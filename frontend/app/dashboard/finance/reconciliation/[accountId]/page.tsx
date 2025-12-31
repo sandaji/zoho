@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useParams } from "next/navigation";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { API_ENDPOINTS, getAuthHeaders, getApiUrl } from "@/lib/api-config";
 import { Loader2, ArrowLeftRight, CheckCircle2 } from "lucide-react";
@@ -28,7 +28,6 @@ interface JournalEntry {
 export default function ReconciliationMatchingPage() {
   const params = useParams();
   const accountId = params.accountId as string;
-  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [bankLines, setBankLines] = useState<BankLine[]>([]);
@@ -65,7 +64,7 @@ export default function ReconciliationMatchingPage() {
 
       try {
           setReconciling(true);
-          const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILE_ITEM), {
+          const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILE_ITEM(selectedBankLine)), {
               method: "POST",
               headers: {
                   ...getAuthHeaders(),

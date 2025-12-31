@@ -13,14 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Trash2,
-  Plus,
-  Minus,
-  ShoppingCart,
-  Percent,
-  DollarSign,
-} from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingCart, Percent, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -70,7 +63,7 @@ export const POSCart: React.FC<POSCartProps> = ({
 
   return (
     <Card className="shadow-lg">
-      <CardHeader className="border-b bg-gradient-to-r from-green-50 to-emerald-50">
+      <CardHeader className="border-b bg-linear-to-r from-green-50 to-emerald-50">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
@@ -97,9 +90,7 @@ export const POSCart: React.FC<POSCartProps> = ({
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <ShoppingCart className="h-16 w-16 text-slate-300 mb-4" />
             <p className="text-slate-500 text-lg font-medium">Cart is empty</p>
-            <p className="text-slate-400 text-sm mt-1">
-              Search and add products to get started
-            </p>
+            <p className="text-slate-400 text-sm mt-1">Search and add products to get started</p>
           </div>
         ) : (
           <div className="max-h-[500px] overflow-auto">
@@ -134,9 +125,7 @@ export const POSCart: React.FC<POSCartProps> = ({
                             variant="outline"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() =>
-                              onUpdateQuantity(item.productId, item.quantity - 1)
-                            }
+                            onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
@@ -144,10 +133,7 @@ export const POSCart: React.FC<POSCartProps> = ({
                             type="number"
                             value={item.quantity}
                             onChange={(e) =>
-                              onUpdateQuantity(
-                                item.productId,
-                                parseInt(e.target.value) || 0
-                              )
+                              onUpdateQuantity(item.productId, parseInt(e.target.value) || 0)
                             }
                             className="w-16 text-center h-8"
                             min="1"
@@ -157,9 +143,7 @@ export const POSCart: React.FC<POSCartProps> = ({
                             variant="outline"
                             size="icon"
                             className="h-8 w-8"
-                            onClick={() =>
-                              onUpdateQuantity(item.productId, item.quantity + 1)
-                            }
+                            onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
                             disabled={item.quantity >= item.available}
                           >
                             <Plus className="h-3 w-3" />

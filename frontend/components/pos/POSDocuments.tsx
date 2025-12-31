@@ -82,10 +82,9 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
       if (statusFilter !== "ALL") params.append("status", statusFilter);
       params.append("limit", "50");
 
-      const res = await fetch(
-        `${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params.toString()}`,
-        { headers: getAuthHeaders() }
-      );
+      const res = await fetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params.toString()}`, {
+        headers: getAuthHeaders(),
+      });
 
       const json = await res.json();
 
@@ -109,14 +108,11 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
 
   const handleConvertToInvoice = async (id: string) => {
     try {
-      const res = await fetch(
-        getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(id)),
-        {
-          method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify({ type: "INVOICE" }),
-        }
-      );
+      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(id)), {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ type: "INVOICE" }),
+      });
 
       const json = await res.json();
 
@@ -131,23 +127,21 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
     }
   };
 
-  const filteredDocuments = documents.filter((doc) =>
-    doc.documentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.customer?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredDocuments = documents.filter(
+    (doc) =>
+      doc.documentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.customer?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <Card className="shadow-lg">
-      <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-indigo-50">
+      <CardHeader className="border-b bg-linear-to-r from-purple-50 to-indigo-50">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
             Sales Documents
           </CardTitle>
-          <Button
-            onClick={handleNewDocument}
-            className="gap-2 bg-indigo-600 hover:bg-indigo-700"
-          >
+          <Button onClick={handleNewDocument} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
             <Plus className="h-4 w-4" />
             New Document
           </Button>
@@ -204,11 +198,7 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
           <div className="flex h-40 flex-col items-center justify-center text-muted-foreground">
             <FileText className="mb-2 h-10 w-10 opacity-50" />
             <p>No documents found</p>
-            <Button
-              variant="link"
-              onClick={handleNewDocument}
-              className="mt-2"
-            >
+            <Button variant="link" onClick={handleNewDocument} className="mt-2">
               Create your first document
             </Button>
           </div>
@@ -229,9 +219,7 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
               <TableBody>
                 {filteredDocuments.map((doc) => (
                   <TableRow key={doc.id} className="hover:bg-slate-50">
-                    <TableCell className="font-mono font-medium">
-                      {doc.documentId}
-                    </TableCell>
+                    <TableCell className="font-mono font-medium">{doc.documentId}</TableCell>
                     <TableCell>
                       <Badge className={typeColors[doc.type]} variant="outline">
                         {doc.type.replace("_", " ")}
@@ -243,16 +231,12 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {doc.customer?.name || (
-                        <span className="text-muted-foreground">—</span>
-                      )}
+                      {doc.customer?.name || <span className="text-muted-foreground">—</span>}
                     </TableCell>
                     <TableCell className="text-right font-mono">
                       KES {doc.total.toLocaleString()}
                     </TableCell>
-                    <TableCell>
-                      {new Date(doc.issueDate).toLocaleDateString()}
-                    </TableCell>
+                    <TableCell>{new Date(doc.issueDate).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button

@@ -13,14 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Search,
-  Eye,
-  Printer,
-  RefreshCw,
-  Calendar,
-  Download,
-} from "lucide-react";
+import { Search, Eye, Printer, RefreshCw, Calendar, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -68,12 +61,9 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
         payment_method: paymentFilter !== "all" ? paymentFilter : "",
       });
 
-      const res = await fetch(
-        `${getApiUrl(API_ENDPOINTS.POS_SALES)}?${params}`,
-        {
-          headers: getAuthHeaders(),
-        }
-      );
+      const res = await fetch(`${getApiUrl(API_ENDPOINTS.POS_SALES)}?${params}`, {
+        headers: getAuthHeaders(),
+      });
 
       const json = await res.json();
 
@@ -115,22 +105,15 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
 
   return (
     <Card className="shadow-lg">
-      <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+      <CardHeader className="border-b bg-linear-to-r from-blue-50 to-indigo-50">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
             Sales History
           </CardTitle>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={fetchSales}
-              disabled={loading}
-            >
-              <RefreshCw
-                className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
-              />
+            <Button variant="outline" size="sm" onClick={fetchSales} disabled={loading}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
             <Button variant="outline" size="sm" disabled>
@@ -197,9 +180,7 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
             <CardContent className="pt-6">
               <p className="text-sm text-slate-600">Average Sale</p>
               <p className="text-2xl font-bold">
-                {formatCurrency(
-                  filteredSales.length > 0 ? totalSales / filteredSales.length : 0
-                )}
+                {formatCurrency(filteredSales.length > 0 ? totalSales / filteredSales.length : 0)}
               </p>
             </CardContent>
           </Card>
@@ -231,25 +212,18 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
               <TableBody>
                 {filteredSales.map((sale) => (
                   <TableRow key={sale.id} className="hover:bg-slate-50">
-                    <TableCell className="font-medium">
-                      {sale.invoice_no}
-                    </TableCell>
+                    <TableCell className="font-medium">{sale.invoice_no}</TableCell>
                     <TableCell className="text-sm text-slate-600">
                       {formatDate(sale.created_at)}
                     </TableCell>
                     <TableCell>
-                      {sale.customer_name || (
-                        <span className="text-slate-400">Walk-in</span>
-                      )}
+                      {sale.customer_name || <span className="text-slate-400">Walk-in</span>}
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{sale.items_count} items</Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="capitalize"
-                      >
+                      <Badge variant="outline" className="capitalize">
                         {sale.payment_method}
                       </Badge>
                     </TableCell>

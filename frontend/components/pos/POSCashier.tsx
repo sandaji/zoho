@@ -40,7 +40,7 @@ export const POSCashier: React.FC<POSCashierProps> = ({ user }) => {
 
   return (
     <Card className="shadow-lg">
-      <CardHeader className="border-b bg-gradient-to-r from-amber-50 to-orange-50">
+      <CardHeader className="border-b bg-linear-to-r from-amber-50 to-orange-50">
         <CardTitle className="text-base flex items-center gap-2">
           <User className="h-4 w-4" />
           Session Info

@@ -65,7 +65,12 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
     { value: "card", label: "Card", icon: CreditCard, color: "bg-blue-100 text-blue-700" },
     { value: "mpesa", label: "M-Pesa", icon: Smartphone, color: "bg-emerald-100 text-emerald-700" },
     { value: "cheque", label: "Cheque", icon: FileText, color: "bg-purple-100 text-purple-700" },
-    { value: "bank_transfer", label: "Bank", icon: Building2, color: "bg-indigo-100 text-indigo-700" },
+    {
+      value: "bank_transfer",
+      label: "Bank",
+      icon: Building2,
+      color: "bg-indigo-100 text-indigo-700",
+    },
   ];
 
   const quickAmounts = [
@@ -77,7 +82,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
 
   return (
     <Card className="shadow-lg sticky top-4">
-      <CardHeader className="border-b bg-gradient-to-r from-purple-50 to-pink-50">
+      <CardHeader className="border-b bg-linear-to-r from-purple-50 to-pink-50">
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
           Payment & Checkout
@@ -93,9 +98,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           {totalDiscount > 0 && (
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Discount</span>
-              <span className="font-medium text-green-600">
-                -{formatCurrency(totalDiscount)}
-              </span>
+              <span className="font-medium text-green-600">-{formatCurrency(totalDiscount)}</span>
             </div>
           )}
           <div className="flex justify-between text-sm">
@@ -121,12 +124,8 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                   key={method.value}
                   type="button"
                   variant={isSelected ? "default" : "outline"}
-                  className={`h-20 flex-col gap-2 ${
-                    isSelected ? "" : method.color
-                  }`}
-                  onClick={() =>
-                    setPaymentMethod(method.value as PaymentMethod)
-                  }
+                  className={`h-20 flex-col gap-2 ${isSelected ? "" : method.color}`}
+                  onClick={() => setPaymentMethod(method.value as PaymentMethod)}
                 >
                   <Icon className="h-5 w-5" />
                   <span className="text-xs">{method.label}</span>
@@ -147,9 +146,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                 id="amountTendered"
                 type="number"
                 value={amountTendered || ""}
-                onChange={(e) =>
-                  setAmountTendered(parseFloat(e.target.value) || 0)
-                }
+                onChange={(e) => setAmountTendered(parseFloat(e.target.value) || 0)}
                 placeholder="0.00"
                 className="mt-2 text-lg font-bold"
                 min="0"
@@ -177,9 +174,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
             {amountTendered > 0 && (
               <div className="rounded-lg bg-white p-3 border border-green-300">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-slate-600">
-                    Change Due
-                  </span>
+                  <span className="text-sm font-medium text-slate-600">Change Due</span>
                   <span
                     className={`text-2xl font-bold ${
                       changeAmount < 0 ? "text-red-600" : "text-green-600"
@@ -189,9 +184,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                   </span>
                 </div>
                 {changeAmount < 0 && (
-                  <p className="text-xs text-red-600 mt-1">
-                    Insufficient amount tendered
-                  </p>
+                  <p className="text-xs text-red-600 mt-1">Insufficient amount tendered</p>
                 )}
               </div>
             )}
@@ -217,9 +210,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
         <Button
           onClick={onCheckout}
           disabled={
-            loading ||
-            cartCount === 0 ||
-            (paymentMethod === "cash" && amountTendered < grandTotal)
+            loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
           }
           className="w-full h-14 text-lg font-bold"
           size="lg"

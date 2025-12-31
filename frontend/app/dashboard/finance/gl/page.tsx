@@ -54,7 +54,6 @@ export default function GeneralLedgerPage() {
   const { showToast } = useToast();
   const [entries, setEntries] = useState<any[]>([]);
   const [journals, setJournals] = useState<any[]>([]);
-  const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,18 +77,11 @@ export default function GeneralLedgerPage() {
   const fetchMetadata = async () => {
     try {
       const token = localStorage.getItem("auth_token");
-      const [jRes, aRes] = await Promise.all([
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/gl/journals`, {
-          headers: { Authorization: `Bearer ${token}` }
-        }),
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/summary`, {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-      ]);
-      const [jData, aData] = await Promise.all([jRes.json(), aRes.json()]);
+      const jRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/gl/journals`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const jData = await jRes.json();
       if (jData.status === "success") setJournals(jData.data);
-      // For accounts, we'll fetch them from a standard endpoint in the next step
-      // For now, let's assume we have a way to search accounts
     } catch (error) {
       console.error("Error fetching metadata:", error);
     }
@@ -358,14 +350,24 @@ export default function GeneralLedgerPage() {
                   <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-full ml-auto" /></TableCell>
                 </TableRow>
               ))
-            ) : filteredEntries.length === 0 ? (
+            ) : entries.filter(e => 
+                !searchQuery || 
+                e.entry_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase())
+              ).length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                   No journal entries found.
                 </TableCell>
               </TableRow>
             ) : (
-              filteredEntries.map((entry) => (
+              entries.filter(e => 
+                !searchQuery || 
+                e.entry_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase())
+              ).map((entry) => (
                 <TableRow key={entry.id} className="hover:bg-slate-50/50 transition-colors">
                   <TableCell className="text-sm font-medium">
                     {format(new Date(entry.entry_date), "MMM dd, yyyy")}

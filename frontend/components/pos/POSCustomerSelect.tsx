@@ -30,10 +30,7 @@ interface POSCustomerSelectProps {
   onCustomerSelect: (customer: Customer | null) => void;
 }
 
-export function POSCustomerSelect({
-  selectedCustomer,
-  onCustomerSelect,
-}: POSCustomerSelectProps) {
+export function POSCustomerSelect({ selectedCustomer, onCustomerSelect }: POSCustomerSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
@@ -135,18 +132,13 @@ export function POSCustomerSelect({
     <>
       {/* Selected Customer Display */}
       <Card className="shadow-lg border-2 border-slate-200">
-        <CardHeader className="py-3 px-4 border-b bg-gradient-to-r from-slate-50 to-slate-100">
+        <CardHeader className="py-3 px-4 border-b bg-linear-to-r from-slate-50 to-slate-100">
           <CardTitle className="flex items-center justify-between text-base">
             <span className="flex items-center gap-2">
               <User className="h-4 w-4" />
               Customer
             </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(true)}
-              className="h-8"
-            >
+            <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)} className="h-8">
               Change
             </Button>
           </CardTitle>
@@ -171,10 +163,7 @@ export function POSCustomerSelect({
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Badge
-                variant="secondary"
-                className="bg-amber-100 text-amber-800 hover:bg-amber-100"
-              >
+              <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">
                 <Store className="h-3 w-3 mr-1" />
                 Counter Sale
               </Badge>
@@ -217,9 +206,7 @@ export function POSCustomerSelect({
                 <p className="text-sm text-amber-700">Walk-in customer</p>
               </div>
             </div>
-            {!selectedCustomer && (
-              <Check className="h-5 w-5 text-amber-700" />
-            )}
+            {!selectedCustomer && <Check className="h-5 w-5 text-amber-700" />}
           </button>
 
           {/* Search Results */}
@@ -252,13 +239,9 @@ export function POSCustomerSelect({
                 </button>
               ))
             ) : searchTerm.length >= 2 ? (
-              <p className="text-center text-sm text-slate-500 py-4">
-                No customers found
-              </p>
+              <p className="text-center text-sm text-slate-500 py-4">No customers found</p>
             ) : (
-              <p className="text-center text-sm text-slate-500 py-4">
-                Type to search customers...
-              </p>
+              <p className="text-center text-sm text-slate-500 py-4">Type to search customers...</p>
             )}
           </div>
 
@@ -290,9 +273,7 @@ export function POSCustomerSelect({
               <Input
                 id="customer-name"
                 value={newCustomer.name}
-                onChange={(e) =>
-                  setNewCustomer({ ...newCustomer, name: e.target.value })
-                }
+                onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
                 placeholder="Customer name"
               />
             </div>
@@ -302,9 +283,7 @@ export function POSCustomerSelect({
               <Input
                 id="customer-phone"
                 value={newCustomer.phone}
-                onChange={(e) =>
-                  setNewCustomer({ ...newCustomer, phone: e.target.value })
-                }
+                onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
                 placeholder="0712 345 678"
               />
             </div>
@@ -315,9 +294,7 @@ export function POSCustomerSelect({
                 id="customer-email"
                 type="email"
                 value={newCustomer.email}
-                onChange={(e) =>
-                  setNewCustomer({ ...newCustomer, email: e.target.value })
-                }
+                onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
                 placeholder="email@example.com"
               />
             </div>
@@ -327,10 +304,7 @@ export function POSCustomerSelect({
             <Button variant="outline" onClick={() => setShowAddDialog(false)}>
               Cancel
             </Button>
-            <Button
-              onClick={handleAddCustomer}
-              disabled={!newCustomer.name.trim() || isAdding}
-            >
+            <Button onClick={handleAddCustomer} disabled={!newCustomer.name.trim() || isAdding}>
               {isAdding ? "Adding..." : "Add Customer"}
             </Button>
           </DialogFooter>
