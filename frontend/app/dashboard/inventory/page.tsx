@@ -1,0 +1,280 @@
+// app/dashboard/inventory/page.tsx
+"use client";
+
+import { useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, Download, RefreshCw, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { InventoryStats } from "./components/inventory-stats";
+import { StockLevelChart } from "./components/stock-level-chart";
+import { CategoryDistribution } from "./components/category-distribution";
+import { LowStockItems } from "./components/low-stock-items";
+import { InventoryTable } from "./components/inventory-table";
+import { QuickActions } from "./components/quick-actions";
+import { useInventory } from "@/hooks/use-inventory";
+import { toast } from "sonner";
+
+export default function InventoryDashboard() {
+  const {
+    // Data
+    products,
+    stats,
+    categories,
+    branches,
+    pagination,
+    lowStockProducts,
+    outOfStockProducts,
+
+    // State
+    isLoading,
+    error,
+
+    // Filters
+    filters,
+    setSearch,
+    setCategory,
+
+    // Actions
+    refresh,
+    exportData,
+    goToPage,
+    setSort,
+  } = useInventory();
+
+  // Transform products for components that expect the old interface
+  const transformedProducts = products.map((product) => ({
+    id: product.id,
+    itemCode: product.sku,
+    name: product.name,
+    category: product.category || "Uncategorized",
+    currentStock: product.quantity,
+    minStock: product.reorder_level,
+    maxStock: product.reorder_level * 10, // Estimate
+    unit: product.unit_of_measurement,
+    costPrice: product.cost_price,
+    sellingPrice: product.unit_price,
+    lastRestocked: product.updatedAt,
+    status:
+      product.quantity === 0
+        ? ("out_of_stock" as const)
+        : product.quantity <= product.reorder_level
+        ? ("low_stock" as const)
+        : ("in_stock" as const),
+    branch: "All Branches", // TODO: Add branch info when available
+  }));
+
+  const alertProducts = [
+    ...lowStockProducts.map((p) => ({
+      id: p.id,
+      itemCode: p.sku,
+      name: p.name,
+      category: p.category || "Uncategorized",
+      currentStock: p.quantity,
+      minStock: p.reorder_level,
+      maxStock: p.reorder_level * 10,
+      unit: p.unit_of_measurement,
+      costPrice: p.cost_price,
+      sellingPrice: p.unit_price,
+      lastRestocked: p.updatedAt,
+      status: "low_stock" as const,
+      branch: "All Branches",
+    })),
+    ...outOfStockProducts.map((p) => ({
+      id: p.id,
+      itemCode: p.sku,
+      name: p.name,
+      category: p.category || "Uncategorized",
+      currentStock: p.quantity,
+      minStock: p.reorder_level,
+      maxStock: p.reorder_level * 10,
+      unit: p.unit_of_measurement,
+      costPrice: p.cost_price,
+      sellingPrice: p.unit_price,
+      lastRestocked: p.updatedAt,
+      status: "out_of_stock" as const,
+      branch: "All Branches",
+    })),
+  ];
+
+  // Show error toast if there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
+
+  const handleRefresh = async () => {
+    await refresh();
+    toast.success("Inventory refreshed successfully");
+  };
+
+  const handleExport = () => {
+    exportData();
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            Inventory Dashboard
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Manage and monitor your inventory across all branches
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            className="border-slate-300 dark:border-slate-600"
+            disabled={isLoading || products.length === 0}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          <Button
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900"
+          >
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            />
+            Refresh
+          </Button>
+        </div>
+      </div>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Search and Filters */}
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+        <CardContent className="p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <Input
+                placeholder="Search items by name or SKU..."
+                value={filters.search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 border-slate-300 dark:border-slate-600"
+              />
+            </div>
+            <div className="flex gap-2">
+              <select
+                value={filters.category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                disabled={isLoading}
+              >
+                <option value="all">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <select
+                value="all"
+                className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                disabled={isLoading || !branches || branches.length === 0}
+              >
+                <option value="all">All Branches</option>
+                {branches && branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Loading State */}
+      {isLoading && products.length === 0 ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-3">
+            <RefreshCw className="h-8 w-8 animate-spin mx-auto text-slate-400" />
+            <p className="text-slate-600 dark:text-slate-400">
+              Loading inventory data...
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Stats Cards */}
+          <InventoryStats
+            totalItems={stats.totalItems}
+            lowStockItems={stats.lowStockCount}
+            outOfStockItems={stats.outOfStockCount}
+            totalValue={stats.totalValue}
+          />
+
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StockLevelChart items={transformedProducts} />
+            <CategoryDistribution items={transformedProducts} />
+          </div>
+
+          {/* Bottom Section */}
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="xl:col-span-2 space-y-6">
+              <LowStockItems items={alertProducts} />
+              <InventoryTable 
+                items={transformedProducts} 
+                isLoading={isLoading}
+                pagination={pagination}
+                onSort={setSort}
+                onPageChange={goToPage}
+                currentSort={{
+                  sortBy: filters.sortBy,
+                  sortOrder: filters.sortOrder
+                }}
+              />
+            </div>
+            <div className="space-y-6">
+              <QuickActions onProductAdded={refresh} />
+            </div>
+          </div>
+
+          {/* Empty State */}
+          {!isLoading && products.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                <AlertCircle className="h-8 w-8 text-slate-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                No products found
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 mb-4">
+                {filters.search || filters.category !== "all"
+                  ? "Try adjusting your filters"
+                  : "Get started by adding your first product"}
+              </p>
+              <Button
+                onClick={() => {
+                  setSearch("");
+                  setCategory("all");
+                }}
+                variant="outline"
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

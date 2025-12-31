@@ -1,0 +1,60 @@
+{
+  "sale": {
+    "id": "clxyz123456789",
+    "invoice_no": "WL-001-20241116-0001",
+    "status": "confirmed",
+    "payment_method": "mpesa",
+    "branchId": "branch_001",
+    "userId": "user_001",
+    "subtotal": 120000.00,
+    "total_amount": 120000.00,
+    "discount": 2000.00,
+    "tax": 18880.00,
+    "grand_total": 136880.00,
+    "amount_paid": 137000.00,
+    "change": 120.00,
+    "items": [
+      {
+        "id": "item_001",
+        "productId": "prod_001",
+        "productName": "Dell Latitude 5420",
+        "productSku": "LAP-001",
+        "quantity": 1,
+        "unit_price": 120000.00,
+        "tax_rate": 0.16,
+        "discount": 2000.00,
+        "discount_percent": 1.67,
+        "subtotal": 120000.00,
+        "tax_amount": 18880.00,
+        "amount": 136880.00
+      }
+    ],
+    "created_date": "2024-11-16T10:30:45.123Z",
+    "notes": "Customer paid via M-Pesa"
+  },
+  "branch": {
+    "name": "Westlands Branch",
+    "address": "Westlands, Nairobi",
+    "phone": "+254 722 111 001",
+    "code": "WL-001"
+  },
+  "cashier": {
+    "name": "Alice Johnson",
+    "email": "cashier@lunatech.co.ke"
+  },
+  "company": {
+    "name": "LUNATECH SYSTEMS LTD",
+    "address": "123 Tech Plaza, Westlands, Nairobi",
+    "phone": "+254 722 123 456",
+    "email": "info@lunatech.co.ke",
+    "kra_pin": "P051472913Q"
+  },
+  "etr_data": {
+    "device_serial": "ETR-2024-001",
+    "fiscal_code": "FIS-2024-11-16-0001",
+    "cu_serial": "CU-001-2024",
+    "receipt_counter": 1234,
+    "receipt_signature": "4F8E9A2C1B5D6E3F7A8B9C0D1E2F3A4B",
+    "qr_code": "https://etims.kra.go.ke/verify?rcpt=WL-001-20241116-0001"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "zoho-erp",
+  "version": "1.0.0",
+  "description": "Zoho ERP - Complete monorepo with Next.js frontend and Node.js backend",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "lint:fix": "npm run lint:fix --workspaces",
+    "type-check": "npm run type-check --workspaces",
+    "db:push": "npm run db:push --workspace=backend",
+    "db:migrate": "npm run db:migrate --workspace=backend",
+    "db:studio": "npm run db:studio --workspace=backend"
+  },
+  "keywords": [
+    "erp",
+    "next.js",
+    "typescript",
+    "prisma",
+    "postgresql"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/next": "^8.0.7",
+    "baseline-browser-mapping": "^2.8.32"
+  }
+}

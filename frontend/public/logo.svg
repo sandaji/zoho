@@ -1,0 +1,11 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Isometric-style Minimalist Blocks -->
+  <!-- Bottom Left Block -->
+  <path d="M8 28L20 34V22L8 16V28Z" fill="#1e293b"/>
+  <!-- Bottom Right Block -->
+  <path d="M32 28L20 34V22L32 16V28Z" fill="#334155"/>
+  <!-- Top Block (Main) -->
+  <path d="M20 22L32 16L20 10L8 16L20 22Z" fill="#3b82f6"/>
+  <!-- Top Highlight -->
+  <path d="M20 14L28 10L20 6L12 10L20 14Z" fill="#60a5fa" opacity="0.8"/>
+</svg>
