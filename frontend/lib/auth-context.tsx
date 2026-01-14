@@ -2,18 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-// All the roles used in the system
-export type UserRole = 
-  | "admin" 
-  | "branch_manager"
-  | "manager" 
-  | "accountant"
-  | "hr"
-  | "cashier" 
-  | "warehouse_staff" 
-  | "driver" 
-  | "user";
-
 export interface Branch {
   id: string;
   name: string;
@@ -24,7 +12,6 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: UserRole;
   branchId: string | null;
   branch?: {
     id: string;

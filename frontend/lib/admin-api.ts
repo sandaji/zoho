@@ -1,5 +1,5 @@
 // frontend/lib/admin-api.ts
-import { UserRole, SalesStatus, DeliveryStatus, TransactionType, PayrollStatus, PaymentMethod } from "./types";
+import { SalesStatus, DeliveryStatus, TransactionType, PayrollStatus, PaymentMethod } from "./types";
 
 const API_BASE_URL = "/api";
 

@@ -1,320 +1,8 @@
-// // backend/prisma/seed.ts
-// import { prisma } from '../src/lib/db';
-// import 'dotenv/config';
-// import { 
-//   UserRole, 
-//   InventoryStatus, 
-//   SalesStatus, 
-//   PaymentMethod,
-//   AccessScope
-// } from '../src/generated/client';
-// import bcrypt from 'bcrypt';
-
-// async function main() {
-//   console.log("🌱 Starting seed...");
-
-//   // -----------------------------
-//   // Clear existing data
-//   // -----------------------------
-//   console.log("🧹 Cleaning existing data...");
-
-//   // RBAC
-//   await prisma.roleAssignment.deleteMany();
-//   await prisma.rolePermission.deleteMany();
-//   await prisma.permission.deleteMany();
-//   await prisma.role.deleteMany();
-//   await prisma.module.deleteMany();
-
-//   // HR & Performance
-//   await prisma.benefitEnrollment.deleteMany();
-//   await prisma.benefit.deleteMany();
-//   await prisma.attendance.deleteMany();
-//   await prisma.leaveRequest.deleteMany();
-//   await prisma.leaveAllocation.deleteMany();
-//   await prisma.leaveType.deleteMany();
-//   await prisma.performanceEvaluation.deleteMany();
-//   await prisma.goal.deleteMany();
-//   await prisma.employeeTransfer.deleteMany();
-
-//   // Recruitment
-//   await prisma.interview.deleteMany();
-//   await prisma.applicant.deleteMany();
-//   await prisma.jobPosting.deleteMany();
-
-//   // Finance
-//   await prisma.payment.deleteMany();
-//   await prisma.financeTransaction.deleteMany();
-//   await prisma.journalEntry.deleteMany();
-//   await prisma.journal.deleteMany();
-//   await prisma.fiscalPeriod.deleteMany();
-//   await prisma.fiscalYear.deleteMany();
-//   await prisma.budget.deleteMany();
-//   await prisma.bankStatementLine.deleteMany();
-//   await prisma.bankStatement.deleteMany();
-//   await prisma.bankAccount.deleteMany();
-//   await prisma.accountReceivable.deleteMany();
-//   await prisma.accountPayable.deleteMany();
-//   await prisma.chartOfAccount.deleteMany();
-//   await prisma.taxRecord.deleteMany();
-//   await prisma.financialForecast.deleteMany();
-
-//   // Sales & Logistics
-//   await prisma.delivery.deleteMany();
-//   await prisma.truck.deleteMany();
-//   await prisma.stockMovement.deleteMany();
-//   await prisma.transferItem.deleteMany();
-//   await prisma.stockTransfer.deleteMany();
-//   await prisma.salesDocumentItem.deleteMany();
-//   await prisma.salesDocument.deleteMany();
-//   await prisma.documentSequence.deleteMany();
-//   await prisma.customer.deleteMany();
-//   await prisma.salesItem.deleteMany();
-//   await prisma.sales.deleteMany();
-
-//   // Core Data
-//   await prisma.payroll.deleteMany();
-//   await prisma.inventory.deleteMany();
-//   await prisma.product.deleteMany();
-//   await prisma.warehouse.deleteMany();
-//   await prisma.user.deleteMany();
-//   await prisma.branch.deleteMany();
-
-//   // -----------------------------
-//   // Branches
-//   // -----------------------------
-//   console.log("🏢 Creating branches...");
-//   const mainBranch = await prisma.branch.create({
-//     data: {
-//       code: "WH-001",
-//       name: "Main Warehouse",
-//       city: "Nairobi",
-//       address: "Industrial Area, Nairobi",
-//       phone: "+254 722 111 000",
-//     },
-//   });
-
-//   const westlandsBranch = await prisma.branch.create({
-//     data: {
-//       code: "WL-001",
-//       name: "Westlands Branch",
-//       city: "Nairobi",
-//       address: "Westlands, Nairobi",
-//       phone: "+254 722 111 001",
-//     },
-//   });
-
-//   // -----------------------------
-//   // Warehouses
-//   // -----------------------------
-//   console.log("📦 Creating warehouses...");
-//   const warehouse1 = await prisma.warehouse.create({
-//     data: {
-//       code: "WH-MAIN",
-//       name: "Main Storage",
-//       location: "Industrial Area",
-//       capacity: 1000,
-//       branchId: mainBranch.id,
-//     },
-//   });
-
-//   const warehouse2 = await prisma.warehouse.create({
-//     data: {
-//       code: "WH-WL",
-//       name: "Westlands Storage",
-//       location: "Westlands",
-//       capacity: 500,
-//       branchId: westlandsBranch.id,
-//     },
-//   });
-
-//   // -----------------------------
-//   // Users & RBAC
-//   // -----------------------------
-//   console.log("👥 Creating users with RBAC assignments...");
-//   const hashedPassword = await bcrypt.hash("password123", 10);
-
-//   console.log("🛠️ Seeding RBAC data...");
-//   const hrModule = await prisma.module.create({ data: { code: 'hr', name: 'HR' } });
-//   const salesModule = await prisma.module.create({ data: { code: 'sales', name: 'Sales' } });
-//   const financeModule = await prisma.module.create({ data: { code: 'finance', name: 'Finance' } });
-//   const adminModule = await prisma.module.create({ data: { code: 'admin', name: 'Admin' } });
-
-//   const permissions = [
-//     { code: 'hr.employee.view', name: 'View Employees', moduleId: hrModule.id },
-//     { code: 'hr.employee.manage', name: 'Manage Employees', moduleId: hrModule.id },
-//     { code: 'sales.order.create', name: 'Create Sales', moduleId: salesModule.id },
-//     { code: 'sales.order.view_all', name: 'View All Sales', moduleId: salesModule.id },
-//     { code: 'finance.reports.view', name: 'View Reports', moduleId: financeModule.id },
-//     { code: 'admin.user.manage', name: 'Manage Users', moduleId: adminModule.id },
-//     { code: 'admin.role.manage', name: 'Manage Roles', moduleId: adminModule.id },
-//   ];
-
-//   const permissionMap = new Map<string, string>();
-//   for (const p of permissions) {
-//     const perm = await prisma.permission.create({ data: p });
-//     permissionMap.set(p.code, perm.id);
-//   }
-
-//   const superAdminRole = await prisma.role.create({
-//     data: { code: 'super_admin', name: 'Super Administrator', isSystem: true, description: 'Global access' }
-//   });
-
-//   const branchManagerRole = await prisma.role.create({
-//     data: { code: 'branch_manager', name: 'Branch Manager', isSystem: true, description: 'Branch-level access' }
-//   });
-
-//   const cashierRole = await prisma.role.create({
-//     data: { code: 'cashier', name: 'Cashier', isSystem: true, description: 'POS access' }
-//   });
-
-//   const warehouseRole = await prisma.role.create({
-//     data: { code: 'warehouse_staff', name: 'Warehouse Staff', isSystem: true, description: 'Inventory access' }
-//   });
-
-//   // Assign permissions
-//   for (const permId of permissionMap.values()) {
-//     await prisma.rolePermission.create({ data: { roleId: superAdminRole.id, permissionId: permId, scope: AccessScope.GLOBAL } });
-//   }
-
-//   const bmPerms = ['hr.employee.view', 'sales.order.create', 'sales.order.view_all'];
-//   for (const code of bmPerms) {
-//     const id = permissionMap.get(code);
-//     if (id) await prisma.rolePermission.create({ data: { roleId: branchManagerRole.id, permissionId: id, scope: AccessScope.BRANCH } });
-//   }
-
-//   const cashierPerms = ['sales.order.create'];
-//   for (const code of cashierPerms) {
-//     const id = permissionMap.get(code);
-//     if (id) await prisma.rolePermission.create({ data: { roleId: cashierRole.id, permissionId: id, scope: AccessScope.OWN } });
-//   }
-
-//   const warehousePerms = ['sales.order.view_all'];
-//   for (const code of warehousePerms) {
-//     const id = permissionMap.get(code);
-//     if (id) await prisma.rolePermission.create({ data: { roleId: warehouseRole.id, permissionId: id, scope: AccessScope.BRANCH } });
-//   }
-
-//   // Users
-//   const admin = await prisma.user.create({
-//     data: { email: "admin@lunatech.co.ke", name: "Admin User", passwordHash: hashedPassword, role: UserRole.admin, branchId: mainBranch.id }
-//   });
-//   await prisma.roleAssignment.create({ data: { userId: admin.id, roleId: superAdminRole.id } });
-
-//   const manager = await prisma.user.create({
-//     data: { email: "manager@lunatech.co.ke", name: "Jane Smith", passwordHash: hashedPassword, role: UserRole.manager, branchId: westlandsBranch.id }
-//   });
-//   await prisma.roleAssignment.create({ data: { userId: manager.id, roleId: branchManagerRole.id } });
-
-//   const warehouseStaff = await prisma.user.create({
-//     data: { email: "warehouse@lunatech.co.ke", name: "Bob Wilson", passwordHash: hashedPassword, role: UserRole.warehouse_staff, branchId: mainBranch.id }
-//   });
-//   await prisma.roleAssignment.create({ data: { userId: warehouseStaff.id, roleId: warehouseRole.id } });
-
-//   const cashier = await prisma.user.create({
-//     data: { email: "cashier@lunatech.co.ke", name: "Alice Johnson", passwordHash: hashedPassword, role: UserRole.cashier, branchId: westlandsBranch.id }
-//   });
-//   await prisma.roleAssignment.create({ data: { userId: cashier.id, roleId: cashierRole.id } });
-
-//   const driver = await prisma.user.create({
-//     data: { email: "driver@lunatech.co.ke", name: "Michael Brown", passwordHash: hashedPassword, role: UserRole.driver, branchId: westlandsBranch.id }
-//   });
-
-//   // -----------------------------
-//   // Products & Inventory
-//   // -----------------------------
-//   console.log("🛍️ Creating products...");
-//   const createdProducts = await Promise.all([
-//     prisma.product.create({ data: { sku: "LAP-001", barcode: "123456789001", name: "Dell Latitude 5420", description: "Business Laptop", category: "Computers", unit_price: 120000, cost_price: 95000, tax_rate: 0.16, quantity: 60, reorder_level: 5 } }),
-//     prisma.product.create({ data: { sku: "LAP-002", barcode: "123456789002", name: "HP Elitebook 840", description: "Enterprise Laptop", category: "Computers", unit_price: 115000, cost_price: 92000, tax_rate: 0.16, quantity: 40, reorder_level: 5 } }),
-//   ]);
-
-//   console.log("📊 Creating inventory records...");
-//   for (const product of createdProducts) {
-//     const qty1 = Math.floor(product.quantity * 0.6);
-//     const qty2 = Math.floor(product.quantity * 0.4);
-//     await prisma.inventory.create({ data: { quantity: qty1, reserved: 0, available: qty1, status: InventoryStatus.in_stock, productId: product.id, warehouseId: warehouse1.id } });
-//     await prisma.inventory.create({ data: { quantity: qty2, reserved: 0, available: qty2, status: InventoryStatus.in_stock, productId: product.id, warehouseId: warehouse2.id } });
-//   }
-
-//   // -----------------------------
-//   // Trucks
-//   // -----------------------------
-//   console.log("🚚 Creating trucks...");
-//   await prisma.truck.create({ data: { registration: "KCA 123A", model: "Toyota Hiace", capacity: 2000, license_plate: "KCA-123A" } });
-
-//   // -----------------------------
-//   // Sample Sales
-//   // -----------------------------
-//   console.log("🛒 Creating sample sales...");
-//   function calculateTotals(items: { unit_price: number; quantity: number; tax_rate: number }[]) {
-//     let subtotal = 0;
-//     let tax = 0;
-//     for (const item of items) {
-//       const lineSubtotal = item.unit_price * item.quantity;
-//       const lineTax = lineSubtotal * item.tax_rate;
-//       subtotal += lineSubtotal;
-//       tax += lineTax;
-//     }
-//     return { subtotal, tax, grand_total: subtotal + tax };
-//   }
-
-//   for (let i = 1; i <= 3; i++) {
-//     const itemsForSale = createdProducts.map(product => {
-//       const quantity = Math.floor(Math.random() * 3) + 1;
-//       return { product, quantity, unit_price: product.unit_price, tax_rate: product.tax_rate };
-//     });
-
-//     const totals = calculateTotals(itemsForSale);
-
-//     const sale = await prisma.sales.create({
-//       data: {
-//         invoice_no: `INV-2025-00${i}`,
-//         status: SalesStatus.confirmed,
-//         payment_method: PaymentMethod.cash,
-//         branchId: i % 2 === 0 ? mainBranch.id : westlandsBranch.id,
-//         userId: i % 2 === 0 ? warehouseStaff.id : cashier.id,
-//         createdById: manager.id,
-//         subtotal: totals.subtotal,
-//         total_amount: totals.subtotal,
-//         discount: 0,
-//         tax: totals.tax,
-//         grand_total: totals.grand_total,
-//         amount_paid: totals.grand_total,
-//         change: 0,
-//       },
-//     });
-
-//     for (const item of itemsForSale) {
-//       await prisma.salesItem.create({
-//         data: {
-//           quantity: item.quantity,
-//           unit_price: item.unit_price,
-//           subtotal: item.unit_price * item.quantity,
-//           tax_rate: item.tax_rate,
-//           tax_amount: item.unit_price * item.quantity * item.tax_rate,
-//           amount: item.unit_price * item.quantity * (1 + item.tax_rate),
-//           salesId: sale.id,
-//           productId: item.product.id,
-//         },
-//       });
-//     }
-//   }
-
-//   console.log("\n✅ Seed data created successfully!");
-// }
-
-// main()
-//   .catch(e => { console.error("\n❌ Seed failed:"); console.error(e); process.exit(1); })
-//   .finally(async () => { /* process exit handles disconnect */ });
-
-
-
 // backend/prisma/seed.ts
 
 import { prisma } from '../src/lib/db';
 import 'dotenv/config';
 import {
-  UserRole,
   InventoryStatus,
   SalesStatus,
   DeliveryStatus,
@@ -418,19 +106,64 @@ async function main() {
   });
 
   console.log('👥 Creating RBAC modules and permissions...');
-  const hrModule = await prisma.module.create({ data: { code: 'hr', name: 'HR' } });
+  const hrModule = await prisma.module.create({ data: { code: 'hr', name: 'Human Resources' } });
   const salesModule = await prisma.module.create({ data: { code: 'sales', name: 'Sales' } });
   const financeModule = await prisma.module.create({ data: { code: 'finance', name: 'Finance' } });
-  const adminModule = await prisma.module.create({ data: { code: 'admin', name: 'Admin' } });
+  const adminModule = await prisma.module.create({ data: { code: 'admin', name: 'Administration' } });
+  const inventoryModule = await prisma.module.create({ data: { code: 'inventory', name: 'Inventory' } });
+  const procurementModule = await prisma.module.create({ data: { code: 'procurement', name: 'Procurement' } });
+  const auditModule = await prisma.module.create({ data: { code: 'audit', name: 'Audit' } });
 
   const permissions = [
+    // HR Permissions
     { code: 'hr.employee.view', name: 'View Employees', moduleId: hrModule.id },
     { code: 'hr.employee.manage', name: 'Manage Employees', moduleId: hrModule.id },
-    { code: 'sales.order.create', name: 'Create Sales', moduleId: salesModule.id },
-    { code: 'sales.order.view_all', name: 'View All Sales', moduleId: salesModule.id },
-    { code: 'finance.reports.view', name: 'View Reports', moduleId: financeModule.id },
+    { code: 'hr.payroll.view', name: 'View Payroll', moduleId: hrModule.id },
+    { code: 'hr.payroll.manage', name: 'Manage Payroll', moduleId: hrModule.id },
+    { code: 'hr.recruitment.view', name: 'View Recruitment', moduleId: hrModule.id },
+    { code: 'hr.recruitment.manage', name: 'Manage Recruitment', moduleId: hrModule.id },
+
+    // Sales Permissions
+    { code: 'sales.order.create', name: 'Create Sales Orders', moduleId: salesModule.id },
+    { code: 'sales.order.view', name: 'View Sales Orders', moduleId: salesModule.id },
+    { code: 'sales.order.view_all', name: 'View All Sales Orders', moduleId: salesModule.id },
+    { code: 'sales.order.manage', name: 'Manage Sales Orders', moduleId: salesModule.id },
+    { code: 'sales.customer.view', name: 'View Customers', moduleId: salesModule.id },
+    { code: 'sales.customer.manage', name: 'Manage Customers', moduleId: salesModule.id },
+
+    // Finance Permissions
+    { code: 'finance.invoice.create', name: 'Create Invoices', moduleId: financeModule.id },
+    { code: 'finance.invoice.view', name: 'View Invoices', moduleId: financeModule.id },
+    { code: 'finance.invoice.approve', name: 'Approve Invoices', moduleId: financeModule.id },
+    { code: 'finance.payment.create', name: 'Create Payments', moduleId: financeModule.id },
+    { code: 'finance.payment.view', name: 'View Payments', moduleId: financeModule.id },
+    { code: 'finance.reports.view', name: 'View Financial Reports', moduleId: financeModule.id },
+    { code: 'finance.gl.view', name: 'View General Ledger', moduleId: financeModule.id },
+    { code: 'finance.gl.manage', name: 'Manage General Ledger', moduleId: financeModule.id },
+
+    // Admin Permissions
     { code: 'admin.user.manage', name: 'Manage Users', moduleId: adminModule.id },
     { code: 'admin.role.manage', name: 'Manage Roles', moduleId: adminModule.id },
+    { code: 'admin.branch.manage', name: 'Manage Branches', moduleId: adminModule.id },
+    { code: 'admin.system.view', name: 'View System Settings', moduleId: adminModule.id },
+    { code: 'admin.system.manage', name: 'Manage System Settings', moduleId: adminModule.id },
+
+    // Inventory Permissions
+    { code: 'inventory.product.view', name: 'View Products', moduleId: inventoryModule.id },
+    { code: 'inventory.product.manage', name: 'Manage Products', moduleId: inventoryModule.id },
+    { code: 'inventory.stock.view', name: 'View Stock', moduleId: inventoryModule.id },
+    { code: 'inventory.stock.adjust', name: 'Adjust Stock', moduleId: inventoryModule.id },
+    { code: 'inventory.warehouse.manage', name: 'Manage Warehouses', moduleId: inventoryModule.id },
+
+    // Procurement Permissions
+    { code: 'procurement.vendor.view', name: 'View Vendors', moduleId: procurementModule.id },
+    { code: 'procurement.vendor.manage', name: 'Manage Vendors', moduleId: procurementModule.id },
+    { code: 'procurement.order.create', name: 'Create Purchase Orders', moduleId: procurementModule.id },
+    { code: 'procurement.order.view', name: 'View Purchase Orders', moduleId: procurementModule.id },
+    { code: 'procurement.order.approve', name: 'Approve Purchase Orders', moduleId: procurementModule.id },
+
+    // Audit Permissions
+    { code: 'audit.log.view', name: 'View Audit Logs', moduleId: auditModule.id },
   ];
 
   const permissionMap = new Map<string, string>();
@@ -476,27 +209,27 @@ async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const admin = await prisma.user.create({
-    data: { email: 'admin@lunatech.co.ke', name: 'Admin User', passwordHash: hashedPassword, role: UserRole.admin, branchId: mainWarehouse.id },
+    data: { email: 'admin@lunatech.co.ke', name: 'Admin User', passwordHash: hashedPassword, branchId: mainWarehouse.id },
   });
   await prisma.roleAssignment.create({ data: { userId: admin.id, roleId: superAdminRole.id } });
 
   const manager = await prisma.user.create({
-    data: { email: 'manager@lunatech.co.ke', name: 'Jane Smith', passwordHash: hashedPassword, role: UserRole.manager, branchId: westlandsBranch.id },
+    data: { email: 'manager@lunatech.co.ke', name: 'Jane Smith', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
   await prisma.roleAssignment.create({ data: { userId: manager.id, roleId: branchManagerRole.id } });
 
   const warehouseStaff = await prisma.user.create({
-    data: { email: 'warehouse@lunatech.co.ke', name: 'Bob Wilson', passwordHash: hashedPassword, role: UserRole.warehouse_staff, branchId: mainWarehouse.id },
+    data: { email: 'warehouse@lunatech.co.ke', name: 'Bob Wilson', passwordHash: hashedPassword, branchId: mainWarehouse.id },
   });
   await prisma.roleAssignment.create({ data: { userId: warehouseStaff.id, roleId: warehouseRole.id } });
 
   const cashier = await prisma.user.create({
-    data: { email: 'cashier@lunatech.co.ke', name: 'Alice Johnson', passwordHash: hashedPassword, role: UserRole.cashier, branchId: westlandsBranch.id },
+    data: { email: 'cashier@lunatech.co.ke', name: 'Alice Johnson', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
   await prisma.roleAssignment.create({ data: { userId: cashier.id, roleId: cashierRole.id } });
 
   const driver = await prisma.user.create({
-    data: { email: 'driver@lunatech.co.ke', name: 'Michael Brown', passwordHash: hashedPassword, role: UserRole.driver, branchId: westlandsBranch.id },
+    data: { email: 'driver@lunatech.co.ke', name: 'Michael Brown', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
 
   console.log('🛍️ Creating products and inventory...');

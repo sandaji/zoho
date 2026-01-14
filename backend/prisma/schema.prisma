@@ -17,25 +17,6 @@ datasource db {
 // ENUMS
 // ============================================================================
 
-enum UserRole {
-  cashier
-  warehouse_staff
-  driver
-  branch_manager
-  hr
-  accountant
-  manager
-  admin
-  super_admin
-  procurement_officer
-  inventory_manager
-  warehouse_officer
-  finance_officer
-  view_only
-
-  @@map("user_role")
-}
-
 enum InventoryStatus {
   in_stock
   low_stock
@@ -219,7 +200,7 @@ model User {
   passwordHash String    @map("password")
   name         String
   phone        String?
-  role         UserRole  @default(cashier)
+  role         String    @default("warehouse_staff") // cashier, warehouse_staff, driver, manager, admin
 
   // Branch assignment
   branchId String?
@@ -311,8 +292,8 @@ model EmployeeTransfer {
   fromBranch      Branch?   @relation("TransfersFrom", fields: [fromBranchId], references: [id], onDelete: SetNull)
   toBranchId      String
   toBranch        Branch    @relation("TransfersTo", fields: [toBranchId], references: [id], onDelete: Restrict)
-  fromRole        UserRole?
-  toRole          UserRole
+  fromRole        String?
+  toRole          String
   transferDate    DateTime  @default(now())
   effectiveDate   DateTime
   reason          String?

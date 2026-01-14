@@ -12,10 +12,6 @@ export function useHasPermission() {
   const hasPermission = (permissionCode: string): boolean => {
     if (!user || !user.permissions) return false;
     
-    // Admin role bypass (optional, depends on if admin gets all permissions in DB)
-    // If you want to be strict and only use DB permissions, remove the "admin" check
-    if (user.role === 'admin') return true;
-
     return user.permissions.includes(permissionCode);
   };
 
@@ -24,7 +20,6 @@ export function useHasPermission() {
    */
   const hasAnyPermission = (permissionCodes: string[]): boolean => {
     if (!user || !user.permissions) return false;
-    if (user.role === 'admin') return true;
 
     return permissionCodes.some(code => user.permissions.includes(code));
   };

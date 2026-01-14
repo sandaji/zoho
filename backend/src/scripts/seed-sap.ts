@@ -1,5 +1,5 @@
 import { prisma } from "../lib/db";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "../types";
 
 async function seedRBAC() {
   console.log("Seeding SAP-like roles...");

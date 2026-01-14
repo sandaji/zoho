@@ -1,7 +1,5 @@
 // frontend/lib/types.ts
 
-export type UserRole = "admin" | "manager" | "user" | "cashier" | "warehouse_staff" | "driver";
-
 export enum InventoryStatus {
   in_stock = "in_stock",
   low_stock = "low_stock",

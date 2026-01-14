@@ -82,7 +82,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        role: user.role,
+        role: user.role as any,
         branchId: user.branchId,
         branch: user.branch,
         permissions,
@@ -164,7 +164,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       name: user.name,
-      role: user.role,
+      role: user.role as any,
     };
   }
 
@@ -199,7 +199,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       name: user.name,
-      role: user.role || "user",
+      role: (user.role || "user") as any,
       branchId: user.branchId,
       permissions,
       createdAt: user.createdAt.toISOString(),

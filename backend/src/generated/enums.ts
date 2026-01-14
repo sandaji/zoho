@@ -9,26 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const UserRole = {
-  cashier: 'cashier',
-  warehouse_staff: 'warehouse_staff',
-  driver: 'driver',
-  branch_manager: 'branch_manager',
-  hr: 'hr',
-  accountant: 'accountant',
-  manager: 'manager',
-  admin: 'admin',
-  super_admin: 'super_admin',
-  procurement_officer: 'procurement_officer',
-  inventory_manager: 'inventory_manager',
-  warehouse_officer: 'warehouse_officer',
-  finance_officer: 'finance_officer',
-  view_only: 'view_only'
-} as const
-
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
-
-
 export const InventoryStatus = {
   in_stock: 'in_stock',
   low_stock: 'low_stock',

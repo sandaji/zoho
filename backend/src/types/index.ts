@@ -18,13 +18,38 @@ import {
   Delivery,
   FinanceTransaction,
   Payroll,
-  UserRole,
+} from "../generated/client";
+import {
   InventoryStatus,
   SalesStatus,
   DeliveryStatus,
   TransactionType,
   PayrollStatus,
-} from "@prisma/client";
+  PaymentMethod,
+  ProductType,
+  ProductStatus,
+  SalesDocumentType,
+  SalesDocumentStatus,
+  PaymentStatus,
+  MovementType,
+  TransferStatus,
+  JournalType,
+  FiscalStatus,
+  AuditAction,
+  ApprovalType,
+  ApprovalStatus,
+  PurchaseOrderStatus,
+} from "../generated/enums";
+
+// ============================================================================
+// USER ROLE TYPE
+// ============================================================================
+
+/**
+ * User role enumeration
+ * Defines the different roles available in the system
+ */
+export type UserRole = "cashier" | "warehouse_staff" | "driver" | "manager" | "admin";
 
 // ============================================================================
 // AUTH & TOKEN TYPES
@@ -433,14 +458,6 @@ export interface DashboardStats {
 /**
  * Map of enum values to display labels
  */
-export const USER_ROLE_LABELS: Record<UserRole, string> = {
-  cashier: "Cashier",
-  warehouse_staff: "Warehouse Staff",
-  driver: "Driver",
-  manager: "Manager",
-  admin: "Administrator",
-};
-
 export const INVENTORY_STATUS_LABELS: Record<InventoryStatus, string> = {
   in_stock: "In Stock",
   low_stock: "Low Stock",
@@ -607,12 +624,25 @@ export type {
 };
 
 export type {
-  UserRole,
   InventoryStatus,
   SalesStatus,
   DeliveryStatus,
   TransactionType,
   PayrollStatus,
+  PaymentMethod,
+  ProductType,
+  ProductStatus,
+  SalesDocumentType,
+  SalesDocumentStatus,
+  PaymentStatus,
+  MovementType,
+  TransferStatus,
+  JournalType,
+  FiscalStatus,
+  AuditAction,
+  ApprovalType,
+  ApprovalStatus,
+  PurchaseOrderStatus,
 };
 
 // ============================================================================
@@ -733,11 +763,4 @@ export function isDeliveryComplete(status: DeliveryStatus): boolean {
  *     timestamp: new Date().toISOString()
  *   };
  * }
- *
- * // In frontend:
- * import { USER_ROLE_LABELS, getPermissionsForRole } from '@/types';
- *
- * const role = user.role as UserRole;
- * const permissions = getPermissionsForRole(role);
- * const label = USER_ROLE_LABELS[role];
  */

@@ -29,8 +29,8 @@ export type EmployeeTransferMinAggregateOutputType = {
   userId: string | null
   fromBranchId: string | null
   toBranchId: string | null
-  fromRole: $Enums.UserRole | null
-  toRole: $Enums.UserRole | null
+  fromRole: string | null
+  toRole: string | null
   transferDate: Date | null
   effectiveDate: Date | null
   reason: string | null
@@ -46,8 +46,8 @@ export type EmployeeTransferMaxAggregateOutputType = {
   userId: string | null
   fromBranchId: string | null
   toBranchId: string | null
-  fromRole: $Enums.UserRole | null
-  toRole: $Enums.UserRole | null
+  fromRole: string | null
+  toRole: string | null
   transferDate: Date | null
   effectiveDate: Date | null
   reason: string | null
@@ -206,8 +206,8 @@ export type EmployeeTransferGroupByOutputType = {
   userId: string
   fromBranchId: string | null
   toBranchId: string
-  fromRole: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole: string | null
+  toRole: string
   transferDate: Date
   effectiveDate: Date
   reason: string | null
@@ -244,8 +244,8 @@ export type EmployeeTransferWhereInput = {
   userId?: Prisma.StringFilter<"EmployeeTransfer"> | string
   fromBranchId?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
   toBranchId?: Prisma.StringFilter<"EmployeeTransfer"> | string
-  fromRole?: Prisma.EnumUserRoleNullableFilter<"EmployeeTransfer"> | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFilter<"EmployeeTransfer"> | $Enums.UserRole
+  fromRole?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
+  toRole?: Prisma.StringFilter<"EmployeeTransfer"> | string
   transferDate?: Prisma.DateTimeFilter<"EmployeeTransfer"> | Date | string
   effectiveDate?: Prisma.DateTimeFilter<"EmployeeTransfer"> | Date | string
   reason?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
@@ -287,8 +287,8 @@ export type EmployeeTransferWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"EmployeeTransfer"> | string
   fromBranchId?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
   toBranchId?: Prisma.StringFilter<"EmployeeTransfer"> | string
-  fromRole?: Prisma.EnumUserRoleNullableFilter<"EmployeeTransfer"> | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFilter<"EmployeeTransfer"> | $Enums.UserRole
+  fromRole?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
+  toRole?: Prisma.StringFilter<"EmployeeTransfer"> | string
   transferDate?: Prisma.DateTimeFilter<"EmployeeTransfer"> | Date | string
   effectiveDate?: Prisma.DateTimeFilter<"EmployeeTransfer"> | Date | string
   reason?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
@@ -330,8 +330,8 @@ export type EmployeeTransferScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"EmployeeTransfer"> | string
   fromBranchId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTransfer"> | string | null
   toBranchId?: Prisma.StringWithAggregatesFilter<"EmployeeTransfer"> | string
-  fromRole?: Prisma.EnumUserRoleNullableWithAggregatesFilter<"EmployeeTransfer"> | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleWithAggregatesFilter<"EmployeeTransfer"> | $Enums.UserRole
+  fromRole?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTransfer"> | string | null
+  toRole?: Prisma.StringWithAggregatesFilter<"EmployeeTransfer"> | string
   transferDate?: Prisma.DateTimeWithAggregatesFilter<"EmployeeTransfer"> | Date | string
   effectiveDate?: Prisma.DateTimeWithAggregatesFilter<"EmployeeTransfer"> | Date | string
   reason?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTransfer"> | string | null
@@ -344,8 +344,8 @@ export type EmployeeTransferScalarWhereWithAggregatesInput = {
 
 export type EmployeeTransferCreateInput = {
   id?: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -364,8 +364,8 @@ export type EmployeeTransferUncheckedCreateInput = {
   userId: string
   fromBranchId?: string | null
   toBranchId: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -378,8 +378,8 @@ export type EmployeeTransferUncheckedCreateInput = {
 
 export type EmployeeTransferUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -398,8 +398,8 @@ export type EmployeeTransferUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   fromBranchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toBranchId?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -415,8 +415,8 @@ export type EmployeeTransferCreateManyInput = {
   userId: string
   fromBranchId?: string | null
   toBranchId: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -429,8 +429,8 @@ export type EmployeeTransferCreateManyInput = {
 
 export type EmployeeTransferUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -446,8 +446,8 @@ export type EmployeeTransferUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   fromBranchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toBranchId?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -645,18 +645,14 @@ export type EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput = {
   deleteMany?: Prisma.EmployeeTransferScalarWhereInput | Prisma.EmployeeTransferScalarWhereInput[]
 }
 
-export type NullableEnumUserRoleFieldUpdateOperationsInput = {
-  set?: $Enums.UserRole | null
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
 export type EmployeeTransferCreateWithoutUserInput = {
   id?: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -673,8 +669,8 @@ export type EmployeeTransferUncheckedCreateWithoutUserInput = {
   id?: string
   fromBranchId?: string | null
   toBranchId: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -719,8 +715,8 @@ export type EmployeeTransferScalarWhereInput = {
   userId?: Prisma.StringFilter<"EmployeeTransfer"> | string
   fromBranchId?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
   toBranchId?: Prisma.StringFilter<"EmployeeTransfer"> | string
-  fromRole?: Prisma.EnumUserRoleNullableFilter<"EmployeeTransfer"> | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFilter<"EmployeeTransfer"> | $Enums.UserRole
+  fromRole?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
+  toRole?: Prisma.StringFilter<"EmployeeTransfer"> | string
   transferDate?: Prisma.DateTimeFilter<"EmployeeTransfer"> | Date | string
   effectiveDate?: Prisma.DateTimeFilter<"EmployeeTransfer"> | Date | string
   reason?: Prisma.StringNullableFilter<"EmployeeTransfer"> | string | null
@@ -733,8 +729,8 @@ export type EmployeeTransferScalarWhereInput = {
 
 export type EmployeeTransferCreateWithoutFromBranchInput = {
   id?: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -751,8 +747,8 @@ export type EmployeeTransferUncheckedCreateWithoutFromBranchInput = {
   id?: string
   userId: string
   toBranchId: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -775,8 +771,8 @@ export type EmployeeTransferCreateManyFromBranchInputEnvelope = {
 
 export type EmployeeTransferCreateWithoutToBranchInput = {
   id?: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -793,8 +789,8 @@ export type EmployeeTransferUncheckedCreateWithoutToBranchInput = {
   id?: string
   userId: string
   fromBranchId?: string | null
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -851,8 +847,8 @@ export type EmployeeTransferCreateManyUserInput = {
   id?: string
   fromBranchId?: string | null
   toBranchId: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -865,8 +861,8 @@ export type EmployeeTransferCreateManyUserInput = {
 
 export type EmployeeTransferUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -883,8 +879,8 @@ export type EmployeeTransferUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fromBranchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toBranchId?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -899,8 +895,8 @@ export type EmployeeTransferUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   fromBranchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   toBranchId?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -915,8 +911,8 @@ export type EmployeeTransferCreateManyFromBranchInput = {
   id?: string
   userId: string
   toBranchId: string
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -931,8 +927,8 @@ export type EmployeeTransferCreateManyToBranchInput = {
   id?: string
   userId: string
   fromBranchId?: string | null
-  fromRole?: $Enums.UserRole | null
-  toRole: $Enums.UserRole
+  fromRole?: string | null
+  toRole: string
   transferDate?: Date | string
   effectiveDate: Date | string
   reason?: string | null
@@ -945,8 +941,8 @@ export type EmployeeTransferCreateManyToBranchInput = {
 
 export type EmployeeTransferUpdateWithoutFromBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -963,8 +959,8 @@ export type EmployeeTransferUncheckedUpdateWithoutFromBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   toBranchId?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -979,8 +975,8 @@ export type EmployeeTransferUncheckedUpdateManyWithoutFromBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   toBranchId?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -993,8 +989,8 @@ export type EmployeeTransferUncheckedUpdateManyWithoutFromBranchInput = {
 
 export type EmployeeTransferUpdateWithoutToBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1011,8 +1007,8 @@ export type EmployeeTransferUncheckedUpdateWithoutToBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   fromBranchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1027,8 +1023,8 @@ export type EmployeeTransferUncheckedUpdateManyWithoutToBranchInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   fromBranchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  fromRole?: Prisma.NullableEnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole | null
-  toRole?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  fromRole?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  toRole?: Prisma.StringFieldUpdateOperationsInput | string
   transferDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   effectiveDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1147,8 +1143,8 @@ export type $EmployeeTransferPayload<ExtArgs extends runtime.Types.Extensions.In
     userId: string
     fromBranchId: string | null
     toBranchId: string
-    fromRole: $Enums.UserRole | null
-    toRole: $Enums.UserRole
+    fromRole: string | null
+    toRole: string
     transferDate: Date
     effectiveDate: Date
     reason: string | null
@@ -1587,8 +1583,8 @@ export interface EmployeeTransferFieldRefs {
   readonly userId: Prisma.FieldRef<"EmployeeTransfer", 'String'>
   readonly fromBranchId: Prisma.FieldRef<"EmployeeTransfer", 'String'>
   readonly toBranchId: Prisma.FieldRef<"EmployeeTransfer", 'String'>
-  readonly fromRole: Prisma.FieldRef<"EmployeeTransfer", 'UserRole'>
-  readonly toRole: Prisma.FieldRef<"EmployeeTransfer", 'UserRole'>
+  readonly fromRole: Prisma.FieldRef<"EmployeeTransfer", 'String'>
+  readonly toRole: Prisma.FieldRef<"EmployeeTransfer", 'String'>
   readonly transferDate: Prisma.FieldRef<"EmployeeTransfer", 'DateTime'>
   readonly effectiveDate: Prisma.FieldRef<"EmployeeTransfer", 'DateTime'>
   readonly reason: Prisma.FieldRef<"EmployeeTransfer", 'String'>

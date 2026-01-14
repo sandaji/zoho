@@ -5,7 +5,7 @@
 
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../../lib/db";
-import { UserRole } from "@prisma/client";
+import { UserRole } from "../../types";
 import { AppError, ErrorCode } from "../../lib/errors";
 import { logger } from "../../lib/logger";
 import * as bcrypt from "bcrypt";

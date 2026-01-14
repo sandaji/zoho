@@ -3,7 +3,7 @@
  * Request/Response contracts for auth endpoints
  */
 
-import { UserRole } from '../../../generated/enums';
+import { UserRole } from '../../../types';
 
 export interface LoginRequestDTO {
   email: string;

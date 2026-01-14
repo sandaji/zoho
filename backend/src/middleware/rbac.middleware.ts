@@ -2,7 +2,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { PermissionService } from '../modules/auth/service/permission.service';
 import { AppError, ErrorCode } from '../lib/errors';
-import { logger } from '../lib/logger';
 
 /**
  * Middleware to enforce a specific permission
@@ -20,13 +19,6 @@ export const requirePermission = (permissionCode: string) => {
       }
 
       const userId = req.user.userId;
-      
-      // Super admin bypass: Grant global access to admins
-      if (req.user.role === 'admin') {
-        logger.debug({ userId, permissionCode }, "Super admin bypass: granting global access");
-        next();
-        return;
-      }
       
       // Resolve effective scope for this permission
       const scope = await PermissionService.getResolvedScope(userId, permissionCode);
@@ -77,13 +69,6 @@ export const hasAnyPermission = (permissionCodes: string[]) => {
 
       const userId = req.user.userId;
 
-      // Super admin bypass: Grant access to admins
-      if (req.user.role === 'admin') {
-        logger.debug({ userId, permissionCodes }, "Super admin bypass: granting access");
-        next();
-        return;
-      }
-      
       const userPermissions = await PermissionService.getUserPermissions(userId);
       
       const hasAccess = permissionCodes.some(code => userPermissions.includes(code));

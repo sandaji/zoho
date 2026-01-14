@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useAuth } from "@/lib/auth-context";
 
 interface Product {
   id: string;
@@ -60,6 +61,8 @@ export function ProductSearchCombobox({
 
   const debouncedSearch = useDebounce(search, 300);
 
+  const { token } = useAuth();
+
   const searchProducts = useCallback(async (query: string) => {
     if (!query || query.length < 2) {
       setProducts([]);
@@ -70,16 +73,25 @@ export function ProductSearchCombobox({
     setError(null);
 
     try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch(
         `/api/products/search/pos?q=${encodeURIComponent(query)}&branchId=${branchId}`,
         {
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers,
         }
       );
 
       if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Unauthorized - Please log in again");
+        }
         throw new Error("Failed to search products");
       }
 
@@ -92,7 +104,7 @@ export function ProductSearchCombobox({
     } finally {
       setLoading(false);
     }
-  }, [branchId]);
+  }, [branchId, token]);
 
   useEffect(() => {
     if (debouncedSearch) {
@@ -176,7 +188,7 @@ export function ProductSearchCombobox({
                   Searching products...
                 </div>
               )}
-              
+
               {!loading && error && (
                 <div className="py-6 px-4">
                   <div className="flex items-center gap-2 text-sm text-destructive">
@@ -185,13 +197,13 @@ export function ProductSearchCombobox({
                   </div>
                 </div>
               )}
-              
+
               {!loading && !error && search.length > 0 && products.length === 0 && (
                 <CommandEmpty>
                   No products found. Try a different search term.
                 </CommandEmpty>
               )}
-              
+
               {!loading && products.length > 0 && (
                 <CommandGroup>
                   {products.map((product) => (

@@ -1,7 +1,7 @@
 // backend/src/modules/pos/service/stock-validation.service.ts
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { UserRole } from "../../../generated/enums";
+import { PermissionService } from "../../auth/service/permission.service";
 
 interface StockCheckResult {
   isAvailable: boolean;
@@ -87,21 +87,8 @@ export class StockValidationService {
    * Check if user has admin privileges to override stock validation
    */
   static async canOverrideStock(userId: string): Promise<boolean> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: true },
-    });
-
-    if (!user) return false;
-
-    // Admin, Manager, or Branch Manager can override
-    const canOverride = ([
-      UserRole.admin,
-      UserRole.manager,
-      UserRole.branch_manager,
-    ] as UserRole[]).includes(user.role);
-
-    return canOverride;
+    // Check if user has permission to adjust stock (which managers/admins should have)
+    return await PermissionService.hasPermission(userId, 'inventory.stock.adjust');
   }
 
   /**
