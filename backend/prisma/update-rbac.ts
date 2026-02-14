@@ -80,12 +80,27 @@ async function main() {
     { code: 'inventory.stock.adjust', name: 'Adjust Stock', module: 'inventory' },
     { code: 'inventory.warehouse.manage', name: 'Manage Warehouses', module: 'inventory' },
 
-    // Purchasing (Standardized from Procurement)
-    { code: 'purchasing.order.view_all', name: 'View All Purchase Orders', module: 'purchasing' },
-    { code: 'purchasing.order.create', name: 'Create Purchase Orders', module: 'purchasing' },
-    { code: 'purchasing.order.approve', name: 'Approve Purchase Orders', module: 'purchasing' },
+    // Purchasing (LPO - Local Purchase Orders) - KSH Currency
+    // View & List permissions
+    { code: 'purchasing.order.view_all', name: 'View All Purchase Orders (LPO)', module: 'purchasing' },
     { code: 'purchasing.vendor.view', name: 'View Vendors', module: 'purchasing' },
-    { code: 'purchasing.vendor.manage', name: 'Manage Vendors', module: 'purchasing' },
+    
+    // Create & Submit
+    { code: 'purchasing.order.create', name: 'Create Purchase Orders (LPO)', module: 'purchasing' },
+    { code: 'purchasing.order.submit', name: 'Submit Purchase Orders for Approval', module: 'purchasing' },
+    
+    // Approval by Threshold (KSH)
+    { code: 'purchasing.order.approve_standard', name: 'Approve Standard LPOs (< KSH 10,000)', module: 'purchasing' },
+    { code: 'purchasing.order.approve_high_value', name: 'Approve High-Value LPOs (KSH 10,000 - 100,000)', module: 'purchasing' },
+    { code: 'purchasing.order.approve_executive', name: 'Approve Executive LPOs (> KSH 100,000)', module: 'purchasing' },
+    
+    // Goods Receipt & Closeout
+    { code: 'purchasing.order.receive', name: 'Receive Goods for LPOs', module: 'purchasing' },
+    { code: 'purchasing.order.cancel', name: 'Cancel Purchase Orders', module: 'purchasing' },
+    
+    // Vendor Management
+    { code: 'purchasing.vendor.manage', name: 'Manage Vendors (Create/Edit)', module: 'purchasing' },
+    { code: 'purchasing.vendor.delete', name: 'Delete/Deactivate Vendors', module: 'purchasing' },
 
     // Audit
     { code: 'audit.log.view', name: 'View Audit Logs', module: 'audit' },
@@ -237,12 +252,40 @@ async function main() {
   // Store Clerk
   await assignAll('store_clerk', ['inventory.stock.view', 'inventory.product.view'], AccessScope.BRANCH);
 
-  // Purchasing Manager
+  // Purchasing Manager (Full control)
   const purManagerPerms = permissions.filter(p => p.module === 'purchasing').map(p => p.code);
   await assignAll('purchasing_manager', purManagerPerms, AccessScope.GLOBAL);
 
-  // Purchasing Officer
-  await assignAll('purchasing_officer', ['purchasing.order.create', 'purchasing.order.view_all', 'purchasing.vendor.view', 'purchasing.vendor.manage'], AccessScope.BRANCH);
+  // Purchasing Officer (Create & Submit LPOs, View vendors)
+  await assignAll('purchasing_officer', [
+    'purchasing.order.create',
+    'purchasing.order.submit',
+    'purchasing.order.view_all',
+    'purchasing.vendor.view',
+    'purchasing.vendor.manage'
+  ], AccessScope.BRANCH);
+
+  // Finance Manager (Approve standard & high-value, receive goods)
+  await assignAll('finance_manager', [
+    'purchasing.order.approve_standard',
+    'purchasing.order.approve_high_value',
+    'purchasing.order.view_all',
+    'purchasing.order.receive',
+    'purchasing.vendor.view'
+  ], AccessScope.BRANCH);
+
+  // Director (Approve all including executive, full purchasing oversight)
+  await assignAll('director', [
+    'purchasing.order.view_all',
+    'purchasing.order.approve_standard',
+    'purchasing.order.approve_high_value',
+    'purchasing.order.approve_executive',
+    'purchasing.order.cancel',
+    'purchasing.order.receive',
+    'purchasing.vendor.view',
+    'purchasing.vendor.manage',
+    'purchasing.vendor.delete'
+  ], AccessScope.BRANCH);
 
   // HR Manager
   const hrManagerPerms = permissions.filter(p => p.module === 'hr').map(p => p.code);

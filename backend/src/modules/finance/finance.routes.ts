@@ -47,4 +47,13 @@ router.post('/periods/initialize', requirePermission('finance.settings.periods')
 router.post('/periods/:id/lock', requirePermission('finance.periods.lock'), (req, res, next) => financeController.lockFiscalPeriod(req, res, next));
 router.post('/periods/:id/unlock', requirePermission('finance.periods.lock'), (req, res, next) => financeController.unlockFiscalPeriod(req, res, next));
 
+// Dashboard Finance Endpoints
+router.get('/transactions', hasAnyPermission(['finance.gl.view', 'finance.report.aging']), (req, res, next) => financeController.getTransactions(req, res, next));
+router.get('/expense-categories', hasAnyPermission(['finance.gl.view', 'finance.report.aging']), (req, res, next) => financeController.getExpenseCategories(req, res, next));
+router.get('/daily-spending', hasAnyPermission(['finance.gl.view', 'finance.report.aging']), (req, res, next) => financeController.getDailySpending(req, res, next));
+router.get('/savings-goals', hasAnyPermission(['finance.gl.view', 'finance.report.aging']), (req, res, next) => financeController.getSavingsGoals(req, res, next));
+router.post('/savings-goals', requirePermission('finance.gl.create'), (req, res, next) => financeController.createSavingsGoal(req, res, next));
+router.patch('/savings-goals/:id', requirePermission('finance.gl.create'), (req, res, next) => financeController.updateSavingsGoal(req, res, next));
+router.delete('/savings-goals/:id', requirePermission('finance.gl.create'), (req, res, next) => financeController.deleteSavingsGoal(req, res, next));
+
 export default router;

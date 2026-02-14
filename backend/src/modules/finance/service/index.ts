@@ -31,7 +31,7 @@ export class FinanceService {
           reference_no: dto.reference_no,
           description: dto.description,
           amount: dto.amount,
-          salesId: dto.salesId,
+          // salesId: dto.salesId, // Relation removed
           payrollId: dto.payrollId,
           payment_method: dto.payment_method,
           reference_doc: dto.reference_doc,
@@ -200,9 +200,9 @@ export class FinanceService {
     try {
       logger.debug({ startDate, endDate }, "Generating revenue analytics");
 
-      const sales = await this.prisma.sales.findMany({
+      const sales = await this.prisma.salesDocument.findMany({
         where: {
-          created_date: {
+          createdAt: {
             gte: new Date(startDate),
             lte: new Date(endDate),
           },
@@ -289,9 +289,9 @@ export class FinanceService {
       });
 
       // Get sales for revenue
-      const sales = await this.prisma.sales.findMany({
+      const sales = await this.prisma.salesDocument.findMany({
         where: {
-          created_date: {
+          createdAt: {
             gte: startDate,
             lte: endDate,
           },

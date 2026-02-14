@@ -18,12 +18,18 @@ export async function createApp(): Promise<Express> {
   const app = express();
 
   // 1. GLOBAL MIDDLEWARE
+  const allowedOrigins = process.env.FRONTEND_URLS
+    ? process.env.FRONTEND_URLS.split(",").map(s => s.trim())
+    : ["http://localhost:3000", "http://127.0.0.1:3000"];
+
   app.use(
     cors({
-     origin: ["http://localhost:3000", "http://127.0.0.1:3000"], 
-    credentials: true,
+      origin: allowedOrigins,
+      credentials: true,
     })
   );
+
+  logger.debug({ allowedOrigins }, "🔧 CORS origins configured");
 
   // Core observability middleware
   app.use(requestIdMiddleware);

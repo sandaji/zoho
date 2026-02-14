@@ -12,16 +12,15 @@ import {
   Warehouse,
   Product,
   Inventory,
-  Sales,
-  SalesItem,
   Truck,
   Delivery,
   FinanceTransaction,
   Payroll,
-} from "../generated/client";
+  CashierSession,
+  SalesDocument,
+} from "../generated/client.js";
 import {
   InventoryStatus,
-  SalesStatus,
   DeliveryStatus,
   TransactionType,
   PayrollStatus,
@@ -31,6 +30,7 @@ import {
   SalesDocumentType,
   SalesDocumentStatus,
   PaymentStatus,
+  CashierSessionStatus,
   MovementType,
   TransferStatus,
   JournalType,
@@ -39,7 +39,7 @@ import {
   ApprovalType,
   ApprovalStatus,
   PurchaseOrderStatus,
-} from "../generated/enums";
+} from "../generated/enums.js";
 
 // ============================================================================
 // USER ROLE TYPE
@@ -87,14 +87,12 @@ declare global {
 
 /**
  * User with full relations
- * Use this when you need complete user data including sales, deliveries, payroll
+ * Use this when you need complete user data including deliveries and payroll
  */
 export interface UserWithRelations extends User {
   branch?: Branch | null;
-  sales?: Sales[];
   payrollRecords?: Payroll[];
   deliveries?: Delivery[];
-  createdSales?: Sales[];
 }
 
 /**
@@ -104,7 +102,6 @@ export interface UserWithRelations extends User {
 export interface BranchWithRelations extends Branch {
   users?: User[];
   warehouses?: Warehouse[];
-  sales?: Sales[];
 }
 
 /**
@@ -122,7 +119,6 @@ export interface WarehouseWithInventory extends Warehouse {
  */
 export interface ProductWithInventory extends Product {
   inventory?: InventoryWithWarehouse[];
-  sales_items?: SalesItem[];
 }
 
 /**
@@ -149,41 +145,10 @@ export interface InventoryWithWarehouse extends Inventory {
 }
 
 /**
- * Sales order with all related data
- * Use this for complete order view including items, customer, delivery
- */
-export interface SalesWithFullDetails extends Sales {
-  branch?: Branch;
-  user?: User;
-  createdBy?: User;
-  items?: SalesItem[];
-  delivery?: Delivery | null;
-  finance_transactions?: FinanceTransaction[];
-}
-
-/**
- * Sales order with items and delivery (common use case)
- */
-export interface SalesWithItems extends Sales {
-  items?: SalesItem[];
-  delivery?: Delivery | null;
-}
-
-/**
- * Sales line item with product details
- * Use this for order item views
- */
-export interface SalesItemWithProduct extends SalesItem {
-  product?: Product;
-  sales?: Sales;
-}
-
-/**
  * Delivery with full logistics details
  * Use this for shipment tracking
  */
 export interface DeliveryWithDetails extends Delivery {
-  sales?: Sales;
   driver?: User;
   truck?: Truck;
 }
@@ -201,7 +166,6 @@ export interface TruckWithDeliveries extends Truck {
  * Use this for audit trail and reporting
  */
 export interface FinanceTransactionWithLinks extends FinanceTransaction {
-  sales?: Sales | null;
   payroll?: Payroll | null;
 }
 
@@ -231,25 +195,6 @@ export interface CreateProductRequest {
   cost_price: number;
   quantity?: number;
   reorder_level?: number;
-}
-
-/**
- * Create Sales Order Request
- */
-export interface CreateSalesRequest {
-  invoice_no: string;
-  branchId: string;
-  userId: string;
-  createdById: string;
-  items: Array<{
-    productId: string;
-    quantity: number;
-    unit_price: number;
-    discount?: number;
-  }>;
-  discount?: number;
-  tax?: number;
-  notes?: string;
 }
 
 /**
@@ -340,18 +285,6 @@ export interface ProductFilters {
   minPrice?: number;
   maxPrice?: number;
   search?: string;
-}
-
-/**
- * Sales filters for search/list
- */
-export interface SalesFilters {
-  status?: SalesStatus;
-  branchId?: string;
-  userId?: string;
-  startDate?: Date;
-  endDate?: Date;
-  search?: string; // Searches invoice_no
 }
 
 /**
@@ -465,16 +398,6 @@ export const INVENTORY_STATUS_LABELS: Record<InventoryStatus, string> = {
   discontinued: "Discontinued",
 };
 
-export const SALES_STATUS_LABELS: Record<SalesStatus, string> = {
-  draft: "Draft",
-  pending: "Pending",
-  confirmed: "Confirmed",
-  shipped: "Shipped",
-  delivered: "Delivered",
-  cancelled: "Cancelled",
-  returned: "Returned",
-};
-
 export const DELIVERY_STATUS_LABELS: Record<DeliveryStatus, string> = {
   pending: "Pending",
   assigned: "Assigned",
@@ -482,6 +405,13 @@ export const DELIVERY_STATUS_LABELS: Record<DeliveryStatus, string> = {
   delivered: "Delivered",
   failed: "Failed",
   rescheduled: "Rescheduled",
+};
+
+export const CASHIER_SESSION_STATUS_LABELS: Record<CashierSessionStatus, string> = {
+  OPEN: "Open",
+  CLOSED: "Closed",
+  DISCREPANCY: "Discrepancy Detected",
+  RECONCILED: "Reconciled",
 };
 
 export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
@@ -615,17 +545,16 @@ export type {
   Warehouse,
   Product,
   Inventory,
-  Sales,
-  SalesItem,
   Truck,
   Delivery,
   FinanceTransaction,
   Payroll,
+  CashierSession,
+  SalesDocument,
 };
 
 export type {
   InventoryStatus,
-  SalesStatus,
   DeliveryStatus,
   TransactionType,
   PayrollStatus,
@@ -635,6 +564,7 @@ export type {
   SalesDocumentType,
   SalesDocumentStatus,
   PaymentStatus,
+  CashierSessionStatus,
   MovementType,
   TransferStatus,
   JournalType,
@@ -718,15 +648,6 @@ export function calculateSalesTotal(
  */
 export function isLowStock(quantity: number, reorderLevel: number): boolean {
   return quantity < reorderLevel;
-}
-
-/**
- * Is sales order complete?
- */
-export function isSalesComplete(status: SalesStatus): boolean {
-  return (
-    status === "delivered" || status === "cancelled" || status === "returned"
-  );
 }
 
 /**

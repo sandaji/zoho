@@ -182,7 +182,8 @@ export class BranchController {
         include: {
           users: { select: { id: true } },
           warehouses: { select: { id: true } },
-          sales: { select: { id: true } },
+          warehouses: { select: { id: true } },
+          salesDocuments: { select: { id: true } },
         },
       });
 
@@ -194,7 +195,7 @@ export class BranchController {
       if (
         branch.users.length > 0 ||
         branch.warehouses.length > 0 ||
-        branch.sales.length > 0
+        branch.salesDocuments.length > 0
       ) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,

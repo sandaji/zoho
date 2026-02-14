@@ -3,6 +3,11 @@ import type { Request } from "express";
 
 const isDev = process.env.NODE_ENV === "development";
 
+if (isDev) {
+  // Ensure color output even when the output is piped (helpful in CI or tooling)
+  process.env.FORCE_COLOR = process.env.FORCE_COLOR || "1";
+}
+
 // 1. Configure Main Logger
 export const logger = pino({
   level: process.env.LOG_LEVEL || (isDev ? "debug" : "info"),
@@ -16,6 +21,7 @@ export const logger = pino({
           target: "pino-pretty",
           options: {
             colorize: true,
+            levelFirst: true,
             singleLine: false,
             translateTime: "SYS:standard",
             ignore: "pid,hostname",

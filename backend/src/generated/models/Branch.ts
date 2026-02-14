@@ -216,9 +216,9 @@ export type BranchWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Branch"> | Date | string
   users?: Prisma.UserListRelationFilter
   warehouses?: Prisma.WarehouseListRelationFilter
-  sales?: Prisma.SalesListRelationFilter
   salesDocuments?: Prisma.SalesDocumentListRelationFilter
   documentSequences?: Prisma.DocumentSequenceListRelationFilter
+  cashierSessions?: Prisma.CashierSessionListRelationFilter
   transfersFrom?: Prisma.EmployeeTransferListRelationFilter
   transfersTo?: Prisma.EmployeeTransferListRelationFilter
   purchaseOrders?: Prisma.PurchaseOrderListRelationFilter
@@ -237,9 +237,9 @@ export type BranchOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
   warehouses?: Prisma.WarehouseOrderByRelationAggregateInput
-  sales?: Prisma.SalesOrderByRelationAggregateInput
   salesDocuments?: Prisma.SalesDocumentOrderByRelationAggregateInput
   documentSequences?: Prisma.DocumentSequenceOrderByRelationAggregateInput
+  cashierSessions?: Prisma.CashierSessionOrderByRelationAggregateInput
   transfersFrom?: Prisma.EmployeeTransferOrderByRelationAggregateInput
   transfersTo?: Prisma.EmployeeTransferOrderByRelationAggregateInput
   purchaseOrders?: Prisma.PurchaseOrderOrderByRelationAggregateInput
@@ -261,9 +261,9 @@ export type BranchWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Branch"> | Date | string
   users?: Prisma.UserListRelationFilter
   warehouses?: Prisma.WarehouseListRelationFilter
-  sales?: Prisma.SalesListRelationFilter
   salesDocuments?: Prisma.SalesDocumentListRelationFilter
   documentSequences?: Prisma.DocumentSequenceListRelationFilter
+  cashierSessions?: Prisma.CashierSessionListRelationFilter
   transfersFrom?: Prisma.EmployeeTransferListRelationFilter
   transfersTo?: Prisma.EmployeeTransferListRelationFilter
   purchaseOrders?: Prisma.PurchaseOrderListRelationFilter
@@ -312,9 +312,9 @@ export type BranchCreateInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -333,9 +333,9 @@ export type BranchUncheckedCreateInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -354,9 +354,9 @@ export type BranchUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -375,9 +375,9 @@ export type BranchUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -542,20 +542,6 @@ export type BranchUpdateOneWithoutProductsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutProductsInput, Prisma.BranchUpdateWithoutProductsInput>, Prisma.BranchUncheckedUpdateWithoutProductsInput>
 }
 
-export type BranchCreateNestedOneWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.BranchCreateWithoutSalesInput, Prisma.BranchUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutSalesInput
-  connect?: Prisma.BranchWhereUniqueInput
-}
-
-export type BranchUpdateOneRequiredWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.BranchCreateWithoutSalesInput, Prisma.BranchUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutSalesInput
-  upsert?: Prisma.BranchUpsertWithoutSalesInput
-  connect?: Prisma.BranchWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutSalesInput, Prisma.BranchUpdateWithoutSalesInput>, Prisma.BranchUncheckedUpdateWithoutSalesInput>
-}
-
 export type BranchCreateNestedOneWithoutSalesDocumentsInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutSalesDocumentsInput, Prisma.BranchUncheckedCreateWithoutSalesDocumentsInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutSalesDocumentsInput
@@ -584,6 +570,20 @@ export type BranchUpdateOneRequiredWithoutDocumentSequencesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutDocumentSequencesInput, Prisma.BranchUpdateWithoutDocumentSequencesInput>, Prisma.BranchUncheckedUpdateWithoutDocumentSequencesInput>
 }
 
+export type BranchCreateNestedOneWithoutCashierSessionsInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutCashierSessionsInput, Prisma.BranchUncheckedCreateWithoutCashierSessionsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutCashierSessionsInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneRequiredWithoutCashierSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutCashierSessionsInput, Prisma.BranchUncheckedCreateWithoutCashierSessionsInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutCashierSessionsInput
+  upsert?: Prisma.BranchUpsertWithoutCashierSessionsInput
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutCashierSessionsInput, Prisma.BranchUpdateWithoutCashierSessionsInput>, Prisma.BranchUncheckedUpdateWithoutCashierSessionsInput>
+}
+
 export type BranchCreateNestedOneWithoutPurchaseOrdersInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutPurchaseOrdersInput, Prisma.BranchUncheckedCreateWithoutPurchaseOrdersInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutPurchaseOrdersInput
@@ -609,9 +609,9 @@ export type BranchCreateWithoutUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -629,9 +629,9 @@ export type BranchUncheckedCreateWithoutUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -665,9 +665,9 @@ export type BranchUpdateWithoutUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -685,9 +685,9 @@ export type BranchUncheckedUpdateWithoutUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -706,9 +706,9 @@ export type BranchCreateWithoutTransfersFromInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   products?: Prisma.ProductCreateNestedManyWithoutBranchInput
@@ -726,9 +726,9 @@ export type BranchUncheckedCreateWithoutTransfersFromInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -751,9 +751,9 @@ export type BranchCreateWithoutTransfersToInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
   products?: Prisma.ProductCreateNestedManyWithoutBranchInput
@@ -771,9 +771,9 @@ export type BranchUncheckedCreateWithoutTransfersToInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -807,9 +807,9 @@ export type BranchUpdateWithoutTransfersFromInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   products?: Prisma.ProductUpdateManyWithoutBranchNestedInput
@@ -827,9 +827,9 @@ export type BranchUncheckedUpdateWithoutTransfersFromInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   products?: Prisma.ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -858,9 +858,9 @@ export type BranchUpdateWithoutTransfersToInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
   products?: Prisma.ProductUpdateManyWithoutBranchNestedInput
@@ -878,9 +878,9 @@ export type BranchUncheckedUpdateWithoutTransfersToInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
   products?: Prisma.ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -897,9 +897,9 @@ export type BranchCreateWithoutWarehousesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -917,9 +917,9 @@ export type BranchUncheckedCreateWithoutWarehousesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -953,9 +953,9 @@ export type BranchUpdateWithoutWarehousesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -973,9 +973,9 @@ export type BranchUncheckedUpdateWithoutWarehousesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -994,9 +994,9 @@ export type BranchCreateWithoutProductsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -1014,9 +1014,9 @@ export type BranchUncheckedCreateWithoutProductsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -1050,9 +1050,9 @@ export type BranchUpdateWithoutProductsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -1070,108 +1070,12 @@ export type BranchUncheckedUpdateWithoutProductsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
-}
-
-export type BranchCreateWithoutSalesInput = {
-  id?: string
-  code: string
-  name: string
-  city: string
-  address?: string | null
-  phone?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  users?: Prisma.UserCreateNestedManyWithoutBranchInput
-  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
-  documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
-  transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
-  transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
-  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
-  products?: Prisma.ProductCreateNestedManyWithoutBranchInput
-}
-
-export type BranchUncheckedCreateWithoutSalesInput = {
-  id?: string
-  code: string
-  name: string
-  city: string
-  address?: string | null
-  phone?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
-  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
-  documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
-  transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
-  transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
-  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
-  products?: Prisma.ProductUncheckedCreateNestedManyWithoutBranchInput
-}
-
-export type BranchCreateOrConnectWithoutSalesInput = {
-  where: Prisma.BranchWhereUniqueInput
-  create: Prisma.XOR<Prisma.BranchCreateWithoutSalesInput, Prisma.BranchUncheckedCreateWithoutSalesInput>
-}
-
-export type BranchUpsertWithoutSalesInput = {
-  update: Prisma.XOR<Prisma.BranchUpdateWithoutSalesInput, Prisma.BranchUncheckedUpdateWithoutSalesInput>
-  create: Prisma.XOR<Prisma.BranchCreateWithoutSalesInput, Prisma.BranchUncheckedCreateWithoutSalesInput>
-  where?: Prisma.BranchWhereInput
-}
-
-export type BranchUpdateToOneWithWhereWithoutSalesInput = {
-  where?: Prisma.BranchWhereInput
-  data: Prisma.XOR<Prisma.BranchUpdateWithoutSalesInput, Prisma.BranchUncheckedUpdateWithoutSalesInput>
-}
-
-export type BranchUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  city?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserUpdateManyWithoutBranchNestedInput
-  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
-  documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
-  transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
-  transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
-  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
-  products?: Prisma.ProductUpdateManyWithoutBranchNestedInput
-}
-
-export type BranchUncheckedUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  city?: Prisma.StringFieldUpdateOperationsInput | string
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
-  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
-  documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
-  transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
-  transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
-  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
-  products?: Prisma.ProductUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateWithoutSalesDocumentsInput = {
@@ -1186,8 +1090,8 @@ export type BranchCreateWithoutSalesDocumentsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -1206,8 +1110,8 @@ export type BranchUncheckedCreateWithoutSalesDocumentsInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -1242,8 +1146,8 @@ export type BranchUpdateWithoutSalesDocumentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -1262,8 +1166,8 @@ export type BranchUncheckedUpdateWithoutSalesDocumentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -1282,8 +1186,8 @@ export type BranchCreateWithoutDocumentSequencesInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -1302,8 +1206,8 @@ export type BranchUncheckedCreateWithoutDocumentSequencesInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -1338,8 +1242,8 @@ export type BranchUpdateWithoutDocumentSequencesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -1358,8 +1262,104 @@ export type BranchUncheckedUpdateWithoutDocumentSequencesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+  transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+  transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+  products?: Prisma.ProductUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchCreateWithoutCashierSessionsInput = {
+  id?: string
+  code: string
+  name: string
+  city: string
+  address?: string | null
+  phone?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
+  salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
+  documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
+  transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutBranchInput
+  products?: Prisma.ProductCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutCashierSessionsInput = {
+  id?: string
+  code: string
+  name: string
+  city: string
+  address?: string | null
+  phone?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
+  warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+  documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+  transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+  purchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+  products?: Prisma.ProductUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutCashierSessionsInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutCashierSessionsInput, Prisma.BranchUncheckedCreateWithoutCashierSessionsInput>
+}
+
+export type BranchUpsertWithoutCashierSessionsInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutCashierSessionsInput, Prisma.BranchUncheckedUpdateWithoutCashierSessionsInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutCashierSessionsInput, Prisma.BranchUncheckedCreateWithoutCashierSessionsInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutCashierSessionsInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutCashierSessionsInput, Prisma.BranchUncheckedUpdateWithoutCashierSessionsInput>
+}
+
+export type BranchUpdateWithoutCashierSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
+  salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
+  documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+  transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
+  purchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutBranchNestedInput
+  products?: Prisma.ProductUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutCashierSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
+  warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+  salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+  documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   purchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -1378,9 +1378,9 @@ export type BranchCreateWithoutPurchaseOrdersInput = {
   updatedAt?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferCreateNestedManyWithoutToBranchInput
   products?: Prisma.ProductCreateNestedManyWithoutBranchInput
@@ -1398,9 +1398,9 @@ export type BranchUncheckedCreateWithoutPurchaseOrdersInput = {
   updatedAt?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
   warehouses?: Prisma.WarehouseUncheckedCreateNestedManyWithoutBranchInput
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutBranchInput
   salesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
   documentSequences?: Prisma.DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutBranchInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
   transfersTo?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
   products?: Prisma.ProductUncheckedCreateNestedManyWithoutBranchInput
@@ -1434,9 +1434,9 @@ export type BranchUpdateWithoutPurchaseOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUpdateManyWithoutToBranchNestedInput
   products?: Prisma.ProductUpdateManyWithoutBranchNestedInput
@@ -1454,9 +1454,9 @@ export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
   warehouses?: Prisma.WarehouseUncheckedUpdateManyWithoutBranchNestedInput
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutBranchNestedInput
   salesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
   documentSequences?: Prisma.DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
   transfersFrom?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
   transfersTo?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
   products?: Prisma.ProductUncheckedUpdateManyWithoutBranchNestedInput
@@ -1470,9 +1470,9 @@ export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
 export type BranchCountOutputType = {
   users: number
   warehouses: number
-  sales: number
   salesDocuments: number
   documentSequences: number
+  cashierSessions: number
   transfersFrom: number
   transfersTo: number
   purchaseOrders: number
@@ -1482,9 +1482,9 @@ export type BranchCountOutputType = {
 export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | BranchCountOutputTypeCountUsersArgs
   warehouses?: boolean | BranchCountOutputTypeCountWarehousesArgs
-  sales?: boolean | BranchCountOutputTypeCountSalesArgs
   salesDocuments?: boolean | BranchCountOutputTypeCountSalesDocumentsArgs
   documentSequences?: boolean | BranchCountOutputTypeCountDocumentSequencesArgs
+  cashierSessions?: boolean | BranchCountOutputTypeCountCashierSessionsArgs
   transfersFrom?: boolean | BranchCountOutputTypeCountTransfersFromArgs
   transfersTo?: boolean | BranchCountOutputTypeCountTransfersToArgs
   purchaseOrders?: boolean | BranchCountOutputTypeCountPurchaseOrdersArgs
@@ -1518,13 +1518,6 @@ export type BranchCountOutputTypeCountWarehousesArgs<ExtArgs extends runtime.Typ
 /**
  * BranchCountOutputType without action
  */
-export type BranchCountOutputTypeCountSalesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.SalesWhereInput
-}
-
-/**
- * BranchCountOutputType without action
- */
 export type BranchCountOutputTypeCountSalesDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SalesDocumentWhereInput
 }
@@ -1534,6 +1527,13 @@ export type BranchCountOutputTypeCountSalesDocumentsArgs<ExtArgs extends runtime
  */
 export type BranchCountOutputTypeCountDocumentSequencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DocumentSequenceWhereInput
+}
+
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountCashierSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CashierSessionWhereInput
 }
 
 /**
@@ -1577,9 +1577,9 @@ export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   users?: boolean | Prisma.Branch$usersArgs<ExtArgs>
   warehouses?: boolean | Prisma.Branch$warehousesArgs<ExtArgs>
-  sales?: boolean | Prisma.Branch$salesArgs<ExtArgs>
   salesDocuments?: boolean | Prisma.Branch$salesDocumentsArgs<ExtArgs>
   documentSequences?: boolean | Prisma.Branch$documentSequencesArgs<ExtArgs>
+  cashierSessions?: boolean | Prisma.Branch$cashierSessionsArgs<ExtArgs>
   transfersFrom?: boolean | Prisma.Branch$transfersFromArgs<ExtArgs>
   transfersTo?: boolean | Prisma.Branch$transfersToArgs<ExtArgs>
   purchaseOrders?: boolean | Prisma.Branch$purchaseOrdersArgs<ExtArgs>
@@ -1627,9 +1627,9 @@ export type BranchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type BranchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Branch$usersArgs<ExtArgs>
   warehouses?: boolean | Prisma.Branch$warehousesArgs<ExtArgs>
-  sales?: boolean | Prisma.Branch$salesArgs<ExtArgs>
   salesDocuments?: boolean | Prisma.Branch$salesDocumentsArgs<ExtArgs>
   documentSequences?: boolean | Prisma.Branch$documentSequencesArgs<ExtArgs>
+  cashierSessions?: boolean | Prisma.Branch$cashierSessionsArgs<ExtArgs>
   transfersFrom?: boolean | Prisma.Branch$transfersFromArgs<ExtArgs>
   transfersTo?: boolean | Prisma.Branch$transfersToArgs<ExtArgs>
   purchaseOrders?: boolean | Prisma.Branch$purchaseOrdersArgs<ExtArgs>
@@ -1644,9 +1644,9 @@ export type $BranchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     users: Prisma.$UserPayload<ExtArgs>[]
     warehouses: Prisma.$WarehousePayload<ExtArgs>[]
-    sales: Prisma.$SalesPayload<ExtArgs>[]
     salesDocuments: Prisma.$SalesDocumentPayload<ExtArgs>[]
     documentSequences: Prisma.$DocumentSequencePayload<ExtArgs>[]
+    cashierSessions: Prisma.$CashierSessionPayload<ExtArgs>[]
     transfersFrom: Prisma.$EmployeeTransferPayload<ExtArgs>[]
     transfersTo: Prisma.$EmployeeTransferPayload<ExtArgs>[]
     purchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
@@ -2058,9 +2058,9 @@ export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   users<T extends Prisma.Branch$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   warehouses<T extends Prisma.Branch$warehousesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$warehousesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  sales<T extends Prisma.Branch$salesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$salesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   salesDocuments<T extends Prisma.Branch$salesDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$salesDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documentSequences<T extends Prisma.Branch$documentSequencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$documentSequencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentSequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cashierSessions<T extends Prisma.Branch$cashierSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$cashierSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CashierSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transfersFrom<T extends Prisma.Branch$transfersFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$transfersFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transfersTo<T extends Prisma.Branch$transfersToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$transfersToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   purchaseOrders<T extends Prisma.Branch$purchaseOrdersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$purchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2539,30 +2539,6 @@ export type Branch$warehousesArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * Branch.sales
- */
-export type Branch$salesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Sales
-   */
-  select?: Prisma.SalesSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Sales
-   */
-  omit?: Prisma.SalesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SalesInclude<ExtArgs> | null
-  where?: Prisma.SalesWhereInput
-  orderBy?: Prisma.SalesOrderByWithRelationInput | Prisma.SalesOrderByWithRelationInput[]
-  cursor?: Prisma.SalesWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.SalesScalarFieldEnum | Prisma.SalesScalarFieldEnum[]
-}
-
-/**
  * Branch.salesDocuments
  */
 export type Branch$salesDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2608,6 +2584,30 @@ export type Branch$documentSequencesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.DocumentSequenceScalarFieldEnum | Prisma.DocumentSequenceScalarFieldEnum[]
+}
+
+/**
+ * Branch.cashierSessions
+ */
+export type Branch$cashierSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CashierSession
+   */
+  select?: Prisma.CashierSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CashierSession
+   */
+  omit?: Prisma.CashierSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CashierSessionInclude<ExtArgs> | null
+  where?: Prisma.CashierSessionWhereInput
+  orderBy?: Prisma.CashierSessionOrderByWithRelationInput | Prisma.CashierSessionOrderByWithRelationInput[]
+  cursor?: Prisma.CashierSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CashierSessionScalarFieldEnum | Prisma.CashierSessionScalarFieldEnum[]
 }
 
 /**

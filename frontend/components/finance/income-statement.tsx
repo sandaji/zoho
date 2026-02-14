@@ -1,5 +1,6 @@
 "use client"
 import { useEffect, useState } from 'react';
+import { formatCurrency } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -50,13 +51,7 @@ const IncomeStatement = () => {
     fetchData();
   }, []);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-  
+
   if (loading) {
     return (
       <Card>

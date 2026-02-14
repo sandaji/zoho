@@ -1,6 +1,6 @@
 // backend/src/modules/finance/services/payables.service.ts
 import { prisma } from "../../../lib/db";
-import { APStatus, PaymentMethod } from "../../../generated/enums";
+import { APStatus, PaymentMethod } from "../../../generated";
 import { AppError, ErrorCode } from "../../../lib/errors";
 
 export class PayablesService {

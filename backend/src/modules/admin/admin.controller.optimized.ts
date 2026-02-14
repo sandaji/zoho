@@ -9,13 +9,13 @@ import { logger } from "../../lib/logger.js";
 
 export class AdminController {
   private prisma = prisma;
-  
+
   // Cache stats for 30 seconds to reduce database load
   private statsCache: {
     data: any;
     timestamp: number;
   } | null = null;
-  
+
   private readonly CACHE_TTL = 30000; // 30 seconds
 
   /**
@@ -61,13 +61,13 @@ export class AdminController {
       // Convert BigInt to Number
       const firstResult = result[0];
       if (!firstResult) {
-        res.status(500).json({ 
-          success: false, 
-          error: "No results returned from database" 
+        res.status(500).json({
+          success: false,
+          error: "No results returned from database"
         });
         return;
       }
-      
+
       const stats = {
         totalBranches: Number(firstResult.total_branches),
         totalWarehouses: Number(firstResult.total_warehouses),
@@ -204,7 +204,7 @@ export class AdminController {
         include: {
           driver: { select: { name: true, email: true } },
           truck: { select: { registration: true, model: true } },
-          sales: { select: { invoice_no: true, grand_total: true } },
+          // salesDocuments: { select: { documentId: true, total: true } }, // No relation in schema
         },
         orderBy: { createdAt: "desc" },
         take: 100,

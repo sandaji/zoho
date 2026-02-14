@@ -5,8 +5,9 @@
 // backend/prisma/schema.prisma
 
 generator client {
-  provider   = "prisma-client"
-  output   = "../src/generated" 
+  provider        = "prisma-client-js"
+  output          = "../src/generated"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -126,6 +127,15 @@ enum PaymentMethod {
   @@map("payment_method")
 }
 
+enum CashierSessionStatus {
+  OPEN
+  CLOSED
+  DISCREPANCY
+  RECONCILED
+
+  @@map("cashier_session_status")
+}
+
 enum MovementType {
   INBOUND
   OUTBOUND
@@ -207,13 +217,12 @@ model User {
   branch   Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
 
   // Relations
-  sales                 Sales[]
   payrollRecords        Payroll[]
   deliveries            Delivery[] @relation("DriverDeliveries")
-  createdSales          Sales[]    @relation("CreatedBySales")
   createdSalesDocuments SalesDocument[]
   createdPayments       Payment[]
   transfers             EmployeeTransfer[]
+  cashierSessions       CashierSession[]
   // Leave Management
   leaveAllocations      LeaveAllocation[]
   leaveRequests         LeaveRequest[]
@@ -266,9 +275,9 @@ model Branch {
   // Relations
   users             User[]
   warehouses        Warehouse[]
-  sales             Sales[]
   salesDocuments    SalesDocument[]
   documentSequences DocumentSequence[]
+  cashierSessions   CashierSession[]
   transfersFrom     EmployeeTransfer[] @relation("TransfersFrom")
   transfersTo       EmployeeTransfer[] @relation("TransfersTo")
   purchaseOrders    PurchaseOrder[]
@@ -393,7 +402,6 @@ model Product {
   
   // Relations
   inventory          Inventory[]
-  sales_items        SalesItem[]
   salesDocumentItems SalesDocumentItem[]
   stockMovements     StockMovement[]
   transferItems      TransferItem[]
@@ -518,86 +526,10 @@ model TransferItem {
 // ============================================================================
 // SALES MODELS
 // ============================================================================
-
-/// Sales Orders
-model Sales {
-  id            String    @id @default(cuid())
-  invoice_no    String    @unique
-  status        SalesStatus @default(draft)
-  payment_method PaymentMethod @default(cash)
-  
-  // Relationships
-  branchId      String
-  branch        Branch    @relation(fields: [branchId], references: [id], onDelete: Restrict)
-  
-  userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Restrict)
-  
-  createdById   String
-  createdBy     User      @relation("CreatedBySales", fields: [createdById], references: [id], onDelete: Restrict)
-  
-  // Sales details
-  items         SalesItem[]
-  subtotal      Float     @default(0)
-  total_amount  Float     @default(0)
-  discount      Float     @default(0)
-  discount_approved_by String?  // Manager ID who approved discount
-  tax           Float     @default(0)
-  grand_total   Float     @default(0)
-  
-  // Payment tracking
-  amount_paid   Float     @default(0)
-  change        Float     @default(0)
-  
-  // Delivery
-  delivery      Delivery?
-  accountReceivable AccountReceivable?
-  finance_transactions FinanceTransaction[]
-  
-  notes         String?
-  created_date  DateTime  @default(now())
-  delivery_date DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  @@map("sales")
-  @@index([branchId])
-  @@index([userId])
-  @@index([createdById])
-  @@index([status])
-  @@index([invoice_no])
-  @@index([payment_method])
-  @@index([created_date])
-  @@index([branchId, created_date])
-}
-
-/// Sales Line Items
-model SalesItem {
-  id            String    @id @default(cuid())
-  quantity      Int
-  unit_price    Float
-  tax_rate      Float     @default(0.16)
-  discount      Float     @default(0)
-  discount_percent Float  @default(0)
-  subtotal      Float     // quantity * unit_price
-  tax_amount    Float     @default(0)
-  amount        Float     // subtotal - discount + tax_amount
-  
-  // Relationships
-  salesId       String
-  sales         Sales     @relation(fields: [salesId], references: [id], onDelete: Cascade)
-  
-  productId     String
-  product       Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  @@map("sales_items")
-  @@index([salesId])
-  @@index([productId])
-  @@unique([salesId, productId])
-}
+// NOTE: Legacy Sales and SalesItem models have been removed.
+// All POS operations now use the modern SalesDocument and SalesDocumentItem models.
+// Cashier session management implementation - STEP 1: Legacy model removal.
+// ============================================================================
 
 // ============================================================================
 // CUSTOMER & SALES DOCUMENT MODELS (V2)
@@ -645,6 +577,10 @@ model SalesDocument {
   createdById String
   createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Restrict)
 
+  // Cashier Session (POS transactions)
+  sessionId String?
+  session   CashierSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
   // Financials
   items      SalesDocumentItem[]
   subtotal   Float
@@ -676,6 +612,7 @@ model SalesDocument {
   @@index([branchId])
   @@index([customerId])
   @@index([createdById])
+  @@index([sessionId])
   @@index([issueDate])
 }
 
@@ -749,6 +686,64 @@ model DocumentSequence {
   @@unique([branchId, type])
   @@map("document_sequences")
   @@index([branchId])
+}
+
+// ============================================================================
+// CASHIER SESSION MANAGEMENT
+// ============================================================================
+
+/// Cashier Sessions for shift management and cash reconciliation
+model CashierSession {
+  id              String                @id @default(cuid())
+  sessionNo       String                @unique
+  
+  // Relationships
+  userId          String
+  user            User                  @relation(fields: [userId], references: [id], onDelete: Restrict)
+  
+  branchId        String
+  branch          Branch                @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  
+  sales           SalesDocument[]
+  
+  // Session Status
+  status          CashierSessionStatus  @default(OPEN)
+  
+  // Opening balances
+  openingBalance  Float                 @default(0) @map("opening_balance")
+  
+  // Closing details
+  closingBalance  Float?                @map("closing_balance")
+  expectedCash    Float?                @map("expected_cash")
+  actualCash      Float?                @map("actual_cash")
+  cashVariance    Float?                @map("cash_variance")
+  
+  // Sales summary
+  totalSalesCount Int                   @default(0) @map("total_sales_count")
+  totalSalesAmount Float                @default(0) @map("total_sales_amount")
+  
+  // Payment method breakdown
+  totalCashReceived Float               @default(0) @map("total_cash_received")
+  totalCardReceived Float               @default(0) @map("total_card_received")
+  totalMpesaReceived Float              @default(0) @map("total_mpesa_received")
+  totalOtherReceived Float              @default(0) @map("total_other_received")
+  
+  // Timestamps
+  openedAt        DateTime              @default(now()) @map("opened_at")
+  closedAt        DateTime?             @map("closed_at")
+  reconciledAt    DateTime?             @map("reconciled_at")
+  
+  notes           String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@map("cashier_sessions")
+  @@index([userId])
+  @@index([branchId])
+  @@index([status])
+  @@index([openedAt])
+  @@index([sessionNo])
+  @@unique([branchId, sessionNo])
 }
 
 
@@ -914,9 +909,6 @@ model Delivery {
   status        DeliveryStatus @default(pending)
   
   // Relationships
-  salesId       String    @unique
-  sales         Sales     @relation(fields: [salesId], references: [id], onDelete: Cascade)
-  
   driverId      String
   driver        User      @relation("DriverDeliveries", fields: [driverId], references: [id], onDelete: Restrict)
   
@@ -938,7 +930,6 @@ model Delivery {
   updatedAt     DateTime  @updatedAt
 
   @@map("deliveries")
-  @@index([salesId])
   @@index([driverId])
   @@index([truckId])
   @@index([status])
@@ -949,18 +940,17 @@ model Delivery {
 // FINANCIAL MODELS
 // ============================================================================
 
-/// Finance Transactions
+/// Finance Transactions - Enhanced with category and date filtering
 model FinanceTransaction {
   id            String    @id @default(cuid())
   type          TransactionType
   reference_no  String    @unique
   description   String
   amount        Float
+  category      String?   // e.g., "food", "utilities", "shopping", "payroll", "income", "sales", "services"
+  transactionDate DateTime  @default(now()) // Separate from createdAt for historical data
   
   // Relationships
-  salesId       String?
-  sales         Sales?    @relation(fields: [salesId], references: [id], onDelete: SetNull)
-  
   payrollId     String?
   payroll       Payroll?  @relation(fields: [payrollId], references: [id], onDelete: SetNull)
   
@@ -974,9 +964,43 @@ model FinanceTransaction {
 
   @@map("finance_transactions")
   @@index([type])
+  @@index([category])
+  @@index([transactionDate])
   @@index([reference_no])
-  @@index([salesId])
   @@index([payrollId])
+}
+
+/// Savings Goals - Track financial goals with progress
+model SavingsGoal {
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  targetAmount    Float
+  currentAmount   Float     @default(0)
+  deadline        DateTime?
+  status          String    @default("active") // "active" or "completed"
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("savings_goals")
+  @@index([status])
+  @@index([createdAt])
+}
+
+/// Daily Spending Limit - Track daily spending against configured limit
+model DailySpendingLimit {
+  id              String    @id @default(cuid())
+  limit           Float     @default(50000) // Default 50,000 KES
+  date            DateTime
+  spent           Float     @default(0)
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("daily_spending_limits")
+  @@index([date])
+  @@unique([date])
 }
 
 // ============================================================================
@@ -1271,9 +1295,6 @@ model AccountReceivable {
   
   status          ARStatus  @default(outstanding)
   aging_days      Int       @default(0)
-  
-  salesId         String?   @unique
-  sales           Sales?    @relation(fields: [salesId], references: [id])
   
   payments        ARPayment[]
   

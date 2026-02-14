@@ -17,6 +17,9 @@ import { POSHistory } from "@/components/pos/POSHistory";
 import { POSQuickActions } from "@/components/pos/POSQuickActions";
 import { POSDocuments } from "@/components/pos/POSDocuments";
 import { POSCustomerSelect, Customer } from "@/components/pos/POSCustomerSelect";
+import { useCashierSession } from "@/hooks/cashier/useCashierSession";
+import { SessionOpenDialog } from "@/components/cashier/SessionOpenDialog";
+import { SessionStatusCard } from "@/components/cashier/SessionStatusCard";
 
 import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
 
@@ -57,6 +60,15 @@ export default function POSPage() {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
 
+  // Cashier session management
+  const {
+    session,
+    isLoading: sessionLoading,
+    error: sessionError,
+    openSession,
+    closeSession,
+  } = useCashierSession();
+
   // Main states
   const [cart, setCart] = useState<CartItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
@@ -64,6 +76,10 @@ export default function POSPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Cashier session dialogs
+  const [showOpenDialog, setShowOpenDialog] = useState(false);
+  const [showCloseDialog, setShowCloseDialog] = useState(false);
   
   // Active tab
   const [activeTab, setActiveTab] = useState("sale");
@@ -349,6 +365,32 @@ export default function POSPage() {
           />
         </div>
 
+        {/* Cashier Session Status */}
+        <SessionStatusCard
+          session={session}
+          isLoading={sessionLoading}
+          onCloseClick={() => setShowCloseDialog(true)}
+          onReconcileClick={() => {
+            // Reconciliation is handled by manager through API
+            toast("Reconciliation can only be done by managers", "info");
+          }}
+        />
+
+        {/* Session Not Open Warning */}
+        {!sessionLoading && !session && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-yellow-800">
+              ⚠️ No active cashier session. Click "Open Session" in the status card above to start taking transactions.
+            </p>
+            <button
+              onClick={() => setShowOpenDialog(true)}
+              className="mt-2 px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm font-medium"
+            >
+              Open Session Now
+            </button>
+          </div>
+        )}
+
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList className="grid w-full max-w-xl grid-cols-4">
@@ -462,6 +504,113 @@ export default function POSPage() {
             changeAmount={changeAmount}
             onNewSale={handleNewSale}
           />
+        )}
+
+        {/* Session Dialogs */}
+        <SessionOpenDialog
+          isOpen={showOpenDialog}
+          onOpenChange={setShowOpenDialog}
+          onOpenSession={async (openingBalance, notes) => {
+            try {
+              const newSession = await openSession(openingBalance, notes);
+              toast("Session opened successfully", "success");
+              return newSession;
+            } catch (err) {
+              toast(
+                err instanceof Error ? err.message : "Failed to open session",
+                "error"
+              );
+              throw err;
+            }
+          }}
+          isLoading={sessionLoading}
+          error={sessionError}
+        />
+
+        {/* Close Session Dialog */}
+        {showCloseDialog && session && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <Card className="w-full max-w-md">
+              <CardHeader>
+                <CardTitle>Close Cashier Session</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium">Expected Cash</label>
+                  <p className="text-2xl font-bold">
+                    {new Intl.NumberFormat("en-KE", {
+                      style: "currency",
+                      currency: "KES",
+                    }).format(session.expectedCash)}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Actual Cash Count (KES)
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0"
+                    className="w-full border rounded px-3 py-2"
+                    id="actualCash"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Notes (Optional)
+                  </label>
+                  <textarea
+                    placeholder="Any discrepancies or notes..."
+                    className="w-full border rounded px-3 py-2"
+                    rows={3}
+                    id="closeNotes"
+                  />
+                </div>
+              </CardContent>
+              <div className="flex gap-2 px-6 pb-6">
+                <button
+                  onClick={() => setShowCloseDialog(false)}
+                  className="flex-1 px-4 py-2 border rounded hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    const actualCash = parseFloat(
+                      (document.getElementById("actualCash") as HTMLInputElement)
+                        .value
+                    );
+                    const notes = (
+                      document.getElementById("closeNotes") as HTMLTextAreaElement
+                    ).value;
+
+                    if (isNaN(actualCash)) {
+                      toast("Please enter actual cash amount", "error");
+                      return;
+                    }
+
+                    try {
+                      await closeSession(actualCash, notes || undefined);
+                      toast("Session closed successfully", "success");
+                      setShowCloseDialog(false);
+                    } catch (err) {
+                      toast(
+                        err instanceof Error
+                          ? err.message
+                          : "Failed to close session",
+                        "error"
+                      );
+                    }
+                  }}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Close Session
+                </button>
+              </div>
+            </Card>
+          </div>
         )}
       </div>
     </div>

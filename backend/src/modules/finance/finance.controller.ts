@@ -6,10 +6,12 @@ import { GeneralLedgerService } from './services/gl.service';
 import { ReceivablesService } from './services/receivables.service';
 import { PayablesService } from './services/payables.service';
 import { PeriodService } from './services/period.service';
+import { DashboardFinanceService } from './services/dashboard.service';
 import { logger } from '../../lib/logger';
 
 class FinanceController {
   private financeService = new FinanceService();
+  private dashboardService = new DashboardFinanceService();
 
   async getFinancialSummary(_req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -384,6 +386,207 @@ class FinanceController {
     } catch (error) {
       logger.error(error, "Error fetching fiscal periods:");
       next(error);
+    }
+  }
+
+  // ============================================
+  // Dashboard Finance Endpoints
+  // ============================================
+
+  async getTransactions(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 5;
+      const type = req.query.type as 'income' | 'expense' | undefined;
+      const startDate = req.query.startDate as string | undefined;
+      const endDate = req.query.endDate as string | undefined;
+
+      const result = await this.dashboardService.getTransactions({
+        limit,
+        type,
+        startDate,
+        endDate,
+      });
+
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in getTransactions:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch transactions',
+        },
+      });
+    }
+  }
+
+  async getExpenseCategories(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const period = (req.query.period || 'month') as 'today' | 'week' | 'month' | 'year';
+      const startDate = req.query.startDate as string | undefined;
+      const endDate = req.query.endDate as string | undefined;
+
+      const result = await this.dashboardService.getExpenseCategories({
+        period,
+        startDate,
+        endDate,
+      });
+
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in getExpenseCategories:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch expense categories',
+        },
+      });
+    }
+  }
+
+  async getDailySpending(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const date = req.query.date as string | undefined;
+
+      const result = await this.dashboardService.getDailySpending({
+        date,
+      });
+
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in getDailySpending:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch daily spending',
+        },
+      });
+    }
+  }
+
+  async getSavingsGoals(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const status = (req.query.status || 'active') as 'active' | 'completed' | 'all';
+
+      const result = await this.dashboardService.getSavingsGoals({
+        status,
+      });
+
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in getSavingsGoals:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to fetch savings goals',
+        },
+      });
+    }
+  }
+
+  async createSavingsGoal(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { name, description, targetAmount, deadline } = req.body;
+
+      if (!name || !targetAmount) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_PARAMETERS',
+            message: 'Name and targetAmount are required',
+          },
+        });
+        return;
+      }
+
+      const result = await this.dashboardService.createSavingsGoal({
+        name,
+        description,
+        targetAmount,
+        deadline,
+      });
+
+      res.status(201).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in createSavingsGoal:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to create savings goal',
+        },
+      });
+    }
+  }
+
+  async updateSavingsGoal(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { name, description, targetAmount, currentAmount, deadline, status } = req.body;
+
+      if (!id) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_PARAMETERS',
+            message: 'Goal ID is required',
+          },
+        });
+        return;
+      }
+
+      const result = await this.dashboardService.updateSavingsGoal(id, {
+        name,
+        description,
+        targetAmount,
+        currentAmount,
+        deadline,
+        status,
+      });
+
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in updateSavingsGoal:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update savings goal',
+        },
+      });
+    }
+  }
+
+  async deleteSavingsGoal(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { id } = req.params;
+
+      if (!id) {
+        res.status(400).json({
+          success: false,
+          error: {
+            code: 'INVALID_PARAMETERS',
+            message: 'Goal ID is required',
+          },
+        });
+        return;
+      }
+
+      const result = await this.dashboardService.deleteSavingsGoal(id);
+
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error(error, 'Error in deleteSavingsGoal:');
+      res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete savings goal',
+        },
+      });
     }
   }
 }

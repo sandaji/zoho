@@ -12,6 +12,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
+  role: "cashier" | "warehouse_staff" | "driver" | "manager" | "admin";
   branchId: string | null;
   branch?: {
     id: string;

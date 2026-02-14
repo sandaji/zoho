@@ -63,16 +63,6 @@ export type StockTransfer = Prisma.StockTransferModel
  */
 export type TransferItem = Prisma.TransferItemModel
 /**
- * Model Sales
- * Sales Orders
- */
-export type Sales = Prisma.SalesModel
-/**
- * Model SalesItem
- * Sales Line Items
- */
-export type SalesItem = Prisma.SalesItemModel
-/**
  * Model Customer
  * Customers/Clients of the business
  */
@@ -97,6 +87,11 @@ export type Payment = Prisma.PaymentModel
  * Tracks the next document number for each type per branch
  */
 export type DocumentSequence = Prisma.DocumentSequenceModel
+/**
+ * Model CashierSession
+ * Cashier Sessions for shift management and cash reconciliation
+ */
+export type CashierSession = Prisma.CashierSessionModel
 /**
  * Model Vendor
  * Vendors/Suppliers

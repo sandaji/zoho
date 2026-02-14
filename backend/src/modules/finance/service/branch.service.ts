@@ -117,19 +117,19 @@ export class BranchService {
 
           // Basic counts
           const employeeCount = await this.prisma.user.count({ where: { branchId } });
-          
-          // Revenue
-          const revenueAggregate = await this.prisma.sales.aggregate({
-            where: { branchId, createdAt: { gte: monthStart, lte: monthEnd } },
-            _sum: { grand_total: true }
-          });
-          const monthRevenue = revenueAggregate._sum.grand_total || 0;
 
-          const totalRevenueAggregate = await this.prisma.sales.aggregate({
-            where: { branchId },
-            _sum: { grand_total: true }
+          // Revenue
+          const revenueAggregate = await this.prisma.salesDocument.aggregate({
+            where: { branchId, createdAt: { gte: monthStart, lte: monthEnd } },
+            _sum: { total: true }
           });
-          const totalRevenue = totalRevenueAggregate._sum.grand_total || 0;
+          const monthRevenue = revenueAggregate._sum.total || 0;
+
+          const totalRevenueAggregate = await this.prisma.salesDocument.aggregate({
+            where: { branchId },
+            _sum: { total: true }
+          });
+          const totalRevenue = totalRevenueAggregate._sum.total || 0;
 
           // Inventory
           const inventoryData = await this.prisma.inventory.findMany({
@@ -148,8 +148,9 @@ export class BranchService {
 
           // Expenses for margin
           const expensesAggregate = await this.prisma.financeTransaction.aggregate({
-            where: { 
-              OR: [{ sales: { branchId } }, { payroll: { user: { branchId } } }],
+            where: {
+              // OR: [{ salesDocuments: { branchId } }, { payroll: { user: { branchId } } }], // salesDocuments not in FinanceTransaction
+              OR: [{ payroll: { user: { branchId } } }],
               type: "expense",
               createdAt: { gte: monthStart, lte: monthEnd }
             },
@@ -159,7 +160,7 @@ export class BranchService {
 
           // Payroll for margin
           const payrollAggregate = await this.prisma.payroll.aggregate({
-            where: { 
+            where: {
               user: { branchId },
               createdAt: { gte: monthStart, lte: monthEnd }
             },
@@ -210,11 +211,11 @@ export class BranchService {
       }
 
       // Sales data
-      const allSales: any[] = await this.prisma.sales.findMany({
+      const allSales: any[] = await this.prisma.salesDocument.findMany({
         where: { branchId },
       });
 
-      const monthSales: any[] = await this.prisma.sales.findMany({
+      const monthSales: any[] = await this.prisma.salesDocument.findMany({
         where: {
           branchId,
           createdAt: {
@@ -225,11 +226,11 @@ export class BranchService {
       });
 
       const totalRevenue = allSales.reduce(
-        (sum: number, s: any) => sum + (s.grand_total || 0),
+        (sum: number, s: any) => sum + (s.total || 0),
         0
       );
       const monthRevenue = monthSales.reduce(
-        (sum: number, s: any) => sum + (s.grand_total || 0),
+        (sum: number, s: any) => sum + (s.total || 0),
         0
       );
       const lastMonthRevenue = await this.getLastMonthRevenue(branchId);
@@ -271,13 +272,14 @@ export class BranchService {
 
       // Fleet
       const trucks: any[] = await this.prisma.truck.findMany({
-        where: { deliveries: { some: { sales: { branchId } } } },
+        where: { deliveries: { some: { driver: { branchId } } } },
       });
 
       // Deliveries
       const deliveries: any[] = await this.prisma.delivery.findMany({
         where: {
-          sales: { branchId },
+          // sales: { branchId }, // Relation likely removed in schema
+          driver: { branchId },
           createdAt: {
             gte: monthStart,
             lte: monthEnd,
@@ -378,7 +380,7 @@ export class BranchService {
     monthEnd: Date
   ): Promise<BranchSalesMetricsDTO> {
     try {
-      const sales: any[] = await this.prisma.sales.findMany({
+      const sales: any[] = await this.prisma.salesDocument.findMany({
         where: {
           branchId,
           createdAt: {
@@ -395,7 +397,7 @@ export class BranchService {
       const totalSales = sales.length;
 
       // Category breakdown (Real)
-      const salesItems = await this.prisma.salesItem.findMany({
+      const salesItems = await this.prisma.salesDocumentItem.findMany({
         where: {
           sales: {
             branchId,
@@ -413,7 +415,7 @@ export class BranchService {
         const existing = categoryMap.get(cat) || { quantity: 0, amount: 0 };
         categoryMap.set(cat, {
           quantity: existing.quantity + (item.quantity || 0),
-          amount: existing.amount + (item.amount || 0)
+          amount: existing.amount + (item.total || 0)
         });
       });
 
@@ -491,7 +493,7 @@ export class BranchService {
 
       // Fleet
       const trucks: any[] = await this.prisma.truck.findMany({
-        where: { deliveries: { some: { sales: { branchId } } } },
+        where: { deliveries: { some: { driver: { branchId } } } },
       });
 
       const activeTrucks = trucks.filter(
@@ -521,9 +523,9 @@ export class BranchService {
           utilization_percentage:
             (w.capacity || 1) > 0
               ? (inventory.filter((inv: any) => inv.warehouseId === w.id)
-                  .length /
-                  (w.capacity || 1)) *
-                100
+                .length /
+                (w.capacity || 1)) *
+              100
               : 0,
         })
       );
@@ -689,7 +691,7 @@ export class BranchService {
     branchId: string,
     limit: number
   ): Promise<SalesActivityDTO[]> {
-    const sales: any[] = await this.prisma.sales.findMany({
+    const sales: any[] = await this.prisma.salesDocument.findMany({
       where: { branchId },
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -699,7 +701,7 @@ export class BranchService {
       id: s.id,
       reference_no: s.invoice_no,
       customer_name: "Walking Customer",
-      amount: s.grand_total || 0,
+      amount: s.total || 0,
       status: s.status,
       created_at: s.createdAt.toISOString(),
     }));
@@ -713,7 +715,10 @@ export class BranchService {
     limit: number
   ): Promise<DeliveryActivityDTO[]> {
     const deliveries: any[] = await this.prisma.delivery.findMany({
-      where: { sales: { branchId } },
+      where: {
+        // salesDocuments relation invalid in Delivery
+        driver: { branchId }
+      },
       orderBy: { createdAt: "desc" },
       take: limit,
     });
@@ -737,7 +742,6 @@ export class BranchService {
     const transactions: any[] = await this.prisma.financeTransaction.findMany({
       where: {
         OR: [
-          { sales: { branchId } },
           { payroll: { user: { branchId } } }
         ]
       },
@@ -781,7 +785,8 @@ export class BranchService {
 
       const pendingDeliveries = await this.prisma.delivery.findMany({
         where: {
-          sales: { branchId },
+          // sales: { branchId }, // Relation removed
+          driver: { branchId },
           status: "pending",
         },
         take: 1,
@@ -799,7 +804,7 @@ export class BranchService {
 
       const maintenanceTrucks = await this.prisma.truck.findMany({
         where: {
-          deliveries: { some: { sales: { branchId } } },
+          deliveries: { some: { driver: { branchId } } },
           isActive: false, // Assuming isActive false means maintenance or similar
         },
         take: 1,
@@ -832,7 +837,7 @@ export class BranchService {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const salesByProduct = await this.prisma.salesItem.groupBy({
+    const salesByProduct = await this.prisma.salesDocumentItem.groupBy({
       by: ['productId'],
       where: {
         sales: {
@@ -842,11 +847,11 @@ export class BranchService {
       },
       _sum: {
         quantity: true,
-        amount: true
+        total: true
       },
       orderBy: {
         _sum: {
-          amount: 'desc'
+          total: 'desc'
         }
       },
       take: limit
@@ -857,9 +862,9 @@ export class BranchService {
       where: { id: { in: productIds } }
     });
 
-    const totalRevenueResult = await this.prisma.sales.aggregate({
+    const totalRevenueResult = await this.prisma.salesDocument.aggregate({
       where: { branchId, createdAt: { gte: monthStart } },
-      _sum: { grand_total: true }
+      _sum: { total: true }
     });
     const totalRevenue = totalRevenueResult._sum.grand_total || 1;
 
@@ -869,8 +874,8 @@ export class BranchService {
         product_id: s.productId,
         product_name: product?.name || "Unknown Product",
         quantity_sold: s._sum.quantity || 0,
-        revenue: s._sum.amount || 0,
-        percentage_of_total: ((s._sum.amount || 0) / totalRevenue) * 100
+        revenue: s._sum.total || 0,
+        percentage_of_total: ((s._sum.total || 0) / totalRevenue) * 100
       };
     });
   }
@@ -905,21 +910,21 @@ export class BranchService {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const salesByCustomer = await this.prisma.sales.groupBy({
+    const salesByCustomer = await this.prisma.salesDocument.groupBy({
       by: ['userId'], // Grouping by User as surrogate for customer in POS if not specifically linked
       where: {
         branchId,
         createdAt: { gte: monthStart }
       },
       _sum: {
-        grand_total: true
+        total: true
       },
       _count: {
         id: true
       },
       orderBy: {
         _sum: {
-          grand_total: 'desc'
+          total: 'desc'
         }
       },
       take: limit
@@ -929,7 +934,7 @@ export class BranchService {
       customer_id: s.userId || "Unknown",
       customer_name: "Customer",
       total_purchases: s._count.id,
-      total_spent: s._sum.grand_total || 0,
+      total_spent: s._sum.total || 0,
       order_count: s._count.id
     }));
   }
@@ -977,7 +982,7 @@ export class BranchService {
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
 
-    const lastMonthSales: any[] = await this.prisma.sales.findMany({
+    const lastMonthSales: any[] = await this.prisma.salesDocument.findMany({
       where: {
         branchId,
         createdAt: {

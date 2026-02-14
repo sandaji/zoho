@@ -40,7 +40,6 @@ export type DeliveryMinAggregateOutputType = {
   id: string | null
   delivery_no: string | null
   status: $Enums.DeliveryStatus | null
-  salesId: string | null
   driverId: string | null
   truckId: string | null
   destination: string | null
@@ -58,7 +57,6 @@ export type DeliveryMaxAggregateOutputType = {
   id: string | null
   delivery_no: string | null
   status: $Enums.DeliveryStatus | null
-  salesId: string | null
   driverId: string | null
   truckId: string | null
   destination: string | null
@@ -76,7 +74,6 @@ export type DeliveryCountAggregateOutputType = {
   id: number
   delivery_no: number
   status: number
-  salesId: number
   driverId: number
   truckId: number
   destination: number
@@ -106,7 +103,6 @@ export type DeliveryMinAggregateInputType = {
   id?: true
   delivery_no?: true
   status?: true
-  salesId?: true
   driverId?: true
   truckId?: true
   destination?: true
@@ -124,7 +120,6 @@ export type DeliveryMaxAggregateInputType = {
   id?: true
   delivery_no?: true
   status?: true
-  salesId?: true
   driverId?: true
   truckId?: true
   destination?: true
@@ -142,7 +137,6 @@ export type DeliveryCountAggregateInputType = {
   id?: true
   delivery_no?: true
   status?: true
-  salesId?: true
   driverId?: true
   truckId?: true
   destination?: true
@@ -247,7 +241,6 @@ export type DeliveryGroupByOutputType = {
   id: string
   delivery_no: string
   status: $Enums.DeliveryStatus
-  salesId: string
   driverId: string
   truckId: string
   destination: string
@@ -288,7 +281,6 @@ export type DeliveryWhereInput = {
   id?: Prisma.StringFilter<"Delivery"> | string
   delivery_no?: Prisma.StringFilter<"Delivery"> | string
   status?: Prisma.EnumDeliveryStatusFilter<"Delivery"> | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFilter<"Delivery"> | string
   driverId?: Prisma.StringFilter<"Delivery"> | string
   truckId?: Prisma.StringFilter<"Delivery"> | string
   destination?: Prisma.StringFilter<"Delivery"> | string
@@ -300,7 +292,6 @@ export type DeliveryWhereInput = {
   notes?: Prisma.StringNullableFilter<"Delivery"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Delivery"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Delivery"> | Date | string
-  sales?: Prisma.XOR<Prisma.SalesScalarRelationFilter, Prisma.SalesWhereInput>
   driver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   truck?: Prisma.XOR<Prisma.TruckScalarRelationFilter, Prisma.TruckWhereInput>
 }
@@ -309,7 +300,6 @@ export type DeliveryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   delivery_no?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   driverId?: Prisma.SortOrder
   truckId?: Prisma.SortOrder
   destination?: Prisma.SortOrder
@@ -321,7 +311,6 @@ export type DeliveryOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  sales?: Prisma.SalesOrderByWithRelationInput
   driver?: Prisma.UserOrderByWithRelationInput
   truck?: Prisma.TruckOrderByWithRelationInput
 }
@@ -329,7 +318,6 @@ export type DeliveryOrderByWithRelationInput = {
 export type DeliveryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   delivery_no?: string
-  salesId?: string
   AND?: Prisma.DeliveryWhereInput | Prisma.DeliveryWhereInput[]
   OR?: Prisma.DeliveryWhereInput[]
   NOT?: Prisma.DeliveryWhereInput | Prisma.DeliveryWhereInput[]
@@ -345,16 +333,14 @@ export type DeliveryWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"Delivery"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Delivery"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Delivery"> | Date | string
-  sales?: Prisma.XOR<Prisma.SalesScalarRelationFilter, Prisma.SalesWhereInput>
   driver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   truck?: Prisma.XOR<Prisma.TruckScalarRelationFilter, Prisma.TruckWhereInput>
-}, "id" | "delivery_no" | "salesId">
+}, "id" | "delivery_no">
 
 export type DeliveryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   delivery_no?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   driverId?: Prisma.SortOrder
   truckId?: Prisma.SortOrder
   destination?: Prisma.SortOrder
@@ -380,7 +366,6 @@ export type DeliveryScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Delivery"> | string
   delivery_no?: Prisma.StringWithAggregatesFilter<"Delivery"> | string
   status?: Prisma.EnumDeliveryStatusWithAggregatesFilter<"Delivery"> | $Enums.DeliveryStatus
-  salesId?: Prisma.StringWithAggregatesFilter<"Delivery"> | string
   driverId?: Prisma.StringWithAggregatesFilter<"Delivery"> | string
   truckId?: Prisma.StringWithAggregatesFilter<"Delivery"> | string
   destination?: Prisma.StringWithAggregatesFilter<"Delivery"> | string
@@ -407,7 +392,6 @@ export type DeliveryCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales: Prisma.SalesCreateNestedOneWithoutDeliveryInput
   driver: Prisma.UserCreateNestedOneWithoutDeliveriesInput
   truck: Prisma.TruckCreateNestedOneWithoutDeliveriesInput
 }
@@ -416,7 +400,6 @@ export type DeliveryUncheckedCreateInput = {
   id?: string
   delivery_no: string
   status?: $Enums.DeliveryStatus
-  salesId: string
   driverId: string
   truckId: string
   destination: string
@@ -443,7 +426,6 @@ export type DeliveryUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneRequiredWithoutDeliveryNestedInput
   driver?: Prisma.UserUpdateOneRequiredWithoutDeliveriesNestedInput
   truck?: Prisma.TruckUpdateOneRequiredWithoutDeliveriesNestedInput
 }
@@ -452,7 +434,6 @@ export type DeliveryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFieldUpdateOperationsInput | string
   driverId?: Prisma.StringFieldUpdateOperationsInput | string
   truckId?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
@@ -470,7 +451,6 @@ export type DeliveryCreateManyInput = {
   id?: string
   delivery_no: string
   status?: $Enums.DeliveryStatus
-  salesId: string
   driverId: string
   truckId: string
   destination: string
@@ -503,7 +483,6 @@ export type DeliveryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFieldUpdateOperationsInput | string
   driverId?: Prisma.StringFieldUpdateOperationsInput | string
   truckId?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
@@ -527,16 +506,10 @@ export type DeliveryOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type DeliveryNullableScalarRelationFilter = {
-  is?: Prisma.DeliveryWhereInput | null
-  isNot?: Prisma.DeliveryWhereInput | null
-}
-
 export type DeliveryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   delivery_no?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   driverId?: Prisma.SortOrder
   truckId?: Prisma.SortOrder
   destination?: Prisma.SortOrder
@@ -559,7 +532,6 @@ export type DeliveryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   delivery_no?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   driverId?: Prisma.SortOrder
   truckId?: Prisma.SortOrder
   destination?: Prisma.SortOrder
@@ -577,7 +549,6 @@ export type DeliveryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   delivery_no?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   driverId?: Prisma.SortOrder
   truckId?: Prisma.SortOrder
   destination?: Prisma.SortOrder
@@ -636,38 +607,6 @@ export type DeliveryUncheckedUpdateManyWithoutDriverNestedInput = {
   update?: Prisma.DeliveryUpdateWithWhereUniqueWithoutDriverInput | Prisma.DeliveryUpdateWithWhereUniqueWithoutDriverInput[]
   updateMany?: Prisma.DeliveryUpdateManyWithWhereWithoutDriverInput | Prisma.DeliveryUpdateManyWithWhereWithoutDriverInput[]
   deleteMany?: Prisma.DeliveryScalarWhereInput | Prisma.DeliveryScalarWhereInput[]
-}
-
-export type DeliveryCreateNestedOneWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.DeliveryCreateWithoutSalesInput, Prisma.DeliveryUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.DeliveryCreateOrConnectWithoutSalesInput
-  connect?: Prisma.DeliveryWhereUniqueInput
-}
-
-export type DeliveryUncheckedCreateNestedOneWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.DeliveryCreateWithoutSalesInput, Prisma.DeliveryUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.DeliveryCreateOrConnectWithoutSalesInput
-  connect?: Prisma.DeliveryWhereUniqueInput
-}
-
-export type DeliveryUpdateOneWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.DeliveryCreateWithoutSalesInput, Prisma.DeliveryUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.DeliveryCreateOrConnectWithoutSalesInput
-  upsert?: Prisma.DeliveryUpsertWithoutSalesInput
-  disconnect?: Prisma.DeliveryWhereInput | boolean
-  delete?: Prisma.DeliveryWhereInput | boolean
-  connect?: Prisma.DeliveryWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.DeliveryUpdateToOneWithWhereWithoutSalesInput, Prisma.DeliveryUpdateWithoutSalesInput>, Prisma.DeliveryUncheckedUpdateWithoutSalesInput>
-}
-
-export type DeliveryUncheckedUpdateOneWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.DeliveryCreateWithoutSalesInput, Prisma.DeliveryUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.DeliveryCreateOrConnectWithoutSalesInput
-  upsert?: Prisma.DeliveryUpsertWithoutSalesInput
-  disconnect?: Prisma.DeliveryWhereInput | boolean
-  delete?: Prisma.DeliveryWhereInput | boolean
-  connect?: Prisma.DeliveryWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.DeliveryUpdateToOneWithWhereWithoutSalesInput, Prisma.DeliveryUpdateWithoutSalesInput>, Prisma.DeliveryUncheckedUpdateWithoutSalesInput>
 }
 
 export type DeliveryCreateNestedManyWithoutTruckInput = {
@@ -729,7 +668,6 @@ export type DeliveryCreateWithoutDriverInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales: Prisma.SalesCreateNestedOneWithoutDeliveryInput
   truck: Prisma.TruckCreateNestedOneWithoutDeliveriesInput
 }
 
@@ -737,7 +675,6 @@ export type DeliveryUncheckedCreateWithoutDriverInput = {
   id?: string
   delivery_no: string
   status?: $Enums.DeliveryStatus
-  salesId: string
   truckId: string
   destination: string
   estimated_km?: number | null
@@ -783,7 +720,6 @@ export type DeliveryScalarWhereInput = {
   id?: Prisma.StringFilter<"Delivery"> | string
   delivery_no?: Prisma.StringFilter<"Delivery"> | string
   status?: Prisma.EnumDeliveryStatusFilter<"Delivery"> | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFilter<"Delivery"> | string
   driverId?: Prisma.StringFilter<"Delivery"> | string
   truckId?: Prisma.StringFilter<"Delivery"> | string
   destination?: Prisma.StringFilter<"Delivery"> | string
@@ -795,90 +731,6 @@ export type DeliveryScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"Delivery"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Delivery"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Delivery"> | Date | string
-}
-
-export type DeliveryCreateWithoutSalesInput = {
-  id?: string
-  delivery_no: string
-  status?: $Enums.DeliveryStatus
-  destination: string
-  estimated_km?: number | null
-  actual_km?: number | null
-  scheduled_date?: Date | string | null
-  picked_up_at?: Date | string | null
-  delivered_at?: Date | string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  driver: Prisma.UserCreateNestedOneWithoutDeliveriesInput
-  truck: Prisma.TruckCreateNestedOneWithoutDeliveriesInput
-}
-
-export type DeliveryUncheckedCreateWithoutSalesInput = {
-  id?: string
-  delivery_no: string
-  status?: $Enums.DeliveryStatus
-  driverId: string
-  truckId: string
-  destination: string
-  estimated_km?: number | null
-  actual_km?: number | null
-  scheduled_date?: Date | string | null
-  picked_up_at?: Date | string | null
-  delivered_at?: Date | string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type DeliveryCreateOrConnectWithoutSalesInput = {
-  where: Prisma.DeliveryWhereUniqueInput
-  create: Prisma.XOR<Prisma.DeliveryCreateWithoutSalesInput, Prisma.DeliveryUncheckedCreateWithoutSalesInput>
-}
-
-export type DeliveryUpsertWithoutSalesInput = {
-  update: Prisma.XOR<Prisma.DeliveryUpdateWithoutSalesInput, Prisma.DeliveryUncheckedUpdateWithoutSalesInput>
-  create: Prisma.XOR<Prisma.DeliveryCreateWithoutSalesInput, Prisma.DeliveryUncheckedCreateWithoutSalesInput>
-  where?: Prisma.DeliveryWhereInput
-}
-
-export type DeliveryUpdateToOneWithWhereWithoutSalesInput = {
-  where?: Prisma.DeliveryWhereInput
-  data: Prisma.XOR<Prisma.DeliveryUpdateWithoutSalesInput, Prisma.DeliveryUncheckedUpdateWithoutSalesInput>
-}
-
-export type DeliveryUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
-  estimated_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  actual_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scheduled_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  picked_up_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  delivered_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  driver?: Prisma.UserUpdateOneRequiredWithoutDeliveriesNestedInput
-  truck?: Prisma.TruckUpdateOneRequiredWithoutDeliveriesNestedInput
-}
-
-export type DeliveryUncheckedUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  driverId?: Prisma.StringFieldUpdateOperationsInput | string
-  truckId?: Prisma.StringFieldUpdateOperationsInput | string
-  destination?: Prisma.StringFieldUpdateOperationsInput | string
-  estimated_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  actual_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  scheduled_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  picked_up_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  delivered_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type DeliveryCreateWithoutTruckInput = {
@@ -894,7 +746,6 @@ export type DeliveryCreateWithoutTruckInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales: Prisma.SalesCreateNestedOneWithoutDeliveryInput
   driver: Prisma.UserCreateNestedOneWithoutDeliveriesInput
 }
 
@@ -902,7 +753,6 @@ export type DeliveryUncheckedCreateWithoutTruckInput = {
   id?: string
   delivery_no: string
   status?: $Enums.DeliveryStatus
-  salesId: string
   driverId: string
   destination: string
   estimated_km?: number | null
@@ -945,7 +795,6 @@ export type DeliveryCreateManyDriverInput = {
   id?: string
   delivery_no: string
   status?: $Enums.DeliveryStatus
-  salesId: string
   truckId: string
   destination: string
   estimated_km?: number | null
@@ -971,7 +820,6 @@ export type DeliveryUpdateWithoutDriverInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneRequiredWithoutDeliveryNestedInput
   truck?: Prisma.TruckUpdateOneRequiredWithoutDeliveriesNestedInput
 }
 
@@ -979,7 +827,6 @@ export type DeliveryUncheckedUpdateWithoutDriverInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFieldUpdateOperationsInput | string
   truckId?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
   estimated_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -996,7 +843,6 @@ export type DeliveryUncheckedUpdateManyWithoutDriverInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFieldUpdateOperationsInput | string
   truckId?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
   estimated_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1013,7 +859,6 @@ export type DeliveryCreateManyTruckInput = {
   id?: string
   delivery_no: string
   status?: $Enums.DeliveryStatus
-  salesId: string
   driverId: string
   destination: string
   estimated_km?: number | null
@@ -1039,7 +884,6 @@ export type DeliveryUpdateWithoutTruckInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneRequiredWithoutDeliveryNestedInput
   driver?: Prisma.UserUpdateOneRequiredWithoutDeliveriesNestedInput
 }
 
@@ -1047,7 +891,6 @@ export type DeliveryUncheckedUpdateWithoutTruckInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFieldUpdateOperationsInput | string
   driverId?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
   estimated_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1064,7 +907,6 @@ export type DeliveryUncheckedUpdateManyWithoutTruckInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   delivery_no?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-  salesId?: Prisma.StringFieldUpdateOperationsInput | string
   driverId?: Prisma.StringFieldUpdateOperationsInput | string
   destination?: Prisma.StringFieldUpdateOperationsInput | string
   estimated_km?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1083,7 +925,6 @@ export type DeliverySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   delivery_no?: boolean
   status?: boolean
-  salesId?: boolean
   driverId?: boolean
   truckId?: boolean
   destination?: boolean
@@ -1095,7 +936,6 @@ export type DeliverySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.SalesDefaultArgs<ExtArgs>
   driver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   truck?: boolean | Prisma.TruckDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["delivery"]>
@@ -1104,7 +944,6 @@ export type DeliverySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   delivery_no?: boolean
   status?: boolean
-  salesId?: boolean
   driverId?: boolean
   truckId?: boolean
   destination?: boolean
@@ -1116,7 +955,6 @@ export type DeliverySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.SalesDefaultArgs<ExtArgs>
   driver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   truck?: boolean | Prisma.TruckDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["delivery"]>
@@ -1125,7 +963,6 @@ export type DeliverySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   delivery_no?: boolean
   status?: boolean
-  salesId?: boolean
   driverId?: boolean
   truckId?: boolean
   destination?: boolean
@@ -1137,7 +974,6 @@ export type DeliverySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.SalesDefaultArgs<ExtArgs>
   driver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   truck?: boolean | Prisma.TruckDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["delivery"]>
@@ -1146,7 +982,6 @@ export type DeliverySelectScalar = {
   id?: boolean
   delivery_no?: boolean
   status?: boolean
-  salesId?: boolean
   driverId?: boolean
   truckId?: boolean
   destination?: boolean
@@ -1160,19 +995,16 @@ export type DeliverySelectScalar = {
   updatedAt?: boolean
 }
 
-export type DeliveryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "delivery_no" | "status" | "salesId" | "driverId" | "truckId" | "destination" | "estimated_km" | "actual_km" | "scheduled_date" | "picked_up_at" | "delivered_at" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["delivery"]>
+export type DeliveryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "delivery_no" | "status" | "driverId" | "truckId" | "destination" | "estimated_km" | "actual_km" | "scheduled_date" | "picked_up_at" | "delivered_at" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["delivery"]>
 export type DeliveryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.SalesDefaultArgs<ExtArgs>
   driver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   truck?: boolean | Prisma.TruckDefaultArgs<ExtArgs>
 }
 export type DeliveryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.SalesDefaultArgs<ExtArgs>
   driver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   truck?: boolean | Prisma.TruckDefaultArgs<ExtArgs>
 }
 export type DeliveryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.SalesDefaultArgs<ExtArgs>
   driver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   truck?: boolean | Prisma.TruckDefaultArgs<ExtArgs>
 }
@@ -1180,7 +1012,6 @@ export type DeliveryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type $DeliveryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Delivery"
   objects: {
-    sales: Prisma.$SalesPayload<ExtArgs>
     driver: Prisma.$UserPayload<ExtArgs>
     truck: Prisma.$TruckPayload<ExtArgs>
   }
@@ -1188,7 +1019,6 @@ export type $DeliveryPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     delivery_no: string
     status: $Enums.DeliveryStatus
-    salesId: string
     driverId: string
     truckId: string
     destination: string
@@ -1594,7 +1424,6 @@ readonly fields: DeliveryFieldRefs;
  */
 export interface Prisma__DeliveryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  sales<T extends Prisma.SalesDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesDefaultArgs<ExtArgs>>): Prisma.Prisma__SalesClient<runtime.Types.Result.GetResult<Prisma.$SalesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   driver<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   truck<T extends Prisma.TruckDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TruckDefaultArgs<ExtArgs>>): Prisma.Prisma__TruckClient<runtime.Types.Result.GetResult<Prisma.$TruckPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1629,7 +1458,6 @@ export interface DeliveryFieldRefs {
   readonly id: Prisma.FieldRef<"Delivery", 'String'>
   readonly delivery_no: Prisma.FieldRef<"Delivery", 'String'>
   readonly status: Prisma.FieldRef<"Delivery", 'DeliveryStatus'>
-  readonly salesId: Prisma.FieldRef<"Delivery", 'String'>
   readonly driverId: Prisma.FieldRef<"Delivery", 'String'>
   readonly truckId: Prisma.FieldRef<"Delivery", 'String'>
   readonly destination: Prisma.FieldRef<"Delivery", 'String'>

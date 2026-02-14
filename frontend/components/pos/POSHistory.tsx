@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
 import { useToast } from "@/lib/toast-context";
+import { formatCurrency } from "@/lib/utils";
 
 interface POSHistoryProps {
   branchId: string;
@@ -78,13 +79,6 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
   };
 
   const formatDate = (dateString: string) => {

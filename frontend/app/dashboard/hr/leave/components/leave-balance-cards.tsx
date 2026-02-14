@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, CheckCircle2, Clock } from "lucide-react";
+import { Calendar } from "lucide-react";
 
 interface LeaveBalance {
   leaveType: {

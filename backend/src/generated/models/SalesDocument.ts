@@ -53,6 +53,7 @@ export type SalesDocumentMinAggregateOutputType = {
   branchId: string | null
   customerId: string | null
   createdById: string | null
+  sessionId: string | null
   subtotal: number | null
   discount: number | null
   tax: number | null
@@ -77,6 +78,7 @@ export type SalesDocumentMaxAggregateOutputType = {
   branchId: string | null
   customerId: string | null
   createdById: string | null
+  sessionId: string | null
   subtotal: number | null
   discount: number | null
   tax: number | null
@@ -101,6 +103,7 @@ export type SalesDocumentCountAggregateOutputType = {
   branchId: number
   customerId: number
   createdById: number
+  sessionId: number
   subtotal: number
   discount: number
   tax: number
@@ -145,6 +148,7 @@ export type SalesDocumentMinAggregateInputType = {
   branchId?: true
   customerId?: true
   createdById?: true
+  sessionId?: true
   subtotal?: true
   discount?: true
   tax?: true
@@ -169,6 +173,7 @@ export type SalesDocumentMaxAggregateInputType = {
   branchId?: true
   customerId?: true
   createdById?: true
+  sessionId?: true
   subtotal?: true
   discount?: true
   tax?: true
@@ -193,6 +198,7 @@ export type SalesDocumentCountAggregateInputType = {
   branchId?: true
   customerId?: true
   createdById?: true
+  sessionId?: true
   subtotal?: true
   discount?: true
   tax?: true
@@ -304,6 +310,7 @@ export type SalesDocumentGroupByOutputType = {
   branchId: string
   customerId: string | null
   createdById: string
+  sessionId: string | null
   subtotal: number
   discount: number
   tax: number
@@ -351,6 +358,7 @@ export type SalesDocumentWhereInput = {
   branchId?: Prisma.StringFilter<"SalesDocument"> | string
   customerId?: Prisma.StringNullableFilter<"SalesDocument"> | string | null
   createdById?: Prisma.StringFilter<"SalesDocument"> | string
+  sessionId?: Prisma.StringNullableFilter<"SalesDocument"> | string | null
   subtotal?: Prisma.FloatFilter<"SalesDocument"> | number
   discount?: Prisma.FloatFilter<"SalesDocument"> | number
   tax?: Prisma.FloatFilter<"SalesDocument"> | number
@@ -369,6 +377,7 @@ export type SalesDocumentWhereInput = {
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  session?: Prisma.XOR<Prisma.CashierSessionNullableScalarRelationFilter, Prisma.CashierSessionWhereInput> | null
   items?: Prisma.SalesDocumentItemListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
@@ -383,6 +392,7 @@ export type SalesDocumentOrderByWithRelationInput = {
   branchId?: Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
@@ -401,6 +411,7 @@ export type SalesDocumentOrderByWithRelationInput = {
   branch?: Prisma.BranchOrderByWithRelationInput
   customer?: Prisma.CustomerOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
+  session?: Prisma.CashierSessionOrderByWithRelationInput
   items?: Prisma.SalesDocumentItemOrderByRelationAggregateInput
   payments?: Prisma.PaymentOrderByRelationAggregateInput
   stockMovements?: Prisma.StockMovementOrderByRelationAggregateInput
@@ -419,6 +430,7 @@ export type SalesDocumentWhereUniqueInput = Prisma.AtLeast<{
   branchId?: Prisma.StringFilter<"SalesDocument"> | string
   customerId?: Prisma.StringNullableFilter<"SalesDocument"> | string | null
   createdById?: Prisma.StringFilter<"SalesDocument"> | string
+  sessionId?: Prisma.StringNullableFilter<"SalesDocument"> | string | null
   subtotal?: Prisma.FloatFilter<"SalesDocument"> | number
   discount?: Prisma.FloatFilter<"SalesDocument"> | number
   tax?: Prisma.FloatFilter<"SalesDocument"> | number
@@ -437,6 +449,7 @@ export type SalesDocumentWhereUniqueInput = Prisma.AtLeast<{
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   customer?: Prisma.XOR<Prisma.CustomerNullableScalarRelationFilter, Prisma.CustomerWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  session?: Prisma.XOR<Prisma.CashierSessionNullableScalarRelationFilter, Prisma.CashierSessionWhereInput> | null
   items?: Prisma.SalesDocumentItemListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
   stockMovements?: Prisma.StockMovementListRelationFilter
@@ -451,6 +464,7 @@ export type SalesDocumentOrderByWithAggregationInput = {
   branchId?: Prisma.SortOrder
   customerId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
@@ -483,6 +497,7 @@ export type SalesDocumentScalarWhereWithAggregatesInput = {
   branchId?: Prisma.StringWithAggregatesFilter<"SalesDocument"> | string
   customerId?: Prisma.StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
   createdById?: Prisma.StringWithAggregatesFilter<"SalesDocument"> | string
+  sessionId?: Prisma.StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
   subtotal?: Prisma.FloatWithAggregatesFilter<"SalesDocument"> | number
   discount?: Prisma.FloatWithAggregatesFilter<"SalesDocument"> | number
   tax?: Prisma.FloatWithAggregatesFilter<"SalesDocument"> | number
@@ -521,6 +536,7 @@ export type SalesDocumentCreateInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
@@ -535,6 +551,7 @@ export type SalesDocumentUncheckedCreateInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -577,6 +594,7 @@ export type SalesDocumentUpdateInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
@@ -591,6 +609,7 @@ export type SalesDocumentUncheckedUpdateInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -619,6 +638,7 @@ export type SalesDocumentCreateManyInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -663,6 +683,7 @@ export type SalesDocumentUncheckedUpdateManyInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -707,6 +728,7 @@ export type SalesDocumentCountOrderByAggregateInput = {
   branchId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
@@ -740,6 +762,7 @@ export type SalesDocumentMaxOrderByAggregateInput = {
   branchId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
@@ -764,6 +787,7 @@ export type SalesDocumentMinOrderByAggregateInput = {
   branchId?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
+  sessionId?: Prisma.SortOrder
   subtotal?: Prisma.SortOrder
   discount?: Prisma.SortOrder
   tax?: Prisma.SortOrder
@@ -1023,6 +1047,48 @@ export type SalesDocumentUpdateOneRequiredWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SalesDocumentUpdateToOneWithWhereWithoutPaymentsInput, Prisma.SalesDocumentUpdateWithoutPaymentsInput>, Prisma.SalesDocumentUncheckedUpdateWithoutPaymentsInput>
 }
 
+export type SalesDocumentCreateNestedManyWithoutSessionInput = {
+  create?: Prisma.XOR<Prisma.SalesDocumentCreateWithoutSessionInput, Prisma.SalesDocumentUncheckedCreateWithoutSessionInput> | Prisma.SalesDocumentCreateWithoutSessionInput[] | Prisma.SalesDocumentUncheckedCreateWithoutSessionInput[]
+  connectOrCreate?: Prisma.SalesDocumentCreateOrConnectWithoutSessionInput | Prisma.SalesDocumentCreateOrConnectWithoutSessionInput[]
+  createMany?: Prisma.SalesDocumentCreateManySessionInputEnvelope
+  connect?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+}
+
+export type SalesDocumentUncheckedCreateNestedManyWithoutSessionInput = {
+  create?: Prisma.XOR<Prisma.SalesDocumentCreateWithoutSessionInput, Prisma.SalesDocumentUncheckedCreateWithoutSessionInput> | Prisma.SalesDocumentCreateWithoutSessionInput[] | Prisma.SalesDocumentUncheckedCreateWithoutSessionInput[]
+  connectOrCreate?: Prisma.SalesDocumentCreateOrConnectWithoutSessionInput | Prisma.SalesDocumentCreateOrConnectWithoutSessionInput[]
+  createMany?: Prisma.SalesDocumentCreateManySessionInputEnvelope
+  connect?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+}
+
+export type SalesDocumentUpdateManyWithoutSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.SalesDocumentCreateWithoutSessionInput, Prisma.SalesDocumentUncheckedCreateWithoutSessionInput> | Prisma.SalesDocumentCreateWithoutSessionInput[] | Prisma.SalesDocumentUncheckedCreateWithoutSessionInput[]
+  connectOrCreate?: Prisma.SalesDocumentCreateOrConnectWithoutSessionInput | Prisma.SalesDocumentCreateOrConnectWithoutSessionInput[]
+  upsert?: Prisma.SalesDocumentUpsertWithWhereUniqueWithoutSessionInput | Prisma.SalesDocumentUpsertWithWhereUniqueWithoutSessionInput[]
+  createMany?: Prisma.SalesDocumentCreateManySessionInputEnvelope
+  set?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  disconnect?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  delete?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  connect?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  update?: Prisma.SalesDocumentUpdateWithWhereUniqueWithoutSessionInput | Prisma.SalesDocumentUpdateWithWhereUniqueWithoutSessionInput[]
+  updateMany?: Prisma.SalesDocumentUpdateManyWithWhereWithoutSessionInput | Prisma.SalesDocumentUpdateManyWithWhereWithoutSessionInput[]
+  deleteMany?: Prisma.SalesDocumentScalarWhereInput | Prisma.SalesDocumentScalarWhereInput[]
+}
+
+export type SalesDocumentUncheckedUpdateManyWithoutSessionNestedInput = {
+  create?: Prisma.XOR<Prisma.SalesDocumentCreateWithoutSessionInput, Prisma.SalesDocumentUncheckedCreateWithoutSessionInput> | Prisma.SalesDocumentCreateWithoutSessionInput[] | Prisma.SalesDocumentUncheckedCreateWithoutSessionInput[]
+  connectOrCreate?: Prisma.SalesDocumentCreateOrConnectWithoutSessionInput | Prisma.SalesDocumentCreateOrConnectWithoutSessionInput[]
+  upsert?: Prisma.SalesDocumentUpsertWithWhereUniqueWithoutSessionInput | Prisma.SalesDocumentUpsertWithWhereUniqueWithoutSessionInput[]
+  createMany?: Prisma.SalesDocumentCreateManySessionInputEnvelope
+  set?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  disconnect?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  delete?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  connect?: Prisma.SalesDocumentWhereUniqueInput | Prisma.SalesDocumentWhereUniqueInput[]
+  update?: Prisma.SalesDocumentUpdateWithWhereUniqueWithoutSessionInput | Prisma.SalesDocumentUpdateWithWhereUniqueWithoutSessionInput[]
+  updateMany?: Prisma.SalesDocumentUpdateManyWithWhereWithoutSessionInput | Prisma.SalesDocumentUpdateManyWithWhereWithoutSessionInput[]
+  deleteMany?: Prisma.SalesDocumentScalarWhereInput | Prisma.SalesDocumentScalarWhereInput[]
+}
+
 export type SalesDocumentCreateWithoutCreatedByInput = {
   id?: string
   documentId: string
@@ -1045,6 +1111,7 @@ export type SalesDocumentCreateWithoutCreatedByInput = {
   childDocument?: Prisma.SalesDocumentCreateNestedOneWithoutSourceDocumentInput
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
@@ -1058,6 +1125,7 @@ export type SalesDocumentUncheckedCreateWithoutCreatedByInput = {
   sourceDocumentId?: string | null
   branchId: string
   customerId?: string | null
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1115,6 +1183,7 @@ export type SalesDocumentScalarWhereInput = {
   branchId?: Prisma.StringFilter<"SalesDocument"> | string
   customerId?: Prisma.StringNullableFilter<"SalesDocument"> | string | null
   createdById?: Prisma.StringFilter<"SalesDocument"> | string
+  sessionId?: Prisma.StringNullableFilter<"SalesDocument"> | string | null
   subtotal?: Prisma.FloatFilter<"SalesDocument"> | number
   discount?: Prisma.FloatFilter<"SalesDocument"> | number
   tax?: Prisma.FloatFilter<"SalesDocument"> | number
@@ -1152,6 +1221,7 @@ export type SalesDocumentCreateWithoutBranchInput = {
   childDocument?: Prisma.SalesDocumentCreateNestedOneWithoutSourceDocumentInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
@@ -1165,6 +1235,7 @@ export type SalesDocumentUncheckedCreateWithoutBranchInput = {
   sourceDocumentId?: string | null
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1233,6 +1304,7 @@ export type SalesDocumentCreateWithoutStockMovementsInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
 }
@@ -1246,6 +1318,7 @@ export type SalesDocumentUncheckedCreateWithoutStockMovementsInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1303,6 +1376,7 @@ export type SalesDocumentUpdateWithoutStockMovementsInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
 }
@@ -1316,6 +1390,7 @@ export type SalesDocumentUncheckedUpdateWithoutStockMovementsInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1356,6 +1431,7 @@ export type SalesDocumentCreateWithoutCustomerInput = {
   childDocument?: Prisma.SalesDocumentCreateNestedOneWithoutSourceDocumentInput
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
@@ -1369,6 +1445,7 @@ export type SalesDocumentUncheckedCreateWithoutCustomerInput = {
   sourceDocumentId?: string | null
   branchId: string
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1436,6 +1513,7 @@ export type SalesDocumentCreateWithoutChildDocumentInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
@@ -1450,6 +1528,7 @@ export type SalesDocumentUncheckedCreateWithoutChildDocumentInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1495,6 +1574,7 @@ export type SalesDocumentCreateWithoutSourceDocumentInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
@@ -1508,6 +1588,7 @@ export type SalesDocumentUncheckedCreateWithoutSourceDocumentInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1565,6 +1646,7 @@ export type SalesDocumentUpdateWithoutChildDocumentInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
@@ -1579,6 +1661,7 @@ export type SalesDocumentUncheckedUpdateWithoutChildDocumentInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1630,6 +1713,7 @@ export type SalesDocumentUpdateWithoutSourceDocumentInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
@@ -1643,6 +1727,7 @@ export type SalesDocumentUncheckedUpdateWithoutSourceDocumentInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1685,6 +1770,7 @@ export type SalesDocumentCreateWithoutItemsInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
 }
@@ -1698,6 +1784,7 @@ export type SalesDocumentUncheckedCreateWithoutItemsInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1755,6 +1842,7 @@ export type SalesDocumentUpdateWithoutItemsInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
 }
@@ -1768,6 +1856,7 @@ export type SalesDocumentUncheckedUpdateWithoutItemsInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1809,6 +1898,7 @@ export type SalesDocumentCreateWithoutPaymentsInput = {
   branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
   customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  session?: Prisma.CashierSessionCreateNestedOneWithoutSalesInput
   items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
   stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
 }
@@ -1822,6 +1912,7 @@ export type SalesDocumentUncheckedCreateWithoutPaymentsInput = {
   branchId: string
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1879,6 +1970,7 @@ export type SalesDocumentUpdateWithoutPaymentsInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
 }
@@ -1892,6 +1984,7 @@ export type SalesDocumentUncheckedUpdateWithoutPaymentsInput = {
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1910,6 +2003,88 @@ export type SalesDocumentUncheckedUpdateWithoutPaymentsInput = {
   stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutSalesNestedInput
 }
 
+export type SalesDocumentCreateWithoutSessionInput = {
+  id?: string
+  documentId: string
+  type: $Enums.SalesDocumentType
+  status: $Enums.SalesDocumentStatus
+  subtotal: number
+  discount?: number
+  tax: number
+  total: number
+  notes?: string | null
+  terms?: string | null
+  paymentStatus?: $Enums.PaymentStatus | null
+  paidAmount?: number
+  balance: number
+  issueDate?: Date | string
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceDocument?: Prisma.SalesDocumentCreateNestedOneWithoutChildDocumentInput
+  childDocument?: Prisma.SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+  branch: Prisma.BranchCreateNestedOneWithoutSalesDocumentsInput
+  customer?: Prisma.CustomerCreateNestedOneWithoutSalesDocumentsInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+  items?: Prisma.SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutSalesDocumentInput
+  stockMovements?: Prisma.StockMovementCreateNestedManyWithoutSalesInput
+}
+
+export type SalesDocumentUncheckedCreateWithoutSessionInput = {
+  id?: string
+  documentId: string
+  type: $Enums.SalesDocumentType
+  status: $Enums.SalesDocumentStatus
+  sourceDocumentId?: string | null
+  branchId: string
+  customerId?: string | null
+  createdById: string
+  subtotal: number
+  discount?: number
+  tax: number
+  total: number
+  notes?: string | null
+  terms?: string | null
+  paymentStatus?: $Enums.PaymentStatus | null
+  paidAmount?: number
+  balance: number
+  issueDate?: Date | string
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  childDocument?: Prisma.SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+  items?: Prisma.SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
+  stockMovements?: Prisma.StockMovementUncheckedCreateNestedManyWithoutSalesInput
+}
+
+export type SalesDocumentCreateOrConnectWithoutSessionInput = {
+  where: Prisma.SalesDocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.SalesDocumentCreateWithoutSessionInput, Prisma.SalesDocumentUncheckedCreateWithoutSessionInput>
+}
+
+export type SalesDocumentCreateManySessionInputEnvelope = {
+  data: Prisma.SalesDocumentCreateManySessionInput | Prisma.SalesDocumentCreateManySessionInput[]
+  skipDuplicates?: boolean
+}
+
+export type SalesDocumentUpsertWithWhereUniqueWithoutSessionInput = {
+  where: Prisma.SalesDocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.SalesDocumentUpdateWithoutSessionInput, Prisma.SalesDocumentUncheckedUpdateWithoutSessionInput>
+  create: Prisma.XOR<Prisma.SalesDocumentCreateWithoutSessionInput, Prisma.SalesDocumentUncheckedCreateWithoutSessionInput>
+}
+
+export type SalesDocumentUpdateWithWhereUniqueWithoutSessionInput = {
+  where: Prisma.SalesDocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.SalesDocumentUpdateWithoutSessionInput, Prisma.SalesDocumentUncheckedUpdateWithoutSessionInput>
+}
+
+export type SalesDocumentUpdateManyWithWhereWithoutSessionInput = {
+  where: Prisma.SalesDocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.SalesDocumentUpdateManyMutationInput, Prisma.SalesDocumentUncheckedUpdateManyWithoutSessionInput>
+}
+
 export type SalesDocumentCreateManyCreatedByInput = {
   id?: string
   documentId: string
@@ -1918,6 +2093,7 @@ export type SalesDocumentCreateManyCreatedByInput = {
   sourceDocumentId?: string | null
   branchId: string
   customerId?: string | null
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -1955,6 +2131,7 @@ export type SalesDocumentUpdateWithoutCreatedByInput = {
   childDocument?: Prisma.SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
@@ -1968,6 +2145,7 @@ export type SalesDocumentUncheckedUpdateWithoutCreatedByInput = {
   sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -1995,6 +2173,7 @@ export type SalesDocumentUncheckedUpdateManyWithoutCreatedByInput = {
   sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2018,6 +2197,7 @@ export type SalesDocumentCreateManyBranchInput = {
   sourceDocumentId?: string | null
   customerId?: string | null
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -2055,6 +2235,7 @@ export type SalesDocumentUpdateWithoutBranchInput = {
   childDocument?: Prisma.SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
   customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
@@ -2068,6 +2249,7 @@ export type SalesDocumentUncheckedUpdateWithoutBranchInput = {
   sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2095,6 +2277,7 @@ export type SalesDocumentUncheckedUpdateManyWithoutBranchInput = {
   sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2118,6 +2301,7 @@ export type SalesDocumentCreateManyCustomerInput = {
   sourceDocumentId?: string | null
   branchId: string
   createdById: string
+  sessionId?: string | null
   subtotal: number
   discount?: number
   tax: number
@@ -2155,6 +2339,7 @@ export type SalesDocumentUpdateWithoutCustomerInput = {
   childDocument?: Prisma.SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  session?: Prisma.CashierSessionUpdateOneWithoutSalesNestedInput
   items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
   stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
@@ -2168,6 +2353,7 @@ export type SalesDocumentUncheckedUpdateWithoutCustomerInput = {
   sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
   tax?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2194,6 +2380,111 @@ export type SalesDocumentUncheckedUpdateManyWithoutCustomerInput = {
   status?: Prisma.EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
   sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  tax?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentStatus?: Prisma.NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+  paidAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  issueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type SalesDocumentCreateManySessionInput = {
+  id?: string
+  documentId: string
+  type: $Enums.SalesDocumentType
+  status: $Enums.SalesDocumentStatus
+  sourceDocumentId?: string | null
+  branchId: string
+  customerId?: string | null
+  createdById: string
+  subtotal: number
+  discount?: number
+  tax: number
+  total: number
+  notes?: string | null
+  terms?: string | null
+  paymentStatus?: $Enums.PaymentStatus | null
+  paidAmount?: number
+  balance: number
+  issueDate?: Date | string
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type SalesDocumentUpdateWithoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+  status?: Prisma.EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  tax?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentStatus?: Prisma.NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+  paidAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  issueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceDocument?: Prisma.SalesDocumentUpdateOneWithoutChildDocumentNestedInput
+  childDocument?: Prisma.SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
+  customer?: Prisma.CustomerUpdateOneWithoutSalesDocumentsNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+  items?: Prisma.SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutSalesDocumentNestedInput
+  stockMovements?: Prisma.StockMovementUpdateManyWithoutSalesNestedInput
+}
+
+export type SalesDocumentUncheckedUpdateWithoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+  status?: Prisma.EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+  sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
+  subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
+  discount?: Prisma.FloatFieldUpdateOperationsInput | number
+  tax?: Prisma.FloatFieldUpdateOperationsInput | number
+  total?: Prisma.FloatFieldUpdateOperationsInput | number
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  terms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentStatus?: Prisma.NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+  paidAmount?: Prisma.FloatFieldUpdateOperationsInput | number
+  balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  issueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  childDocument?: Prisma.SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+  items?: Prisma.SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
+  stockMovements?: Prisma.StockMovementUncheckedUpdateManyWithoutSalesNestedInput
+}
+
+export type SalesDocumentUncheckedUpdateManyWithoutSessionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  documentId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+  status?: Prisma.EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+  sourceDocumentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   subtotal?: Prisma.FloatFieldUpdateOperationsInput | number
   discount?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -2268,6 +2559,7 @@ export type SalesDocumentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   branchId?: boolean
   customerId?: boolean
   createdById?: boolean
+  sessionId?: boolean
   subtotal?: boolean
   discount?: boolean
   tax?: boolean
@@ -2286,6 +2578,7 @@ export type SalesDocumentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.SalesDocument$customerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  session?: boolean | Prisma.SalesDocument$sessionArgs<ExtArgs>
   items?: boolean | Prisma.SalesDocument$itemsArgs<ExtArgs>
   payments?: boolean | Prisma.SalesDocument$paymentsArgs<ExtArgs>
   stockMovements?: boolean | Prisma.SalesDocument$stockMovementsArgs<ExtArgs>
@@ -2301,6 +2594,7 @@ export type SalesDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   branchId?: boolean
   customerId?: boolean
   createdById?: boolean
+  sessionId?: boolean
   subtotal?: boolean
   discount?: boolean
   tax?: boolean
@@ -2318,6 +2612,7 @@ export type SalesDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.SalesDocument$customerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  session?: boolean | Prisma.SalesDocument$sessionArgs<ExtArgs>
 }, ExtArgs["result"]["salesDocument"]>
 
 export type SalesDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2329,6 +2624,7 @@ export type SalesDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   branchId?: boolean
   customerId?: boolean
   createdById?: boolean
+  sessionId?: boolean
   subtotal?: boolean
   discount?: boolean
   tax?: boolean
@@ -2346,6 +2642,7 @@ export type SalesDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.SalesDocument$customerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  session?: boolean | Prisma.SalesDocument$sessionArgs<ExtArgs>
 }, ExtArgs["result"]["salesDocument"]>
 
 export type SalesDocumentSelectScalar = {
@@ -2357,6 +2654,7 @@ export type SalesDocumentSelectScalar = {
   branchId?: boolean
   customerId?: boolean
   createdById?: boolean
+  sessionId?: boolean
   subtotal?: boolean
   discount?: boolean
   tax?: boolean
@@ -2372,13 +2670,14 @@ export type SalesDocumentSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SalesDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "type" | "status" | "sourceDocumentId" | "branchId" | "customerId" | "createdById" | "subtotal" | "discount" | "tax" | "total" | "notes" | "terms" | "paymentStatus" | "paidAmount" | "balance" | "issueDate" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["salesDocument"]>
+export type SalesDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "type" | "status" | "sourceDocumentId" | "branchId" | "customerId" | "createdById" | "sessionId" | "subtotal" | "discount" | "tax" | "total" | "notes" | "terms" | "paymentStatus" | "paidAmount" | "balance" | "issueDate" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["salesDocument"]>
 export type SalesDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sourceDocument?: boolean | Prisma.SalesDocument$sourceDocumentArgs<ExtArgs>
   childDocument?: boolean | Prisma.SalesDocument$childDocumentArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.SalesDocument$customerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  session?: boolean | Prisma.SalesDocument$sessionArgs<ExtArgs>
   items?: boolean | Prisma.SalesDocument$itemsArgs<ExtArgs>
   payments?: boolean | Prisma.SalesDocument$paymentsArgs<ExtArgs>
   stockMovements?: boolean | Prisma.SalesDocument$stockMovementsArgs<ExtArgs>
@@ -2389,12 +2688,14 @@ export type SalesDocumentIncludeCreateManyAndReturn<ExtArgs extends runtime.Type
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.SalesDocument$customerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  session?: boolean | Prisma.SalesDocument$sessionArgs<ExtArgs>
 }
 export type SalesDocumentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sourceDocument?: boolean | Prisma.SalesDocument$sourceDocumentArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   customer?: boolean | Prisma.SalesDocument$customerArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  session?: boolean | Prisma.SalesDocument$sessionArgs<ExtArgs>
 }
 
 export type $SalesDocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2405,6 +2706,7 @@ export type $SalesDocumentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     branch: Prisma.$BranchPayload<ExtArgs>
     customer: Prisma.$CustomerPayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs>
+    session: Prisma.$CashierSessionPayload<ExtArgs> | null
     items: Prisma.$SalesDocumentItemPayload<ExtArgs>[]
     payments: Prisma.$PaymentPayload<ExtArgs>[]
     stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
@@ -2418,6 +2720,7 @@ export type $SalesDocumentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     branchId: string
     customerId: string | null
     createdById: string
+    sessionId: string | null
     subtotal: number
     discount: number
     tax: number
@@ -2830,6 +3133,7 @@ export interface Prisma__SalesDocumentClient<T, Null = never, ExtArgs extends ru
   branch<T extends Prisma.BranchDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BranchDefaultArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   customer<T extends Prisma.SalesDocument$customerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesDocument$customerArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  session<T extends Prisma.SalesDocument$sessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesDocument$sessionArgs<ExtArgs>>): Prisma.Prisma__CashierSessionClient<runtime.Types.Result.GetResult<Prisma.$CashierSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.SalesDocument$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesDocument$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesDocumentItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.SalesDocument$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesDocument$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stockMovements<T extends Prisma.SalesDocument$stockMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SalesDocument$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2870,6 +3174,7 @@ export interface SalesDocumentFieldRefs {
   readonly branchId: Prisma.FieldRef<"SalesDocument", 'String'>
   readonly customerId: Prisma.FieldRef<"SalesDocument", 'String'>
   readonly createdById: Prisma.FieldRef<"SalesDocument", 'String'>
+  readonly sessionId: Prisma.FieldRef<"SalesDocument", 'String'>
   readonly subtotal: Prisma.FieldRef<"SalesDocument", 'Float'>
   readonly discount: Prisma.FieldRef<"SalesDocument", 'Float'>
   readonly tax: Prisma.FieldRef<"SalesDocument", 'Float'>
@@ -3333,6 +3638,25 @@ export type SalesDocument$customerArgs<ExtArgs extends runtime.Types.Extensions.
    */
   include?: Prisma.CustomerInclude<ExtArgs> | null
   where?: Prisma.CustomerWhereInput
+}
+
+/**
+ * SalesDocument.session
+ */
+export type SalesDocument$sessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CashierSession
+   */
+  select?: Prisma.CashierSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CashierSession
+   */
+  omit?: Prisma.CashierSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CashierSessionInclude<ExtArgs> | null
+  where?: Prisma.CashierSessionWhereInput
 }
 
 /**

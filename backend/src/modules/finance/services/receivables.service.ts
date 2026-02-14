@@ -1,6 +1,6 @@
 // backend/src/modules/finance/services/receivables.service.ts
 import { prisma } from "../../../lib/db";
-import { ARStatus, PaymentMethod } from "../../../generated/enums";
+import { ARStatus, PaymentMethod } from "../../../generated";
 import { AppError, ErrorCode } from "../../../lib/errors";
 
 export class ReceivablesService {
@@ -10,7 +10,7 @@ export class ReceivablesService {
   static async getAllReceivables() {
     return await prisma.accountReceivable.findMany({
       include: {
-        sales: true,
+        // sales: true, // Relation not in schema
         payments: true
       },
       orderBy: { due_date: 'asc' }
@@ -95,9 +95,9 @@ export class ReceivablesService {
     receivables.forEach(ar => {
       const diffTime = Math.abs(today.getTime() - ar.due_date.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       const isOverdue = today > ar.due_date;
-      
+
       if (!isOverdue) {
         report.current += ar.balance;
       } else if (diffDays <= 30) {

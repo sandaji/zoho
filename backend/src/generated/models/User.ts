@@ -223,13 +223,12 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
-  sales?: Prisma.SalesListRelationFilter
   payrollRecords?: Prisma.PayrollListRelationFilter
   deliveries?: Prisma.DeliveryListRelationFilter
-  createdSales?: Prisma.SalesListRelationFilter
   createdSalesDocuments?: Prisma.SalesDocumentListRelationFilter
   createdPayments?: Prisma.PaymentListRelationFilter
   transfers?: Prisma.EmployeeTransferListRelationFilter
+  cashierSessions?: Prisma.CashierSessionListRelationFilter
   leaveAllocations?: Prisma.LeaveAllocationListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
   interviews?: Prisma.InterviewListRelationFilter
@@ -261,13 +260,12 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   branch?: Prisma.BranchOrderByWithRelationInput
-  sales?: Prisma.SalesOrderByRelationAggregateInput
   payrollRecords?: Prisma.PayrollOrderByRelationAggregateInput
   deliveries?: Prisma.DeliveryOrderByRelationAggregateInput
-  createdSales?: Prisma.SalesOrderByRelationAggregateInput
   createdSalesDocuments?: Prisma.SalesDocumentOrderByRelationAggregateInput
   createdPayments?: Prisma.PaymentOrderByRelationAggregateInput
   transfers?: Prisma.EmployeeTransferOrderByRelationAggregateInput
+  cashierSessions?: Prisma.CashierSessionOrderByRelationAggregateInput
   leaveAllocations?: Prisma.LeaveAllocationOrderByRelationAggregateInput
   leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
   interviews?: Prisma.InterviewOrderByRelationAggregateInput
@@ -302,13 +300,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
-  sales?: Prisma.SalesListRelationFilter
   payrollRecords?: Prisma.PayrollListRelationFilter
   deliveries?: Prisma.DeliveryListRelationFilter
-  createdSales?: Prisma.SalesListRelationFilter
   createdSalesDocuments?: Prisma.SalesDocumentListRelationFilter
   createdPayments?: Prisma.PaymentListRelationFilter
   transfers?: Prisma.EmployeeTransferListRelationFilter
+  cashierSessions?: Prisma.CashierSessionListRelationFilter
   leaveAllocations?: Prisma.LeaveAllocationListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
   interviews?: Prisma.InterviewListRelationFilter
@@ -371,13 +368,12 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -408,13 +404,12 @@ export type UserUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -445,13 +440,12 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -482,13 +476,12 @@ export type UserUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -707,34 +700,6 @@ export type UserUpdateOneRequiredWithoutCreatedTransfersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedTransfersInput, Prisma.UserUpdateWithoutCreatedTransfersInput>, Prisma.UserUncheckedUpdateWithoutCreatedTransfersInput>
 }
 
-export type UserCreateNestedOneWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSalesInput, Prisma.UserUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSalesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserCreateNestedOneWithoutCreatedSalesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedSalesInput, Prisma.UserUncheckedCreateWithoutCreatedSalesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedSalesInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSalesInput, Prisma.UserUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSalesInput
-  upsert?: Prisma.UserUpsertWithoutSalesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSalesInput, Prisma.UserUpdateWithoutSalesInput>, Prisma.UserUncheckedUpdateWithoutSalesInput>
-}
-
-export type UserUpdateOneRequiredWithoutCreatedSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedSalesInput, Prisma.UserUncheckedCreateWithoutCreatedSalesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedSalesInput
-  upsert?: Prisma.UserUpsertWithoutCreatedSalesInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedSalesInput, Prisma.UserUpdateWithoutCreatedSalesInput>, Prisma.UserUncheckedUpdateWithoutCreatedSalesInput>
-}
-
 export type UserCreateNestedOneWithoutCreatedSalesDocumentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedSalesDocumentsInput, Prisma.UserUncheckedCreateWithoutCreatedSalesDocumentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedSalesDocumentsInput
@@ -761,6 +726,20 @@ export type UserUpdateOneRequiredWithoutCreatedPaymentsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutCreatedPaymentsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedPaymentsInput, Prisma.UserUpdateWithoutCreatedPaymentsInput>, Prisma.UserUncheckedUpdateWithoutCreatedPaymentsInput>
+}
+
+export type UserCreateNestedOneWithoutCashierSessionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCashierSessionsInput, Prisma.UserUncheckedCreateWithoutCashierSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCashierSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCashierSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCashierSessionsInput, Prisma.UserUncheckedCreateWithoutCashierSessionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCashierSessionsInput
+  upsert?: Prisma.UserUpsertWithoutCashierSessionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCashierSessionsInput, Prisma.UserUpdateWithoutCashierSessionsInput>, Prisma.UserUncheckedUpdateWithoutCashierSessionsInput>
 }
 
 export type UserCreateNestedOneWithoutRequestedPurchaseOrdersInput = {
@@ -1019,13 +998,12 @@ export type UserCreateWithoutBranchInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -1055,13 +1033,12 @@ export type UserUncheckedCreateWithoutBranchInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1134,12 +1111,11 @@ export type UserCreateWithoutTransfersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -1170,12 +1146,11 @@ export type UserUncheckedCreateWithoutTransfersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1222,12 +1197,11 @@ export type UserUpdateWithoutTransfersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -1258,12 +1232,11 @@ export type UserUncheckedUpdateWithoutTransfersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -1294,13 +1267,12 @@ export type UserCreateWithoutReceivedTransfersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -1330,13 +1302,12 @@ export type UserUncheckedCreateWithoutReceivedTransfersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1371,13 +1342,12 @@ export type UserCreateWithoutCreatedTransfersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -1407,13 +1377,12 @@ export type UserUncheckedCreateWithoutCreatedTransfersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -1459,13 +1428,12 @@ export type UserUpdateWithoutReceivedTransfersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -1495,13 +1463,12 @@ export type UserUncheckedUpdateWithoutReceivedTransfersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -1542,13 +1509,12 @@ export type UserUpdateWithoutCreatedTransfersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -1578,13 +1544,12 @@ export type UserUncheckedUpdateWithoutCreatedTransfersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -1600,326 +1565,6 @@ export type UserUncheckedUpdateWithoutCreatedTransfersInput = {
   approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
   requestedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
   approvedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
-  receivedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
-}
-
-export type UserCreateWithoutSalesInput = {
-  id?: string
-  email: string
-  passwordHash: string
-  name: string
-  phone?: string | null
-  role?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
-  deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
-  createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
-  createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
-  transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
-  leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
-  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
-  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
-  evaluations?: Prisma.PerformanceEvaluationCreateNestedManyWithoutUserInput
-  givenEvaluations?: Prisma.PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
-  developmentPlans?: Prisma.DevelopmentPlanCreateNestedManyWithoutUserInput
-  roles?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentCreateNestedManyWithoutUserInput
-  lockedPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutLockedByInput
-  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutRequestedByInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutApprovedByInput
-  requestedApprovals?: Prisma.ApprovalRequestCreateNestedManyWithoutRequestedByInput
-  approvedApprovals?: Prisma.ApprovalRequestCreateNestedManyWithoutApprovedByInput
-  createdTransfers?: Prisma.StockTransferCreateNestedManyWithoutCreatedByInput
-  receivedTransfers?: Prisma.StockTransferCreateNestedManyWithoutReceivedByInput
-}
-
-export type UserUncheckedCreateWithoutSalesInput = {
-  id?: string
-  email: string
-  passwordHash: string
-  name: string
-  phone?: string | null
-  role?: string
-  branchId?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
-  deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
-  createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
-  createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
-  transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
-  leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
-  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
-  evaluations?: Prisma.PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
-  givenEvaluations?: Prisma.PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
-  developmentPlans?: Prisma.DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
-  roles?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
-  lockedPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
-  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
-  requestedApprovals?: Prisma.ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
-  approvedApprovals?: Prisma.ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
-  createdTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
-  receivedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
-}
-
-export type UserCreateOrConnectWithoutSalesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSalesInput, Prisma.UserUncheckedCreateWithoutSalesInput>
-}
-
-export type UserCreateWithoutCreatedSalesInput = {
-  id?: string
-  email: string
-  passwordHash: string
-  name: string
-  phone?: string | null
-  role?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
-  payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
-  deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
-  createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
-  transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
-  leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
-  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
-  interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
-  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
-  evaluations?: Prisma.PerformanceEvaluationCreateNestedManyWithoutUserInput
-  givenEvaluations?: Prisma.PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
-  developmentPlans?: Prisma.DevelopmentPlanCreateNestedManyWithoutUserInput
-  roles?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentCreateNestedManyWithoutUserInput
-  lockedPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutLockedByInput
-  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutRequestedByInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutApprovedByInput
-  requestedApprovals?: Prisma.ApprovalRequestCreateNestedManyWithoutRequestedByInput
-  approvedApprovals?: Prisma.ApprovalRequestCreateNestedManyWithoutApprovedByInput
-  createdTransfers?: Prisma.StockTransferCreateNestedManyWithoutCreatedByInput
-  receivedTransfers?: Prisma.StockTransferCreateNestedManyWithoutReceivedByInput
-}
-
-export type UserUncheckedCreateWithoutCreatedSalesInput = {
-  id?: string
-  email: string
-  passwordHash: string
-  name: string
-  phone?: string | null
-  role?: string
-  branchId?: string | null
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
-  payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
-  deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
-  createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
-  transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
-  leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
-  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
-  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
-  evaluations?: Prisma.PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
-  givenEvaluations?: Prisma.PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
-  developmentPlans?: Prisma.DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
-  roles?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
-  lockedPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
-  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
-  requestedApprovals?: Prisma.ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
-  approvedApprovals?: Prisma.ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
-  createdTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
-  receivedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
-}
-
-export type UserCreateOrConnectWithoutCreatedSalesInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedSalesInput, Prisma.UserUncheckedCreateWithoutCreatedSalesInput>
-}
-
-export type UserUpsertWithoutSalesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSalesInput, Prisma.UserUncheckedUpdateWithoutSalesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSalesInput, Prisma.UserUncheckedCreateWithoutSalesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutSalesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSalesInput, Prisma.UserUncheckedUpdateWithoutSalesInput>
-}
-
-export type UserUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
-  deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
-  createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
-  createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
-  transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
-  leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
-  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
-  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
-  evaluations?: Prisma.PerformanceEvaluationUpdateManyWithoutUserNestedInput
-  givenEvaluations?: Prisma.PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
-  developmentPlans?: Prisma.DevelopmentPlanUpdateManyWithoutUserNestedInput
-  roles?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentUpdateManyWithoutUserNestedInput
-  lockedPeriods?: Prisma.FiscalPeriodUpdateManyWithoutLockedByNestedInput
-  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutRequestedByNestedInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutApprovedByNestedInput
-  requestedApprovals?: Prisma.ApprovalRequestUpdateManyWithoutRequestedByNestedInput
-  approvedApprovals?: Prisma.ApprovalRequestUpdateManyWithoutApprovedByNestedInput
-  createdTransfers?: Prisma.StockTransferUpdateManyWithoutCreatedByNestedInput
-  receivedTransfers?: Prisma.StockTransferUpdateManyWithoutReceivedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
-  deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
-  createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
-  createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
-  transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
-  leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
-  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
-  evaluations?: Prisma.PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
-  givenEvaluations?: Prisma.PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
-  developmentPlans?: Prisma.DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
-  roles?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
-  lockedPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
-  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
-  requestedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
-  approvedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
-  createdTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
-  receivedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
-}
-
-export type UserUpsertWithoutCreatedSalesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedSalesInput, Prisma.UserUncheckedUpdateWithoutCreatedSalesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedSalesInput, Prisma.UserUncheckedCreateWithoutCreatedSalesInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutCreatedSalesInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedSalesInput, Prisma.UserUncheckedUpdateWithoutCreatedSalesInput>
-}
-
-export type UserUpdateWithoutCreatedSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
-  payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
-  deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
-  createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
-  transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
-  leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
-  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
-  interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
-  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
-  evaluations?: Prisma.PerformanceEvaluationUpdateManyWithoutUserNestedInput
-  givenEvaluations?: Prisma.PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
-  developmentPlans?: Prisma.DevelopmentPlanUpdateManyWithoutUserNestedInput
-  roles?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentUpdateManyWithoutUserNestedInput
-  lockedPeriods?: Prisma.FiscalPeriodUpdateManyWithoutLockedByNestedInput
-  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutRequestedByNestedInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutApprovedByNestedInput
-  requestedApprovals?: Prisma.ApprovalRequestUpdateManyWithoutRequestedByNestedInput
-  approvedApprovals?: Prisma.ApprovalRequestUpdateManyWithoutApprovedByNestedInput
-  createdTransfers?: Prisma.StockTransferUpdateManyWithoutCreatedByNestedInput
-  receivedTransfers?: Prisma.StockTransferUpdateManyWithoutReceivedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutCreatedSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.StringFieldUpdateOperationsInput | string
-  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
-  payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
-  deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
-  createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
-  transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
-  leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
-  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
-  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
-  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
-  evaluations?: Prisma.PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
-  givenEvaluations?: Prisma.PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
-  developmentPlans?: Prisma.DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
-  roles?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
-  benefitEnrollments?: Prisma.BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
-  lockedPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
-  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
-  requestedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
-  approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
-  requestedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
-  approvedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
-  createdTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
   receivedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
 }
 
@@ -1934,12 +1579,11 @@ export type UserCreateWithoutCreatedSalesDocumentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -1970,12 +1614,11 @@ export type UserUncheckedCreateWithoutCreatedSalesDocumentsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2022,12 +1665,11 @@ export type UserUpdateWithoutCreatedSalesDocumentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -2058,12 +1700,11 @@ export type UserUncheckedUpdateWithoutCreatedSalesDocumentsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -2094,12 +1735,11 @@ export type UserCreateWithoutCreatedPaymentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -2130,12 +1770,11 @@ export type UserUncheckedCreateWithoutCreatedPaymentsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2182,12 +1821,11 @@ export type UserUpdateWithoutCreatedPaymentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -2218,11 +1856,166 @@ export type UserUncheckedUpdateWithoutCreatedPaymentsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+  leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  evaluations?: Prisma.PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+  givenEvaluations?: Prisma.PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+  developmentPlans?: Prisma.DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  benefitEnrollments?: Prisma.BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+  lockedPeriods?: Prisma.FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutUserNestedInput
+  requestedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+  requestedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  approvedApprovals?: Prisma.ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+  createdTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+  receivedTransfers?: Prisma.StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+}
+
+export type UserCreateWithoutCashierSessionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name: string
+  phone?: string | null
+  role?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
+  deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
+  createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
+  createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
+  transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
+  interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  evaluations?: Prisma.PerformanceEvaluationCreateNestedManyWithoutUserInput
+  givenEvaluations?: Prisma.PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+  developmentPlans?: Prisma.DevelopmentPlanCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleAssignmentCreateNestedManyWithoutUserInput
+  benefitEnrollments?: Prisma.BenefitEnrollmentCreateNestedManyWithoutUserInput
+  lockedPeriods?: Prisma.FiscalPeriodCreateNestedManyWithoutLockedByInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutUserInput
+  requestedPurchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutRequestedByInput
+  approvedPurchaseOrders?: Prisma.PurchaseOrderCreateNestedManyWithoutApprovedByInput
+  requestedApprovals?: Prisma.ApprovalRequestCreateNestedManyWithoutRequestedByInput
+  approvedApprovals?: Prisma.ApprovalRequestCreateNestedManyWithoutApprovedByInput
+  createdTransfers?: Prisma.StockTransferCreateNestedManyWithoutCreatedByInput
+  receivedTransfers?: Prisma.StockTransferCreateNestedManyWithoutReceivedByInput
+}
+
+export type UserUncheckedCreateWithoutCashierSessionsInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  name: string
+  phone?: string | null
+  role?: string
+  branchId?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
+  deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
+  createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+  createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+  transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  evaluations?: Prisma.PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+  givenEvaluations?: Prisma.PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+  developmentPlans?: Prisma.DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  benefitEnrollments?: Prisma.BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+  lockedPeriods?: Prisma.FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutUserInput
+  requestedPurchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedPurchaseOrders?: Prisma.PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+  requestedApprovals?: Prisma.ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  approvedApprovals?: Prisma.ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+  createdTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+  receivedTransfers?: Prisma.StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+}
+
+export type UserCreateOrConnectWithoutCashierSessionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCashierSessionsInput, Prisma.UserUncheckedCreateWithoutCashierSessionsInput>
+}
+
+export type UserUpsertWithoutCashierSessionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCashierSessionsInput, Prisma.UserUncheckedUpdateWithoutCashierSessionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCashierSessionsInput, Prisma.UserUncheckedCreateWithoutCashierSessionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCashierSessionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCashierSessionsInput, Prisma.UserUncheckedUpdateWithoutCashierSessionsInput>
+}
+
+export type UserUpdateWithoutCashierSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
+  deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
+  createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
+  createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
+  transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
+  interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  evaluations?: Prisma.PerformanceEvaluationUpdateManyWithoutUserNestedInput
+  givenEvaluations?: Prisma.PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+  developmentPlans?: Prisma.DevelopmentPlanUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleAssignmentUpdateManyWithoutUserNestedInput
+  benefitEnrollments?: Prisma.BenefitEnrollmentUpdateManyWithoutUserNestedInput
+  lockedPeriods?: Prisma.FiscalPeriodUpdateManyWithoutLockedByNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutUserNestedInput
+  requestedPurchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+  approvedPurchaseOrders?: Prisma.PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+  requestedApprovals?: Prisma.ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+  approvedApprovals?: Prisma.ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+  createdTransfers?: Prisma.StockTransferUpdateManyWithoutCreatedByNestedInput
+  receivedTransfers?: Prisma.StockTransferUpdateManyWithoutReceivedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCashierSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.StringFieldUpdateOperationsInput | string
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
+  deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+  createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+  createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
@@ -2254,13 +2047,12 @@ export type UserCreateWithoutRequestedPurchaseOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -2290,13 +2082,12 @@ export type UserUncheckedCreateWithoutRequestedPurchaseOrdersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2331,13 +2122,12 @@ export type UserCreateWithoutApprovedPurchaseOrdersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -2367,13 +2157,12 @@ export type UserUncheckedCreateWithoutApprovedPurchaseOrdersInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2419,13 +2208,12 @@ export type UserUpdateWithoutRequestedPurchaseOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -2455,13 +2243,12 @@ export type UserUncheckedUpdateWithoutRequestedPurchaseOrdersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -2502,13 +2289,12 @@ export type UserUpdateWithoutApprovedPurchaseOrdersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -2538,13 +2324,12 @@ export type UserUncheckedUpdateWithoutApprovedPurchaseOrdersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -2574,13 +2359,12 @@ export type UserCreateWithoutRequestedApprovalsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -2610,13 +2394,12 @@ export type UserUncheckedCreateWithoutRequestedApprovalsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2651,13 +2434,12 @@ export type UserCreateWithoutApprovedApprovalsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -2687,13 +2469,12 @@ export type UserUncheckedCreateWithoutApprovedApprovalsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2739,13 +2520,12 @@ export type UserUpdateWithoutRequestedApprovalsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -2775,13 +2555,12 @@ export type UserUncheckedUpdateWithoutRequestedApprovalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -2822,13 +2601,12 @@ export type UserUpdateWithoutApprovedApprovalsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -2858,13 +2636,12 @@ export type UserUncheckedUpdateWithoutApprovedApprovalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -2894,12 +2671,11 @@ export type UserCreateWithoutDeliveriesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -2930,12 +2706,11 @@ export type UserUncheckedCreateWithoutDeliveriesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -2982,12 +2757,11 @@ export type UserUpdateWithoutDeliveriesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -3018,12 +2792,11 @@ export type UserUncheckedUpdateWithoutDeliveriesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -3054,12 +2827,11 @@ export type UserCreateWithoutPayrollRecordsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -3090,12 +2862,11 @@ export type UserUncheckedCreateWithoutPayrollRecordsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -3142,12 +2913,11 @@ export type UserUpdateWithoutPayrollRecordsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -3178,12 +2948,11 @@ export type UserUncheckedUpdateWithoutPayrollRecordsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -3214,13 +2983,12 @@ export type UserCreateWithoutLockedPeriodsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -3250,13 +3018,12 @@ export type UserUncheckedCreateWithoutLockedPeriodsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -3302,13 +3069,12 @@ export type UserUpdateWithoutLockedPeriodsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -3338,13 +3104,12 @@ export type UserUncheckedUpdateWithoutLockedPeriodsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -3374,13 +3139,12 @@ export type UserCreateWithoutLeaveAllocationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
   goals?: Prisma.GoalCreateNestedManyWithoutUserInput
@@ -3410,13 +3174,12 @@ export type UserUncheckedCreateWithoutLeaveAllocationsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
@@ -3462,13 +3225,12 @@ export type UserUpdateWithoutLeaveAllocationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
   goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
@@ -3498,13 +3260,12 @@ export type UserUncheckedUpdateWithoutLeaveAllocationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
@@ -3534,13 +3295,12 @@ export type UserCreateWithoutLeaveRequestsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
   goals?: Prisma.GoalCreateNestedManyWithoutUserInput
@@ -3570,13 +3330,12 @@ export type UserUncheckedCreateWithoutLeaveRequestsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
@@ -3622,13 +3381,12 @@ export type UserUpdateWithoutLeaveRequestsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
   goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
@@ -3658,13 +3416,12 @@ export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
@@ -3694,13 +3451,12 @@ export type UserCreateWithoutInterviewsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   goals?: Prisma.GoalCreateNestedManyWithoutUserInput
@@ -3730,13 +3486,12 @@ export type UserUncheckedCreateWithoutInterviewsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
@@ -3782,13 +3537,12 @@ export type UserUpdateWithoutInterviewsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
@@ -3818,13 +3572,12 @@ export type UserUncheckedUpdateWithoutInterviewsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
@@ -3854,13 +3607,12 @@ export type UserCreateWithoutGoalsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -3890,13 +3642,12 @@ export type UserUncheckedCreateWithoutGoalsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -3942,13 +3693,12 @@ export type UserUpdateWithoutGoalsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -3978,13 +3728,12 @@ export type UserUncheckedUpdateWithoutGoalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4014,13 +3763,12 @@ export type UserCreateWithoutEvaluationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -4050,13 +3798,12 @@ export type UserUncheckedCreateWithoutEvaluationsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -4091,13 +3838,12 @@ export type UserCreateWithoutGivenEvaluationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -4127,13 +3873,12 @@ export type UserUncheckedCreateWithoutGivenEvaluationsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -4179,13 +3924,12 @@ export type UserUpdateWithoutEvaluationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -4215,13 +3959,12 @@ export type UserUncheckedUpdateWithoutEvaluationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4262,13 +4005,12 @@ export type UserUpdateWithoutGivenEvaluationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -4298,13 +4040,12 @@ export type UserUncheckedUpdateWithoutGivenEvaluationsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4334,13 +4075,12 @@ export type UserCreateWithoutDevelopmentPlansInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -4370,13 +4110,12 @@ export type UserUncheckedCreateWithoutDevelopmentPlansInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -4422,13 +4161,12 @@ export type UserUpdateWithoutDevelopmentPlansInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -4458,13 +4196,12 @@ export type UserUncheckedUpdateWithoutDevelopmentPlansInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4494,13 +4231,12 @@ export type UserCreateWithoutBenefitEnrollmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -4530,13 +4266,12 @@ export type UserUncheckedCreateWithoutBenefitEnrollmentsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -4582,13 +4317,12 @@ export type UserUpdateWithoutBenefitEnrollmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -4618,13 +4352,12 @@ export type UserUncheckedUpdateWithoutBenefitEnrollmentsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4654,13 +4387,12 @@ export type UserCreateWithoutRolesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -4690,13 +4422,12 @@ export type UserUncheckedCreateWithoutRolesInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -4742,13 +4473,12 @@ export type UserUpdateWithoutRolesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -4778,13 +4508,12 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4814,13 +4543,12 @@ export type UserCreateWithoutAuditLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
-  sales?: Prisma.SalesCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutInterviewerInput
@@ -4850,13 +4578,12 @@ export type UserUncheckedCreateWithoutAuditLogsInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesUncheckedCreateNestedManyWithoutUserInput
   payrollRecords?: Prisma.PayrollUncheckedCreateNestedManyWithoutUserInput
   deliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutDriverInput
-  createdSales?: Prisma.SalesUncheckedCreateNestedManyWithoutCreatedByInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
   createdPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCreatedByInput
   transfers?: Prisma.EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+  cashierSessions?: Prisma.CashierSessionUncheckedCreateNestedManyWithoutUserInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutUserInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutInterviewerInput
@@ -4902,13 +4629,12 @@ export type UserUpdateWithoutAuditLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -4938,13 +4664,12 @@ export type UserUncheckedUpdateWithoutAuditLogsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -4985,13 +4710,12 @@ export type UserUpdateWithoutBranchInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutInterviewerNestedInput
@@ -5021,13 +4745,12 @@ export type UserUncheckedUpdateWithoutBranchInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUncheckedUpdateManyWithoutUserNestedInput
   payrollRecords?: Prisma.PayrollUncheckedUpdateManyWithoutUserNestedInput
   deliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutDriverNestedInput
-  createdSales?: Prisma.SalesUncheckedUpdateManyWithoutCreatedByNestedInput
   createdSalesDocuments?: Prisma.SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
   createdPayments?: Prisma.PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
   transfers?: Prisma.EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+  cashierSessions?: Prisma.CashierSessionUncheckedUpdateManyWithoutUserNestedInput
   leaveAllocations?: Prisma.LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
@@ -5065,13 +4788,12 @@ export type UserUncheckedUpdateManyWithoutBranchInput = {
  */
 
 export type UserCountOutputType = {
-  sales: number
   payrollRecords: number
   deliveries: number
-  createdSales: number
   createdSalesDocuments: number
   createdPayments: number
   transfers: number
+  cashierSessions: number
   leaveAllocations: number
   leaveRequests: number
   interviews: number
@@ -5092,13 +4814,12 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | UserCountOutputTypeCountSalesArgs
   payrollRecords?: boolean | UserCountOutputTypeCountPayrollRecordsArgs
   deliveries?: boolean | UserCountOutputTypeCountDeliveriesArgs
-  createdSales?: boolean | UserCountOutputTypeCountCreatedSalesArgs
   createdSalesDocuments?: boolean | UserCountOutputTypeCountCreatedSalesDocumentsArgs
   createdPayments?: boolean | UserCountOutputTypeCountCreatedPaymentsArgs
   transfers?: boolean | UserCountOutputTypeCountTransfersArgs
+  cashierSessions?: boolean | UserCountOutputTypeCountCashierSessionsArgs
   leaveAllocations?: boolean | UserCountOutputTypeCountLeaveAllocationsArgs
   leaveRequests?: boolean | UserCountOutputTypeCountLeaveRequestsArgs
   interviews?: boolean | UserCountOutputTypeCountInterviewsArgs
@@ -5131,13 +4852,6 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountSalesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.SalesWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountPayrollRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PayrollWhereInput
 }
@@ -5147,13 +4861,6 @@ export type UserCountOutputTypeCountPayrollRecordsArgs<ExtArgs extends runtime.T
  */
 export type UserCountOutputTypeCountDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DeliveryWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountCreatedSalesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.SalesWhereInput
 }
 
 /**
@@ -5175,6 +4882,13 @@ export type UserCountOutputTypeCountCreatedPaymentsArgs<ExtArgs extends runtime.
  */
 export type UserCountOutputTypeCountTransfersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeTransferWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCashierSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CashierSessionWhereInput
 }
 
 /**
@@ -5309,13 +5023,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   branch?: boolean | Prisma.User$branchArgs<ExtArgs>
-  sales?: boolean | Prisma.User$salesArgs<ExtArgs>
   payrollRecords?: boolean | Prisma.User$payrollRecordsArgs<ExtArgs>
   deliveries?: boolean | Prisma.User$deliveriesArgs<ExtArgs>
-  createdSales?: boolean | Prisma.User$createdSalesArgs<ExtArgs>
   createdSalesDocuments?: boolean | Prisma.User$createdSalesDocumentsArgs<ExtArgs>
   createdPayments?: boolean | Prisma.User$createdPaymentsArgs<ExtArgs>
   transfers?: boolean | Prisma.User$transfersArgs<ExtArgs>
+  cashierSessions?: boolean | Prisma.User$cashierSessionsArgs<ExtArgs>
   leaveAllocations?: boolean | Prisma.User$leaveAllocationsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.User$leaveRequestsArgs<ExtArgs>
   interviews?: boolean | Prisma.User$interviewsArgs<ExtArgs>
@@ -5380,13 +5093,12 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "role" | "branchId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   branch?: boolean | Prisma.User$branchArgs<ExtArgs>
-  sales?: boolean | Prisma.User$salesArgs<ExtArgs>
   payrollRecords?: boolean | Prisma.User$payrollRecordsArgs<ExtArgs>
   deliveries?: boolean | Prisma.User$deliveriesArgs<ExtArgs>
-  createdSales?: boolean | Prisma.User$createdSalesArgs<ExtArgs>
   createdSalesDocuments?: boolean | Prisma.User$createdSalesDocumentsArgs<ExtArgs>
   createdPayments?: boolean | Prisma.User$createdPaymentsArgs<ExtArgs>
   transfers?: boolean | Prisma.User$transfersArgs<ExtArgs>
+  cashierSessions?: boolean | Prisma.User$cashierSessionsArgs<ExtArgs>
   leaveAllocations?: boolean | Prisma.User$leaveAllocationsArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.User$leaveRequestsArgs<ExtArgs>
   interviews?: boolean | Prisma.User$interviewsArgs<ExtArgs>
@@ -5417,13 +5129,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     branch: Prisma.$BranchPayload<ExtArgs> | null
-    sales: Prisma.$SalesPayload<ExtArgs>[]
     payrollRecords: Prisma.$PayrollPayload<ExtArgs>[]
     deliveries: Prisma.$DeliveryPayload<ExtArgs>[]
-    createdSales: Prisma.$SalesPayload<ExtArgs>[]
     createdSalesDocuments: Prisma.$SalesDocumentPayload<ExtArgs>[]
     createdPayments: Prisma.$PaymentPayload<ExtArgs>[]
     transfers: Prisma.$EmployeeTransferPayload<ExtArgs>[]
+    cashierSessions: Prisma.$CashierSessionPayload<ExtArgs>[]
     leaveAllocations: Prisma.$LeaveAllocationPayload<ExtArgs>[]
     leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
     interviews: Prisma.$InterviewPayload<ExtArgs>[]
@@ -5848,13 +5559,12 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   branch<T extends Prisma.User$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$branchArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  sales<T extends Prisma.User$salesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$salesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payrollRecords<T extends Prisma.User$payrollRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$payrollRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayrollPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   deliveries<T extends Prisma.User$deliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  createdSales<T extends Prisma.User$createdSalesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdSalesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdSalesDocuments<T extends Prisma.User$createdSalesDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdSalesDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdPayments<T extends Prisma.User$createdPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transfers<T extends Prisma.User$transfersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transfersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cashierSessions<T extends Prisma.User$cashierSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cashierSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CashierSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveAllocations<T extends Prisma.User$leaveAllocationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveAllocationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveAllocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveRequests<T extends Prisma.User$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   interviews<T extends Prisma.User$interviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6326,30 +6036,6 @@ export type User$branchArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 }
 
 /**
- * User.sales
- */
-export type User$salesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Sales
-   */
-  select?: Prisma.SalesSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Sales
-   */
-  omit?: Prisma.SalesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SalesInclude<ExtArgs> | null
-  where?: Prisma.SalesWhereInput
-  orderBy?: Prisma.SalesOrderByWithRelationInput | Prisma.SalesOrderByWithRelationInput[]
-  cursor?: Prisma.SalesWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.SalesScalarFieldEnum | Prisma.SalesScalarFieldEnum[]
-}
-
-/**
  * User.payrollRecords
  */
 export type User$payrollRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -6395,30 +6081,6 @@ export type User$deliveriesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.DeliveryScalarFieldEnum | Prisma.DeliveryScalarFieldEnum[]
-}
-
-/**
- * User.createdSales
- */
-export type User$createdSalesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Sales
-   */
-  select?: Prisma.SalesSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Sales
-   */
-  omit?: Prisma.SalesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SalesInclude<ExtArgs> | null
-  where?: Prisma.SalesWhereInput
-  orderBy?: Prisma.SalesOrderByWithRelationInput | Prisma.SalesOrderByWithRelationInput[]
-  cursor?: Prisma.SalesWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.SalesScalarFieldEnum | Prisma.SalesScalarFieldEnum[]
 }
 
 /**
@@ -6491,6 +6153,30 @@ export type User$transfersArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.EmployeeTransferScalarFieldEnum | Prisma.EmployeeTransferScalarFieldEnum[]
+}
+
+/**
+ * User.cashierSessions
+ */
+export type User$cashierSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CashierSession
+   */
+  select?: Prisma.CashierSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CashierSession
+   */
+  omit?: Prisma.CashierSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CashierSessionInclude<ExtArgs> | null
+  where?: Prisma.CashierSessionWhereInput
+  orderBy?: Prisma.CashierSessionOrderByWithRelationInput | Prisma.CashierSessionOrderByWithRelationInput[]
+  cursor?: Prisma.CashierSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CashierSessionScalarFieldEnum | Prisma.CashierSessionScalarFieldEnum[]
 }
 
 /**

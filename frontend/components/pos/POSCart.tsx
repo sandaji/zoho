@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { CartItem } from "@/app/dashboard/pos/page";
+import { formatCurrency } from "@/lib/utils";
 
 interface POSCartProps {
   cart: CartItem[];
@@ -54,12 +55,7 @@ export const POSCart: React.FC<POSCartProps> = ({
     setDiscountValue("");
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
+
 
   return (
     <Card className="shadow-lg">

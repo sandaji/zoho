@@ -1,7 +1,7 @@
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 import { logger } from './logger'
-import { PrismaClient, Prisma } from '../generated/client'
+import { PrismaClient, Prisma } from '../generated'
 import { getRequestContext } from './async-context'
 
 interface CustomPrismaClient extends Omit<PrismaClient, '$on'>  {

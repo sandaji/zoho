@@ -60,13 +60,12 @@ export const ModelName = {
   StockMovement: 'StockMovement',
   StockTransfer: 'StockTransfer',
   TransferItem: 'TransferItem',
-  Sales: 'Sales',
-  SalesItem: 'SalesItem',
   Customer: 'Customer',
   SalesDocument: 'SalesDocument',
   SalesDocumentItem: 'SalesDocumentItem',
   Payment: 'Payment',
   DocumentSequence: 'DocumentSequence',
+  CashierSession: 'CashierSession',
   Vendor: 'Vendor',
   PurchaseOrder: 'PurchaseOrder',
   ApprovalRequest: 'ApprovalRequest',
@@ -117,12 +116,12 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  * Enums
  */
 
-export const TransactionIsolationLevel = {
+export const TransactionIsolationLevel = runtime.makeStrictEnum({
   ReadUncommitted: 'ReadUncommitted',
   ReadCommitted: 'ReadCommitted',
   RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
-} as const
+} as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
@@ -292,51 +291,6 @@ export const TransferItemScalarFieldEnum = {
 export type TransferItemScalarFieldEnum = (typeof TransferItemScalarFieldEnum)[keyof typeof TransferItemScalarFieldEnum]
 
 
-export const SalesScalarFieldEnum = {
-  id: 'id',
-  invoice_no: 'invoice_no',
-  status: 'status',
-  payment_method: 'payment_method',
-  branchId: 'branchId',
-  userId: 'userId',
-  createdById: 'createdById',
-  subtotal: 'subtotal',
-  total_amount: 'total_amount',
-  discount: 'discount',
-  discount_approved_by: 'discount_approved_by',
-  tax: 'tax',
-  grand_total: 'grand_total',
-  amount_paid: 'amount_paid',
-  change: 'change',
-  notes: 'notes',
-  created_date: 'created_date',
-  delivery_date: 'delivery_date',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SalesScalarFieldEnum = (typeof SalesScalarFieldEnum)[keyof typeof SalesScalarFieldEnum]
-
-
-export const SalesItemScalarFieldEnum = {
-  id: 'id',
-  quantity: 'quantity',
-  unit_price: 'unit_price',
-  tax_rate: 'tax_rate',
-  discount: 'discount',
-  discount_percent: 'discount_percent',
-  subtotal: 'subtotal',
-  tax_amount: 'tax_amount',
-  amount: 'amount',
-  salesId: 'salesId',
-  productId: 'productId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SalesItemScalarFieldEnum = (typeof SalesItemScalarFieldEnum)[keyof typeof SalesItemScalarFieldEnum]
-
-
 export const CustomerScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -360,6 +314,7 @@ export const SalesDocumentScalarFieldEnum = {
   branchId: 'branchId',
   customerId: 'customerId',
   createdById: 'createdById',
+  sessionId: 'sessionId',
   subtotal: 'subtotal',
   discount: 'discount',
   tax: 'tax',
@@ -423,6 +378,34 @@ export const DocumentSequenceScalarFieldEnum = {
 } as const
 
 export type DocumentSequenceScalarFieldEnum = (typeof DocumentSequenceScalarFieldEnum)[keyof typeof DocumentSequenceScalarFieldEnum]
+
+
+export const CashierSessionScalarFieldEnum = {
+  id: 'id',
+  sessionNo: 'sessionNo',
+  userId: 'userId',
+  branchId: 'branchId',
+  status: 'status',
+  openingBalance: 'openingBalance',
+  closingBalance: 'closingBalance',
+  expectedCash: 'expectedCash',
+  actualCash: 'actualCash',
+  cashVariance: 'cashVariance',
+  totalSalesCount: 'totalSalesCount',
+  totalSalesAmount: 'totalSalesAmount',
+  totalCashReceived: 'totalCashReceived',
+  totalCardReceived: 'totalCardReceived',
+  totalMpesaReceived: 'totalMpesaReceived',
+  totalOtherReceived: 'totalOtherReceived',
+  openedAt: 'openedAt',
+  closedAt: 'closedAt',
+  reconciledAt: 'reconciledAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CashierSessionScalarFieldEnum = (typeof CashierSessionScalarFieldEnum)[keyof typeof CashierSessionScalarFieldEnum]
 
 
 export const VendorScalarFieldEnum = {
@@ -514,7 +497,6 @@ export const DeliveryScalarFieldEnum = {
   id: 'id',
   delivery_no: 'delivery_no',
   status: 'status',
-  salesId: 'salesId',
   driverId: 'driverId',
   truckId: 'truckId',
   destination: 'destination',
@@ -537,7 +519,6 @@ export const FinanceTransactionScalarFieldEnum = {
   reference_no: 'reference_no',
   description: 'description',
   amount: 'amount',
-  salesId: 'salesId',
   payrollId: 'payrollId',
   payment_method: 'payment_method',
   reference_doc: 'reference_doc',
@@ -728,7 +709,6 @@ export const AccountReceivableScalarFieldEnum = {
   paid_date: 'paid_date',
   status: 'status',
   aging_days: 'aging_days',
-  salesId: 'salesId',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1136,15 +1116,15 @@ export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
 export const JsonNullValueInput = {
-  JsonNull: 'JsonNull'
+  JsonNull: JsonNull
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull'
+  DbNull: DbNull,
+  JsonNull: JsonNull
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
@@ -1167,9 +1147,9 @@ export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 export const JsonNullValueFilter = {
-  DbNull: 'DbNull',
-  JsonNull: 'JsonNull',
-  AnyNull: 'AnyNull'
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]

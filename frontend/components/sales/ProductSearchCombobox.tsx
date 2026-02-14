@@ -1,7 +1,7 @@
 // frontend/components/sales/ProductSearchCombobox.tsx
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Check, ChevronsUpDown, AlertCircle, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

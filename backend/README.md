@@ -23,6 +23,13 @@ A robust Node.js + TypeScript backend API for the Zoho ERP system built with Exp
    # Edit .env with your configuration
    ```
 
+   Add `FRONTEND_URLS` to configure allowed CORS origins as a comma-separated list, for example:
+
+   ```bash
+   # Allow localhost and production frontend
+   FRONTEND_URLS="http://localhost:3000,https://app.example.com"
+   ```
+
 3. **Setup database**
    ```bash
    npm run db:push

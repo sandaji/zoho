@@ -1,6 +1,6 @@
 // backend/src/modules/finance/services/accounting.service.ts
 import { prisma } from "../../../lib/db";
-import { AccountType } from "../../../generated/enums";
+import { AccountType } from "../../../generated";
 
 export const DEFAULT_ACCOUNTS = {
   CASH_ON_HAND: { code: "1001", name: "Cash on Hand", type: AccountType.asset, category: "Current Assets" },
@@ -61,96 +61,96 @@ export class AccountingService {
     // 1. Resolve Accounts
     const revenueAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_REVENUE);
     const taxAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_TAX_PAYABLE);
-    
+
     // Determine Asset Account based on payment method
     let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
     if (data.paymentMethod === 'mpesa') assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
     else if (data.paymentMethod === 'card' || data.paymentMethod === 'bank_transfer') assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
     // Note: If credit/on-account, usage would be Accounts Receivable, but POS is usually immediate payment.
-    
+
     const assetAccount = await this.getEnsureAccount(assetAccountDef);
 
     // We will create the splits separately using batch_id
     const batchId = `BATCH-${data.saleId}`;
-    
+
     // 2. Debit Asset (Cash/Bank) - Increase Asset
     await tx.journalEntry.create({
-        data: {
-            entry_no: `JE-${data.saleId}-DR`, // Unique Entry No
-            entry_date: data.date,
-            account_id: assetAccount.id,
-            debit: data.total, // Asset increases with Debit
-            credit: 0,
-            description: `POS Sale Collection - ${data.paymentMethod}`,
-            reference_type: 'SALES_DOCUMENT',
-            reference_id: data.saleId,
-            batch_id: batchId,
-            created_by: data.userId
-        }
+      data: {
+        entry_no: `JE-${data.saleId}-DR`, // Unique Entry No
+        entry_date: data.date,
+        account_id: assetAccount.id,
+        debit: data.total, // Asset increases with Debit
+        credit: 0,
+        description: `POS Sale Collection - ${data.paymentMethod}`,
+        reference_type: 'SALES_DOCUMENT',
+        reference_id: data.saleId,
+        batch_id: batchId,
+        created_by: data.userId
+      }
     });
-    
+
     // 3. Credit Revenue - Increase Revenue
     // Revenue amount = Subtotal (Net Sales)
     // Wait, if tax is involved. Total = Subtotal + Tax.
     // If we credit Revenue with Total, we overstate revenue.
     // We should Credit Revenue with Subtotal (minus discount if applicable).
-    
+
     // Let's assume Subtotal is net of discount in the input data or handle it.
     // Input `subtotal` usually means Price * Qty.
     // `total` = Subtotal + Tax - Discount.
-    
+
     // Let's verify standard: 
     // DR Cash (Total)
     //    CR Revenue (Subtotal - Discount)
     //    CR Tax Payable (Tax)
-    
+
     // Revenue amount calculation logic (Concept only, using net revenue below)
-    
+
     const netRevenue = data.total - data.tax;
-    
+
     await tx.journalEntry.create({
-        data: {
-            entry_no: `JE-${data.saleId}-CR-REV`,
-            entry_date: data.date,
-            account_id: revenueAccount.id,
-            debit: 0,
-            credit: netRevenue, // Revenue increases with Credit
-            description: `POS Revenue`,
-            reference_type: 'SALES_DOCUMENT',
-            reference_id: data.saleId,
-            batch_id: batchId,
-            created_by: data.userId
-        }
+      data: {
+        entry_no: `JE-${data.saleId}-CR-REV`,
+        entry_date: data.date,
+        account_id: revenueAccount.id,
+        debit: 0,
+        credit: netRevenue, // Revenue increases with Credit
+        description: `POS Revenue`,
+        reference_type: 'SALES_DOCUMENT',
+        reference_id: data.saleId,
+        batch_id: batchId,
+        created_by: data.userId
+      }
     });
-    
+
     // 4. Credit Tax Payable
     if (data.tax > 0) {
-        await tx.journalEntry.create({
-            data: {
-                entry_no: `JE-${data.saleId}-CR-TAX`,
-                entry_date: data.date,
-                account_id: taxAccount.id,
-                debit: 0,
-                credit: data.tax, // Liability increases with Credit
-                description: `Sales Tax / VAT`,
-                reference_type: 'SALES_DOCUMENT',
-                reference_id: data.saleId,
-                batch_id: batchId,
-                created_by: data.userId
-            }
-        });
+      await tx.journalEntry.create({
+        data: {
+          entry_no: `JE-${data.saleId}-CR-TAX`,
+          entry_date: data.date,
+          account_id: taxAccount.id,
+          debit: 0,
+          credit: data.tax, // Liability increases with Credit
+          description: `Sales Tax / VAT`,
+          reference_type: 'SALES_DOCUMENT',
+          reference_id: data.saleId,
+          batch_id: batchId,
+          created_by: data.userId
+        }
+      });
     }
 
     // Update Account Balances (Denormalization if exists in schema)
     // Schema has `current_balance` on ChartOfAccount.
     // We should update it.
-    
+
     // Asset (Debit increases)
     await tx.chartOfAccount.update({
-        where: { id: assetAccount.id },
-        data: { current_balance: { increment: data.total } }
+      where: { id: assetAccount.id },
+      data: { current_balance: { increment: data.total } }
     });
-    
+
     // Revenue (Credit increases... wait. Usually Revenue accounts are credit accounts. 
     // Does `current_balance` store strict number or signed? 
     // Typically in DB: Asset (+), Liability (-), Revenue (-), Expense (+).
@@ -159,15 +159,15 @@ export class AccountingService {
     // If it's a Revenue account, "increasing" it usually means more credit. 
     // Let's just increment for now, assuming "Balance" implies "Value in that account".
     await tx.chartOfAccount.update({
-        where: { id: revenueAccount.id },
-        data: { current_balance: { increment: netRevenue } }
+      where: { id: revenueAccount.id },
+      data: { current_balance: { increment: netRevenue } }
     });
-    
+
     if (data.tax > 0) {
-        await tx.chartOfAccount.update({
-            where: { id: taxAccount.id },
-            data: { current_balance: { increment: data.tax } }
-        });
+      await tx.chartOfAccount.update({
+        where: { id: taxAccount.id },
+        data: { current_balance: { increment: data.tax } }
+      });
     }
   }
 
@@ -180,21 +180,21 @@ export class AccountingService {
    * Snapshot of Assets, Liabilities, and Equity at a specific date.
    */
   static async getBankAccounts() {
-      return await prisma.chartOfAccount.findMany({
-          where: {
-              account_type: 'asset',
-              OR: [
-                  { account_name: { contains: 'Bank', mode: 'insensitive' } },
-                  { account_name: { contains: 'Cash', mode: 'insensitive' } },
-              ]
-          },
-          select: {
-              id: true,
-              account_name: true,
-              account_code: true,
-              current_balance: true
-          }
-      });
+    return await prisma.chartOfAccount.findMany({
+      where: {
+        account_type: 'asset',
+        OR: [
+          { account_name: { contains: 'Bank', mode: 'insensitive' } },
+          { account_name: { contains: 'Cash', mode: 'insensitive' } },
+        ]
+      },
+      select: {
+        id: true,
+        account_name: true,
+        account_code: true,
+        current_balance: true
+      }
+    });
   }
 
   static async getBalanceSheet(asOfDate: Date = new Date(), branchId?: string) {
@@ -232,7 +232,7 @@ export class AccountingService {
       const bal = balances.find(b => b.account_id === acc.id);
       const debit = bal?._sum.debit || 0;
       const credit = bal?._sum.credit || 0;
-      
+
       let net = 0;
       if (acc.account_type === AccountType.asset) {
         net = debit - credit;
@@ -271,7 +271,7 @@ export class AccountingService {
       entry_date: { gte: startDate, lte: endDate },
     };
     if (branchId) {
-        // whereEntries.branchId = branchId;
+      // whereEntries.branchId = branchId;
     }
 
     const movements = await prisma.journalEntry.groupBy({
@@ -287,7 +287,7 @@ export class AccountingService {
       const mov = movements.find(m => m.account_id === acc.id);
       const debit = mov?._sum.debit || 0;
       const credit = mov?._sum.credit || 0;
-      
+
       let amount = 0;
       if (acc.account_type === AccountType.revenue) {
         amount = credit - debit;
@@ -326,9 +326,9 @@ export class AccountingService {
         ]
       }
     });
-    
+
     const cashAccountIds = cashAccounts.map(a => a.id);
-    
+
     if (cashAccountIds.length === 0) return { summary: { netChange: 0 }, details: [] };
 
     const cashEntries = await prisma.journalEntry.findMany({
@@ -344,25 +344,25 @@ export class AccountingService {
 
     let totalIn = 0;
     let totalOut = 0;
-    
+
     for (const entry of cashEntries) {
-        totalIn += entry.debit;
-        totalOut += entry.credit;
+      totalIn += entry.debit;
+      totalOut += entry.credit;
     }
-    
+
     return {
-        summary: {
-            cashIn: totalIn,
-            cashOut: totalOut,
-            netChange: totalIn - totalOut
-        },
-        details: cashEntries.map(e => ({
-            id: e.id,
-            date: e.entry_date,
-            description: e.description,
-            amount: e.debit - e.credit,
-            account: e.account.account_name
-        }))
+      summary: {
+        cashIn: totalIn,
+        cashOut: totalOut,
+        netChange: totalIn - totalOut
+      },
+      details: cashEntries.map(e => ({
+        id: e.id,
+        date: e.entry_date,
+        description: e.description,
+        amount: e.debit - e.credit,
+        account: e.account.account_name
+      }))
     };
   }
 }

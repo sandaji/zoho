@@ -17,6 +17,7 @@ import {
   Loader2,
   CheckCircle2,
 } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
 
@@ -53,13 +54,6 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   notes,
   setNotes,
 }) => {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
-
   const paymentMethods = [
     { value: "cash", label: "Cash", icon: Banknote, color: "bg-green-100 text-green-700" },
     { value: "card", label: "Card", icon: CreditCard, color: "bg-blue-100 text-blue-700" },
@@ -176,9 +170,8 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-slate-600">Change Due</span>
                   <span
-                    className={`text-2xl font-bold ${
-                      changeAmount < 0 ? "text-red-600" : "text-green-600"
-                    }`}
+                    className={`text-2xl font-bold ${changeAmount < 0 ? "text-red-600" : "text-green-600"
+                      }`}
                   >
                     {formatCurrency(changeAmount)}
                   </span>

@@ -1,7 +1,7 @@
 // backend/src/modules/finance/services/period.service.ts
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { FiscalStatus } from "../../../generated/enums";
+import { FiscalStatus } from "../../../generated";
 
 export class PeriodService {
   /**
@@ -63,7 +63,13 @@ export class PeriodService {
         }
       });
 
-      const periods = [];
+      const periods: Array<{
+        fiscalYearId: string;
+        name: string;
+        startDate: Date;
+        endDate: Date;
+        status: typeof FiscalStatus.open;
+      }> = [];
       for (let month = 0; month < 12; month++) {
         const pStartDate = new Date(year, month, 1);
         const pEndDate = new Date(year, month + 1, 0, 23, 59, 59);

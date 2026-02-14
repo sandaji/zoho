@@ -154,9 +154,9 @@ export class EmployeeController {
 
       // Record-level isolation: Ensure manager can't create user for another branch
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {
-          if (!branchId || !req.authorizedBranchIds.includes(branchId)) {
-              throw new AppError(ErrorCode.FORBIDDEN, 403, "Cannot create user for another branch");
-          }
+        if (!branchId || !req.authorizedBranchIds.includes(branchId)) {
+          throw new AppError(ErrorCode.FORBIDDEN, 403, "Cannot create user for another branch");
+        }
       }
 
       // Validate branch exists if provided
@@ -417,7 +417,7 @@ export class EmployeeController {
       const employee = await prisma.user.findFirst({
         where,
         include: {
-          sales: { select: { id: true } },
+          createdSalesDocuments: { select: { id: true } },
           deliveries: { select: { id: true } },
           payrollRecords: { select: { id: true } },
         },
@@ -429,7 +429,7 @@ export class EmployeeController {
 
       // Check if employee has dependencies
       if (
-        employee.sales.length > 0 ||
+        employee.createdSalesDocuments.length > 0 ||
         employee.deliveries.length > 0 ||
         employee.payrollRecords.length > 0
       ) {

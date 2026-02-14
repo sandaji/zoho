@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SaleData } from "@/app/dashboard/pos/page";
+import { formatCurrency } from "@/lib/utils";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;
@@ -37,13 +38,6 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
 }) => {
   const receiptRef = useRef<HTMLDivElement>(null);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString("en-KE", {
       dateStyle: "medium",
@@ -57,7 +51,7 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
   });
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={() => { }}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
@@ -143,13 +137,6 @@ const ReceiptContent: React.FC<{
   sale: SaleData;
   changeAmount: number;
 }> = ({ sale, changeAmount }) => {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: "KES",
-    }).format(amount);
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString("en-KE", {
       dateStyle: "medium",

@@ -50,8 +50,26 @@ export class PurchasingController {
 
   getPurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.params.id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
-      const order = await this.service.getPurchaseOrder(req.params.id);
+      const id = req.params.id as string;
+      if (!id) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      }
+
+      const userBranchId = (req as any).user?.branchId;
+      const userPermissions = (req as any).user?.permissions || [];
+
+      const order = await this.service.getPurchaseOrder(id);
+
+      // ✅ NEW: Verify branch access (Branch Isolation)
+      const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+      if (!hasViewAll && order.branchId !== userBranchId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          'You do not have permission to view Purchase Orders from other branches'
+        );
+      }
+
       res.json({
         success: true,
         data: order,
@@ -63,12 +81,18 @@ export class PurchasingController {
 
   listPurchaseOrders = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const userBranchId = (req as any).user?.branchId;
+      const userPermissions = (req as any).user?.permissions || [];
+
       const result = await this.service.listPurchaseOrders({
-        status: req.query.status as any, // Cast to any to avoid enum type issues until generated
+        status: req.query.status as any,
         vendorId: req.query.vendorId as string,
         branchId: req.query.branchId as string,
         skip: req.query.skip ? parseInt(req.query.skip as string) : undefined,
         take: req.query.take ? parseInt(req.query.take as string) : undefined,
+        // ✅ NEW: Pass user context for branch isolation
+        userBranchId,
+        userPermissions,
       });
       res.json({
         success: true,
@@ -81,16 +105,45 @@ export class PurchasingController {
 
   updateStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.user || !req.user.userId) throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
-      
-      const { status } = req.body;
-      if (!status) throw new AppError(ErrorCode.MISSING_FIELD, 400, "Status is required");
+      if (!req.user || !req.user.userId) {
+        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
+      }
 
-      if (!req.params.id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
-      const order = await this.service.updateStatus(req.params.id, status as any, req.user.userId);
+      const { status } = req.body;
+      if (!status) {
+        throw new AppError(ErrorCode.MISSING_FIELD, 400, "Status is required");
+      }
+
+      const id = req.params.id as string;
+      if (!id) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      }
+
+      const userBranchId = (req as any).user?.branchId;
+      const userPermissions = (req as any).user?.permissions || [];
+
+      // ✅ NEW: Verify PO belongs to user's branch
+      const order = await this.service.getPurchaseOrder(id);
+      const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+      if (!hasViewAll && order.branchId !== userBranchId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          'Cannot modify Purchase Orders from other branches'
+        );
+      }
+
+      // ✅ NEW: Pass user permissions for threshold validation and segregation of duties
+      const updatedOrder = await this.service.updateStatus(
+        id,
+        status as any,
+        req.user.userId,
+        userPermissions  // Pass for threshold checking
+      );
+
       res.json({
         success: true,
-        data: order,
+        data: updatedOrder,
       });
     } catch (error) {
       next(error);
@@ -101,9 +154,10 @@ export class PurchasingController {
     try {
       if (!req.user || !req.user.userId) throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
 
-      if (!req.params.id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      const id = req.params.id as string;
+      if (!id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
       const order = await this.service.receiveGoods(
-        req.params.id,
+        id,
         req.user.userId,
         req.body // expected: { warehouseId, items: [] }
       );
@@ -119,16 +173,52 @@ export class PurchasingController {
 
   generatePdf = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.params.id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
-      const pdfBuffer = await this.service.generatePoPdf(req.params.id);
+      const id = req.params.id as string;
+      if (!id) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      }
+
+      const userBranchId = (req as any).user?.branchId;
+      const userPermissions = (req as any).user?.permissions || [];
+
+      const order = await this.service.getPurchaseOrder(id);
+
+      // ✅ NEW: Verify branch access before generating PDF
+      const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+      if (!hasViewAll && order.branchId !== userBranchId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          'You do not have permission to download this Purchase Order'
+        );
+      }
+
+      const pdfBuffer = await this.service.generatePoPdf(id);
       
       res.set({
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename=PO-${req.params.id}.pdf`,
+        "Content-Disposition": `attachment; filename=LPO-${order.poNumber}.pdf`,
         "Content-Length": pdfBuffer.length,
       });
 
       res.send(pdfBuffer);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  deleteVendor = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id as string;
+      if (!id) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
+      }
+
+      await this.service.deleteVendor(id);
+      res.json({
+        success: true,
+        message: "Vendor deactivated successfully"
+      });
     } catch (error) {
       next(error);
     }

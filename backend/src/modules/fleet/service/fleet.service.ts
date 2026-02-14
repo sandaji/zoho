@@ -60,7 +60,7 @@ export class FleetService {
               },
               select: {
                 id: true,
-                sales: { select: { id: true } },
+                truck: { select: { registration: true } },
               },
             },
           },
@@ -499,17 +499,17 @@ export class FleetService {
       status: delivery.status,
       sales: delivery.sales
         ? {
-            id: delivery.sales.id,
-            invoice_no: delivery.sales.invoice_no,
-            total_amount: delivery.sales.total_amount,
-          }
+          id: delivery.sales.id,
+          invoice_no: delivery.sales.invoice_no,
+          total_amount: delivery.sales.total_amount,
+        }
         : undefined,
       driver: delivery.driver
         ? {
-            id: delivery.driver.id,
-            name: delivery.driver.name,
-            phone: delivery.driver.phone,
-          }
+          id: delivery.driver.id,
+          name: delivery.driver.name,
+          phone: delivery.driver.phone,
+        }
         : undefined,
       truck: this.formatTruckResponse(delivery.truck),
       destination: delivery.destination,
@@ -617,7 +617,7 @@ export class FleetService {
     const delivery = await this.prisma.delivery.findUnique({
       where: { id },
       include: {
-        sales: true,
+
         driver: true,
         truck: true,
       },
@@ -631,8 +631,8 @@ export class FleetService {
       id: delivery.id,
       delivery_no: delivery.delivery_no,
       status: delivery.status,
-      salesId: delivery.salesId,
       driverId: delivery.driverId,
+
       truckId: delivery.truckId,
       destination: delivery.destination,
       estimated_km: delivery.estimated_km,
@@ -678,8 +678,8 @@ export class FleetService {
       id: updated.id,
       delivery_no: updated.delivery_no,
       status: updated.status,
-      salesId: updated.salesId,
       driverId: updated.driverId,
+
       truckId: updated.truckId,
       destination: updated.destination,
       estimated_km: updated.estimated_km,

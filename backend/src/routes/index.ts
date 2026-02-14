@@ -2,9 +2,9 @@
 import { Router } from "express";
 import { AdminController } from "../modules/admin/admin.controller";
 import { AuthController } from "../modules/auth/controller";
-import { PosController } from "../modules/pos/controller";
+import { POSController } from "../modules/pos/controller";
 import { InventoryController } from "../modules/inventory/controller";
-import { WarehouseController } from "../modules/warehouse/controller";
+import { WarehouseController } from "../modules/warehouse/controllers";
 import { FleetController } from "../modules/fleet/controller";
 import { HrController } from "../modules/hr/controller";
 import { FinanceController } from "../modules/finance/controller";
@@ -19,20 +19,21 @@ import { requirePermission } from "../middleware/rbac.middleware";
 import productRoutes from "../modules/products/routes/product.routes";
 import branchRoutes from "./branches.routes";
 import employeeRoutes from "./employees.routes";
-import warehouseRoutes from "../modules/warehouse/warehouse.routes";
+import warehouseRoutes from "../modules/warehouse/routes/warehouse.routes";
 import salesRoutes from "./sales.routes";
 import customersRoutes from "../modules/customers/customers.routes";
 import hrRoutes from "../modules/hr/routes/hr.routes";
 import rbacRoutes from "../modules/rbac/rbac.routes";
 import auditRoutes from "../modules/admin/audit.routes";
 import purchasingRoutes from "../modules/purchasing/purchasing.routes";
+import cashierRoutes from "../modules/cashier/routes/session.routes";
 
 const router = Router();
 
 // Initialize controllers
 const adminController = new AdminController();
 const authController = new AuthController();
-const posController = new PosController();
+const posController = new POSController();
 const inventoryController = new InventoryController();
 const warehouseController = new WarehouseController();
 const fleetController = new FleetController();
@@ -472,5 +473,10 @@ router.use("/rbac", rbacRoutes);
 // PURCHASING MODULE ROUTES
 // ============================================================================
 router.use("/purchasing", purchasingRoutes);
+
+// ============================================================================
+// CASHIER SESSION MANAGEMENT ROUTES (Protected)
+// ============================================================================
+router.use("/cashier", cashierRoutes);
 
 export default router;

@@ -54,7 +54,6 @@ export type AccountReceivableMinAggregateOutputType = {
   paid_date: Date | null
   status: $Enums.ARStatus | null
   aging_days: number | null
-  salesId: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -74,7 +73,6 @@ export type AccountReceivableMaxAggregateOutputType = {
   paid_date: Date | null
   status: $Enums.ARStatus | null
   aging_days: number | null
-  salesId: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -94,7 +92,6 @@ export type AccountReceivableCountAggregateOutputType = {
   paid_date: number
   status: number
   aging_days: number
-  salesId: number
   notes: number
   createdAt: number
   updatedAt: number
@@ -130,7 +127,6 @@ export type AccountReceivableMinAggregateInputType = {
   paid_date?: true
   status?: true
   aging_days?: true
-  salesId?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -150,7 +146,6 @@ export type AccountReceivableMaxAggregateInputType = {
   paid_date?: true
   status?: true
   aging_days?: true
-  salesId?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -170,7 +165,6 @@ export type AccountReceivableCountAggregateInputType = {
   paid_date?: true
   status?: true
   aging_days?: true
-  salesId?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -277,7 +271,6 @@ export type AccountReceivableGroupByOutputType = {
   paid_date: Date | null
   status: $Enums.ARStatus
   aging_days: number
-  salesId: string | null
   notes: string | null
   createdAt: Date
   updatedAt: Date
@@ -320,11 +313,9 @@ export type AccountReceivableWhereInput = {
   paid_date?: Prisma.DateTimeNullableFilter<"AccountReceivable"> | Date | string | null
   status?: Prisma.EnumARStatusFilter<"AccountReceivable"> | $Enums.ARStatus
   aging_days?: Prisma.IntFilter<"AccountReceivable"> | number
-  salesId?: Prisma.StringNullableFilter<"AccountReceivable"> | string | null
   notes?: Prisma.StringNullableFilter<"AccountReceivable"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AccountReceivable"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AccountReceivable"> | Date | string
-  sales?: Prisma.XOR<Prisma.SalesNullableScalarRelationFilter, Prisma.SalesWhereInput> | null
   payments?: Prisma.ARPaymentListRelationFilter
 }
 
@@ -342,18 +333,15 @@ export type AccountReceivableOrderByWithRelationInput = {
   paid_date?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   aging_days?: Prisma.SortOrder
-  salesId?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  sales?: Prisma.SalesOrderByWithRelationInput
   payments?: Prisma.ARPaymentOrderByRelationAggregateInput
 }
 
 export type AccountReceivableWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   invoice_no?: string
-  salesId?: string
   AND?: Prisma.AccountReceivableWhereInput | Prisma.AccountReceivableWhereInput[]
   OR?: Prisma.AccountReceivableWhereInput[]
   NOT?: Prisma.AccountReceivableWhereInput | Prisma.AccountReceivableWhereInput[]
@@ -371,9 +359,8 @@ export type AccountReceivableWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"AccountReceivable"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AccountReceivable"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AccountReceivable"> | Date | string
-  sales?: Prisma.XOR<Prisma.SalesNullableScalarRelationFilter, Prisma.SalesWhereInput> | null
   payments?: Prisma.ARPaymentListRelationFilter
-}, "id" | "invoice_no" | "salesId">
+}, "id" | "invoice_no">
 
 export type AccountReceivableOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -389,7 +376,6 @@ export type AccountReceivableOrderByWithAggregationInput = {
   paid_date?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   aging_days?: Prisma.SortOrder
-  salesId?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -417,7 +403,6 @@ export type AccountReceivableScalarWhereWithAggregatesInput = {
   paid_date?: Prisma.DateTimeNullableWithAggregatesFilter<"AccountReceivable"> | Date | string | null
   status?: Prisma.EnumARStatusWithAggregatesFilter<"AccountReceivable"> | $Enums.ARStatus
   aging_days?: Prisma.IntWithAggregatesFilter<"AccountReceivable"> | number
-  salesId?: Prisma.StringNullableWithAggregatesFilter<"AccountReceivable"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"AccountReceivable"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AccountReceivable"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AccountReceivable"> | Date | string
@@ -440,7 +425,6 @@ export type AccountReceivableCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesCreateNestedOneWithoutAccountReceivableInput
   payments?: Prisma.ARPaymentCreateNestedManyWithoutAccount_receivableInput
 }
 
@@ -458,7 +442,6 @@ export type AccountReceivableUncheckedCreateInput = {
   paid_date?: Date | string | null
   status?: $Enums.ARStatus
   aging_days?: number
-  salesId?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -482,7 +465,6 @@ export type AccountReceivableUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneWithoutAccountReceivableNestedInput
   payments?: Prisma.ARPaymentUpdateManyWithoutAccount_receivableNestedInput
 }
 
@@ -500,7 +482,6 @@ export type AccountReceivableUncheckedUpdateInput = {
   paid_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
   aging_days?: Prisma.IntFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -521,7 +502,6 @@ export type AccountReceivableCreateManyInput = {
   paid_date?: Date | string | null
   status?: $Enums.ARStatus
   aging_days?: number
-  salesId?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -560,15 +540,9 @@ export type AccountReceivableUncheckedUpdateManyInput = {
   paid_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
   aging_days?: Prisma.IntFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type AccountReceivableNullableScalarRelationFilter = {
-  is?: Prisma.AccountReceivableWhereInput | null
-  isNot?: Prisma.AccountReceivableWhereInput | null
 }
 
 export type AccountReceivableCountOrderByAggregateInput = {
@@ -585,7 +559,6 @@ export type AccountReceivableCountOrderByAggregateInput = {
   paid_date?: Prisma.SortOrder
   status?: Prisma.SortOrder
   aging_days?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -612,7 +585,6 @@ export type AccountReceivableMaxOrderByAggregateInput = {
   paid_date?: Prisma.SortOrder
   status?: Prisma.SortOrder
   aging_days?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -632,7 +604,6 @@ export type AccountReceivableMinOrderByAggregateInput = {
   paid_date?: Prisma.SortOrder
   status?: Prisma.SortOrder
   aging_days?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -648,38 +619,6 @@ export type AccountReceivableSumOrderByAggregateInput = {
 export type AccountReceivableScalarRelationFilter = {
   is?: Prisma.AccountReceivableWhereInput
   isNot?: Prisma.AccountReceivableWhereInput
-}
-
-export type AccountReceivableCreateNestedOneWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.AccountReceivableCreateWithoutSalesInput, Prisma.AccountReceivableUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.AccountReceivableCreateOrConnectWithoutSalesInput
-  connect?: Prisma.AccountReceivableWhereUniqueInput
-}
-
-export type AccountReceivableUncheckedCreateNestedOneWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.AccountReceivableCreateWithoutSalesInput, Prisma.AccountReceivableUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.AccountReceivableCreateOrConnectWithoutSalesInput
-  connect?: Prisma.AccountReceivableWhereUniqueInput
-}
-
-export type AccountReceivableUpdateOneWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.AccountReceivableCreateWithoutSalesInput, Prisma.AccountReceivableUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.AccountReceivableCreateOrConnectWithoutSalesInput
-  upsert?: Prisma.AccountReceivableUpsertWithoutSalesInput
-  disconnect?: Prisma.AccountReceivableWhereInput | boolean
-  delete?: Prisma.AccountReceivableWhereInput | boolean
-  connect?: Prisma.AccountReceivableWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AccountReceivableUpdateToOneWithWhereWithoutSalesInput, Prisma.AccountReceivableUpdateWithoutSalesInput>, Prisma.AccountReceivableUncheckedUpdateWithoutSalesInput>
-}
-
-export type AccountReceivableUncheckedUpdateOneWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.AccountReceivableCreateWithoutSalesInput, Prisma.AccountReceivableUncheckedCreateWithoutSalesInput>
-  connectOrCreate?: Prisma.AccountReceivableCreateOrConnectWithoutSalesInput
-  upsert?: Prisma.AccountReceivableUpsertWithoutSalesInput
-  disconnect?: Prisma.AccountReceivableWhereInput | boolean
-  delete?: Prisma.AccountReceivableWhereInput | boolean
-  connect?: Prisma.AccountReceivableWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AccountReceivableUpdateToOneWithWhereWithoutSalesInput, Prisma.AccountReceivableUpdateWithoutSalesInput>, Prisma.AccountReceivableUncheckedUpdateWithoutSalesInput>
 }
 
 export type EnumARStatusFieldUpdateOperationsInput = {
@@ -700,102 +639,6 @@ export type AccountReceivableUpdateOneRequiredWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AccountReceivableUpdateToOneWithWhereWithoutPaymentsInput, Prisma.AccountReceivableUpdateWithoutPaymentsInput>, Prisma.AccountReceivableUncheckedUpdateWithoutPaymentsInput>
 }
 
-export type AccountReceivableCreateWithoutSalesInput = {
-  id?: string
-  invoice_no: string
-  customer_name: string
-  customer_email?: string | null
-  customer_phone?: string | null
-  total_amount: number
-  paid_amount?: number
-  balance: number
-  invoice_date?: Date | string
-  due_date: Date | string
-  paid_date?: Date | string | null
-  status?: $Enums.ARStatus
-  aging_days?: number
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  payments?: Prisma.ARPaymentCreateNestedManyWithoutAccount_receivableInput
-}
-
-export type AccountReceivableUncheckedCreateWithoutSalesInput = {
-  id?: string
-  invoice_no: string
-  customer_name: string
-  customer_email?: string | null
-  customer_phone?: string | null
-  total_amount: number
-  paid_amount?: number
-  balance: number
-  invoice_date?: Date | string
-  due_date: Date | string
-  paid_date?: Date | string | null
-  status?: $Enums.ARStatus
-  aging_days?: number
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  payments?: Prisma.ARPaymentUncheckedCreateNestedManyWithoutAccount_receivableInput
-}
-
-export type AccountReceivableCreateOrConnectWithoutSalesInput = {
-  where: Prisma.AccountReceivableWhereUniqueInput
-  create: Prisma.XOR<Prisma.AccountReceivableCreateWithoutSalesInput, Prisma.AccountReceivableUncheckedCreateWithoutSalesInput>
-}
-
-export type AccountReceivableUpsertWithoutSalesInput = {
-  update: Prisma.XOR<Prisma.AccountReceivableUpdateWithoutSalesInput, Prisma.AccountReceivableUncheckedUpdateWithoutSalesInput>
-  create: Prisma.XOR<Prisma.AccountReceivableCreateWithoutSalesInput, Prisma.AccountReceivableUncheckedCreateWithoutSalesInput>
-  where?: Prisma.AccountReceivableWhereInput
-}
-
-export type AccountReceivableUpdateToOneWithWhereWithoutSalesInput = {
-  where?: Prisma.AccountReceivableWhereInput
-  data: Prisma.XOR<Prisma.AccountReceivableUpdateWithoutSalesInput, Prisma.AccountReceivableUncheckedUpdateWithoutSalesInput>
-}
-
-export type AccountReceivableUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  invoice_no?: Prisma.StringFieldUpdateOperationsInput | string
-  customer_name?: Prisma.StringFieldUpdateOperationsInput | string
-  customer_email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customer_phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  total_amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  paid_amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  balance?: Prisma.FloatFieldUpdateOperationsInput | number
-  invoice_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  due_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  paid_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  status?: Prisma.EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
-  aging_days?: Prisma.IntFieldUpdateOperationsInput | number
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  payments?: Prisma.ARPaymentUpdateManyWithoutAccount_receivableNestedInput
-}
-
-export type AccountReceivableUncheckedUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  invoice_no?: Prisma.StringFieldUpdateOperationsInput | string
-  customer_name?: Prisma.StringFieldUpdateOperationsInput | string
-  customer_email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customer_phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  total_amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  paid_amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  balance?: Prisma.FloatFieldUpdateOperationsInput | number
-  invoice_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  due_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  paid_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  status?: Prisma.EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
-  aging_days?: Prisma.IntFieldUpdateOperationsInput | number
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  payments?: Prisma.ARPaymentUncheckedUpdateManyWithoutAccount_receivableNestedInput
-}
-
 export type AccountReceivableCreateWithoutPaymentsInput = {
   id?: string
   invoice_no: string
@@ -813,7 +656,6 @@ export type AccountReceivableCreateWithoutPaymentsInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesCreateNestedOneWithoutAccountReceivableInput
 }
 
 export type AccountReceivableUncheckedCreateWithoutPaymentsInput = {
@@ -830,7 +672,6 @@ export type AccountReceivableUncheckedCreateWithoutPaymentsInput = {
   paid_date?: Date | string | null
   status?: $Enums.ARStatus
   aging_days?: number
-  salesId?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -869,7 +710,6 @@ export type AccountReceivableUpdateWithoutPaymentsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneWithoutAccountReceivableNestedInput
 }
 
 export type AccountReceivableUncheckedUpdateWithoutPaymentsInput = {
@@ -886,7 +726,6 @@ export type AccountReceivableUncheckedUpdateWithoutPaymentsInput = {
   paid_date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
   aging_days?: Prisma.IntFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -937,11 +776,9 @@ export type AccountReceivableSelect<ExtArgs extends runtime.Types.Extensions.Int
   paid_date?: boolean
   status?: boolean
   aging_days?: boolean
-  salesId?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.AccountReceivable$salesArgs<ExtArgs>
   payments?: boolean | Prisma.AccountReceivable$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.AccountReceivableCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["accountReceivable"]>
@@ -960,11 +797,9 @@ export type AccountReceivableSelectCreateManyAndReturn<ExtArgs extends runtime.T
   paid_date?: boolean
   status?: boolean
   aging_days?: boolean
-  salesId?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.AccountReceivable$salesArgs<ExtArgs>
 }, ExtArgs["result"]["accountReceivable"]>
 
 export type AccountReceivableSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -981,11 +816,9 @@ export type AccountReceivableSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   paid_date?: boolean
   status?: boolean
   aging_days?: boolean
-  salesId?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.AccountReceivable$salesArgs<ExtArgs>
 }, ExtArgs["result"]["accountReceivable"]>
 
 export type AccountReceivableSelectScalar = {
@@ -1002,29 +835,22 @@ export type AccountReceivableSelectScalar = {
   paid_date?: boolean
   status?: boolean
   aging_days?: boolean
-  salesId?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AccountReceivableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "invoice_no" | "customer_name" | "customer_email" | "customer_phone" | "total_amount" | "paid_amount" | "balance" | "invoice_date" | "due_date" | "paid_date" | "status" | "aging_days" | "salesId" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountReceivable"]>
+export type AccountReceivableOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "invoice_no" | "customer_name" | "customer_email" | "customer_phone" | "total_amount" | "paid_amount" | "balance" | "invoice_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountReceivable"]>
 export type AccountReceivableInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.AccountReceivable$salesArgs<ExtArgs>
   payments?: boolean | Prisma.AccountReceivable$paymentsArgs<ExtArgs>
   _count?: boolean | Prisma.AccountReceivableCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type AccountReceivableIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.AccountReceivable$salesArgs<ExtArgs>
-}
-export type AccountReceivableIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.AccountReceivable$salesArgs<ExtArgs>
-}
+export type AccountReceivableIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type AccountReceivableIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $AccountReceivablePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AccountReceivable"
   objects: {
-    sales: Prisma.$SalesPayload<ExtArgs> | null
     payments: Prisma.$ARPaymentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1041,7 +867,6 @@ export type $AccountReceivablePayload<ExtArgs extends runtime.Types.Extensions.I
     paid_date: Date | null
     status: $Enums.ARStatus
     aging_days: number
-    salesId: string | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -1439,7 +1264,6 @@ readonly fields: AccountReceivableFieldRefs;
  */
 export interface Prisma__AccountReceivableClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  sales<T extends Prisma.AccountReceivable$salesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AccountReceivable$salesArgs<ExtArgs>>): Prisma.Prisma__SalesClient<runtime.Types.Result.GetResult<Prisma.$SalesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payments<T extends Prisma.AccountReceivable$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AccountReceivable$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ARPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1483,7 +1307,6 @@ export interface AccountReceivableFieldRefs {
   readonly paid_date: Prisma.FieldRef<"AccountReceivable", 'DateTime'>
   readonly status: Prisma.FieldRef<"AccountReceivable", 'ARStatus'>
   readonly aging_days: Prisma.FieldRef<"AccountReceivable", 'Int'>
-  readonly salesId: Prisma.FieldRef<"AccountReceivable", 'String'>
   readonly notes: Prisma.FieldRef<"AccountReceivable", 'String'>
   readonly createdAt: Prisma.FieldRef<"AccountReceivable", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AccountReceivable", 'DateTime'>
@@ -1736,10 +1559,6 @@ export type AccountReceivableCreateManyAndReturnArgs<ExtArgs extends runtime.Typ
    */
   data: Prisma.AccountReceivableCreateManyInput | Prisma.AccountReceivableCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AccountReceivableIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1810,10 +1629,6 @@ export type AccountReceivableUpdateManyAndReturnArgs<ExtArgs extends runtime.Typ
    * Limit how many AccountReceivables to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AccountReceivableIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1880,25 +1695,6 @@ export type AccountReceivableDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many AccountReceivables to delete.
    */
   limit?: number
-}
-
-/**
- * AccountReceivable.sales
- */
-export type AccountReceivable$salesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Sales
-   */
-  select?: Prisma.SalesSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Sales
-   */
-  omit?: Prisma.SalesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SalesInclude<ExtArgs> | null
-  where?: Prisma.SalesWhereInput
 }
 
 /**

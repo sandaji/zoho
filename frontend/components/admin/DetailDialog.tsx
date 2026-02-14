@@ -47,7 +47,7 @@ export function DetailDialog({
         <div className="space-y-4 mt-4">
           {fields.map((field, index) => {
             const value = data[field.key];
-            
+
             return (
               <div key={field.key}>
                 {index > 0 && <Separator className="my-4" />}
@@ -92,10 +92,8 @@ export function renderStatusBadge(status: string) {
   );
 }
 
-// Helper function to format currency
-export function formatCurrency(amount: number) {
-  return `KES ${amount.toLocaleString()}`;
-}
+// Re-export currency formatter from utils for backward compatibility
+export { formatCurrency } from "@/lib/utils";
 
 // Helper function to format date
 export function formatDate(dateString: string) {

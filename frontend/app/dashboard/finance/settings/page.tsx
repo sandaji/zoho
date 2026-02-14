@@ -2,20 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { 
-  Calendar, 
-  ChevronRight, 
   Lock, 
   Unlock, 
   Plus, 
   CheckCircle2, 
   AlertCircle,
-  RefreshCw,
-  Search
+  RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { FiscalPeriod } from "@/types/admin";

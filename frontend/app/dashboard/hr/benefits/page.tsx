@@ -7,7 +7,6 @@ import {
   ShieldCheck, 
   Stethoscope, 
   PiggyBank, 
-  Plus, 
   CheckCircle2,
   ExternalLink,
   ChevronRight
@@ -18,8 +17,16 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 export default function BenefitsPage() {
-  const [benefits, setBenefits] = useState([]);
-  const [enrollments, setEnrollments] = useState([]);
+  const [benefits, setBenefits] = useState<Array<{
+    id: string;
+    name: string;
+    type: string;
+    provider: string;
+    description: string;
+  }>>([]);
+  const [enrollments, setEnrollments] = useState<Array<{
+    benefitId: string;
+  }>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

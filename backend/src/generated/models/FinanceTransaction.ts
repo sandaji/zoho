@@ -40,7 +40,6 @@ export type FinanceTransactionMinAggregateOutputType = {
   reference_no: string | null
   description: string | null
   amount: number | null
-  salesId: string | null
   payrollId: string | null
   payment_method: string | null
   reference_doc: string | null
@@ -55,7 +54,6 @@ export type FinanceTransactionMaxAggregateOutputType = {
   reference_no: string | null
   description: string | null
   amount: number | null
-  salesId: string | null
   payrollId: string | null
   payment_method: string | null
   reference_doc: string | null
@@ -70,7 +68,6 @@ export type FinanceTransactionCountAggregateOutputType = {
   reference_no: number
   description: number
   amount: number
-  salesId: number
   payrollId: number
   payment_method: number
   reference_doc: number
@@ -95,7 +92,6 @@ export type FinanceTransactionMinAggregateInputType = {
   reference_no?: true
   description?: true
   amount?: true
-  salesId?: true
   payrollId?: true
   payment_method?: true
   reference_doc?: true
@@ -110,7 +106,6 @@ export type FinanceTransactionMaxAggregateInputType = {
   reference_no?: true
   description?: true
   amount?: true
-  salesId?: true
   payrollId?: true
   payment_method?: true
   reference_doc?: true
@@ -125,7 +120,6 @@ export type FinanceTransactionCountAggregateInputType = {
   reference_no?: true
   description?: true
   amount?: true
-  salesId?: true
   payrollId?: true
   payment_method?: true
   reference_doc?: true
@@ -227,7 +221,6 @@ export type FinanceTransactionGroupByOutputType = {
   reference_no: string
   description: string
   amount: number
-  salesId: string | null
   payrollId: string | null
   payment_method: string | null
   reference_doc: string | null
@@ -265,14 +258,12 @@ export type FinanceTransactionWhereInput = {
   reference_no?: Prisma.StringFilter<"FinanceTransaction"> | string
   description?: Prisma.StringFilter<"FinanceTransaction"> | string
   amount?: Prisma.FloatFilter<"FinanceTransaction"> | number
-  salesId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   payrollId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   payment_method?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   reference_doc?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   notes?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
-  sales?: Prisma.XOR<Prisma.SalesNullableScalarRelationFilter, Prisma.SalesWhereInput> | null
   payroll?: Prisma.XOR<Prisma.PayrollNullableScalarRelationFilter, Prisma.PayrollWhereInput> | null
 }
 
@@ -282,14 +273,12 @@ export type FinanceTransactionOrderByWithRelationInput = {
   reference_no?: Prisma.SortOrder
   description?: Prisma.SortOrder
   amount?: Prisma.SortOrder
-  salesId?: Prisma.SortOrderInput | Prisma.SortOrder
   payrollId?: Prisma.SortOrderInput | Prisma.SortOrder
   payment_method?: Prisma.SortOrderInput | Prisma.SortOrder
   reference_doc?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  sales?: Prisma.SalesOrderByWithRelationInput
   payroll?: Prisma.PayrollOrderByWithRelationInput
 }
 
@@ -302,14 +291,12 @@ export type FinanceTransactionWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumTransactionTypeFilter<"FinanceTransaction"> | $Enums.TransactionType
   description?: Prisma.StringFilter<"FinanceTransaction"> | string
   amount?: Prisma.FloatFilter<"FinanceTransaction"> | number
-  salesId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   payrollId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   payment_method?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   reference_doc?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   notes?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
-  sales?: Prisma.XOR<Prisma.SalesNullableScalarRelationFilter, Prisma.SalesWhereInput> | null
   payroll?: Prisma.XOR<Prisma.PayrollNullableScalarRelationFilter, Prisma.PayrollWhereInput> | null
 }, "id" | "reference_no">
 
@@ -319,7 +306,6 @@ export type FinanceTransactionOrderByWithAggregationInput = {
   reference_no?: Prisma.SortOrder
   description?: Prisma.SortOrder
   amount?: Prisma.SortOrder
-  salesId?: Prisma.SortOrderInput | Prisma.SortOrder
   payrollId?: Prisma.SortOrderInput | Prisma.SortOrder
   payment_method?: Prisma.SortOrderInput | Prisma.SortOrder
   reference_doc?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -342,7 +328,6 @@ export type FinanceTransactionScalarWhereWithAggregatesInput = {
   reference_no?: Prisma.StringWithAggregatesFilter<"FinanceTransaction"> | string
   description?: Prisma.StringWithAggregatesFilter<"FinanceTransaction"> | string
   amount?: Prisma.FloatWithAggregatesFilter<"FinanceTransaction"> | number
-  salesId?: Prisma.StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
   payrollId?: Prisma.StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
   payment_method?: Prisma.StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
   reference_doc?: Prisma.StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
@@ -362,7 +347,6 @@ export type FinanceTransactionCreateInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesCreateNestedOneWithoutFinance_transactionsInput
   payroll?: Prisma.PayrollCreateNestedOneWithoutTransactionsInput
 }
 
@@ -372,7 +356,6 @@ export type FinanceTransactionUncheckedCreateInput = {
   reference_no: string
   description: string
   amount: number
-  salesId?: string | null
   payrollId?: string | null
   payment_method?: string | null
   reference_doc?: string | null
@@ -392,7 +375,6 @@ export type FinanceTransactionUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneWithoutFinance_transactionsNestedInput
   payroll?: Prisma.PayrollUpdateOneWithoutTransactionsNestedInput
 }
 
@@ -402,7 +384,6 @@ export type FinanceTransactionUncheckedUpdateInput = {
   reference_no?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payrollId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -417,7 +398,6 @@ export type FinanceTransactionCreateManyInput = {
   reference_no: string
   description: string
   amount: number
-  salesId?: string | null
   payrollId?: string | null
   payment_method?: string | null
   reference_doc?: string | null
@@ -445,7 +425,6 @@ export type FinanceTransactionUncheckedUpdateManyInput = {
   reference_no?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payrollId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -454,23 +433,12 @@ export type FinanceTransactionUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type FinanceTransactionListRelationFilter = {
-  every?: Prisma.FinanceTransactionWhereInput
-  some?: Prisma.FinanceTransactionWhereInput
-  none?: Prisma.FinanceTransactionWhereInput
-}
-
-export type FinanceTransactionOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
-}
-
 export type FinanceTransactionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   type?: Prisma.SortOrder
   reference_no?: Prisma.SortOrder
   description?: Prisma.SortOrder
   amount?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   payrollId?: Prisma.SortOrder
   payment_method?: Prisma.SortOrder
   reference_doc?: Prisma.SortOrder
@@ -489,7 +457,6 @@ export type FinanceTransactionMaxOrderByAggregateInput = {
   reference_no?: Prisma.SortOrder
   description?: Prisma.SortOrder
   amount?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   payrollId?: Prisma.SortOrder
   payment_method?: Prisma.SortOrder
   reference_doc?: Prisma.SortOrder
@@ -504,7 +471,6 @@ export type FinanceTransactionMinOrderByAggregateInput = {
   reference_no?: Prisma.SortOrder
   description?: Prisma.SortOrder
   amount?: Prisma.SortOrder
-  salesId?: Prisma.SortOrder
   payrollId?: Prisma.SortOrder
   payment_method?: Prisma.SortOrder
   reference_doc?: Prisma.SortOrder
@@ -517,46 +483,14 @@ export type FinanceTransactionSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
 }
 
-export type FinanceTransactionCreateNestedManyWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.FinanceTransactionCreateWithoutSalesInput, Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput> | Prisma.FinanceTransactionCreateWithoutSalesInput[] | Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput[]
-  connectOrCreate?: Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput | Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput[]
-  createMany?: Prisma.FinanceTransactionCreateManySalesInputEnvelope
-  connect?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
+export type FinanceTransactionListRelationFilter = {
+  every?: Prisma.FinanceTransactionWhereInput
+  some?: Prisma.FinanceTransactionWhereInput
+  none?: Prisma.FinanceTransactionWhereInput
 }
 
-export type FinanceTransactionUncheckedCreateNestedManyWithoutSalesInput = {
-  create?: Prisma.XOR<Prisma.FinanceTransactionCreateWithoutSalesInput, Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput> | Prisma.FinanceTransactionCreateWithoutSalesInput[] | Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput[]
-  connectOrCreate?: Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput | Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput[]
-  createMany?: Prisma.FinanceTransactionCreateManySalesInputEnvelope
-  connect?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-}
-
-export type FinanceTransactionUpdateManyWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.FinanceTransactionCreateWithoutSalesInput, Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput> | Prisma.FinanceTransactionCreateWithoutSalesInput[] | Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput[]
-  connectOrCreate?: Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput | Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput[]
-  upsert?: Prisma.FinanceTransactionUpsertWithWhereUniqueWithoutSalesInput | Prisma.FinanceTransactionUpsertWithWhereUniqueWithoutSalesInput[]
-  createMany?: Prisma.FinanceTransactionCreateManySalesInputEnvelope
-  set?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  disconnect?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  delete?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  connect?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  update?: Prisma.FinanceTransactionUpdateWithWhereUniqueWithoutSalesInput | Prisma.FinanceTransactionUpdateWithWhereUniqueWithoutSalesInput[]
-  updateMany?: Prisma.FinanceTransactionUpdateManyWithWhereWithoutSalesInput | Prisma.FinanceTransactionUpdateManyWithWhereWithoutSalesInput[]
-  deleteMany?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
-}
-
-export type FinanceTransactionUncheckedUpdateManyWithoutSalesNestedInput = {
-  create?: Prisma.XOR<Prisma.FinanceTransactionCreateWithoutSalesInput, Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput> | Prisma.FinanceTransactionCreateWithoutSalesInput[] | Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput[]
-  connectOrCreate?: Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput | Prisma.FinanceTransactionCreateOrConnectWithoutSalesInput[]
-  upsert?: Prisma.FinanceTransactionUpsertWithWhereUniqueWithoutSalesInput | Prisma.FinanceTransactionUpsertWithWhereUniqueWithoutSalesInput[]
-  createMany?: Prisma.FinanceTransactionCreateManySalesInputEnvelope
-  set?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  disconnect?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  delete?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  connect?: Prisma.FinanceTransactionWhereUniqueInput | Prisma.FinanceTransactionWhereUniqueInput[]
-  update?: Prisma.FinanceTransactionUpdateWithWhereUniqueWithoutSalesInput | Prisma.FinanceTransactionUpdateWithWhereUniqueWithoutSalesInput[]
-  updateMany?: Prisma.FinanceTransactionUpdateManyWithWhereWithoutSalesInput | Prisma.FinanceTransactionUpdateManyWithWhereWithoutSalesInput[]
-  deleteMany?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
+export type FinanceTransactionOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type EnumTransactionTypeFieldUpdateOperationsInput = {
@@ -605,78 +539,6 @@ export type FinanceTransactionUncheckedUpdateManyWithoutPayrollNestedInput = {
   deleteMany?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
 }
 
-export type FinanceTransactionCreateWithoutSalesInput = {
-  id?: string
-  type: $Enums.TransactionType
-  reference_no: string
-  description: string
-  amount: number
-  payment_method?: string | null
-  reference_doc?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  payroll?: Prisma.PayrollCreateNestedOneWithoutTransactionsInput
-}
-
-export type FinanceTransactionUncheckedCreateWithoutSalesInput = {
-  id?: string
-  type: $Enums.TransactionType
-  reference_no: string
-  description: string
-  amount: number
-  payrollId?: string | null
-  payment_method?: string | null
-  reference_doc?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type FinanceTransactionCreateOrConnectWithoutSalesInput = {
-  where: Prisma.FinanceTransactionWhereUniqueInput
-  create: Prisma.XOR<Prisma.FinanceTransactionCreateWithoutSalesInput, Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput>
-}
-
-export type FinanceTransactionCreateManySalesInputEnvelope = {
-  data: Prisma.FinanceTransactionCreateManySalesInput | Prisma.FinanceTransactionCreateManySalesInput[]
-  skipDuplicates?: boolean
-}
-
-export type FinanceTransactionUpsertWithWhereUniqueWithoutSalesInput = {
-  where: Prisma.FinanceTransactionWhereUniqueInput
-  update: Prisma.XOR<Prisma.FinanceTransactionUpdateWithoutSalesInput, Prisma.FinanceTransactionUncheckedUpdateWithoutSalesInput>
-  create: Prisma.XOR<Prisma.FinanceTransactionCreateWithoutSalesInput, Prisma.FinanceTransactionUncheckedCreateWithoutSalesInput>
-}
-
-export type FinanceTransactionUpdateWithWhereUniqueWithoutSalesInput = {
-  where: Prisma.FinanceTransactionWhereUniqueInput
-  data: Prisma.XOR<Prisma.FinanceTransactionUpdateWithoutSalesInput, Prisma.FinanceTransactionUncheckedUpdateWithoutSalesInput>
-}
-
-export type FinanceTransactionUpdateManyWithWhereWithoutSalesInput = {
-  where: Prisma.FinanceTransactionScalarWhereInput
-  data: Prisma.XOR<Prisma.FinanceTransactionUpdateManyMutationInput, Prisma.FinanceTransactionUncheckedUpdateManyWithoutSalesInput>
-}
-
-export type FinanceTransactionScalarWhereInput = {
-  AND?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
-  OR?: Prisma.FinanceTransactionScalarWhereInput[]
-  NOT?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
-  id?: Prisma.StringFilter<"FinanceTransaction"> | string
-  type?: Prisma.EnumTransactionTypeFilter<"FinanceTransaction"> | $Enums.TransactionType
-  reference_no?: Prisma.StringFilter<"FinanceTransaction"> | string
-  description?: Prisma.StringFilter<"FinanceTransaction"> | string
-  amount?: Prisma.FloatFilter<"FinanceTransaction"> | number
-  salesId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
-  payrollId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
-  payment_method?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
-  reference_doc?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
-  notes?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
-  createdAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
-}
-
 export type FinanceTransactionCreateWithoutPayrollInput = {
   id?: string
   type: $Enums.TransactionType
@@ -688,7 +550,6 @@ export type FinanceTransactionCreateWithoutPayrollInput = {
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  sales?: Prisma.SalesCreateNestedOneWithoutFinance_transactionsInput
 }
 
 export type FinanceTransactionUncheckedCreateWithoutPayrollInput = {
@@ -697,7 +558,6 @@ export type FinanceTransactionUncheckedCreateWithoutPayrollInput = {
   reference_no: string
   description: string
   amount: number
-  salesId?: string | null
   payment_method?: string | null
   reference_doc?: string | null
   notes?: string | null
@@ -731,60 +591,21 @@ export type FinanceTransactionUpdateManyWithWhereWithoutPayrollInput = {
   data: Prisma.XOR<Prisma.FinanceTransactionUpdateManyMutationInput, Prisma.FinanceTransactionUncheckedUpdateManyWithoutPayrollInput>
 }
 
-export type FinanceTransactionCreateManySalesInput = {
-  id?: string
-  type: $Enums.TransactionType
-  reference_no: string
-  description: string
-  amount: number
-  payrollId?: string | null
-  payment_method?: string | null
-  reference_doc?: string | null
-  notes?: string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-}
-
-export type FinanceTransactionUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
-  reference_no?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  payroll?: Prisma.PayrollUpdateOneWithoutTransactionsNestedInput
-}
-
-export type FinanceTransactionUncheckedUpdateWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
-  reference_no?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  payrollId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type FinanceTransactionUncheckedUpdateManyWithoutSalesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
-  reference_no?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  payrollId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type FinanceTransactionScalarWhereInput = {
+  AND?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
+  OR?: Prisma.FinanceTransactionScalarWhereInput[]
+  NOT?: Prisma.FinanceTransactionScalarWhereInput | Prisma.FinanceTransactionScalarWhereInput[]
+  id?: Prisma.StringFilter<"FinanceTransaction"> | string
+  type?: Prisma.EnumTransactionTypeFilter<"FinanceTransaction"> | $Enums.TransactionType
+  reference_no?: Prisma.StringFilter<"FinanceTransaction"> | string
+  description?: Prisma.StringFilter<"FinanceTransaction"> | string
+  amount?: Prisma.FloatFilter<"FinanceTransaction"> | number
+  payrollId?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
+  payment_method?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
+  reference_doc?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
+  notes?: Prisma.StringNullableFilter<"FinanceTransaction"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"FinanceTransaction"> | Date | string
 }
 
 export type FinanceTransactionCreateManyPayrollInput = {
@@ -793,7 +614,6 @@ export type FinanceTransactionCreateManyPayrollInput = {
   reference_no: string
   description: string
   amount: number
-  salesId?: string | null
   payment_method?: string | null
   reference_doc?: string | null
   notes?: string | null
@@ -812,7 +632,6 @@ export type FinanceTransactionUpdateWithoutPayrollInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  sales?: Prisma.SalesUpdateOneWithoutFinance_transactionsNestedInput
 }
 
 export type FinanceTransactionUncheckedUpdateWithoutPayrollInput = {
@@ -821,7 +640,6 @@ export type FinanceTransactionUncheckedUpdateWithoutPayrollInput = {
   reference_no?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -835,7 +653,6 @@ export type FinanceTransactionUncheckedUpdateManyWithoutPayrollInput = {
   reference_no?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.FloatFieldUpdateOperationsInput | number
-  salesId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   payment_method?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference_doc?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -851,14 +668,12 @@ export type FinanceTransactionSelect<ExtArgs extends runtime.Types.Extensions.In
   reference_no?: boolean
   description?: boolean
   amount?: boolean
-  salesId?: boolean
   payrollId?: boolean
   payment_method?: boolean
   reference_doc?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.FinanceTransaction$salesArgs<ExtArgs>
   payroll?: boolean | Prisma.FinanceTransaction$payrollArgs<ExtArgs>
 }, ExtArgs["result"]["financeTransaction"]>
 
@@ -868,14 +683,12 @@ export type FinanceTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.
   reference_no?: boolean
   description?: boolean
   amount?: boolean
-  salesId?: boolean
   payrollId?: boolean
   payment_method?: boolean
   reference_doc?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.FinanceTransaction$salesArgs<ExtArgs>
   payroll?: boolean | Prisma.FinanceTransaction$payrollArgs<ExtArgs>
 }, ExtArgs["result"]["financeTransaction"]>
 
@@ -885,14 +698,12 @@ export type FinanceTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.
   reference_no?: boolean
   description?: boolean
   amount?: boolean
-  salesId?: boolean
   payrollId?: boolean
   payment_method?: boolean
   reference_doc?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  sales?: boolean | Prisma.FinanceTransaction$salesArgs<ExtArgs>
   payroll?: boolean | Prisma.FinanceTransaction$payrollArgs<ExtArgs>
 }, ExtArgs["result"]["financeTransaction"]>
 
@@ -902,7 +713,6 @@ export type FinanceTransactionSelectScalar = {
   reference_no?: boolean
   description?: boolean
   amount?: boolean
-  salesId?: boolean
   payrollId?: boolean
   payment_method?: boolean
   reference_doc?: boolean
@@ -911,24 +721,20 @@ export type FinanceTransactionSelectScalar = {
   updatedAt?: boolean
 }
 
-export type FinanceTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "reference_no" | "description" | "amount" | "salesId" | "payrollId" | "payment_method" | "reference_doc" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["financeTransaction"]>
+export type FinanceTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "reference_no" | "description" | "amount" | "payrollId" | "payment_method" | "reference_doc" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["financeTransaction"]>
 export type FinanceTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.FinanceTransaction$salesArgs<ExtArgs>
   payroll?: boolean | Prisma.FinanceTransaction$payrollArgs<ExtArgs>
 }
 export type FinanceTransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.FinanceTransaction$salesArgs<ExtArgs>
   payroll?: boolean | Prisma.FinanceTransaction$payrollArgs<ExtArgs>
 }
 export type FinanceTransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  sales?: boolean | Prisma.FinanceTransaction$salesArgs<ExtArgs>
   payroll?: boolean | Prisma.FinanceTransaction$payrollArgs<ExtArgs>
 }
 
 export type $FinanceTransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FinanceTransaction"
   objects: {
-    sales: Prisma.$SalesPayload<ExtArgs> | null
     payroll: Prisma.$PayrollPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -937,7 +743,6 @@ export type $FinanceTransactionPayload<ExtArgs extends runtime.Types.Extensions.
     reference_no: string
     description: string
     amount: number
-    salesId: string | null
     payrollId: string | null
     payment_method: string | null
     reference_doc: string | null
@@ -1338,7 +1143,6 @@ readonly fields: FinanceTransactionFieldRefs;
  */
 export interface Prisma__FinanceTransactionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  sales<T extends Prisma.FinanceTransaction$salesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinanceTransaction$salesArgs<ExtArgs>>): Prisma.Prisma__SalesClient<runtime.Types.Result.GetResult<Prisma.$SalesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   payroll<T extends Prisma.FinanceTransaction$payrollArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FinanceTransaction$payrollArgs<ExtArgs>>): Prisma.Prisma__PayrollClient<runtime.Types.Result.GetResult<Prisma.$PayrollPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1374,7 +1178,6 @@ export interface FinanceTransactionFieldRefs {
   readonly reference_no: Prisma.FieldRef<"FinanceTransaction", 'String'>
   readonly description: Prisma.FieldRef<"FinanceTransaction", 'String'>
   readonly amount: Prisma.FieldRef<"FinanceTransaction", 'Float'>
-  readonly salesId: Prisma.FieldRef<"FinanceTransaction", 'String'>
   readonly payrollId: Prisma.FieldRef<"FinanceTransaction", 'String'>
   readonly payment_method: Prisma.FieldRef<"FinanceTransaction", 'String'>
   readonly reference_doc: Prisma.FieldRef<"FinanceTransaction", 'String'>
@@ -1774,25 +1577,6 @@ export type FinanceTransactionDeleteManyArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many FinanceTransactions to delete.
    */
   limit?: number
-}
-
-/**
- * FinanceTransaction.sales
- */
-export type FinanceTransaction$salesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Sales
-   */
-  select?: Prisma.SalesSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Sales
-   */
-  omit?: Prisma.SalesOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SalesInclude<ExtArgs> | null
-  where?: Prisma.SalesWhereInput
 }
 
 /**

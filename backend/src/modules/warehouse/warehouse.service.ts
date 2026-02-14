@@ -5,7 +5,7 @@
 
 import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { MovementType, TransferStatus } from "../../generated/client";
+import { MovementType, TransferStatus } from "../../generated";
 import type {
   CreateTransferInput,
   AdjustStockInput,

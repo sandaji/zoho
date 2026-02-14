@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, TrendingUp, TrendingDown, Scale, AlertCircle } from 'lucide-react';
 import { apiClient } from '@/lib/api-client';
+import { formatCurrency } from "@/lib/utils";
 
 interface SummaryData {
   cashBalance: number;
@@ -41,15 +42,6 @@ const FinancialSummary = () => {
 
     fetchSummaryData();
   }, []);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   if (loading) {
     return (

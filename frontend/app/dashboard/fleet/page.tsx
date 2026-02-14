@@ -5,9 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toaster, toast } from "sonner";
-import { Timeline, TimelineEvent } from "@/app/components/Timeline";
+import { Timeline, TimelineEvent } from "@/components/ui/timeline";
 import { MdLocalShipping, MdDeliveryDining, MdCheckCircle, MdError } from "react-icons/md";
-import { DeliveryStatus, DeliveryBadge } from "@/app/components/DeliveryBadge";
+import { Badge } from "@/components/ui/badge";
+
+// Delivery status type and styling
+type DeliveryStatus =
+  | "pending"
+  | "assigned"
+  | "in_transit"
+  | "delivered"
+  | "failed"
+  | "rescheduled";
 
 // Types
 interface Truck {
@@ -163,13 +172,13 @@ export default function FleetDashboard() {
       prev.map((d) =>
         d.id === deliveryId
           ? {
-              ...d,
-              status: newStatus,
-              picked_up_at:
-                newStatus === "in_transit" ? new Date().toISOString() : d.picked_up_at,
-              delivered_at:
-                newStatus === "delivered" ? new Date().toISOString() : d.delivered_at,
-            }
+            ...d,
+            status: newStatus,
+            picked_up_at:
+              newStatus === "in_transit" ? new Date().toISOString() : d.picked_up_at,
+            delivered_at:
+              newStatus === "delivered" ? new Date().toISOString() : d.delivered_at,
+          }
           : d
       )
     );
@@ -236,7 +245,7 @@ export default function FleetDashboard() {
       events.push({
         id: "failed",
         status: "failed",
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         notes: "Delivery marked as failed",
       });
     }
@@ -284,29 +293,29 @@ export default function FleetDashboard() {
             </CardContent>
           </Card>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-slate-600">Completed Today</p>
-                    <p className="text-3xl font-bold text-slate-900">{completedDeliveries.length}</p>
-                  </div>
-                  <MdCheckCircle className="text-4xl text-green-500" />
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600">Completed Today</p>
+                  <p className="text-3xl font-bold text-slate-900">{completedDeliveries.length}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <MdCheckCircle className="text-4xl text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-slate-600">Failed</p>
-                    <p className="text-3xl font-bold text-slate-900">{failedDeliveries.length}</p>
-                  </div>
-                  <MdError className="text-4xl text-red-500" />
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-600">Failed</p>
+                  <p className="text-3xl font-bold text-slate-900">{failedDeliveries.length}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <MdError className="text-4xl text-red-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-3 gap-8">
@@ -352,9 +361,8 @@ export default function FleetDashboard() {
                             <p className="text-sm text-slate-600">Utilization</p>
                             <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
                               <div
-                                className={`h-full ${
-                                  truck.utilizationRate > 70 ? "bg-red-500" : "bg-green-500"
-                                }`}
+                                className={`h-full ${truck.utilizationRate > 70 ? "bg-red-500" : "bg-green-500"
+                                  }`}
                                 style={{ width: `${truck.utilizationRate}%` }}
                               />
                             </div>
@@ -363,15 +371,21 @@ export default function FleetDashboard() {
                         </div>
 
                         <div className="ml-4">
-                          <DeliveryBadge
-                            status={
+                          <Badge
+                            className={
                               truck.isActive
                                 ? truck.deliveryCount > 0
-                                  ? "in_transit"
-                                  : "pending"
-                                : "failed"
+                                  ? "bg-amber-500 text-white"
+                                  : "bg-slate-500 text-white"
+                                : "bg-rose-600 text-white"
                             }
-                          />
+                          >
+                            {truck.isActive
+                              ? truck.deliveryCount > 0
+                                ? "In Transit"
+                                : "Pending"
+                              : "Failed"}
+                          </Badge>
                           <p className="text-sm text-slate-600 mt-2">{truck.deliveryCount} active</p>
                         </div>
                       </div>
@@ -412,9 +426,8 @@ export default function FleetDashboard() {
                   {filteredDeliveries.map((delivery) => (
                     <Card
                       key={delivery.id}
-                      className={`cursor-pointer transition-all ${
-                        selectedId === delivery.id ? "ring-2 ring-blue-500 bg-blue-50" : "hover:shadow-md"
-                      }`}
+                      className={`cursor-pointer transition-all ${selectedId === delivery.id ? "ring-2 ring-blue-500 bg-blue-50" : "hover:shadow-md"
+                        }`}
                       onClick={() => setSelectedId(delivery.id)}
                     >
                       <CardContent className="pt-6">
@@ -428,7 +441,19 @@ export default function FleetDashboard() {
                           </div>
 
                           <div className="text-right space-y-2">
-                            <DeliveryBadge status={delivery.status} />
+                            <Badge
+                              className={
+                                delivery.status === "delivered"
+                                  ? "bg-emerald-600 text-white"
+                                  : delivery.status === "failed"
+                                    ? "bg-rose-600 text-white"
+                                    : delivery.status === "in_transit"
+                                      ? "bg-amber-500 text-white"
+                                      : "bg-blue-600 text-white"
+                              }
+                            >
+                              {delivery.status.replace("_", " ").toUpperCase()}
+                            </Badge>
                             <p className="text-xs text-slate-600">
                               {delivery.actual_km || delivery.estimated_km} km
                             </p>

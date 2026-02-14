@@ -2,10 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DailySummary } from "@/lib/admin-api";
-import { 
-  TrendingUp, 
-  DollarSign, 
-  Receipt, 
+import { formatCurrency } from "@/lib/utils";
+import {
+  TrendingUp,
+  DollarSign,
+  Receipt,
   Tag,
   Package,
   Users,
@@ -46,11 +47,6 @@ const safeNumber = (value: any, defaultValue: number = 0): number => {
   return defaultValue;
 };
 
-const formatCurrency = (value: any): string => {
-  const num = safeNumber(value);
-  return `KES ${num.toLocaleString()}`;
-};
-
 const formatNumber = (value: any): string => {
   return safeNumber(value).toLocaleString();
 };
@@ -64,7 +60,7 @@ export default function AdminOverview() {
 
   const loadData = async () => {
     if (!token) return;
-    
+
     setLoading(true);
     setError(null);
     try {
@@ -135,12 +131,12 @@ export default function AdminOverview() {
     total_revenue: safeNumber(summary?.total_revenue),
     total_tax: safeNumber(summary?.total_tax),
     total_discount: safeNumber(summary?.total_discount),
-    top_products: Array.isArray(summary?.top_products) 
+    top_products: Array.isArray(summary?.top_products)
       ? summary.top_products.map(product => ({
-          productId: product?.productId || 'Unknown',
-          name: product?.name || 'Unknown Product',
-          quantity: safeNumber(product?.quantity)
-        }))
+        productId: product?.productId || 'Unknown',
+        name: product?.name || 'Unknown Product',
+        quantity: safeNumber(product?.quantity)
+      }))
       : []
   };
 
@@ -183,14 +179,14 @@ export default function AdminOverview() {
     },
   ];
 
-  const totalProductsSold = safeSummary.top_products.reduce((acc, product) => 
+  const totalProductsSold = safeSummary.top_products.reduce((acc, product) =>
     acc + safeNumber(product.quantity), 0
   );
 
   const additionalMetrics = [
     {
       title: "Average Order Value",
-      value: safeSummary.total_sales > 0 
+      value: safeSummary.total_sales > 0
         ? formatCurrency(safeSummary.total_revenue / safeSummary.total_sales)
         : formatCurrency(0),
       icon: DollarSign,
@@ -214,9 +210,9 @@ export default function AdminOverview() {
             </p>
           )}
         </div>
-        <Button 
-          onClick={refreshData} 
-          variant="outline" 
+        <Button
+          onClick={refreshData}
+          variant="outline"
           size="sm"
           disabled={loading}
         >
@@ -230,7 +226,7 @@ export default function AdminOverview() {
         {kpis.map((kpi) => {
           const Icon = kpi.icon;
           const TrendIcon = kpi.trend === 'up' ? ArrowUp : kpi.trend === 'down' ? ArrowDown : null;
-          
+
           return (
             <Card key={kpi.title} className="relative overflow-hidden ">
               <div className={`absolute top-0 right-0 w-20 h-20 ${kpi.bgColor} rounded-full -mr-10 -mt-10 opacity-50`}></div>
@@ -249,9 +245,8 @@ export default function AdminOverview() {
                 <div className="flex items-center text-xs text-slate-500">
                   <span>{kpi.subtitle}</span>
                   {TrendIcon && (
-                    <TrendIcon className={`h-3 w-3 ml-1 ${
-                      kpi.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                    }`} />
+                    <TrendIcon className={`h-3 w-3 ml-1 ${kpi.trend === 'up' ? 'text-green-500' : 'text-red-500'
+                      }`} />
                   )}
                 </div>
               </CardContent>
@@ -309,7 +304,7 @@ export default function AdminOverview() {
                   {safeSummary.top_products.slice(0, 8).map((product, index) => {
                     const quantity = safeNumber(product.quantity);
                     const productStatus = quantity > 20 ? "Hot" : quantity > 10 ? "Popular" : "Regular";
-                    
+
                     return (
                       <TableRow key={product.productId} className="group">
                         <TableCell className="font-medium">
@@ -330,14 +325,14 @@ export default function AdminOverview() {
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
-                          <Badge 
+                          <Badge
                             variant={quantity > 10 ? "default" : "secondary"}
                             className={
-                              quantity > 20 
-                                ? "bg-green-100 text-green-800 hover:bg-green-100" 
+                              quantity > 20
+                                ? "bg-green-100 text-green-800 hover:bg-green-100"
                                 : quantity > 10
-                                ? "bg-blue-100 text-blue-800 hover:bg-blue-100"
-                                : "bg-slate-100 text-slate-800 hover:bg-slate-100"
+                                  ? "bg-blue-100 text-blue-800 hover:bg-blue-100"
+                                  : "bg-slate-100 text-slate-800 hover:bg-slate-100"
                             }
                           >
                             {productStatus}
@@ -390,7 +385,7 @@ export default function AdminOverview() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center">
@@ -402,7 +397,7 @@ export default function AdminOverview() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center">

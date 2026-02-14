@@ -97,7 +97,7 @@ export function Sidebar() {
         }
       } catch (error) {
         if (!isMounted) return;
-        
+
         // Only log error if we've exceeded retries to reduce console spam
         if (retryCount < MAX_RETRIES) {
           retryCount++;
@@ -255,8 +255,8 @@ export function Sidebar() {
         href: "/dashboard/purchasing",
         icon: ShoppingCart,
         children: [
-           { label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users },
-           { label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen },
+          { label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users },
+          { label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen },
         ]
       });
     }
@@ -333,7 +333,7 @@ export function Sidebar() {
     // Finance
     if (hasAnyPermission(['finance.gl.view', 'finance.gl.create', 'finance.report.aging'])) {
       const financeChildren: MenuItem[] = [];
-      
+
       if (hasPermission('finance.gl.view')) {
         financeChildren.push({ label: "Overview", href: "/dashboard/finance", icon: LayoutDashboard });
         financeChildren.push({ label: "General Ledger", href: "/dashboard/finance/gl", icon: BookOpen });
@@ -342,7 +342,7 @@ export function Sidebar() {
         financeChildren.push({ label: "Bank & Cash", href: "/dashboard/finance/bank", icon: Wallet });
         financeChildren.push({ label: "Reconciliation", href: "/dashboard/finance/reconciliation", icon: RefreshCw });
       }
-      
+
       if (hasPermission('finance.settings.periods')) {
         financeChildren.push({ label: "Settings", href: "/dashboard/finance/settings", icon: Settings });
       }
@@ -390,10 +390,10 @@ export function Sidebar() {
       // Ensure localStorage is cleared even if logout function misses something
       localStorage.removeItem("auth_token");
       localStorage.removeItem("auth_user");
-      
+
       // Attempt router push first for smooth transition
       router.push("/auth/login");
-      
+
       // Fallback redirect after a short delay if router fails
       setTimeout(() => {
         window.location.href = "/auth/login";
@@ -492,10 +492,10 @@ export function Sidebar() {
                     alt="Zoho ERP"
                     fill
                     className="object-contain"
-                  />                 
-                 
+                  />
+
                 </div>
-                    <div className="flex text-sky-500"><span>ZOHO ERP</span></div> 
+                <div className="flex text-sky-500"><span>ZOHO ERP</span></div>
               </div>
             )}
             {isCollapsed && (
@@ -548,7 +548,7 @@ export function Sidebar() {
               const hasChildren = item.children && item.children.length > 0;
 
               return (
-                <div key={item.href} className="space-y-1">
+                <div key={`${item.label}-${item.href}`} className="space-y-1">
                   <Link
                     href={item.href}
                     onClick={() => !hasChildren && setIsOpen(false)}
@@ -580,7 +580,7 @@ export function Sidebar() {
                       {item.children?.map((child) => {
                         const ChildIcon = child.icon;
                         const childActive = pathname === child.href;
-                        
+
                         return (
                           <Link
                             key={child.href}

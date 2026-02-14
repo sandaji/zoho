@@ -1,6 +1,6 @@
 // backend/src/modules/pos/service/sales.service.ts
 import { prisma } from "../../../lib/db";
-import { SalesDocumentType, SalesDocumentStatus, PaymentStatus, PaymentMethod, MovementType } from "../../../generated/enums";
+import { SalesDocumentType, SalesDocumentStatus, PaymentStatus, PaymentMethod, MovementType } from "../../../generated";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { StockValidationService } from "./stock-validation.service";

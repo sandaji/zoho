@@ -1,0 +1,2024 @@
+// Zoho ERP Prisma Schema
+// Comprehensive ERP system with branches, warehouses, inventory, sales, and logistics
+// UUID for all primary keys, timestamps on all entities
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// backend/prisma/schema.prisma
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum InventoryStatus {
+  in_stock
+  low_stock
+  out_of_stock
+  discontinued
+
+  @@map("inventory_status")
+}
+
+enum ProductType {
+  physical
+  digital
+  service
+
+  @@map("product_type")
+}
+
+enum ProductStatus {
+  active
+  inactive
+  discontinued
+
+  @@map("product_status")
+}
+
+enum SalesStatus {
+  draft
+  pending
+  confirmed
+  shipped
+  delivered
+  cancelled
+  returned
+
+  @@map("sales_status")
+}
+
+enum SalesDocumentType {
+  DRAFT
+  QUOTE
+  INVOICE
+  CREDIT_NOTE
+
+  @@map("sales_document_type")
+}
+
+enum SalesDocumentStatus {
+  DRAFT
+  SENT
+  PARTIALLY_PAID
+  PAID
+  VOID
+  CONVERTED
+  CREDITED
+  PARTIALLY_CREDITED
+
+  @@map("sales_document_status")
+}
+
+// Re-using the existing PaymentMethod enum
+
+enum PaymentStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  REFUNDED
+
+  @@map("payment_status")
+}
+
+enum DeliveryStatus {
+  pending
+  assigned
+  in_transit
+  delivered
+  failed
+  rescheduled
+
+  @@map("delivery_status")
+}
+
+enum TransactionType {
+  income
+  expense
+  transfer
+  adjustment
+
+  @@map("transaction_type")
+}
+
+enum PayrollStatus {
+  draft
+  submitted
+  approved
+  paid
+  reversed
+
+  @@map("payroll_status")
+}
+
+enum PaymentMethod {
+  cash
+  card
+  mpesa
+  cheque
+  bank_transfer
+
+  @@map("payment_method")
+}
+
+enum CashierSessionStatus {
+  OPEN
+  CLOSED
+  DISCREPANCY
+  RECONCILED
+
+  @@map("cashier_session_status")
+}
+
+enum MovementType {
+  INBOUND
+  OUTBOUND
+  TRANSFER_IN
+  TRANSFER_OUT
+  ADJUSTMENT
+
+  @@map("movement_type")
+}
+
+enum TransferStatus {
+  PENDING
+  IN_TRANSIT
+  PENDING_RECEIPT
+  COMPLETED
+  CANCELLED
+  DISCREPANCY
+
+  @@map("transfer_status")
+}
+
+enum JournalType {
+  sale
+  purchase
+  cash
+  bank
+  general
+
+  @@map("journal_type")
+}
+
+enum FiscalStatus {
+  open
+  closed
+  locked
+
+  @@map("fiscal_status")
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum ApprovalType {
+  VENDOR_CHANGE
+  PO_APPROVAL
+  TRANSFER_APPROVAL
+  PRICE_ADJUSTMENT
+  STOCK_ADJUSTMENT
+
+  @@map("approval_type")
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+
+  @@map("approval_status")
+}
+
+// ============================================================================
+// CORE ORGANIZATION MODELS
+// ============================================================================
+
+/// Users/Employees
+model User {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String  @map("password")
+  name         String
+  phone        String?
+  role         String  @default("warehouse_staff") // cashier, warehouse_staff, driver, manager, admin
+
+  // Branch assignment
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  // Relations
+  payrollRecords        Payroll[]
+  deliveries            Delivery[]         @relation("DriverDeliveries")
+  createdSalesDocuments SalesDocument[]
+  createdPayments       Payment[]
+  transfers             EmployeeTransfer[]
+  cashierSessions       CashierSession[]
+  // Leave Management
+  leaveAllocations      LeaveAllocation[]
+  leaveRequests         LeaveRequest[]
+
+  // Recruitment
+  interviews Interview[] @relation("Interviewer")
+
+  // Performance
+  goals            Goal[]
+  evaluations      PerformanceEvaluation[] @relation("Evaluatee")
+  givenEvaluations PerformanceEvaluation[] @relation("Evaluator")
+  developmentPlans DevelopmentPlan[]
+
+  // RBAC Relations
+  roles RoleAssignment[]
+
+  // Benefits
+  benefitEnrollments BenefitEnrollment[]
+
+  // Fiscal Period Locking
+  lockedPeriods           FiscalPeriod[]    @relation("LockedPeriods")
+  auditLogs               AuditLog[]
+  requestedPurchaseOrders PurchaseOrder[]   @relation("RequestedByPO")
+  approvedPurchaseOrders  PurchaseOrder[]   @relation("ApprovedByPO")
+  requestedApprovals      ApprovalRequest[] @relation("RequestedApprovals")
+  approvedApprovals       ApprovalRequest[] @relation("ApprovedApprovals")
+
+  createdTransfers  StockTransfer[] @relation("CreatedTransfers")
+  receivedTransfers StockTransfer[] @relation("ReceivedTransfers")
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([branchId])
+  @@index([email])
+  @@index([isActive])
+  @@map("users")
+}
+
+/// Branches/Locations
+model Branch {
+  id      String  @id @default(cuid())
+  code    String  @unique
+  name    String
+  city    String
+  address String?
+  phone   String?
+
+  // Relations
+  users             User[]
+  warehouses        Warehouse[]
+  salesDocuments    SalesDocument[]
+  documentSequences DocumentSequence[]
+  cashierSessions   CashierSession[]
+  transfersFrom     EmployeeTransfer[] @relation("TransfersFrom")
+  transfersTo       EmployeeTransfer[] @relation("TransfersTo")
+  purchaseOrders    PurchaseOrder[]
+  products          Product[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@map("branches")
+}
+
+/// Employee Transfers
+model EmployeeTransfer {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+  fromBranchId  String?
+  fromBranch    Branch?   @relation("TransfersFrom", fields: [fromBranchId], references: [id], onDelete: SetNull)
+  toBranchId    String
+  toBranch      Branch    @relation("TransfersTo", fields: [toBranchId], references: [id], onDelete: Restrict)
+  fromRole      String?
+  toRole        String
+  transferDate  DateTime  @default(now())
+  effectiveDate DateTime
+  reason        String?
+  approvedBy    String?
+  approvedAt    DateTime?
+  notes         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([fromBranchId])
+  @@index([toBranchId])
+  @@index([transferDate])
+  @@map("employee_transfers")
+}
+
+/// Warehouses/Storage Locations
+model Warehouse {
+  id       String @id @default(cuid())
+  code     String @unique
+  name     String
+  location String
+  capacity Int // Total storage capacity in units
+
+  // Branch relationship
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  // Relations
+  inventory       Inventory[]
+  stockMovements  StockMovement[]
+  sourceTransfers StockTransfer[] @relation("SourceTransfers")
+  targetTransfers StockTransfer[] @relation("TargetTransfers")
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([branchId])
+  @@index([code])
+  @@index([isActive])
+  @@map("warehouses")
+}
+
+// ============================================================================
+// PRODUCT & INVENTORY MODELS
+// ============================================================================
+
+/// Products
+model Product {
+  id          String  @id @default(cuid())
+  sku         String  @unique
+  upc         String? @unique // UPC barcode
+  barcode     String? // Additional barcode field
+  name        String
+  description String?
+
+  // Classification
+  category     String?
+  subcategory  String?
+  product_type ProductType @default(physical)
+
+  // Pricing
+  cost_price Float // Cost to company
+  unit_price Float // Selling price
+  tax_rate   Float @default(0.16) // Default 16% VAT
+
+  // Inventory Management
+  quantity            Int    @default(0) // Total quantity across all warehouses
+  reorder_level       Int    @default(10)
+  reorder_quantity    Int    @default(20) // Quantity to reorder
+  unit_of_measurement String @default("pcs") // units, kg, lbs, etc
+
+  // Physical properties
+  weight         Float? // Product weight
+  weight_unit    String? @default("kg") // kg, lbs, etc
+  length         Float? // Dimensions
+  width          Float?
+  height         Float?
+  dimension_unit String? @default("cm") // cm, inches, etc
+
+  // Product media
+  image_url String? // Product image URL
+
+  // Supplier information
+  vendorId             String?
+  vendor               Vendor? @relation(fields: [vendorId], references: [id])
+  supplier_part_number String?
+  lead_time_days       Int? // Lead time in days
+
+  // Branch assignment
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id])
+
+  // Status
+  status ProductStatus @default(active)
+
+  // Relations
+  inventory          Inventory[]
+  salesDocumentItems SalesDocumentItem[]
+  stockMovements     StockMovement[]
+  transferItems      TransferItem[]
+  purchaseOrderItems PurchaseOrderItem[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sku])
+  @@index([upc])
+  @@index([barcode])
+  @@index([category])
+  @@index([status])
+  @@index([isActive])
+  @@map("products")
+}
+
+/// Inventory - Links Products to Warehouses
+model Inventory {
+  id           String          @id @default(cuid())
+  quantity     Int             @default(0)
+  reserved     Int             @default(0) // Reserved for pending sales
+  available    Int             @default(0) // quantity - reserved
+  status       InventoryStatus @default(in_stock)
+  last_counted DateTime?
+
+  // Foreign keys
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId, warehouseId])
+  @@index([productId])
+  @@index([warehouseId])
+  @@index([status])
+  @@map("inventory")
+}
+
+// ============================================================================
+// STOCK MOVEMENT MODELS
+// ============================================================================
+
+/// Stock Movements - Audit trail for all inventory changes
+model StockMovement {
+  id          String         @id @default(cuid())
+  type        MovementType
+  quantity    Int
+  productId   String
+  product     Product        @relation(fields: [productId], references: [id])
+  warehouseId String
+  warehouse   Warehouse      @relation(fields: [warehouseId], references: [id])
+  salesId     String?
+  sales       SalesDocument? @relation(fields: [salesId], references: [id])
+  transferId  String?
+  transfer    StockTransfer? @relation(fields: [transferId], references: [id])
+  reference   String? // e.g., "Reason for adjustment"
+  createdById String
+  createdAt   DateTime       @default(now())
+
+  @@index([productId, warehouseId])
+  @@index([type])
+  @@index([createdAt])
+  @@index([transferId])
+  @@map("stock_movements")
+}
+
+/// Stock Transfers - Transfer stock between warehouses
+model StockTransfer {
+  id              String          @id @default(cuid())
+  transferNo      String          @unique
+  status          TransferStatus  @default(PENDING)
+  sourceId        String
+  sourceWarehouse Warehouse       @relation("SourceTransfers", fields: [sourceId], references: [id])
+  targetId        String
+  targetWarehouse Warehouse       @relation("TargetTransfers", fields: [targetId], references: [id])
+  items           TransferItem[]
+  stockMovements  StockMovement[]
+  notes           String?
+
+  // Logistics info
+  truckRegNo    String?
+  driverName    String?
+  attendantName String?
+
+  // Received info
+  receivedAt   DateTime?
+  receivedById String?
+  receivedBy   User?     @relation("ReceivedTransfers", fields: [receivedById], references: [id])
+
+  createdById String
+  createdBy   User     @relation("CreatedTransfers", fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([sourceId])
+  @@index([targetId])
+  @@index([createdAt])
+  @@map("stock_transfers")
+}
+
+/// Transfer Items - Line items within a stock transfer
+model TransferItem {
+  id         String        @id @default(cuid())
+  quantity   Int
+  productId  String
+  product    Product       @relation(fields: [productId], references: [id])
+  transferId String
+  transfer   StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+  @@index([transferId])
+  @@index([productId])
+  @@map("transfer_items")
+}
+
+// ============================================================================
+// SALES MODELS
+// ============================================================================
+// NOTE: Legacy Sales and SalesItem models have been removed.
+// All POS operations now use the modern SalesDocument and SalesDocumentItem models.
+// Cashier session management implementation - STEP 1: Legacy model removal.
+// ============================================================================
+
+// ============================================================================
+// CUSTOMER & SALES DOCUMENT MODELS (V2)
+// ============================================================================
+
+/// Customers/Clients of the business
+model Customer {
+  id      String  @id @default(cuid())
+  name    String
+  email   String? @unique
+  phone   String?
+  address String?
+  taxId   String? @map("tax_id") // Business tax ID, VAT number, etc.
+
+  // Relations
+  salesDocuments SalesDocument[]
+  payments       Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@index([phone])
+  @@map("customers")
+}
+
+/// Unified model for Drafts, Quotes, Invoices, and Credit Notes
+model SalesDocument {
+  id         String              @id @default(cuid())
+  documentId String // Branch-scoped, sequential ID (e.g., INV-0001)
+  type       SalesDocumentType
+  status     SalesDocumentStatus
+
+  // Lifecycle tracking
+  sourceDocumentId String?        @unique @map("source_document_id")
+  sourceDocument   SalesDocument? @relation("DocumentLifecycle", fields: [sourceDocumentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childDocument    SalesDocument? @relation("DocumentLifecycle")
+
+  // Foreign keys
+  branchId   String
+  branch     Branch    @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  // Cashier Session (POS transactions)
+  sessionId String?
+  session   CashierSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+  // Financials
+  items    SalesDocumentItem[]
+  subtotal Float
+  discount Float               @default(0)
+  tax      Float
+  total    Float
+  notes    String?
+  terms    String? // Payment terms, etc.
+
+  // Payment Status (for Invoices and Credit Notes)
+  paymentStatus PaymentStatus? @map("payment_status")
+  paidAmount    Float          @default(0)
+  balance       Float
+
+  // Dates
+  issueDate DateTime  @default(now()) @map("issue_date")
+  dueDate   DateTime? @map("due_date")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments       Payment[]
+  stockMovements StockMovement[]
+
+  @@unique([branchId, documentId])
+  @@index([type])
+  @@index([status])
+  @@index([branchId])
+  @@index([customerId])
+  @@index([createdById])
+  @@index([sessionId])
+  @@index([issueDate])
+  @@map("sales_documents")
+}
+
+/// Line items for SalesDocuments
+model SalesDocumentItem {
+  id String @id @default(cuid())
+
+  // Foreign keys
+  salesDocumentId String
+  salesDocument   SalesDocument @relation(fields: [salesDocumentId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  // Snapshot of product details at time of creation
+  description String
+  quantity    Float
+  unitPrice   Float  @map("unit_price")
+  taxRate     Float  @map("tax_rate")
+  discount    Float  @default(0) // Line item discount amount
+  subtotal    Float // quantity * unitPrice
+  taxAmount   Float  @map("tax_amount")
+  total       Float // subtotal - discount + taxAmount
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([salesDocumentId])
+  @@index([productId])
+  @@map("sales_document_items")
+}
+
+/// Tracks payments made against Invoices
+model Payment {
+  id String @id @default(cuid())
+
+  // Foreign keys
+  salesDocumentId String
+  salesDocument   SalesDocument @relation(fields: [salesDocumentId], references: [id], onDelete: Restrict)
+  customerId      String?
+  customer        Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  // Payment details
+  amount      Float
+  paymentDate DateTime      @default(now()) @map("payment_date")
+  method      PaymentMethod
+  reference   String? // e.g., Cheque number, transaction ID
+  createdById String
+  createdBy   User          @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([salesDocumentId])
+  @@index([customerId])
+  @@index([method])
+  @@index([paymentDate])
+  @@map("payments")
+}
+
+/// Tracks the next document number for each type per branch
+model DocumentSequence {
+  id         String            @id @default(cuid())
+  branchId   String
+  branch     Branch            @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  type       SalesDocumentType
+  prefix     String
+  nextNumber Int               @default(1) @map("next_number")
+
+  @@unique([branchId, type])
+  @@index([branchId])
+  @@map("document_sequences")
+}
+
+// ============================================================================
+// CASHIER SESSION MANAGEMENT
+// ============================================================================
+
+/// Cashier Sessions for shift management and cash reconciliation
+model CashierSession {
+  id        String @id @default(cuid())
+  sessionNo String @unique
+
+  // Relationships
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Restrict)
+
+  sales SalesDocument[]
+
+  // Session Status
+  status CashierSessionStatus @default(OPEN)
+
+  // Opening balances
+  openingBalance Float @default(0) @map("opening_balance")
+
+  // Closing details
+  closingBalance Float? @map("closing_balance")
+  expectedCash   Float? @map("expected_cash")
+  actualCash     Float? @map("actual_cash")
+  cashVariance   Float? @map("cash_variance")
+
+  // Sales summary
+  totalSalesCount  Int   @default(0) @map("total_sales_count")
+  totalSalesAmount Float @default(0) @map("total_sales_amount")
+
+  // Payment method breakdown
+  totalCashReceived  Float @default(0) @map("total_cash_received")
+  totalCardReceived  Float @default(0) @map("total_card_received")
+  totalMpesaReceived Float @default(0) @map("total_mpesa_received")
+  totalOtherReceived Float @default(0) @map("total_other_received")
+
+  // Timestamps
+  openedAt     DateTime  @default(now()) @map("opened_at")
+  closedAt     DateTime? @map("closed_at")
+  reconciledAt DateTime? @map("reconciled_at")
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([branchId, sessionNo])
+  @@index([userId])
+  @@index([branchId])
+  @@index([status])
+  @@index([openedAt])
+  @@index([sessionNo])
+  @@map("cashier_sessions")
+}
+
+// ============================================================================
+// PURCHASING & VENDOR MODELS
+// ============================================================================
+
+enum PurchaseOrderStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CLOSED
+  CANCELLED
+
+  @@map("purchase_order_status")
+}
+
+/// Vendors/Suppliers
+model Vendor {
+  id      String  @id @default(cuid())
+  code    String  @unique
+  name    String
+  email   String?
+  phone   String?
+  address String?
+  taxId   String? @map("tax_id")
+  website String?
+
+  // Relations
+  purchaseOrders PurchaseOrder[]
+  products       Product[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([code])
+  @@index([name])
+  @@index([isActive])
+  @@map("vendors")
+}
+
+/// Purchase Orders
+model PurchaseOrder {
+  id       String              @id @default(cuid())
+  poNumber String              @unique @map("po_number")
+  status   PurchaseOrderStatus @default(DRAFT)
+
+  // Foreign keys
+  vendorId String
+  vendor   Vendor @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+
+  branchId String
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Restrict)
+
+  requestedById String
+  requestedBy   User   @relation("RequestedByPO", fields: [requestedById], references: [id], onDelete: Restrict)
+
+  approvedById String?
+  approvedBy   User?   @relation("ApprovedByPO", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  // Financials
+  subtotal Float @default(0)
+  tax      Float @default(0)
+  total    Float @default(0)
+
+  // Details
+  items                PurchaseOrderItem[]
+  notes                String?
+  expectedDeliveryDate DateTime?           @map("expected_delivery_date")
+
+  // Lifecycle
+  submittedAt DateTime?
+  approvedAt  DateTime?
+  closedAt    DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([poNumber])
+  @@index([vendorId])
+  @@index([branchId])
+  @@index([status])
+  @@map("purchase_orders")
+}
+
+/// Approval Requests for high-risk actions
+model ApprovalRequest {
+  id            String         @id @default(cuid())
+  type          ApprovalType
+  status        ApprovalStatus @default(PENDING)
+  requestedById String
+  requestedBy   User           @relation("RequestedApprovals", fields: [requestedById], references: [id])
+  approvedById  String?
+  approvedBy    User?          @relation("ApprovedApprovals", fields: [approvedById], references: [id])
+  data          Json // Snapshot of requested changes or metadata
+  referenceId   String? // ID of the entity being approved (e.g., productId)
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([type])
+  @@index([status])
+  @@index([requestedById])
+  @@map("approval_requests")
+}
+
+/// Purchase Order Line Items
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  // Snapshot of item details
+  quantity  Int
+  unitPrice Float @map("unit_price")
+  subtotal  Float // quantity * unitPrice
+
+  // Tracking
+  receivedQuantity Int @default(0) @map("received_quantity")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([purchaseOrderId])
+  @@index([productId])
+  @@map("purchase_order_items")
+}
+
+// ============================================================================
+// LOGISTICS MODELS
+// ============================================================================
+
+/// Trucks/Vehicles
+model Truck {
+  id            String  @id @default(cuid())
+  registration  String  @unique
+  model         String
+  capacity      Int // Capacity in units
+  license_plate String? @unique
+
+  // Relations
+  deliveries Delivery[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([registration])
+  @@index([isActive])
+  @@map("trucks")
+}
+
+/// Deliveries
+model Delivery {
+  id          String         @id @default(cuid())
+  delivery_no String         @unique
+  status      DeliveryStatus @default(pending)
+
+  // Relationships
+  driverId String
+  driver   User   @relation("DriverDeliveries", fields: [driverId], references: [id], onDelete: Restrict)
+
+  truckId String
+  truck   Truck  @relation(fields: [truckId], references: [id], onDelete: Restrict)
+
+  // Delivery details
+  destination  String
+  estimated_km Int?
+  actual_km    Int?
+
+  // Timestamps
+  scheduled_date DateTime?
+  picked_up_at   DateTime?
+  delivered_at   DateTime?
+  notes          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([driverId])
+  @@index([truckId])
+  @@index([status])
+  @@index([delivery_no])
+  @@map("deliveries")
+}
+
+// ============================================================================
+// FINANCIAL MODELS
+// ============================================================================
+
+/// Finance Transactions - Enhanced with category and date filtering
+model FinanceTransaction {
+  id              String          @id @default(cuid())
+  type            TransactionType
+  reference_no    String          @unique
+  description     String
+  amount          Float
+  category        String? // e.g., "food", "utilities", "shopping", "payroll", "income", "sales", "services"
+  transactionDate DateTime        @default(now()) // Separate from createdAt for historical data
+
+  // Relationships
+  payrollId String?
+  payroll   Payroll? @relation(fields: [payrollId], references: [id], onDelete: SetNull)
+
+  // Metadata
+  payment_method String? // cash, check, card, transfer
+  reference_doc  String? // Invoice number, receipt number, etc.
+  notes          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([category])
+  @@index([transactionDate])
+  @@index([reference_no])
+  @@index([payrollId])
+  @@map("finance_transactions")
+}
+
+/// Savings Goals - Track financial goals with progress
+model SavingsGoal {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  targetAmount  Float
+  currentAmount Float     @default(0)
+  deadline      DateTime?
+  status        String    @default("active") // "active" or "completed"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("savings_goals")
+}
+
+/// Daily Spending Limit - Track daily spending against configured limit
+model DailySpendingLimit {
+  id    String   @id @default(cuid())
+  limit Float    @default(50000) // Default 50,000 KES
+  date  DateTime
+  spent Float    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([date])
+  @@index([date])
+  @@map("daily_spending_limits")
+}
+
+// ============================================================================
+// PAYROLL MODELS
+// ============================================================================
+
+/// Payroll Records
+model Payroll {
+  id         String        @id @default(cuid())
+  payroll_no String        @unique
+  status     PayrollStatus @default(draft)
+
+  // Relationships
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  // Compensation
+  base_salary Float
+  allowances  Float @default(0)
+  deductions  Float @default(0)
+  net_salary  Float
+
+  // Dates
+  period_start DateTime
+  period_end   DateTime
+  paid_date    DateTime?
+
+  // Finance link
+  transactions FinanceTransaction[]
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([payroll_no])
+  @@map("payroll")
+}
+
+// ============================================================================
+// INDEXES & CONSTRAINTS
+// ============================================================================
+
+// Additional composite indexes for common queries
+// Note: Many single-field indexes are defined inline with @index decorators
+
+// ============================================================================
+// ENHANCED FINANCIAL MODELS
+// ============================================================================
+
+/// Chart of Accounts - Foundation for all financial tracking
+model ChartOfAccount {
+  id           String           @id @default(cuid())
+  account_code String           @unique
+  account_name String
+  account_type AccountType
+  parent_id    String?
+  parent       ChartOfAccount?  @relation("AccountHierarchy", fields: [parent_id], references: [id])
+  children     ChartOfAccount[] @relation("AccountHierarchy")
+
+  category    String
+  subcategory String?
+
+  is_active Boolean @default(true)
+  is_system Boolean @default(false)
+
+  current_balance Float @default(0)
+
+  journal_entries JournalEntry[]
+  budgets         Budget[] // existing
+  bank_statements BankStatement[] // Add this
+
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([account_code])
+  @@index([account_type])
+  @@index([category])
+  @@map("chart_of_accounts")
+}
+
+/// Journals - Categorize transactions
+model Journal {
+  id   String      @id @default(cuid())
+  code String      @unique // e.g., "MISC", "SALE", "PURCH"
+  name String
+  type JournalType
+
+  entries JournalEntry[]
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("journals")
+}
+
+/// Fiscal Year - Formal accounting years
+model FiscalYear {
+  id        String       @id @default(cuid())
+  name      String // e.g., "2024"
+  startDate DateTime     @map("start_date")
+  endDate   DateTime     @map("end_date")
+  status    FiscalStatus @default(open)
+
+  periods FiscalPeriod[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("fiscal_years")
+}
+
+/// Fiscal Period - Monthly/Quarterly divisions
+model FiscalPeriod {
+  id           String       @id @default(cuid())
+  fiscalYearId String       @map("fiscal_year_id")
+  fiscalYear   FiscalYear   @relation(fields: [fiscalYearId], references: [id])
+  name         String // e.g., "Jan 2024"
+  startDate    DateTime     @map("start_date")
+  endDate      DateTime     @map("end_date")
+  status       FiscalStatus @default(open)
+
+  // Locking fields
+  isLocked   Boolean   @default(false)
+  lockedAt   DateTime?
+  lockedById String?
+  lockedBy   User?     @relation("LockedPeriods", fields: [lockedById], references: [id])
+
+  entries JournalEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lockedById])
+  @@map("fiscal_periods")
+}
+
+/// Journal Entries - Double-entry bookkeeping
+model JournalEntry {
+  id         String   @id @default(cuid())
+  entry_no   String   @unique
+  entry_date DateTime @default(now())
+
+  account_id String
+  account    ChartOfAccount @relation(fields: [account_id], references: [id])
+
+  debit  Float @default(0)
+  credit Float @default(0)
+
+  reference_type String?
+  reference_id   String?
+
+  batch_id String?
+
+  journal_id String?
+  journal    Journal? @relation(fields: [journal_id], references: [id])
+
+  period_id String?
+  period    FiscalPeriod? @relation(fields: [period_id], references: [id])
+
+  description String
+  notes       String?
+
+  is_reconciled   Boolean   @default(false)
+  reconciled_date DateTime?
+
+  // Link to Bank Statement Line (reconciliation)
+  statement_line BankStatementLine? // Add this (optional inverse relation)
+
+  created_by    String
+  approved_by   String?
+  approved_date DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([account_id])
+  @@index([entry_no])
+  @@index([entry_date])
+  @@index([batch_id])
+  @@index([journal_id])
+  @@index([period_id])
+  @@index([reference_type, reference_id])
+  @@map("journal_entries")
+}
+
+/// Budget Management
+model Budget {
+  id          String @id @default(cuid())
+  budget_name String
+  fiscal_year Int
+
+  account_id String
+  account    ChartOfAccount @relation(fields: [account_id], references: [id])
+
+  period_type  PeriodType @default(monthly)
+  period_start DateTime
+  period_end   DateTime
+
+  budgeted_amount  Float
+  actual_amount    Float @default(0)
+  variance         Float @default(0)
+  variance_percent Float @default(0)
+
+  status BudgetStatus @default(draft)
+
+  created_by    String
+  approved_by   String?
+  approved_date DateTime?
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([account_id, fiscal_year, period_start])
+  @@index([account_id])
+  @@index([fiscal_year])
+  @@index([status])
+  @@map("budgets")
+}
+
+/// Bank Reconciliation Models
+
+model BankStatement {
+  id         String         @id @default(cuid())
+  account_id String
+  account    ChartOfAccount @relation(fields: [account_id], references: [id])
+
+  filename    String
+  upload_date DateTime @default(now())
+  uploaded_by String
+
+  start_date DateTime?
+  end_date   DateTime?
+
+  status String @default("pending") // pending, reconciled
+
+  transactions BankStatementLine[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([account_id])
+  @@map("bank_statements")
+}
+
+model BankStatementLine {
+  id           String        @id @default(cuid())
+  statement_id String
+  statement    BankStatement @relation(fields: [statement_id], references: [id], onDelete: Cascade)
+
+  date        DateTime
+  description String
+  amount      Float // Positive = Deposit, Negative = Withdrawal
+  reference   String?
+
+  is_reconciled   Boolean   @default(false)
+  reconciled_date DateTime?
+
+  // Link to system Journal Entry when matched
+  journal_entry_id String?       @unique
+  journal_entry    JournalEntry? @relation(fields: [journal_entry_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([statement_id])
+  @@index([date])
+  @@index([amount])
+  @@map("bank_statement_lines")
+}
+
+/// Accounts Receivable
+model AccountReceivable {
+  id         String @id @default(cuid())
+  invoice_no String @unique
+
+  customer_name  String
+  customer_email String?
+  customer_phone String?
+
+  total_amount Float
+  paid_amount  Float @default(0)
+  balance      Float
+
+  invoice_date DateTime  @default(now())
+  due_date     DateTime
+  paid_date    DateTime?
+
+  status     ARStatus @default(outstanding)
+  aging_days Int      @default(0)
+
+  payments ARPayment[]
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([invoice_no])
+  @@index([customer_name])
+  @@index([status])
+  @@index([due_date])
+  @@map("accounts_receivable")
+}
+
+/// AR Payments
+model ARPayment {
+  id         String @id @default(cuid())
+  payment_no String @unique
+
+  ar_id              String
+  account_receivable AccountReceivable @relation(fields: [ar_id], references: [id])
+
+  amount         Float
+  payment_method PaymentMethod
+  payment_date   DateTime      @default(now())
+
+  bank_name      String?
+  check_no       String?
+  transaction_id String?
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ar_id])
+  @@index([payment_no])
+  @@index([payment_date])
+  @@map("ar_payments")
+}
+
+/// Accounts Payable
+model AccountPayable {
+  id      String @id @default(cuid())
+  bill_no String @unique
+
+  vendor_name  String
+  vendor_email String?
+  vendor_phone String?
+
+  total_amount Float
+  paid_amount  Float @default(0)
+  balance      Float
+
+  bill_date DateTime  @default(now())
+  due_date  DateTime
+  paid_date DateTime?
+
+  status     APStatus @default(outstanding)
+  aging_days Int      @default(0)
+
+  payments APPayment[]
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bill_no])
+  @@index([vendor_name])
+  @@index([status])
+  @@index([due_date])
+  @@map("accounts_payable")
+}
+
+/// AP Payments
+model APPayment {
+  id         String @id @default(cuid())
+  payment_no String @unique
+
+  ap_id           String
+  account_payable AccountPayable @relation(fields: [ap_id], references: [id])
+
+  amount         Float
+  payment_method PaymentMethod
+  payment_date   DateTime      @default(now())
+
+  bank_name      String?
+  check_no       String?
+  transaction_id String?
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ap_id])
+  @@index([payment_no])
+  @@index([payment_date])
+  @@map("ap_payments")
+}
+
+/// Bank Accounts & Treasury
+model BankAccount {
+  id             String  @id @default(cuid())
+  account_name   String
+  account_number String  @unique
+  bank_name      String
+  branch         String?
+
+  account_type BankAccountType @default(checking)
+  currency     String          @default("KES")
+
+  current_balance   Float @default(0)
+  available_balance Float @default(0)
+
+  overdraft_limit Float @default(0)
+
+  is_active Boolean @default(true)
+
+  transactions BankTransaction[]
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([account_number])
+  @@index([bank_name])
+  @@map("bank_accounts")
+}
+
+/// Bank Transactions
+model BankTransaction {
+  id             String @id @default(cuid())
+  transaction_no String @unique
+
+  bank_account_id String
+  bank_account    BankAccount @relation(fields: [bank_account_id], references: [id])
+
+  transaction_type TransactionType
+  amount           Float
+  balance_after    Float
+
+  description  String
+  reference_no String?
+
+  category String?
+
+  is_reconciled   Boolean   @default(false)
+  reconciled_date DateTime?
+
+  transaction_date DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([bank_account_id])
+  @@index([transaction_no])
+  @@index([transaction_date])
+  @@map("bank_transactions")
+}
+
+/// Financial Forecasts
+model FinancialForecast {
+  id            String       @id @default(cuid())
+  forecast_name String
+  forecast_type ForecastType
+
+  fiscal_year  Int
+  period_start DateTime
+  period_end   DateTime
+
+  forecast_data Json
+
+  actual_data Json?
+
+  accuracy_score Float?
+  mape           Float?
+
+  model_type   String?
+  model_params Json?
+
+  status ForecastStatus @default(draft)
+
+  created_by String
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([fiscal_year])
+  @@index([forecast_type])
+  @@index([status])
+  @@map("financial_forecasts")
+}
+
+/// Financial Alerts
+model FinancialAlert {
+  id         String        @id @default(cuid())
+  alert_type AlertType
+  severity   AlertSeverity @default(medium)
+
+  title   String
+  message String
+
+  threshold_value Float?
+  current_value   Float?
+
+  status          AlertStatus @default(active)
+  acknowledged_by String?
+  acknowledged_at DateTime?
+  resolved_at     DateTime?
+
+  recipients Json
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([alert_type])
+  @@index([severity])
+  @@index([status])
+  @@map("financial_alerts")
+}
+
+/// Tax Records
+model TaxRecord {
+  id         String  @id @default(cuid())
+  tax_type   TaxType
+  tax_period String
+
+  taxable_amount Float
+  tax_rate       Float
+  tax_amount     Float
+
+  status TaxStatus @default(pending)
+
+  filing_date DateTime?
+  due_date    DateTime
+  filed_by    String?
+
+  payment_status String @default("unpaid")
+  paid_amount    Float  @default(0)
+
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tax_type])
+  @@index([tax_period])
+  @@index([status])
+  @@index([due_date])
+  @@map("tax_records")
+}
+
+// ============================================================================
+// FINANCE ENHANCEMENT ENUMS
+// ============================================================================
+
+enum AccountType {
+  asset
+  liability
+  equity
+  revenue
+  expense
+
+  @@map("account_type")
+}
+
+enum PeriodType {
+  monthly
+  quarterly
+  annually
+
+  @@map("period_type")
+}
+
+enum BudgetStatus {
+  draft
+  submitted
+  approved
+  active
+  closed
+
+  @@map("budget_status")
+}
+
+enum ARStatus {
+  outstanding
+  partial
+  paid
+  overdue
+  written_off
+
+  @@map("ar_status")
+}
+
+enum APStatus {
+  outstanding
+  partial
+  paid
+  overdue
+
+  @@map("ap_status")
+}
+
+enum BankAccountType {
+  checking
+  savings
+  credit_line
+  money_market
+
+  @@map("bank_account_type")
+}
+
+enum ForecastType {
+  revenue
+  expense
+  cashflow
+  profit
+
+  @@map("forecast_type")
+}
+
+enum ForecastStatus {
+  draft
+  active
+  archived
+
+  @@map("forecast_status")
+}
+
+enum AlertType {
+  budget_exceeded
+  low_cash_balance
+  overdue_receivable
+  overdue_payable
+  unusual_transaction
+  forecast_deviation
+  compliance_issue
+
+  @@map("alert_type")
+}
+
+enum AlertSeverity {
+  low
+  medium
+  high
+  critical
+
+  @@map("alert_severity")
+}
+
+enum AlertStatus {
+  active
+  acknowledged
+  resolved
+  dismissed
+
+  @@map("alert_status")
+}
+
+enum TaxType {
+  vat
+  income_tax
+  payroll_tax
+  withholding_tax
+  sales_tax
+
+  @@map("tax_type")
+}
+
+enum TaxStatus {
+  pending
+  filed
+  paid
+  overdue
+
+  @@map("tax_status")
+}
+
+// ============================================================================
+// HR & LEAVE MANAGEMENT MODELS
+// ============================================================================
+
+/// Types of Leave (e.g., Annual, Sick, Unpaid)
+model LeaveType {
+  id          String  @id @default(cuid())
+  name        String  @unique // e.g., "Annual Leave", "Sick Leave"
+  description String?
+  daysAllowed Int // Default days per year
+  carryOver   Boolean @default(false)
+
+  allocations LeaveAllocation[]
+  requests    LeaveRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("leave_types")
+}
+
+/// Leave Allocation - Tracks days allowed vs used per user per year
+model LeaveAllocation {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  leaveTypeId String
+  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  year      Int // e.g., 2024
+  allocated Int // Total days given
+  used      Int @default(0) // Days consumed
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, leaveTypeId, year])
+  @@map("leave_allocations")
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+/// Leave Requests
+model LeaveRequest {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  leaveTypeId String
+  leaveType   LeaveType @relation(fields: [leaveTypeId], references: [id])
+
+  startDate DateTime
+  endDate   DateTime
+  days      Int // Calculated working days
+  reason    String?
+
+  status LeaveStatus @default(PENDING)
+
+  processedBy String? // User ID of approver/rejecter
+  processedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@map("leave_requests")
+}
+
+// ============================================================================
+// RECRUITMENT MODELS
+// ============================================================================
+
+enum JobPostingStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
+
+model JobPosting {
+  id          String           @id @default(cuid())
+  title       String
+  description String
+  department  String
+  location    String?
+  type        String? // e.g., "Full-time", "Contract"
+  status      JobPostingStatus @default(DRAFT)
+
+  applicants Applicant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("job_postings")
+}
+
+enum ApplicantStatus {
+  NEW
+  REVIEWING
+  INTERVIEWING
+  OFFERED
+  HIRED
+  REJECTED
+}
+
+model Applicant {
+  id        String          @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  resumeUrl String?
+  status    ApplicantStatus @default(NEW)
+  notes     String?
+
+  jobPostingId String
+  jobPosting   JobPosting @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
+
+  interviews Interview[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([jobPostingId])
+  @@map("applicants")
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model Interview {
+  id            String    @id @default(cuid())
+  applicantId   String
+  applicant     Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  interviewerId String
+  interviewer   User      @relation("Interviewer", fields: [interviewerId], references: [id])
+
+  scheduledAt DateTime
+  feedback    String?
+  rating      Int? // e.g., 1-5
+  status      InterviewStatus @default(SCHEDULED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicantId])
+  @@index([interviewerId])
+  @@map("interviews")
+}
+
+// ============================================================================
+// PERFORMANCE MODELS
+// ============================================================================
+
+enum PerformanceStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+}
+
+model Goal {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  targetDate  DateTime?
+  progress    Int               @default(0) // 0-100
+  status      PerformanceStatus @default(NOT_STARTED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("performance_goals")
+}
+
+model PerformanceEvaluation {
+  id          String @id @default(cuid())
+  userId      String
+  user        User   @relation("Evaluatee", fields: [userId], references: [id])
+  evaluatorId String
+  evaluator   User   @relation("Evaluator", fields: [evaluatorId], references: [id])
+
+  period   String // e.g., "Q4 2024", "Annual 2024"
+  date     DateTime @default(now())
+  ratings  Json? // Structured ratings for different competencies
+  comments String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([evaluatorId])
+  @@map("performance_evaluations")
+}
+
+model DevelopmentPlan {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String
+  status      String @default("ACTIVE")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("development_plans")
+}
+
+// ============================================================================
+// BENEFITS MODELS
+// ============================================================================
+
+model Benefit {
+  id          String  @id @default(cuid())
+  name        String
+  type        String // e.g., "Health", "Dental", "Retirement"
+  description String?
+  provider    String?
+
+  enrollments BenefitEnrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("benefits")
+}
+
+model BenefitEnrollment {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  benefitId String
+  benefit   Benefit @relation(fields: [benefitId], references: [id], onDelete: Cascade)
+
+  enrolledAt DateTime @default(now())
+  status     String   @default("ACTIVE")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, benefitId])
+  @@index([userId])
+  @@index([benefitId])
+  @@map("benefit_enrollments")
+}
+
+// ============================================================================
+// RBAC MODELS
+// ============================================================================
+
+model Module {
+  id          String       @id @default(cuid())
+  name        String       @unique // e.g., "Finance", "HR"
+  code        String       @unique // e.g., "finance"
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("modules")
+}
+
+model Permission {
+  id        String           @id @default(cuid())
+  name      String // e.g., "Create Invoice"
+  code      String           @unique // e.g., "finance.invoice.create"
+  moduleId  String
+  module    Module           @relation(fields: [moduleId], references: [id])
+  roles     RolePermission[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([moduleId])
+  @@map("permissions")
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  name        String           @unique // e.g., "Finance Manager"
+  code        String           @unique // e.g., "finance_manager"
+  description String?
+  isSystem    Boolean          @default(false) // Prevents deletion of core ERP roles
+  permissions RolePermission[]
+  users       RoleAssignment[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@map("roles")
+}
+
+model RolePermission {
+  roleId       String
+  role         Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permissionId String
+  permission   Permission  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  scope        AccessScope @default(BRANCH)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+enum AccessScope {
+  GLOBAL
+  BRANCH
+  OWN
+}
+
+model RoleAssignment {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+// ============================================================================
+// AUDIT LOG MODEL
+// ============================================================================
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  entityType String
+  entityId   String
+  action     AuditAction
+  userId     String?
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  changes    Json
+  ipAddress  String?
+  timestamp  DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([userId])
+  @@index([timestamp])
+  @@map("audit_logs")
+}

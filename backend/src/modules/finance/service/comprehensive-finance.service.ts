@@ -30,11 +30,11 @@ interface FinancialSummaryDTO {
 }
 
 export class ComprehensiveFinanceService {
-  
+
   // ============================================================================
   // 1. FINANCIAL SUMMARY & DASHBOARD
   // ============================================================================
-  
+
   /**
    * Get comprehensive financial summary with key metrics
    */
@@ -72,8 +72,8 @@ export class ComprehensiveFinanceService {
       const currentAssets = assets.current;
       const currentLiabilities = liabilities.current;
       const currentRatio = currentLiabilities > 0 ? currentAssets / currentLiabilities : 0;
-      const quickRatio = currentLiabilities > 0 
-        ? (currentAssets - assets.inventory) / currentLiabilities 
+      const quickRatio = currentLiabilities > 0
+        ? (currentAssets - assets.inventory) / currentLiabilities
         : 0;
       const debtToEquity = equity > 0 ? liabilities.total / equity : 0;
       const returnOnAssets = assets.total > 0 ? (netIncome / assets.total) * 100 : 0;
@@ -104,13 +104,13 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 2. INCOME STATEMENT
   // ============================================================================
-  
+
   /**
    * Generate comprehensive income statement
    */
   async getIncomeStatement(startDate: Date, endDate: Date) {
     try {
-      const [revenue, cogs, operatingExpenses, otherIncome, otherExpenses, taxes] = 
+      const [revenue, cogs, operatingExpenses, otherIncome, otherExpenses, taxes] =
         await Promise.all([
           this.getRevenueDetailed(startDate, endDate),
           this.getCostOfGoodsSold(startDate, endDate),
@@ -159,7 +159,7 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 3. BALANCE SHEET
   // ============================================================================
-  
+
   /**
    * Generate balance sheet
    */
@@ -212,7 +212,7 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 4. CASH FLOW STATEMENT
   // ============================================================================
-  
+
   /**
    * Generate cash flow statement using indirect method
    */
@@ -258,7 +258,7 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 5. ACCOUNTS RECEIVABLE & PAYABLE
   // ============================================================================
-  
+
   /**
    * Get accounts receivable summary with aging analysis
    */
@@ -313,14 +313,14 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 6. BUDGETING & FORECASTING
   // ============================================================================
-  
+
   /**
    * Get budget vs actual analysis
    */
   async getBudgetAnalysis(fiscalYear: number) {
     try {
       const budgets = await prisma.budget.findMany({
-        where: { 
+        where: {
           fiscal_year: fiscalYear,
           status: 'active'
         },
@@ -331,8 +331,8 @@ export class ComprehensiveFinanceService {
 
       const analysis = budgets.map(budget => {
         const variance = budget.actual_amount - budget.budgeted_amount;
-        const variancePercent = budget.budgeted_amount > 0 
-          ? (variance / budget.budgeted_amount) * 100 
+        const variancePercent = budget.budgeted_amount > 0
+          ? (variance / budget.budgeted_amount) * 100
           : 0;
 
         return {
@@ -355,8 +355,8 @@ export class ComprehensiveFinanceService {
           totalBudgeted,
           totalActual,
           totalVariance: totalActual - totalBudgeted,
-          totalVariancePercent: totalBudgeted > 0 
-            ? ((totalActual - totalBudgeted) / totalBudgeted) * 100 
+          totalVariancePercent: totalBudgeted > 0
+            ? ((totalActual - totalBudgeted) / totalBudgeted) * 100
             : 0
         },
         fiscalYear
@@ -382,7 +382,7 @@ export class ComprehensiveFinanceService {
       startDate.setMonth(startDate.getMonth() - 24);
 
       const historicalData = await this.getHistoricalData(forecastType, startDate, endDate);
-      
+
       // Generate forecast based on method
       let forecastData;
       switch (method) {
@@ -420,14 +420,14 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 7. FINANCIAL RATIOS & KPIs
   // ============================================================================
-  
+
   /**
    * Calculate all key financial ratios
    */
   async calculateFinancialRatios(dateRange?: DateRange) {
     try {
       const { startDate, endDate } = dateRange || this.getCurrentFiscalYear();
-      
+
       const [
         liquidityRatios,
         profitabilityRatios,
@@ -459,13 +459,13 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // 8. TREASURY MANAGEMENT
   // ============================================================================
-  
+
   /**
    * Get treasury dashboard with bank accounts and cash position
    */
   async getTreasuryDashboard() {
     try {
-      const [bankAccounts, cashPosition, upcomingPayments, upcomingReceipts] = 
+      const [bankAccounts, cashPosition, upcomingPayments, upcomingReceipts] =
         await Promise.all([
           this.getBankAccountsSummary(),
           this.getCashPositionForecast(30), // 30-day forecast
@@ -490,7 +490,7 @@ export class ComprehensiveFinanceService {
   // ============================================================================
   // HELPER METHODS
   // ============================================================================
-  
+
   private getCurrentFiscalYear(): DateRange {
     const now = new Date();
     const year = now.getFullYear();
@@ -525,22 +525,22 @@ export class ComprehensiveFinanceService {
   }
 
   private async getRevenue(startDate: Date, endDate: Date) {
-    const sales = await prisma.sales.aggregate({
+    const sales = await prisma.salesDocument.aggregate({
       where: {
         created_date: {
           gte: startDate,
           lte: endDate
         },
-        status: { in: ['confirmed', 'shipped', 'delivered'] }
+        status: { in: ['PAID', 'PARTIALLY_PAID', 'SENT'] }
       },
       _sum: {
-        grand_total: true,
+        total: true,
         subtotal: true
       }
     });
 
     return {
-      revenue: sales._sum.grand_total || 0,
+      revenue: sales._sum.total || 0,
       cogs: 0 // Calculate separately
     };
   }

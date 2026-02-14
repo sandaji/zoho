@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.2.0
- * Query Engine version: 0c8ef2ce45c83248ab3df073180d5eda9e8be7a3
+ * Prisma Client JS version: 7.3.0
+ * Query Engine version: 9d6ad21cbbceab97458517b147a6a09ff43aa735
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.2.0",
-  engine: "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3"
+  client: "7.3.0",
+  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
 }
 
 /**
@@ -393,13 +393,12 @@ export const ModelName = {
   StockMovement: 'StockMovement',
   StockTransfer: 'StockTransfer',
   TransferItem: 'TransferItem',
-  Sales: 'Sales',
-  SalesItem: 'SalesItem',
   Customer: 'Customer',
   SalesDocument: 'SalesDocument',
   SalesDocumentItem: 'SalesDocumentItem',
   Payment: 'Payment',
   DocumentSequence: 'DocumentSequence',
+  CashierSession: 'CashierSession',
   Vendor: 'Vendor',
   PurchaseOrder: 'PurchaseOrder',
   ApprovalRequest: 'ApprovalRequest',
@@ -457,7 +456,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "inventory" | "stockMovement" | "stockTransfer" | "transferItem" | "sales" | "salesItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "truck" | "delivery" | "financeTransaction" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog"
+    modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "inventory" | "stockMovement" | "stockTransfer" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "truck" | "delivery" | "financeTransaction" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1127,154 +1126,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    Sales: {
-      payload: Prisma.$SalesPayload<ExtArgs>
-      fields: Prisma.SalesFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.SalesFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.SalesFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>
-        }
-        findFirst: {
-          args: Prisma.SalesFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.SalesFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>
-        }
-        findMany: {
-          args: Prisma.SalesFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>[]
-        }
-        create: {
-          args: Prisma.SalesCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>
-        }
-        createMany: {
-          args: Prisma.SalesCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.SalesCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>[]
-        }
-        delete: {
-          args: Prisma.SalesDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>
-        }
-        update: {
-          args: Prisma.SalesUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>
-        }
-        deleteMany: {
-          args: Prisma.SalesDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.SalesUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.SalesUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>[]
-        }
-        upsert: {
-          args: Prisma.SalesUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesPayload>
-        }
-        aggregate: {
-          args: Prisma.SalesAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSales>
-        }
-        groupBy: {
-          args: Prisma.SalesGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SalesGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.SalesCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SalesCountAggregateOutputType> | number
-        }
-      }
-    }
-    SalesItem: {
-      payload: Prisma.$SalesItemPayload<ExtArgs>
-      fields: Prisma.SalesItemFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.SalesItemFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.SalesItemFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>
-        }
-        findFirst: {
-          args: Prisma.SalesItemFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.SalesItemFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>
-        }
-        findMany: {
-          args: Prisma.SalesItemFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>[]
-        }
-        create: {
-          args: Prisma.SalesItemCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>
-        }
-        createMany: {
-          args: Prisma.SalesItemCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.SalesItemCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>[]
-        }
-        delete: {
-          args: Prisma.SalesItemDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>
-        }
-        update: {
-          args: Prisma.SalesItemUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>
-        }
-        deleteMany: {
-          args: Prisma.SalesItemDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.SalesItemUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.SalesItemUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>[]
-        }
-        upsert: {
-          args: Prisma.SalesItemUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$SalesItemPayload>
-        }
-        aggregate: {
-          args: Prisma.SalesItemAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateSalesItem>
-        }
-        groupBy: {
-          args: Prisma.SalesItemGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SalesItemGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.SalesItemCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.SalesItemCountAggregateOutputType> | number
-        }
-      }
-    }
     Customer: {
       payload: Prisma.$CustomerPayload<ExtArgs>
       fields: Prisma.CustomerFieldRefs
@@ -1642,6 +1493,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DocumentSequenceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DocumentSequenceCountAggregateOutputType> | number
+        }
+      }
+    }
+    CashierSession: {
+      payload: Prisma.$CashierSessionPayload<ExtArgs>
+      fields: Prisma.CashierSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CashierSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CashierSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.CashierSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CashierSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>
+        }
+        findMany: {
+          args: Prisma.CashierSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>[]
+        }
+        create: {
+          args: Prisma.CashierSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>
+        }
+        createMany: {
+          args: Prisma.CashierSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CashierSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.CashierSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>
+        }
+        update: {
+          args: Prisma.CashierSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.CashierSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CashierSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CashierSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.CashierSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CashierSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.CashierSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCashierSession>
+        }
+        groupBy: {
+          args: Prisma.CashierSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CashierSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CashierSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CashierSessionCountAggregateOutputType> | number
         }
       }
     }
@@ -4957,51 +4882,6 @@ export const TransferItemScalarFieldEnum = {
 export type TransferItemScalarFieldEnum = (typeof TransferItemScalarFieldEnum)[keyof typeof TransferItemScalarFieldEnum]
 
 
-export const SalesScalarFieldEnum = {
-  id: 'id',
-  invoice_no: 'invoice_no',
-  status: 'status',
-  payment_method: 'payment_method',
-  branchId: 'branchId',
-  userId: 'userId',
-  createdById: 'createdById',
-  subtotal: 'subtotal',
-  total_amount: 'total_amount',
-  discount: 'discount',
-  discount_approved_by: 'discount_approved_by',
-  tax: 'tax',
-  grand_total: 'grand_total',
-  amount_paid: 'amount_paid',
-  change: 'change',
-  notes: 'notes',
-  created_date: 'created_date',
-  delivery_date: 'delivery_date',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SalesScalarFieldEnum = (typeof SalesScalarFieldEnum)[keyof typeof SalesScalarFieldEnum]
-
-
-export const SalesItemScalarFieldEnum = {
-  id: 'id',
-  quantity: 'quantity',
-  unit_price: 'unit_price',
-  tax_rate: 'tax_rate',
-  discount: 'discount',
-  discount_percent: 'discount_percent',
-  subtotal: 'subtotal',
-  tax_amount: 'tax_amount',
-  amount: 'amount',
-  salesId: 'salesId',
-  productId: 'productId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type SalesItemScalarFieldEnum = (typeof SalesItemScalarFieldEnum)[keyof typeof SalesItemScalarFieldEnum]
-
-
 export const CustomerScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -5025,6 +4905,7 @@ export const SalesDocumentScalarFieldEnum = {
   branchId: 'branchId',
   customerId: 'customerId',
   createdById: 'createdById',
+  sessionId: 'sessionId',
   subtotal: 'subtotal',
   discount: 'discount',
   tax: 'tax',
@@ -5088,6 +4969,34 @@ export const DocumentSequenceScalarFieldEnum = {
 } as const
 
 export type DocumentSequenceScalarFieldEnum = (typeof DocumentSequenceScalarFieldEnum)[keyof typeof DocumentSequenceScalarFieldEnum]
+
+
+export const CashierSessionScalarFieldEnum = {
+  id: 'id',
+  sessionNo: 'sessionNo',
+  userId: 'userId',
+  branchId: 'branchId',
+  status: 'status',
+  openingBalance: 'openingBalance',
+  closingBalance: 'closingBalance',
+  expectedCash: 'expectedCash',
+  actualCash: 'actualCash',
+  cashVariance: 'cashVariance',
+  totalSalesCount: 'totalSalesCount',
+  totalSalesAmount: 'totalSalesAmount',
+  totalCashReceived: 'totalCashReceived',
+  totalCardReceived: 'totalCardReceived',
+  totalMpesaReceived: 'totalMpesaReceived',
+  totalOtherReceived: 'totalOtherReceived',
+  openedAt: 'openedAt',
+  closedAt: 'closedAt',
+  reconciledAt: 'reconciledAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CashierSessionScalarFieldEnum = (typeof CashierSessionScalarFieldEnum)[keyof typeof CashierSessionScalarFieldEnum]
 
 
 export const VendorScalarFieldEnum = {
@@ -5179,7 +5088,6 @@ export const DeliveryScalarFieldEnum = {
   id: 'id',
   delivery_no: 'delivery_no',
   status: 'status',
-  salesId: 'salesId',
   driverId: 'driverId',
   truckId: 'truckId',
   destination: 'destination',
@@ -5202,7 +5110,6 @@ export const FinanceTransactionScalarFieldEnum = {
   reference_no: 'reference_no',
   description: 'description',
   amount: 'amount',
-  salesId: 'salesId',
   payrollId: 'payrollId',
   payment_method: 'payment_method',
   reference_doc: 'reference_doc',
@@ -5393,7 +5300,6 @@ export const AccountReceivableScalarFieldEnum = {
   paid_date: 'paid_date',
   status: 'status',
   aging_days: 'aging_days',
-  salesId: 'salesId',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -5980,34 +5886,6 @@ export type ListEnumTransferStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
- * Reference to a field of type 'SalesStatus'
- */
-export type EnumSalesStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SalesStatus'>
-    
-
-
-/**
- * Reference to a field of type 'SalesStatus[]'
- */
-export type ListEnumSalesStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SalesStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'PaymentMethod'
- */
-export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
-    
-
-
-/**
- * Reference to a field of type 'PaymentMethod[]'
- */
-export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
-    
-
-
-/**
  * Reference to a field of type 'SalesDocumentType'
  */
 export type EnumSalesDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SalesDocumentType'>
@@ -6046,6 +5924,34 @@ export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  * Reference to a field of type 'PaymentStatus[]'
  */
 export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentMethod'
+ */
+export type EnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentMethod[]'
+ */
+export type ListEnumPaymentMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentMethod[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CashierSessionStatus'
+ */
+export type EnumCashierSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CashierSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CashierSessionStatus[]'
+ */
+export type ListEnumCashierSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CashierSessionStatus[]'>
     
 
 
@@ -6558,13 +6464,12 @@ export type GlobalOmitConfig = {
   stockMovement?: Prisma.StockMovementOmit
   stockTransfer?: Prisma.StockTransferOmit
   transferItem?: Prisma.TransferItemOmit
-  sales?: Prisma.SalesOmit
-  salesItem?: Prisma.SalesItemOmit
   customer?: Prisma.CustomerOmit
   salesDocument?: Prisma.SalesDocumentOmit
   salesDocumentItem?: Prisma.SalesDocumentItemOmit
   payment?: Prisma.PaymentOmit
   documentSequence?: Prisma.DocumentSequenceOmit
+  cashierSession?: Prisma.CashierSessionOmit
   vendor?: Prisma.VendorOmit
   purchaseOrder?: Prisma.PurchaseOrderOmit
   approvalRequest?: Prisma.ApprovalRequestOmit

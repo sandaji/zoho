@@ -128,6 +128,16 @@ export const PaymentMethod = {
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
 
+export const CashierSessionStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  DISCREPANCY: 'DISCREPANCY',
+  RECONCILED: 'RECONCILED'
+} as const
+
+export type CashierSessionStatus = (typeof CashierSessionStatus)[keyof typeof CashierSessionStatus]
+
+
 export const MovementType = {
   INBOUND: 'INBOUND',
   OUTBOUND: 'OUTBOUND',
