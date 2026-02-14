@@ -1,5 +1,5 @@
 "use client";
-
+//frontend/app/auth/login/page.tsx
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -59,7 +59,7 @@ export default function LoginPage() {
       login(token, user);
 
       // Redirect based on role
-      const redirectPath = getRoleDashboardRoute(user.role);
+      const redirectPath = getRoleDashboardRoute(user.roles || user.role);
       router.push(redirectPath);
     } catch (err) {
       setError("An error occurred. Please try again.");

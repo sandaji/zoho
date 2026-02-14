@@ -8,11 +8,14 @@ export interface Branch {
   location: string;
 }
 
+export type UserRole = "admin" | "branch_manager" | "manager" | "accountant" | "hr" | "cashier" | "warehouse_staff" | "driver" | "user";
+
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: "cashier" | "warehouse_staff" | "driver" | "manager" | "admin";
+  role: UserRole;
+  roles?: string[]; // Support for multiple roles
   branchId: string | null;
   branch?: {
     id: string;

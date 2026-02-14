@@ -21,12 +21,33 @@ export const ROLE_DASHBOARD_ROUTES: Record<string, string> = {
 };
 
 /**
- * Get the appropriate dashboard route based on user role
- * @param role - The user's role
+ * Role priority for resolving default dashboard
+ * Higher priority comes first
+ */
+export const ROLE_PRIORITY = [
+  "admin",
+  "branch_manager",
+  "manager",
+  "accountant",
+  "hr",
+  "cashier",
+  "warehouse_staff",
+  "driver",
+  "user",
+];
+
+/**
+ * Get the appropriate dashboard route based on user roles
+ * @param roles - The user's role(s)
  * @returns The dashboard route path
  */
-export function getRoleDashboardRoute(role: UserRole | string): string {
-  return ROLE_DASHBOARD_ROUTES[role] || "/dashboard";
+export function getRoleDashboardRoute(roles: UserRole | string | string[]): string {
+  const roleArray = Array.isArray(roles) ? roles : [roles];
+
+  // Find the highest priority role that the user has
+  const primaryRole = ROLE_PRIORITY.find((r) => roleArray.includes(r)) || roleArray[0] || "user";
+
+  return ROLE_DASHBOARD_ROUTES[primaryRole] || "/dashboard";
 }
 
 /**
@@ -42,6 +63,7 @@ export const ROLE_DISPLAY_NAMES: Record<string, string> = {
   warehouse_staff: "Warehouse Staff",
   driver: "Driver",
   user: "User",
+  // Add fallback for composed roles if needed
 };
 
 /**
@@ -55,75 +77,81 @@ export function getRoleDisplayName(role: UserRole | string): string {
 
 /**
  * Check if a role has access to a specific feature
+ * Helper function to check if ANY of the user's roles allow access
  */
+const checkRoleAccess = (allowedRoles: string[], userRoles: string[]) => {
+  return userRoles.some(role => allowedRoles.includes(role));
+};
+
 export const rolePermissions = {
-  canManageBranches: (role: string) => ["admin"].includes(role),
-  canManageEmployees: (role: string) => ["admin", "hr", "branch_manager"].includes(role),
-  canViewFinance: (role: string) => ["admin", "accountant", "manager", "branch_manager"].includes(role),
-  canManageFinance: (role: string) => ["admin", "accountant"].includes(role),
-  canAccessPOS: (role: string) => ["admin", "cashier", "manager", "branch_manager"].includes(role),
-  canManageInventory: (role: string) => ["admin", "warehouse_staff", "manager", "branch_manager"].includes(role),
-  canViewDeliveries: (role: string) => ["admin", "driver", "manager", "branch_manager"].includes(role),
-  canManageDeliveries: (role: string) => ["admin", "manager", "branch_manager"].includes(role),
-  canAccessAdminPanel: (role: string) => ["admin"].includes(role),
-  canViewReports: (role: string) => ["admin", "manager", "branch_manager", "accountant"].includes(role),
-  canManagePayroll: (role: string) => ["admin", "hr", "accountant"].includes(role),
+  canManageBranches: (roles: string | string[]) => checkRoleAccess(["admin"], Array.isArray(roles) ? roles : [roles]),
+  canManageEmployees: (roles: string | string[]) => checkRoleAccess(["admin", "hr", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canViewFinance: (roles: string | string[]) => checkRoleAccess(["admin", "accountant", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canManageFinance: (roles: string | string[]) => checkRoleAccess(["admin", "accountant"], Array.isArray(roles) ? roles : [roles]),
+  canAccessPOS: (roles: string | string[]) => checkRoleAccess(["admin", "cashier", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canManageInventory: (roles: string | string[]) => checkRoleAccess(["admin", "warehouse_staff", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canViewDeliveries: (roles: string | string[]) => checkRoleAccess(["admin", "driver", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canManageDeliveries: (roles: string | string[]) => checkRoleAccess(["admin", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canAccessAdminPanel: (roles: string | string[]) => checkRoleAccess(["admin"], Array.isArray(roles) ? roles : [roles]),
+  canViewReports: (roles: string | string[]) => checkRoleAccess(["admin", "manager", "branch_manager", "accountant"], Array.isArray(roles) ? roles : [roles]),
+  canManagePayroll: (roles: string | string[]) => checkRoleAccess(["admin", "hr", "accountant"], Array.isArray(roles) ? roles : [roles]),
 };
 
 /**
- * Get all accessible routes for a role
- * @param role - The user's role
+ * Get all accessible routes for a user based on their roles
+ * @param roles - The user's role(s)
  * @returns Array of accessible route paths
  */
-export function getAccessibleRoutes(role: string): string[] {
-  const routes = ["/dashboard"]; // Everyone can access main dashboard
+export function getAccessibleRoutes(roles: string | string[]): string[] {
+  const roleArray = Array.isArray(roles) ? roles : [roles];
+  const routes = new Set(["/dashboard"]); // Everyone can access main dashboard
 
-  if (rolePermissions.canAccessAdminPanel(role)) {
-    routes.push("/dashboard/admin");
+  if (rolePermissions.canAccessAdminPanel(roleArray)) {
+    routes.add("/dashboard/admin");
   }
 
-  if (rolePermissions.canManageBranches(role)) {
-    routes.push("/dashboard/branches");
+  if (rolePermissions.canManageBranches(roleArray)) {
+    routes.add("/dashboard/branches");
   }
 
-  if (rolePermissions.canManageEmployees(role)) {
-    routes.push("/dashboard/employees");
+  if (rolePermissions.canManageEmployees(roleArray)) {
+    routes.add("/dashboard/employees");
   }
 
-  if (rolePermissions.canViewFinance(role)) {
-    routes.push("/dashboard/finance");
+  if (rolePermissions.canViewFinance(roleArray)) {
+    routes.add("/dashboard/finance");
   }
 
-  if (rolePermissions.canAccessPOS(role)) {
-    routes.push("/dashboard/pos");
+  if (rolePermissions.canAccessPOS(roleArray)) {
+    routes.add("/dashboard/pos");
   }
 
-  if (rolePermissions.canManageInventory(role)) {
-    routes.push("/dashboard/inventory");
+  if (rolePermissions.canManageInventory(roleArray)) {
+    routes.add("/dashboard/inventory");
   }
 
-  if (rolePermissions.canViewDeliveries(role)) {
-    routes.push("/dashboard/fleet");
+  if (rolePermissions.canViewDeliveries(roleArray)) {
+    routes.add("/dashboard/fleet");
   }
 
-  if (rolePermissions.canManagePayroll(role)) {
-    routes.push("/dashboard/payroll");
+  if (rolePermissions.canManagePayroll(roleArray)) {
+    routes.add("/dashboard/payroll");
   }
 
-  if (role === "branch_manager") {
-    routes.push("/dashboard/branch/manager");
+  if (roleArray.includes("branch_manager")) {
+    routes.add("/dashboard/branch/manager");
   }
 
-  return routes;
+  return Array.from(routes);
 }
 
 /**
  * Check if user can access a specific route
- * @param role - The user's role
+ * @param roles - The user's role(s)
  * @param path - The route path to check
  * @returns Boolean indicating access permission
  */
-export function canAccessRoute(role: string, path: string): boolean {
-  const accessibleRoutes = getAccessibleRoutes(role);
+export function canAccessRoute(roles: string | string[], path: string): boolean {
+  const accessibleRoutes = getAccessibleRoutes(roles);
   return accessibleRoutes.some(route => path.startsWith(route));
 }

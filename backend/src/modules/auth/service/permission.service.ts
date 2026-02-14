@@ -63,6 +63,30 @@ export class PermissionService {
   }
 
   /**
+   * 🔹 Get all role codes assigned to a user
+   */
+  static async getUserRoles(userId: string): Promise<string[]> {
+    try {
+      const rows = await prisma.roleAssignment.findMany({
+        where: { userId },
+        select: {
+          role: {
+            select: { code: true },
+          },
+        },
+      });
+
+      return rows.map((r) => r.role.code);
+    } catch (error) {
+      logger.error(
+        { userId, error: error as Error },
+        "Failed to get user roles"
+      );
+      return [];
+    }
+  }
+
+  /**
    * 🔹 Get all permissions with their MAXIMUM resolved scopes
    * (GLOBAL > BRANCH > OWN)
    */

@@ -428,7 +428,7 @@ export class PosService {
     // Query filter
     const where: any = {
       createdAt: { gte: startOfDay, lte: endOfDay },
-      status: { in: ["confirmed", "delivered"] },
+      status: { in: ["SENT", "PAID"] },
     };
     if (dto.branchId) where.branchId = dto.branchId;
 

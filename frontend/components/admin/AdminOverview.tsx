@@ -228,7 +228,7 @@ export default function AdminOverview() {
           const TrendIcon = kpi.trend === 'up' ? ArrowUp : kpi.trend === 'down' ? ArrowDown : null;
 
           return (
-            <Card key={kpi.title} className="relative overflow-hidden ">
+            <Card key={kpi.title} className="relative overflow-hidden bg-emerald-500 ">
               <div className={`absolute top-0 right-0 w-20 h-20 ${kpi.bgColor} rounded-full -mr-10 -mt-10 opacity-50`}></div>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-slate-600">

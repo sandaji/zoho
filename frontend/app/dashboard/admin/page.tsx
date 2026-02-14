@@ -98,13 +98,13 @@ export default function AdminDashboardPage() {
       {/* Page Header */}
       <div className="mb-2 px-4">
         <h1 className="text-3xl font-bold text-slate-900 mb-2">{getSectionTitle()}</h1>
-        <p className="text-slate-600">
+        {/* <p className="text-slate-600">
           Manage and monitor all aspects of your ERP system
-        </p>
+        </p> */}
       </div>
 
       {/* Section Content */}
-      <div className="bg-white rounded-lg shadow-sm pl-4 pt-2">
+      <div className="bg-emerald-50 rounded-lg shadow-sm pl-4 pt-2">
         {renderSection()}
       </div>
     </div>

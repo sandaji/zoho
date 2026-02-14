@@ -73,8 +73,14 @@ export class AuthService {
 
     logger.info({ userId: user.id, email: user.email }, "User logged in");
 
-    // Get user permissions
+    // Get user permissions and roles
     const permissions = await PermissionService.getUserPermissions(user.id);
+    const roles = await PermissionService.getUserRoles(user.id);
+
+    // Add primary role to roles list if not present (legacy support)
+    if (user.role && !roles.includes(user.role)) {
+      roles.push(user.role);
+    }
 
     return {
       token,
@@ -83,6 +89,7 @@ export class AuthService {
         email: user.email,
         name: user.name,
         role: user.role as any,
+        roles,
         branchId: user.branchId,
         branch: user.branch,
         permissions,
@@ -165,6 +172,7 @@ export class AuthService {
       email: user.email,
       name: user.name,
       role: user.role as any,
+      roles: [roleCode], // Newly registered user has one role
     };
   }
 
@@ -192,14 +200,21 @@ export class AuthService {
       );
     }
 
-    // Get user permissions
+    // Get user permissions and roles
     const permissions = await PermissionService.getUserPermissions(user.id);
+    const roles = await PermissionService.getUserRoles(user.id);
+
+    // Add primary role to roles list if not present (legacy support)
+    if (user.role && !roles.includes(user.role)) {
+      roles.push(user.role);
+    }
 
     return {
       id: user.id,
       email: user.email,
       name: user.name,
       role: (user.role || "user") as any,
+      roles,
       branchId: user.branchId,
       permissions,
       createdAt: user.createdAt.toISOString(),
@@ -226,16 +241,23 @@ export class AuthService {
       },
     });
 
-    logger.info({ userId: user.id },"User updated", );
+    logger.info({ userId: user.id }, "User updated",);
 
-    // Get permissions
+    // Get permissions and roles
     const permissions = await PermissionService.getUserPermissions(user.id);
+    const roles = await PermissionService.getUserRoles(user.id);
+
+    // Add primary role to roles list if not present (legacy support)
+    if (user.role && !roles.includes(user.role)) {
+      roles.push(user.role);
+    }
 
     return {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role || "user",
+      roles,
       branchId: user.branchId,
       permissions,
     };
@@ -253,14 +275,21 @@ export class AuthService {
       throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
     }
 
-    // Get permissions
+    // Get permissions and roles
     const permissions = await PermissionService.getUserPermissions(user.id);
+    const roles = await PermissionService.getUserRoles(user.id);
+
+    // Add primary role to roles list if not present (legacy support)
+    if (user.role && !roles.includes(user.role)) {
+      roles.push(user.role);
+    }
 
     return {
       id: user.id,
       email: user.email,
       name: user.name,
       role: user.role || "user",
+      roles,
       branchId: user.branchId,
       permissions,
     };
