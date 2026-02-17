@@ -33,6 +33,7 @@ const ROLES = [
   { value: "accountant", label: "Accountant" },
   { value: "manager", label: "Manager" },
   { value: "admin", label: "Admin" },
+  { value: "super_admin", label: "Super Admin" },
 ];
 
 export default function EmployeeManagement() {

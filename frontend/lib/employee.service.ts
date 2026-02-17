@@ -16,7 +16,8 @@ export interface Employee {
     | "hr"
     | "accountant"
     | "manager"
-    | "admin";
+    | "admin"
+    | "super_admin";
   branchId?: string;
   branch?: { id: string; name: string; code: string };
   isActive: boolean;

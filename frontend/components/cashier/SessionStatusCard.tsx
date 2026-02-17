@@ -225,7 +225,7 @@ export function SessionStatusCard({
         )}
 
         {/* Payment Methods Breakdown */}
-        {Object.keys(session.paymentMethods).length > 0 && (
+        {session.paymentMethods && Object.keys(session.paymentMethods).length > 0 && (
           <div className="space-y-3 border-t pt-4">
             <h4 className="font-semibold text-sm">Payment Methods</h4>
             <div className="space-y-2">

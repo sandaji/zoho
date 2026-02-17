@@ -1,7 +1,6 @@
 // frontend/lib/rbac-api.ts
 import { User } from "./admin-api";
-
-const API_BASE_URL = "/api/rbac";
+import { API_BASE_URL } from "./api-config";
 
 export interface Permission {
   id: string;
@@ -40,7 +39,7 @@ const getAuthHeaders = (token: string) => {
 };
 
 export const fetchRoles = async (token: string): Promise<Role[]> => {
-  const response = await fetch(`${API_BASE_URL}/roles`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) throw new Error("Failed to fetch roles");
@@ -49,7 +48,7 @@ export const fetchRoles = async (token: string): Promise<Role[]> => {
 };
 
 export const fetchRoleDetails = async (token: string, id: string): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/roles/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) throw new Error("Failed to fetch role details");
@@ -58,7 +57,7 @@ export const fetchRoleDetails = async (token: string, id: string): Promise<Role>
 };
 
 export const createRole = async (token: string, data: { name: string; code: string; description?: string }): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/roles`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles`, {
     method: "POST",
     headers: getAuthHeaders(token),
     body: JSON.stringify(data),
@@ -72,7 +71,7 @@ export const createRole = async (token: string, data: { name: string; code: stri
 };
 
 export const updateRole = async (token: string, id: string, data: { name?: string; description?: string }): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/roles/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
     method: "PATCH",
     headers: getAuthHeaders(token),
     body: JSON.stringify(data),
@@ -83,7 +82,7 @@ export const updateRole = async (token: string, id: string, data: { name?: strin
 };
 
 export const deleteRole = async (token: string, id: string): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/roles/${id}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(token),
   });
@@ -94,7 +93,7 @@ export const deleteRole = async (token: string, id: string): Promise<void> => {
 };
 
 export const fetchPermissions = async (token: string): Promise<Module[]> => {
-  const response = await fetch(`${API_BASE_URL}/permissions`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/permissions`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) throw new Error("Failed to fetch permissions");
@@ -103,7 +102,7 @@ export const fetchPermissions = async (token: string): Promise<Module[]> => {
 };
 
 export const syncRolePermissions = async (token: string, roleId: string, permissionIds: string[]): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/roles/${roleId}/permissions`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${roleId}/permissions`, {
     method: "POST",
     headers: getAuthHeaders(token),
     body: JSON.stringify({ permissions: permissionIds }),
@@ -114,7 +113,7 @@ export const syncRolePermissions = async (token: string, roleId: string, permiss
 };
 
 export const fetchUserRoles = async (token: string, userId: string): Promise<any[]> => {
-  const response = await fetch(`${API_BASE_URL}/users/${userId}/roles`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/users/${userId}/roles`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) throw new Error("Failed to fetch user roles");
@@ -123,7 +122,7 @@ export const fetchUserRoles = async (token: string, userId: string): Promise<any
 };
 
 export const assignUserRoles = async (token: string, userId: string, roleIds: string[]): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/users/${userId}/roles`, {
+  const response = await fetch(`${API_BASE_URL}/v1/rbac/users/${userId}/roles`, {
     method: "POST",
     headers: getAuthHeaders(token),
     body: JSON.stringify({ roles: roleIds }),

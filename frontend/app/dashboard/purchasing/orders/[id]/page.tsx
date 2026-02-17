@@ -170,6 +170,7 @@ export default function PurchaseOrderDetailPage({ params }: { params: { id: stri
       } finally {
           setActionLoading(false);
       }
+      return;
   };
 
   const downloadPdf = async () => {

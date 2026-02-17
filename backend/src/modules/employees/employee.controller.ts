@@ -56,13 +56,29 @@ export class EmployeeController {
           isActive: true,
           createdAt: true,
           updatedAt: true,
+          roles: {
+            select: {
+              role: {
+                select: { code: true },
+              },
+            },
+          },
         },
         orderBy: { name: "asc" },
       });
 
+      // Map roles from RoleAssignment table
+      const employeesWithRoles = employees.map((emp: any) => {
+        const assignedRoles = emp.roles.map((r: any) => r.role.code);
+        return {
+          ...emp,
+          role: assignedRoles.length > 0 ? assignedRoles[0] : emp.role,
+        };
+      });
+
       res.json({
         success: true,
-        data: employees,
+        data: employeesWithRoles,
       });
     } catch (error) {
       next(error);
@@ -94,12 +110,26 @@ export class EmployeeController {
           isActive: true,
           createdAt: true,
           updatedAt: true,
+          roles: {
+            select: {
+              role: {
+                select: { code: true },
+              },
+            },
+          },
         },
       });
 
       if (!employee) {
         throw new AppError(ErrorCode.NOT_FOUND, 404, "Employee not found");
       }
+
+      // Map role from RoleAssignment table
+      const assignedRoles = (employee as any).roles.map((r: any) => r.role.code);
+      const employeeWithRole = {
+        ...employee,
+        role: assignedRoles.length > 0 ? assignedRoles[0] : (employee as any).role,
+      };
 
       // Get transfer history
       const transfers = await (prisma as any).employeeTransfer.findMany({
@@ -114,7 +144,7 @@ export class EmployeeController {
       res.json({
         success: true,
         data: {
-          ...employee,
+          ...employeeWithRole,
           transfers,
         },
       });

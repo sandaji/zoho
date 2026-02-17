@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
 
 /**
  * Cashier Session Data Structure
@@ -55,6 +56,7 @@ export interface CashierSessionHookState {
  */
 export function useCashierSession(): CashierSessionHookState {
   const router = useRouter();
+  const { token, isLoading: authLoading } = useAuth();
   const [session, setSession] = useState<CashierSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,20 +65,37 @@ export function useCashierSession(): CashierSessionHookState {
    * Fetch current session from API
    */
   const refetch = useCallback(async () => {
+    // Wait for auth to initialize
+    if (authLoading) return;
+
+    // If no token, redirect to login implies we can't fetch.
+    if (!token) {
+      setIsLoading(false);
+      // Safe to redirect as the original code enforced it on 401
+      router.push('/auth/login');
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
 
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch('/api/cashier/sessions/current', {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       });
 
       if (response.status === 401) {
         // Unauthorized - redirect to login
-        router.push('/login');
+        router.push('/auth/login');
         return;
       }
 
@@ -100,7 +119,7 @@ export function useCashierSession(): CashierSessionHookState {
     } finally {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [router, token, authLoading]);
 
   /**
    * Open a new cashier session
@@ -111,11 +130,17 @@ export function useCashierSession(): CashierSessionHookState {
         setIsLoading(true);
         setError(null);
 
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch('/api/cashier/sessions/open', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
           body: JSON.stringify({
             openingBalance,
             notes,
@@ -123,7 +148,7 @@ export function useCashierSession(): CashierSessionHookState {
         });
 
         if (response.status === 401) {
-          router.push('/login');
+          router.push('/auth/login');
           throw new Error('Unauthorized');
         }
 
@@ -144,7 +169,7 @@ export function useCashierSession(): CashierSessionHookState {
         setIsLoading(false);
       }
     },
-    [router]
+    [router, token]
   );
 
   /**
@@ -160,13 +185,19 @@ export function useCashierSession(): CashierSessionHookState {
         setIsLoading(true);
         setError(null);
 
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(
           `/api/cashier/sessions/${session.id}/close`,
           {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify({
               actualCash,
               notes,
@@ -175,7 +206,7 @@ export function useCashierSession(): CashierSessionHookState {
         );
 
         if (response.status === 401) {
-          router.push('/login');
+          router.push('/auth/login');
           throw new Error('Unauthorized');
         }
 
@@ -196,7 +227,7 @@ export function useCashierSession(): CashierSessionHookState {
         setIsLoading(false);
       }
     },
-    [session, router]
+    [session, router, token]
   );
 
   /**
@@ -212,13 +243,19 @@ export function useCashierSession(): CashierSessionHookState {
         setIsLoading(true);
         setError(null);
 
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
         const response = await fetch(
           `/api/cashier/sessions/${session.id}/reconcile`,
           {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers,
             body: JSON.stringify({
               notes,
             }),
@@ -226,7 +263,7 @@ export function useCashierSession(): CashierSessionHookState {
         );
 
         if (response.status === 401) {
-          router.push('/login');
+          router.push('/auth/login');
           throw new Error('Unauthorized');
         }
 
@@ -253,7 +290,7 @@ export function useCashierSession(): CashierSessionHookState {
         setIsLoading(false);
       }
     },
-    [session, router]
+    [session, router, token]
   );
 
   /**

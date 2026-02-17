@@ -18,11 +18,18 @@ export const requirePermission = (permissionCode: string) => {
         );
       }
 
+      // Admin users have full access to all endpoints
+      if (req.user.role === 'admin' || req.user.role === 'super_admin') {
+        // Grant GLOBAL scope to admin users
+        next();
+        return;
+      }
+
       const userId = req.user.userId;
-      
+
       // Resolve effective scope for this permission
       const scope = await PermissionService.getResolvedScope(userId, permissionCode);
-      
+
       if (!scope) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
@@ -35,10 +42,10 @@ export const requirePermission = (permissionCode: string) => {
       // Record-level isolation: Inject resolved scopes into request object
       if (scope === 'BRANCH') {
         if (!req.user.branchId) {
-           // If user is supposed to be restricted to a branch but doesn't have one,
-           // this is a configuration error or they are a global user with wrong role.
-           // For safety, we block if they have no branch context.
-           throw new AppError(ErrorCode.FORBIDDEN, 403, 'User must belong to a branch for branch-scoped actions');
+          // If user is supposed to be restricted to a branch but doesn't have one,
+          // this is a configuration error or they are a global user with wrong role.
+          // For safety, we block if they have no branch context.
+          throw new AppError(ErrorCode.FORBIDDEN, 403, 'User must belong to a branch for branch-scoped actions');
         }
         req.authorizedBranchIds = [req.user.branchId];
       } else if (scope === 'OWN') {
@@ -67,12 +74,18 @@ export const hasAnyPermission = (permissionCodes: string[]) => {
         );
       }
 
+      // Admin users have full access to all endpoints
+      if (req.user.role === 'admin' || req.user.role === 'super_admin') {
+        next();
+        return;
+      }
+
       const userId = req.user.userId;
 
       const userPermissions = await PermissionService.getUserPermissions(userId);
-      
+
       const hasAccess = permissionCodes.some(code => userPermissions.includes(code));
-      
+
       if (!hasAccess) {
         throw new AppError(
           ErrorCode.FORBIDDEN,

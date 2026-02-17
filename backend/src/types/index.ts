@@ -49,7 +49,7 @@ import {
  * User role enumeration
  * Defines the different roles available in the system
  */
-export type UserRole = "cashier" | "warehouse_staff" | "driver" | "manager" | "admin";
+export type UserRole = "cashier" | "warehouse_staff" | "driver" | "manager" | "admin" | "super_admin";
 
 // ============================================================================
 // AUTH & TOKEN TYPES

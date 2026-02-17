@@ -137,7 +137,7 @@ export class SalesService {
 
     if (input.type === SalesDocumentType.QUOTE) {
       finalIssueDate = new Date(); // quotation_date = now
-      
+
       // valid_until = quotation_date + 3 days
       const validUntil = new Date(finalIssueDate);
       validUntil.setDate(validUntil.getDate() + 3);
@@ -442,7 +442,7 @@ export class SalesService {
       });
 
       return invoice;
-    });
+    }, { timeout: 10000 });
   }
 
   // =============================
@@ -545,12 +545,12 @@ export class SalesService {
     offset?: string;
   }) {
     const where: any = {};
-    
+
     if (query.branchId) where.branchId = query.branchId;
     if (query.type) where.type = query.type;
     if (query.status) where.status = query.status;
     if (query.customerId) where.customerId = query.customerId;
-    
+
     // REQUIREMENT 6: Date range filtering
     if (query.startDate || query.endDate) {
       where.issueDate = {};
@@ -565,15 +565,15 @@ export class SalesService {
         where.issueDate.lte = endDate;
       }
     }
-    
+
     const limit = parseInt(query.limit || '50');
     const offset = parseInt(query.offset || '0');
-    
+
     const [documents, total] = await Promise.all([
       prisma.salesDocument.findMany({
         where,
-        include: { 
-          items: { include: { product: true } }, 
+        include: {
+          items: { include: { product: true } },
           customer: true,
           payments: true,
         },
@@ -583,7 +583,7 @@ export class SalesService {
       }),
       prisma.salesDocument.count({ where }),
     ]);
-    
+
     return { data: documents, total, limit, offset };
   }
 
@@ -593,9 +593,9 @@ export class SalesService {
   static async getDocumentById(id: string) {
     return prisma.salesDocument.findUnique({
       where: { id },
-      include: { 
-        items: { include: { product: true } }, 
-        customer: true, 
+      include: {
+        items: { include: { product: true } },
+        customer: true,
         payments: true,
         branch: true,
       },
@@ -616,16 +616,16 @@ export class SalesService {
       type: SalesDocumentType.INVOICE,
       status: SalesDocumentStatus.PAID,
     };
-    
+
     if (query.branchId) where.branchId = query.branchId;
-    
+
     if (query.dateFilter) {
       const date = new Date(query.dateFilter);
       const startOfDay = new Date(date.setHours(0, 0, 0, 0));
       const endOfDay = new Date(date.setHours(23, 59, 59, 999));
       where.issueDate = { gte: startOfDay, lte: endOfDay };
     }
-    
+
     const documents = await prisma.salesDocument.findMany({
       where,
       include: { items: true, payments: true },
@@ -633,7 +633,7 @@ export class SalesService {
       take: query.limit || 50,
       skip: query.offset || 0,
     });
-    
+
     return documents.map(doc => ({
       id: doc.id,
       invoice_no: doc.documentId,
@@ -658,9 +658,9 @@ export class SalesService {
       where: { id },
       include: { items: { include: { product: true } }, payments: true },
     });
-    
+
     if (!doc) return null;
-    
+
     return {
       id: doc.id,
       invoice_no: doc.documentId,
@@ -697,13 +697,13 @@ export class SalesService {
     userId: string;
   }) {
     const { documentId, amount, paymentMethod, reference, userId } = input;
-    
+
     const document = await prisma.salesDocument.findUnique({
       where: { id: documentId },
     });
-    
+
     if (!document) throw new AppError(ErrorCode.NOT_FOUND, 404, 'Document not found');
-    
+
     const payment = await prisma.payment.create({
       data: {
         salesDocumentId: documentId,
@@ -714,11 +714,11 @@ export class SalesService {
         createdById: userId,
       },
     });
-    
+
     // Update document balance
     const newBalance = document.balance - amount;
     const isPaid = newBalance <= 0;
-    
+
     await prisma.salesDocument.update({
       where: { id: documentId },
       data: {
@@ -728,7 +728,7 @@ export class SalesService {
         status: isPaid ? SalesDocumentStatus.PAID : document.status,
       },
     });
-    
+
     return payment;
   }
 }

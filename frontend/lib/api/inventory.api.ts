@@ -3,7 +3,7 @@
  * Centralized API calls for inventory management
  */
 
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api-config";
 
 // Types
 export interface Product {

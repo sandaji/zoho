@@ -21,7 +21,7 @@ export class BranchController {
 
       res.json({
         success: true,
-        data: branches,
+        data: { branches },
       });
     } catch (error) {
       next(error);
@@ -33,7 +33,7 @@ export class BranchController {
    */
   async getBranch(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       const branch = await prisma.branch.findUnique({
         where: { id },
@@ -130,7 +130,7 @@ export class BranchController {
    */
   async updateBranch(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { name, city, address, phone, isActive } = req.body;
 
       const branch = await prisma.branch.findUnique({ where: { id } });
@@ -175,13 +175,12 @@ export class BranchController {
    */
   async deleteBranch(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       const branch = await prisma.branch.findUnique({
         where: { id },
         include: {
           users: { select: { id: true } },
-          warehouses: { select: { id: true } },
           warehouses: { select: { id: true } },
           salesDocuments: { select: { id: true } },
         },
@@ -227,7 +226,7 @@ export class BranchController {
         throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Branch ID is required");
       }
 
-      const stats = await this.branchService.getBranchDashboard(branchId);
+      const stats = await this.branchService.getBranchDashboard(branchId as string);
       res.json({
         success: true,
         data: stats

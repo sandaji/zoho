@@ -9,7 +9,6 @@ import {
   Heart, 
   Calendar,
   UserPlus,
-  ClipboardCheck,
   Award
 } from "lucide-react";
 import Link from "next/link";

@@ -11,6 +11,42 @@ import { AppError, ErrorCode } from '@/lib/errors';
 import { successResponse } from '@/lib/response';
 
 /**
+ * Helper to map database session to a response object with derived fields
+ */
+const mapToSessionResponse = (session: any) => {
+  if (!session) return null;
+
+  return {
+    id: session.id,
+    sessionNumber: session.sessionNo,
+    userId: session.userId,
+    branchId: session.branchId,
+    status: session.status,
+    openingBalance: session.openingBalance,
+    actualCash: session.actualCash,
+    expectedCash: session.expectedCash,
+    variance: session.cashVariance,
+    variancePercentage: session.expectedCash > 0 ? ((session.cashVariance || 0) / session.expectedCash) * 100 : 0,
+    totalSales: session.totalSalesAmount,
+    salesCount: session.totalSalesCount,
+    paymentMethods: {
+      cash: session.totalCashReceived || 0,
+      card: session.totalCardReceived || 0,
+      mpesa: session.totalMpesaReceived || 0,
+      other: session.totalOtherReceived || 0,
+    },
+    openedAt: session.openedAt,
+    closedAt: session.closedAt,
+    reconciledAt: session.reconciledAt,
+    notes: session.notes,
+    createdAt: session.createdAt,
+    updatedAt: session.updatedAt,
+    user: session.user,
+    branch: session.branch,
+  };
+};
+
+/**
  * CashierSessionController
  *
  * Handles HTTP requests for cashier session operations.
@@ -39,7 +75,7 @@ export class CashierSessionController {
   async openSession(req: Request, res: Response, next: NextFunction) {
     try {
       const { openingBalance, notes } = req.body;
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
       const branchId = (req as any).user?.branchId;
 
       // Validate user context
@@ -71,7 +107,7 @@ export class CashierSessionController {
 
       return res.status(201).json(
         successResponse({
-          data: session,
+          data: mapToSessionResponse(session),
           message: 'Session opened successfully',
           statusCode: 201,
         })
@@ -96,7 +132,7 @@ export class CashierSessionController {
     try {
       const { id } = req.params;
       const { actualCash, notes } = req.body;
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
 
       // Validate session ID
       const idString = (id as string) || '';
@@ -125,7 +161,7 @@ export class CashierSessionController {
 
       return res.status(200).json(
         successResponse({
-          data: session,
+          data: mapToSessionResponse(session),
           message: 'Session closed successfully',
           statusCode: 200,
         })
@@ -145,15 +181,26 @@ export class CashierSessionController {
    */
   async getCurrentSession(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
       const branchId = (req as any).user?.branchId;
 
       // Validate user context
-      if (!userId || !branchId) {
+      if (!userId) {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
           'User context not found. Authentication required.'
+        );
+      }
+
+      // If user has no branch (e.g. global admin), they can't have a cashier session
+      if (!branchId) {
+        return res.status(200).json(
+          successResponse({
+            data: null,
+            message: 'No active session (User has no branch assigned)',
+            statusCode: 200,
+          })
         );
       }
 
@@ -162,8 +209,8 @@ export class CashierSessionController {
 
       return res.status(200).json(
         successResponse({
-          data: session,
-          message: session ? 'Current session retrieved' : 'No active session',
+          data: mapToSessionResponse(session),
+          message: session ? 'Active session found' : 'No active session found',
           statusCode: 200,
         })
       );
@@ -191,7 +238,7 @@ export class CashierSessionController {
    */
   async listSessions(req: Request, res: Response, next: NextFunction) {
     try {
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
       const userBranchId = (req as any).user?.branchId;
       const userPermissions = (req as any).user?.permissions || [];
 
@@ -269,7 +316,10 @@ export class CashierSessionController {
 
       return res.status(200).json(
         successResponse({
-          data: result,
+          data: {
+            ...result,
+            sessions: result.sessions.map((s: any) => mapToSessionResponse(s)),
+          },
           message: `Retrieved ${result.sessions.length} sessions`,
           statusCode: 200,
         })
@@ -291,7 +341,7 @@ export class CashierSessionController {
   async getSessionById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
       const userPermissions = (req as any).user?.permissions || [];
 
       // Validate session ID
@@ -318,7 +368,7 @@ export class CashierSessionController {
 
       return res.status(200).json(
         successResponse({
-          data: session,
+          data: mapToSessionResponse(session),
           message: 'Session retrieved successfully',
           statusCode: 200,
         })
@@ -342,7 +392,7 @@ export class CashierSessionController {
     try {
       const { id } = req.params;
       const { notes } = req.body;
-      const userId = (req as any).user?.id;
+      const userId = (req as any).user?.userId;
 
       // Validate session ID
       const idString = (id as string) || '';
@@ -370,11 +420,12 @@ export class CashierSessionController {
 
       return res.status(200).json(
         successResponse({
-          data: session,
+          data: mapToSessionResponse(session),
           message: `Session reconciled successfully (Status: ${session.status})`,
           statusCode: 200,
         })
       );
+
     } catch (error) {
       return next(error);
     }

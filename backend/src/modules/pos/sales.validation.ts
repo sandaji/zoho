@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 // Sales document item schema
 const salesDocumentItemSchema = z.object({
-  productId: z.string().uuid(),
+  productId: z.string(),
   quantity: z.number().positive(),
   unitPrice: z.number().nonnegative(),
   taxRate: z.number().nonnegative(),
@@ -19,7 +19,7 @@ const salesDocumentItemSchema = z.object({
 export const createSalesDocumentSchema = z.object({
   type: z.enum(['DRAFT', 'QUOTE', 'INVOICE', 'CREDIT_NOTE']),
   status: z.enum(['DRAFT', 'SENT', 'CONVERTED', 'PAID', 'UNPAID', 'VOID']).optional(),
-  customerId: z.string().uuid().optional(),
+  customerId: z.string().optional(),
   issueDate: z.string().or(z.date()),
   dueDate: z.string().or(z.date()).optional(),
   subtotal: z.number().nonnegative(),
@@ -33,10 +33,10 @@ export const createSalesDocumentSchema = z.object({
 
 // List documents query schema
 export const listDocumentsQuerySchema = z.object({
-  branchId: z.string().uuid().optional(),
+  branchId: z.string().optional(),
   type: z.enum(['DRAFT', 'QUOTE', 'INVOICE', 'CREDIT_NOTE']).optional(),
   status: z.enum(['DRAFT', 'SENT', 'CONVERTED', 'PAID', 'UNPAID', 'VOID']).optional(),
-  customerId: z.string().uuid().optional(),
+  customerId: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   limit: z.string().optional(),
@@ -50,7 +50,7 @@ export const convertDocumentSchema = z.object({
 
 // POS sale item schema
 const posSaleItemSchema = z.object({
-  productId: z.string().uuid(),
+  productId: z.string(),
   quantity: z.number().positive(),
   unit_price: z.number().nonnegative(),
   tax_rate: z.number().nonnegative(),
@@ -60,8 +60,8 @@ const posSaleItemSchema = z.object({
 
 // Create POS sale schema
 export const createPOSSaleSchema = z.object({
-  branchId: z.string().uuid(),
-  userId: z.string().uuid(),
+  branchId: z.string(),
+  userId: z.string(),
   items: z.array(posSaleItemSchema).min(1),
   payment_method: z.enum(['cash', 'card', 'mpesa', 'cheque', 'bank_transfer']),
   amount_paid: z.number().positive(),

@@ -1,5 +1,5 @@
 
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { AdminController } from "../modules/admin/admin.controller";
 import { AuthController } from "../modules/auth/controller";
 import { POSController } from "../modules/pos/controller";
@@ -151,7 +151,7 @@ router.post("/pos/sales", authMiddleware, (req, res, next) =>
   posController.createSales(req, res, next)
 );
 
-// Daily summary - Managers and admins only
+// Daily summary - All authenticated users (RBAC middleware handles admin bypass automatically)
 router.get(
   "/pos/daily-summary",
   authMiddleware,

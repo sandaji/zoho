@@ -10,7 +10,7 @@ import { AppError, ErrorCode } from '../lib/errors';
 export const authenticate = (req: Request, _res: Response, next: NextFunction): void => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader) {
       throw new AppError(
         ErrorCode.UNAUTHORIZED,
@@ -70,13 +70,13 @@ export const authorize = (requiredRoles: string[]) => {
     }
 
     // Super admin bypass
-    if (req.user.role === 'admin') {
+    if (req.user.role === 'admin' || req.user.role === 'super_admin') {
       next();
       return;
     }
 
     const userRole = req.user.role;
-    
+
     if (!requiredRoles.includes(userRole)) {
       next(new AppError(
         ErrorCode.FORBIDDEN,
@@ -117,7 +117,7 @@ export const checkJwt = (req: Request, _res: Response, next: NextFunction): void
 export const hasRole = (requiredRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     // Super admin bypass
-    if (req.user?.role === 'admin') {
+    if (req.user?.role === 'admin' || req.user?.role === 'super_admin') {
       next();
       return;
     }

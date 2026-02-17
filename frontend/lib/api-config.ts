@@ -18,7 +18,7 @@ export const API_ENDPOINTS = {
   POS_SALES: "/v1/pos/sales",
   POS_SALES_BY_ID: (id: string) => `/v1/pos/sales/${id}`,
   POS_RECEIPT: (id: string) => `/v1/pos/sales/${id}/receipt`,
-  POS_DAILY_SUMMARY: "/v1/pos/sales/daily-summary",
+  POS_DAILY_SUMMARY: "/v1/pos/daily-summary",
   POS_DISCOUNT_APPROVE: "/v1/pos/discount/approve",
 
   // Sales Documents
@@ -66,7 +66,7 @@ export const API_ENDPOINTS = {
   // Finance
   FINANCE_TRANSACTIONS: "/v1/finance/transactions",
   FINANCE_TRANSACTION_BY_ID: (id: string) => `/v1/finance/transactions/${id}`,
-  
+
   // Financial Reports
   FINANCE_BALANCE_SHEET: "/v1/finance/reports/balance-sheet",
   FINANCE_PROFIT_LOSS: "/v1/finance/reports/profit-loss",
@@ -74,20 +74,20 @@ export const API_ENDPOINTS = {
 
   // Bank Reconciliation
   BANK_ACCOUNTS: "/v1/finance/bank/accounts",
-  BANK_UPLOAD: `${API_BASE_URL}/finance/bank/upload`,
-  BANK_RECONCILIATION_DATA: (accountId: string) => `${API_BASE_URL}/finance/bank/reconciliation/${accountId}`,
-  BANK_RECONCILE_ITEM: (id: string) => `/finance/bank/reconcile/${id}`,
-  
+  BANK_UPLOAD: "/v1/finance/bank/upload",
+  BANK_RECONCILIATION_DATA: (accountId: string) => `/v1/finance/bank/reconciliation/${accountId}`,
+  BANK_RECONCILE_ITEM: (id: string) => `/v1/finance/bank/reconcile/${id}`,
+
   // HR & Leave Management
-  LEAVE_TYPES: "/hr/leaves/types",
-  LEAVE_BALANCE: "/hr/leaves/my-balance",
-  LEAVE_REQUEST: "/hr/leaves/request",
-  LEAVE_MY_REQUESTS: "/hr/leaves/my-requests",
-  LEAVE_PENDING: "/hr/leaves/pending",
-  LEAVE_UPDATE_STATUS: (id: string) => `/hr/leaves/requests/${id}/status`,
-  
+  LEAVE_TYPES: "/v1/hr/leaves/types",
+  LEAVE_BALANCE: "/v1/hr/leaves/my-balance",
+  LEAVE_REQUEST: "/v1/hr/leaves/request",
+  LEAVE_MY_REQUESTS: "/v1/hr/leaves/my-requests",
+  LEAVE_PENDING: "/v1/hr/leaves/pending",
+  LEAVE_UPDATE_STATUS: (id: string) => `/v1/hr/leaves/requests/${id}/status`,
+
   // Warehouse / Inventory
-  STOCK_MOVEMENTS: `${API_BASE_URL}/warehouse/movements`,
+  STOCK_MOVEMENTS: "/v1/warehouse/movements",
 
   // Payroll
   PAYROLL: "/v1/payroll",

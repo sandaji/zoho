@@ -1,16 +1,9 @@
 // backend/prisma/seed.ts
 
-import { prisma } from '../src/lib/db';
 import 'dotenv/config';
-import {
-  InventoryStatus,
-  SalesStatus,
-  DeliveryStatus,
-  TransactionType,
-  PayrollStatus,
-  PaymentMethod,
-  AccessScope,
-} from '../src/generated/client';
+import { prisma } from '../src/lib/db';
+// Enum imports removed to avoid path issues
+
 import bcrypt from 'bcrypt';
 
 async function main() {
@@ -34,6 +27,10 @@ async function main() {
 
   console.log('🧹 Cleaning existing data...');
   const modelsToClear: (keyof typeof prisma)[] = [
+    'purchaseOrderItem',
+    'purchaseOrder',
+    'approvalRequest',
+    'vendor',
     'roleAssignment',
     'rolePermission',
     'permission',
@@ -75,8 +72,12 @@ async function main() {
     'salesDocument',
     'documentSequence',
     'customer',
-    'salesItem',
-    'sales',
+    'salesDocumentItem',
+    'salesDocument',
+    'documentSequence',
+    'customer',
+    // 'salesItem', 
+    // 'sales',
     'payroll',
     'inventory',
     'product',
@@ -154,6 +155,7 @@ async function main() {
     { code: 'inventory.stock.view', name: 'View Stock', moduleId: inventoryModule.id },
     { code: 'inventory.stock.adjust', name: 'Adjust Stock', moduleId: inventoryModule.id },
     { code: 'inventory.warehouse.manage', name: 'Manage Warehouses', moduleId: inventoryModule.id },
+    { code: 'inventory.warehouse.view', name: 'View Warehouses', moduleId: inventoryModule.id },
 
     // Procurement Permissions
     { code: 'procurement.vendor.view', name: 'View Vendors', moduleId: procurementModule.id },
@@ -181,55 +183,55 @@ async function main() {
   console.log('🔗 Assigning role permissions...');
   // Super Admin: all permissions
   for (const permId of permissionMap.values()) {
-    await prisma.rolePermission.create({ data: { roleId: superAdminRole.id, permissionId: permId, scope: AccessScope.GLOBAL } });
+    await prisma.rolePermission.create({ data: { roleId: superAdminRole.id, permissionId: permId, scope: "GLOBAL" } });
   }
 
   // Branch Manager
   const bmPerms = ['hr.employee.view', 'sales.order.create', 'sales.order.view_all'];
   for (const code of bmPerms) {
     const id = permissionMap.get(code);
-    if (id) await prisma.rolePermission.create({ data: { roleId: branchManagerRole.id, permissionId: id, scope: AccessScope.BRANCH } });
+    if (id) await prisma.rolePermission.create({ data: { roleId: branchManagerRole.id, permissionId: id, scope: "BRANCH" } });
   }
 
   // Cashier
   const cashierPerms = ['sales.order.create'];
   for (const code of cashierPerms) {
     const id = permissionMap.get(code);
-    if (id) await prisma.rolePermission.create({ data: { roleId: cashierRole.id, permissionId: id, scope: AccessScope.OWN } });
+    if (id) await prisma.rolePermission.create({ data: { roleId: cashierRole.id, permissionId: id, scope: "OWN" } });
   }
 
   // Warehouse
   const warehousePerms = ['sales.order.view_all'];
   for (const code of warehousePerms) {
     const id = permissionMap.get(code);
-    if (id) await prisma.rolePermission.create({ data: { roleId: warehouseRole.id, permissionId: id, scope: AccessScope.BRANCH } });
+    if (id) await prisma.rolePermission.create({ data: { roleId: warehouseRole.id, permissionId: id, scope: "BRANCH" } });
   }
 
   console.log('👤 Creating users...');
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const admin = await prisma.user.create({
-    data: { email: 'admin@lunatech.co.ke', name: 'Admin User', passwordHash: hashedPassword, branchId: mainWarehouse.id },
+    data: { email: 'admin@lunatech.co.ke', name: 'Admin User', role: 'admin', passwordHash: hashedPassword, branchId: mainWarehouse.id },
   });
   await prisma.roleAssignment.create({ data: { userId: admin.id, roleId: superAdminRole.id } });
 
   const manager = await prisma.user.create({
-    data: { email: 'manager@lunatech.co.ke', name: 'Jane Smith', passwordHash: hashedPassword, branchId: westlandsBranch.id },
+    data: { email: 'manager@lunatech.co.ke', name: 'Jane Smith', role: 'manager', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
   await prisma.roleAssignment.create({ data: { userId: manager.id, roleId: branchManagerRole.id } });
 
   const warehouseStaff = await prisma.user.create({
-    data: { email: 'warehouse@lunatech.co.ke', name: 'Bob Wilson', passwordHash: hashedPassword, branchId: mainWarehouse.id },
+    data: { email: 'warehouse@lunatech.co.ke', name: 'Bob Wilson', role: 'warehouse_staff', passwordHash: hashedPassword, branchId: mainWarehouse.id },
   });
   await prisma.roleAssignment.create({ data: { userId: warehouseStaff.id, roleId: warehouseRole.id } });
 
   const cashier = await prisma.user.create({
-    data: { email: 'cashier@lunatech.co.ke', name: 'Alice Johnson', passwordHash: hashedPassword, branchId: westlandsBranch.id },
+    data: { email: 'cashier@lunatech.co.ke', name: 'Alice Johnson', role: 'cashier', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
   await prisma.roleAssignment.create({ data: { userId: cashier.id, roleId: cashierRole.id } });
 
   const driver = await prisma.user.create({
-    data: { email: 'driver@lunatech.co.ke', name: 'Michael Brown', passwordHash: hashedPassword, branchId: westlandsBranch.id },
+    data: { email: 'driver@lunatech.co.ke', name: 'Michael Brown', role: 'driver', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
 
   console.log('🛍️ Creating products and inventory...');
@@ -247,35 +249,16 @@ async function main() {
     const qty1 = Math.floor(p.quantity * 0.6);
     const qty2 = Math.floor(p.quantity * 0.4);
 
-    await prisma.inventory.create({ data: { quantity: qty1, reserved: 0, available: qty1, status: InventoryStatus.in_stock, productId: prod.id, warehouseId: warehouse1.id } });
-    await prisma.inventory.create({ data: { quantity: qty2, reserved: 0, available: qty2, status: InventoryStatus.in_stock, productId: prod.id, warehouseId: warehouse2.id } });
+    await prisma.inventory.create({ data: { quantity: qty1, reserved: 0, available: qty1, status: 'in_stock', productId: prod.id, warehouseId: warehouse1.id } });
+    await prisma.inventory.create({ data: { quantity: qty2, reserved: 0, available: qty2, status: 'in_stock', productId: prod.id, warehouseId: warehouse2.id } });
   }
 
   console.log('🚚 Creating trucks...');
   await prisma.truck.create({ data: { registration: 'KCA 123A', model: 'Toyota Hiace', capacity: 2000, license_plate: 'KCA-123A' } });
 
-  console.log('🛒 Creating sample sales...');
-  const sale = await prisma.sales.create({
-    data: {
-      invoice_no: 'INV-2024-001',
-      status: SalesStatus.confirmed,
-      payment_method: PaymentMethod.card,
-      branchId: westlandsBranch.id,
-      userId: cashier.id,
-      createdById: manager.id,
-      subtotal: 120000,
-      total_amount: 120000,
-      discount: 0,
-      tax: 19200,
-      grand_total: 139200,
-      amount_paid: 139200,
-      change: 0,
-    },
-  });
+  console.log('🛒 Creating sample sales... (Legacy Sales model removed)');
+  // Legacy sales seeding removed
 
-  await prisma.salesItem.create({
-    data: { quantity: 1, unit_price: 120000, subtotal: 120000, tax_rate: 0.16, tax_amount: 19200, amount: 139200, salesId: sale.id, productId: createdProducts[0].id },
-  });
 
   console.log('\n✅ Seed data created successfully!');
 }

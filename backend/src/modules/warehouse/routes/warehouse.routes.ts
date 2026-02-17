@@ -33,35 +33,34 @@ router.get(
   (req, res, next) => warehouseController.listWarehouses(req, res, next)
 );
 
-// Get a single warehouse by ID
-// GET /warehouse/:id
-router.get(
-  "/:id",
-  authMiddleware,
-  requirePermission("inventory.warehouse.view"),
-  (req, res, next) => warehouseController.getWarehouse(req, res, next)
-);
+/**
+ * Statistics Routes (MUST be before /:id to avoid matching "stats" as an ID)
+ */
 
-// Update warehouse details
-// PATCH /warehouse/:id
-router.patch(
-  "/:id",
-  authMiddleware,
-  requirePermission("inventory.warehouse.update"),
-  (req, res, next) => warehouseController.updateWarehouse(req, res, next)
-);
-
-// Get warehouse stock details
-// GET /warehouse/:id/stock
+// Get warehouse statistics
+// GET /warehouse/stats
 router.get(
-  "/:id/stock",
+  "/stats",
   authMiddleware,
   requirePermission("inventory.stock.view"),
-  (req, res, next) => warehouseController.getWarehouseStock(req, res, next)
+  (req, res, next) => warehouseController.getWarehouseStats(req, res, next)
 );
 
 /**
- * Stock Transfer Routes
+ * Stock Movement Routes (MUST be before /:id to avoid matching "movements" as an ID)
+ */
+
+// Get stock movements with filtering
+// GET /warehouse/movements
+router.get(
+  "/movements",
+  authMiddleware,
+  requirePermission("inventory.stock.view"),
+  (req, res, next) => warehouseController.getStockMovements(req, res, next)
+);
+
+/**
+ * Stock Transfer Routes (MUST be before /:id)
  */
 
 // Create a new stock transfer
@@ -123,29 +122,35 @@ router.post(
 );
 
 /**
- * Stock Movement Routes
+ * Parameterized Routes (MUST be LAST to avoid catching named routes)
  */
 
-// Get stock movements with filtering
-// GET /warehouse/movements
+// Get a single warehouse by ID
+// GET /warehouse/:id
 router.get(
-  "/movements",
+  "/:id",
   authMiddleware,
-  requirePermission("inventory.stock.view"),
-  (req, res, next) => warehouseController.getStockMovements(req, res, next)
+  requirePermission("inventory.warehouse.view"),
+  (req, res, next) => warehouseController.getWarehouse(req, res, next)
 );
 
-/**
- * Statistics Routes
- */
+// Update warehouse details
+// PATCH /warehouse/:id
+router.patch(
+  "/:id",
+  authMiddleware,
+  requirePermission("inventory.warehouse.update"),
+  (req, res, next) => warehouseController.updateWarehouse(req, res, next)
+);
 
-// Get warehouse statistics
-// GET /warehouse/stats
+// Get warehouse stock details
+// GET /warehouse/:id/stock
 router.get(
-  "/stats",
+  "/:id/stock",
   authMiddleware,
   requirePermission("inventory.stock.view"),
-  (req, res, next) => warehouseController.getWarehouseStats(req, res, next)
+  (req, res, next) => warehouseController.getWarehouseStock(req, res, next)
 );
 
 export default router;
+

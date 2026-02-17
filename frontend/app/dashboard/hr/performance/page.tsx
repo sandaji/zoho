@@ -24,8 +24,16 @@ import {
 } from "@/components/ui/table";
 import { toast } from "sonner";
 
+interface Goal {
+  id: string;
+  title: string;
+  status: string;
+  progress: number;
+  targetDate?: string;
+}
+
 export default function PerformancePage() {
-  const [goals, setGoals] = useState([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {

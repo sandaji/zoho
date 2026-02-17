@@ -129,61 +129,66 @@ export function Sidebar() {
 
     // ========================================
     // DASHBOARD - Permission-specific home page
+    // Exclude for cashiers
     // ========================================
-    if (hasAnyPermission(['admin.user.manage', 'admin.branch.manage'])) {
-      items.push({
-        label: "Admin Dashboard",
-        href: "/dashboard/admin",
-        icon: LayoutDashboard,
-      });
-    } else if (hasPermission('hr.employee.view')) {
-      items.push({
-        label: "Management System",
-        href: "/dashboard/branch/manager",
-        icon: TrendingUp,
-      });
-    } else if (hasAnyPermission(['inventory.product.view', 'sales.order.view_all', 'finance.gl.view'])) {
-      items.push({
-        label: "Dashboard",
-        href: "/dashboard",
-        icon: Home,
-      });
-    } else if (hasPermission('finance.gl.view')) {
-      items.push({
-        label: "Finance Dashboard",
-        href: "/dashboard/finance",
-        icon: DollarSign,
-      });
-    } else if (hasPermission('hr.employee.view')) {
-      items.push({
-        label: "HR Dashboard",
-        href: "/dashboard/hr",
-        icon: LayoutDashboard,
-      });
-    } else if (hasPermission('sales.order.create')) {
-      items.push({
-        label: "POS Dashboard",
-        href: "/dashboard/pos",
-        icon: ShoppingCart,
-      });
-    } else if (hasPermission('inventory.product.view')) {
-      items.push({
-        label: "Inventory Dashboard",
-        href: "/dashboard/inventory",
-        icon: Package,
-      });
-    } else if (hasPermission('sales.order.view_all')) {
-      items.push({
-        label: "Deliveries",
-        href: "/dashboard/fleet",
-        icon: Truck,
-      });
-    } else {
-      items.push({
-        label: "Dashboard",
-        href: "/dashboard",
-        icon: LayoutDashboard,
-      });
+    const isCashier = user?.role === 'cashier';
+    
+    if (!isCashier) {
+      if (hasAnyPermission(['admin.user.manage', 'admin.branch.manage'])) {
+        items.push({
+          label: "Admin Dashboard",
+          href: "/dashboard/admin",
+          icon: LayoutDashboard,
+        });
+      } else if (hasPermission('hr.employee.view')) {
+        items.push({
+          label: "Management System",
+          href: "/dashboard/branch/manager",
+          icon: TrendingUp,
+        });
+      } else if (hasAnyPermission(['inventory.product.view', 'sales.order.view_all', 'finance.gl.view'])) {
+        items.push({
+          label: "Dashboard",
+          href: "/dashboard",
+          icon: Home,
+        });
+      } else if (hasPermission('finance.gl.view')) {
+        items.push({
+          label: "Finance Dashboard",
+          href: "/dashboard/finance",
+          icon: DollarSign,
+        });
+      } else if (hasPermission('hr.employee.view')) {
+        items.push({
+          label: "HR Dashboard",
+          href: "/dashboard/hr",
+          icon: LayoutDashboard,
+        });
+      } else if (hasPermission('sales.order.create')) {
+        items.push({
+          label: "POS Dashboard",
+          href: "/dashboard/pos",
+          icon: ShoppingCart,
+        });
+      } else if (hasPermission('inventory.product.view')) {
+        items.push({
+          label: "Inventory Dashboard",
+          href: "/dashboard/inventory",
+          icon: Package,
+        });
+      } else if (hasPermission('sales.order.view_all')) {
+        items.push({
+          label: "Deliveries",
+          href: "/dashboard/fleet",
+          icon: Truck,
+        });
+      } else {
+        items.push({
+          label: "Dashboard",
+          href: "/dashboard",
+          icon: LayoutDashboard,
+        });
+      }
     }
 
     // ========================================
@@ -372,12 +377,14 @@ export function Sidebar() {
     // SYSTEM SETTINGS
     // ========================================
 
-    // Settings - Available to all authenticated users
-    items.push({
-      label: "Settings",
-      href: "/dashboard/settings",
-      icon: Settings,
-    });
+    // Settings - Available to all authenticated users except cashiers
+    if (!isCashier) {
+      items.push({
+        label: "Settings",
+        href: "/dashboard/settings",
+        icon: Settings,
+      });
+    }
 
     return items;
   };
@@ -438,6 +445,7 @@ export function Sidebar() {
   const getRoleDisplay = (role: string) => {
     const roleMap: Record<string, string> = {
       admin: "Admin",
+      super_admin: "Super Admin",
       branch_manager: "Branch Manager",
       manager: "MD",
       accountant: "Accountant",

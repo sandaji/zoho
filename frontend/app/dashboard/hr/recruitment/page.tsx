@@ -2,14 +2,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { 
   Briefcase, 
   Users, 
-  Calendar, 
   Plus, 
   Search,
   MoreVertical,
-  ExternalLink,
   MapPin,
   Clock
 } from "lucide-react";
@@ -28,8 +27,20 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
+interface JobPosting {
+  id: string;
+  title: string;
+  department: string;
+  status: string;
+  location?: string;
+  type?: string;
+  _count?: {
+    applicants: number;
+  };
+}
+
 export default function RecruitmentPage() {
-  const [postings, setPostings] = useState([]);
+  const [postings, setPostings] = useState<JobPosting[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
 

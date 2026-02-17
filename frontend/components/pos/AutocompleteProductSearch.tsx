@@ -281,7 +281,7 @@ export function AutocompleteProductSearch({
 
                 <div className="flex shrink-0 flex-col items-end gap-1">
                   <span className="text-lg font-bold">
-                    KSh {product.unit_price.toLocaleString()}
+                    KSh {(product.unit_price || 0).toLocaleString()}
                   </span>
                   <span
                     className={cn(

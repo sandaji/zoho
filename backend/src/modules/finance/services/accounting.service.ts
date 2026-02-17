@@ -17,13 +17,15 @@ export class AccountingService {
   /**
    * Get or create a chart of account by code
    */
-  static async getEnsureAccount(accountDef: { code: string; name: string; type: AccountType; category: string }) {
-    let account = await prisma.chartOfAccount.findUnique({
+  static async getEnsureAccount(accountDef: { code: string; name: string; type: AccountType; category: string }, tx?: any) {
+    const client = tx || prisma;
+
+    let account = await client.chartOfAccount.findUnique({
       where: { account_code: accountDef.code },
     });
 
     if (!account) {
-      account = await prisma.chartOfAccount.create({
+      account = await client.chartOfAccount.create({
         data: {
           account_code: accountDef.code,
           account_name: accountDef.name,
@@ -59,8 +61,8 @@ export class AccountingService {
     }
   ) {
     // 1. Resolve Accounts
-    const revenueAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_REVENUE);
-    const taxAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_TAX_PAYABLE);
+    const revenueAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_REVENUE, tx);
+    const taxAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_TAX_PAYABLE, tx);
 
     // Determine Asset Account based on payment method
     let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
@@ -68,7 +70,7 @@ export class AccountingService {
     else if (data.paymentMethod === 'card' || data.paymentMethod === 'bank_transfer') assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
     // Note: If credit/on-account, usage would be Accounts Receivable, but POS is usually immediate payment.
 
-    const assetAccount = await this.getEnsureAccount(assetAccountDef);
+    const assetAccount = await this.getEnsureAccount(assetAccountDef, tx);
 
     // We will create the splits separately using batch_id
     const batchId = `BATCH-${data.saleId}`;

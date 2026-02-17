@@ -10,6 +10,7 @@ import { UserRole } from "./auth-context";
  */
 export const ROLE_DASHBOARD_ROUTES: Record<string, string> = {
   admin: "/dashboard/admin",
+  super_admin: "/dashboard/admin", // super_admin has same access as admin
   branch_manager: "/dashboard/branch/manager",
   manager: "/dashboard",
   accountant: "/dashboard/finance",
@@ -25,6 +26,7 @@ export const ROLE_DASHBOARD_ROUTES: Record<string, string> = {
  * Higher priority comes first
  */
 export const ROLE_PRIORITY = [
+  "super_admin",
   "admin",
   "branch_manager",
   "manager",
@@ -55,6 +57,7 @@ export function getRoleDashboardRoute(roles: UserRole | string | string[]): stri
  */
 export const ROLE_DISPLAY_NAMES: Record<string, string> = {
   admin: "Administrator",
+  super_admin: "Super Admin",
   branch_manager: "Branch Manager",
   manager: "Manager",
   accountant: "Accountant",

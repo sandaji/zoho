@@ -59,7 +59,9 @@ export default function LoginPage() {
       login(token, user);
 
       // Redirect based on role
-      const redirectPath = getRoleDashboardRoute(user.roles || user.role);
+      // Prefer roles array if available, fall back to single role
+      const userRoles = user.roles && user.roles.length > 0 ? user.roles : (user.role ? [user.role] : []);
+      const redirectPath = getRoleDashboardRoute(userRoles);
       router.push(redirectPath);
     } catch (err) {
       setError("An error occurred. Please try again.");

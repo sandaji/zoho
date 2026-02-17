@@ -112,7 +112,7 @@ export class PosService {
           name: product.name,
           description: product.description || undefined,
           category: product.category || undefined,
-          unitPrice: product.unit_price,
+          unit_price: product.unit_price,
           tax_rate: product.tax_rate ?? 0.16,
           available: totalAvailable,
           inventoryLocations,
@@ -188,7 +188,6 @@ export class PosService {
           documentId: invoice_no,
           status: "PAID",
           // payment_method, // Field does not exist on SalesDocument
-          branchId,
           branchId,
           createdById: userId,
           subtotal,

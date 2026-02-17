@@ -6,6 +6,7 @@ import { useReactToPrint } from "react-to-print";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -38,15 +39,9 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
 }) => {
   const receiptRef = useRef<HTMLDivElement>(null);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-KE", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
 
   const handlePrint = useReactToPrint({
-    content: () => receiptRef.current,
+    contentRef: receiptRef,
     documentTitle: `Receipt-${sale.invoice_no}`,
   });
 
@@ -58,6 +53,9 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
             <CheckCircle className="h-8 w-8 text-green-600" />
             Sale Completed Successfully!
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Summary and receipt for invoice {sale.invoice_no}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
