@@ -1,3 +1,5 @@
+
+//frontend/src/app/dashboard/pos/documents/new/page.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -34,9 +36,9 @@ export default function NewDocumentPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => router.back()}
               className="gap-2"
             >
@@ -52,7 +54,7 @@ export default function NewDocumentPage() {
               </p>
             </div>
           </div>
-          
+
           {/* Mode Selector */}
           <div className="flex gap-2">
             {(["draft", "quote", "invoice"] as const).map((m) => (

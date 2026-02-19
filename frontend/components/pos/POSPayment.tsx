@@ -18,6 +18,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
 
@@ -106,28 +107,40 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           </div>
         </div>
 
+
+
         {/* Payment Method */}
         <div className="space-y-2">
           <Label className="text-sm font-semibold">Payment Method</Label>
-          <div className="grid grid-cols-2 gap-2">
-            {paymentMethods.map((method) => {
-              const Icon = method.icon;
-              const isSelected = paymentMethod === method.value;
-              return (
-                <Button
-                  key={method.value}
-                  type="button"
-                  variant={isSelected ? "default" : "outline"}
-                  className={`h-20 flex-col gap-2 ${isSelected ? "" : method.color}`}
-                  onClick={() => setPaymentMethod(method.value as PaymentMethod)}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="w-full justify-start">
+                {paymentMethods.find(m => m.value === paymentMethod)?.label || "Select Payment Method"}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="text-sm font-semibold">Select Payment Method</DropdownMenuLabel>
+                <DropdownMenuRadioGroup
+                  value={paymentMethod}
+                  onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
                 >
-                  <Icon className="h-5 w-5" />
-                  <span className="text-xs">{method.label}</span>
-                </Button>
-              );
-            })}
-          </div>
+                  {paymentMethods.map((method) => {
+                    const Icon = method.icon;
+                    return (
+                      <DropdownMenuRadioItem value={method.value} key={method.value} className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <span>{method.label}</span>
+                      </DropdownMenuRadioItem>
+                    );
+                  })}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
+
+
 
         {/* Cash Payment Details */}
         {paymentMethod === "cash" && (

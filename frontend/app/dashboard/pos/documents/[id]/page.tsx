@@ -1,3 +1,4 @@
+//frontend/src/app/dashboard/pos/documents/[id]/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";

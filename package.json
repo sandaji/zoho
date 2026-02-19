@@ -1,0 +1,24 @@
+{
+  "name": "zoho",
+  "version": "1.0.0",
+  "description": "zoho-erp",
+  "keywords": [
+    "zoho",
+    "erp"
+  ],
+  "homepage": "https://github.com/sandaji/zoho#readme",
+  "bugs": {
+    "url": "https://github.com/sandaji/zoho/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandaji/zoho.git"
+  },
+  "license": "ISC",
+  "author": "ijamy vincent",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

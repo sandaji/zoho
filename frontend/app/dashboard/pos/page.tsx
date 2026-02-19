@@ -76,11 +76,11 @@ export default function POSPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   // Cashier session dialogs
   const [showOpenDialog, setShowOpenDialog] = useState(false);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
-  
+
   // Active tab
   const [activeTab, setActiveTab] = useState("sale");
 
