@@ -11,6 +11,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { fetchVendors } from "@/lib/admin-api";
 
 // Inline interface for Vendor as it might not be in admin-api yet
 interface Vendor {
@@ -38,13 +39,7 @@ export function VendorSelect({
     const loadVendors = async () => {
       if (!token) return;
       try {
-        const response = await fetch("/api/vendors", {
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-        if (!response.ok) throw new Error("Failed to fetch vendors");
-        const { data } = await response.json();
+        const data = await fetchVendors(token);
         setVendors(data || []);
       } catch (error) {
         console.error("Error fetching vendors:", error);

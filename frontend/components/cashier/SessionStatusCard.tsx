@@ -120,12 +120,13 @@ export function SessionStatusCard({
   /**
    * Format currency
    */
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | undefined) => {
+    const numValue = typeof value === 'number' && !isNaN(value) ? value : 0;
     return new Intl.NumberFormat('en-KE', {
       style: 'currency',
       currency: 'KES',
       minimumFractionDigits: 2,
-    }).format(value);
+    }).format(numValue);
   };
 
   /**
@@ -143,7 +144,7 @@ export function SessionStatusCard({
 
   return (
     <Card>
-      <CardHeader>
+      {/* <CardHeader>
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="flex items-center gap-2">
@@ -156,74 +157,74 @@ export function SessionStatusCard({
           </div>
           {getStatusBadge()}
         </div>
-      </CardHeader>
+      </CardHeader> */}
 
       <CardContent className="space-y-6">
         {/* Opening Balance Section */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="border-r pr-4">
-            <p className="text-sm text-gray-600 mb-1">Opening Balance</p>
-            <p className="text-2xl font-bold">
+        <div className="grid grid-cols-4 gap-4">
+          <div className="flex items-center justify-between border-r pr-4">
+            <p className=" text-sm text-gray-600 mb-1">Opening Balance:</p>
+            <p className="text-sm font-bold text-emerald-500">
               {formatCurrency(session.openingBalance)}
             </p>
           </div>
-          <div>
+          <div className="flex items-center justify-between border-r pr-4">
             <p className="text-sm text-gray-600 mb-1">Sales Total</p>
-            <p className="text-2xl font-bold text-green-600">
+            <p className="text-sm font-bold text-green-600">
               {formatCurrency(session.totalSales)}
             </p>
           </div>
-        </div>
 
-        {/* Sales Count Section */}
-        <div className="bg-gray-50 rounded-lg p-3">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">Transactions</p>
-            <p className="text-lg font-semibold">{session.salesCount}</p>
+
+          {/* Sales Count Section */}
+          <div className="bg-gray-50 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-gray-600">Transactions</p>
+              <p className="text-lg font-semibold">{session.salesCount}</p>
+            </div>
           </div>
-        </div>
 
-        {/* Expected vs Actual Cash */}
-        {session.status !== 'OPEN' && (
-          <div className="space-y-3 border-t pt-4">
-            <h4 className="font-semibold text-sm">Reconciliation</h4>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-gray-600 mb-1">Expected Cash</p>
-                <p className="font-semibold">{formatCurrency(session.expectedCash)}</p>
+          {/* Expected vs Actual Cash */}
+          {session.status !== 'OPEN' && (
+            <div className="space-y-3 border-t pt-4">
+              {/* <h4 className="font-semibold text-sm">Reconciliation</h4> */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-gray-600 mb-1">Expected Cash</p>
+                  <p className="font-semibold">{formatCurrency(session.expectedCash)}</p>
+                </div>
+                {session.actualCash !== undefined && (
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs text-gray-600 mb-1">Actual Cash</p>
+                    <p className="font-semibold">{formatCurrency(session.actualCash)}</p>
+                  </div>
+                )}
               </div>
-              {session.actualCash !== undefined && (
-                <div>
-                  <p className="text-xs text-gray-600 mb-1">Actual Cash</p>
-                  <p className="font-semibold">{formatCurrency(session.actualCash)}</p>
+
+              {/* Variance Display */}
+              {session.variance !== undefined && (
+                <div className={`bg-blue-50 border border-blue-200 rounded-lg p-3 ${getVarianceColor()}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {Math.abs(session.variance) > 500 ? (
+                        <AlertTriangle className="h-4 w-4" />
+                      ) : (
+                        <TrendingUp className="h-4 w-4" />
+                      )}
+                      <span className="text-sm">Cash Variance</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">{formatCurrency(session.variance)}</p>
+                      <p className="text-xs">
+                        {session.variancePercentage?.toFixed(2)}%
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-
-            {/* Variance Display */}
-            {session.variance !== undefined && (
-              <div className={`bg-blue-50 border border-blue-200 rounded-lg p-3 ${getVarianceColor()}`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {Math.abs(session.variance) > 500 ? (
-                      <AlertTriangle className="h-4 w-4" />
-                    ) : (
-                      <TrendingUp className="h-4 w-4" />
-                    )}
-                    <span className="text-sm">Cash Variance</span>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold">{formatCurrency(session.variance)}</p>
-                    <p className="text-xs">
-                      {session.variancePercentage?.toFixed(2)}%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
+          )}
+        </div>
         {/* Payment Methods Breakdown */}
         {session.paymentMethods && Object.keys(session.paymentMethods).length > 0 && (
           <div className="space-y-3 border-t pt-4">

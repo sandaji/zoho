@@ -1,3 +1,4 @@
+//frontend/src/app/dashboard/pos/history/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -55,12 +56,12 @@ interface SalesDocument {
 export default function HistoryPage() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading } = useAuth();
-  
+
   // Filters
   const [documentType, setDocumentType] = useState<DocumentType>("ALL");
   const [fromDate, setFromDate] = useState<string>("");
   const [toDate, setToDate] = useState<string>("");
-  
+
   // Data
   const [documents, setDocuments] = useState<SalesDocument[]>([]);
   const [loading, setLoading] = useState(false);

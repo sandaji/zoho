@@ -178,18 +178,18 @@ const getAuthHeaders = (token: string) => {
 };
 
 export const fetchBranches = async (token: string): Promise<Branch[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/branches`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/branches`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch branches");
   }
   const { data } = await response.json();
-  return data;
+  return data.branches || [];
 };
 
 export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/warehouses`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/warehouses`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -200,18 +200,18 @@ export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
 };
 
 export const fetchVendors = async (token: string): Promise<any[]> => {
-  const response = await fetch(`${API_BASE_URL}/vendors`, {
+  const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch vendors");
   }
   const { data } = await response.json();
-  return data;
+  return data.vendors || [];
 };
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/users`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/users`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -222,7 +222,7 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
 };
 
 export const fetchProducts = async (token: string): Promise<Product[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/products`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/products`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -233,7 +233,7 @@ export const fetchProducts = async (token: string): Promise<Product[]> => {
 };
 
 export const fetchSales = async (token: string): Promise<Sales[]> => {
-  const response = await fetch(`${API_BASE_URL}/pos/sales`, {
+  const response = await fetch(`${API_BASE_URL}/v1/pos/sales`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -245,7 +245,7 @@ export const fetchSales = async (token: string): Promise<Sales[]> => {
 };
 
 export const fetchDeliveries = async (token: string): Promise<Delivery[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/deliveries`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/deliveries`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -256,7 +256,7 @@ export const fetchDeliveries = async (token: string): Promise<Delivery[]> => {
 };
 
 export const fetchFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/finance/transactions`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/finance/transactions`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -267,7 +267,7 @@ export const fetchFinanceTransactions = async (token: string): Promise<FinanceTr
 };
 
 export const fetchPayroll = async (token: string): Promise<Payroll[]> => {
-  const response = await fetch(`${API_BASE_URL}/admin/payroll`, {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/payroll`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -278,7 +278,7 @@ export const fetchPayroll = async (token: string): Promise<Payroll[]> => {
 };
 
 export const createProduct = async (token: string, payload: ProductPayload): Promise<Product> => {
-  const response = await fetch(`${API_BASE_URL}/products`, {
+  const response = await fetch(`${API_BASE_URL}/v1/products`, {
     method: "POST",
     headers: getAuthHeaders(token),
     body: JSON.stringify(payload),
@@ -317,7 +317,7 @@ export const fetchDailySummary = async (token: string): Promise<DailySummary> =>
 }
 
 export const getFinancialReport = async (token: string, month: number, year: number): Promise<MonthlyReport> => {
-  const response = await fetch(`${API_BASE_URL}/finance/report?month=${month}&year=${year}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/finance/report?month=${month}&year=${year}`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -328,7 +328,7 @@ export const getFinancialReport = async (token: string, month: number, year: num
 };
 
 export const getRevenueAnalytics = async (token: string, range: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/finance/analytics/revenue?range=${range}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/finance/analytics/revenue?range=${range}`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -339,7 +339,7 @@ export const getRevenueAnalytics = async (token: string, range: string): Promise
 };
 
 export const listFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {
-  const response = await fetch(`${API_BASE_URL}/finance/transactions`, {
+  const response = await fetch(`${API_BASE_URL}/v1/finance/transactions`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -350,7 +350,7 @@ export const listFinanceTransactions = async (token: string): Promise<FinanceTra
 };
 
 export const listPayroll = async (token: string): Promise<Payroll[]> => {
-  const response = await fetch(`${API_BASE_URL}/hr/payroll`, {
+  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll`, {
     headers: getAuthHeaders(token),
   });
   if (!response.ok) {
@@ -361,7 +361,7 @@ export const listPayroll = async (token: string): Promise<Payroll[]> => {
 };
 
 export const runPayroll = async (token: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/payroll/run`, {
+  const response = await fetch(`${API_BASE_URL}/v1/payroll/run`, {
     method: "POST",
     headers: getAuthHeaders(token),
   });
@@ -374,7 +374,7 @@ export const runPayroll = async (token: string): Promise<any> => {
 };
 
 export const updatePayrollStatus = async (token: string, id: string, status: string): Promise<Payroll> => {
-  const response = await fetch(`${API_BASE_URL}/payroll/${id}/status`, {
+  const response = await fetch(`${API_BASE_URL}/v1/payroll/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeaders(token),
     body: JSON.stringify({ status }),
@@ -445,7 +445,7 @@ export const updateUser = async (
 
 ): Promise<User> => {
 
-  const response = await fetch(`${API_BASE_URL}/hr/users/${userId}`, {
+  const response = await fetch(`${API_BASE_URL}/v1/hr/users/${userId}`, {
 
     method: "PATCH",
 

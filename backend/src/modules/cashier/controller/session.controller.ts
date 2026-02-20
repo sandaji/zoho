@@ -16,24 +16,32 @@ import { successResponse } from '@/lib/response';
 const mapToSessionResponse = (session: any) => {
   if (!session) return null;
 
+  // Ensure numeric values are properly converted to numbers with 0 as default for undefined
+  const openingBalance = Number(session.openingBalance) || 0;
+  const actualCash = session.actualCash ? Number(session.actualCash) : undefined;
+  const expectedCash = Number(session.expectedCash) || 0;
+  const cashVariance = session.cashVariance ? Number(session.cashVariance) : 0;
+  const totalSalesAmount = Number(session.totalSalesAmount) || 0;
+  const totalSalesCount = Number(session.totalSalesCount) || 0;
+
   return {
     id: session.id,
     sessionNumber: session.sessionNo,
     userId: session.userId,
     branchId: session.branchId,
     status: session.status,
-    openingBalance: session.openingBalance,
-    actualCash: session.actualCash,
-    expectedCash: session.expectedCash,
-    variance: session.cashVariance,
-    variancePercentage: session.expectedCash > 0 ? ((session.cashVariance || 0) / session.expectedCash) * 100 : 0,
-    totalSales: session.totalSalesAmount,
-    salesCount: session.totalSalesCount,
+    openingBalance,
+    actualCash,
+    expectedCash,
+    variance: cashVariance,
+    variancePercentage: expectedCash > 0 ? (cashVariance / expectedCash) * 100 : 0,
+    totalSales: totalSalesAmount,
+    salesCount: totalSalesCount,
     paymentMethods: {
-      cash: session.totalCashReceived || 0,
-      card: session.totalCardReceived || 0,
-      mpesa: session.totalMpesaReceived || 0,
-      other: session.totalOtherReceived || 0,
+      cash: Number(session.totalCashReceived) || 0,
+      card: Number(session.totalCardReceived) || 0,
+      mpesa: Number(session.totalMpesaReceived) || 0,
+      other: Number(session.totalOtherReceived) || 0,
     },
     openedAt: session.openedAt,
     closedAt: session.closedAt,

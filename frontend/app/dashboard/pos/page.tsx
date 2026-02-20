@@ -365,16 +365,7 @@ export default function POSPage() {
           />
         </div>
 
-        {/* Cashier Session Status */}
-        <SessionStatusCard
-          session={session}
-          isLoading={sessionLoading}
-          onCloseClick={() => setShowCloseDialog(true)}
-          onReconcileClick={() => {
-            // Reconciliation is handled by manager through API
-            toast("Reconciliation can only be done by managers", "info");
-          }}
-        />
+
 
         {/* Session Not Open Warning */}
         {!sessionLoading && !session && (
@@ -613,6 +604,17 @@ export default function POSPage() {
           </div>
         )}
       </div>
+
+      {/* Cashier Session Status */}
+      <SessionStatusCard
+        session={session}
+        isLoading={sessionLoading}
+        onCloseClick={() => setShowCloseDialog(true)}
+        onReconcileClick={() => {
+          // Reconciliation is handled by manager through API
+          toast("Reconciliation can only be done by managers", "info");
+        }}
+      />
     </div>
   );
 }
