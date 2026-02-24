@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SaleData } from "@/app/dashboard/pos/page";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, safeFormatDate } from "@/lib/utils";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;
@@ -135,13 +135,6 @@ const ReceiptContent: React.FC<{
   sale: SaleData;
   changeAmount: number;
 }> = ({ sale, changeAmount }) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-KE", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
-
   return (
     <div className="receipt-content space-y-4 font-mono text-sm">
       {/* Header */}
@@ -162,7 +155,7 @@ const ReceiptContent: React.FC<{
         </div>
         <div className="flex justify-between">
           <span>Date:</span>
-          <span>{formatDate(sale.created_at)}</span>
+          <span>{safeFormatDate(sale.created_at, { dateStyle: "medium", timeStyle: "short" })}</span>
         </div>
         {sale.customer && (
           <>

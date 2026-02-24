@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +42,11 @@ export default function DocumentDetailPage() {
   const fetchDocument = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/sales/documents/${params.id}`);
+      const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
+      if (!rawId) return;
+      const response = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(rawId)), {
+        headers: getAuthHeaders(),
+      });
       const result = await response.json();
 
       if (result.success) {

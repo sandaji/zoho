@@ -1,3 +1,4 @@
+// frontend/components/cashier/SessionStatusCard.tsx
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,13 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Clock,
-  DollarSign,
   AlertTriangle,
   CheckCircle,
   AlertCircle,
   TrendingUp,
 } from 'lucide-react';
 import type { CashierSession } from '@/hooks/cashier/useCashierSession';
+import { formatCurrency } from '@/lib/utils';
 
 export interface SessionStatusCardProps {
   /**
@@ -89,57 +90,11 @@ export function SessionStatusCard({
     );
   }
 
-  /**
-   * Get status badge color
-   */
-  const getStatusBadge = () => {
-    switch (session.status) {
-      case 'OPEN':
-        return <Badge className="bg-green-500">Active</Badge>;
-      case 'CLOSED':
-        return <Badge className="bg-blue-500">Closed</Badge>;
-      case 'DISCREPANCY':
-        return <Badge className="bg-yellow-500">Discrepancy</Badge>;
-      case 'RECONCILED':
-        return <Badge className="bg-gray-500">Reconciled</Badge>;
-      default:
-        return <Badge>{session.status}</Badge>;
-    }
-  };
-
-  /**
-   * Get variance color based on amount
-   */
   const getVarianceColor = () => {
     if (!session.variance) return 'text-gray-600';
     if (Math.abs(session.variance) < 100) return 'text-green-600';
     if (Math.abs(session.variance) < 500) return 'text-yellow-600';
     return 'text-red-600';
-  };
-
-  /**
-   * Format currency
-   */
-  const formatCurrency = (value: number | undefined) => {
-    const numValue = typeof value === 'number' && !isNaN(value) ? value : 0;
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES',
-      minimumFractionDigits: 2,
-    }).format(numValue);
-  };
-
-  /**
-   * Format time
-   */
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-KE', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
   };
 
   return (

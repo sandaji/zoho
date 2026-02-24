@@ -607,7 +607,8 @@ export class SalesService {
   // =============================
   static async getPOSSales(query: {
     branchId?: string;
-    dateFilter?: string;
+    startDate?: string;
+    endDate?: string;
     paymentMethod?: string;
     limit?: number;
     offset?: number;
@@ -619,11 +620,26 @@ export class SalesService {
 
     if (query.branchId) where.branchId = query.branchId;
 
-    if (query.dateFilter) {
-      const date = new Date(query.dateFilter);
-      const startOfDay = new Date(date.setHours(0, 0, 0, 0));
-      const endOfDay = new Date(date.setHours(23, 59, 59, 999));
-      where.issueDate = { gte: startOfDay, lte: endOfDay };
+    // Date range filter
+    if (query.startDate || query.endDate) {
+      where.createdAt = {};
+      if (query.startDate) {
+        const start = new Date(query.startDate);
+        start.setHours(0, 0, 0, 0);
+        where.createdAt.gte = start;
+      }
+      if (query.endDate) {
+        const end = new Date(query.endDate);
+        end.setHours(23, 59, 59, 999);
+        where.createdAt.lte = end;
+      }
+    }
+
+    // Payment method filter — filter on linked payments
+    if (query.paymentMethod) {
+      where.payments = {
+        some: { method: query.paymentMethod as PaymentMethod },
+      };
     }
 
     const documents = await prisma.salesDocument.findMany({

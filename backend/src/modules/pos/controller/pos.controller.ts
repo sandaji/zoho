@@ -156,7 +156,7 @@ export class POSController {
       }
 
       // Read from SalesDocument model
-      const document = await SalesService.getPOSSaleById(id);
+      const document = await SalesService.getPOSSaleById(id as string);
 
       res.json({
         success: true,
@@ -184,10 +184,11 @@ export class POSController {
       // Get from SalesDocument model only
       const sales = await SalesService.getPOSSales({
         branchId: query.branchId,
-        dateFilter: query.startDate,
-        paymentMethod: query.payment_method,
-        limit: query.limit || 20,
-        offset: ((query.page || 1) - 1) * (query.limit || 20),
+        startDate: query.startDate,
+        endDate: (query as any).endDate,
+        paymentMethod: query.payment_method || undefined,
+        limit: query.limit || 50,
+        offset: ((query.page || 1) - 1) * (query.limit || 50),
       });
 
       res.json({
@@ -225,7 +226,7 @@ export class POSController {
       }
 
       // TODO: Use SalesService.updateDocument() once implemented
-      const result = await this.posService.updateSales(id, dto);
+      const result = await this.posService.updateSales(id as string, dto);
 
       res.json({
         success: true,
@@ -283,7 +284,7 @@ export class POSController {
       }
 
       // TODO: Use SalesService for receipt generation once implemented
-      const result = await this.posService.generateReceipt(id);
+      const result = await this.posService.generateReceipt(id as string);
 
       res.json({
         success: true,

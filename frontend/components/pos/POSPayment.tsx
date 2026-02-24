@@ -107,8 +107,6 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           </div>
         </div>
 
-
-
         {/* Payment Method */}
         <div className="space-y-2">
           <Label className="text-sm font-semibold">Payment Method</Label>
