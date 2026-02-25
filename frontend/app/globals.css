@@ -43,90 +43,234 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   GLOBAL FONT SIZE  — 13px base so Tailwind's rem scale stays proportional:
+   text-xs=10.4px  text-sm=11.7px  text-base=13px  text-lg=14.6px
+   ═══════════════════════════════════════════════════════════════════════════ */
+html {
+  font-size: 13px;
+}
+
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --radius: 0.5rem;
+
+  /* ── Backgrounds ────────────────────────────────────────────────────── */
+  --background:      oklch(0.982 0.004 150);   /* barely-there emerald tint */
+  --foreground:      oklch(0.18  0.02  155);   /* deep emerald-tinted near-black */
+
+  /* ── Card / Popover ─────────────────────────────────────────────────── */
+  --card:            oklch(1    0     0);
+  --card-foreground: oklch(0.18 0.02  155);
+  --popover:         oklch(1    0     0);
+  --popover-foreground: oklch(0.18 0.02 155);
+
+  /* ── Primary  →  emerald-600 ────────────────────────────────────────── */
+  --primary:            oklch(0.532 0.157 157.4);  /* emerald-600 */
+  --primary-foreground: oklch(1     0     0);
+
+  /* ── Secondary  →  emerald-50 ───────────────────────────────────────── */
+  --secondary:            oklch(0.968 0.018 155);
+  --secondary-foreground: oklch(0.35  0.07  155);
+
+  /* ── Muted  →  soft emerald-grey ────────────────────────────────────── */
+  --muted:            oklch(0.955 0.01  152);
+  --muted-foreground: oklch(0.52  0.04  155);
+
+  /* ── Accent  →  emerald-100 ─────────────────────────────────────────── */
+  --accent:            oklch(0.935 0.03  155);
+  --accent-foreground: oklch(0.28  0.06  155);
+
+  /* ── Semantic ────────────────────────────────────────────────────────── */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* ── Borders & inputs  →  emerald-tinted ────────────────────────────── */
+  --border: oklch(0.898 0.025 152);
+  --input:  oklch(0.898 0.025 152);
+  --ring:   oklch(0.532 0.157 157.4);   /* emerald-600 focus ring */
+
+  /* ── Charts  →  emerald family + yellow accent ──────────────────────── */
+  --chart-1: oklch(0.532 0.157 157.4);  /* emerald-600 */
+  --chart-2: oklch(0.7   0.13  158);    /* emerald-400 */
+  --chart-3: oklch(0.82  0.115 155);    /* emerald-300 */
+  --chart-4: oklch(0.84  0.175 88);     /* yellow-400  */
+  --chart-5: oklch(0.65  0.22  41);     /* amber-500   */
+
+  /* ── Sidebar  →  matches Sidebar.tsx slate-900 ──────────────────────── */
+  --sidebar:                    oklch(0.18  0.01 240);
+  --sidebar-foreground:         oklch(0.95  0    0);
+  --sidebar-primary:            oklch(0.532 0.157 157.4);
+  --sidebar-primary-foreground: oklch(1     0     0);
+  --sidebar-accent:             oklch(0.25  0.01  240);
+  --sidebar-accent-foreground:  oklch(0.95  0     0);
+  --sidebar-border:             oklch(0.28  0.01  240);
+  --sidebar-ring:               oklch(0.532 0.157 157.4);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+  --background:      oklch(0.145 0.008 155);
+  --foreground:      oklch(0.95  0.01  155);
+  --card:            oklch(0.19  0.01  155);
+  --card-foreground: oklch(0.95  0.01  155);
+  --popover:         oklch(0.19  0.01  155);
+  --popover-foreground: oklch(0.95 0.01 155);
+  --primary:            oklch(0.64  0.15  157);
+  --primary-foreground: oklch(0.1   0.02  155);
+  --secondary:          oklch(0.25  0.02  155);
+  --secondary-foreground: oklch(0.9  0.01 155);
+  --muted:            oklch(0.25  0.01  155);
+  --muted-foreground: oklch(0.62  0.04  155);
+  --accent:           oklch(0.27  0.02  155);
+  --accent-foreground: oklch(0.9  0.01  155);
+  --destructive:      oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
+  --input:  oklch(1 0 0 / 15%);
+  --ring:   oklch(0.64 0.15 157);
+  --chart-1: oklch(0.64  0.15  157);
+  --chart-2: oklch(0.76  0.13  158);
+  --chart-3: oklch(0.84  0.175 88);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar:                    oklch(0.145 0.008 155);
+  --sidebar-foreground:         oklch(0.95  0.01  155);
+  --sidebar-primary:            oklch(0.64  0.15  157);
+  --sidebar-primary-foreground: oklch(0.1   0.02  155);
+  --sidebar-accent:             oklch(0.22  0.01  155);
+  --sidebar-accent-foreground:  oklch(0.95  0.01  155);
+  --sidebar-border:             oklch(1 0 0 / 10%);
+  --sidebar-ring:               oklch(0.64  0.15  157);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE LAYER — apply tokens + compact component sizing globally
+   ═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-size: 0.8125rem;   /* 13px — belt-and-suspenders with html font-size */
+    line-height: 1.5;
+  }
+
+  /* ── Headings: tighter, emerald-tinted ─────────────────────────────── */
+  h1 { @apply text-xl   font-bold   tracking-tight text-foreground; }
+  h2 { @apply text-lg   font-bold   tracking-tight text-foreground; }
+  h3 { @apply text-base font-semibold               text-foreground; }
+  h4 { @apply text-sm   font-semibold               text-foreground; }
+  h5, h6 { @apply text-xs font-semibold             text-foreground; }
+
+  /* ── Focus ring: emerald ────────────────────────────────────────────── */
+  :focus-visible {
+    outline: 2px solid oklch(0.532 0.157 157.4);
+    outline-offset: 2px;
+  }
+
+  /* ── Selection highlight ─────────────────────────────────────────────── */
+  ::selection {
+    background-color: oklch(0.532 0.157 157.4 / 20%);
+    color: oklch(0.18 0.02 155);
   }
 }
 
-@layer utilities {
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+/* ═══════════════════════════════════════════════════════════════════════════
+   COMPONENT OVERRIDES — compact everything without touching tsx files
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer base {
+
+  /* ── Card: tighter padding, smaller title ───────────────────────────── */
+  [data-slot="card"] {
+    @apply gap-3 py-4;
   }
+  [data-slot="card-header"] {
+    @apply px-4 gap-1;
+  }
+  [data-slot="card-content"] {
+    @apply px-4;
+  }
+  [data-slot="card-footer"] {
+    @apply px-4;
+  }
+  [data-slot="card-title"] {
+    @apply text-sm font-semibold;
+  }
+  [data-slot="card-description"] {
+    @apply text-xs;
+  }
+
+  /* ── Button: slightly shorter, smaller text ─────────────────────────── */
+  [data-slot="button"] {
+    @apply text-xs;
+  }
+  [data-slot="button"][data-size="default"] {
+    @apply h-8 px-3 py-1.5;
+  }
+  [data-slot="button"][data-size="sm"] {
+    @apply h-7 px-2.5 text-xs;
+  }
+  [data-slot="button"][data-size="lg"] {
+    @apply h-9 px-5;
+  }
+
+  /* ── Badge: tighter ─────────────────────────────────────────────────── */
+  [data-slot="badge"] {
+    @apply text-[10px] px-1.5 py-px;
+  }
+
+  /* ── Input: compact ─────────────────────────────────────────────────── */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+    @apply text-xs;
+    height: 2rem;          /* 32px */
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  /* ── Select trigger ─────────────────────────────────────────────────── */
+  [data-radix-select-trigger] {
+    @apply h-8 text-xs;
+  }
+
+  /* ── Table: tighter rows ────────────────────────────────────────────── */
+  table {
+    @apply text-xs;
+  }
+  thead tr th {
+    @apply h-9 px-3 text-[10px] font-semibold uppercase tracking-wide;
+  }
+  tbody tr td {
+    @apply px-3 py-2;
+  }
+
+  /* ── Dialog / Modal: smaller title ─────────────────────────────────── */
+  [data-slot="dialog-title"],
+  [data-radix-dialog-title] {
+    @apply text-sm font-semibold;
+  }
+
+  /* ── Dropdown menu items ────────────────────────────────────────────── */
+  [role="menuitem"] {
+    @apply text-xs py-1.5;
+  }
+
+  /* ── Tabs ───────────────────────────────────────────────────────────── */
+  [role="tab"] {
+    @apply text-xs;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Emerald focus ring utility */
+  .ring-emerald {
+    --tw-ring-color: oklch(0.532 0.157 157.4);
   }
 }

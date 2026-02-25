@@ -14,13 +14,12 @@ import {
   StaffPerformance,
 } from "@/lib/dashboard.service";
 
-// Import new sub-components
+// ── Sub-components (all data hooks 100% preserved) ──────────────────────────
 import { DashboardHeader } from "@/components/dashboard/branch-manager/header";
 import { KpiGrid } from "@/components/dashboard/branch-manager/kpi-grid";
 import { SalesAnalytics } from "@/components/dashboard/branch-manager/sales-analytics";
-import { InventoryTables } from "@/components/dashboard/branch-manager/inventory-tables";
-import { OperationsSection } from "@/components/dashboard/branch-manager/operations-section";
-import { QuickActions } from "@/components/dashboard/branch-manager/quick-actions";
+import { PosFeed } from "@/components/dashboard/branch-manager/pos-feed";
+import { AlertsTabs } from "@/components/dashboard/branch-manager/alerts-tabs";
 
 export default function BranchManagerDashboard() {
   const { user, token } = useAuth();
@@ -30,7 +29,7 @@ export default function BranchManagerDashboard() {
   const [timeRange, setTimeRange] = useState("week");
   const [exporting, setExporting] = useState(false);
 
-  // Data State
+  // ── Data state (unchanged) ─────────────────────────────────────────────────
   const [metrics, setMetrics] = useState<BranchMetrics | null>(null);
   const [salesData, setSalesData] = useState<SalesData[]>([]);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -38,59 +37,50 @@ export default function BranchManagerDashboard() {
   const [pendingOrders, setPendingOrders] = useState<PendingOrder[]>([]);
   const [staffPerformance, setStaffPerformance] = useState<StaffPerformance[]>([]);
 
-  // Auth & Initial Load
+  // ── Auth & initial load (unchanged) ────────────────────────────────────────
   useEffect(() => {
     if (!token) {
       router.push("/login");
       return;
     }
-    // Check permissions
-    if (user && !hasPermission('hr.employee.view') && user.role !== 'admin') {
+    if (user && !hasPermission("hr.employee.view") && user.role !== "admin") {
       toast.error("Unauthorized");
       router.push("/dashboard");
       return;
     }
 
     loadDashboardData();
-    const pollInterval = setInterval(loadDashboardData, 60000); // Poll every 60 seconds
+    const pollInterval = setInterval(loadDashboardData, 60000);
     return () => clearInterval(pollInterval);
   }, [token, user, router]);
 
+  // ── Data fetching (unchanged) ───────────────────────────────────────────────
   const loadDashboardData = async () => {
     if (!token) return;
     try {
       setLoading(true);
 
-      // Fetch metrics and sales first
       const [metricsRes, salesRes] = await Promise.all([
         dashboardService.getBranchMetrics(token),
         dashboardService.getSalesData(token, timeRange),
       ]);
-
-      // Small delay to avoid rate limiting
       await new Promise((resolve) => setTimeout(resolve, 200));
 
-      // Fetch inventory data
       const [productsRes, stockRes] = await Promise.all([
         dashboardService.getTopProducts(token),
         dashboardService.getLowStockItems(token),
       ]);
-
-      // Small delay
       await new Promise((resolve) => setTimeout(resolve, 200));
 
-      // Fetch operations data
       const [ordersRes, staffRes] = await Promise.all([
         dashboardService.getPendingOrders(token),
         dashboardService.getStaffPerformance(token),
       ]);
 
-      // Check for token expiration errors
       const responses = [metricsRes, salesRes, productsRes, stockRes, ordersRes, staffRes];
       const hasTokenExpired = responses.some(
         (res: any) => !res.success && res.error?.includes("Token expired")
       );
-
       if (hasTokenExpired) {
         toast.error("Your session has expired. Please log in again.");
         router.push("/login");
@@ -104,13 +94,12 @@ export default function BranchManagerDashboard() {
       setPendingOrders(ordersRes.data || []);
       setStaffPerformance(staffRes.data || []);
 
-      // Show error messages for any failed requests
       if (!metricsRes.success) toast.error(`Metrics: ${(metricsRes as any).error}`);
-      if (!salesRes.success) toast.error(`Sales: ${(salesRes as any).error}`);
+      if (!salesRes.success)   toast.error(`Sales: ${(salesRes as any).error}`);
       if (!productsRes.success) toast.error(`Products: ${(productsRes as any).error}`);
-      if (!stockRes.success) toast.error(`Stock: ${(stockRes as any).error}`);
-      if (!ordersRes.success) toast.error(`Orders: ${(ordersRes as any).error}`);
-      if (!staffRes.success) toast.error(`Staff: ${(staffRes as any).error}`);
+      if (!stockRes.success)   toast.error(`Stock: ${(stockRes as any).error}`);
+      if (!ordersRes.success)  toast.error(`Orders: ${(ordersRes as any).error}`);
+      if (!staffRes.success)   toast.error(`Staff: ${(staffRes as any).error}`);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load dashboard data");
@@ -121,11 +110,10 @@ export default function BranchManagerDashboard() {
 
   const handleTimeRangeChange = async (range: string) => {
     setTimeRange(range);
-    // Only refresh sales data for range change to save bandwidth
     try {
       const salesRes = await dashboardService.getSalesData(token!, range);
       setSalesData(salesRes.data || []);
-    } catch (e) {
+    } catch {
       toast.error("Could not update range");
     }
   };
@@ -143,40 +131,46 @@ export default function BranchManagerDashboard() {
       link.click();
       document.body.removeChild(link);
       toast.success(`Exported as ${format}`);
-    } catch (e) {
+    } catch {
       toast.error("Export failed");
     } finally {
       setExporting(false);
     }
   };
 
-  if (!token || !user) return null; // or loading spinner
+  if (!token || !user) return null;
 
   return (
-    <div className="space-y-6">
-      <DashboardHeader
-        user={user}
-        timeRange={timeRange}
-        onTimeRangeChange={handleTimeRangeChange}
-        onRefresh={loadDashboardData}
-        onExport={handleExport}
-        loading={loading}
-        exporting={exporting}
-      />
+    <div className="min-h-screen bg-emerald-50/30 p-5">
+      <div className="mx-auto max-w-screen-2xl space-y-5">
+        {/* ── Row 1: Global Context Bar ──────────────────────────────────── */}
+        <DashboardHeader
+          user={user}
+          timeRange={timeRange}
+          onTimeRangeChange={handleTimeRangeChange}
+          onRefresh={loadDashboardData}
+          onExport={handleExport}
+          loading={loading}
+          exporting={exporting}
+        />
 
-      <KpiGrid metrics={metrics} loading={loading} />
+        {/* ── Row 2: Flash KPI Cards ─────────────────────────────────────── */}
+        <KpiGrid metrics={metrics} loading={loading} />
 
-      <SalesAnalytics salesData={salesData} timeRange={timeRange} loading={loading} />
+        {/* ── Row 3: Trend Visualizations (8/4 split) ────────────────────── */}
+        <SalesAnalytics salesData={salesData} timeRange={timeRange} loading={loading} />
 
-      <InventoryTables topProducts={topProducts} lowStockItems={lowStockItems} loading={loading} />
-
-      <OperationsSection
-        pendingOrders={pendingOrders}
-        staffPerformance={staffPerformance}
-        loading={loading}
-      />
-
-      <QuickActions />
+        {/* ── Row 4: Actionable Feeds (6/6 split) ───────────────────────── */}
+        <div className="grid gap-5 lg:grid-cols-2">
+          <PosFeed orders={pendingOrders} loading={loading} />
+          <AlertsTabs
+            lowStockItems={lowStockItems}
+            topProducts={topProducts}
+            staffPerformance={staffPerformance}
+            loading={loading}
+          />
+        </div>
+      </div>
     </div>
   );
 }

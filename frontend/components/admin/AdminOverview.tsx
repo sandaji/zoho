@@ -14,8 +14,9 @@ import {
   AlertCircle,
   RefreshCw,
   ArrowUp,
-  ArrowDown,
-  MoreHorizontal
+  MoreHorizontal,
+  Activity,
+  Crown,
 } from "lucide-react";
 import {
   Table,
@@ -36,20 +37,44 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cva } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 
-// Safe number formatter utility
-const safeNumber = (value: any, defaultValue: number = 0): number => {
-  if (typeof value === 'number') return value;
-  if (typeof value === 'string') {
+// ── Helpers ──────────────────────────────────────────────────────────────────
+const safeNumber = (value: any, defaultValue = 0): number => {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
     const parsed = parseFloat(value);
     return isNaN(parsed) ? defaultValue : parsed;
   }
   return defaultValue;
 };
+const formatNumber = (value: any) => safeNumber(value).toLocaleString();
 
-const formatNumber = (value: any): string => {
-  return safeNumber(value).toLocaleString();
-};
+// ── CVA: KPI card accent bar ──────────────────────────────────────────────────
+const kpiAccent = cva("absolute left-0 top-0 h-full w-1 rounded-l-xl", {
+  variants: {
+    color: {
+      emerald: "bg-emerald-500",
+      yellow:  "bg-yellow-400",
+      teal:    "bg-teal-500",
+      rose:    "bg-rose-400",
+    },
+  },
+  defaultVariants: { color: "emerald" },
+});
+
+// ── CVA: product status badge ────────────────────────────────────────────────
+const productBadge = cva("text-[11px] font-semibold", {
+  variants: {
+    level: {
+      hot:     "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
+      popular: "bg-emerald-100 text-emerald-800 hover:bg-emerald-100",
+      regular: "bg-slate-100 text-slate-600 hover:bg-slate-100",
+    },
+  },
+  defaultVariants: { level: "regular" },
+});
 
 export default function AdminOverview() {
   const { token } = useAuth();
@@ -60,7 +85,6 @@ export default function AdminOverview() {
 
   const loadData = async () => {
     if (!token) return;
-
     setLoading(true);
     setError(null);
     try {
@@ -69,185 +93,133 @@ export default function AdminOverview() {
       setLastUpdated(new Date());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load data");
-      console.error("Failed to fetch summary:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, [token]);
+  useEffect(() => { loadData(); }, [token]);
 
-  const refreshData = () => {
-    loadData();
-  };
-
-  if (loading && !summary) {
-    return <LoadingSkeleton />;
-  }
+  if (loading && !summary) return <LoadingSkeleton />;
 
   if (error && !summary) {
     return (
-      <Card>
-        <CardContent className="py-8 text-center">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">
-            Failed to Load Data
-          </h3>
-          <p className="text-slate-600 mb-4">{error}</p>
-          <Button onClick={refreshData} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Try Again
+      <Card className="rounded-xl border border-red-100 bg-white shadow-sm">
+        <CardContent className="py-12 text-center">
+          <AlertCircle className="mx-auto mb-3 h-12 w-12 text-red-400" />
+          <h3 className="text-base font-semibold text-slate-800">Failed to Load Data</h3>
+          <p className="mt-1 text-sm text-slate-500">{error}</p>
+          <Button onClick={loadData} variant="outline" className="mt-4 border-emerald-200 text-emerald-700">
+            <RefreshCw className="mr-2 h-4 w-4" /> Try Again
           </Button>
         </CardContent>
       </Card>
     );
   }
 
-  if (!summary) {
-    return (
-      <Card>
-        <CardContent className="py-8 text-center">
-          <Package className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">
-            No Data Available
-          </h3>
-          <p className="text-slate-600 mb-4">
-            There's no data to display for the current period.
-          </p>
-          <Button onClick={refreshData} variant="outline">
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+  if (!summary) return null;
 
-  // Safe data access with defaults
-  const safeSummary = {
-    total_sales: safeNumber(summary?.total_sales),
-    total_revenue: safeNumber(summary?.total_revenue),
-    total_tax: safeNumber(summary?.total_tax),
-    total_discount: safeNumber(summary?.total_discount),
-    top_products: Array.isArray(summary?.top_products)
-      ? summary.top_products.map(product => ({
-        productId: product?.productId || 'Unknown',
-        name: product?.name || 'Unknown Product',
-        quantity: safeNumber(product?.quantity)
-      }))
-      : []
+  // ── Safe data ─────────────────────────────────────────────────────────────
+  const safe = {
+    total_sales:    safeNumber(summary.total_sales),
+    total_revenue:  safeNumber(summary.total_revenue),
+    total_tax:      safeNumber(summary.total_tax),
+    total_discount: safeNumber(summary.total_discount),
+    top_products: (Array.isArray(summary.top_products) ? summary.top_products : []).map((p) => ({
+      productId: p?.productId || "unknown",
+      name:      p?.name      || "Unknown Product",
+      quantity:  safeNumber(p?.quantity),
+    })),
   };
 
   const kpis = [
     {
-      title: "Total Sales",
-      value: formatNumber(safeSummary.total_sales),
-      subtitle: "Transactions",
-      icon: Receipt,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-      trend: safeSummary.total_sales > 0 ? "up" : "neutral",
+      title:    "Gross Revenue",
+      value:    formatCurrency(safe.total_revenue),
+      subtitle: "Today's total",
+      icon:     DollarSign,
+      color:    "emerald" as const,
     },
     {
-      title: "Total Revenue",
-      value: formatCurrency(safeSummary.total_revenue),
-      subtitle: "Today's revenue",
-      icon: DollarSign,
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-      trend: safeSummary.total_revenue > 0 ? "up" : "neutral",
+      title:    "Transaction Count",
+      value:    formatNumber(safe.total_sales),
+      subtitle: "Sales orders",
+      icon:     Receipt,
+      color:    "yellow" as const,
     },
     {
-      title: "Total Tax",
-      value: formatCurrency(safeSummary.total_tax),
-      subtitle: "Tax collected",
-      icon: TrendingUp,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-      trend: safeSummary.total_tax > 0 ? "up" : "neutral",
+      title:    "Tax Collected",
+      value:    formatCurrency(safe.total_tax),
+      subtitle: "VAT & levies",
+      icon:     TrendingUp,
+      color:    "teal" as const,
     },
     {
-      title: "Total Discount",
-      value: formatCurrency(safeSummary.total_discount),
-      subtitle: "Discounts applied",
-      icon: Tag,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-      trend: safeSummary.total_discount > 0 ? "up" : "neutral",
+      title:    "Discounts Given",
+      value:    formatCurrency(safe.total_discount),
+      subtitle: "Total deductions",
+      icon:     Tag,
+      color:    "rose" as const,
     },
   ];
 
-  const totalProductsSold = safeSummary.top_products.reduce((acc, product) =>
-    acc + safeNumber(product.quantity), 0
-  );
-
-  const additionalMetrics = [
-    {
-      title: "Average Order Value",
-      value: safeSummary.total_sales > 0
-        ? formatCurrency(safeSummary.total_revenue / safeSummary.total_sales)
-        : formatCurrency(0),
-      icon: DollarSign,
-    },
-    {
-      title: "Products Sold",
-      value: formatNumber(totalProductsSold),
-      icon: Package,
-    },
-  ];
+  const totalProductsSold = safe.top_products.reduce((a, p) => a + p.quantity, 0);
+  const avgOrderValue     = safe.total_sales > 0
+    ? formatCurrency(safe.total_revenue / safe.total_sales)
+    : formatCurrency(0);
 
   return (
-    <div className="space-y-6 pb-6 pr-4">
-      {/* Header with Refresh */}
+    <div className="space-y-6 pb-6">
+      {/* ── Command header ───────────────────────────────────────────────── */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900">Today's Overview</h2>
-          {lastUpdated && (
-            <p className="text-sm text-emerald-500">
-              Last updated: {lastUpdated.toLocaleTimeString()}
-            </p>
-          )}
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400">
+            <Crown className="h-5 w-5 text-emerald-900" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-emerald-900">Today's Command View</h2>
+            {lastUpdated && (
+              <p className="text-xs text-emerald-500">
+                Last synced: {lastUpdated.toLocaleTimeString()}
+              </p>
+            )}
+          </div>
         </div>
         <Button
-          onClick={refreshData}
+          onClick={loadData}
           variant="outline"
           size="sm"
           disabled={loading}
+          className="gap-2 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
         >
-          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Refreshing...' : 'Refresh'}
+          <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+          {loading ? "Refreshing…" : "Refresh"}
         </Button>
       </div>
 
-      {/* Main KPIs */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* ── Row 1: KPI Cards ─────────────────────────────────────────────── */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => {
           const Icon = kpi.icon;
-          const TrendIcon = kpi.trend === 'up' ? ArrowUp : kpi.trend === 'down' ? ArrowDown : null;
-
           return (
-            <Card key={kpi.title} className="relative overflow-hidden bg-emerald-500 ">
-              <div className={`absolute top-0 right-0 w-20 h-20 ${kpi.bgColor} rounded-full -mr-10 -mt-10 opacity-50`}></div>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-slate-600">
+            <Card
+              key={kpi.title}
+              className="relative overflow-hidden rounded-xl border border-emerald-100 bg-white shadow-sm transition-shadow hover:shadow-md"
+            >
+              <span className={cn(kpiAccent({ color: kpi.color }))} />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pl-5">
+                <CardTitle className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
                   {kpi.title}
                 </CardTitle>
-                <div className={`p-2 rounded-full ${kpi.bgColor}`}>
-                  <Icon className={`h-4 w-4 ${kpi.color}`} />
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50">
+                  <Icon className="h-4 w-4 text-emerald-700" />
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-slate-900 mb-1">
-                  {kpi.value}
-                </div>
-                <div className="flex items-center text-xs text-slate-500">
-                  <span>{kpi.subtitle}</span>
-                  {TrendIcon && (
-                    <TrendIcon className={`h-3 w-3 ml-1 ${kpi.trend === 'up' ? 'text-green-500' : 'text-red-500'
-                      }`} />
-                  )}
+              <CardContent className="pl-5">
+                <p className="text-2xl font-bold text-emerald-900">{kpi.value}</p>
+                <div className="mt-1 flex items-center gap-1 text-xs text-emerald-500">
+                  <ArrowUp className="h-3 w-3 text-emerald-400" />
+                  {kpi.subtitle}
                 </div>
               </CardContent>
             </Card>
@@ -255,100 +227,112 @@ export default function AdminOverview() {
         })}
       </div>
 
-      {/* Additional Metrics and Top Products */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Additional Metrics */}
-        <Card className="lg:col-span-1   ">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <TrendingUp className="h-5 w-5 mr-2 text-slate-600" />
-              Performance Metrics
+      {/* ── Row 2: Derived metrics + Top Products ────────────────────────── */}
+      <div className="grid gap-5 lg:grid-cols-3">
+        {/* Performance callouts */}
+        <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm lg:col-span-1">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-sm text-emerald-900">
+              <Activity className="h-4 w-4 text-emerald-600" /> Performance Metrics
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {additionalMetrics.map((metric) => {
-              const Icon = metric.icon;
-              return (
-                <div key={metric.title} className=" flex items-center justify-between p-3 bg-slate-5 rounded-lg">
-                  <div className="flex items-center">
-                    <Icon className="h-4 w-4 text-slate-500 mr-2" />
-                    <span className="text-sm font-medium text-slate-700">{metric.title}</span>
+          <CardContent className="space-y-3">
+            {[
+              { label: "Avg. Order Value",   value: avgOrderValue },
+              { label: "Total Products Sold", value: formatNumber(totalProductsSold) },
+            ].map((m) => (
+              <div
+                key={m.label}
+                className="flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2.5"
+              >
+                <span className="text-xs font-medium text-emerald-700">{m.label}</span>
+                <span className="text-sm font-bold text-emerald-900">{m.value}</span>
+              </div>
+            ))}
+
+            {/* System health indicators */}
+            <div className="mt-2 space-y-2 border-t border-emerald-100 pt-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
+                System Signals
+              </p>
+              {[
+                { label: "Active Users",   icon: Users,  value: "—" },
+                { label: "Active Branches", icon: Store,  value: "—" },
+                { label: "Low Stock SKUs",  icon: Package, value: "—" },
+              ].map(({ label, icon: Icon, value }) => (
+                <div key={label} className="flex items-center justify-between py-1">
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-3.5 w-3.5 text-emerald-400" />
+                    <span className="text-xs text-emerald-600">{label}</span>
                   </div>
-                  <span className="text-sm font-semibold text-slate-900">{metric.value}</span>
+                  <span className="text-xs font-semibold text-emerald-800">{value}</span>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </CardContent>
         </Card>
 
-        {/* Top Products */}
-        <Card className="lg:col-span-2 ">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Top Selling Products</CardTitle>
-            <Badge variant="secondary">
-              {safeSummary.top_products.length} products
+        {/* Top-selling products table */}
+        <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between pb-3">
+            <CardTitle className="text-sm text-emerald-900">Top Selling Products</CardTitle>
+            <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">
+              {safe.top_products.length} products
             </Badge>
           </CardHeader>
           <CardContent>
-            {safeSummary.top_products.length > 0 ? (
+            {safe.top_products.length === 0 ? (
+              <div className="py-10 text-center">
+                <Package className="mx-auto mb-2 h-10 w-10 text-emerald-200" />
+                <p className="text-sm text-emerald-400">No sales data available</p>
+              </div>
+            ) : (
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Product</TableHead>
-                    <TableHead className="text-center">Status</TableHead>
-                    <TableHead className="text-right">Quantity Sold</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
+                  <TableRow className="border-emerald-100">
+                    <TableHead className="text-emerald-600">Product</TableHead>
+                    <TableHead className="text-center text-emerald-600">Status</TableHead>
+                    <TableHead className="text-right text-emerald-600">Units Sold</TableHead>
+                    <TableHead className="w-10" />
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {safeSummary.top_products.slice(0, 8).map((product, index) => {
-                    const quantity = safeNumber(product.quantity);
-                    const productStatus = quantity > 20 ? "Hot" : quantity > 10 ? "Popular" : "Regular";
+                  {safe.top_products.slice(0, 8).map((product, index) => {
+                    const qty = product.quantity;
+                    const level = qty > 20 ? "hot" : qty > 10 ? "popular" : "regular";
+                    const statusLabel = qty > 20 ? "Hot" : qty > 10 ? "Popular" : "Regular";
 
                     return (
-                      <TableRow key={product.productId} className="group">
-                        <TableCell className="font-medium">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 bg-slate-100 rounded-md flex items-center justify-center mr-3">
-                              <span className="text-xs font-semibold text-slate-600">
-                                #{index + 1}
-                              </span>
+                      <TableRow key={product.productId} className="group border-emerald-50 hover:bg-emerald-50/50">
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-100 text-[11px] font-bold text-emerald-700">
+                              #{index + 1}
                             </div>
                             <div>
-                              <div className="font-medium text-slate-900">
-                                {product.name}
-                              </div>
-                              <div className="text-xs text-slate-500">
-                                SKU: {product.productId.slice(0, 8)}...
-                              </div>
+                              <p className="text-sm font-semibold text-slate-800">{product.name}</p>
+                              <p className="text-[10px] text-slate-400">
+                                ID: {product.productId.slice(0, 8)}…
+                              </p>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
-                          <Badge
-                            variant={quantity > 10 ? "default" : "secondary"}
-                            className={
-                              quantity > 20
-                                ? "bg-green-100 text-green-800 hover:bg-green-100"
-                                : quantity > 10
-                                  ? "bg-blue-100 text-blue-800 hover:bg-blue-100"
-                                  : "bg-slate-100 text-slate-800 hover:bg-slate-100"
-                            }
-                          >
-                            {productStatus}
-                          </Badge>
+                          <Badge className={cn(productBadge({ level }))}>{statusLabel}</Badge>
                         </TableCell>
                         <TableCell className="text-right">
-                          <div className="font-semibold text-slate-900">
-                            {formatNumber(quantity)}
-                          </div>
-                          <div className="text-xs text-slate-500">units</div>
+                          <span className="text-sm font-bold text-emerald-900">{formatNumber(qty)}</span>
+                          <span className="ml-1 text-[10px] text-slate-400">units</span>
                         </TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100">
-                                <MoreHorizontal className="h-4 w-4" />
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
+                              >
+                                <MoreHorizontal className="h-3.5 w-3.5" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -362,51 +346,7 @@ export default function AdminOverview() {
                   })}
                 </TableBody>
               </Table>
-            ) : (
-              <div className="text-center py-8 text-slate-500">
-                <Package className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No sales data available</p>
-              </div>
             )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600 mr-3" />
-              <div>
-                <div className="text-sm text-slate-600">Active Users</div>
-                <div className="text-lg font-semibold">-</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <Store className="h-8 w-8 text-green-600 mr-3" />
-              <div>
-                <div className="text-sm text-slate-600">Active Branches</div>
-                <div className="text-lg font-semibold">-</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <Package className="h-8 w-8 text-purple-600 mr-3" />
-              <div>
-                <div className="text-sm text-slate-600">Low Stock Items</div>
-                <div className="text-lg font-semibold">-</div>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -414,61 +354,29 @@ export default function AdminOverview() {
   );
 }
 
-// Enhanced Loading Skeleton
+// ── Loading skeleton ──────────────────────────────────────────────────────────
 function LoadingSkeleton() {
   return (
     <div className="space-y-6">
-      {/* Header Skeleton */}
       <div className="flex items-center justify-between">
-        <div className="space-y-2">
-          <div className="h-8 bg-slate-200 rounded w-48 animate-pulse"></div>
-          <div className="h-4 bg-slate-200 rounded w-32 animate-pulse"></div>
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 animate-pulse rounded-full bg-emerald-100" />
+          <div className="space-y-1.5">
+            <div className="h-4 w-36 animate-pulse rounded bg-emerald-100" />
+            <div className="h-3 w-24 animate-pulse rounded bg-emerald-50" />
+          </div>
         </div>
-        <div className="h-9 bg-slate-200 rounded w-24 animate-pulse"></div>
+        <div className="h-8 w-24 animate-pulse rounded-lg bg-emerald-100" />
       </div>
-
-      {/* KPI Skeletons */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="animate-pulse">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div className="h-4 bg-slate-200 rounded w-20"></div>
-              <div className="h-8 w-8 bg-slate-200 rounded-full"></div>
-            </CardHeader>
-            <CardContent>
-              <div className="h-8 bg-slate-200 rounded w-24 mb-1"></div>
-              <div className="h-3 bg-slate-200 rounded w-16"></div>
-            </CardContent>
-          </Card>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-24 animate-pulse rounded-xl bg-emerald-50" />
         ))}
       </div>
-
-      {/* Content Skeletons */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-1 animate-pulse">
-          <CardHeader>
-            <div className="h-6 bg-slate-200 rounded w-32"></div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {[1, 2].map((i) => (
-              <div key={i} className="h-12 bg-slate-200 rounded"></div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-2 animate-pulse">
-          <CardHeader>
-            <div className="h-6 bg-slate-200 rounded w-40"></div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-12 bg-slate-200 rounded"></div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="h-64 animate-pulse rounded-xl bg-emerald-50" />
+        <div className="h-64 animate-pulse rounded-xl bg-emerald-50 lg:col-span-2" />
       </div>
     </div>
   );
-} 
+}
