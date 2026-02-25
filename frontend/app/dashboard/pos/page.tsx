@@ -5,9 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Receipt } from "lucide-react";
-
 import { AutocompleteProductSearch } from "@/components/pos/AutocompleteProductSearch";
 import { POSCart } from "@/components/pos/POSCart";
 import { POSPayment } from "@/components/pos/POSPayment";
@@ -345,232 +342,232 @@ export default function POSPage() {
   }, [cart, loading, grandTotal, activeTab]);
 
   // ------------------ UI ------------------
-return (
-  <div className="min-h-screen bg-slate-100">
-    <div className="mx-auto max-w-[1700px] px-6 py-6 space-y-6">
+  return (
+    <div className="min-h-screen bg-slate-100">
+      <div className="mx-auto max-w-[1700px] px-6 py-6 space-y-6">
 
-      {/* ================= HEADER ================= */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-            Point of Sale
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {user.branch?.name || "Main Branch"} • Cashier: {user.name}
-          </p>
+        {/* ================= HEADER ================= */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Point of Sale
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              {user.branch?.name || "Main Branch"} • Cashier: {user.name}
+            </p>
+          </div>
+
+          <POSQuickActions
+            onPark={handleParkSale}
+            onHold={handleHoldSale}
+            onClear={clearCart}
+            hasItems={cart.length > 0}
+          />
         </div>
 
-        <POSQuickActions
-          onPark={handleParkSale}
-          onHold={handleHoldSale}
-          onClear={clearCart}
-          hasItems={cart.length > 0}
-        />
-      </div>
-
-      {/* ================= SESSION WARNING ================= */}
-      {!sessionLoading && !session && (
-        <Card className="border-yellow-300 bg-yellow-50">
-          <CardContent className="flex items-center justify-between p-4">
-            <div className="text-sm text-yellow-800">
-              No active cashier session. Open a session to start selling.
-            </div>
-            <button
-              onClick={() => setShowOpenDialog(true)}
-              className="px-4 py-2 rounded-md bg-yellow-600 text-white text-sm font-medium hover:bg-yellow-700 transition"
-            >
-              Open Session
-            </button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* ================= MAIN CONTENT ================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-        {/* ================= LEFT SIDE ================= */}
-        <div className="lg:col-span-2 space-y-6">
-
-          {/* Product Search */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium">
-                Add Products
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AutocompleteProductSearch
-                branchId={user.branchId || ""}
-                searchInputRef={searchInputRef}
-                onSelect={addToCart}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Cart */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3 flex items-center justify-between">
-              <CardTitle className="text-base font-medium">
-                Cart
-              </CardTitle>
-              <span className="text-sm text-muted-foreground">
-                {cart.length} item(s)
-              </span>
-            </CardHeader>
-            <CardContent>
-              <POSCart
-                cart={cart}
-                onUpdateQuantity={updateQuantity}
-                onUpdateDiscount={updateDiscount}
-                onRemove={removeFromCart}
-                onClear={clearCart}
-              />
-            </CardContent>
-          </Card>
-
-        </div>
-
-        {/* ================= RIGHT SIDE ================= */}
-        <div className="space-y-6">
-
-          {/* Customer */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium">
-                Customer
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <POSCustomerSelect
-                selectedCustomer={selectedCustomer}
-                onCustomerSelect={setSelectedCustomer}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Payment */}
-          <Card className="shadow-md border-slate-300">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-medium">
-                Payment & Summary
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>{subtotal.toLocaleString("en-KE")} KES</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Discount</span>
-                  <span>- {totalDiscount.toLocaleString("en-KE")} KES</span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span>{tax.toLocaleString("en-KE")} KES</span>
-                </div>
-
-                <div className="border-t pt-3 flex justify-between text-lg font-semibold">
-                  <span>Total</span>
-                  <span>
-                    {grandTotal.toLocaleString("en-KE")} KES
-                  </span>
-                </div>
+        {/* ================= SESSION WARNING ================= */}
+        {!sessionLoading && !session && (
+          <Card className="border-yellow-300 bg-yellow-50">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="text-sm text-yellow-800">
+                No active cashier session. Open a session to start selling.
               </div>
-
-              <POSPayment
-                subtotal={subtotal}
-                tax={tax}
-                totalDiscount={totalDiscount}
-                grandTotal={grandTotal}
-                paymentMethod={paymentMethod}
-                setPaymentMethod={setPaymentMethod}
-                amountTendered={amountTendered}
-                setAmountTendered={setAmountTendered}
-                changeAmount={changeAmount}
-                onCheckout={handleCheckout}
-                loading={loading}
-                cartCount={cart.length}
-                notes={notes}
-                setNotes={setNotes}
-              />
-
+              <button
+                onClick={() => setShowOpenDialog(true)}
+                className="px-4 py-2 rounded-md bg-yellow-600 text-white text-sm font-medium hover:bg-yellow-700 transition"
+              >
+                Open Session
+              </button>
             </CardContent>
           </Card>
+        )}
 
-          <POSCashier user={user} />
+        {/* ================= MAIN CONTENT ================= */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
+          {/* ================= LEFT SIDE ================= */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Product Search */}
+            <Card className="shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-medium">
+                  Add Products
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AutocompleteProductSearch
+                  branchId={user.branchId || ""}
+                  searchInputRef={searchInputRef}
+                  onSelect={addToCart}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Cart */}
+            <Card className="shadow-sm">
+              <CardHeader className="pb-3 flex items-center justify-between">
+                <CardTitle className="text-base font-medium">
+                  Cart
+                </CardTitle>
+                <span className="text-sm text-muted-foreground">
+                  {cart.length} item(s)
+                </span>
+              </CardHeader>
+              <CardContent>
+                <POSCart
+                  cart={cart}
+                  onUpdateQuantity={updateQuantity}
+                  onUpdateDiscount={updateDiscount}
+                  onRemove={removeFromCart}
+                  onClear={clearCart}
+                />
+              </CardContent>
+            </Card>
+
+          </div>
+
+          {/* ================= RIGHT SIDE ================= */}
+          <div className="space-y-6">
+
+            {/* Customer */}
+            <Card className="shadow-sm">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-medium">
+                  Customer
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <POSCustomerSelect
+                  selectedCustomer={selectedCustomer}
+                  onCustomerSelect={setSelectedCustomer}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Payment */}
+            <Card className="shadow-md border-slate-300">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base font-medium">
+                  Payment & Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{subtotal.toLocaleString("en-KE")} KES</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Discount</span>
+                    <span>- {totalDiscount.toLocaleString("en-KE")} KES</span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Tax</span>
+                    <span>{tax.toLocaleString("en-KE")} KES</span>
+                  </div>
+
+                  <div className="border-t pt-3 flex justify-between text-lg font-semibold">
+                    <span>Total</span>
+                    <span>
+                      {grandTotal.toLocaleString("en-KE")} KES
+                    </span>
+                  </div>
+                </div>
+
+                <POSPayment
+                  subtotal={subtotal}
+                  tax={tax}
+                  totalDiscount={totalDiscount}
+                  grandTotal={grandTotal}
+                  paymentMethod={paymentMethod}
+                  setPaymentMethod={setPaymentMethod}
+                  amountTendered={amountTendered}
+                  setAmountTendered={setAmountTendered}
+                  changeAmount={changeAmount}
+                  onCheckout={handleCheckout}
+                  loading={loading}
+                  cartCount={cart.length}
+                  notes={notes}
+                  setNotes={setNotes}
+                />
+
+              </CardContent>
+            </Card>
+
+            <POSCashier user={user} />
+
+          </div>
         </div>
-      </div>
 
-      {/* ================= SUCCESS MODAL ================= */}
-      {lastSale && (
-        <POSSaleSuccess
-          isOpen={showSuccessModal}
-          sale={lastSale}
-          changeAmount={changeAmount}
-          onNewSale={handleNewSale}
-        />
-      )}
+        {/* ================= SUCCESS MODAL ================= */}
+        {lastSale && (
+          <POSSaleSuccess
+            isOpen={showSuccessModal}
+            sale={lastSale}
+            changeAmount={changeAmount}
+            onNewSale={handleNewSale}
+          />
+        )}
 
-      {/* ================= SESSION OPEN ================= */}
-      <SessionOpenDialog
-        isOpen={showOpenDialog}
-        onOpenChange={setShowOpenDialog}
-        onOpenSession={async (openingBalance, notes) => {
-          try {
-            const newSession = await openSession(openingBalance, notes);
-            toast("Session opened successfully", "success");
-            return newSession;
-          } catch (err) {
-            toast(
-              err instanceof Error ? err.message : "Failed to open session",
-              "error"
-            );
-            throw err;
-          }
-        }}
-        isLoading={sessionLoading}
-        error={sessionError}
-      />
-
-      {/* ================= CLOSE SESSION (REFACTORED) ================= */}
-      {session && (
-        <CloseSessionDialog
-          open={showCloseDialog}
-          expectedCash={session.expected_cash || 0}
-          onClose={() => setShowCloseDialog(false)}
-          onSubmit={async (actualCash: number, notes?: string) => {
+        {/* ================= SESSION OPEN ================= */}
+        <SessionOpenDialog
+          isOpen={showOpenDialog}
+          onOpenChange={setShowOpenDialog}
+          onOpenSession={async (openingBalance, notes) => {
             try {
-              await closeSession(actualCash, notes || undefined);
-              toast("Session closed successfully", "success");
-              setShowCloseDialog(false);
+              const newSession = await openSession(openingBalance, notes);
+              toast("Session opened successfully", "success");
+              return newSession;
             } catch (err) {
               toast(
-                err instanceof Error
-                  ? err.message
-                  : "Failed to close session",
+                err instanceof Error ? err.message : "Failed to open session",
                 "error"
               );
+              throw err;
             }
           }}
+          isLoading={sessionLoading}
+          error={sessionError}
         />
-      )}
 
+        {/* ================= CLOSE SESSION (REFACTORED) ================= */}
+        {session && (
+          <CloseSessionDialog
+            open={showCloseDialog}
+            expectedCash={session.expectedCash || 0}
+            onClose={() => setShowCloseDialog(false)}
+            onSubmit={async (actualCash: number, notes?: string) => {
+              try {
+                await closeSession(actualCash, notes || undefined);
+                toast("Session closed successfully", "success");
+                setShowCloseDialog(false);
+              } catch (err) {
+                toast(
+                  err instanceof Error
+                    ? err.message
+                    : "Failed to close session",
+                  "error"
+                );
+              }
+            }}
+          />
+        )}
+
+      </div>
+
+      <SessionStatusCard
+        session={session}
+        isLoading={sessionLoading}
+        onCloseClick={() => setShowCloseDialog(true)}
+        onReconcileClick={() =>
+          toast("Reconciliation can only be done by managers", "info")
+        }
+      />
     </div>
-
-    <SessionStatusCard
-      session={session}
-      isLoading={sessionLoading}
-      onCloseClick={() => setShowCloseDialog(true)}
-      onReconcileClick={() =>
-        toast("Reconciliation can only be done by managers", "info")
-      }
-    />
-  </div>
-);
+  );
 
 }
