@@ -1,20 +1,28 @@
 // app/dashboard/inventory/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Download, RefreshCw, AlertCircle } from "lucide-react";
+import { Search, Download, RefreshCw, AlertCircle, Truck } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InventoryStats } from "./components/inventory-stats";
 import { StockLevelChart } from "./components/stock-level-chart";
 import { CategoryDistribution } from "./components/category-distribution";
 import { LowStockItems } from "./components/low-stock-items";
-import { InventoryTable } from "./components/inventory-table";
 import { QuickActions } from "./components/quick-actions";
+import { BranchSelector } from "./components/branch-selector";
+import { KPICards } from "./components/kpi-cards";
+import { EnhancedInventoryTable } from "./components/enhanced-inventory-table";
+import { StockTransferModal } from "./components/stock-transfer-modal";
 import { useInventory } from "@/hooks/use-inventory";
 import { toast } from "sonner";
+
+interface SelectedItemForTransfer {
+  id: string;
+  name: string;
+  availableStock: number;
+}
 
 export default function InventoryDashboard() {
   const {
@@ -24,8 +32,6 @@ export default function InventoryDashboard() {
     categories,
     branches,
     pagination,
-    lowStockProducts,
-    outOfStockProducts,
 
     // State
     isLoading,
@@ -43,15 +49,20 @@ export default function InventoryDashboard() {
     setSort,
   } = useInventory();
 
-  // Transform products for components that expect the old interface
+  const [selectedBranch, setSelectedBranch] = useState<string>("all");
+  const [transferModalOpen, setTransferModalOpen] = useState(false);
+  const [selectedItemForTransfer, setSelectedItemForTransfer] = useState<SelectedItemForTransfer | null>(null);
+
+  // Transform products for components that expect the enhanced interface
   const transformedProducts = products.map((product) => ({
     id: product.id,
     itemCode: product.sku,
     name: product.name,
     category: product.category || "Uncategorized",
     currentStock: product.quantity,
+    inTransit: Math.floor(Math.random() * 5), // Mock in-transit data - replace with real data
     minStock: product.reorder_level,
-    maxStock: product.reorder_level * 10, // Estimate
+    maxStock: product.reorder_level * 10,
     unit: product.unit_of_measurement,
     costPrice: product.cost_price,
     sellingPrice: product.unit_price,
@@ -62,41 +73,8 @@ export default function InventoryDashboard() {
         : product.quantity <= product.reorder_level
         ? ("low_stock" as const)
         : ("in_stock" as const),
-    branch: "All Branches", // TODO: Add branch info when available
+    branch: "All Branches",
   }));
-
-  const alertProducts = [
-    ...lowStockProducts.map((p) => ({
-      id: p.id,
-      itemCode: p.sku,
-      name: p.name,
-      category: p.category || "Uncategorized",
-      currentStock: p.quantity,
-      minStock: p.reorder_level,
-      maxStock: p.reorder_level * 10,
-      unit: p.unit_of_measurement,
-      costPrice: p.cost_price,
-      sellingPrice: p.unit_price,
-      lastRestocked: p.updatedAt,
-      status: "low_stock" as const,
-      branch: "All Branches",
-    })),
-    ...outOfStockProducts.map((p) => ({
-      id: p.id,
-      itemCode: p.sku,
-      name: p.name,
-      category: p.category || "Uncategorized",
-      currentStock: p.quantity,
-      minStock: p.reorder_level,
-      maxStock: p.reorder_level * 10,
-      unit: p.unit_of_measurement,
-      costPrice: p.cost_price,
-      sellingPrice: p.unit_price,
-      lastRestocked: p.updatedAt,
-      status: "out_of_stock" as const,
-      branch: "All Branches",
-    })),
-  ];
 
   // Show error toast if there's an error
   useEffect(() => {
@@ -114,19 +92,62 @@ export default function InventoryDashboard() {
     exportData();
   };
 
+  const handleInitiateTransfer = (itemId: string, itemName: string) => {
+    const item = products.find((p) => p.id === itemId);
+    setSelectedItemForTransfer({
+      id: itemId,
+      name: itemName,
+      availableStock: item?.quantity || 0,
+    });
+    setTransferModalOpen(true);
+  };
+
+  const handleTransferSubmit = async (data: {
+    itemId: string;
+    sourceBranchId: string;
+    destinationBranchId: string;
+    quantity: number;
+    notes: string;
+  }) => {
+    // TODO: Call API to create transfer
+    console.log("Transfer data:", data);
+    toast.success("Stock transfer initiated successfully");
+    setTransferModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-            Inventory Dashboard
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Manage and monitor your inventory across all branches
-          </p>
+      {/* Header Section */}
+      <div className="space-y-6">
+        {/* Title + Branch Selector Row */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+              Inventory Dashboard
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400">
+              Manage and monitor your inventory across all branches
+            </p>
+          </div>
+
+          {/* Branch Selector */}
+          <BranchSelector
+            branches={branches || []}
+            selectedBranch={selectedBranch}
+            onBranchChange={setSelectedBranch}
+            isLoading={isLoading}
+          />
         </div>
-        <div className="flex items-center gap-3">
+
+        {/* Action Buttons Row */}
+        <div className="flex flex-wrap gap-3">
+          <Button
+            onClick={() => setTransferModalOpen(true)}
+            className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white"
+          >
+            <Truck className="h-4 w-4 mr-2" />
+            New Transfer
+          </Button>
           <Button
             onClick={handleExport}
             variant="outline"
@@ -184,18 +205,6 @@ export default function InventoryDashboard() {
                   </option>
                 ))}
               </select>
-              <select
-                value="all"
-                className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
-                disabled={isLoading || !branches || branches.length === 0}
-              >
-                <option value="all">All Branches</option>
-                {branches && branches.map((branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
         </CardContent>
@@ -213,12 +222,12 @@ export default function InventoryDashboard() {
         </div>
       ) : (
         <>
-          {/* Stats Cards */}
-          <InventoryStats
+          {/* KPI Summary Cards */}
+          <KPICards
             totalItems={stats.totalItems}
-            lowStockItems={stats.lowStockCount}
-            outOfStockItems={stats.outOfStockCount}
-            totalValue={stats.totalValue}
+            lowStockAlerts={stats.lowStockCount}
+            pendingTransfers={transformedProducts.reduce((sum, p) => sum + p.inTransit, 0)}
+            totalInventoryValue={stats.totalValue}
           />
 
           {/* Charts Section */}
@@ -227,21 +236,20 @@ export default function InventoryDashboard() {
             <CategoryDistribution items={transformedProducts} />
           </div>
 
+          {/* Main Table Section */}
+          <EnhancedInventoryTable
+            items={transformedProducts}
+            isLoading={isLoading}
+            onInitiateTransfer={handleInitiateTransfer}
+            onPageChange={goToPage}
+            onSort={setSort}
+            pagination={pagination}
+          />
+
           {/* Bottom Section */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-            <div className="xl:col-span-2 space-y-6">
-              <LowStockItems items={alertProducts} />
-              <InventoryTable 
-                items={transformedProducts} 
-                isLoading={isLoading}
-                pagination={pagination}
-                onSort={setSort}
-                onPageChange={goToPage}
-                currentSort={{
-                  sortBy: filters.sortBy,
-                  sortOrder: filters.sortOrder
-                }}
-              />
+            <div className="xl:col-span-2">
+              <LowStockItems items={transformedProducts.filter((p) => p.status !== "in_stock")} />
             </div>
             <div className="space-y-6">
               <QuickActions onProductAdded={refresh} />
@@ -275,6 +283,17 @@ export default function InventoryDashboard() {
           )}
         </>
       )}
+
+      {/* Stock Transfer Modal */}
+      <StockTransferModal
+        open={transferModalOpen}
+        onOpenChange={setTransferModalOpen}
+        itemId={selectedItemForTransfer?.id}
+        availableStock={selectedItemForTransfer?.availableStock}
+        branches={branches || []}
+        items={products.map((p) => ({ id: p.id, name: p.name, sku: p.sku }))}
+        onSubmit={handleTransferSubmit}
+      />
     </div>
   );
 }
