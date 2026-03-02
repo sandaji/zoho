@@ -33,6 +33,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
   const searchParam = searchParams.get("search") || "";
   const categoryParam = searchParams.get("category") || "all";
   const statusParam = searchParams.get("status") || "all";
+  const branchIdParam = searchParams.get("branchId") || "";
   const sortByParam = searchParams.get("sortBy") || "createdAt";
   const sortOrderParam = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
 
@@ -43,6 +44,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
   const [branches, setBranches] = useState<
     Array<{ id: string; name: string; code: string }>
   >([]);
+  const [currentBranchId, setCurrentBranchId] = useState<string>(branchIdParam);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -59,6 +61,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
     search: searchParam,
     category: categoryParam,
     status: statusParam,
+    branchId: branchIdParam,
     sortBy: sortByParam,
     sortOrder: sortOrderParam,
   });
@@ -72,6 +75,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
       search?: string;
       category?: string;
       status?: string;
+      branchId?: string;
       sortBy?: string;
       sortOrder?: "asc" | "desc";
     }) => {
@@ -85,6 +89,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
           search: params?.search !== undefined ? params.search : filters.search,
           category: params?.category || filters.category,
           status: params?.status || filters.status,
+          branchId: params?.branchId !== undefined ? params.branchId : filters.branchId,
           sortBy: params?.sortBy || filters.sortBy,
           sortOrder: params?.sortOrder || filters.sortOrder,
         };
@@ -107,6 +112,9 @@ export function useInventory(options: UseInventoryOptions = {}) {
         
         if (fetchParams.status !== "all") newParams.set("status", fetchParams.status);
         else newParams.delete("status");
+
+        if (fetchParams.branchId) newParams.set("branchId", fetchParams.branchId);
+        else newParams.delete("branchId");
 
         if (fetchParams.sortBy !== "createdAt") newParams.set("sortBy", fetchParams.sortBy);
         else newParams.delete("sortBy");
@@ -193,6 +201,14 @@ export function useInventory(options: UseInventoryOptions = {}) {
   }, []);
 
   /**
+   * Update branch filter
+   */
+  const setBranch = useCallback((branchId: string) => {
+    setFilters((prev) => ({ ...prev, branchId }));
+    setCurrentBranchId(branchId);
+  }, []);
+
+  /**
    * Update status filter
    */
   const setStatus = useCallback((status: string) => {
@@ -241,18 +257,35 @@ export function useInventory(options: UseInventoryOptions = {}) {
   const filteredProducts = products;
 
   /**
-   * Calculate derived data
+   * Helper function to get branch-specific inventory for a product
    */
-  const lowStockProducts = filteredProducts.filter(
-    (p) => p.quantity <= p.reorder_level && p.quantity > 0
-  );
+  const getBranchInventory = (product: Product) => {
+    if (!filters.branchId || !product.branchInventory) {
+      return null;
+    }
+    return product.branchInventory.find((bi) => bi.branchId === filters.branchId) || null;
+  };
 
-  const outOfStockProducts = filteredProducts.filter((p) => p.quantity === 0);
+  /**
+   * Calculate derived data based on branch inventory
+   */
+  const lowStockProducts = filteredProducts.filter((p) => {
+    const branchInv = getBranchInventory(p);
+    if (!branchInv) return false;
+    return branchInv.quantity <= branchInv.reorder_level && branchInv.quantity > 0;
+  });
 
-  const totalValue = filteredProducts.reduce(
-    (sum, p) => sum + p.quantity * p.cost_price,
-    0
-  );
+  const outOfStockProducts = filteredProducts.filter((p) => {
+    const branchInv = getBranchInventory(p);
+    if (!branchInv) return false;
+    return branchInv.quantity === 0;
+  });
+
+  const totalValue = filteredProducts.reduce((sum, p) => {
+    const branchInv = getBranchInventory(p);
+    if (!branchInv) return sum;
+    return sum + branchInv.quantity * p.cost_price;
+  }, 0);
 
   // Initial fetch
   useEffect(() => {
@@ -266,7 +299,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
     if (autoFetch) {
       fetchProducts({ page: 1 });
     }
-  }, [filters.category, filters.status, filters.sortBy, filters.sortOrder, filters.search, autoFetch]);
+  }, [filters.category, filters.status, filters.branchId, filters.sortBy, filters.sortOrder, filters.search, autoFetch]);
 
   return {
     // Data
@@ -296,6 +329,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
     filters,
     setSearch,
     setCategory,
+    setBranch,
     setStatus,
     setSort,
 

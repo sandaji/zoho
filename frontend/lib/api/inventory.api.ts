@@ -6,6 +6,26 @@
 import { API_BASE_URL } from "../api-config";
 
 // Types
+export interface BranchInventory {
+  id: string;
+  productId: string;
+  branchId: string;
+  quantity: number;
+  reorder_level: number;
+  reorder_quantity: number;
+  reserved: number;
+  available: number;
+  status: "in_stock" | "low_stock" | "out_of_stock" | "discontinued";
+  local_price?: number | null;
+  bin_location?: string | null;
+  last_counted?: string | null;
+  branch?: {
+    id: string;
+    code: string;
+    name: string;
+  };
+}
+
 export interface Product {
   id: string;
   sku: string;
@@ -19,9 +39,6 @@ export interface Product {
   cost_price: number;
   unit_price: number;
   tax_rate: number;
-  quantity: number;
-  reorder_level: number;
-  reorder_quantity: number;
   unit_of_measurement: string;
   weight: number | null;
   weight_unit: string | null;
@@ -37,6 +54,8 @@ export interface Product {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  // Branch inventory - contains branch-specific quantities
+  branchInventory?: BranchInventory[];
 }
 
 export interface InventoryItem extends Product {
@@ -120,6 +139,7 @@ export async function getProducts(params?: {
   search?: string;
   category?: string;
   status?: string;
+  branchId?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
 }): Promise<ApiResponse<PaginatedResponse<Product>>> {
@@ -132,6 +152,7 @@ export async function getProducts(params?: {
     queryParams.append("category", params.category);
   if (params?.status && params.status !== "all")
     queryParams.append("status", params.status);
+  if (params?.branchId) queryParams.append("branchId", params.branchId);
   if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
   if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
 

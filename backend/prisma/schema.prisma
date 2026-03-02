@@ -275,13 +275,13 @@ model Branch {
   // Relations
   users             User[]
   warehouses        Warehouse[]
+  branchInventory   BranchInventory[] // Link to product inventories for this branch
   salesDocuments    SalesDocument[]
   documentSequences DocumentSequence[]
   cashierSessions   CashierSession[]
   transfersFrom     EmployeeTransfer[] @relation("TransfersFrom")
   transfersTo       EmployeeTransfer[] @relation("TransfersTo")
   purchaseOrders    PurchaseOrder[]
-  products          Product[]
 
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
@@ -365,15 +365,12 @@ model Product {
   subcategory   String?
   product_type  ProductType @default(physical)
   
-  // Pricing
+  // Pricing - Global/Master Data
   cost_price    Float     // Cost to company
-  unit_price    Float     // Selling price
+  unit_price    Float     // Base selling price
   tax_rate      Float     @default(0.16) // Default 16% VAT
   
-  // Inventory Management
-  quantity      Int       @default(0) // Total quantity across all warehouses
-  reorder_level Int       @default(10)
-  reorder_quantity Int    @default(20) // Quantity to reorder
+  // Unit of measurement - Global
   unit_of_measurement String @default("pcs") // units, kg, lbs, etc
   
   // Physical properties
@@ -392,15 +389,12 @@ model Product {
   vendor        Vendor?   @relation(fields: [vendorId], references: [id])
   supplier_part_number String?
   lead_time_days Int?    // Lead time in days
-
-  // Branch assignment
-  branchId String?
-  branch   Branch?   @relation(fields: [branchId], references: [id])
   
-  // Status
+  // Status - Global
   status        ProductStatus @default(active)
   
   // Relations
+  branchInventory    BranchInventory[] // Link to branch-specific inventory
   inventory          Inventory[]
   salesDocumentItems SalesDocumentItem[]
   stockMovements     StockMovement[]
@@ -418,6 +412,44 @@ model Product {
   @@index([category])
   @@index([status])
   @@index([isActive])
+}
+
+/// Branch Inventory - Aggregated quantities and settings per branch
+/// This is the junction table that separates master data (Product) from local data (quantities per branch)
+model BranchInventory {
+  id                String    @id @default(cuid())
+  
+  // Foreign Keys
+  productId         String
+  branchId          String
+  
+  // Branch-specific inventory data
+  quantity          Int       @default(0) // Total quantity across all warehouses in this branch
+  reorder_level     Int       @default(10) // Branch-specific reorder point
+  reorder_quantity  Int       @default(20) // Branch-specific reorder amount
+  reserved          Int       @default(0) // Reserved for pending sales in this branch
+  available         Int       @default(0) // quantity - reserved
+  status            InventoryStatus @default(in_stock)
+  
+  // Local pricing override (optional)
+  local_price       Float?    // Override global unit_price for this branch
+  bin_location      String?   // Where in this branch's warehouse is it stored?
+  
+  last_counted      DateTime?
+  
+  // Relations
+  product           Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  branch            Branch    @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Ensure only one inventory record per product per branch
+  @@unique([productId, branchId])
+  @@map("branch_inventory")
+  @@index([productId])
+  @@index([branchId])
+  @@index([status])
 }
 
 /// Inventory - Links Products to Warehouses

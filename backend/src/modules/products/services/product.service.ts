@@ -14,9 +14,6 @@ interface CreateProductDTO {
   cost_price: number;
   unit_price: number;
   tax_rate?: number;
-  quantity?: number;
-  reorder_level?: number;
-  reorder_quantity?: number;
   unit_of_measurement?: string;
   weight?: number | null;
   weight_unit?: string | null;
@@ -29,7 +26,11 @@ interface CreateProductDTO {
   supplier_part_number?: string | null;
   lead_time_days?: number | null;
   status?: "active" | "inactive" | "discontinued";
-  warehouseId?: string; // Optional warehouse assignment
+  // Branch & Warehouse inventory (moved to BranchInventory)
+  branchId: string; // Required: which branch this product is being added to
+  quantity?: number; // Initial quantity for this branch
+  reorder_level?: number; // Branch-specific reorder level
+  reorder_quantity?: number; // Branch-specific reorder quantity
 }
 
 interface GetProductsQuery {
@@ -38,7 +39,8 @@ interface GetProductsQuery {
   search?: string;
   category?: string;
   status?: string;
-  sortBy?: "name" | "sku" | "price" | "createdAt";
+  branchId?: string; // Branch-specific inventory filtering
+  sortBy?: "name" | "sku" | "price" | "createdAt" | "quantity";
   sortOrder?: "asc" | "desc";
 }
 
@@ -96,31 +98,43 @@ export class ProductService {
         }
       }
 
-      // Determine warehouse for initial inventory
-      let warehouseId = data.warehouseId;
-      if (!warehouseId) {
-        const mainWarehouse = await this.getMainWarehouse();
-        warehouseId = mainWarehouse.id;
-      } else {
-        // Verify the specified warehouse exists and is active
-        const warehouse = await prisma.warehouse.findUnique({
-          where: { id: warehouseId },
-        });
+      // Verify branch exists
+      const branch = await prisma.branch.findUnique({
+        where: { id: data.branchId },
+        include: { warehouses: { where: { isActive: true } } },
+      });
 
-        if (!warehouse || !warehouse.isActive) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            "Specified warehouse not found or inactive"
-          );
-        }
+      if (!branch) {
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Specified branch not found"
+        );
+      }
+
+      if (branch.warehouses.length === 0) {
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Branch has no active warehouses"
+        );
       }
 
       const initialQuantity = data.quantity || 0;
+      const reorderLevel = data.reorder_level || 10;
+      const reorderQuantity = data.reorder_quantity || 20;
 
-      // Create the product and inventory in a transaction
+      // Determine inventory status based on quantity
+      let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" = "in_stock";
+      if (initialQuantity === 0) {
+        inventoryStatus = "out_of_stock";
+      } else if (initialQuantity < reorderLevel) {
+        inventoryStatus = "low_stock";
+      }
+
+      // Create the product and branch inventory in a transaction
       const result = await prisma.$transaction(async (tx) => {
-        // Create the product
+        // 1. Create the master product (without quantity fields)
         const product = await tx.product.create({
           data: {
             sku: data.sku,
@@ -134,9 +148,6 @@ export class ProductService {
             cost_price: data.cost_price,
             unit_price: data.unit_price,
             tax_rate: data.tax_rate || 0.16,
-            quantity: initialQuantity,
-            reorder_level: data.reorder_level || 10,
-            reorder_quantity: data.reorder_quantity || 20,
             unit_of_measurement: data.unit_of_measurement || "pcs",
             weight: data.weight || null,
             weight_unit: data.weight_unit || null,
@@ -152,20 +163,28 @@ export class ProductService {
           },
         });
 
-        // Determine inventory status based on quantity
-        const reorderLevel = data.reorder_level || 10;
-        let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" = "in_stock";
-        if (initialQuantity === 0) {
-          inventoryStatus = "out_of_stock";
-        } else if (initialQuantity < reorderLevel) {
-          inventoryStatus = "low_stock";
-        }
+        // 2. Create BranchInventory record for localized inventory
+        await tx.branchInventory.create({
+          data: {
+            productId: product.id,
+            branchId: data.branchId,
+            quantity: initialQuantity,
+            reorder_level: reorderLevel,
+            reorder_quantity: reorderQuantity,
+            reserved: 0,
+            available: initialQuantity,
+            status: inventoryStatus,
+            last_counted: new Date(),
+          },
+        });
 
-        // Create initial inventory record for the warehouse
+        // 3. Create Inventory record for the primary warehouse in this branch
+        // This maintains warehouse-level tracking for advanced stock operations
+        const primaryWarehouse = branch.warehouses[0];
         await tx.inventory.create({
           data: {
             productId: product.id,
-            warehouseId: warehouseId!,
+            warehouseId: primaryWarehouse.id,
             quantity: initialQuantity,
             reserved: 0,
             available: initialQuantity,
@@ -180,9 +199,9 @@ export class ProductService {
       logger.info({
         productId: result.id,
         productName: result.name,
-        warehouseId,
+        branchId: data.branchId,
         initialQuantity,
-      }, `Product created and allocated to warehouse`);
+      }, `Product created and allocated to branch`);
 
       return result;
     } catch (error) {
@@ -200,14 +219,17 @@ export class ProductService {
 
   /**
    * Get products with pagination and filters
+   * Now supports branch-specific inventory queries
    */
   async getProducts(query: GetProductsQuery) {
     try {
-      const { page, limit, search, category, status } = query;
+      const { page, limit, search, category, status, branchId } = query;
       const skip = (page - 1) * limit;
 
-      // Build filter conditions
-      const where: any = {};
+      // Build filter conditions for products table
+      const where: any = {
+        isActive: true,
+      };
 
       if (search) {
         where.OR = [
@@ -241,6 +263,16 @@ export class ProductService {
           skip,
           take: limit,
           orderBy,
+          include: {
+            branchInventory: branchId
+              ? {
+                  where: { branchId },
+                  include: { branch: true },
+                }
+              : {
+                  include: { branch: true },
+                },
+          },
         }),
         prisma.product.count({ where }),
       ]);

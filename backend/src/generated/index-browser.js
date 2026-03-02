@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.4.0
- * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
+ * Prisma Client JS version: 7.4.2
+ * Query Engine version: 94a226be1cf2967af2541cca5529f0f7ba866919
  */
 Prisma.prismaVersion = {
-  client: "7.4.0",
-  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
+  client: "7.4.2",
+  engine: "94a226be1cf2967af2541cca5529f0f7ba866919"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -187,9 +187,6 @@ exports.Prisma.ProductScalarFieldEnum = {
   cost_price: 'cost_price',
   unit_price: 'unit_price',
   tax_rate: 'tax_rate',
-  quantity: 'quantity',
-  reorder_level: 'reorder_level',
-  reorder_quantity: 'reorder_quantity',
   unit_of_measurement: 'unit_of_measurement',
   weight: 'weight',
   weight_unit: 'weight_unit',
@@ -201,9 +198,25 @@ exports.Prisma.ProductScalarFieldEnum = {
   vendorId: 'vendorId',
   supplier_part_number: 'supplier_part_number',
   lead_time_days: 'lead_time_days',
-  branchId: 'branchId',
   status: 'status',
   isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BranchInventoryScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  branchId: 'branchId',
+  quantity: 'quantity',
+  reorder_level: 'reorder_level',
+  reorder_quantity: 'reorder_quantity',
+  reserved: 'reserved',
+  available: 'available',
+  status: 'status',
+  local_price: 'local_price',
+  bin_location: 'bin_location',
+  last_counted: 'last_counted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1270,6 +1283,7 @@ exports.Prisma.ModelName = {
   EmployeeTransfer: 'EmployeeTransfer',
   Warehouse: 'Warehouse',
   Product: 'Product',
+  BranchInventory: 'BranchInventory',
   Inventory: 'Inventory',
   StockMovement: 'StockMovement',
   StockTransfer: 'StockTransfer',

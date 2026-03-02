@@ -28,7 +28,7 @@ router.post("/", authenticate, requirePermission('inventory.product.manage'), as
 // Get all products with pagination and filters
 router.get("/", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
   try {
-    const { page = "1", limit = "50", search, category, status } = req.query;
+    const { page = "1", limit = "50", search, category, status, branchId } = req.query;
 
     const result = await productService.getProducts({
       page: parseInt(page as string),
@@ -36,6 +36,7 @@ router.get("/", authenticate, requirePermission('inventory.product.view'), async
       search: search as string,
       category: category as string,
       status: status as string,
+      branchId: branchId as string,
     });
 
     res.json({
