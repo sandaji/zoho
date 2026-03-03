@@ -40,7 +40,7 @@ export default function InventoryPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/inventory`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/inventory`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

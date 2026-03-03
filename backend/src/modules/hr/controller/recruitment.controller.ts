@@ -25,7 +25,7 @@ export class RecruitmentController {
 
   async getJobPostingById(req: Request, res: Response, next: NextFunction) {
     try {
-      const postingId = req.params.id;
+      const postingId = req.params.id as string;
       if (!postingId) {
         res.status(400).json({ success: false, error: "Job posting ID is required" });
         return;
@@ -48,7 +48,7 @@ export class RecruitmentController {
 
   async updateApplicantStatus(req: Request, res: Response, next: NextFunction) {
     try {
-      const applicantId = req.params.id;
+      const applicantId = req.params.id as string;
       if (!applicantId) {
         res.status(400).json({ success: false, error: "Applicant ID is required" });
         return;
@@ -71,7 +71,7 @@ export class RecruitmentController {
 
   async updateInterview(req: Request, res: Response, next: NextFunction) {
     try {
-      const interviewId = req.params.id;
+      const interviewId = req.params.id as string;
       if (!interviewId) {
         res.status(400).json({ success: false, error: "Interview ID is required" });
         return;

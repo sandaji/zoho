@@ -399,7 +399,7 @@ export class BranchService {
       // Category breakdown (Real)
       const salesItems = await this.prisma.salesDocumentItem.findMany({
         where: {
-          sales: {
+          salesDocument: {
             branchId,
             createdAt: { gte: monthStart, lte: monthEnd }
           }
@@ -840,7 +840,7 @@ export class BranchService {
     const salesByProduct = await this.prisma.salesDocumentItem.groupBy({
       by: ['productId'],
       where: {
-        sales: {
+        salesDocument: {
           branchId,
           createdAt: { gte: monthStart }
         }
@@ -866,16 +866,16 @@ export class BranchService {
       where: { branchId, createdAt: { gte: monthStart } },
       _sum: { total: true }
     });
-    const totalRevenue = totalRevenueResult._sum.grand_total || 1;
+    const totalRevenue = totalRevenueResult._sum?.total ?? 1;
 
     return salesByProduct.map(s => {
       const product = products.find(p => p.id === s.productId);
       return {
         product_id: s.productId,
         product_name: product?.name || "Unknown Product",
-        quantity_sold: s._sum.quantity || 0,
-        revenue: s._sum.total || 0,
-        percentage_of_total: ((s._sum.total || 0) / totalRevenue) * 100
+        quantity_sold: s._sum?.quantity || 0,
+        revenue: s._sum?.total || 0,
+        percentage_of_total: ((s._sum?.total || 0) / totalRevenue) * 100
       };
     });
   }
@@ -888,7 +888,7 @@ export class BranchService {
       const existing = dailyMap.get(date) || { count: 0, revenue: 0 };
       dailyMap.set(date, {
         count: existing.count + 1,
-        revenue: existing.revenue + (sale.grand_total || 0),
+        revenue: existing.revenue + (sale.total || 0),
       });
     });
 
@@ -911,7 +911,7 @@ export class BranchService {
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const salesByCustomer = await this.prisma.salesDocument.groupBy({
-      by: ['userId'], // Grouping by User as surrogate for customer in POS if not specifically linked
+      by: ['customerId'], // Grouping by customer
       where: {
         branchId,
         createdAt: { gte: monthStart }
@@ -919,9 +919,7 @@ export class BranchService {
       _sum: {
         total: true
       },
-      _count: {
-        id: true
-      },
+      _count: true,
       orderBy: {
         _sum: {
           total: 'desc'
@@ -931,11 +929,11 @@ export class BranchService {
     });
 
     return salesByCustomer.map(s => ({
-      customer_id: s.userId || "Unknown",
+      customer_id: s.customerId || "Unknown",
       customer_name: "Customer",
-      total_purchases: s._count.id,
-      total_spent: s._sum.total || 0,
-      order_count: s._count.id
+      total_purchases: s._count ?? 0,
+      total_spent: s._sum?.total || 0,
+      order_count: s._count ?? 0
     }));
   }
 

@@ -112,7 +112,7 @@ class FinanceController {
     try {
       const startDate = req.query.startDate ? new Date(req.query.startDate as string) : new Date(new Date().getFullYear(), 0, 1);
       const endDate = req.query.endDate ? new Date(req.query.endDate as string) : new Date();
-      
+
       const report = await AccountingService.getIncomeStatement(startDate, endDate);
       res.status(200).json({ status: 'success', data: report });
     } catch (error) {
@@ -125,7 +125,7 @@ class FinanceController {
     try {
       const startDate = req.query.startDate ? new Date(req.query.startDate as string) : new Date(new Date().getFullYear(), 0, 1);
       const endDate = req.query.endDate ? new Date(req.query.endDate as string) : new Date();
-      
+
       const report = await AccountingService.getCashFlow(startDate, endDate);
       res.status(200).json({ status: 'success', data: report });
     } catch (error) {
@@ -137,64 +137,64 @@ class FinanceController {
   // ============================================
   // Bank Reconciliation
   // ============================================
-  
+
   private bankService = new BankService();
 
   async getBankAccounts(_req: Request, res: Response, next: NextFunction): Promise<void> {
-      try {
-          const accounts = await AccountingService.getBankAccounts();
-          res.status(200).json({ status: 'success', data: accounts });
-      } catch (error) {
-          logger.error(error, "Error fetching bank accounts:");
-          next(error);
-      }
+    try {
+      const accounts = await AccountingService.getBankAccounts();
+      res.status(200).json({ status: 'success', data: accounts });
+    } catch (error) {
+      logger.error(error, "Error fetching bank accounts:");
+      next(error);
+    }
   }
 
   async uploadBankStatement(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        // Simplified file handling: Assume plain text body or specific parsing field if using multer (not configured here yet)
-        // For MVP, we'll accept raw CSV string in body.fileContent
-        
-        const { accountId, fileContent, filename } = req.body;
-        // User ID from Auth Middleware
-        // @ts-ignore
-        const userId = (req.user as any)?.userId || 'system';
+      // Simplified file handling: Assume plain text body or specific parsing field if using multer (not configured here yet)
+      // For MVP, we'll accept raw CSV string in body.fileContent
 
-        const result = await this.bankService.importStatement(accountId, fileContent, filename, userId);
-        
-        res.status(200).json({ status: 'success', data: result });
+      const { accountId, fileContent, filename } = req.body;
+      // User ID from Auth Middleware
+      // @ts-ignore
+      const userId = (req.user as any)?.userId || 'system';
+
+      const result = await this.bankService.importStatement(accountId, fileContent, filename, userId);
+
+      res.status(200).json({ status: 'success', data: result });
     } catch (error) {
-        logger.error(error, "Error uploading bank statement:");
-        next(error);
+      logger.error(error, "Error uploading bank statement:");
+      next(error);
     }
   }
 
   async getReconciliationData(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const accountId = req.query.accountId as string;
-        if (!accountId) {
-          res.status(400).json({ 
-            status: 'error', 
-            message: 'accountId query parameter is required' 
-          });
-          return;
-        }
-        const data = await this.bankService.getReconciliationData(accountId);
-        res.status(200).json({ status: 'success', data });
+      const accountId = req.query.accountId as string;
+      if (!accountId) {
+        res.status(400).json({
+          status: 'error',
+          message: 'accountId query parameter is required'
+        });
+        return;
+      }
+      const data = await this.bankService.getReconciliationData(accountId);
+      res.status(200).json({ status: 'success', data });
     } catch (error) {
-        logger.error(error, "Error fetching reconciliation data:");
-        next(error);
+      logger.error(error, "Error fetching reconciliation data:");
+      next(error);
     }
   }
 
   async reconcileTransaction(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const { bankLineId, journalEntryId } = req.body;
-        const result = await this.bankService.reconcileItems(bankLineId, journalEntryId);
-        res.status(200).json({ status: 'success', data: result });
+      const { bankLineId, journalEntryId } = req.body;
+      const result = await this.bankService.reconcileItems(bankLineId, journalEntryId);
+      res.status(200).json({ status: 'success', data: result });
     } catch (error) {
-        logger.error(error, "Error reconciling transaction:");
-        next(error);
+      logger.error(error, "Error reconciling transaction:");
+      next(error);
     }
   }
 
@@ -355,7 +355,7 @@ class FinanceController {
         res.status(400).json({ status: 'error', message: 'Period ID is required' });
         return;
       }
-      const result = await PeriodService.lock(id, userId);
+      const result = await PeriodService.lock(id as string, userId);
       res.status(200).json({ status: 'success', data: result });
     } catch (error) {
       logger.error(error, "Error locking fiscal period:");
@@ -370,7 +370,7 @@ class FinanceController {
         res.status(400).json({ status: 'error', message: 'Period ID is required' });
         return;
       }
-      const result = await PeriodService.unlock(id);
+      const result = await PeriodService.unlock(id as string);
       res.status(200).json({ status: 'success', data: result });
     } catch (error) {
       logger.error(error, "Error unlocking fiscal period:");
@@ -538,7 +538,7 @@ class FinanceController {
         return;
       }
 
-      const result = await this.dashboardService.updateSavingsGoal(id, {
+      const result = await this.dashboardService.updateSavingsGoal(id as string, {
         name,
         description,
         targetAmount,
@@ -562,7 +562,7 @@ class FinanceController {
 
   async deleteSavingsGoal(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         res.status(400).json({

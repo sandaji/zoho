@@ -7,28 +7,28 @@ import { useEffect } from "react";
 import { Shield, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-import AdminOverview    from "@/components/admin/AdminOverview";
-import BranchesSection  from "@/components/admin/BranchesSection";
+import AdminOverview from "@/components/admin/AdminOverview";
+import BranchesSection from "@/components/admin/BranchesSection";
 import WarehousesSection from "@/components/admin/WarehousesSection";
-import UsersSection     from "@/components/admin/UsersSection";
-import ProductsSection  from "@/components/admin/ProductsSection";
-import SalesSection     from "@/components/admin/SalesSection";
+import UsersSection from "@/components/admin/UsersSection";
+import ProductsSection from "@/components/admin/ProductsSection";
+import SalesSection from "@/components/admin/SalesSection";
 import DeliveriesSection from "@/components/admin/DeliveriesSection";
-import FinanceSection   from "@/components/admin/FinanceSection";
-import PayrollSection   from "@/components/admin/PayrollSection";
-import RolesSection     from "@/components/admin/RolesSection";
+import FinanceSection from "@/components/admin/FinanceSection";
+import PayrollSection from "@/components/admin/PayrollSection";
+import RolesSection from "@/components/admin/RolesSection";
 
 const SECTION_META: Record<string, { title: string; subtitle: string; icon: React.ElementType }> = {
-  overview:   { title: "System Overview",         subtitle: "Live snapshot across all operations",          icon: Crown   },
-  branches:   { title: "Branch Management",       subtitle: "Monitor and manage all branch locations",      icon: Shield  },
-  warehouses: { title: "Warehouse Management",    subtitle: "Storage facilities and inventory allocation",  icon: Shield  },
-  users:      { title: "User Management",         subtitle: "Staff accounts, roles, and access levels",     icon: Shield  },
-  products:   { title: "Product Catalog",         subtitle: "SKUs, pricing, and stock management",          icon: Shield  },
-  sales:      { title: "Sales Orders",            subtitle: "All POS and manual transactions",              icon: Shield  },
-  deliveries: { title: "Delivery Management",     subtitle: "Fleet dispatch and delivery tracking",         icon: Shield  },
-  finance:    { title: "Finance & Transactions",  subtitle: "Ledger entries, income and expenses",          icon: Shield  },
-  payroll:    { title: "Payroll Management",      subtitle: "Employee salary records and disbursements",    icon: Shield  },
-  roles:      { title: "Roles & Permissions",     subtitle: "Define access control for all system roles",   icon: Shield  },
+  overview: { title: "System Overview", subtitle: "Live snapshot across all operations", icon: Crown },
+  branches: { title: "Branch Management", subtitle: "Monitor and manage all branch locations", icon: Shield },
+  warehouses: { title: "Warehouse Management", subtitle: "Storage facilities and inventory allocation", icon: Shield },
+  users: { title: "User Management", subtitle: "Staff accounts, roles, and access levels", icon: Shield },
+  products: { title: "Product Catalog", subtitle: "SKUs, pricing, and stock management", icon: Shield },
+  sales: { title: "Sales Orders", subtitle: "All POS and manual transactions", icon: Shield },
+  deliveries: { title: "Delivery Management", subtitle: "Fleet dispatch and delivery tracking", icon: Shield },
+  finance: { title: "Finance & Transactions", subtitle: "Ledger entries, income and expenses", icon: Shield },
+  payroll: { title: "Payroll Management", subtitle: "Employee salary records and disbursements", icon: Shield },
+  roles: { title: "Roles & Permissions", subtitle: "Define access control for all system roles", icon: Shield },
 };
 
 export default function AdminDashboardPage() {
@@ -81,22 +81,22 @@ export default function AdminDashboardPage() {
 
   const renderSection = () => {
     switch (section) {
-      case "overview":   return <AdminOverview />;
-      case "branches":   return <BranchesSection />;
+      case "overview": return <AdminOverview />;
+      case "branches": return <BranchesSection />;
       case "warehouses": return <WarehousesSection />;
-      case "users":      return <UsersSection />;
-      case "products":   return <ProductsSection />;
-      case "sales":      return <SalesSection />;
+      case "users": return <UsersSection />;
+      case "products": return <ProductsSection />;
+      case "sales": return <SalesSection />;
       case "deliveries": return <DeliveriesSection />;
-      case "finance":    return <FinanceSection />;
-      case "payroll":    return <PayrollSection />;
-      case "roles":      return <RolesSection />;
-      default:           return <AdminOverview />;
+      case "finance": return <FinanceSection />;
+      case "payroll": return <PayrollSection />;
+      case "roles": return <RolesSection />;
+      default: return <AdminOverview />;
     }
   };
 
-  const meta = SECTION_META[section] ?? SECTION_META.overview;
-  const MetaIcon = meta.icon;
+  const meta = SECTION_META[section as keyof typeof SECTION_META] || SECTION_META["overview"];
+  const MetaIcon = meta!.icon;
 
   return (
     <div className="flex flex-col min-h-full bg-emerald-50/20">
@@ -114,8 +114,8 @@ export default function AdminDashboardPage() {
               )} />
             </div>
             <div>
-              <h1 className="text-base font-bold leading-none text-emerald-900">{meta.title}</h1>
-              <p className="mt-0.5 text-xs text-emerald-500">{meta.subtitle}</p>
+              <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
+              <p className="mt-0.5 text-xs text-emerald-500">{meta!.subtitle}</p>
             </div>
           </div>
 

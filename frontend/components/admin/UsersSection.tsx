@@ -46,11 +46,14 @@ export default function UsersSection() {
     {
       key: "role",
       label: "Role",
-      render: (role) => (
-        <Badge variant={roleBadgeVariant(role)}>
-          {role.replace("_", " ").toUpperCase()}
-        </Badge>
-      ),
+      render: (role) => {
+        const roleStr = role as string;
+        return (
+          <Badge variant={roleBadgeVariant(roleStr)}>
+            {roleStr.replace("_", " ").toUpperCase()}
+          </Badge>
+        );
+      },
     },
     {
       key: "phone",
@@ -58,9 +61,9 @@ export default function UsersSection() {
       render: (phone) => phone || "-",
     },
     {
-        key: "branch",
-        label: "Branch",
-        render: (branch) => branch?.name || "-",
+      key: "branch",
+      label: "Branch",
+      render: (branch) => (branch as any)?.name || "-",
     },
     {
       key: "isActive",
@@ -82,9 +85,9 @@ export default function UsersSection() {
         loading={loading}
         searchKeys={["name", "email", "phone", "role", "branch.name"]}
         actions={(user) => (
-            <Button variant="outline" size="sm" onClick={() => setEditingUser(user)}>
-                Edit
-            </Button>
+          <Button variant="outline" size="sm" onClick={() => setEditingUser(user)}>
+            Edit
+          </Button>
         )}
       />
 

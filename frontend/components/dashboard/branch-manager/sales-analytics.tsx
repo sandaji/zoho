@@ -15,9 +15,9 @@ import { SalesData } from "@/lib/dashboard.service";
 
 // Payment-type proxy data (static until payment-type API is available)
 const paymentData = [
-  { name: "Cash",   value: 38, color: "#059669" /* emerald-600 */ },
+  { name: "Cash", value: 38, color: "#059669" /* emerald-600 */ },
   { name: "M-Pesa", value: 32, color: "#d97706" /* yellow-600  */ },
-  { name: "Card",   value: 20, color: "#0d9488" /* teal-600    */ },
+  { name: "Card", value: 20, color: "#0d9488" /* teal-600    */ },
   { name: "Credit", value: 10, color: "#6ee7b7" /* emerald-300 */ },
 ];
 
@@ -66,7 +66,7 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
               <AreaChart data={salesData} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#059669" stopOpacity={0.25} />
+                    <stop offset="5%" stopColor="#059669" stopOpacity={0.25} />
                     <stop offset="95%" stopColor="#059669" stopOpacity={0} />
                   </linearGradient>
                 </defs>
@@ -119,7 +119,7 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number, name: string) => [`${value}%`, name]}
+                  formatter={(value: any, name: any) => [`${value}%`, name]}
                   contentStyle={{
                     borderRadius: 8,
                     border: "1px solid #d1fae5",

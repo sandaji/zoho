@@ -149,7 +149,7 @@ export class POSController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError('ID is required');
@@ -218,7 +218,7 @@ export class POSController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto: UpdateSalesDTO = req.body;
 
       if (!id) {
@@ -277,7 +277,7 @@ export class POSController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError('Sale ID is required');

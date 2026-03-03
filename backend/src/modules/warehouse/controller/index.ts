@@ -51,13 +51,13 @@ export class WarehouseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError("ID is required");
       }
 
-      const result = await this.service.getWarehouse(id);
+      const result = await this.service.getWarehouse(id as string);
 
       res.json({
         success: true,
@@ -98,14 +98,14 @@ export class WarehouseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto: UpdateWarehouseDTO = req.body;
 
       if (!id) {
         throw validationError("ID is required");
       }
 
-      const result = await this.service.updateWarehouse(id, dto);
+      const result = await this.service.updateWarehouse(id as string, dto);
 
       res.json({
         success: true,
@@ -122,13 +122,13 @@ export class WarehouseController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError("ID is required");
       }
 
-      const result = await this.service.getWarehouseStock(id);
+      const result = await this.service.getWarehouseStock(id as string);
 
       res.json({
         success: true,

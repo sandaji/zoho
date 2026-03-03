@@ -138,7 +138,7 @@ export class CashierSessionController {
    */
   async closeSession(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { actualCash, notes } = req.body;
       const userId = (req as any).user?.userId;
 
@@ -348,7 +348,7 @@ export class CashierSessionController {
    */
   async getSessionById(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const userId = (req as any).user?.userId;
       const userPermissions = (req as any).user?.permissions || [];
 
@@ -398,7 +398,7 @@ export class CashierSessionController {
    */
   async reconcileSession(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { notes } = req.body;
       const userId = (req as any).user?.userId;
 

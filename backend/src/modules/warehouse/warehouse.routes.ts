@@ -4,7 +4,7 @@
  */
 
 import { Router } from "express";
-import { WarehouseController } from "./warehouse.controller";
+import { WarehouseController } from "./controllers";
 import { authMiddleware } from "../../lib/auth";
 import { requirePermission } from "../../middleware/rbac.middleware";
 

@@ -106,7 +106,7 @@ export class SalesController {
    */
   static async getDocumentById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
       if (!id) {
         res.status(400).json({ success: false, error: 'Document ID is required' });
         return;
@@ -128,7 +128,7 @@ export class SalesController {
    */
   static async convertDocument(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
       if (!id) {
         res.status(400).json({ success: false, error: 'Document ID is required' });
         return;
@@ -234,7 +234,8 @@ export class SalesController {
 
       const sales = await SalesService.getPOSSales({
         branchId: branchIdFilter as string,
-        dateFilter: date as string,
+        startDate: date as string,
+        endDate: date as string,
         paymentMethod: payment_method as string,
         limit: parseInt(limit as string),
         offset: parseInt(offset as string),
@@ -251,7 +252,7 @@ export class SalesController {
    */
   static async getPOSSaleById(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
       if (!id) {
         res.status(400).json({ success: false, error: 'Sale ID is required' });
         return;
@@ -275,7 +276,7 @@ export class SalesController {
    */
   static async voidDocument(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
       if (!id) {
         res.status(400).json({ success: false, error: 'Document ID is required' });
         return;
@@ -295,7 +296,7 @@ export class SalesController {
    */
   static async createCreditNote(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const invoiceId = req.params.invoiceId;
+      const invoiceId = req.params.invoiceId as string;
       if (!invoiceId) {
         res.status(400).json({ success: false, error: 'Invoice ID is required' });
         return;
@@ -337,7 +338,7 @@ export class SalesController {
    */
   static async recordPayment(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = req.params.id;
+      const id = req.params.id as string;
       if (!id) {
         res.status(400).json({ success: false, error: 'Document ID is required' });
         return;

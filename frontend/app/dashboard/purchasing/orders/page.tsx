@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,7 +13,6 @@ import {
 } from "@/components/ui/table";
 import { Plus, Search, Eye, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/lib/auth-context";
 
 interface PurchaseOrder {
   id: string;
@@ -32,8 +30,6 @@ export default function PurchaseOrdersPage() {
   const [orders, setOrders] = useState<PurchaseOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const { user } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     fetchOrders();

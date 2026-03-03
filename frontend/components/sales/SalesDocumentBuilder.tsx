@@ -55,11 +55,14 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
   const [isTypeLocked, setIsTypeLocked] = useState(false);
 
   const form = useForm<SalesDocumentFormValues>({
-    resolver: zodResolver(salesDocumentSchema),
+    resolver: zodResolver(salesDocumentSchema) as any,
     defaultValues: initialData || {
       issueDate: new Date(),
       items: [],
       status: "draft",
+      customerId: undefined,
+      dueDate: undefined,
+      notes: undefined,
     },
     mode: "onBlur",
   });
@@ -97,7 +100,7 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
         e.preventDefault();
         const currentItems = form.getValues("items");
         if (currentItems.length > 0) {
-          form.setValue("items", currentItems.slice(0, -1));
+          form.setValue("items", currentItems.slice(0, -1) as any);
           toast.success("Last item removed");
         }
       }
@@ -105,7 +108,7 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
       // F5: Save document
       if (e.key === "F5") {
         e.preventDefault();
-        form.handleSubmit(onSubmit)();
+        form.handleSubmit(onSubmit as any)();
       }
     };
 
@@ -120,7 +123,7 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
         const subtotal = item.quantity * item.unitPrice;
         const taxAmount = subtotal * item.taxRate;
         const total = subtotal + taxAmount - (item.discount || 0);
-        
+
         return {
           productId: item.productId,
           quantity: item.quantity,
@@ -191,7 +194,7 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
 
   const handleSaveDraft = () => {
     form.setValue("status", "DRAFT");
-    form.handleSubmit(onSubmit)();
+    form.handleSubmit(onSubmit as any)();
   };
 
   // Check if read-only
@@ -222,18 +225,18 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
       )}
 
       {/* Document Form */}
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-6">
         <DocumentHeader form={form} isReadOnly={isReadOnly} />
-        
+
         <DocumentItemTable
           form={form}
           isReadOnly={isReadOnly}
           documentType={documentType}
           branchId={user.branchId}
         />
-        
+
         <DocumentTotals form={form} />
-        
+
         <DocumentActions
           form={form}
           isSubmitting={form.formState.isSubmitting}

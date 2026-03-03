@@ -19,7 +19,7 @@ export class PDFController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { format = "html" } = req.query; // 'html' or 'pdf' (future)
 
       if (!id) {
@@ -105,7 +105,7 @@ export class PDFController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw new AppError(

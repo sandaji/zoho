@@ -56,7 +56,10 @@ export class InventoryController {
         );
       }
 
-      const result = await this.service.getInventory({ productId, warehouseId });
+      const result = await this.service.getInventory({
+        productId: productId as string,
+        warehouseId: warehouseId as string
+      });
 
       res.json({
         success: true,

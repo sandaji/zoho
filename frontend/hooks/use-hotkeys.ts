@@ -22,7 +22,9 @@ export const useHotkeys = (hotkeys: Record<string, HotkeyCallback>) => {
           event.altKey === alt
         ) {
           event.preventDefault();
-          hotkeys[key](event);
+          if (hotkeys[key]) {
+            hotkeys[key](event);
+          }
         }
       }
     };

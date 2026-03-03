@@ -54,27 +54,32 @@ export default function InventoryDashboard() {
   const [selectedItemForTransfer, setSelectedItemForTransfer] = useState<SelectedItemForTransfer | null>(null);
 
   // Transform products for components that expect the enhanced interface
-  const transformedProducts = products.map((product) => ({
-    id: product.id,
-    itemCode: product.sku,
-    name: product.name,
-    category: product.category || "Uncategorized",
-    currentStock: product.quantity,
-    inTransit: Math.floor(Math.random() * 5), // Mock in-transit data - replace with real data
-    minStock: product.reorder_level,
-    maxStock: product.reorder_level * 10,
-    unit: product.unit_of_measurement,
-    costPrice: product.cost_price,
-    sellingPrice: product.unit_price,
-    lastRestocked: product.updatedAt,
-    status:
-      product.quantity === 0
-        ? ("out_of_stock" as const)
-        : product.quantity <= product.reorder_level
-        ? ("low_stock" as const)
-        : ("in_stock" as const),
-    branch: "All Branches",
-  }));
+  const transformedProducts = products.map((product) => {
+    const quantity = product.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+    const reorderLevel = product.branchInventory?.reduce((acc, b) => acc + (b.reorder_level || 0), 0) || 0;
+
+    return {
+      id: product.id,
+      itemCode: product.sku,
+      name: product.name,
+      category: product.category || "Uncategorized",
+      currentStock: quantity,
+      inTransit: Math.floor(Math.random() * 5), // Mock in-transit data - replace with real data
+      minStock: reorderLevel,
+      maxStock: reorderLevel * 10,
+      unit: product.unit_of_measurement,
+      costPrice: product.cost_price,
+      sellingPrice: product.unit_price,
+      lastRestocked: product.updatedAt,
+      status:
+        quantity === 0
+          ? ("out_of_stock" as const)
+          : quantity <= reorderLevel
+            ? ("low_stock" as const)
+            : ("in_stock" as const),
+      branch: "All Branches",
+    };
+  });
 
   // Show error toast if there's an error
   useEffect(() => {
@@ -94,10 +99,11 @@ export default function InventoryDashboard() {
 
   const handleInitiateTransfer = (itemId: string, itemName: string) => {
     const item = products.find((p) => p.id === itemId);
+    const quantity = item?.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
     setSelectedItemForTransfer({
       id: itemId,
       name: itemName,
-      availableStock: item?.quantity || 0,
+      availableStock: quantity,
     });
     setTransferModalOpen(true);
   };

@@ -79,7 +79,7 @@ export class WarehouseController {
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
-      const transfer = await this.warehouseService.fulfillTransfer(id, userId);
+      const transfer = await this.warehouseService.fulfillTransfer(id as string, userId);
 
       res.json({
         success: true,
@@ -201,7 +201,7 @@ export class WarehouseController {
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
-      const transfer = await this.warehouseService.getTransferById(id);
+      const transfer = await this.warehouseService.getTransferById(id as string);
 
       res.json({
         success: true,
@@ -237,7 +237,7 @@ export class WarehouseController {
       }
       const validated = updateTransferStatusSchema.parse(req.body);
       const transfer = await this.warehouseService.updateTransferStatus(
-        id,
+        id as string,
         validated,
         userId
       );

@@ -30,18 +30,18 @@ export default function WarehousesSection() {
     {
       key: "branch.name",
       label: "Branch",
-      render: (branchName) => branchName || "-",
+      render: (branchName) => (branchName as string) || "-",
     },
     {
       key: "capacity",
       label: "Capacity",
-      render: (capacity) => capacity.toLocaleString(),
+      render: (capacity) => (capacity as number).toLocaleString(),
     },
     {
-        key: "_count.inventory",
-        label: "Inventory Count",
-        render: (inventory) => inventory,
-      },
+      key: "_count.inventory",
+      label: "Inventory Count",
+      render: (inventory) => String(inventory || 0),
+    },
     {
       key: "isActive",
       label: "Status",
@@ -62,9 +62,9 @@ export default function WarehousesSection() {
         loading={loading}
         searchKeys={["name", "code", "location", "branch.name"]}
         actions={(warehouse) => (
-            <Button variant="outline" size="sm" onClick={() => setSelected(warehouse)}>
-                View Details
-            </Button>
+          <Button variant="outline" size="sm" onClick={() => setSelected(warehouse)}>
+            View Details
+          </Button>
         )}
       />
 

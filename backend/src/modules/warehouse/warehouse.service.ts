@@ -272,16 +272,7 @@ export class WarehouseService {
           },
         });
 
-        // Update product total quantity (should remain the same, but recalculate for consistency)
-        const totalQuantity = await tx.inventory.aggregate({
-          where: { productId: item.productId },
-          _sum: { quantity: true },
-        });
-
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { quantity: totalQuantity._sum.quantity || 0 },
-        });
+        // (Removed outdated logic storing sum of quantity back to product model)
       }
 
       // Update transfer status
@@ -425,16 +416,7 @@ export class WarehouseService {
         },
       });
 
-      // Update product total quantity
-      const totalQuantity = await tx.inventory.aggregate({
-        where: { productId },
-        _sum: { quantity: true },
-      });
-
-      await tx.product.update({
-        where: { id: productId },
-        data: { quantity: totalQuantity._sum.quantity || 0 },
-      });
+      // (Removed outdated logic storing sum of quantity back to product model)
 
       return {
         movement,

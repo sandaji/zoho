@@ -265,15 +265,15 @@ export class FinanceService {
         count: number;
       }>>`
         SELECT 
-          EXTRACT(MONTH FROM created_date)::INTEGER as month,
-          EXTRACT(YEAR FROM created_date)::INTEGER as year,
-          COALESCE(SUM(grand_total), 0)::FLOAT as revenue,
+          EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
+          EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
+          COALESCE(SUM(total), 0)::FLOAT as revenue,
           COUNT(*)::INTEGER as count
-        FROM sales
-        WHERE created_date >= ${startDate}
-          AND created_date <= ${endDate}
-          AND status IN ('confirmed', 'shipped', 'delivered')
-        GROUP BY EXTRACT(YEAR FROM created_date), EXTRACT(MONTH FROM created_date)
+        FROM "SalesDocument"
+        WHERE "createdAt" >= ${startDate}
+          AND "createdAt" <= ${endDate}
+          AND status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
+        GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
         ORDER BY year, month
       `;
 
@@ -317,7 +317,13 @@ export class FinanceService {
       const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-      const chartData = [];
+      const chartData: Array<{
+        name: string;
+        month: number;
+        revenue: number;
+        expenses: number;
+        profit: number;
+      }> = [];
       const currentMonth = now.getMonth() + 1;
 
       for (let month = 1; month <= currentMonth; month++) {
@@ -354,7 +360,7 @@ export class FinanceService {
         by: ['productId'],
         _sum: {
           quantity: true,
-          amount: true,
+          total: true,
         },
         orderBy: {
           _sum: {
@@ -412,7 +418,7 @@ export class FinanceService {
           }
         },
         _sum: {
-          grand_grand_total: true,
+          total: true,
         },
         _count: true,
       });

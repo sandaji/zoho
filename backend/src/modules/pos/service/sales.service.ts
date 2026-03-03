@@ -261,11 +261,7 @@ export class SalesService {
           },
         });
 
-        // Decrement product global quantity
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { quantity: { decrement: item.quantity } },
-        });
+        // (product global quantity update removed)
 
         // Create stock movement
         await tx.stockMovement.create({
@@ -410,10 +406,7 @@ export class SalesService {
           },
         });
 
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { quantity: { decrement: item.quantity } },
-        });
+        // (product global quantity update removed)
 
         await tx.stockMovement.create({
           data: {

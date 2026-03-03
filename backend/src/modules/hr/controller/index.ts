@@ -65,7 +65,7 @@ export class HrController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError("ID is required");
@@ -88,7 +88,7 @@ export class HrController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto: UpdateUserDTO = req.body;
 
       if (!id) {
@@ -143,7 +143,7 @@ export class HrController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError("ID is required");
@@ -190,7 +190,7 @@ export class HrController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto: UpdatePayrollDTO = req.body;
 
       if (!id) {

@@ -186,11 +186,21 @@ export async function getInventoryStats(): Promise<
   const stats: InventoryStats = {
     totalItems: products.length,
     totalValue: products.reduce(
-      (sum, p) => sum + p.quantity * p.cost_price,
+      (sum, p) => {
+        const qty = p.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+        return sum + qty * p.cost_price;
+      },
       0
     ),
-    lowStockCount: products.filter((p) => p.quantity <= p.reorder_level).length,
-    outOfStockCount: products.filter((p) => p.quantity === 0).length,
+    lowStockCount: products.filter((p) => {
+      const qty = p.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+      const reorderLevel = p.branchInventory?.reduce((acc, b) => acc + (b.reorder_level || 0), 0) || 0;
+      return qty <= reorderLevel;
+    }).length,
+    outOfStockCount: products.filter((p) => {
+      const qty = p.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+      return qty === 0;
+    }).length,
     categoriesCount: new Set(products.map((p) => p.category).filter(Boolean))
       .size,
     activeProducts: products.filter((p) => p.status === "active").length,
@@ -282,16 +292,21 @@ export function exportInventoryToCSV(items: Product[]) {
     "Reorder Level",
   ];
 
-  const rows = items.map((item) => [
-    item.sku,
-    item.name,
-    item.category || "",
-    item.quantity,
-    item.cost_price,
-    item.unit_price,
-    item.status,
-    item.reorder_level,
-  ]);
+  const rows = items.map((item) => {
+    const qty = item.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+    const reorderLevel = item.branchInventory?.reduce((acc, b) => acc + (b.reorder_level || 0), 0) || 0;
+
+    return [
+      item.sku,
+      item.name,
+      item.category || "",
+      qty,
+      item.cost_price,
+      item.unit_price,
+      item.status,
+      reorderLevel,
+    ];
+  });
 
   const csvContent = [
     headers.join(","),

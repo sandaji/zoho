@@ -208,7 +208,7 @@ export class ProductService {
       if (error instanceof AppError) {
         throw error;
       }
-      logger.error(error as Error,"Error creating product");
+      logger.error(error as Error, "Error creating product");
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
@@ -266,12 +266,12 @@ export class ProductService {
           include: {
             branchInventory: branchId
               ? {
-                  where: { branchId },
-                  include: { branch: true },
-                }
+                where: { branchId },
+                include: { branch: true },
+              }
               : {
-                  include: { branch: true },
-                },
+                include: { branch: true },
+              },
           },
         }),
         prisma.product.count({ where }),
@@ -359,7 +359,7 @@ export class ProductService {
         // However, the service doesn't have the user context. 
         // We'll throw an error if a non-approved change is attempted
         // AND provide a method to create approval requests.
-        
+
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
@@ -386,13 +386,7 @@ export class ProductService {
           ...(data.cost_price !== undefined && { cost_price: data.cost_price }),
           ...(data.unit_price !== undefined && { unit_price: data.unit_price }),
           ...(data.tax_rate !== undefined && { tax_rate: data.tax_rate }),
-          ...(data.quantity !== undefined && { quantity: data.quantity }),
-          ...(data.reorder_level !== undefined && {
-            reorder_level: data.reorder_level,
-          }),
-          ...(data.reorder_quantity !== undefined && {
-            reorder_quantity: data.reorder_quantity,
-          }),
+          // quantity, reorder_level, reorder_quantity are managed via BranchInventory table
           ...(data.unit_of_measurement && {
             unit_of_measurement: data.unit_of_measurement,
           }),
@@ -423,7 +417,7 @@ export class ProductService {
       if (error instanceof AppError) {
         throw error;
       }
-      logger.error(error as Error,`Error updating product ${id}`, );
+      logger.error(error as Error, `Error updating product ${id}`,);
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
@@ -496,11 +490,11 @@ export class ProductService {
           unit_of_measurement: product.unit_of_measurement,
           image_url: product.image_url,
           // Stock information
-          quantity: product.quantity,
+          quantity: inventory?.quantity || 0,
           available: inventory?.available || 0,
           reserved: inventory?.reserved || 0,
           status: inventory?.status || "out_of_stock",
-          reorder_level: product.reorder_level,
+          reorder_level: 10,
         };
       });
     } catch (error) {

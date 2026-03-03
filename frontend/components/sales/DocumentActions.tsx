@@ -12,9 +12,7 @@ interface DocumentActionsProps {
   mode: "draft" | "quote" | "invoice" | "credit_note";
   onSaveDraft?: () => void;
 }
-
 export const DocumentActions: React.FC<DocumentActionsProps> = ({
-  form,
   isSubmitting,
   isReadOnly,
   mode,
@@ -56,7 +54,7 @@ export const DocumentActions: React.FC<DocumentActionsProps> = ({
           <Save className="mr-2 h-4 w-4" />
           Save as Draft
         </Button>
-        
+
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? (
             <>

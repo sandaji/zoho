@@ -44,7 +44,7 @@ export function useInventory(options: UseInventoryOptions = {}) {
   const [branches, setBranches] = useState<
     Array<{ id: string; name: string; code: string }>
   >([]);
-  const [currentBranchId, setCurrentBranchId] = useState<string>(branchIdParam);
+  // Branch state removed as it was unused locally
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -103,13 +103,13 @@ export function useInventory(options: UseInventoryOptions = {}) {
         const newParams = new URLSearchParams(searchParams.toString());
         if (fetchParams.page > 1) newParams.set("page", fetchParams.page.toString());
         else newParams.delete("page");
-        
+
         if (fetchParams.search) newParams.set("search", fetchParams.search);
         else newParams.delete("search");
-        
+
         if (fetchParams.category !== "all") newParams.set("category", fetchParams.category);
         else newParams.delete("category");
-        
+
         if (fetchParams.status !== "all") newParams.set("status", fetchParams.status);
         else newParams.delete("status");
 
@@ -205,7 +205,6 @@ export function useInventory(options: UseInventoryOptions = {}) {
    */
   const setBranch = useCallback((branchId: string) => {
     setFilters((prev) => ({ ...prev, branchId }));
-    setCurrentBranchId(branchId);
   }, []);
 
   /**

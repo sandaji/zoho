@@ -241,7 +241,7 @@ export class EmployeeController {
    */
   async updateEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
       const { name, phone, role, branchId, isActive } = req.body;
 
       const where: any = { id };
@@ -305,7 +305,7 @@ export class EmployeeController {
    */
   async transferEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
       const { toBranchId, toRole, effectiveDate, reason, notes, approvedBy } =
         req.body;
 
@@ -405,7 +405,7 @@ export class EmployeeController {
    */
   async getTransferHistory(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
       // Verify employee exists
       const employee = await prisma.user.findUnique({ where: { id } });
@@ -437,7 +437,7 @@ export class EmployeeController {
    */
   async deleteEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
       const where: any = { id };
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {

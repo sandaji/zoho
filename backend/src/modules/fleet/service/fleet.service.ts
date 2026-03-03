@@ -109,19 +109,19 @@ export class FleetService {
 
       // Atomic transaction
       const delivery = await this.prisma.$transaction(async (tx: any) => {
-        // Verify sales exists and is confirmed
-        const sales = await tx.sales.findUnique({
+        // Verify sales document exists and is in valid status
+        const salesDocument = await tx.salesDocument.findUnique({
           where: { id: dto.salesId },
-          select: { id: true, status: true, total_amount: true },
+          select: { id: true, status: true, total: true },
         });
 
-        if (!sales) {
-          throw new Error(`Sales order ${dto.salesId} not found`);
+        if (!salesDocument) {
+          throw new Error(`Sales document ${dto.salesId} not found`);
         }
 
-        if (sales.status !== "confirmed" && sales.status !== "shipped") {
+        if (salesDocument.status !== "PAID" && salesDocument.status !== "SENT") {
           throw new Error(
-            `Sales order must be confirmed before delivery (current: ${sales.status})`
+            `Sales document must be paid or sent before delivery (current: ${salesDocument.status})`
           );
         }
 
@@ -300,8 +300,8 @@ export class FleetService {
             ...timestamps,
           },
           include: {
-            sales: {
-              select: { id: true, invoice_no: true, total_amount: true },
+            salesDocument: {
+              select: { id: true, documentId: true, total: true },
             },
             driver: { select: { id: true, name: true, phone: true } },
             truck: {
@@ -429,9 +429,7 @@ export class FleetService {
           skip,
           take: limit,
           include: {
-            sales: {
-              select: { id: true, invoice_no: true, total_amount: true },
-            },
+            // salesDocument relation removed from Delivery schema
             driver: { select: { id: true, name: true, phone: true } },
             truck: {
               include: {
@@ -497,13 +495,8 @@ export class FleetService {
       id: delivery.id,
       delivery_no: delivery.delivery_no,
       status: delivery.status,
-      sales: delivery.sales
-        ? {
-          id: delivery.sales.id,
-          invoice_no: delivery.sales.invoice_no,
-          total_amount: delivery.sales.total_amount,
-        }
-        : undefined,
+      // sales relation removed from Delivery schema
+      sales: undefined,
       driver: delivery.driver
         ? {
           id: delivery.driver.id,

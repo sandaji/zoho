@@ -125,7 +125,7 @@ export class PayrollController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError("ID is required");
@@ -151,7 +151,7 @@ export class PayrollController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { status, paid_date } = req.body;
 
       if (!id) {

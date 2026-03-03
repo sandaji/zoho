@@ -76,7 +76,7 @@ export class WarehouseController {
         throw validationError("ID is required");
       }
 
-      const result = await this.crudService.getWarehouse(id);
+      const result = await this.crudService.getWarehouse(id as string);
 
       res.json({
         success: true,
@@ -124,7 +124,7 @@ export class WarehouseController {
         throw validationError("ID is required");
       }
 
-      const result = await this.crudService.updateWarehouse(id, dto);
+      const result = await this.crudService.updateWarehouse(id as string, dto);
 
       res.json({
         success: true,
@@ -147,7 +147,7 @@ export class WarehouseController {
         throw validationError("ID is required");
       }
 
-      const result = await this.crudService.getWarehouseStock(id);
+      const result = await this.crudService.getWarehouseStock(id as string);
 
       res.json({
         success: true,
@@ -220,7 +220,7 @@ export class WarehouseController {
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
-      const transfer = await this.inventoryService.fulfillTransfer(id, userId);
+      const transfer = await this.inventoryService.fulfillTransfer(id as string, userId);
 
       res.json({
         success: true,
@@ -342,7 +342,7 @@ export class WarehouseController {
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
-      const transfer = await this.inventoryService.getTransferById(id);
+      const transfer = await this.inventoryService.getTransferById(id as string);
 
       res.json({
         success: true,
@@ -372,13 +372,13 @@ export class WarehouseController {
         );
       }
 
-      const { id } = req.params;
+      let id = req.params.id as string;
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
       const validated = updateTransferStatusSchema.parse(req.body);
       const transfer = await this.inventoryService.updateTransferStatus(
-        id,
+        id as string,
         validated,
         userId
       );

@@ -30,7 +30,10 @@ export default function CreateVendorPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.code) return toast.error("Name and Code are required");
+    if (!formData.name || !formData.code) {
+      toast.error("Name and Code are required");
+      return;
+    }
 
     setLoading(true);
     try {

@@ -117,19 +117,34 @@ export default function CreatePurchaseOrderPage() {
   };
 
   const calculateTotal = () => {
-    return items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
+    return items.reduce((sum, item) => sum + (item.quantity ?? 0) * (item.unitPrice ?? 0), 0);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!vendorId) return toast.error("Please select a vendor");
-    if (items.length === 0) return toast.error("Please add at least one item");
-    if (!branchId) return toast.error("Branch is required (User must be assigned to a branch)");
+    if (!vendorId) {
+      toast.error("Please select a vendor");
+      return;
+    }
+    if (items.length === 0) {
+      toast.error("Please add at least one item");
+      return;
+    }
+    if (!branchId) {
+      toast.error("Branch is required (User must be assigned to a branch)");
+      return;
+    }
 
     // Validate items
     for (const item of items) {
-      if (!item.productId) return toast.error("All items must have a product selected");
-      if (item.quantity <= 0) return toast.error("Quantity must be greater than 0");
+      if (!item.productId) {
+        toast.error("All items must have a product selected");
+        return;
+      }
+      if (!item.quantity || item.quantity <= 0) {
+        toast.error("Quantity must be greater than 0");
+        return;
+      }
     }
 
     setLoading(true);
@@ -272,7 +287,7 @@ export default function CreatePurchaseOrderPage() {
                     />
                   </TableCell>
                   <TableCell>
-                    ${(item.quantity * item.unitPrice).toFixed(2)}
+                    ${((item.quantity ?? 0) * (item.unitPrice ?? 0)).toFixed(2)}
                   </TableCell>
                   <TableCell>
                     <Button 

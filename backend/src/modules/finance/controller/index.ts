@@ -45,7 +45,7 @@ export class FinanceController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id) {
         throw validationError("ID is required");
@@ -92,7 +92,7 @@ export class FinanceController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto: UpdateTransactionDTO = req.body;
 
       if (!id) {

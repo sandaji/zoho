@@ -133,7 +133,7 @@ export class FleetController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto: UpdateDeliveryStatusDTO = req.body;
 
       // Validate ID
@@ -192,7 +192,7 @@ export class FleetController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id || !id.trim()) {
         throw validationError("Delivery ID is required");
@@ -294,7 +294,7 @@ export class FleetController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id || !id.trim()) {
         throw validationError("Truck ID is required");
@@ -322,7 +322,7 @@ export class FleetController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { model, capacity, license_plate, isActive } = req.body;
 
       if (!id || !id.trim()) {
@@ -356,7 +356,7 @@ export class FleetController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
 
       if (!id || !id.trim()) {
         throw validationError("Delivery ID is required");
@@ -384,7 +384,7 @@ export class FleetController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const dto = req.body;
 
       if (!id || !id.trim()) {

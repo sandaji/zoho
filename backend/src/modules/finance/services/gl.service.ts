@@ -46,8 +46,8 @@ export class GeneralLedgerService {
 
     // 4. Create Entries in Transaction
     return await prisma.$transaction(async (tx) => {
-      const entries = [];
-      
+      const entries: any[] = [];
+
       for (const line of data.lines) {
         // Create the entry
         const createdEntry: any = await tx.journalEntry.create({
@@ -78,7 +78,7 @@ export class GeneralLedgerService {
           }
         });
       }
-      
+
       return entries;
     });
   }
@@ -95,9 +95,9 @@ export class GeneralLedgerService {
   /**
    * Search Ledger Entries
    */
-  static async getLedgerEntries(params: { 
-    accountId?: string; 
-    startDate?: Date; 
+  static async getLedgerEntries(params: {
+    accountId?: string;
+    startDate?: Date;
     endDate?: Date;
     journalId?: string;
   }) {

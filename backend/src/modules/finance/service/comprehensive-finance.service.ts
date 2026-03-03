@@ -527,7 +527,7 @@ export class ComprehensiveFinanceService {
   private async getRevenue(startDate: Date, endDate: Date) {
     const sales = await prisma.salesDocument.aggregate({
       where: {
-        created_date: {
+        createdAt: {
           gte: startDate,
           lte: endDate
         },
@@ -540,7 +540,7 @@ export class ComprehensiveFinanceService {
     });
 
     return {
-      revenue: sales._sum.total || 0,
+      revenue: sales._sum?.total || 0,
       cogs: 0 // Calculate separately
     };
   }

@@ -226,4 +226,21 @@ export const warehouseService = {
 
     return response.json();
   },
+
+  /**
+   * Get products list for warehouse
+   */
+  async getProducts(token: string) {
+    const response = await fetch(`${API_URL}/v1/products`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    return response.json();
+  },
 };

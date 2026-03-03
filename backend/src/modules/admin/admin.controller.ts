@@ -18,7 +18,7 @@ export class AdminController {
         prisma.user.count({ where: { isActive: true } }),
         prisma.product.count({ where: { isActive: true } }),
         prisma.delivery.count({ where: { status: { in: ['pending', 'assigned', 'in_transit'] } } }),
-        prisma.$queryRaw`SELECT COUNT(*) as count FROM products WHERE "isActive" = true AND quantity <= reorder_level`,
+        prisma.branchInventory.count({ where: { status: 'low_stock' } }),
       ]);
 
       const [
@@ -27,14 +27,8 @@ export class AdminController {
         total_users,
         total_products,
         pending_deliveries,
-        low_stock_items_result,
+        low_stock_items,
       ] = result;
-
-      let low_stock_items = 0;
-      if (Array.isArray(low_stock_items_result) && low_stock_items_result.length > 0) {
-        const row = low_stock_items_result[0] as { count: any };
-        low_stock_items = Number(row.count || 0);
-      }
 
       res.status(200).json({
         total_branches,

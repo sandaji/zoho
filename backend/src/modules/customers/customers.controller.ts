@@ -92,7 +92,7 @@ export class CustomersController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
       if (!id) {
         res.status(400).json({ success: false, error: "Customer ID required" });
@@ -121,7 +121,7 @@ export class CustomersController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
       if (!id) {
         res.status(400).json({ success: false, error: "Customer ID required" });
@@ -146,7 +146,7 @@ export class CustomersController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
 
       if (!id) {
         res.status(400).json({ success: false, error: "Customer ID required" });

@@ -28,7 +28,7 @@ export class PerformanceController {
 
   async updateGoalProgress(req: Request, res: Response, next: NextFunction) {
     try {
-      const { id } = req.params;
+      const { id } = req.params as { id: string };
       const { progress } = req.body;
       if (!id) {
         res.status(400).json({ success: false, error: "Goal ID is required" });

@@ -72,7 +72,8 @@ export class PosService {
     // Step 3: Process all products and fetch their inventory
     const results = await Promise.all(
       products.map(async (product) => {
-        let totalAvailable = product.quantity || 0;
+        // Note: Product model doesn't have quantity field, use inventory
+        let totalAvailable = 0;
         let inventoryLocations: any[] = [];
 
         if (warehouseIds.length > 0) {
@@ -186,18 +187,18 @@ export class PosService {
       const sale = await tx.salesDocument.create({
         data: {
           documentId: invoice_no,
+          type: "INVOICE",
           status: "PAID",
+          balance: 0,
           // payment_method, // Field does not exist on SalesDocument
           branchId,
           createdById: userId,
           subtotal,
-          total: subtotal,
           discount,
           // discount_approved_by, // Field missing in schema
           tax: total_tax,
-          grand_total,
-          amount_paid: paid,
-          change,
+          total: grand_total,
+          paidAmount: paid,
           notes,
         },
       });
@@ -226,6 +227,7 @@ export class PosService {
           data: {
             salesDocumentId: sale.id,
             productId: item.productId,
+            description: product.name || item.productId,
             quantity: item.quantity,
             unitPrice: item.unit_price,
             taxRate: tax_rate,
@@ -255,7 +257,7 @@ export class PosService {
           const newStatus =
             newAvailable <= 0
               ? "out_of_stock"
-              : newAvailable <= product.reorder_level
+              : newAvailable <= 10 // Default reorder level
                 ? "low_stock"
                 : inventory.status;
 
@@ -268,21 +270,13 @@ export class PosService {
             },
           });
         } else {
-          // Fallback: Check if product has enough quantity
-          if (!product.quantity || product.quantity < item.quantity) {
-            throw new AppError(
-              ErrorCode.VALIDATION_ERROR,
-              400,
-              `Insufficient inventory for product: ${product.name} in branch ${branch.name}`
-            );
-          }
+          // If no inventory record exists, we throw error
+          throw new AppError(
+            ErrorCode.VALIDATION_ERROR,
+            400,
+            `No inventory found for product: ${product.name} in branch`
+          );
         }
-
-        // Always decrement product quantity
-        await tx.product.update({
-          where: { id: item.productId },
-          data: { quantity: { decrement: item.quantity } },
-        });
       }
 
       // Create finance transaction
@@ -440,7 +434,7 @@ export class PosService {
     // Aggregations
     const total_sales = sales.length;
     const total_revenue = sales.reduce(
-      (sum: any, s: { total: any }) => sum + s.grand_total,
+      (sum: any, s: { total: any }) => sum + s.total,
       0
     );
     const total_tax = sales.reduce(
@@ -482,12 +476,12 @@ export class PosService {
         const ex = productSales.get(i.productId);
         if (ex) {
           ex.quantity += i.quantity;
-          ex.revenue += i.amount;
+          ex.revenue += i.total;
         } else {
           productSales.set(i.productId, {
             name: i.product.name,
             quantity: i.quantity,
-            revenue: i.amount,
+            revenue: i.total,
           });
         }
       }
@@ -534,7 +528,7 @@ export class PosService {
       include: {
         items: { include: { product: true } },
         branch: true,
-        user: true,
+        createdBy: true,
       },
     });
 

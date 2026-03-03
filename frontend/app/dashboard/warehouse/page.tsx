@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { warehouseService } from "@/lib/warehouse.service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, TrendingDown, AlertTriangle, BarChart3, ArrowRight } from "lucide-react";
+import { Package, AlertTriangle, ArrowRight, PackagePlus, ArrowRightLeft, Layers, Truck, ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -40,23 +40,24 @@ export default function WarehouseDashboard() {
 
   const getMovementTypeColor = (type: string) => {
     const colors: Record<string, string> = {
-      INBOUND: "text-green-600 bg-green-100",
-      OUTBOUND: "text-red-600 bg-red-100",
-      TRANSFER_IN: "text-blue-600 bg-blue-100",
-      TRANSFER_OUT: "text-orange-600 bg-orange-100",
-      ADJUSTMENT: "text-purple-600 bg-purple-100",
+      INBOUND: "text-emerald-700 bg-emerald-100",
+      OUTBOUND: "text-slate-700 bg-slate-100",
+      TRANSFER_IN: "text-emerald-700 bg-emerald-100",
+      TRANSFER_OUT: "text-yellow-700 bg-yellow-100",
+      IN_TRANSIT: "text-yellow-700 bg-yellow-100",
+      ADJUSTMENT: "text-orange-700 bg-orange-100",
     };
-    return colors[type] || "text-gray-600 bg-gray-100";
+    return colors[type] || "text-slate-600 bg-slate-100";
   };
 
   if (loading) {
     return (
-      <div className="p-6">
+      <div className="p-6 bg-emerald-50/30 min-h-screen">
         <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="h-8 bg-emerald-100 rounded w-1/4 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-32 bg-gray-200 rounded"></div>
+              <div key={i} className="h-32 bg-emerald-100 rounded"></div>
             ))}
           </div>
         </div>
@@ -65,17 +66,17 @@ export default function WarehouseDashboard() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-emerald-50/30 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Warehouse Management</h1>
-          <p className="text-gray-600 mt-1">Monitor inventory and stock movements</p>
+          <h1 className="text-3xl font-bold text-slate-900">Warehouse Management</h1>
+          <p className="text-slate-600 mt-1">Monitor multi-branch inventory and stock movements</p>
         </div>
         <div className="flex gap-3">
           <Link
             href="/dashboard/warehouse/transfers"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
           >
             Manage Transfers
           </Link>
@@ -84,87 +85,88 @@ export default function WarehouseDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Products</CardTitle>
-            <Package className="h-5 w-5 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-slate-600">Total Units on Hand</CardTitle>
+            <Package className="h-5 w-5 text-emerald-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalProducts || 0}</div>
-            <p className="text-xs text-gray-500 mt-1">Active products</p>
+            <div className="text-2xl font-bold text-emerald-600">{stats?.totalUnitsOnHand || 0}</div>
+            <p className="text-xs text-slate-500 mt-1">Available in active bins</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Stock Value</CardTitle>
-            <BarChart3 className="h-5 w-5 text-green-600" />
+            <CardTitle className="text-sm font-medium text-slate-600">Units In-Transit</CardTitle>
+            <Truck className="h-5 w-5 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalValue?.toLocaleString() || 0}</div>
-            <p className="text-xs text-gray-500 mt-1">Units in stock</p>
+            <div className="text-2xl font-bold text-yellow-600">{stats?.unitsInTransit || 0}</div>
+            <p className="text-xs text-slate-500 mt-1">Pending arrival</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Low Stock Items</CardTitle>
-            <TrendingDown className="h-5 w-5 text-orange-600" />
+            <CardTitle className="text-sm font-medium text-slate-600">Pending GRN</CardTitle>
+            <ClipboardList className="h-5 w-5 text-emerald-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{stats?.lowStockCount || 0}</div>
-            <p className="text-xs text-gray-500 mt-1">Need reordering</p>
+            <div className="text-2xl font-bold text-emerald-600">{stats?.pendingGRN || 0}</div>
+            <p className="text-xs text-slate-500 mt-1">Awaiting put-away</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Out of Stock</CardTitle>
+            <CardTitle className="text-sm font-medium text-slate-600">Stock Alerts (OOS)</CardTitle>
             <AlertTriangle className="h-5 w-5 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{stats?.outOfStockCount || 0}</div>
-            <p className="text-xs text-gray-500 mt-1">Requires attention</p>
+            <div className="text-2xl font-bold text-red-600">{stats?.stockAlerts || stats?.outOfStockCount || 0}</div>
+            <p className="text-xs text-slate-500 mt-1">Critical discrepancies/OOS</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Recent Movements */}
-      <Card>
+      <Card className="bg-white">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Recent Stock Movements</CardTitle>
           <Link
             href="/dashboard/inventory"
-            className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+            className="text-sm text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
           >
-            View All <ArrowRight size={16} />
+            View Ledger <ArrowRight size={16} />
           </Link>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {movements.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">No recent movements</p>
+              <p className="text-center text-slate-500 py-8">No recent movements</p>
             ) : (
               movements.map((movement) => (
                 <div
                   key={movement.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex items-center justify-between p-4 border border-emerald-100 rounded-lg hover:bg-emerald-50 transition-colors"
                 >
                   <div className="flex items-center gap-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${getMovementTypeColor(movement.type)}`}>
                       {movement.type.replace("_", " ")}
                     </span>
                     <div>
-                      <p className="font-medium text-gray-900">{movement.product?.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-slate-900">{movement.product?.name}</p>
+                      <p className="text-sm text-slate-500">
                         {movement.warehouse?.name} • SKU: {movement.product?.sku}
+                        {movement.bin?.code && ` • Bin: ${movement.bin.code}`}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">{movement.quantity} units</p>
-                    <p className="text-xs text-gray-500">
-                      {new Date(movement.createdAt).toLocaleDateString()}
+                    <p className="font-semibold text-slate-900">{movement.quantity > 0 ? "+" : ""}{movement.quantity} units</p>
+                    <p className="text-xs text-slate-500">
+                      {new Date(movement.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -176,33 +178,35 @@ export default function WarehouseDashboard() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link href="/dashboard/inventory">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+        <Link href="/dashboard/warehouse/receipts">
+          <Card className="bg-white hover:shadow-md transition-shadow cursor-pointer border-emerald-100 hover:border-emerald-300">
             <CardContent className="pt-6">
-              <Package className="h-8 w-8 text-blue-600 mb-3" />
-              <h3 className="font-semibold text-lg mb-2">View Inventory</h3>
-              <p className="text-sm text-gray-600">Check stock levels across warehouses</p>
+              <PackagePlus className="h-8 w-8 text-emerald-600 mb-3" />
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">Receive Goods (GRN)</h3>
+              <p className="text-sm text-slate-600">Process incoming deliveries to staging</p>
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/dashboard/warehouse/transfers">
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
+        <Link href="/dashboard/warehouse/transfers/new">
+          <Card className="bg-white hover:shadow-md transition-shadow cursor-pointer border-emerald-100 hover:border-emerald-300">
             <CardContent className="pt-6">
-              <ArrowRight className="h-8 w-8 text-green-600 mb-3" />
-              <h3 className="font-semibold text-lg mb-2">Manage Transfers</h3>
-              <p className="text-sm text-gray-600">Transfer stock between locations</p>
+              <ArrowRightLeft className="h-8 w-8 text-yellow-600 mb-3" />
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">Transfer Stock</h3>
+              <p className="text-sm text-slate-600">Initiate inter-branch or zone transfers</p>
             </CardContent>
           </Card>
         </Link>
 
-        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => toast.info("Coming soon")}>
-          <CardContent className="pt-6">
-            <BarChart3 className="h-8 w-8 text-purple-600 mb-3" />
-            <h3 className="font-semibold text-lg mb-2">Stock Reports</h3>
-            <p className="text-sm text-gray-600">Generate detailed stock reports</p>
-          </CardContent>
-        </Card>
+        <Link href="/dashboard/warehouse/bins">
+          <Card className="bg-white hover:shadow-md transition-shadow cursor-pointer border-emerald-100 hover:border-emerald-300">
+            <CardContent className="pt-6">
+              <Layers className="h-8 w-8 text-emerald-600 mb-3" />
+              <h3 className="font-semibold text-lg text-slate-900 mb-2">Bin Management & Put-away</h3>
+              <p className="text-sm text-slate-600">Move items from inbound to final storage</p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
+// useFormContext removed
 import { Card, CardContent } from '../ui/card';
 
 interface DocumentTotalsProps {

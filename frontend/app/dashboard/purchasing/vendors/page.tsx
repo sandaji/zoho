@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Loader2, Edit, CheckCircle, XCircle } from "lucide-react";
+import { Plus, Search, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
