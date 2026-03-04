@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Toaster, toast } from "sonner";
 import { Timeline, TimelineEvent } from "@/components/ui/timeline";
-import { MdLocalShipping, MdDeliveryDining, MdCheckCircle, MdError } from "react-icons/md";
+import { Truck, Package, CheckCircle, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 // Delivery status type and styling
@@ -276,7 +276,7 @@ export default function FleetDashboard() {
                     {trucks.filter((t) => t.isActive).length}
                   </p>
                 </div>
-                <MdLocalShipping className="text-4xl text-blue-500" />
+                <Truck className="text-4xl text-blue-500" />
               </div>
             </CardContent>
           </Card>
@@ -288,7 +288,7 @@ export default function FleetDashboard() {
                   <p className="text-sm text-slate-600">Active Deliveries</p>
                   <p className="text-3xl font-bold text-slate-900">{activeDeliveries.length}</p>
                 </div>
-                <MdDeliveryDining className="text-4xl text-yellow-500" />
+                <Package className="text-4xl text-yellow-500" />
               </div>
             </CardContent>
           </Card>
@@ -300,7 +300,7 @@ export default function FleetDashboard() {
                   <p className="text-sm text-slate-600">Completed Today</p>
                   <p className="text-3xl font-bold text-slate-900">{completedDeliveries.length}</p>
                 </div>
-                <MdCheckCircle className="text-4xl text-green-500" />
+                <CheckCircle className="text-4xl text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -312,7 +312,7 @@ export default function FleetDashboard() {
                   <p className="text-sm text-slate-600">Failed</p>
                   <p className="text-3xl font-bold text-slate-900">{failedDeliveries.length}</p>
                 </div>
-                <MdError className="text-4xl text-red-500" />
+                <AlertCircle className="text-4xl text-red-500" />
               </div>
             </CardContent>
           </Card>

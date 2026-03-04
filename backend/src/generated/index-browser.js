@@ -234,6 +234,20 @@ exports.Prisma.InventoryScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.StockBatchScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  warehouseId: 'warehouseId',
+  grnItemId: 'grnItemId',
+  initialQuantity: 'initialQuantity',
+  currentQuantity: 'currentQuantity',
+  unitCost: 'unitCost',
+  receivedAt: 'receivedAt',
+  isDepleted: 'isDepleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.StockMovementScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -345,6 +359,53 @@ exports.Prisma.DocumentSequenceScalarFieldEnum = {
   nextNumber: 'nextNumber'
 };
 
+exports.Prisma.SalesOrderScalarFieldEnum = {
+  id: 'id',
+  soNumber: 'soNumber',
+  customerId: 'customerId',
+  branchId: 'branchId',
+  status: 'status',
+  subtotal: 'subtotal',
+  tax: 'tax',
+  totalAmount: 'totalAmount',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SOItemScalarFieldEnum = {
+  id: 'id',
+  salesOrderId: 'salesOrderId',
+  productId: 'productId',
+  qtyRequested: 'qtyRequested',
+  qtyDispatched: 'qtyDispatched',
+  unitPrice: 'unitPrice',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DispatchNoteScalarFieldEnum = {
+  id: 'id',
+  dnNumber: 'dnNumber',
+  salesOrderId: 'salesOrderId',
+  dispatchedById: 'dispatchedById',
+  dispatchedAt: 'dispatchedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DispatchItemScalarFieldEnum = {
+  id: 'id',
+  dispatchNoteId: 'dispatchNoteId',
+  soItemId: 'soItemId',
+  productId: 'productId',
+  qtyDispatched: 'qtyDispatched',
+  totalCogs: 'totalCogs',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CashierSessionScalarFieldEnum = {
   id: 'id',
   sessionNo: 'sessionNo',
@@ -425,6 +486,28 @@ exports.Prisma.PurchaseOrderItemScalarFieldEnum = {
   unitPrice: 'unitPrice',
   subtotal: 'subtotal',
   receivedQuantity: 'receivedQuantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GoodsReceiptNoteScalarFieldEnum = {
+  id: 'id',
+  grnNumber: 'grnNumber',
+  purchaseOrderId: 'purchaseOrderId',
+  receivedById: 'receivedById',
+  status: 'status',
+  receivedAt: 'receivedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GRNItemScalarFieldEnum = {
+  id: 'id',
+  grnId: 'grnId',
+  poItemId: 'poItemId',
+  productId: 'productId',
+  qtyReceived: 'qtyReceived',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1064,6 +1147,14 @@ exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   bank_transfer: 'bank_transfer'
 };
 
+exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {
+  DRAFT: 'DRAFT',
+  APPROVED: 'APPROVED',
+  DISPATCHED: 'DISPATCHED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.CashierSessionStatus = exports.$Enums.CashierSessionStatus = {
   OPEN: 'OPEN',
   CLOSED: 'CLOSED',
@@ -1093,6 +1184,11 @@ exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
+};
+
+exports.GRNStatus = exports.$Enums.GRNStatus = {
+  COMPLETED: 'COMPLETED',
+  QUARANTINED: 'QUARANTINED'
 };
 
 exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
@@ -1285,6 +1381,7 @@ exports.Prisma.ModelName = {
   Product: 'Product',
   BranchInventory: 'BranchInventory',
   Inventory: 'Inventory',
+  StockBatch: 'StockBatch',
   StockMovement: 'StockMovement',
   StockTransfer: 'StockTransfer',
   TransferItem: 'TransferItem',
@@ -1293,11 +1390,17 @@ exports.Prisma.ModelName = {
   SalesDocumentItem: 'SalesDocumentItem',
   Payment: 'Payment',
   DocumentSequence: 'DocumentSequence',
+  SalesOrder: 'SalesOrder',
+  SOItem: 'SOItem',
+  DispatchNote: 'DispatchNote',
+  DispatchItem: 'DispatchItem',
   CashierSession: 'CashierSession',
   Vendor: 'Vendor',
   PurchaseOrder: 'PurchaseOrder',
   ApprovalRequest: 'ApprovalRequest',
   PurchaseOrderItem: 'PurchaseOrderItem',
+  GoodsReceiptNote: 'GoodsReceiptNote',
+  GRNItem: 'GRNItem',
   Truck: 'Truck',
   Delivery: 'Delivery',
   FinanceTransaction: 'FinanceTransaction',

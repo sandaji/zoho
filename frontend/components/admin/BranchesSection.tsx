@@ -47,7 +47,7 @@ export default function BranchesSection() {
     {
       key: "phone",
       label: "Phone",
-      render: (phone) => phone || "-",
+      render: (phone) => <>{phone || "-"}</>,
     },
     {
       key: "isActive",

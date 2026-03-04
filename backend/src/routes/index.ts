@@ -21,6 +21,8 @@ import branchRoutes from "./branches.routes";
 import employeeRoutes from "./employees.routes";
 import warehouseRoutes from "../modules/warehouse/routes/warehouse.routes";
 import salesRoutes from "./sales.routes";
+import salesOrderRoutes from "../modules/sales/routes/sales-orders.routes.js";
+import reportsRoutes from "../modules/reports/reports.routes.js";
 import customersRoutes from "../modules/customers/customers.routes";
 import hrRoutes from "../modules/hr/routes/hr.routes";
 import rbacRoutes from "../modules/rbac/rbac.routes";
@@ -195,6 +197,18 @@ router.post(
 // ============================================================================
 
 router.use("/sales-documents", salesRoutes);
+
+// ============================================================================
+// SALES ORDERS & DISPATCH ROUTES (Protected)
+// ============================================================================
+
+router.use("/sales/orders", salesOrderRoutes);
+
+// ============================================================================
+// REPORTS & ANALYTICS ROUTES (Protected - Admin/Manager only)
+// ============================================================================
+
+router.use("/reports", reportsRoutes);
 
 // ============================================================================
 // PRODUCT ROUTES (Protected)

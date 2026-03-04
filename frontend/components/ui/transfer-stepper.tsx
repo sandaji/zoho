@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { MdCheckCircle, MdClose } from "react-icons/md";
+import { CheckCircle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface TransferFormData {
@@ -365,7 +365,7 @@ export function TransferStepper({
             className="text-slate-500 hover:text-slate-700"
             disabled={isLoading}
           >
-            <MdClose className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
@@ -386,7 +386,7 @@ export function TransferStepper({
                         : "bg-slate-200 text-slate-600"
                   )}
                 >
-                  {currentStep > step.id ? <MdCheckCircle className="h-5 w-5" /> : step.id}
+                  {currentStep > step.id ? <CheckCircle className="h-5 w-5" /> : step.id}
                 </button>
                 <p className="text-xs text-center text-slate-600 leading-tight">{step.label}</p>
               </div>

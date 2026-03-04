@@ -38,25 +38,25 @@ const statusVariant = (status: string) => {
       {
         key: "createdAt",
         label: "Created At",
-        render: (date) => new Date(date).toLocaleDateString(),
+        render: (date) => new Date(date as string | number | Date).toLocaleDateString(),
       },
       {
         key: "driver.name",
         label: "Driver",
-        render: (driverName) => driverName || "-",
+        render: (driverName) => <>{driverName || "-"}</>,
       },
       {
         key: "truck.registration",
         label: "Truck",
-        render: (truckRegistration) => truckRegistration || "-",
+        render: (truckRegistration) => <>{truckRegistration || "-"}</>,
       },
       { key: "destination", label: "Destination" },
       {
         key: "status",
         label: "Status",
-        render: (status: DeliveryStatus) => (
-          <Badge variant={statusVariant(status)}>
-            {status.toUpperCase().replace("_", " ")}
+        render: (status) => (
+          <Badge variant={statusVariant(status as DeliveryStatus)}>
+            {(status as DeliveryStatus).toUpperCase().replace("_", " ")}
           </Badge>
         ),
       },

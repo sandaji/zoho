@@ -6,7 +6,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaChevronDown } from "react-icons/fa";
+import { ChevronDown } from "lucide-react";
 
 interface AccordionItemProps {
   title: string;
@@ -55,7 +55,7 @@ export function Accordion({ items, allowMultiple = true, className = "" }: Accor
                 {item.description && <p className="text-sm text-gray-500">{item.description}</p>}
               </div>
             </div>
-            <FaChevronDown
+            <ChevronDown
               className={`text-gray-400 transition-transform ${
                 openIndices.includes(i) ? "rotate-180" : ""
               }`}

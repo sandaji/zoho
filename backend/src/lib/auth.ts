@@ -5,6 +5,8 @@
 
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "./jwt";
+export { verifyToken };
+
 import { AppError, ErrorCode } from "./errors";
 import { logger } from "./logger";
 
@@ -62,8 +64,8 @@ export function authMiddleware(
 export function roleMiddleware(
   allowedRoles: Array<"admin" | "manager" | "branch_manager" | "hr" | "user">
 ) {
-  return (req: Request, 
-    _res: Response, 
+  return (req: Request,
+    _res: Response,
     next: NextFunction): void => {
     try {
       if (!req.user) {

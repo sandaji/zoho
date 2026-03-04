@@ -1,6 +1,6 @@
 "use client";
 
-import { MdLocalShipping, MdDeliveryDining, MdCheckCircle, MdError } from "react-icons/md";
+import { Truck, Package, CheckCircle, AlertCircle } from "lucide-react";
 import clsx from "clsx";
 
 export type TimelineEventStatus = "created" | "picked_up" | "delivered" | "failed";
@@ -15,13 +15,13 @@ export interface TimelineEvent {
 function statusIcon(status: TimelineEventStatus) {
   switch (status) {
     case "created":
-      return <MdLocalShipping className="h-5 w-5 text-slate-600" />;
+      return <Truck className="h-5 w-5 text-slate-600" />;
     case "picked_up":
-      return <MdDeliveryDining className="h-5 w-5 text-amber-600" />;
+      return <Package className="h-5 w-5 text-amber-600" />;
     case "delivered":
-      return <MdCheckCircle className="h-5 w-5 text-emerald-600" />;
+      return <CheckCircle className="h-5 w-5 text-emerald-600" />;
     case "failed":
-      return <MdError className="h-5 w-5 text-rose-600" />;
+      return <AlertCircle className="h-5 w-5 text-rose-600" />;
     default:
       return null;
   }

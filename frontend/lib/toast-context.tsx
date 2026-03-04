@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MdClose, MdCheckCircle, MdError } from "react-icons/md";
-import { BiInfoCircle } from "react-icons/bi";
+import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
 
 type ToastType = "success" | "error" | "info" | "warning";
 
@@ -73,28 +72,28 @@ const ToastItem: React.FC<{
           bg: "bg-green-50",
           border: "border-green-200",
           text: "text-green-900",
-          icon: <MdCheckCircle className="text-green-600" />,
+          icon: <CheckCircle className="text-green-600" />,
         };
       case "error":
         return {
           bg: "bg-red-50",
           border: "border-red-200",
           text: "text-red-900",
-          icon: <MdError className="text-red-600" />,
+          icon: <AlertCircle className="text-red-600" />,
         };
       case "warning":
         return {
           bg: "bg-yellow-50",
           border: "border-yellow-200",
           text: "text-yellow-900",
-          icon: <BiInfoCircle className="text-yellow-600" />,
+          icon: <Info className="text-yellow-600" />,
         };
       default:
         return {
           bg: "bg-blue-50",
           border: "border-blue-200",
           text: "text-blue-900",
-          icon: <BiInfoCircle className="text-blue-600" />,
+          icon: <Info className="text-blue-600" />,
         };
     }
   };
@@ -108,7 +107,7 @@ const ToastItem: React.FC<{
       <div className="text-lg">{styles.icon}</div>
       <div className="flex-1">{toast.message}</div>
       <button onClick={onClose} className="text-lg hover:opacity-70 transition-opacity">
-        <MdClose />
+        <X size={20} />
       </button>
     </div>
   );

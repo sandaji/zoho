@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from "react";
-import { MdClose } from "react-icons/md";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface AdjustmentDialogProps {
@@ -123,7 +123,7 @@ export function AdjustmentDialog({
             className="text-slate-500 hover:text-slate-700"
             disabled={isLoading}
           >
-            <MdClose className="h-5 w-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 

@@ -1,399 +1,482 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useAuth } from '@/lib/auth-context';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft, Download, Eye } from 'lucide-react';
+import ReceiveGoodsModal from './receive-goods-modal';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { 
-  ArrowLeft, 
-  CheckCircle, 
-  Download, 
-  Package,
-  Loader2,
-  Send
-} from "lucide-react";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-import { toast } from "sonner";
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
-interface PurchaseOrder {
+interface PurchaseOrderDetail {
   id: string;
   poNumber: string;
-  vendor: { name: string; email: string, address: string };
-  branch: { name: string; address: string };
-  status: string;
-  createdAt: string;
-  items: { 
-    id: string;
-    product: { id: string; name: string }; 
-    quantity: number; 
-    receivedQuantity: number;
-    unitPrice: number;
-    subtotal: number;
-  }[];
+  status: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'PARTIALLY_RECEIVED' | 'RECEIVED' | 'CLOSED' | 'CANCELLED';
+  vendor: { id: string; name: string; email?: string; phone?: string };
+  branch: { id: string; name: string };
+  requestedBy: { id: string; email: string; name: string };
+  approvedBy?: { id: string; email: string; name: string };
   subtotal: number;
   tax: number;
   total: number;
-  notes: string;
+  items: Array<{
+    id: string;
+    product: { id: string; name: string; sku: string };
+    quantity: number;
+    unitPrice: number;
+    subtotal: number;
+    receivedQuantity: number;
+    grnItems: Array<{
+      id: string;
+      qtyReceived: number;
+      goodsReceiptNote: { grnNumber: string; receivedAt: string };
+    }>;
+  }>;
+  grns: Array<{
+    id: string;
+    grnNumber: string;
+    status: string;
+    receivedAt: string;
+    receivedBy: { id: string; email: string; name: string };
+    items: Array<{
+      id: string;
+      product: { name: string };
+      qtyReceived: number;
+    }>;
+  }>;
+  notes?: string;
+  expectedDeliveryDate?: string;
+  submittedAt?: string;
+  approvedAt?: string;
+  closedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export default function PurchaseOrderDetailPage({ params }: { params: { id: string } }) {
-  
+const statusColors: Record<string, string> = {
+  DRAFT: 'bg-slate-100 text-slate-800',
+  SUBMITTED: 'bg-blue-100 text-blue-800',
+  APPROVED: 'bg-emerald-100 text-emerald-800',
+  PARTIALLY_RECEIVED: 'bg-amber-100 text-amber-800',
+  RECEIVED: 'bg-green-100 text-green-800',
+  CLOSED: 'bg-gray-100 text-gray-800',
+  CANCELLED: 'bg-red-100 text-red-800',
+};
 
-  const [po, setPo] = useState<PurchaseOrder | null>(null);
+export default function PurchaseOrderDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { token } = useAuth();
+  const { showToast } = useToast();
+  const [po, setPO] = useState<PurchaseOrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
-  
-  // Goods Receipt State
-  const [receiveModalOpen, setReceiveModalOpen] = useState(false);
-  const [warehouses, setWarehouses] = useState<{id: string, name: string}[]>([]);
-  const [selectedWarehouse, setSelectedWarehouse] = useState("");
-  const [receiveItems, setReceiveItems] = useState<{productId: string; quantity: number}[]>([]);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   useEffect(() => {
-    fetchPo();
-    fetchWarehouses();
-  }, [params.id]);
-
-  const fetchPo = async () => {
-    try {
-      const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/purchasing/orders/${params.id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPo(data.data);
-        // Initialize receive items with remaining quantity
-        setReceiveItems(data.data.items.map((item: any) => ({
-          productId: item.product.id,
-          quantity: Math.max(0, item.quantity - item.receivedQuantity)
-        })));
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const fetchWarehouses = async () => {
-      // Assuming we can fetch warehouses. ideally filter by branch
+    const fetchPO = async () => {
       try {
-        const token = localStorage.getItem("auth_token");
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/admin/warehouses`, {
-           headers: { Authorization: `Bearer ${token}` }, 
-        });
-        if(response.ok) {
-            const data = await response.json();
-            setWarehouses(data.data.warehouses);
+        if (!token) {
+          showToast('error', 'Authentication required');
+          router.push('/auth/login');
+          return;
         }
-      } catch (e) { console.error(e) }
-  };
 
-  const handleStatusUpdate = async (newStatus: string) => {
-    // Confirm dialog could be good here
-    setActionLoading(true);
-    try {
-      const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/purchasing/orders/${params.id}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        toast.success(`Order status updated to ${newStatus}`);
-        fetchPo();
-      } else {
-        toast.error("Failed to update status");
-      }
-    } catch (error) {
-      toast.error("An error occurred");
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleReceiveGoods = async () => {
-      if (!selectedWarehouse) return toast.error("Please select a warehouse");
-      
-      const itemsToReceive = receiveItems.filter(i => i.quantity > 0);
-      if (itemsToReceive.length === 0) return toast.error("Please enter quantities to receive");
-
-      setActionLoading(true);
-      try {
-        const token = localStorage.getItem("auth_token");
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/purchasing/orders/${params.id}/receive`, {
-            method: "POST",
+        const response = await fetch(
+          `${API_URL}/v1/purchasing/orders/${params.id}`,
+          {
             headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                warehouseId: selectedWarehouse,
-                items: itemsToReceive
-            })
-        });
-        
-        if (response.ok) {
-            toast.success("Goods received successfully");
-            setReceiveModalOpen(false);
-            fetchPo();
-        } else {
-            const err = await response.json();
-            toast.error(err.message || "Failed to receive goods");
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch purchase order details');
         }
-      } catch (e) {
-          toast.error("Error receiving goods");
+
+        const data = await response.json();
+        setPO(data.data || data);
+      } catch (error) {
+        showToast('error', error instanceof Error ? error.message : 'Failed to load purchase order');
       } finally {
-          setActionLoading(false);
+        setLoading(false);
       }
-      return;
+    };
+
+    fetchPO();
+  }, [params.id, token, router, showToast]);
+
+  const handleReceiveSuccess = (updatedPO: PurchaseOrderDetail) => {
+    setPO(updatedPO);
+    setShowReceiveModal(false);
+    showToast('success', 'Goods received successfully');
   };
 
-  const downloadPdf = async () => {
-    try {
-      const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/purchasing/orders/${params.id}/pdf`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${po?.poNumber}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-      } else {
-        toast.error("Failed to generate PDF");
-      }
-    } catch (e) {
-      toast.error("Error downloading PDF");
-    }
-  };
-  
-  const updateReceiveQty = (productId: string, qty: number) => {
-      setReceiveItems(prev => prev.map(item => 
-          item.productId === productId ? { ...item, quantity: qty } : item
-      ));
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-slate-600">Loading purchase order...</div>
+      </div>
+    );
   }
 
-  if (loading) return <div className="flex justify-center p-12"><Loader2 className="animate-spin" /></div>;
-  if (!po) return <div className="p-12 text-center">Order not found</div>;
+  if (!po) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-slate-900 mb-4">
+            Purchase Order Not Found
+          </h1>
+          <Button onClick={() => router.back()} variant="outline">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go Back
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const canReceiveGoods = ['APPROVED', 'PARTIALLY_RECEIVED'].includes(po.status);;
 
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <Link href="/dashboard/purchasing/orders">
-            <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              {po.poNumber}
-              <Badge variant={
-                  po.status === 'APPROVED' ? 'default' : 
-                  po.status === 'RECEIVED' ? 'secondary' : 'outline'
-              }>
-                  {po.status}
-              </Badge>
-            </h1>
-            <p className="text-slate-500 text-sm">Created on {new Date(po.createdAt).toLocaleDateString()}</p>
+    <div className="min-h-screen bg-slate-50 p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900">
+                {po.poNumber}
+              </h1>
+              <p className="text-sm text-slate-600 mt-1">
+                Created on {new Date(po.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          <Badge className={statusColors[po.status]}>
+            {po.status.replace(/_/g, ' ')}
+          </Badge>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* PO Details Card */}
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg">Order Details</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">
+                      Vendor
+                    </div>
+                    <div className="text-base font-semibold text-slate-900">
+                      {po.vendor.name}
+                    </div>
+                    {po.vendor.email && (
+                      <div className="text-sm text-slate-600">{po.vendor.email}</div>
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">
+                      Branch
+                    </div>
+                    <div className="text-base font-semibold text-slate-900">
+                      {po.branch.name}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">
+                      Requested By
+                    </div>
+                    <div className="text-base font-semibold text-slate-900">
+                      {po.requestedBy.name}
+                    </div>
+                    <div className="text-sm text-slate-600">{po.requestedBy.email}</div>
+                  </div>
+
+                  <div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">
+                      Approved By
+                    </div>
+                    <div className="text-base font-semibold text-slate-900">
+                      {po.approvedBy?.name || 'Pending'}
+                    </div>
+                  </div>
+
+                  {po.expectedDeliveryDate && (
+                    <div>
+                      <div className="text-sm font-medium text-slate-600 mb-1">
+                        Expected Delivery
+                      </div>
+                      <div className="text-base font-semibold text-slate-900">
+                        {new Date(po.expectedDeliveryDate).toLocaleDateString()}
+                      </div>
+                    </div>
+                  )}
+
+                  {po.notes && (
+                    <div className="col-span-2">
+                      <div className="text-sm font-medium text-slate-600 mb-1">
+                        Notes
+                      </div>
+                      <div className="text-slate-700">{po.notes}</div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Line Items */}
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg">Line Items</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-slate-200 hover:bg-transparent">
+                      <TableHead className="h-12 text-slate-700 font-semibold">
+                        Product
+                      </TableHead>
+                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
+                        Qty Ordered
+                      </TableHead>
+                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
+                        Unit Price
+                      </TableHead>
+                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
+                        Received
+                      </TableHead>
+                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
+                        Subtotal
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {po.items.map((item) => (
+                      <TableRow key={item.id} className="hover:bg-slate-50">
+                        <TableCell className="py-4">
+                          <div>
+                            <div className="font-medium text-slate-900">
+                              {item.product.name}
+                            </div>
+                            <div className="text-sm text-slate-600">
+                              SKU: {item.product.sku}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right py-4">
+                          {item.quantity}
+                        </TableCell>
+                        <TableCell className="text-right py-4">
+                          KES {item.unitPrice.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="text-right py-4">
+                          <Badge
+                            variant={
+                              item.receivedQuantity === item.quantity
+                                ? 'default'
+                                : 'secondary'
+                            }
+                            className={
+                              item.receivedQuantity === item.quantity
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : 'bg-amber-100 text-amber-800'
+                            }
+                          >
+                            {item.receivedQuantity}/{item.quantity}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right py-4 font-medium">
+                          KES {item.subtotal.toFixed(2)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+
+            {/* GRN History */}
+            {po.grns.length > 0 && (
+              <Card>
+                <CardHeader className="bg-slate-50 border-b">
+                  <CardTitle className="text-lg">Goods Receipt History</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6">
+                  <div className="space-y-4">
+                    {po.grns.map((grn) => (
+                      <div
+                        key={grn.id}
+                        className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <div className="font-semibold text-slate-900">
+                              {grn.grnNumber}
+                            </div>
+                            <div className="text-sm text-slate-600 mt-1">
+                              Received by {grn.receivedBy.name} on{' '}
+                              {new Date(grn.receivedAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                          <Badge className="bg-green-100 text-green-800">
+                            {grn.status}
+                          </Badge>
+                        </div>
+                        <div className="text-sm text-slate-700">
+                          <div className="font-medium mb-2">Items received:</div>
+                          <ul className="space-y-1 ml-4">
+                            {grn.items.map((item) => (
+                              <li key={item.id} className="text-slate-600">
+                                {item.product.name}: {item.qtyReceived} units
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Summary Card */}
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg">Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Subtotal:</span>
+                    <span className="font-semibold text-slate-900">
+                      KES {po.subtotal.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-600">Tax:</span>
+                    <span className="font-semibold text-slate-900">
+                      KES {po.tax.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="h-px bg-slate-200 my-4"></div>
+                  <div className="flex justify-between text-lg">
+                    <span className="font-semibold text-slate-900">Total:</span>
+                    <span className="font-bold text-emerald-600">
+                      KES {po.total.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Receive Goods Button */}
+            {canReceiveGoods && (
+              <Button
+                onClick={() => setShowReceiveModal(true)}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                Receive Goods
+              </Button>
+            )}
+
+            {/* Status Timeline */}
+            <Card>
+              <CardHeader className="bg-slate-50 border-b">
+                <CardTitle className="text-lg">Timeline</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="space-y-4 text-sm">
+                  <div className="flex gap-3">
+                    <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
+                    <div>
+                      <div className="font-medium text-slate-900">Created</div>
+                      <div className="text-slate-600">
+                        {new Date(po.createdAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {po.submittedAt && (
+                    <div className="flex gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium text-slate-900">Submitted</div>
+                        <div className="text-slate-600">
+                          {new Date(po.submittedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {po.approvedAt && (
+                    <div className="flex gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium text-slate-900">Approved</div>
+                        <div className="text-slate-600">
+                          {new Date(po.approvedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {po.closedAt && (
+                    <div className="flex gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
+                      <div>
+                        <div className="font-medium text-slate-900">Closed</div>
+                        <div className="text-slate-600">
+                          {new Date(po.closedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1">
+                <Download className="mr-2 h-4 w-4" />
+                Print
+              </Button>
+            </div>
           </div>
         </div>
-        
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={downloadPdf}>
-            <Download className="w-4 h-4 mr-2" />
-            PDF
-          </Button>
-          
-          {po.status === "DRAFT" && (
-            <Button onClick={() => handleStatusUpdate("SUBMITTED")} disabled={actionLoading}>
-              <Send className="w-4 h-4 mr-2" />
-              Submit
-            </Button>
-          )}
-
-          {po.status === "SUBMITTED" && (
-             // Ideally check permission
-             <Button onClick={() => handleStatusUpdate("APPROVED")} disabled={actionLoading} className="bg-green-600 hover:bg-green-700">
-               <CheckCircle className="w-4 h-4 mr-2" />
-               Approve
-             </Button>
-          )}
-          
-          {(po.status === "APPROVED" || po.status === "PARTIALLY_RECEIVED") && (
-            <Dialog open={receiveModalOpen} onOpenChange={setReceiveModalOpen}>
-                <DialogTrigger asChild>
-                    <Button>
-                        <Package className="w-4 h-4 mr-2" />
-                        Receive Goods
-                    </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-3xl">
-                    <DialogHeader>
-                        <DialogTitle>Receive Goods</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div>
-                            <Label>Destination Warehouse</Label>
-                            <Select value={selectedWarehouse} onValueChange={setSelectedWarehouse}>
-                                <SelectTrigger><SelectValue placeholder="Select Warehouse" /></SelectTrigger>
-                                <SelectContent>
-                                    {warehouses.map(w => (
-                                        <SelectItem key={w.id} value={w.id}>{w.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Product</TableHead>
-                                    <TableHead>Ordered</TableHead>
-                                    <TableHead>Received</TableHead>
-                                    <TableHead>Receive Now</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {po.items.map(item => {
-                                    const receiveItem = receiveItems.find(r => r.productId === item.product.id);
-                                    return (
-                                        <TableRow key={item.id}>
-                                            <TableCell>{item.product.name}</TableCell>
-                                            <TableCell>{item.quantity}</TableCell>
-                                            <TableCell>{item.receivedQuantity}</TableCell>
-                                            <TableCell>
-                                                <Input 
-                                                    type="number" 
-                                                    min="0"
-                                                    max={item.quantity - item.receivedQuantity}
-                                                    value={receiveItem?.quantity || 0}
-                                                    onChange={(e) => updateReceiveQty(item.product.id, parseInt(e.target.value) || 0)}
-                                                    className="w-24"
-                                                />
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                            </TableBody>
-                        </Table>
-                        
-                        <div className="flex justify-end gap-2">
-                            <Button variant="outline" onClick={() => setReceiveModalOpen(false)}>Cancel</Button>
-                            <Button onClick={handleReceiveGoods} disabled={actionLoading}>Confirm Receipt</Button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-          )}
-
-          {po.status === "RECEIVED" && (
-             <Button variant="secondary" disabled>
-                 <CheckCircle className="w-4 h-4 mr-2" />
-                 Fully Received
-             </Button>
-          )}
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Info Cards */}
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-slate-500">Vendor</CardTitle></CardHeader>
-          <CardContent>
-            <p className="font-semibold">{po.vendor.name}</p>
-            <p className="text-sm text-slate-500">{po.vendor.email}</p>
-            <p className="text-sm text-slate-500">{po.vendor.address}</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-slate-500">Ship To</CardTitle></CardHeader>
-          <CardContent>
-             <p className="font-semibold">{po.branch.name}</p>
-             <p className="text-sm text-slate-500">{po.branch.address}</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-           <CardHeader className="pb-2"><CardTitle className="text-sm font-medium text-slate-500">Summary</CardTitle></CardHeader>
-           <CardContent className="space-y-1">
-              <div className="flex justify-between"><span>Subtotal:</span> <span>${po.subtotal.toFixed(2)}</span></div>
-              <div className="flex justify-between"><span>Tax:</span> <span>${po.tax.toFixed(2)}</span></div>
-              <div className="flex justify-between font-bold text-lg pt-2 border-t"><span>Total:</span> <span>${po.total.toFixed(2)}</span></div>
-           </CardContent>
-        </Card>
-      </div>
-
-      {/* Items Table */}
-      <Card>
-        <CardHeader><CardTitle>Order Items</CardTitle></CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-                <TableHead className="text-right">Received</TableHead>
-                <TableHead className="text-right">Unit Price</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {po.items.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.product.name}</TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right">
-                      {item.receivedQuantity > 0 ? (
-                          <span className={item.receivedQuantity >= item.quantity ? "text-green-600" : "text-yellow-600"}>
-                              {item.receivedQuantity}
-                          </span>
-                      ) : "-"}
-                  </TableCell>
-                  <TableCell className="text-right">${item.unitPrice.toFixed(2)}</TableCell>
-                  <TableCell className="text-right">${item.subtotal.toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-      
-      {po.notes && (
-          <Card>
-              <CardHeader><CardTitle className="text-sm">Notes</CardTitle></CardHeader>
-              <CardContent><p className="text-sm text-slate-600">{po.notes}</p></CardContent>
-          </Card>
+      {/* Receive Goods Modal */}
+      {showReceiveModal && (
+        <ReceiveGoodsModal
+          purchaseOrder={po}
+          onClose={() => setShowReceiveModal(false)}
+          onSuccess={handleReceiveSuccess}
+        />
       )}
     </div>
   );

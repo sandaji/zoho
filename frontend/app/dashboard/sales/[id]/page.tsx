@@ -58,6 +58,11 @@ export default async function EditSalesDocumentPage({ params }: { params: { id: 
     ...document.body,
     issueDate: new Date(document.body.issueDate),
     dueDate: document.body.dueDate ? new Date(document.body.dueDate) : undefined,
+    items: document.body.items.map((item) => ({
+      ...item,
+      productName: item.name,
+      discount: 0,
+    })),
   };
 
   return <SalesDocumentBuilder mode={getModeFromType(document.type)} initialData={initialData} />;

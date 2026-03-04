@@ -65,19 +65,19 @@ export class PurchasingService {
    */
   async generatePoPdf(id: string): Promise<Buffer> {
     const po = await this.getPurchaseOrder(id);
-    
+
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ margin: 50 });
       const buffers: Buffer[] = [];
-      
+
       doc.on("data", (chunk) => buffers.push(chunk));
       doc.on("end", () => resolve(Buffer.concat(buffers)));
       doc.on("error", reject);
-      
+
       // -- HEADER --
       doc.fontSize(24).text("PURCHASE ORDER", { align: "right" });
       doc.moveDown();
-      
+
       doc.fontSize(10).text(`PO Number: ${po.poNumber}`, { align: "right" });
       doc.text(`Date: ${po.createdAt.toDateString()}`, { align: "right" });
       doc.text(`Status: ${po.status}`, { align: "right" });
@@ -85,7 +85,7 @@ export class PurchasingService {
 
       // -- VENDOR & BRANCH INFO --
       const startY = doc.y;
-      
+
       // Vendor (Left)
       doc.fontSize(12).text("Start Vendor:", 50, startY, { underline: true });
       doc.fontSize(10).text(po.vendor.name);
@@ -93,15 +93,15 @@ export class PurchasingService {
       if (po.vendor.phone) doc.text(`Phone: ${po.vendor.phone}`);
       if (po.vendor.email) doc.text(`Email: ${po.vendor.email}`);
       if (po.vendor.taxId) doc.text(`Tax ID: ${po.vendor.taxId}`);
-      
+
       // Branch (Right)
       doc.fontSize(12).text("Ship To:", 300, startY, { underline: true });
       doc.fontSize(10).text(po.branch.name);
       if (po.branch.address) doc.text(po.branch.address);
       if (po.branch.phone) doc.text(`Phone: ${po.branch.phone}`);
-      
+
       doc.moveDown(4);
-      
+
       // -- ITEMS TABLE --
       // Headers
       const tableTop = doc.y;
@@ -109,33 +109,33 @@ export class PurchasingService {
       const qtyX = 300;
       const priceX = 380;
       const totalX = 460;
-      
+
       doc.fontSize(10).font("Helvetica-Bold");
       doc.text("Item / Description", itemX, tableTop);
       doc.text("Qty", qtyX, tableTop);
       doc.text("Unit Price", priceX, tableTop);
       doc.text("Total", totalX, tableTop);
-      
+
       doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
       doc.font("Helvetica");
-      
+
       let y = tableTop + 25;
-      
+
       po.items.forEach((item) => {
         const productName = item.product.name;
         const subtotal = item.quantity * item.unitPrice;
-        
+
         doc.text(productName, itemX, y);
         doc.text(item.quantity.toString(), qtyX, y);
         doc.text(item.unitPrice.toFixed(2), priceX, y);
         doc.text(subtotal.toFixed(2), totalX, y);
-        
+
         y += 20;
       });
-      
+
       doc.moveTo(50, y).lineTo(550, y).stroke();
       y += 10;
-      
+
       // -- TOTALS --
       doc.font("Helvetica-Bold");
       doc.text(`Subtotal: ${po.subtotal.toFixed(2)}`, 400, y, { align: "right" });
@@ -143,18 +143,18 @@ export class PurchasingService {
       doc.text(`Tax: ${po.tax.toFixed(2)}`, 400, y, { align: "right" });
       y += 15;
       doc.fontSize(12).text(`Total: ${po.total.toFixed(2)}`, 400, y, { align: "right" });
-      
+
       // -- FOOTER --
       doc.fontSize(10).font("Helvetica");
       doc.text("Authorized Signature", 50, 700);
       doc.moveTo(50, 690).lineTo(200, 690).stroke();
-      
+
       if (po.notes) {
         doc.moveDown(4);
         doc.text("Notes:", { underline: true });
         doc.text(po.notes);
       }
-      
+
       doc.end();
     });
   }
@@ -266,15 +266,15 @@ export class PurchasingService {
 
         if (product.vendorId !== data.vendorId) {
           throw new AppError(
-            ErrorCode.VALIDATION_ERROR, 
-            400, 
+            ErrorCode.VALIDATION_ERROR,
+            400,
             `Product "${product.name}" does not belong to the selected vendor. SAP discipline requires all items in a PO to match the vendor.`
           );
         }
 
         const itemSubtotal = item.quantity * item.unitPrice;
         subtotal += itemSubtotal;
-        
+
         itemsData.push({
           productId: item.productId,
           quantity: item.quantity,
@@ -292,7 +292,7 @@ export class PurchasingService {
           requestedById: userId,
           status: PurchaseOrderStatus.DRAFT,
           subtotal,
-          tax: subtotal * 0.16, 
+          tax: subtotal * 0.16,
           total: subtotal * 1.16,
           notes: data.notes,
           expectedDeliveryDate: data.expectedDeliveryDate ? new Date(data.expectedDeliveryDate) : null,
@@ -349,11 +349,11 @@ export class PurchasingService {
     userBranchId?: string;
     userPermissions?: string[];
   }) {
-    const { 
-      status, 
-      vendorId, 
-      branchId, 
-      skip = 0, 
+    const {
+      status,
+      vendorId,
+      branchId,
+      skip = 0,
       take = 50,
       userBranchId,
       userPermissions = []
@@ -409,8 +409,8 @@ export class PurchasingService {
    * - Vendor active status
    */
   async updateStatus(
-    id: string, 
-    status: PurchaseOrderStatus, 
+    id: string,
+    status: PurchaseOrderStatus,
     userId: string,
     userPermissions: string[] = []
   ) {
@@ -438,17 +438,17 @@ export class PurchasingService {
       // ✅ Validate approval threshold
       const approvalLevel = getApprovalLevel(po.total);
       const requiredPermission = `purchasing.order.approve_${approvalLevel}`;
-      
+
       const hasRequiredPermission = userPermissions.includes(requiredPermission) ||
-                                    userPermissions.includes('purchasing.order.approve_executive');
+        userPermissions.includes('purchasing.order.approve_executive');
 
       if (!hasRequiredPermission) {
-        const thresholdInfo = 
-          approvalLevel === ApprovalLevel.STANDARD 
-            ? 'KSH 10,000' 
-            : approvalLevel === ApprovalLevel.HIGH_VALUE 
-            ? 'between KSH 10,000 - 100,000' 
-            : 'above KSH 100,000';
+        const thresholdInfo =
+          approvalLevel === ApprovalLevel.STANDARD
+            ? 'KSH 10,000'
+            : approvalLevel === ApprovalLevel.HIGH_VALUE
+              ? 'between KSH 10,000 - 100,000'
+              : 'above KSH 100,000';
 
         throw new AppError(
           ErrorCode.FORBIDDEN,
@@ -515,40 +515,119 @@ export class PurchasingService {
     data: {
       warehouseId: string;
       items: { productId: string; quantity: number }[];
+      allowOverReceive?: boolean;
+      notes?: string;
     }
   ) {
+    // RBAC: Check warehouse clerk role
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        roles: { include: { role: true } },
+      },
+    });
+
+    const allowedRoles = ["WAREHOUSE_CLERK", "WAREHOUSE_MANAGER", "ADMIN"];
+    const hasPermission = user?.roles.some((r) =>
+      allowedRoles.includes(r.role.code.toUpperCase())
+    );
+
+    if (!hasPermission) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only warehouse staff can receive goods"
+      );
+    }
+
     return prisma.$transaction(async (tx) => {
       const po = await tx.purchaseOrder.findUnique({
         where: { id },
-        include: { items: true, branch: true },
+        include: { items: { include: { product: true } }, branch: true },
       });
 
       if (!po) throw new AppError(ErrorCode.NOT_FOUND, 404, "PO not found");
-      if (po.status !== PurchaseOrderStatus.APPROVED && po.status !== PurchaseOrderStatus.PARTIALLY_RECEIVED) {
-        throw new AppError(ErrorCode.INVALID_STATUS, 400, "PO must be APPROVED or PARTIALLY_RECEIVED to receive goods");
+      if (
+        po.status !== PurchaseOrderStatus.APPROVED &&
+        po.status !== PurchaseOrderStatus.PARTIALLY_RECEIVED
+      ) {
+        throw new AppError(
+          ErrorCode.INVALID_STATUS,
+          400,
+          "PO must be APPROVED or PARTIALLY_RECEIVED to receive goods"
+        );
       }
 
       // Check warehouse
       const warehouse = await tx.warehouse.findUnique({
         where: { id: data.warehouseId },
       });
-      if (!warehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
+      if (!warehouse)
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
       if (warehouse.branchId !== po.branchId) {
-        throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Warehouse must belong to the PO branch");
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          400,
+          "Warehouse must belong to the PO branch"
+        );
       }
+
+      // Generate GRN number
+      const lastGRN = await tx.goodsReceiptNote.findFirst({
+        orderBy: { createdAt: "desc" as const },
+        select: { grnNumber: true },
+      });
+
+      const grnNumber =
+        "GRN-" +
+        (lastGRN
+          ? (parseInt(lastGRN.grnNumber.split("-")[1]) + 1)
+            .toString()
+            .padStart(6, "0")
+          : "000001");
+
+      // Create GRN
+      const grn = await tx.goodsReceiptNote.create({
+        data: {
+          grnNumber,
+          purchaseOrderId: id,
+          receivedById: userId,
+          notes: data.notes || "",
+          status: "COMPLETED",
+        },
+      });
+
+      const grnItems = [];
+      let totalReceivedQty = 0;
+      let totalOrderedQty = 0;
 
       for (const receivedItem of data.items) {
         if (receivedItem.quantity <= 0) continue;
 
-        const poItem = po.items.find((item) => item.productId === receivedItem.productId);
+        const poItem = po.items.find(
+          (item) => item.productId === receivedItem.productId
+        );
         if (!poItem) {
-          throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Product ${receivedItem.productId} is not in this PO`);
+          throw new AppError(
+            ErrorCode.VALIDATION_ERROR,
+            400,
+            `Product ${receivedItem.productId} is not in this PO`
+          );
+        }
+
+        const remaining = poItem.quantity - poItem.receivedQuantity;
+        if (
+          receivedItem.quantity > remaining &&
+          !data.allowOverReceive
+        ) {
+          throw new AppError(
+            ErrorCode.VALIDATION_ERROR,
+            400,
+            `Cannot receive ${receivedItem.quantity} of ${poItem.product.name}. Only ${remaining} units remaining.`
+          );
         }
 
         const newReceivedQty = poItem.receivedQuantity + receivedItem.quantity;
-        if (newReceivedQty > poItem.quantity) {
-          throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Cannot receive more than ordered quantity for product ${receivedItem.productId}`);
-        }
 
         // 1. Update PO Item
         await tx.purchaseOrderItem.update({
@@ -556,7 +635,19 @@ export class PurchasingService {
           data: { receivedQuantity: newReceivedQty },
         });
 
-        // 2. Update/Create Inventory
+        // 2. Create GRN Item
+        const grnItem = await tx.grnItem.create({
+          data: {
+            grnId: grn.id,
+            poItemId: poItem.id,
+            productId: receivedItem.productId,
+            qtyReceived: receivedItem.quantity,
+          },
+        });
+
+        grnItems.push(grnItem);
+
+        // 3. Update/Create Inventory
         await tx.inventory.upsert({
           where: {
             productId_warehouseId: {
@@ -567,54 +658,57 @@ export class PurchasingService {
           create: {
             productId: receivedItem.productId,
             warehouseId: data.warehouseId,
-            quantity: receivedItem.quantity,
-            available: receivedItem.quantity, // Assuming no reservations yet
-            status: "in_stock",
+            quantityOnHand: receivedItem.quantity,
+            reorderLevel: 10,
+            lastReceivedAt: new Date(),
           },
           update: {
-            quantity: { increment: receivedItem.quantity },
-            available: { increment: receivedItem.quantity },
+            quantityOnHand: {
+              increment: receivedItem.quantity,
+            },
+            lastReceivedAt: new Date(),
+            updatedAt: new Date(),
           },
         });
 
-        // 3. Create Stock Movement
-        await tx.stockMovement.create({
-          data: {
-            type: "INBOUND",
-            quantity: receivedItem.quantity,
-            productId: receivedItem.productId,
-            warehouseId: data.warehouseId,
-            createdById: userId,
-            reference: `PO Receive: ${po.poNumber}`,
-          },
-        });
+        totalReceivedQty += newReceivedQty;
+        totalOrderedQty += poItem.quantity;
       }
 
       // 4. Update PO Status
-      const updatedItems = await tx.purchaseOrderItem.findMany({
-        where: { purchaseOrderId: id },
-      });
-      
-      const isEveryItemComplete = updatedItems.every(
-        (item) => item.receivedQuantity >= item.quantity
-      );
+      const newStatus =
+        totalReceivedQty === totalOrderedQty
+          ? PurchaseOrderStatus.RECEIVED
+          : PurchaseOrderStatus.PARTIALLY_RECEIVED;
 
-      const newStatus = isEveryItemComplete
-        ? PurchaseOrderStatus.RECEIVED
-        : PurchaseOrderStatus.PARTIALLY_RECEIVED;
-        
-      await tx.purchaseOrder.update({
+      const updatedPO = await tx.purchaseOrder.update({
         where: { id },
-        data: { 
+        data: {
           status: newStatus,
-          updatedAt: new Date()
+          updatedAt: new Date(),
+        },
+        include: {
+          items: {
+            include: {
+              product: true,
+              grnItems: { include: { goodsReceiptNote: true } },
+            },
+          },
+          grns: {
+            include: {
+              receivedBy: { select: { id: true, email: true, name: true } },
+              items: { include: { product: true } },
+            },
+            orderBy: { createdAt: "desc" as const },
+          },
         },
       });
 
-      return await tx.purchaseOrder.findUnique({
-        where: { id },
-        include: { items: true },
-      });
+      return {
+        grn,
+        grnItems,
+        updatedPO,
+      };
     });
   }
 

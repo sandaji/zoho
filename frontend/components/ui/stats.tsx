@@ -2,15 +2,14 @@
 
 import React from "react";
 import {
-  MdAttachMoney,
-  MdTrendingUp,
-  MdWarehouse,
-  MdPeople,
-  MdDirectionsCar,
-  MdShoppingCart,
-  MdPercent,
-} from "react-icons/md";
-import { HiCurrencyDollar } from "react-icons/hi";
+  TrendingUp,
+  Warehouse,
+  Users,
+  Truck,
+  ShoppingCart,
+  Percent,
+  DollarSign,
+} from "lucide-react";
 
 export interface StatCardProps {
   title: string;
@@ -166,7 +165,7 @@ export function RevenueStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Revenue"
       value={0}
-      icon={<HiCurrencyDollar />}
+      icon={<DollarSign />}
       variant="success"
       prefix="ksh"
       {...props}

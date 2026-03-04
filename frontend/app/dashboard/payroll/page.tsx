@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MdPerson, MdTrendingUp, MdBarChart, MdPayments, MdRefresh } from "react-icons/md";
+import { User, TrendingUp, BarChart3, CreditCard, RotateCw } from "lucide-react";
 import { StatCard, BarChart, LineChart } from "@/components/ui/chart";
 import { PayslipAccordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
@@ -177,9 +177,9 @@ export default function PayrollDashboard() {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 flex gap-8">
           {[
-            { id: "overview", label: "Overview", icon: MdBarChart },
-            { id: "payslips", label: "Payslips", icon: MdPayments },
-            { id: "analytics", label: "Analytics", icon: MdTrendingUp },
+            { id: "overview", label: "Overview", icon: BarChart3 },
+            { id: "payslips", label: "Payslips", icon: CreditCard },
+            { id: "analytics", label: "Analytics", icon: TrendingUp },
           ].map((tab) => {
             const IconComponent = tab.icon;
             return (
@@ -211,19 +211,19 @@ export default function PayrollDashboard() {
                 label="Total Employees"
                 value={analytics.total_employees}
                 color="blue"
-                icon={<MdPerson />}
+                icon={<User />}
               />
               <StatCard
                 label="Total Payroll Cost"
                 value={analytics.total_cost}
                 color="purple"
-                icon={<MdPayments />}
+                icon={<CreditCard />}
               />
               <StatCard
                 label="Average Salary"
                 value={analytics.average_salary}
                 color="green"
-                icon={<MdTrendingUp />}
+                icon={<TrendingUp />}
               />
               <StatCard
                 label="Status Summary"
@@ -343,7 +343,7 @@ export default function PayrollDashboard() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-900">Employee Payslips</h2>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                <MdRefresh className="mr-2" />
+                <RotateCw className="mr-2" />
                 Export All
               </Button>
             </div>

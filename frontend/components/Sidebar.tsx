@@ -213,7 +213,7 @@ export function Sidebar() {
     if (hasPermission("hr.payroll.run")) {
       items.push({ label: "Payroll", href: "/dashboard/payroll", icon: Wallet });
     }
-    if (hasAnyPermission(["finance.gl.view", "finance.gl.create", "finance.report.aging"])) {
+    if (hasPermission("finance.gl.view")) {
       const financeChildren: MenuItem[] = [];
       if (hasPermission("finance.gl.view")) {
         financeChildren.push({ label: "Overview", href: "/dashboard/finance", icon: LayoutDashboard });
@@ -228,8 +228,12 @@ export function Sidebar() {
       }
       items.push({ label: "Finance", href: "/dashboard/finance", icon: DollarSign, children: financeChildren });
     }
-    if (hasAnyPermission(["finance.report.aging", "sales.order.view_all"])) {
-      items.push({ label: "Reports", href: "/dashboard/reports", icon: BarChart3 });
+    if (
+      user?.role === "admin" ||
+      user?.role === "super_admin" ||
+      hasPermission("finance.report.aging")
+    ) {
+      items.push({ label: "Reports & Analytics", href: "/dashboard/reports", icon: BarChart3 });
     }
     if (!isCashier) {
       items.push({ label: "Settings", href: "/dashboard/settings", icon: Settings });

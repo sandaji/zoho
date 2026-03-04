@@ -247,11 +247,15 @@ model User {
   auditLogs    AuditLog[]
   requestedPurchaseOrders PurchaseOrder[] @relation("RequestedByPO")
   approvedPurchaseOrders  PurchaseOrder[] @relation("ApprovedByPO")
+  receivedGRN            GoodsReceiptNote[] @relation("ReceivedByGRN")
   requestedApprovals      ApprovalRequest[] @relation("RequestedApprovals")
   approvedApprovals       ApprovalRequest[] @relation("ApprovedApprovals")
   
   createdTransfers        StockTransfer[] @relation("CreatedTransfers")
   receivedTransfers       StockTransfer[] @relation("ReceivedTransfers")
+  
+  createdSalesOrders      SalesOrder[]
+  dispatchNotes           DispatchNote[] @relation(name: "DispatchNoteCreatedBy")
 
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
@@ -282,6 +286,7 @@ model Branch {
   transfersFrom     EmployeeTransfer[] @relation("TransfersFrom")
   transfersTo       EmployeeTransfer[] @relation("TransfersTo")
   purchaseOrders    PurchaseOrder[]
+  salesOrders       SalesOrder[]
 
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
@@ -336,6 +341,7 @@ model Warehouse {
   stockMovements StockMovement[]
   sourceTransfers StockTransfer[] @relation("SourceTransfers")
   targetTransfers StockTransfer[] @relation("TargetTransfers")
+  stockBatches StockBatch[] @relation(name: "StockBatchToWarehouse")
   
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
@@ -400,6 +406,10 @@ model Product {
   stockMovements     StockMovement[]
   transferItems      TransferItem[]
   purchaseOrderItems PurchaseOrderItem[]
+  grnItems           GRNItem[] @relation(name: "GRNItemToProduct")
+  stockBatches       StockBatch[] @relation(name: "StockBatchToProduct")
+  soItems            SOItem[] @relation(name: "SOItemToProduct")
+  dispatchItems      DispatchItem[] @relation(name: "DispatchItemToProduct")
   
   isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())
@@ -476,6 +486,45 @@ model Inventory {
   @@index([productId])
   @@index([warehouseId])
   @@index([status])
+}
+
+// ============================================================================
+// STOCK BATCH & FIFO VALUATION MODELS
+// ============================================================================
+
+/// Stock Batch - FIFO batch tracking for cost valuation
+model StockBatch {
+  id                String    @id @default(cuid())
+  productId         String
+  warehouseId       String
+  grnItemId         String?   // Links to the exact delivery that brought this stock in
+  
+  // Quantity Tracking
+  initialQuantity   Int       // How many arrived in this batch
+  currentQuantity   Int       // How many are left in this batch
+  
+  // Financials
+  unitCost          Decimal   // The exact cost per unit at the time of receiving
+  
+  // For FIFO sorting
+  receivedAt        DateTime  @default(now())
+  
+  // Status
+  isDepleted        Boolean   @default(false) // True when currentQuantity hits 0
+  
+  // Relations
+  product           Product   @relation(name: "StockBatchToProduct", fields: [productId], references: [id], onDelete: Restrict)
+  warehouse         Warehouse @relation(name: "StockBatchToWarehouse", fields: [warehouseId], references: [id], onDelete: Restrict)
+  grnItem           GRNItem?  @relation(name: "StockBatchToGRNItem", fields: [grnItemId], references: [id], onDelete: SetNull)
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@map("stock_batches")
+  @@index([productId, warehouseId])
+  @@index([grnItemId])
+  @@index([isDepleted])
+  @@index([receivedAt])
 }
 
 // ============================================================================
@@ -579,7 +628,8 @@ model Customer {
   // Relations
   salesDocuments SalesDocument[]
   payments       Payment[]
-
+  salesOrders    SalesOrder[]
+  
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -721,6 +771,130 @@ model DocumentSequence {
 }
 
 // ============================================================================
+// SALES ORDER & DISPATCH MODELS
+// ============================================================================
+
+/// Sales Orders - Internal purchase requests by customers
+model SalesOrder {
+  id              String            @id @default(cuid())
+  soNumber        String            @unique @map("so_number")
+  
+  // References
+  customerId      String
+  customer        Customer          @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  branchId        String
+  branch          Branch            @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  
+  // Status
+  status          SalesOrderStatus  @default(DRAFT)
+  
+  // Financials
+  items           SOItem[]
+  subtotal        Float             @default(0)
+  tax             Float             @default(0)
+  totalAmount     Float             @default(0) @map("total_amount")
+  
+  // Dispatch tracking
+  dispatchNotes   DispatchNote[]
+  
+  // Metadata
+  notes           String?
+  createdById     String
+  createdBy       User              @relation(fields: [createdById], references: [id], onDelete: Restrict)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("sales_orders")
+  @@index([soNumber])
+  @@index([customerId])
+  @@index([branchId])
+  @@index([status])
+}
+
+/// Sales Order Items - Line items in a sales order
+model SOItem {
+  id              String            @id @default(cuid())
+  
+  // Foreign keys
+  salesOrderId    String
+  salesOrder      SalesOrder        @relation(fields: [salesOrderId], references: [id], onDelete: Cascade)
+  
+  productId       String
+  product         Product           @relation(name: "SOItemToProduct", fields: [productId], references: [id], onDelete: Restrict)
+  
+  // Quantities
+  qtyRequested    Int               @map("qty_requested")
+  qtyDispatched   Int               @default(0) @map("qty_dispatched")
+  
+  // Pricing
+  unitPrice       Float             @map("unit_price")
+  
+  // Dispatch items
+  dispatchItems   DispatchItem[]
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("so_items")
+  @@index([salesOrderId])
+  @@index([productId])
+}
+
+/// Dispatch Notes - Documents for fulfilling sales orders
+model DispatchNote {
+  id              String            @id @default(cuid())
+  dnNumber        String            @unique @map("dn_number")
+  
+  // References
+  salesOrderId    String
+  salesOrder      SalesOrder        @relation(fields: [salesOrderId], references: [id], onDelete: Restrict)
+  
+  // Who dispatched
+  dispatchedById  String
+  dispatchedBy    User              @relation(name: "DispatchNoteCreatedBy", fields: [dispatchedById], references: [id], onDelete: Restrict)
+  
+  // Dispatch details
+  items           DispatchItem[]
+  dispatchedAt    DateTime          @default(now()) @map("dispatched_at")
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("dispatch_notes")
+  @@index([dnNumber])
+  @@index([salesOrderId])
+  @@index([dispatchedById])
+  @@index([dispatchedAt])
+}
+
+/// Dispatch Items - Line items in a dispatch note with precise COGS
+model DispatchItem {
+  id              String            @id @default(cuid())
+  
+  // References
+  dispatchNoteId  String
+  dispatchNote    DispatchNote      @relation(fields: [dispatchNoteId], references: [id], onDelete: Cascade)
+  
+  soItemId        String
+  soItem          SOItem            @relation(fields: [soItemId], references: [id], onDelete: Restrict)
+  
+  productId       String
+  product         Product           @relation(name: "DispatchItemToProduct", fields: [productId], references: [id], onDelete: Restrict)
+  
+  // Quantities and cost
+  qtyDispatched   Int               @map("qty_dispatched")
+  totalCogs       Decimal           @map("total_cogs") // Exact COGS from FIFO calculation
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("dispatch_items")
+  @@index([dispatchNoteId])
+  @@index([soItemId])
+  @@index([productId])
+}
+
+// ============================================================================
 // CASHIER SESSION MANAGEMENT
 // ============================================================================
 
@@ -795,6 +969,23 @@ enum PurchaseOrderStatus {
   @@map("purchase_order_status")
 }
 
+enum SalesOrderStatus {
+  DRAFT
+  APPROVED
+  DISPATCHED
+  COMPLETED
+  CANCELLED
+
+  @@map("sales_order_status")
+}
+
+enum GRNStatus {
+  COMPLETED
+  QUARANTINED
+
+  @@map("grn_status")
+}
+
 /// Vendors/Suppliers
 model Vendor {
   id        String    @id @default(cuid())
@@ -846,6 +1037,7 @@ model PurchaseOrder {
   
   // Details
   items           PurchaseOrderItem[]
+  grns            GoodsReceiptNote[] @relation(name: "GRNToPO")
   notes           String?
   expectedDeliveryDate DateTime?      @map("expected_delivery_date")
   
@@ -901,6 +1093,7 @@ model PurchaseOrderItem {
   
   // Tracking
   receivedQuantity Int          @default(0) @map("received_quantity")
+  grnItems        GRNItem[]
   
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -908,6 +1101,57 @@ model PurchaseOrderItem {
   @@map("purchase_order_items")
   @@index([purchaseOrderId])
   @@index([productId])
+}
+
+/// Goods Receipt Note (GRN) - Created when goods are received
+model GoodsReceiptNote {
+  id              String          @id @default(cuid())
+  grnNumber       String          @unique @map("grn_number")
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder   @relation(name: "GRNToPO", fields: [purchaseOrderId], references: [id], onDelete: Restrict)
+  
+  receivedById    String
+  receivedBy      User            @relation("ReceivedByGRN", fields: [receivedById], references: [id], onDelete: Restrict)
+  
+  status          GRNStatus       @default(COMPLETED)
+  receivedAt      DateTime        @default(now())
+  
+  // Details
+  items           GRNItem[]
+  notes           String?
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("goods_receipt_notes")
+  @@index([grnNumber])
+  @@index([purchaseOrderId])
+  @@index([status])
+}
+
+/// GRN Line Items - Physical count of received goods
+model GRNItem {
+  id              String            @id @default(cuid())
+  grnId           String
+  goodsReceiptNote GoodsReceiptNote  @relation(fields: [grnId], references: [id], onDelete: Cascade)
+  
+  poItemId        String
+  purchaseOrderItem PurchaseOrderItem @relation(fields: [poItemId], references: [id], onDelete: Restrict)
+  
+  productId       String
+  product         Product           @relation(name: "GRNItemToProduct", fields: [productId], references: [id], onDelete: Restrict)
+  
+  qtyReceived     Int               @map("qty_received") // What the clerk counted in THIS specific delivery
+  
+  // FIFO batch tracking
+  stockBatches    StockBatch[]      @relation(name: "StockBatchToGRNItem")
+  
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@map("grn_items")
+  @@index([grnId])
+  @@index([poItemId])
 }
 
 // ============================================================================
