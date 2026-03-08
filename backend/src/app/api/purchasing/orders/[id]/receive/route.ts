@@ -179,7 +179,7 @@ export async function POST(
             },
           },
           update: {
-            qty_on_hand: {
+            quantity: {
               increment: item.qtyReceived,
             },
             updatedAt: new Date(),
@@ -187,9 +187,7 @@ export async function POST(
           create: {
             productId: poItem.productId,
             warehouseId: item.warehouseId,
-            qty_on_hand: item.qtyReceived,
-            reorderLevel: 10,
-            lastReceivedAt: new Date(),
+            quantity: item.qtyReceived,
           },
         });
       }

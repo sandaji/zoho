@@ -658,15 +658,12 @@ export class PurchasingService {
           create: {
             productId: receivedItem.productId,
             warehouseId: data.warehouseId,
-            quantityOnHand: receivedItem.quantity,
-            reorderLevel: 10,
-            lastReceivedAt: new Date(),
+            quantity: receivedItem.quantity,
           },
           update: {
-            quantityOnHand: {
+            quantity: {
               increment: receivedItem.quantity,
             },
-            lastReceivedAt: new Date(),
             updatedAt: new Date(),
           },
         });
