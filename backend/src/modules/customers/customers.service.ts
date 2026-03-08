@@ -11,6 +11,10 @@ export class CustomersService {
     phone?: string | null;
     address?: string | null;
     taxId?: string | null;
+    customerType?: string;
+    creditLimit?: number;
+    currentBalance?: number;
+    isActive?: boolean;
   }) {
     return prisma.customer.create({
       data: {
@@ -19,12 +23,25 @@ export class CustomersService {
         phone: data.phone || null,
         address: data.address || null,
         taxId: data.taxId || null,
+        customerType: data.customerType || "RETAIL",
+        creditLimit: data.creditLimit || 0,
+        currentBalance: data.currentBalance || 0,
+        isActive: data.isActive !== false,
       },
     });
   }
 
   /**
-   * Find all customers with optional search and pagination
+   * Find customer by name
+   */
+  static async findByName(name: string) {
+    return prisma.customer.findUnique({
+      where: { name },
+    });
+  }
+
+  /**
+   * Find all active customers with optional search and pagination
    */
   static async findAll(query: {
     search?: string;
@@ -34,15 +51,16 @@ export class CustomersService {
     const limit = query.limit || 50;
     const offset = query.offset || 0;
 
-    const where = query.search
-      ? {
-          OR: [
-            { name: { contains: query.search, mode: "insensitive" as const } },
-            { email: { contains: query.search, mode: "insensitive" as const } },
-            { phone: { contains: query.search, mode: "insensitive" as const } },
-          ],
-        }
-      : {};
+    const where = {
+      isActive: true,
+      ...(query.search && {
+        OR: [
+          { name: { contains: query.search, mode: "insensitive" as const } },
+          { email: { contains: query.search, mode: "insensitive" as const } },
+          { phone: { contains: query.search, mode: "insensitive" as const } },
+        ],
+      }),
+    };
 
     const [customers, total] = await Promise.all([
       prisma.customer.findMany({
@@ -67,6 +85,7 @@ export class CustomersService {
 
     return prisma.customer.findMany({
       where: {
+        isActive: true,
         OR: [
           { name: { contains: term, mode: "insensitive" } },
           { phone: { contains: term, mode: "insensitive" } },
@@ -120,6 +139,10 @@ export class CustomersService {
       phone?: string | null;
       address?: string | null;
       taxId?: string | null;
+      customerType?: string;
+      creditLimit?: number;
+      currentBalance?: number;
+      isActive?: boolean;
     }
   ) {
     return prisma.customer.update({
@@ -130,6 +153,10 @@ export class CustomersService {
         ...(data.phone !== undefined && { phone: data.phone || null }),
         ...(data.address !== undefined && { address: data.address || null }),
         ...(data.taxId !== undefined && { taxId: data.taxId || null }),
+        ...(data.customerType && { customerType: data.customerType }),
+        ...(data.creditLimit !== undefined && { creditLimit: data.creditLimit }),
+        ...(data.currentBalance !== undefined && { currentBalance: data.currentBalance }),
+        ...(data.isActive !== undefined && { isActive: data.isActive }),
       },
     });
   }

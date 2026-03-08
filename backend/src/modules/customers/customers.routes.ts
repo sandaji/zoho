@@ -2,36 +2,49 @@
 import { Router } from "express";
 import { CustomersController } from "./customers.controller";
 import { authMiddleware } from "../../lib/auth";
-import { requirePermission } from "../../middleware/rbac.middleware";
+import { requirePermission, hasAnyPermission } from "../../middleware/rbac.middleware";
 
 const router = Router();
 
 // All routes require authentication
 router.use(authMiddleware);
 
+// RBAC: Only SUPER_ADMIN, BRANCH_MANAGER, and SALES_REP can access customers
 // Quick search for POS (before :id route to avoid conflict)
-router.get("/search", CustomersController.search);
+router.get(
+  "/search",
+  hasAnyPermission(['sales.customer.view', 'sales.customer.manage']),
+  CustomersController.search
+);
 
-// CRUD routes
+// CRUD routes with specific RBAC requirements
 router.post(
   "/",
-  requirePermission('sales.customer.manage'),
+  hasAnyPermission(['sales.customer.manage']),
   CustomersController.create
 );
 
-router.get("/", requirePermission('sales.customer.view'), CustomersController.findAll);
+router.get(
+  "/",
+  hasAnyPermission(['sales.customer.view', 'sales.customer.manage']),
+  CustomersController.findAll
+);
 
-router.get("/:id", requirePermission('sales.customer.view'), CustomersController.findById);
+router.get(
+  "/:id",
+  hasAnyPermission(['sales.customer.view', 'sales.customer.manage']),
+  CustomersController.findById
+);
 
 router.put(
   "/:id",
-  requirePermission('sales.customer.manage'),
+  hasAnyPermission(['sales.customer.manage']),
   CustomersController.update
 );
 
 router.delete(
   "/:id",
-  requirePermission('sales.customer.manage'),
+  hasAnyPermission(['sales.customer.manage']),
   CustomersController.delete
 );
 

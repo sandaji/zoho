@@ -169,6 +169,8 @@ export class PurchasingService {
     address?: string;
     taxId?: string;
     website?: string;
+    paymentTerms?: string;
+    leadTimeDays?: number;
   }) {
     const existing = await prisma.vendor.findUnique({
       where: { code: data.code },
@@ -179,7 +181,17 @@ export class PurchasingService {
     }
 
     return prisma.vendor.create({
-      data,
+      data: {
+        code: data.code,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+        taxId: data.taxId,
+        website: data.website,
+        paymentTerms: data.paymentTerms || "NET_30",
+        leadTimeDays: data.leadTimeDays || 7,
+      },
     });
   }
 

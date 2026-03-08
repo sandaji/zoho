@@ -10,6 +10,10 @@ const createCustomerSchema = z.object({
   phone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
   taxId: z.string().optional().nullable(),
+  customerType: z.string().optional().default("RETAIL"),
+  creditLimit: z.number().optional().default(0),
+  currentBalance: z.number().optional().default(0),
+  isActive: z.boolean().optional().default(true),
 });
 
 const updateCustomerSchema = z.object({
@@ -18,6 +22,10 @@ const updateCustomerSchema = z.object({
   phone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
   taxId: z.string().optional().nullable(),
+  customerType: z.string().optional(),
+  creditLimit: z.number().optional(),
+  currentBalance: z.number().optional(),
+  isActive: z.boolean().optional(),
 });
 
 export class CustomersController {
@@ -31,6 +39,14 @@ export class CustomersController {
   ): Promise<void> {
     try {
       const data = createCustomerSchema.parse(req.body);
+      
+      // Validate name uniqueness
+      const existing = await CustomersService.findByName(data.name);
+      if (existing) {
+        res.status(409).json({ success: false, error: "Customer name already exists" });
+        return;
+      }
+
       const customer = await CustomersService.create(data);
       res.status(201).json({ success: true, data: customer });
     } catch (error) {
@@ -39,7 +55,7 @@ export class CustomersController {
   }
 
   /**
-   * List all customers with optional search
+   * List all active customers with optional search
    */
   static async findAll(
     req: Request,

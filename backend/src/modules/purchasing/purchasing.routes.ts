@@ -1,18 +1,19 @@
 import { Router } from "express";
 import { PurchasingController } from "./purchasing.controller";
 import { authMiddleware } from "../../lib/auth";
-import { requirePermission } from "../../middleware/rbac.middleware";
+import { requirePermission, hasAnyPermission } from "../../middleware/rbac.middleware";
 
 const router = Router();
 const controller = new PurchasingController();
 
 // ========== VENDOR ROUTES ==========
+// RBAC: Only SUPER_ADMIN, BRANCH_MANAGER, and PROCUREMENT_OFFICER can access
 
 // GET /vendors - View vendors
 router.get(
   "/vendors",
   authMiddleware,
-  requirePermission("purchasing.vendor.view"),  // ✅ ADD PERMISSION GATE
+  hasAnyPermission(["purchasing.vendor.view", "purchasing.vendor.manage"]),
   controller.listVendors
 );
 
@@ -20,7 +21,7 @@ router.get(
 router.post(
   "/vendors",
   authMiddleware,
-  requirePermission("purchasing.vendor.manage"),
+  hasAnyPermission(["purchasing.vendor.manage"]),
   controller.createVendor
 );
 
@@ -28,7 +29,7 @@ router.post(
 router.delete(
   "/vendors/:id",
   authMiddleware,
-  requirePermission("purchasing.vendor.delete"),  // ✅ NEW
+  hasAnyPermission(["purchasing.vendor.manage"]),
   controller.deleteVendor
 );
 
