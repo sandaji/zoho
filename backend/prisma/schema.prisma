@@ -257,14 +257,16 @@ model User {
   createdSalesOrders      SalesOrder[]
   dispatchNotes           DispatchNote[] @relation(name: "DispatchNoteCreatedBy")
 
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  isActive        Boolean   @default(true)
+  hasSystemAccess Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@map("users")
   @@index([branchId])
   @@index([email])
   @@index([isActive])
+  @@index([hasSystemAccess])
 }
 
 /// Branches/Locations
@@ -342,6 +344,7 @@ model Warehouse {
   sourceTransfers StockTransfer[] @relation("SourceTransfers")
   targetTransfers StockTransfer[] @relation("TargetTransfers")
   stockBatches StockBatch[] @relation(name: "StockBatchToWarehouse")
+  purchaseOrders PurchaseOrder[] @relation("WarehouseToPO")
   
   isActive  Boolean   @default(true)
   createdAt DateTime  @default(now())
@@ -1040,6 +1043,9 @@ model PurchaseOrder {
   
   approvedById    String?
   approvedBy      User?               @relation("ApprovedByPO", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  destinationWarehouseId String?
+  destinationWarehouse   Warehouse?   @relation("WarehouseToPO", fields: [destinationWarehouseId], references: [id], onDelete: SetNull)
 
   // Financials
   subtotal        Float               @default(0)

@@ -8,10 +8,11 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useAuth } from '@/lib/auth-context';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Download, Eye } from 'lucide-react';
+import { ArrowLeft, Download, Eye, CheckCircle, Loader2 } from 'lucide-react';
 import ReceiveGoodsModal from './receive-goods-modal';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { frontendEnv } from "@/lib/env";
+const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface PurchaseOrderDetail {
   id: string;
@@ -71,10 +72,11 @@ const statusColors: Record<string, string> = {
 export default function PurchaseOrderDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { showToast } = useToast();
   const [po, setPO] = useState<PurchaseOrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [approving, setApproving] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   useEffect(() => {
@@ -118,6 +120,34 @@ export default function PurchaseOrderDetailPage() {
     showToast('success', 'Goods received successfully');
   };
 
+  const handleApprove = async () => {
+    if (!token || !po) return;
+
+    try {
+      setApproving(true);
+      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/approve`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Failed to approve purchase order');
+      }
+
+      showToast('success', 'Purchase Order approved successfully');
+      setPO((prev) => prev ? { ...prev, status: 'APPROVED' } : null);
+    } catch (error) {
+      showToast('error', error instanceof Error ? error.message : 'Approval failed');
+    } finally {
+      setApproving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -142,7 +172,9 @@ export default function PurchaseOrderDetailPage() {
     );
   }
 
-  const canReceiveGoods = ['APPROVED', 'PARTIALLY_RECEIVED'].includes(po.status);;
+  const canReceiveGoods = ['APPROVED', 'PARTIALLY_RECEIVED'].includes(po.status);
+  const canApprove = (user?.role === 'super_admin' || user?.role === 'branch_manager') &&
+    ['DRAFT', 'SUBMITTED', 'PENDING'].includes(po.status);
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -316,7 +348,7 @@ export default function PurchaseOrderDetailPage() {
             </Card>
 
             {/* GRN History */}
-            {po.grns.length > 0 && (
+            {po.grns && po.grns.length > 0 && (
               <Card>
                 <CardHeader className="bg-slate-50 border-b">
                   <CardTitle className="text-lg">Goods Receipt History</CardTitle>
@@ -392,11 +424,31 @@ export default function PurchaseOrderDetailPage() {
               </CardContent>
             </Card>
 
-            {/* Receive Goods Button */}
+            {/* Action Buttons */}
+            {canApprove && (
+              <Button
+                onClick={handleApprove}
+                disabled={approving}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mb-4"
+              >
+                {approving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Approving...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Approve Order
+                  </>
+                )}
+              </Button>
+            )}
+
             {canReceiveGoods && (
               <Button
                 onClick={() => setShowReceiveModal(true)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mb-4"
               >
                 <Eye className="mr-2 h-4 w-4" />
                 Receive Goods

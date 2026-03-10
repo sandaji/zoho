@@ -1,22 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  ArrowUpDown, 
+import { frontendEnv } from "@/lib/env";
+import {
+  Plus,
+  Search,
+  Filter,
+  ArrowUpDown,
   MoreHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -31,7 +32,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -41,23 +42,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 export default function GeneralLedgerPage() {
+  const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
   const { showToast } = useToast();
   const [entries, setEntries] = useState<any[]>([]);
   const [journals, setJournals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   // Form State
   const [formData, setFormData] = useState({
     date: format(new Date(), "yyyy-MM-dd"),
@@ -77,7 +79,7 @@ export default function GeneralLedgerPage() {
   const fetchMetadata = async () => {
     try {
       const token = localStorage.getItem("auth_token");
-      const jRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/gl/journals`, {
+      const jRes = await fetch(`${API_URL}/v1/finance/gl/journals`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const jData = await jRes.json();
@@ -91,7 +93,7 @@ export default function GeneralLedgerPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/gl/entries`, {
+      const res = await fetch(`${API_URL}/v1/finance/gl/entries`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -129,11 +131,11 @@ export default function GeneralLedgerPage() {
 
     try {
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/gl/entries`, {
+      const res = await fetch(`${API_URL}/v1/finance/gl/entries`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           ...formData,
@@ -180,16 +182,16 @@ export default function GeneralLedgerPage() {
               <div className="grid grid-cols-2 gap-4 py-4">
                 <div className="space-y-2">
                   <Label>Entry Date</Label>
-                  <Input 
-                    type="date" 
+                  <Input
+                    type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Journal</Label>
-                  <Select 
-                    value={formData.journalId} 
+                  <Select
+                    value={formData.journalId}
                     onValueChange={(v) => setFormData({ ...formData, journalId: v })}
                   >
                     <SelectTrigger>
@@ -204,8 +206,8 @@ export default function GeneralLedgerPage() {
                 </div>
                 <div className="col-span-2 space-y-2">
                   <Label>General Description</Label>
-                  <Input 
-                    placeholder="Reference or overall description" 
+                  <Input
+                    placeholder="Reference or overall description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
@@ -233,32 +235,32 @@ export default function GeneralLedgerPage() {
                     {formData.lines.map((line, idx) => (
                       <TableRow key={idx}>
                         <TableCell>
-                          <Input 
-                            placeholder="Account ID..." 
+                          <Input
+                            placeholder="Account ID..."
                             value={line.accountId}
                             onChange={(e) => handleLineChange(idx, "accountId", e.target.value)}
                             className="text-xs h-8"
                           />
                         </TableCell>
                         <TableCell>
-                          <Input 
-                            placeholder="Line description" 
+                          <Input
+                            placeholder="Line description"
                             value={line.description}
                             onChange={(e) => handleLineChange(idx, "description", e.target.value)}
                             className="text-xs h-8"
                           />
                         </TableCell>
                         <TableCell>
-                          <Input 
-                            type="number" 
+                          <Input
+                            type="number"
                             value={line.debit}
                             onChange={(e) => handleLineChange(idx, "debit", Number(e.target.value))}
                             className="text-xs h-8"
                           />
                         </TableCell>
                         <TableCell>
-                          <Input 
-                            type="number" 
+                          <Input
+                            type="number"
                             value={line.credit}
                             onChange={(e) => handleLineChange(idx, "credit", Number(e.target.value))}
                             className="text-xs h-8"
@@ -310,8 +312,8 @@ export default function GeneralLedgerPage() {
         <div className="p-4 border-b bg-slate-50/50 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input 
-              placeholder="Search entries, accounts, or references..." 
+            <Input
+              placeholder="Search entries, accounts, or references..."
               className="pl-9 bg-white"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -350,20 +352,20 @@ export default function GeneralLedgerPage() {
                   <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-full ml-auto" /></TableCell>
                 </TableRow>
               ))
-            ) : entries.filter(e => 
-                !searchQuery || 
-                e.entry_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase())
-              ).length === 0 ? (
+            ) : entries.filter(e =>
+              !searchQuery ||
+              e.entry_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase())
+            ).length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
                   No journal entries found.
                 </TableCell>
               </TableRow>
             ) : (
-              entries.filter(e => 
-                !searchQuery || 
+              entries.filter(e =>
+                !searchQuery ||
                 e.entry_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase())

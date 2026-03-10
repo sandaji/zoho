@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PurchasingService } from "./purchasing.service";
-// Removed unused PurchaseOrderStatus import
 import { AppError, ErrorCode } from "../../lib/errors";
+import { PurchaseOrderStatus } from "../../generated";
 
 export class PurchasingController {
   private service = new PurchasingService();
@@ -34,10 +34,40 @@ export class PurchasingController {
     }
   };
 
+  getVendor = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
+
+      const vendor = await this.service.getVendorById(id);
+      res.json({
+        success: true,
+        data: vendor,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  updateVendor = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = req.params.id as string;
+      if (!id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
+
+      const vendor = await this.service.updateVendor(id, req.body);
+      res.json({
+        success: true,
+        data: vendor,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   createPurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.user || !req.user.userId) throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
-      
+
       const order = await this.service.createPurchaseOrder(req.user.userId, req.body);
       res.status(201).json({
         success: true,
@@ -150,6 +180,36 @@ export class PurchasingController {
     }
   };
 
+  approvePurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user || !req.user.userId) {
+        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
+      }
+
+      const id = req.params.id as string;
+      const userPermissions = (req as any).user?.permissions || [];
+
+      // Note: We don't check for specific roles here because the route middleware
+      // already enforces that the user has approval permissions.
+      // Additionally, the service layer enforces segregation of duties and approval thresholds.
+
+      const order = await this.service.updateStatus(
+        id,
+        PurchaseOrderStatus.APPROVED,
+        req.user.userId,
+        userPermissions
+      );
+
+      res.json({
+        success: true,
+        message: "Purchase Order approved successfully",
+        data: order,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   receiveGoods = async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.user || !req.user.userId) throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
@@ -161,7 +221,7 @@ export class PurchasingController {
         req.user.userId,
         req.body // expected: { warehouseId, items: [] }
       );
-      
+
       res.json({
         success: true,
         data: order,
@@ -194,7 +254,7 @@ export class PurchasingController {
       }
 
       const pdfBuffer = await this.service.generatePoPdf(id);
-      
+
       res.set({
         "Content-Type": "application/pdf",
         "Content-Disposition": `attachment; filename=LPO-${order.poNumber}.pdf`,

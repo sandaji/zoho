@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../lib/db';
 import { logger } from '../../lib/logger';
+import * as bcrypt from 'bcrypt';
 
 /**
  * Controller for admin-related operations.
@@ -85,11 +86,15 @@ export class AdminController {
   async listUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const { role, branchId } = req.query;
+      const roleStr = Array.isArray(role) ? role[0] as string : role as string | undefined;
+      const branchIdStr = Array.isArray(branchId) ? branchId[0] as string : branchId as string | undefined;
+
       const users = await prisma.user.findMany({
         where: {
           isActive: true,
-          ...(role ? { role: role as string } : {}),
-          ...(branchId ? { branchId: branchId as string } : {}),
+          hasSystemAccess: true, // Only return system users
+          ...(roleStr ? { role: roleStr } : {}),
+          ...(branchIdStr ? { branchId: branchIdStr } : {}),
         },
         select: {
           id: true,
@@ -98,6 +103,7 @@ export class AdminController {
           role: true,
           branchId: true,
           isActive: true,
+          hasSystemAccess: true,
           createdAt: true,
         },
         orderBy: { name: 'asc' },
@@ -105,6 +111,84 @@ export class AdminController {
       res.json({
         success: true,
         data: users,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // --- New Methods for System Access ---
+
+  async listEligibleEmployees(req: Request, res: Response, next: NextFunction) {
+    try {
+      // Returns active employees who do NOT have system access yet
+      const employees = await prisma.user.findMany({
+        where: {
+          isActive: true,
+          hasSystemAccess: false,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          branchId: true,
+        },
+        orderBy: { name: 'asc' },
+      });
+      res.json({
+        success: true,
+        data: employees,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async grantSystemAccess(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const { password, role } = req.body;
+
+      if (!password || !role) {
+        res.status(400).json({ error: "Password and Role are required to grant access." });
+        return;
+      }
+
+      // Ensure the user exists and doesn't already have access
+      const employee = await prisma.user.findUnique({ where: { id } });
+      if (!employee) {
+        res.status(404).json({ error: "Employee not found." });
+        return;
+      }
+      if (employee.hasSystemAccess) {
+        res.status(400).json({ error: "This employee already has system access." });
+        return;
+      }
+
+      // Hash the real password
+      const passwordHash = await bcrypt.hash(password, 10);
+
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data: {
+          hasSystemAccess: true,
+          passwordHash,
+          role,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          hasSystemAccess: true,
+        }
+      });
+
+      res.status(200).json({
+        success: true,
+        data: updatedUser,
+        message: "System access granted successfully.",
       });
     } catch (error) {
       next(error);

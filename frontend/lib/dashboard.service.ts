@@ -53,7 +53,9 @@ export interface StaffPerformance {
   conversionRate: number;
 }
 
-const API_URL = "http://localhost:5000/v1";
+import { frontendEnv } from "./env";
+
+const API_URL = `${frontendEnv.NEXT_PUBLIC_API_URL}/v1`;
 
 export const dashboardService = {
   /**

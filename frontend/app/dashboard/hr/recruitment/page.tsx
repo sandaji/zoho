@@ -1,12 +1,12 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
+import { frontendEnv } from "@/lib/env";
 import Link from "next/link";
-import { 
-  Briefcase, 
-  Users, 
-  Plus, 
+import {
+  Briefcase,
+  Users,
+  Plus,
   Search,
   MoreVertical,
   MapPin,
@@ -15,13 +15,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -49,14 +49,14 @@ export default function RecruitmentPage() {
       try {
         const token = localStorage.getItem("auth_token");
         const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/hr/recruitment/postings`,
-            {
-                headers: { Authorization: `Bearer ${token}` }
-            }
+          `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/recruitment/postings`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
         );
         const data = await response.json();
         if (data.success) {
-            setPostings(data.data);
+          setPostings(data.data);
         }
       } catch (error) {
         console.error("Failed to fetch job postings", error);
@@ -82,7 +82,7 @@ export default function RecruitmentPage() {
     }
   };
 
-  const filteredPostings = postings.filter(p => 
+  const filteredPostings = postings.filter(p =>
     p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -112,8 +112,8 @@ export default function RecruitmentPage() {
           <div className="flex items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input 
-                placeholder="Search jobs or departments..." 
+              <Input
+                placeholder="Search jobs or departments..."
                 className="pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}

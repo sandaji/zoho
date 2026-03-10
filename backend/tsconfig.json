@@ -1,37 +1,10 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "ESNext",
-    "lib": [
-      "ES2020"
-    ],
     "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "noImplicitAny": false,
-    "strictNullChecks": true,
-    "strictFunctionTypes": false,
-    "strictBindCallApply": false,
-    "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "alwaysStrict": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": false,
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "rootDir": "./",
     "baseUrl": ".",
+    "skipLibCheck": true,
     "paths": {
       "@/*": [
         "./src/*"
@@ -40,11 +13,14 @@
   },
   "include": [
     "src/**/*",
-    "scripts/**/*",
-    "tests/**/*"
+    "tests/**/*",
+    "scripts/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/generated",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ]
 }

@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { AppError, ErrorCode } from '../../lib/errors.js';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../lib/prisma';
+import { Prisma } from '../../generated';
+import { AppError, ErrorCode } from '../../lib/errors';
 
 /**
  * Financial Report Types
@@ -54,13 +53,14 @@ export async function getFinancialReport(
   try {
     if (!req.user) {
       throw new AppError(
-        'User not authenticated',
-        ErrorCode.UNAUTHORIZED
+        ErrorCode.UNAUTHORIZED,
+        401,
+        'User not authenticated'
       );
     }
 
     // Use transaction for performance and consistency
-    const report = await prisma.$transaction(async (tx) => {
+    const report = await prisma.$transaction(async (tx: any) => {
       // ========================================
       // 1. INVENTORY VALUE (Current Stock)
       // ========================================
@@ -86,7 +86,7 @@ export async function getFinancialReport(
         totalValue: totalInventoryValue,
         totalBatches: stockBatches.length,
         totalQuantity: stockBatches.reduce(
-          (sum, batch) => sum + batch.currentQuantity,
+          (sum: number, batch: any) => sum + batch.currentQuantity,
           0
         ),
       };
@@ -138,7 +138,7 @@ export async function getFinancialReport(
       // Count unique orders dispatched this month
       const uniqueOrders = new Set(
         currentMonthDispatches
-          .map((d) => d.dispatchNote.salesOrderId)
+          .map((d: any) => d.dispatchNote.salesOrderId)
       );
 
       const monthlyMetrics: MonthlyRevenueMetric = {
@@ -178,10 +178,10 @@ export async function getFinancialReport(
             dispatchItem.qtyDispatched.toString()
           ).mul(
             // Need SOItem to get unitPrice - fetch it
-            await tx.soItem.findUnique({
+            await tx.sOItem.findUnique({
               where: { id: dispatchItem.soItemId },
               select: { unitPrice: true },
-            }).then(item => item?.unitPrice || 0)
+            }).then((item: any) => item?.unitPrice || 0)
           );
 
           orderRevenue = orderRevenue.add(itemRevenue);

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { frontendEnv } from "@/lib/env";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,15 +46,15 @@ export default function InventoryPage() {
       });
 
       if (!response.ok) throw new Error("Failed to load inventory");
-      
+
       const data = await response.json();
       setInventory(data.data || []);
 
       // Load warehouses
-      const warehouseRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/warehouse`, {
+      const warehouseRes = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/warehouse`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
+
       if (warehouseRes.ok) {
         const whData = await warehouseRes.json();
         setWarehouses(whData.data || []);
@@ -85,7 +86,7 @@ export default function InventoryPage() {
   const filteredInventory = inventory.filter((item) => {
     const matchesWarehouse = selectedWarehouse === "all" || item.warehouseId === selectedWarehouse;
     const matchesSearch = item.product?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.product?.sku.toLowerCase().includes(searchTerm.toLowerCase());
+      item.product?.sku.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesWarehouse && matchesSearch;
   });
 
@@ -200,19 +201,19 @@ export default function InventoryPage() {
                               <div className="flex gap-2">
                                 <Button
                                   variant="outline"
-                                  onClick={() => setAdjustmentData({...adjustmentData, quantity: adjustmentData.quantity - 1})}
+                                  onClick={() => setAdjustmentData({ ...adjustmentData, quantity: adjustmentData.quantity - 1 })}
                                 >
                                   <Minus size={16} />
                                 </Button>
                                 <Input
                                   type="number"
                                   value={adjustmentData.quantity}
-                                  onChange={(e) => setAdjustmentData({...adjustmentData, quantity: parseInt(e.target.value) || 0})}
+                                  onChange={(e) => setAdjustmentData({ ...adjustmentData, quantity: parseInt(e.target.value) || 0 })}
                                   className="text-center"
                                 />
                                 <Button
                                   variant="outline"
-                                  onClick={() => setAdjustmentData({...adjustmentData, quantity: adjustmentData.quantity + 1})}
+                                  onClick={() => setAdjustmentData({ ...adjustmentData, quantity: adjustmentData.quantity + 1 })}
                                 >
                                   <Plus size={16} />
                                 </Button>
@@ -226,7 +227,7 @@ export default function InventoryPage() {
                               <Input
                                 placeholder="e.g., Damaged goods, Returns, etc."
                                 value={adjustmentData.reason}
-                                onChange={(e) => setAdjustmentData({...adjustmentData, reason: e.target.value})}
+                                onChange={(e) => setAdjustmentData({ ...adjustmentData, reason: e.target.value })}
                               />
                             </div>
                             <Button onClick={handleAdjustment} className="w-full">

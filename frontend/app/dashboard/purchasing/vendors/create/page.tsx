@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { frontendEnv } from "@/lib/env";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +10,18 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 export default function CreateVendorPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     name: "",
     code: "",
@@ -22,6 +30,8 @@ export default function CreateVendorPage() {
     address: "",
     taxId: "",
     website: "",
+    paymentTerms: "NET_30",
+    leadTimeDays: 7,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -38,13 +48,16 @@ export default function CreateVendorPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/purchasing/vendors`, {
+      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          leadTimeDays: parseInt(formData.leadTimeDays.toString()) || 7
+        }),
       });
 
       if (response.ok) {
@@ -80,7 +93,7 @@ export default function CreateVendorPage() {
             <Label>Vendor Name *</Label>
             <Input name="name" value={formData.name} onChange={handleChange} placeholder="Vendor Name" required />
           </div>
-          
+
           <div className="space-y-2">
             <Label>Email</Label>
             <Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="contact@vendor.com" />
@@ -89,7 +102,7 @@ export default function CreateVendorPage() {
             <Label>Phone</Label>
             <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 234 567 890" />
           </div>
-          
+
           <div className="space-y-2">
             <Label>Tax ID</Label>
             <Input name="taxId" value={formData.taxId} onChange={handleChange} placeholder="Tax / VAT ID" />
@@ -97,6 +110,34 @@ export default function CreateVendorPage() {
           <div className="space-y-2">
             <Label>Website</Label>
             <Input name="website" value={formData.website} onChange={handleChange} placeholder="https://vendor.com" />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Payment Terms</Label>
+            <Select
+              value={formData.paymentTerms}
+              onValueChange={(value) => setFormData({ ...formData, paymentTerms: value })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select terms" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="NET_30">NET 30</SelectItem>
+                <SelectItem value="NET_60">NET 60</SelectItem>
+                <SelectItem value="CASH_ON_DELIVERY">Cash on Delivery</SelectItem>
+                <SelectItem value="PREPAID">Prepaid</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Lead Time (Days)</Label>
+            <Input
+              name="leadTimeDays"
+              type="number"
+              value={formData.leadTimeDays}
+              onChange={handleChange}
+              placeholder="7"
+            />
           </div>
         </div>
 

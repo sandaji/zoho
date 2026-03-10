@@ -1,0 +1,137 @@
+app/dashboard/reports/page.tsx(285,56): error TS2345: Argument of type 'ValueType | undefined' is not assignable to parameter of type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+components/admin/EditUserDialog.tsx(81,18): error TS2345: Argument of type '{ name: string; phone: string; role: UserRole; branchId: string | null; isActive: boolean; }' is not assignable to parameter of type '{ name: string; role: "admin" | "manager" | "cashier" | "warehouse_staff" | "driver"; isActive: boolean; phone?: string | undefined; branchId?: string | null | undefined; } | { name?: string | undefined; role?: "admin" | ... 4 more ... | undefined; isActive?: boolean | undefined; phone?: string | undefined; branchId...'.
+  Types of property 'role' are incompatible.
+    Type 'UserRole' is not assignable to type '"admin" | "manager" | "cashier" | "warehouse_staff" | "driver" | undefined'.
+      Type '"user"' is not assignable to type '"admin" | "manager" | "cashier" | "warehouse_staff" | "driver" | undefined'.
+components/admin/FinanceSection.tsx(41,36): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string | number'.
+components/admin/FinanceSection.tsx(46,9): error TS2322: Type '(type: TransactionType) => JSX.Element' is not assignable to type '(value: unknown, row: FinanceTransaction) => ReactNode'.
+  Types of parameters 'type' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'TransactionType'.
+components/admin/FinanceSection.tsx(56,36): error TS18046: 'amount' is of type 'unknown'.
+components/admin/FinanceSection.tsx(61,37): error TS2339: Property 'toUpperCase' does not exist on type '{}'.
+components/admin/index.ts(3,10): error TS2614: Module '"./AdminOverview"' has no exported member 'AdminOverview'. Did you mean to use 'import AdminOverview from "./AdminOverview"' instead?
+components/admin/index.ts(5,10): error TS2614: Module '"./BranchesSection"' has no exported member 'BranchesSection'. Did you mean to use 'import BranchesSection from "./BranchesSection"' instead?
+components/admin/index.ts(6,10): error TS2614: Module '"./UsersSection"' has no exported member 'UsersSection'. Did you mean to use 'import UsersSection from "./UsersSection"' instead?
+components/admin/index.ts(7,10): error TS2614: Module '"./ProductsSection"' has no exported member 'ProductsSection'. Did you mean to use 'import ProductsSection from "./ProductsSection"' instead?
+components/admin/index.ts(8,10): error TS2614: Module '"./SalesSection"' has no exported member 'SalesSection'. Did you mean to use 'import SalesSection from "./SalesSection"' instead?
+components/admin/index.ts(9,10): error TS2614: Module '"./WarehousesSection"' has no exported member 'WarehousesSection'. Did you mean to use 'import WarehousesSection from "./WarehousesSection"' instead?
+components/admin/index.ts(10,10): error TS2614: Module '"./DeliveriesSection"' has no exported member 'DeliveriesSection'. Did you mean to use 'import DeliveriesSection from "./DeliveriesSection"' instead?
+components/admin/index.ts(11,10): error TS2614: Module '"./FinanceSection"' has no exported member 'FinanceSection'. Did you mean to use 'import FinanceSection from "./FinanceSection"' instead?
+components/admin/index.ts(12,10): error TS2614: Module '"./PayrollSection"' has no exported member 'PayrollSection'. Did you mean to use 'import PayrollSection from "./PayrollSection"' instead?
+components/admin/PayrollSection.tsx(42,9): error TS2322: Type '(userName: unknown) => {}' is not assignable to type '(value: unknown, row: Payroll) => ReactNode'.
+  Type '{}' is not assignable to type 'ReactNode'.
+components/admin/PayrollSection.tsx(47,36): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string | number'.
+components/admin/PayrollSection.tsx(52,36): error TS18046: 'salary' is of type 'unknown'.
+components/admin/PayrollSection.tsx(57,9): error TS2322: Type '(status: PayrollStatus) => JSX.Element' is not assignable to type '(value: unknown, row: Payroll) => ReactNode'.
+  Types of parameters 'status' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'PayrollStatus'.
+components/admin/ProductsSection.tsx(95,7): error TS2322: Type '(category: unknown) => {}' is not assignable to type '(value: unknown, row: Product) => ReactNode'.
+  Type '{}' is not assignable to type 'ReactNode'.
+components/admin/ProductsSection.tsx(100,33): error TS18046: 'price' is of type 'unknown'.
+components/admin/ProductsSection.tsx(106,39): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'number'.
+components/admin/ProductsSection.tsx(109,19): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+components/admin/RolesSection.tsx(24,11): error TS2430: Interface 'RoleWithCount' incorrectly extends interface 'Role'.
+  Types of property 'isSystem' are incompatible.
+    Type 'boolean | undefined' is not assignable to type 'boolean'.
+      Type 'undefined' is not assignable to type 'boolean'.
+components/admin/RolesSection.tsx(95,7): error TS2322: Type '(name: string, role: RoleWithCount) => JSX.Element' is not assignable to type '(value: unknown, row: RoleWithCount) => ReactNode'.
+  Types of parameters 'name' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string'.
+components/admin/RolesSection.tsx(108,7): error TS2322: Type '(code: string) => JSX.Element' is not assignable to type '(value: unknown, row: RoleWithCount) => ReactNode'.
+  Types of parameters 'code' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type 'string'.
+components/admin/RolesSection.tsx(113,7): error TS2322: Type '(count: { permissions: number; users: number; } | undefined) => JSX.Element' is not assignable to type '(value: unknown, row: RoleWithCount) => ReactNode'.
+  Types of parameters 'count' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type '{ permissions: number; users: number; } | undefined'.
+components/admin/RolesSection.tsx(122,7): error TS2322: Type '(count: { permissions: number; users: number; } | undefined) => JSX.Element' is not assignable to type '(value: unknown, row: RoleWithCount) => ReactNode'.
+  Types of parameters 'count' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type '{ permissions: number; users: number; } | undefined'.
+components/admin/RolesSection.tsx(176,9): error TS2322: Type 'RoleWithCount | null' is not assignable to type 'Role | null'.
+  Type 'RoleWithCount' is not assignable to type 'Role'.
+    Types of property 'isSystem' are incompatible.
+      Type 'boolean | undefined' is not assignable to type 'boolean'.
+        Type 'undefined' is not assignable to type 'boolean'.
+components/ui/stats.tsx(155,14): error TS2552: Cannot find name 'MdShoppingCart'. Did you mean 'ShoppingCart'?
+components/ui/stats.tsx(181,14): error TS2304: Cannot find name 'MdAttachMoney'.
+components/ui/stats.tsx(194,14): error TS2552: Cannot find name 'MdTrendingUp'. Did you mean 'TrendingUp'?
+components/ui/stats.tsx(203,55): error TS2304: Cannot find name 'MdPeople'.
+components/ui/stats.tsx(211,14): error TS2552: Cannot find name 'MdWarehouse'. Did you mean 'Warehouse'?
+components/ui/stats.tsx(224,14): error TS2304: Cannot find name 'MdDirectionsCar'.
+components/ui/stats.tsx(236,14): error TS2552: Cannot find name 'MdPercent'. Did you mean 'Percent'?
+lib/env.ts(16,85): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'boolean'.
+  Overload 2 of 2, '(def: () => boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => boolean'.
+lib/env.ts(17,90): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'boolean'.
+  Overload 2 of 2, '(def: () => boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => boolean'.
+lib/env.ts(18,90): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'boolean'.
+  Overload 2 of 2, '(def: () => boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => boolean'.
+lib/env.ts(26,74): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'boolean'.
+  Overload 2 of 2, '(def: () => boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => boolean'.
+lib/env.ts(27,77): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'boolean'.
+  Overload 2 of 2, '(def: () => boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => boolean'.
+lib/env.ts(30,67): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number): ZodDefault<ZodPipe<ZodString, ZodTransform<number, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodPipe<ZodString, ZodTransform<number, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+lib/env.ts(34,63): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number): ZodDefault<ZodPipe<ZodString, ZodTransform<number, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodPipe<ZodString, ZodTransform<number, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+lib/env.ts(35,81): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'boolean'.
+  Overload 2 of 2, '(def: () => boolean): ZodDefault<ZodPipe<ZodString, ZodTransform<boolean, string>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => boolean'.
+lib/env.ts(50,35): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+lib/env.ts(50,46): error TS7006: Parameter 'err' implicitly has an 'any' type.
+tests/setup.ts(5,1): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(8,13): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(9,16): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(10,17): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(11,13): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(27,10): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(27,39): error TS7006: Parameter 'query' implicitly has an 'any' type.
+tests/setup.ts(31,18): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(32,21): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(33,23): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(34,26): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(35,20): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(40,1): error TS2322: Type 'typeof IntersectionObserver' is not assignable to type '{ new (callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined): IntersectionObserver; prototype: IntersectionObserver; }'.
+  Types of property 'prototype' are incompatible.
+    Type 'IntersectionObserver' is missing the following properties from type 'IntersectionObserver': root, rootMargin, thresholds
+tests/setup.ts(55,16): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(59,12): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(60,12): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(61,15): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(62,10): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(64,8): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(70,12): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(71,12): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(72,15): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(73,10): error TS2708: Cannot use namespace 'jest' as a value.
+tests/setup.ts(75,8): error TS2708: Cannot use namespace 'jest' as a value.

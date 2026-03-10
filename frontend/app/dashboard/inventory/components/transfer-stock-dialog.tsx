@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { frontendEnv } from "@/lib/env";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";
 
 interface TransferStockDialogProps {
@@ -113,7 +114,7 @@ export function TransferStockDialog({
         notes: formData.notes || undefined,
       };
 
-      const response = await fetch("http://localhost:5000/inventory/transfer", {
+      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/inventory/transfer`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,7 +129,7 @@ export function TransferStockDialog({
       }
 
       const result = await response.json();
-      
+
       toast.success(
         `Successfully transferred ${result.quantity} units from warehouse to warehouse`
       );

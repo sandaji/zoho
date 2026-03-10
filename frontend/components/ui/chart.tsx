@@ -84,7 +84,7 @@ export function LineChart({
             fontSize="12"
             fill="#999"
           >
-            ${Math.round(maxValue * ratio).toLocaleString()}
+            KES {Math.round(maxValue * ratio).toLocaleString()}
           </text>
         ))}
 
@@ -171,7 +171,7 @@ export function BarChart({
             fontSize="12"
             fill="#999"
           >
-            ${Math.round(maxValue * ratio).toLocaleString()}
+            KES {Math.round(maxValue * ratio).toLocaleString()}
           </text>
         ))}
 
@@ -201,7 +201,7 @@ export function BarChart({
                 fill="#666"
                 fontWeight="500"
               >
-                ${(d.value / 1000).toFixed(1)}k
+                {(d.value / 1000).toFixed(1)}k
               </text>
             </g>
           );

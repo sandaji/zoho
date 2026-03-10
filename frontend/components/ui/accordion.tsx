@@ -111,25 +111,25 @@ export function PayslipAccordion({
         items={[
           {
             title: "Earnings",
-            description: `Base + Allowances = $${(details.baseSalary + details.allowances).toLocaleString()}`,
+            description: `Base + Allowances = KES ${(details.baseSalary + details.allowances).toLocaleString()}`,
             defaultOpen: true,
             icon: "💰",
             children: (
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Base Salary</span>
-                  <span className="font-semibold">${details.baseSalary.toLocaleString()}</span>
+                  <span className="font-semibold">KES {details.baseSalary.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-green-600">
                   <span className="text-gray-600">Allowances</span>
-                  <span className="font-semibold">+${details.allowances.toLocaleString()}</span>
+                  <span className="font-semibold">+KES {details.allowances.toLocaleString()}</span>
                 </div>
               </div>
             ),
           },
           {
             title: "Deductions",
-            description: `Taxes + Deductions = $${(details.deductions + (details.taxes ?? 0)).toLocaleString()}`,
+            description: `Taxes + Deductions = KES ${(details.deductions + (details.taxes ?? 0)).toLocaleString()}`,
             icon: "📉",
             children: (
               <div className="space-y-2">
@@ -137,14 +137,14 @@ export function PayslipAccordion({
                   <div className="flex justify-between">
                     <span className="text-gray-600">Taxes</span>
                     <span className="font-semibold text-red-600">
-                      -${details.taxes.toLocaleString()}
+                      -KES {details.taxes.toLocaleString()}
                     </span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Other Deductions</span>
                   <span className="font-semibold text-red-600">
-                    -${details.deductions.toLocaleString()}
+                    -KES {details.deductions.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -158,7 +158,7 @@ export function PayslipAccordion({
               <div className="flex justify-between items-center bg-green-50 p-3 rounded border border-green-200">
                 <span className="font-semibold text-gray-900">Total Net Salary</span>
                 <span className="text-2xl font-bold text-green-600">
-                  ${details.netSalary.toLocaleString()}
+                  KES {details.netSalary.toLocaleString()}
                 </span>
               </div>
             ),

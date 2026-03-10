@@ -33,7 +33,9 @@ import {
   Line,
 } from 'recharts';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { frontendEnv } from "@/lib/env";
+
+const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface InventoryValueMetric {
   totalValue: string | number;
@@ -268,7 +270,7 @@ export default function FinancialDashboardPage() {
         </CardHeader>
         <CardContent>
           {report.monthlyRevenue.revenue === '0' ||
-          report.monthlyRevenue.revenue === 0 ? (
+            report.monthlyRevenue.revenue === 0 ? (
             <div className="h-64 flex items-center justify-center text-slate-500">
               No revenue data available for this period
             </div>
@@ -282,7 +284,7 @@ export default function FinancialDashboardPage() {
                 />
                 <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
                 <Tooltip
-                  formatter={(value) => formatCurrency(value)}
+                  formatter={(value: any) => formatCurrency(value)}
                   contentStyle={{
                     backgroundColor: '#1e293b',
                     border: '1px solid #334155',

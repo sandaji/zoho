@@ -3,8 +3,10 @@
  * Centralized API endpoints and base URL
  */
 
+import { frontendEnv } from "./env";
+
 // Backend API base URL
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+export const API_BASE_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 // API Endpoints
 export const API_ENDPOINTS = {

@@ -1,8 +1,14 @@
-
 import 'dotenv/config';
-import { AccessScope } from '../src/generated/client';
 import { prisma } from '../src/lib/db';
 import { logger } from '../src/lib/logger';
+
+// Type alias to replace the Prisma enum import that's failing at runtime
+type AccessScope = 'GLOBAL' | 'BRANCH' | 'OWN';
+const AccessScope = {
+  GLOBAL: 'GLOBAL' as AccessScope,
+  BRANCH: 'BRANCH' as AccessScope,
+  OWN: 'OWN' as AccessScope,
+};
 
 async function main() {
   console.log('🔄 Starting RBAC Update...');
@@ -218,6 +224,7 @@ async function main() {
     'inventory.stock.view', 'inventory.stock.adjust', 'inventory.product.view',
     'finance.invoice.view',
     'purchasing.order.view_all',
+    'purchasing.vendor.view',
   ];
   await assignAll('branch_manager', bmPerms, AccessScope.BRANCH);
 
@@ -263,6 +270,16 @@ async function main() {
     'purchasing.order.view_all',
     'purchasing.vendor.view',
     'purchasing.vendor.manage'
+  ], AccessScope.BRANCH);
+
+  // Procurement Role (Full purchasing access - used by procurement staff)
+  await assignAll('procurement', [
+    'purchasing.order.create',
+    'purchasing.order.submit',
+    'purchasing.order.view_all',
+    'purchasing.order.receive',
+    'purchasing.vendor.view',
+    'purchasing.vendor.manage',
   ], AccessScope.BRANCH);
 
   // Finance Manager (Approve standard & high-value, receive goods)

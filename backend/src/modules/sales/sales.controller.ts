@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { SalesService } from './sales.service.js';
-import { AppError, ErrorCode } from '../../lib/errors.js';
+import { SalesService } from './sales.service';
+import { AppError, ErrorCode } from '../../lib/errors';
+import { prisma } from '../../lib/prisma';
 
-const prisma = new PrismaClient();
 const salesService = new SalesService(prisma);
 
 /**
@@ -110,7 +109,7 @@ export class SalesController {
       }
 
       const { id } = req.params;
-      const salesOrder = await salesService.getSalesOrderById(id);
+      const salesOrder = await salesService.getSalesOrderById(id as string);
 
       res.json({
         success: true,
@@ -183,7 +182,7 @@ export class SalesController {
       }
 
       const dispatchNote = await salesService.dispatchSalesOrder({
-        soId: id,
+        soId: Array.isArray(id) ? id[0] : id,
         warehouseId,
         items,
         dispatchedById: req.user.userId,

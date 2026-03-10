@@ -4,8 +4,8 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../../lib/db.js";
-import { logger } from "../../lib/logger.js";
+import { prisma } from "../../lib/db";
+import { logger } from "../../lib/logger";
 
 export class AdminController {
   private prisma = prisma;

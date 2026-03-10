@@ -242,7 +242,7 @@ export function formatCurrencyCompact(amount: number): string {
  * Format number with thousand separators
  */
 export function formatNumber(num: number): string {
-  return new Intl.NumberFormat("en-US").format(num);
+  return new Intl.NumberFormat("en-KE").format(num);
 }
 
 /**
@@ -250,7 +250,7 @@ export function formatNumber(num: number): string {
  */
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("en-KE", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -262,7 +262,7 @@ export function formatDate(dateString: string): string {
  */
 export function formatDateShort(dateString: string): string {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("en-KE", {
     month: "short",
     day: "numeric",
   });

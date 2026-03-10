@@ -161,11 +161,11 @@ export class EmployeeController {
       const { email, name, phone, password, role, branchId } = req.body;
 
       // Validate required fields
-      if (!email || !name || !password) {
+      if (!email || !name) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          "Missing required fields: email, name, password"
+          "Missing required fields: email, name"
         );
       }
 
@@ -200,8 +200,10 @@ export class EmployeeController {
         }
       }
 
-      // Hash password
-      const passwordHash = await bcrypt.hash(password, 10);
+      // Hash password if provided, otherwise create a dummy hash since it's required by the schema
+      // Employees created here do NOT have system access initially
+      const passwordToHash = password || Math.random().toString(36).slice(-10) + "NoAccess!";
+      const passwordHash = await bcrypt.hash(passwordToHash, 10);
 
       const employee = await prisma.user.create({
         data: {
@@ -211,6 +213,7 @@ export class EmployeeController {
           passwordHash,
           role: role || "cashier",
           branchId,
+          hasSystemAccess: false,
         },
         select: {
           id: true,

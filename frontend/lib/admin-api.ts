@@ -458,18 +458,47 @@ export const updateUser = async (
 
 
   if (!response.ok) {
-
     const errorData = await response.json();
-
     throw new Error(errorData.error?.message || "Failed to update user");
-
   }
 
-
-
   const { data } = await response.json();
-
   return data;
-
 };
 
+// ============================================================================
+// SYSTEM ACCESS MANAGEMENT
+// ============================================================================
+
+export const getEligibleEmployees = async (token: string): Promise<User[]> => {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/eligible-employees`, {
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch eligible employees");
+  }
+
+  const { data } = await response.json();
+  return data;
+};
+
+export const grantSystemAccess = async (
+  token: string,
+  userId: string,
+  payload: { role: string; password?: string }
+): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/users/${userId}/grant-access`, {
+    method: "PUT",
+    headers: getAuthHeaders(token),
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Failed to grant system access");
+  }
+
+  const { data } = await response.json();
+  return data;
+};

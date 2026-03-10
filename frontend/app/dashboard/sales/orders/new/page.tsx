@@ -32,7 +32,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+import { frontendEnv } from "@/lib/env";
+const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface Customer {
   id: string;

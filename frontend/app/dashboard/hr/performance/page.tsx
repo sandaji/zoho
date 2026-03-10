@@ -1,9 +1,9 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Award, 
+import { frontendEnv } from "@/lib/env";
+import {
+  Award,
   Plus,
   CheckCircle2,
   Clock,
@@ -14,13 +14,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import { toast } from "sonner";
 
@@ -41,7 +41,7 @@ export default function PerformancePage() {
       try {
         const token = localStorage.getItem("auth_token");
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/hr/performance/goals`,
+          `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/performance/goals`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }

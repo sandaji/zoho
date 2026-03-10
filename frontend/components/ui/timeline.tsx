@@ -69,7 +69,7 @@ export const Timeline: React.FC<TimelineProps> = ({ events, currentStatus, class
   const formatTime = (isoString: string): string => {
     try {
       const date = new Date(isoString);
-      return date.toLocaleString("en-US", {
+      return date.toLocaleString("en-KE", {
         month: "short",
         day: "numeric",
         hour: "2-digit",
@@ -204,7 +204,7 @@ export const StepperTimeline: React.FC<StepperTimelineProps> = ({ steps, classNa
               )}
               {step.timestamp && (
                 <p className="text-xs text-slate-500 mt-1">
-                  {new Date(step.timestamp).toLocaleString("en-US", {
+                  {new Date(step.timestamp).toLocaleString("en-KE", {
                     month: "short",
                     day: "numeric",
                     hour: "2-digit",

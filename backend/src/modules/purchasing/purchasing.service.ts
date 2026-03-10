@@ -177,7 +177,7 @@ export class PurchasingService {
     });
 
     if (existing) {
-      throw new AppError(ErrorCode.ALREADY_EXISTS, 409, "Vendor with this code already exists");
+      throw new AppError(ErrorCode.ALREADY_EXISTS, 409, `Vendor with code "${data.code}" already exists (Name: ${existing.name}). Please use a unique code or update the existing vendor.`);
     }
 
     return prisma.vendor.create({
@@ -191,6 +191,49 @@ export class PurchasingService {
         website: data.website,
         paymentTerms: data.paymentTerms || "NET_30",
         leadTimeDays: data.leadTimeDays || 7,
+      },
+    });
+  }
+
+  /**
+   * Get vendor by ID
+   */
+  async getVendorById(id: string) {
+    const vendor = await prisma.vendor.findUnique({
+      where: { id },
+    });
+
+    if (!vendor) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Vendor not found");
+    }
+
+    return vendor;
+  }
+
+  /**
+   * Update vendor
+   */
+  async updateVendor(
+    id: string,
+    data: Partial<{
+      name: string;
+      email: string;
+      phone: string;
+      address: string;
+      taxId: string;
+      website: string;
+      paymentTerms: string;
+      leadTimeDays: number;
+      isActive: boolean;
+    }>
+  ) {
+    const vendor = await this.getVendorById(id);
+
+    return prisma.vendor.update({
+      where: { id },
+      data: {
+        ...data,
+        updatedAt: new Date(),
       },
     });
   }
@@ -236,7 +279,8 @@ export class PurchasingService {
     userId: string,
     data: {
       vendorId: string;
-      branchId: string;
+      warehouseId?: string; // Optional but recommended
+      branchId?: string;    // If not provided, will be resolved from warehouseId
       items: { productId: string; quantity: number; unitPrice: number }[];
       notes?: string;
       expectedDeliveryDate?: string;
@@ -249,6 +293,23 @@ export class PurchasingService {
       });
       if (!vendor || !vendor.isActive) {
         throw new AppError(ErrorCode.BAD_REQUEST, 400, "Invalid vendor");
+      }
+
+      // 1b. Resolve Branch ID from Warehouse if needed
+      let resolvedBranchId = data.branchId;
+      if (data.warehouseId) {
+        const warehouse = await tx.warehouse.findUnique({
+          where: { id: data.warehouseId },
+          select: { branchId: true }
+        });
+        if (!warehouse) {
+          throw new AppError(ErrorCode.NOT_FOUND, 404, "Target warehouse not found");
+        }
+        resolvedBranchId = warehouse.branchId;
+      }
+
+      if (!resolvedBranchId) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Branch ID or Warehouse ID is required");
       }
 
       // 2. Generate PO Number
@@ -300,7 +361,8 @@ export class PurchasingService {
         data: {
           poNumber,
           vendorId: data.vendorId,
-          branchId: data.branchId,
+          branchId: resolvedBranchId,
+          destinationWarehouseId: data.warehouseId || null,
           requestedById: userId,
           status: PurchaseOrderStatus.DRAFT,
           subtotal,
@@ -339,6 +401,21 @@ export class PurchasingService {
         items: {
           include: {
             product: true,
+            grnItems: {
+              include: {
+                goodsReceiptNote: true,
+              },
+            },
+          },
+        },
+        grns: {
+          include: {
+            receivedBy: true,
+            items: {
+              include: {
+                product: true,
+              },
+            },
           },
         },
       },
@@ -648,7 +725,7 @@ export class PurchasingService {
         });
 
         // 2. Create GRN Item
-        const grnItem = await tx.grnItem.create({
+        const grnItem = await tx.gRNItem.create({
           data: {
             grnId: grn.id,
             poItemId: poItem.id,

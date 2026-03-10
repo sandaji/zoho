@@ -78,8 +78,9 @@ export default function EmployeeManagement() {
         employeeService.getAllEmployees(token!),
         branchService.getAllBranches(token!),
       ]);
+      const branchesData = branchResult.data?.branches || branchResult.data || [];
       setEmployees(empResult.data || []);
-      setBranches(branchResult.data || []);
+      setBranches(Array.isArray(branchesData) ? branchesData : []);
     } catch (error) {
       toast.error("Failed to load data");
       console.error(error);
@@ -112,12 +113,6 @@ export default function EmployeeManagement() {
     try {
       if (!formData.email || !formData.name) {
         toast.error("Please fill in required fields");
-        return;
-      }
-
-      // For create, password is required
-      if (!isEditing && !formData.password) {
-        toast.error("Password is required for new employees");
         return;
       }
 
@@ -304,7 +299,7 @@ export default function EmployeeManagement() {
                         <ArrowRight className="w-4 h-4" />
                         Transfer8
                       </Button> */}
-                     
+
                       <Button
                         variant="destructive"
                         size="sm"
@@ -315,7 +310,7 @@ export default function EmployeeManagement() {
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
-                       <Button
+                      <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleShowHistory(employee)}
@@ -380,18 +375,6 @@ export default function EmployeeManagement() {
               />
             </div>
 
-            {!isEditing && (
-              <div>
-                <label className="text-sm font-medium">Password *</label>
-                <Input
-                  type="password"
-                  value={formData.password || ""}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="••••••••"
-                  className="mt-1"
-                />
-              </div>
-            )}
 
             <div>
               <label className="text-sm font-medium">Role</label>

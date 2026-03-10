@@ -1,5 +1,6 @@
-import { Prisma } from '@prisma/client';
-import { AppError, ErrorCode } from '../error.js';
+import { Prisma } from '../../generated';
+import { prisma } from '../../lib/prisma';
+import { AppError, ErrorCode } from '../../lib/errors';
 
 /**
  * Interface for batch creation data
@@ -90,8 +91,9 @@ export class ValuationService {
     // Validate quantity is positive
     if (!Number.isInteger(quantity) || quantity <= 0) {
       throw new AppError(
-        'Batch quantity must be a positive integer',
-        ErrorCode.INVALID_INPUT
+        ErrorCode.INVALID_INPUT,
+        400,
+        'Batch quantity must be a positive integer'
       );
     }
 
@@ -99,13 +101,14 @@ export class ValuationService {
     const costAsDecimal = typeof unitCost === 'string'
       ? parseFloat(unitCost)
       : unitCost instanceof Prisma.Decimal
-      ? unitCost.toNumber()
-      : unitCost;
+        ? unitCost.toNumber()
+        : unitCost;
 
     if (costAsDecimal < 0) {
       throw new AppError(
-        'Unit cost cannot be negative',
-        ErrorCode.INVALID_INPUT
+        ErrorCode.INVALID_INPUT,
+        400,
+        'Unit cost cannot be negative'
       );
     }
 
@@ -116,8 +119,9 @@ export class ValuationService {
     });
     if (!productExists) {
       throw new AppError(
-        `Product with ID ${productId} not found`,
-        ErrorCode.NOT_FOUND
+        ErrorCode.NOT_FOUND,
+        404,
+        `Product with ID ${productId} not found`
       );
     }
 
@@ -128,8 +132,9 @@ export class ValuationService {
     });
     if (!warehouseExists) {
       throw new AppError(
-        `Warehouse with ID ${warehouseId} not found`,
-        ErrorCode.NOT_FOUND
+        ErrorCode.NOT_FOUND,
+        404,
+        `Warehouse with ID ${warehouseId} not found`
       );
     }
 
@@ -188,8 +193,9 @@ export class ValuationService {
     // Validate inputs
     if (!Number.isInteger(requestedQty) || requestedQty <= 0) {
       throw new AppError(
-        'Requested quantity must be a positive integer',
-        ErrorCode.INVALID_INPUT
+        ErrorCode.INVALID_INPUT,
+        400,
+        'Requested quantity must be a positive integer'
       );
     }
 
@@ -213,14 +219,15 @@ export class ValuationService {
 
     // Check if sufficient stock is available
     const totalAvailable = availableBatches.reduce(
-      (sum, batch) => sum + batch.currentQuantity,
+      (sum: number, batch: any) => sum + batch.currentQuantity,
       0
     );
 
     if (totalAvailable < requestedQty) {
       throw new AppError(
-        `Insufficient stock: requested ${requestedQty}, available ${totalAvailable}`,
-        ErrorCode.INVALID_OPERATION
+        ErrorCode.INVALID_OPERATION,
+        422,
+        `Insufficient stock: requested ${requestedQty}, available ${totalAvailable}`
       );
     }
 
@@ -229,7 +236,7 @@ export class ValuationService {
     const batchesUsed = [];
 
     // Iterate through batches in FIFO order
-    for (const batch of availableBatches) {
+    for (const batch of availableBatches as any) {
       if (remainingQty <= 0) break;
 
       // How much can we take from this batch?

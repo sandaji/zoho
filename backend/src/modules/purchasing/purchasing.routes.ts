@@ -25,6 +25,22 @@ router.post(
   controller.createVendor
 );
 
+// GET /vendors/:id - Get single vendor
+router.get(
+  "/vendors/:id",
+  authMiddleware,
+  hasAnyPermission(["purchasing.vendor.view", "purchasing.vendor.manage"]),
+  controller.getVendor
+);
+
+// PATCH /vendors/:id - Update vendor
+router.patch(
+  "/vendors/:id",
+  authMiddleware,
+  hasAnyPermission(["purchasing.vendor.manage"]),
+  controller.updateVendor
+);
+
 // DELETE /vendors/:id - Delete/deactivate vendor (soft delete)
 router.delete(
   "/vendors/:id",
@@ -59,12 +75,20 @@ router.get(
   controller.getPurchaseOrder
 );
 
-// PATCH /orders/:id/status - Update LPO status (Submit/Approve/Close)
+// PATCH /orders/:id/status - Update LPO status (General)
 router.patch(
   "/orders/:id/status",
   authMiddleware,
   // ✅ Permission checked in controller based on target status + amount
   controller.updateStatus
+);
+
+// PATCH /orders/:id/approve - Dedicated route for LPO Approval
+router.patch(
+  "/orders/:id/approve",
+  authMiddleware,
+  hasAnyPermission(["system.role.super_admin", "purchasing.order.approve_standard", "purchasing.order.approve_high", "purchasing.order.approve_executive"]),
+  controller.approvePurchaseOrder
 );
 
 // POST /orders/:id/receive - Receive goods for LPO

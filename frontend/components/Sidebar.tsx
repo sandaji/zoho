@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import { frontendEnv } from "@/lib/env";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
@@ -59,16 +60,16 @@ interface Stats {
 
 // ── Admin sub-sections: rendered as a grouped dropdown in the sidebar ────────
 const ADMIN_SECTIONS = [
-  { id: "overview",   label: "Overview",       icon: LayoutDashboard, description: "System snapshot" },
-  { id: "branches",   label: "Branches",        icon: Building2,       description: "Locations" },
-  { id: "warehouses", label: "Warehouses",      icon: Warehouse,       description: "Storage" },
-  { id: "users",      label: "Users",           icon: Users,           description: "Staff" },
-  { id: "products",   label: "Products",        icon: Package,         description: "Catalog" },
-  { id: "sales",      label: "Sales",           icon: ShoppingCart,    description: "Orders" },
-  { id: "deliveries", label: "Deliveries",      icon: Truck,           description: "Fleet" },
-  { id: "finance",    label: "Finance",         icon: DollarSign,      description: "Ledger" },
-  { id: "payroll",    label: "Payroll",         icon: Wallet,          description: "Salaries" },
-  { id: "roles",      label: "Roles & Perms",   icon: Shield,          description: "Access" },
+  { id: "overview", label: "Overview", icon: LayoutDashboard, description: "System snapshot" },
+  { id: "branches", label: "Branches", icon: Building2, description: "Locations" },
+  { id: "warehouses", label: "Warehouses", icon: Warehouse, description: "Storage" },
+  { id: "users", label: "Users", icon: Users, description: "Staff" },
+  { id: "products", label: "Products", icon: Package, description: "Catalog" },
+  { id: "sales", label: "Sales", icon: ShoppingCart, description: "Orders" },
+  { id: "deliveries", label: "Deliveries", icon: Truck, description: "Fleet" },
+  { id: "finance", label: "Finance", icon: DollarSign, description: "Ledger" },
+  { id: "payroll", label: "Payroll", icon: Wallet, description: "Salaries" },
+  { id: "roles", label: "Roles & Perms", icon: Shield, description: "Access" },
 ];
 
 export function Sidebar() {
@@ -106,7 +107,7 @@ export function Sidebar() {
         const timeoutId = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/admin/stats`,
+          `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/admin/stats`,
           { headers: { Authorization: `Bearer ${token}` }, signal: controller.signal }
         );
 

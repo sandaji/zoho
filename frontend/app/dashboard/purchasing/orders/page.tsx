@@ -192,7 +192,7 @@ export default function PurchaseOrdersPage() {
                   </TableCell>
                   <TableCell className="text-slate-600">{order.items?.length || 0} items</TableCell>
                   <TableCell className="font-semibold text-slate-900">
-                    ${order.total.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    KES {order.total.toLocaleString("en-KE", { minimumFractionDigits: 2 })}
                   </TableCell>
                   <TableCell>
                     <span

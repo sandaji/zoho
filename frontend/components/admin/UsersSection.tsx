@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "../ui/button";
 import { EditUserDialog } from "./EditUserDialog";
+import { GrantAccessDialog } from "./GrantAccessDialog";
 
 const roleBadgeVariant = (role: string) => {
   switch (role) {
@@ -24,6 +25,7 @@ export default function UsersSection() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [grantingAccess, setGrantingAccess] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -38,6 +40,10 @@ export default function UsersSection() {
     setUsers((currentUsers) =>
       currentUsers.map((u) => (u.id === updatedUser.id ? updatedUser : u))
     );
+  };
+
+  const handleAccessGranted = (newUser: User) => {
+    setUsers((currentUsers) => [newUser, ...currentUsers]);
   };
 
   const columns: Column<User>[] = [
@@ -78,8 +84,14 @@ export default function UsersSection() {
 
   return (
     <>
+      <div className="flex justify-end mb-4">
+        <Button onClick={() => setGrantingAccess(true)}>
+          Grant System Access
+        </Button>
+      </div>
+
       <AdminTable
-        title="Users & Employees"
+        title="System Users"
         data={users}
         columns={columns}
         loading={loading}
@@ -96,6 +108,12 @@ export default function UsersSection() {
         open={!!editingUser}
         onOpenChange={() => setEditingUser(null)}
         onUserUpdated={handleUserUpdated}
+      />
+
+      <GrantAccessDialog
+        open={grantingAccess}
+        onOpenChange={setGrantingAccess}
+        onAccessGranted={handleAccessGranted}
       />
     </>
   );

@@ -9,6 +9,8 @@ import {
   ShoppingCart,
   Percent,
   DollarSign,
+  User,
+  Car,
 } from "lucide-react";
 
 export interface StatCardProps {
@@ -96,18 +98,17 @@ export function StatCard({
           <p className={`${valueSizeStyles[size]} text-gray-900`}>
             {prefix}
             {typeof value === "number"
-              ? value.toLocaleString("en-US", {
-                  maximumFractionDigits: 2,
-                })
+              ? value.toLocaleString("en-KE", {
+                maximumFractionDigits: 2,
+              })
               : value}
             {suffix}
           </p>
 
           {trend && (
             <span
-              className={`text-xs font-semibold mb-1 ${
-                trend.direction === "up" ? "text-green-600" : "text-red-600"
-              }`}
+              className={`text-xs font-semibold mb-1 ${trend.direction === "up" ? "text-green-600" : "text-red-600"
+                }`}
             >
               {trend.direction === "up" ? "↑" : "↓"} {Math.abs(trend.value)}%
             </span>
@@ -152,9 +153,9 @@ export function SalesStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Total Sales"
       value={0}
-      icon={<MdShoppingCart />}
+      icon={<ShoppingCart />}
       variant="info"
-      prefix="$"
+      prefix="KES "
       {...props}
     />
   );
@@ -178,9 +179,9 @@ export function ExpenseStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Expenses"
       value={0}
-      icon={<MdAttachMoney />}
+      icon={<DollarSign />}
       variant="danger"
-      prefix="$"
+      prefix="KES "
       {...props}
     />
   );
@@ -191,16 +192,16 @@ export function ProfitStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Net Profit"
       value={0}
-      icon={<MdTrendingUp />}
+      icon={<TrendingUp />}
       variant="success"
-      prefix="$"
+      prefix="KES "
       {...props}
     />
   );
 }
 
 export function EmployeeStatCard(props: Partial<StatCardProps>) {
-  return <StatCard title="Employees" value={0} icon={<MdPeople />} variant="info" {...props} />;
+  return <StatCard title="Employees" value={0} icon={<Users />} variant="info" {...props} />;
 }
 
 export function InventoryStatCard(props: Partial<StatCardProps>) {
@@ -208,9 +209,9 @@ export function InventoryStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Inventory Value"
       value={0}
-      icon={<MdWarehouse />}
+      icon={<Warehouse />}
       variant="warning"
-      prefix="$"
+      prefix="KES "
       {...props}
     />
   );
@@ -221,7 +222,7 @@ export function FleetStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Active Trucks"
       value={0}
-      icon={<MdDirectionsCar />}
+      icon={<Car />}
       variant="default"
       {...props}
     />
@@ -233,7 +234,7 @@ export function PercentageStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Profit Margin"
       value={0}
-      icon={<MdPercent />}
+      icon={<Percent />}
       variant="success"
       suffix="%"
       {...props}

@@ -8,7 +8,7 @@ export interface Branch {
   location: string;
 }
 
-export type UserRole = "admin" | "super_admin" | "branch_manager" | "manager" | "accountant" | "hr" | "cashier" | "warehouse_staff" | "driver" | "user";
+export type UserRole = "admin" | "super_admin" | "branch_manager" | "manager" | "accountant" | "hr" | "cashier" | "warehouse_staff" | "driver" | "procurement" | "user";
 
 export interface User {
   id: string;

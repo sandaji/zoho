@@ -9,15 +9,15 @@ export interface Employee {
   name: string;
   phone?: string;
   role:
-    | "cashier"
-    | "warehouse_staff"
-    | "driver"
-    | "branch_manager"
-    | "hr"
-    | "accountant"
-    | "manager"
-    | "admin"
-    | "super_admin";
+  | "cashier"
+  | "warehouse_staff"
+  | "driver"
+  | "branch_manager"
+  | "hr"
+  | "accountant"
+  | "manager"
+  | "admin"
+  | "super_admin";
   branchId?: string;
   branch?: { id: string; name: string; code: string };
   isActive: boolean;
@@ -51,7 +51,9 @@ export interface EmployeeTransfer {
   notes?: string;
 }
 
-const API_URL = "http://localhost:5000/v1";
+import { frontendEnv } from "./env";
+
+const API_URL = `${frontendEnv.NEXT_PUBLIC_API_URL}/v1`;
 
 export const employeeService = {
   /**

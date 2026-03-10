@@ -3,7 +3,9 @@
  * Handles all purchasing-related API calls (purchase orders, vendors, etc.)
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { frontendEnv } from "./env";
+
+const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface GetOrdersResponse {
   success: boolean;

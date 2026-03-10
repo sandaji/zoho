@@ -27,7 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ArrowLeft, Plus, Trash2, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Loader2, Search } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { purchasingService } from "@/lib/purchasing.service";
 import { warehouseService } from "@/lib/warehouse.service";
@@ -82,8 +82,10 @@ export default function CreatePurchaseOrderPage() {
 
   // UI state
   const [loading, setLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<"draft" | "submit">("draft");
+  const [productSearch, setProductSearch] = useState("");
 
   // Fetch initial data
   useEffect(() => {
@@ -95,15 +97,19 @@ export default function CreatePurchaseOrderPage() {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
-      const [vendorsData, warehousesData, productsData] = await Promise.all([
+      const [vendorsData, warehousesData] = await Promise.all([
         purchasingService.getVendors(token!),
         warehouseService.getWarehouses(token!),
-        warehouseService.getProducts(token!),
       ]);
 
-      setVendors(vendorsData.vendors || []);
-      setWarehouses(warehousesData.warehouses || []);
-      setProducts(productsData.products || []);
+      // Handle vendors mapping: purchasingService.getVendors returns data.data or { vendors: [] }
+      setVendors(vendorsData.vendors || vendorsData || []);
+
+      // Handle warehouses mapping: warehouseService.getWarehouses returns { success, data, pagination }
+      setWarehouses(warehousesData.data || []);
+
+      // Initial products fetch (without vendor filter)
+      await fetchProducts("");
     } catch (error) {
       console.error("Failed to fetch initial data:", error);
       toast.error("Failed to load vendors and warehouses");
@@ -111,6 +117,41 @@ export default function CreatePurchaseOrderPage() {
       setLoading(false);
     }
   };
+
+  const fetchProducts = async (vId: string, search: string = "") => {
+    if (!token) return;
+    try {
+      setProductsLoading(true);
+      const productsResponse = await warehouseService.getProducts(token, {
+        vendorId: vId || undefined,
+        search: search || undefined,
+        limit: 100
+      });
+      // warehouseService.getProducts returns { success, data: { products, pagination } }
+      setProducts(productsResponse.data?.products || []);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setProductsLoading(false);
+    }
+  };
+
+  // Refetch products when vendorId changes
+  useEffect(() => {
+    if (token) {
+      fetchProducts(vendorId, productSearch);
+    }
+  }, [vendorId, token]);
+
+  // Handle product search with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (token) {
+        fetchProducts(vendorId, productSearch);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [productSearch]);
 
   // Calculate line item total
   const calculateLineTotal = (quantity: number, unitPrice: number): number => {
@@ -209,7 +250,7 @@ export default function CreatePurchaseOrderPage() {
 
       const orderData = {
         vendorId,
-        branchId: destinationId,
+        warehouseId: destinationId,
         status,
         notes,
         items: items.map((item) => ({
@@ -395,15 +436,29 @@ export default function CreatePurchaseOrderPage() {
                   Add products and quantities to your order
                 </CardDescription>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={addLineItem}
-                className="text-emerald-600 border-emerald-200 hover:bg-emerald-50"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Row
-              </Button>
+              <div className="flex gap-3 items-center">
+                <div className="relative w-64">
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search products..."
+                    className="pl-9 h-9 text-xs"
+                    value={productSearch}
+                    onChange={(e) => setProductSearch(e.target.value)}
+                  />
+                  {productsLoading && (
+                    <Loader2 className="absolute right-3 top-2.5 h-4 w-4 animate-spin text-slate-400" />
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={addLineItem}
+                  className="text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Row
+                </Button>
+              </div>
             </div>
           </CardHeader>
 
@@ -437,11 +492,17 @@ export default function CreatePurchaseOrderPage() {
                           <SelectValue placeholder="Select product" />
                         </SelectTrigger>
                         <SelectContent>
-                          {products.map((product) => (
-                            <SelectItem key={product.id} value={product.id}>
-                              {product.name} ({product.sku})
+                          {products.length === 0 ? (
+                            <SelectItem value="none" disabled>
+                              No products found
                             </SelectItem>
-                          ))}
+                          ) : (
+                            products.map((product) => (
+                              <SelectItem key={product.id} value={product.id}>
+                                {product.name} ({product.sku})
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                     </TableCell>

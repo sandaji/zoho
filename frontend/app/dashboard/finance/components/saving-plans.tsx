@@ -78,7 +78,7 @@ export function SavingPlans({ plans, onAddGoal, className }: SavingPlansProps) {
 
                 {plan.deadline && (
                   <p className="mt-1 text-xs text-gray-400">
-                    Target: {new Date(plan.deadline).toLocaleDateString("en-US", {
+                    Target: {new Date(plan.deadline).toLocaleDateString("en-KE", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",

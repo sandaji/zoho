@@ -20,21 +20,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-// Extend the Role type to include the _count property if it's not already defined in rbac-api.ts
-interface RoleWithCount extends Role {
-  isSystem?: boolean;
-  _count?: {
-    permissions: number;
-    users: number;
-  };
-}
-
 export default function RolesSection() {
   const { token } = useAuth();
   const { toast } = useToast();
-  const [roles, setRoles] = useState<RoleWithCount[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRole, setSelectedRole] = useState<RoleWithCount | null>(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newRole, setNewRole] = useState({ name: "", code: "", description: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +34,7 @@ export default function RolesSection() {
     if (!token) return;
     try {
       setLoading(true);
-      const data = await fetchRoles(token) as RoleWithCount[];
+      const data = await fetchRoles(token);
       setRoles(data);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Failed to load roles";
@@ -88,11 +79,11 @@ export default function RolesSection() {
     }
   };
 
-  const columns: Column<RoleWithCount>[] = [
+  const columns: Column<Role>[] = [
     {
       key: "name",
       label: "Role Name",
-      render: (name: string, role: RoleWithCount) => (
+      render: (name: string, role: Role) => (
         <div className="flex items-center gap-2">
           <Shield className="w-4 h-4 text-slate-400" />
           <span className="font-medium text-slate-900">{name}</span>
@@ -146,7 +137,7 @@ export default function RolesSection() {
         columns={columns}
         loading={loading}
         searchKeys={["name", "code", "description"]}
-        actions={(role: RoleWithCount) => (
+        actions={(role: Role) => (
           <div className="flex gap-2">
             <Button
               variant="outline"

@@ -21,8 +21,8 @@ import branchRoutes from "./branches.routes";
 import employeeRoutes from "./employees.routes";
 import warehouseRoutes from "../modules/warehouse/routes/warehouse.routes";
 import salesRoutes from "./sales.routes";
-import salesOrderRoutes from "../modules/sales/routes/sales-orders.routes.js";
-import reportsRoutes from "../modules/reports/reports.routes.js";
+import salesOrderRoutes from "../modules/sales/routes/sales-orders.routes";
+import reportsRoutes from "../modules/reports/reports.routes";
 import customersRoutes from "../modules/customers/customers.routes";
 import hrRoutes from "../modules/hr/routes/hr.routes";
 import rbacRoutes from "../modules/rbac/rbac.routes";
@@ -83,39 +83,24 @@ router.get("/admin/branches", authMiddleware, requirePermission('admin.branch.ma
 );
 
 // Warehouses - Allow managers to view
-router.get(
-  "/admin/warehouses",
-  authMiddleware,
-  requirePermission('inventory.warehouse.manage'),
-  (req, res, next) => adminController.listWarehouses(req, res, next)
-);
+router.get("/admin/warehouses", authMiddleware, requirePermission('admin.warehouse.view'), adminController.listWarehouses.bind(adminController));
 
 // Users - Allow managers to view their team
-router.get("/admin/users", authMiddleware, requirePermission('admin.user.manage'), (req, res, next) =>
-  adminController.listUsers(req, res, next)
-);
+router.get("/admin/users", authMiddleware, requirePermission('admin.user.view'), adminController.listUsers.bind(adminController));
 
-// Products - Allow managers to view products (they need this for dashboard)
-router.get("/admin/products", authMiddleware, requirePermission('inventory.product.view'), (req, res, next) =>
-  adminController.listProducts(req, res, next)
-);
+// New System Access Routes
+router.get("/admin/eligible-employees", authMiddleware, requirePermission('admin.user.manage'), adminController.listEligibleEmployees.bind(adminController));
+router.put("/admin/users/:id/grant-access", authMiddleware, requirePermission('admin.user.manage'), adminController.grantSystemAccess.bind(adminController));
 
-// Deliveries - Allow managers to view deliveries
-router.get(
-  "/admin/deliveries",
-  authMiddleware,
-  requirePermission('sales.order.view_all'),
-  (req, res, next) => adminController.listDeliveries(req, res, next)
-);
-router.get(
-  "/admin/finance/transactions",
-  authMiddleware,
-  requirePermission('finance.gl.view'),
-  (req, res, next) => adminController.listFinanceTransactions(req, res, next)
-);
-router.get("/admin/payroll", authMiddleware, requirePermission('hr.payroll.run'), (req, res, next) =>
-  adminController.listPayroll(req, res, next)
-);
+// Products - Allow managers to view products
+router.get("/admin/products", authMiddleware, requirePermission('admin.product.view'), adminController.listProducts.bind(adminController));
+
+// Deliveries
+router.get("/admin/deliveries", authMiddleware, requirePermission('admin.delivery.view'), adminController.listDeliveries.bind(adminController));
+
+// Finance & Payroll
+router.get("/admin/finance/transactions", authMiddleware, requirePermission('admin.finance.view'), adminController.listFinanceTransactions.bind(adminController));
+router.get("/admin/payroll/records", authMiddleware, requirePermission('admin.payroll.view'), adminController.listPayroll.bind(adminController));
 
 // ============================================================================
 // AUTH ROUTES (Public)

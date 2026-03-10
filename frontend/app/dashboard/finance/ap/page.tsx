@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Plus, 
-  Search, 
+import { frontendEnv } from "@/lib/env";
+import {
+  Plus,
+  Search,
   Filter,
   ArrowUpDown,
   MoreHorizontal,
@@ -14,13 +15,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -43,12 +44,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
@@ -76,7 +77,7 @@ export default function PayablesPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/ap/list`, {
+      const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ap/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -92,14 +93,14 @@ export default function PayablesPage() {
 
   const getStatusBadge = (status: string, dueDate: string) => {
     const isOverdue = new Date() > new Date(dueDate);
-    
+
     switch (status) {
       case "paid":
         return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Paid</Badge>;
       case "partial":
         return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none">Partial</Badge>;
       case "outstanding":
-        return isOverdue 
+        return isOverdue
           ? <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">Overdue</Badge>
           : <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Outstanding</Badge>;
       default:
@@ -120,14 +121,14 @@ export default function PayablesPage() {
 
   const handleRecordPayment = async () => {
     if (!selectedAP) return;
-    
+
     try {
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/ap/payment`, {
+      const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ap/payment`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           payableId: selectedAP.id,
@@ -147,7 +148,7 @@ export default function PayablesPage() {
     }
   };
 
-  const filteredPayables = payables.filter(ap => 
+  const filteredPayables = payables.filter(ap =>
     ap.bill_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ap.vendor_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -217,8 +218,8 @@ export default function PayablesPage() {
         <div className="p-5 border-b border-slate-50 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
-            <Input 
-              placeholder="Search by vendor or bill number..." 
+            <Input
+              placeholder="Search by vendor or bill number..."
               className="pl-11 h-11 bg-slate-50 border-none focus-visible:ring-1 focus-visible:ring-slate-200 rounded-xl"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -312,7 +313,7 @@ export default function PayablesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
                         <DropdownMenuLabel className="text-[10px] uppercase text-slate-400 tracking-widest">Bill Options</DropdownMenuLabel>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium"
                           onClick={() => handleOpenPayment(ap)}
                         >
@@ -349,17 +350,17 @@ export default function PayablesPage() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Payment Amount (KES)</Label>
-              <Input 
-                type="number" 
-                value={paymentData.amount} 
+              <Input
+                type="number"
+                value={paymentData.amount}
                 onChange={(e) => setPaymentData({ ...paymentData, amount: Number(e.target.value) })}
               />
               <p className="text-[10px] text-slate-400">Remaining balance: KES {selectedAP?.balance.toLocaleString()}</p>
             </div>
             <div className="space-y-2">
               <Label>Payment Method</Label>
-              <Select 
-                value={paymentData.paymentMethod} 
+              <Select
+                value={paymentData.paymentMethod}
                 onValueChange={(v) => setPaymentData({ ...paymentData, paymentMethod: v })}
               >
                 <SelectTrigger>
@@ -375,16 +376,16 @@ export default function PayablesPage() {
             </div>
             <div className="space-y-2">
               <Label>Reference Number</Label>
-              <Input 
-                placeholder="e.g. TRN12345678" 
+              <Input
+                placeholder="e.g. TRN12345678"
                 value={paymentData.referenceNo}
                 onChange={(e) => setPaymentData({ ...paymentData, referenceNo: e.target.value })}
               />
             </div>
             <div className="space-y-2">
               <Label>Notes</Label>
-              <Input 
-                placeholder="Optional payment notes" 
+              <Input
+                placeholder="Optional payment notes"
                 value={paymentData.notes}
                 onChange={(e) => setPaymentData({ ...paymentData, notes: e.target.value })}
               />

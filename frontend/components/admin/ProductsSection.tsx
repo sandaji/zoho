@@ -6,6 +6,7 @@ import { Product, fetchProducts } from "@/lib/admin-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
+import { frontendEnv } from "@/lib/env";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -40,7 +41,7 @@ export default function ProductsSection() {
 
     setIsSaving(true);
     try {
-      const response = await fetch(`http://localhost:5000/v1/products/${editData.id}`, {
+      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/${editData.id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -92,17 +93,17 @@ export default function ProductsSection() {
     {
       key: "category",
       label: "Category",
-      render: (category) => category || "-",
+      render: (category: string | null) => category || "-",
     },
     {
       key: "unit_price",
       label: "Price",
-      render: (price) => `KES ${price.toLocaleString()}`,
+      render: (price: number) => `KES ${price.toLocaleString()}`,
     },
     {
       key: "quantity",
       label: "Stock",
-      render: (quantity, row) => {
+      render: (quantity: number, row: Product) => {
         const status = getStockStatus(quantity, row.reorder_level);
         return (
           <div className="flex items-center gap-2">
@@ -303,10 +304,10 @@ export default function ProductsSection() {
                   <p className="text-sm">
                     {selectedProduct && selectedProduct.cost_price
                       ? (
-                          ((selectedProduct.unit_price - selectedProduct.cost_price) /
-                            selectedProduct.cost_price) *
-                          100
-                        ).toFixed(1)
+                        ((selectedProduct.unit_price - selectedProduct.cost_price) /
+                          selectedProduct.cost_price) *
+                        100
+                      ).toFixed(1)
                       : "0"}
                     %
                   </p>

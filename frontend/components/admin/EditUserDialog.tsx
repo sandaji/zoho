@@ -39,7 +39,7 @@ import { useAuth } from "@/lib/auth-context";
 const editUserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().optional(),
-  role: z.enum(["admin", "manager", "cashier", "warehouse_staff", "driver"]),
+  role: z.string().min(1, "Please select a role"),
   branchId: z.string().nullable().optional(),
   isActive: z.boolean(),
 });
@@ -110,11 +110,11 @@ export function EditUserDialog({
         branchId: values.branchId === "null" ? null : values.branchId,
       };
       const updatedUser = await updateUser(token, user.id, payload);
-      
+
       // Also assign the granular role in the RBAC system
       const roleId = availableRoles.find(r => r.code === values.role)?.id;
       if (roleId) {
-          await assignUserRoles(token, user.id, [roleId]);
+        await assignUserRoles(token, user.id, [roleId]);
       }
 
       toast("User updated successfully", "success");
@@ -176,10 +176,10 @@ export function EditUserDialog({
                         <SelectValue placeholder="Select a role" />
                       </SelectTrigger>
                     </FormControl>
-                     <SelectContent>
-                        {availableRoles.map(role => (
-                            <SelectItem key={role.id} value={role.code}>{role.name}</SelectItem>
-                        ))}
+                    <SelectContent>
+                      {availableRoles.map(role => (
+                        <SelectItem key={role.id} value={role.code}>{role.name}</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

@@ -1,6 +1,6 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { AppError, ErrorCode } from '../../lib/errors.js';
-import { ValuationService } from '../../lib/services/valuation.service.js';
+import { Prisma, type PrismaClient } from '../../generated';
+import { AppError, ErrorCode } from '../../lib/errors';
+import { ValuationService } from '../../lib/services/valuation.service';
 
 /**
  * Sales Service - Handles sales order and dispatch operations
@@ -112,7 +112,7 @@ export class SalesService {
     const soNumber = `SO-${Date.now()}`;
 
     // Create sales order with items in transaction
-    const salesOrder = await this.prisma.$transaction(async (tx) => {
+    const salesOrder = await this.prisma.$transaction(async (tx: any) => {
       const createdSO = await tx.salesOrder.create({
         data: {
           soNumber,
@@ -129,7 +129,7 @@ export class SalesService {
 
       // Create line items
       for (const item of validatedItems) {
-        await tx.soItem.create({
+        await tx.sOItem.create({
           data: {
             salesOrderId: createdSO.id,
             productId: item.productId,
@@ -338,7 +338,7 @@ export class SalesService {
         for (const dispatchItem of items) {
           // Find the SO item
           const soItem = salesOrder.items.find(
-            (item) => item.id === dispatchItem.soItemId
+            (item: any) => item.id === dispatchItem.soItemId
           );
           if (!soItem) {
             throw new AppError(
@@ -381,7 +381,7 @@ export class SalesService {
           });
 
           // Update SO item's dispatched quantity
-          await tx.soItem.update({
+          await tx.sOItem.update({
             where: { id: dispatchItem.soItemId },
             data: {
               qtyDispatched: {
@@ -392,12 +392,12 @@ export class SalesService {
         }
 
         // Update sales order status based on dispatch progress
-        const updatedSOItems = await tx.soItem.findMany({
+        const updatedSOItems = await tx.sOItem.findMany({
           where: { salesOrderId: soId },
         });
 
         const allDispatched = updatedSOItems.every(
-          (item) => item.qtyDispatched >= item.qtyRequested
+          (item: any) => item.qtyDispatched >= item.qtyRequested
         );
 
         if (allDispatched) {

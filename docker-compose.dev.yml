@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Development
+  postgres-dev:
+    image: postgres:15-alpine
+    container_name: zoho-postgres-dev
+    environment:
+      POSTGRES_DB: zoho_erp_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    networks:
+      - zoho-dev-network
+
+  # Redis Cache for Development
+  redis-dev:
+    image: redis:7-alpine
+    container_name: zoho-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - zoho-dev-network
+
+  # Backend Development
+  backend-dev:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: zoho-backend-dev
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres123@postgres-dev:5432/zoho_erp_dev
+      JWT_SECRET: development-jwt-secret-key-minimum-32-characters
+      JWT_REFRESH_SECRET: development-refresh-secret-key-minimum-32-characters
+      SESSION_SECRET: development-session-secret-key-minimum-32-characters
+      CORS_ORIGIN: http://localhost:3000
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      - postgres-dev
+      - redis-dev
+    networks:
+      - zoho-dev-network
+    command: npm run dev
+
+  # Frontend Development
+  frontend-dev:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: zoho-frontend-dev
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend-dev
+    networks:
+      - zoho-dev-network
+    command: npm run dev
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+
+networks:
+  zoho-dev-network:
+    driver: bridge

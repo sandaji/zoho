@@ -129,6 +129,7 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   branchId: 'branchId',
   isActive: 'isActive',
+  hasSystemAccess: 'hasSystemAccess',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -292,6 +293,10 @@ exports.Prisma.CustomerScalarFieldEnum = {
   phone: 'phone',
   address: 'address',
   taxId: 'taxId',
+  customerType: 'customerType',
+  creditLimit: 'creditLimit',
+  currentBalance: 'currentBalance',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -440,6 +445,8 @@ exports.Prisma.VendorScalarFieldEnum = {
   address: 'address',
   taxId: 'taxId',
   website: 'website',
+  paymentTerms: 'paymentTerms',
+  leadTimeDays: 'leadTimeDays',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -453,6 +460,7 @@ exports.Prisma.PurchaseOrderScalarFieldEnum = {
   branchId: 'branchId',
   requestedById: 'requestedById',
   approvedById: 'approvedById',
+  destinationWarehouseId: 'destinationWarehouseId',
   subtotal: 'subtotal',
   tax: 'tax',
   total: 'total',

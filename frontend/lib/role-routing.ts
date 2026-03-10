@@ -18,6 +18,7 @@ export const ROLE_DASHBOARD_ROUTES: Record<string, string> = {
   cashier: "/dashboard/pos",
   warehouse_staff: "/dashboard/inventory",
   driver: "/dashboard/fleet",
+  procurement: "/dashboard/purchasing",
   user: "/dashboard", // fallback for generic users
 };
 
@@ -31,6 +32,7 @@ export const ROLE_PRIORITY = [
   "branch_manager",
   "manager",
   "accountant",
+  "procurement",
   "hr",
   "cashier",
   "warehouse_staff",
@@ -61,6 +63,7 @@ export const ROLE_DISPLAY_NAMES: Record<string, string> = {
   branch_manager: "Branch Manager",
   manager: "Manager",
   accountant: "Accountant",
+  procurement: "Procurement & Purchases",
   hr: "HR Manager",
   cashier: "Cashier",
   warehouse_staff: "Warehouse Staff",

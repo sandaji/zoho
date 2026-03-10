@@ -1,3 +1,5 @@
+import { frontendEnv } from "../env";
+
 /**
  * Admin API Client
  * Handles all admin dashboard API calls
@@ -19,7 +21,7 @@ import type {
   PaginatedResponse,
 } from "@/lib/types/admin";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 class AdminApiClient {
   private getHeaders(): HeadersInit {

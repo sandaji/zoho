@@ -17,7 +17,7 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 export interface Column<T> {
   key: keyof T | string;
   label: string;
-  render?: (value: unknown, row: T) => React.ReactNode;
+  render?: (value: any, row: T) => React.ReactNode;
   className?: string;
 }
 
@@ -135,11 +135,10 @@ export function AdminTable<T extends Record<string, any>>({
                   {paginatedData.map((row, rowIndex) => (
                     <TableRow
                       key={rowIndex}
-                      className={`border-emerald-50 transition-colors ${
-                        onRowClick
+                      className={`border-emerald-50 transition-colors ${onRowClick
                           ? "cursor-pointer hover:bg-emerald-50/60"
                           : "hover:bg-emerald-50/40"
-                      }`}
+                        }`}
                       onClick={() => onRowClick?.(row)}
                     >
                       {columns.map((col) => {

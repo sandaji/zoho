@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Plus, 
-  Search, 
+import { frontendEnv } from "@/lib/env";
+import {
+  Plus,
+  Search,
   MoreHorizontal,
   Clock,
   CheckCircle2,
@@ -11,13 +12,13 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -40,12 +41,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
@@ -54,7 +55,7 @@ export default function ReceivablesPage() {
   const [receivables, setReceivables] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  
+
   // Payment Modal State
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedAR, setSelectedAR] = useState<any>(null);
@@ -73,7 +74,7 @@ export default function ReceivablesPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/ar/list`, {
+      const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/list`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -89,14 +90,14 @@ export default function ReceivablesPage() {
 
   const getStatusBadge = (status: string, dueDate: string) => {
     const isOverdue = new Date() > new Date(dueDate);
-    
+
     switch (status) {
       case "paid":
         return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Paid</Badge>;
       case "partial":
         return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none">Partial</Badge>;
       case "outstanding":
-        return isOverdue 
+        return isOverdue
           ? <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">Overdue</Badge>
           : <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Outstanding</Badge>;
       default:
@@ -117,14 +118,14 @@ export default function ReceivablesPage() {
 
   const handleRecordPayment = async () => {
     if (!selectedAR) return;
-    
+
     try {
       const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/finance/ar/payment`, {
+      const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/payment`, {
         method: "POST",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
           receivableId: selectedAR.id,
@@ -144,7 +145,7 @@ export default function ReceivablesPage() {
     }
   };
 
-  const filteredReceivables = receivables.filter(ar => 
+  const filteredReceivables = receivables.filter(ar =>
     ar.invoice_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
     ar.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -213,8 +214,8 @@ export default function ReceivablesPage() {
         <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <Input 
-              placeholder="Search invoices or customers..." 
+            <Input
+              placeholder="Search invoices or customers..."
               className="pl-9 bg-white border-slate-200 focus:ring-blue-500 flex-1"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -307,7 +308,7 @@ export default function ReceivablesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Invoice Options</DropdownMenuLabel>
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           className="gap-2 cursor-pointer"
                           onClick={() => handleOpenPayment(ar)}
                         >
@@ -344,17 +345,17 @@ export default function ReceivablesPage() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Payment Amount (KES)</Label>
-              <Input 
-                type="number" 
-                value={paymentData.amount} 
+              <Input
+                type="number"
+                value={paymentData.amount}
                 onChange={(e) => setPaymentData({ ...paymentData, amount: Number(e.target.value) })}
               />
               <p className="text-[10px] text-slate-400">Remaining balance: KES {selectedAR?.balance.toLocaleString()}</p>
             </div>
             <div className="space-y-2">
               <Label>Payment Method</Label>
-              <Select 
-                value={paymentData.paymentMethod} 
+              <Select
+                value={paymentData.paymentMethod}
                 onValueChange={(v) => setPaymentData({ ...paymentData, paymentMethod: v })}
               >
                 <SelectTrigger>
@@ -370,16 +371,16 @@ export default function ReceivablesPage() {
             </div>
             <div className="space-y-2">
               <Label>Reference Number</Label>
-              <Input 
-                placeholder="e.g. TRN12345678" 
+              <Input
+                placeholder="e.g. TRN12345678"
                 value={paymentData.referenceNo}
                 onChange={(e) => setPaymentData({ ...paymentData, referenceNo: e.target.value })}
               />
             </div>
             <div className="space-y-2">
               <Label>Notes</Label>
-              <Input 
-                placeholder="Optional payment notes" 
+              <Input
+                placeholder="Optional payment notes"
                 value={paymentData.notes}
                 onChange={(e) => setPaymentData({ ...paymentData, notes: e.target.value })}
               />

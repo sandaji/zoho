@@ -40,6 +40,7 @@ interface GetProductsQuery {
   category?: string;
   status?: string;
   branchId?: string; // Branch-specific inventory filtering
+  vendorId?: string; // Vendor-specific filtering
   sortBy?: "name" | "sku" | "price" | "createdAt" | "quantity";
   sortOrder?: "asc" | "desc";
 }
@@ -223,7 +224,7 @@ export class ProductService {
    */
   async getProducts(query: GetProductsQuery) {
     try {
-      const { page, limit, search, category, status, branchId } = query;
+      const { page, limit, search, category, status, branchId, vendorId } = query;
       const skip = (page - 1) * limit;
 
       // Build filter conditions for products table
@@ -245,6 +246,10 @@ export class ProductService {
 
       if (status) {
         where.status = status;
+      }
+
+      if (vendorId) {
+        where.vendorId = vendorId;
       }
 
       // Build sort order

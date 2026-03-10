@@ -1,49 +1,244 @@
-model User {
-  id            String   @id @default(cuid())
-  userName      String   @unique // <-- ADDED: Fast login identifier
-  email         String   @unique
-  passwordHash  String   // Hashed via bcrypt
-  firstName     String
-  lastName      String
-  
-  // RBAC & Multi-Branch
-  role          Role     @default(SALES_REP) // Enum defined previously
-  branchId      String?  // Locked to a specific branch, or global if null
-  
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-
-  // Relations (Assumes Branch model exists)
-  // branch        Branch?  @relation(fields: [branchId], references: [id])
-}
-
-**Role & Objective:**
-You are a Principal Security & Full-Stack Engineer. We are building the **User & Role Management** module for our ERP.
-Public registration is strictly forbidden. Only an Admin can create user accounts and assign roles. 
-Your task is to build the backend API for user provisioning and the Admin Dashboard UI to manage these users.
-
-**Phase 1: Database & Auth Constraints**
-1. Review my `schema.prisma`. Ensure the `User` model uses the `Role` enum (SUPER_ADMIN, BRANCH_MANAGER, PROCUREMENT_OFFICER, WAREHOUSE_MANAGER, WAREHOUSE_CLERK, SALES_REP).
-2. If there is a public `/register` or `/signup` page in the `app/` directory, **delete it or disable it**. Authentication must be strictly login-only (`/login`).
-
-**Phase 2: Secure API Routes (`app/api/admin/users/route.ts`)**
-Create a `POST` and `GET` route for user management.
-* **RBAC Check:** Use `verifyAuth`. If the user requesting this endpoint is NOT a `SUPER_ADMIN` or `BRANCH_MANAGER`, return `403 Forbidden`. (Branch Managers can only create users for their specific branch).
-* **POST Logic:** Accept `email`, `firstName`, `lastName`, `role`, `branchId`, and a `password` (which MUST be hashed using `bcrypt` before saving to Prisma).
-* **GET Logic:** Return a list of all users, excluding their `passwordHash`.
-
-"Make sure to include userName in the POST API validation, and add a userName text input field to the Provision User Modal in the UI. Ensure the API checks if the userName is already taken before creating the user."
-
-**Phase 3: The Admin UI (`app/dashboard/admin/users/page.tsx`)**
-1. **The Layout:** An enterprise data table listing all active system users, their Roles (rendered as colored badges), and their assigned Branch.
-2. **The "Provision User" Modal:** * A form containing: First Name, Last Name, Email, Temporary Password.
-   * A `<Select>` dropdown for **Role**.
-   * A `<Select>` dropdown for **Branch** (Fetched from `/api/branches`).
-3. **Security Action:** Add a "Deactivate" toggle/button on each user row that flips their `isActive` boolean, instantly revoking their login access without deleting their historical audit trails.
-
-"Make sure to include userName in the POST API validation, and add a userName text input field to the Provision User Modal in the UI. Ensure the API checks if the userName is already taken before creating the user."
-
-**Design System:**
-* Primary Color: `emerald-600`.
-* Role Badges: Use distinct, subtle colors for roles (e.g., Admin = `bg-purple-100 text-purple-800`, Clerk = `bg-blue-100 text-blue-800`, Sales = `bg-emerald-100 text-emerald-800`).
-* Use Shadcn UI (`Table`, `Dialog`, `Select`, `Input`, `Button`).
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+Sidebar.useEffect	@	Sidebar.tsx:132
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+[NEW] Explain Console errors by using Copilot in Edge: click 
+ to explain an error. Learn more
+Don't show again
+purchasing.service.ts:43 
+ 
+ GET http://localhost:5000/v1/purchasing/vendors 401 (Unauthorized)
+getVendors	@	purchasing.service.ts:43
+fetchInitialData	@	page.tsx:99
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+installHook.js:1 
+ Failed to fetch initial data: Error: Failed to fetch vendors: Unauthorized
+    at PurchasingService.getVendors (purchasing.service.ts:52:13)
+    at async Promise.all (index 0)
+    at async fetchInitialData (page.tsx:98:59)
+warehouse.service.ts:217 
+ 
+ GET http://localhost:5000/warehouse 404 (Not Found)
+getWarehouses	@	warehouse.service.ts:217
+fetchInitialData	@	page.tsx:100
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+Sidebar.useEffect	@	Sidebar.tsx:132
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+purchasing.service.ts:43 
+ 
+ GET http://localhost:5000/v1/purchasing/vendors 401 (Unauthorized)
+getVendors	@	purchasing.service.ts:43
+fetchInitialData	@	page.tsx:99
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+installHook.js:1 
+ Failed to fetch initial data: Error: Failed to fetch vendors: Unauthorized
+    at PurchasingService.getVendors (purchasing.service.ts:52:13)
+    at async Promise.all (index 0)
+    at async fetchInitialData (page.tsx:98:59)
+overrideMethod	@	installHook.js:1
+fetchInitialData	@	page.tsx:108
+await in fetchInitialData		
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+warehouse.service.ts:234 
+ 
+ GET http://localhost:5000/v1/products 401 (Unauthorized)
+getProducts	@	warehouse.service.ts:234
+fetchInitialData	@	page.tsx:101
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+warehouse.service.ts:217 
+ 
+ GET http://localhost:5000/warehouse 404 (Not Found)
+getWarehouses	@	warehouse.service.ts:217
+fetchInitialData	@	page.tsx:100
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+warehouse.service.ts:234 
+ 
+ GET http://localhost:5000/v1/products 401 (Unauthorized)
+getProducts	@	warehouse.service.ts:234
+fetchInitialData	@	page.tsx:101
+CreatePurchaseOrderPage.useEffect	@	page.tsx:91
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+Promise.all	@	VM245 <anonymous>:1
+forward-logs-shared.ts:95 [Fast Refresh] rebuilding
+forward-logs-shared.ts:95 [Fast Refresh] done in 203ms
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+forward-logs-shared.ts:95 [HMR] connected
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1
+forward-logs-shared.ts:95 [Fast Refresh] rebuilding
+forward-logs-shared.ts:95 [Fast Refresh] done in 708ms
+Sidebar.tsx:108 
+ 
+ GET http://localhost:5000/v1/admin/stats 401 (Unauthorized)
+Sidebar.useEffect.fetchStats	@	Sidebar.tsx:108
+setInterval		
+Sidebar.useEffect	@	Sidebar.tsx:133
+<Sidebar>		
+DashboardLayout	@	layout.tsx:35
+"use client"		
+Promise.all	@	VM245 <anonymous>:1

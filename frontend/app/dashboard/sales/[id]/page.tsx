@@ -30,7 +30,7 @@ interface SalesDocument {
 async function getDocument(id: string): Promise<SalesDocument | null> {
   // This is a mock fetch. Replace with your actual API call.
   // For example:
-  // const res = await fetch(`http://localhost:5000/v1/sales-documents/${id}`);
+  // const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/sales-documents/${id}`);
   // if (!res.ok) return null;
   // return res.json();
   console.log(`Fetching document with id: ${id}`);

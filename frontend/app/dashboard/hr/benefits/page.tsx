@@ -1,12 +1,12 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Heart, 
-  ShieldCheck, 
-  Stethoscope, 
-  PiggyBank, 
+import { frontendEnv } from "@/lib/env";
+import {
+  Heart,
+  ShieldCheck,
+  Stethoscope,
+  PiggyBank,
   CheckCircle2,
   ExternalLink,
   ChevronRight
@@ -34,10 +34,10 @@ export default function BenefitsPage() {
       try {
         const token = localStorage.getItem("auth_token");
         const [benefitsRes, enrollmentsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/hr/benefits`, {
+          fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/benefits`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/hr/benefits/my-enrollments`, {
+          fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/benefits/my-enrollments`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);

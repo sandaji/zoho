@@ -5,7 +5,7 @@
 
 import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
-import { AccessScope } from "../../../generated/client.js";
+import { AccessScope } from "../../../generated/client";
 
 export interface ResolvedPermission {
   code: string;

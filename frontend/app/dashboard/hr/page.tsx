@@ -1,12 +1,12 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Users, 
-  Briefcase, 
-  TrendingUp, 
-  Heart, 
+import { frontendEnv } from "@/lib/env";
+import {
+  Users,
+  Briefcase,
+  TrendingUp,
+  Heart,
   Calendar,
   UserPlus,
   Award
@@ -25,21 +25,21 @@ export default function HRDashboard() {
 
   useEffect(() => {
     const fetchHRStats = async () => {
-        try {
-            const token = localStorage.getItem("auth_token");
-            const response = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/v1/hr/stats`,
-              {
-                headers: { Authorization: `Bearer ${token}` }
-              }
-            );
-            const data = await response.json();
-            if (data.success) {
-              setStats(data.data);
-            }
-        } catch (error) {
-            console.error("Failed to fetch HR stats", error);
+      try {
+        const token = localStorage.getItem("auth_token");
+        const response = await fetch(
+          `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/stats`,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        const data = await response.json();
+        if (data.success) {
+          setStats(data.data);
         }
+      } catch (error) {
+        console.error("Failed to fetch HR stats", error);
+      }
     };
 
     fetchHRStats();

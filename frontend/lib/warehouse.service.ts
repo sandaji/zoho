@@ -34,7 +34,9 @@ export interface TransferParams {
   limit?: number;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+import { frontendEnv } from "./env";
+
+const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 export const warehouseService = {
   /**
@@ -214,7 +216,7 @@ export const warehouseService = {
    * Get warehouses list
    */
   async getWarehouses(token: string) {
-    const response = await fetch(`${API_URL}/warehouse`, {
+    const response = await fetch(`${API_URL}/v1/warehouse/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -228,10 +230,15 @@ export const warehouseService = {
   },
 
   /**
-   * Get products list for warehouse
+   * Get products list with filtering
    */
-  async getProducts(token: string) {
-    const response = await fetch(`${API_URL}/v1/products`, {
+  async getProducts(token: string, params?: { vendorId?: string; search?: string; limit?: number }) {
+    const queryParams = new URLSearchParams();
+    if (params?.vendorId) queryParams.append("vendorId", params.vendorId);
+    if (params?.search) queryParams.append("search", params.search);
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+
+    const response = await fetch(`${API_URL}/v1/products?${queryParams.toString()}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

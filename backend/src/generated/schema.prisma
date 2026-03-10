@@ -258,13 +258,15 @@ model User {
   createdSalesOrders SalesOrder[]
   dispatchNotes      DispatchNote[] @relation(name: "DispatchNoteCreatedBy")
 
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive        Boolean  @default(true)
+  hasSystemAccess Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([branchId])
   @@index([email])
   @@index([isActive])
+  @@index([hasSystemAccess])
   @@map("users")
 }
 
@@ -343,6 +345,7 @@ model Warehouse {
   sourceTransfers StockTransfer[] @relation("SourceTransfers")
   targetTransfers StockTransfer[] @relation("TargetTransfers")
   stockBatches    StockBatch[]    @relation(name: "StockBatchToWarehouse")
+  purchaseOrders  PurchaseOrder[] @relation("WarehouseToPO")
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -620,11 +623,17 @@ model TransferItem {
 /// Customers/Clients of the business
 model Customer {
   id      String  @id @default(cuid())
-  name    String
+  name    String  @unique
   email   String? @unique
   phone   String?
   address String?
   taxId   String? @map("tax_id") // Business tax ID, VAT number, etc.
+
+  // Enterprise Metrics
+  customerType   String  @default("RETAIL") // RETAIL, WHOLESALE, DISTRIBUTOR
+  creditLimit    Decimal @default(0.00) // Maximum allowed unpaid balance
+  currentBalance Decimal @default(0.00) // How much they currently owe you
+  isActive       Boolean @default(true)
 
   // Relations
   salesDocuments SalesDocument[]
@@ -636,6 +645,7 @@ model Customer {
 
   @@index([email])
   @@index([phone])
+  @@index([name])
   @@map("customers")
 }
 
@@ -997,6 +1007,10 @@ model Vendor {
   taxId   String? @map("tax_id")
   website String?
 
+  // Enterprise Metrics
+  paymentTerms String @default("NET_30") // e.g., NET_30, NET_60, CASH_ON_DELIVERY
+  leadTimeDays Int    @default(7) // Average days to deliver
+
   // Relations
   purchaseOrders PurchaseOrder[]
   products       Product[]
@@ -1029,6 +1043,9 @@ model PurchaseOrder {
 
   approvedById String?
   approvedBy   User?   @relation("ApprovedByPO", fields: [approvedById], references: [id], onDelete: SetNull)
+
+  destinationWarehouseId String?
+  destinationWarehouse   Warehouse? @relation("WarehouseToPO", fields: [destinationWarehouseId], references: [id], onDelete: SetNull)
 
   // Financials
   subtotal Float @default(0)
