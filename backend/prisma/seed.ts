@@ -2,7 +2,6 @@
 
 import 'dotenv/config';
 import { prisma } from '../src/lib/db';
-// Enum imports removed to avoid path issues
 
 import bcrypt from 'bcrypt';
 
@@ -27,63 +26,17 @@ async function main() {
 
   console.log('🧹 Cleaning existing data...');
   const modelsToClear: (keyof typeof prisma)[] = [
-    'purchaseOrderItem',
-    'purchaseOrder',
-    'approvalRequest',
-    'vendor',
-    'roleAssignment',
-    'rolePermission',
-    'permission',
-    'role',
-    'module',
-    'benefitEnrollment',
-    'benefit',
-    'attendance',
-    'leaveRequest',
-    'leaveAllocation',
-    'leaveType',
-    'performanceEvaluation',
-    'goal',
-    'employeeTransfer',
-    'interview',
-    'applicant',
-    'jobPosting',
-    'payment',
-    'financeTransaction',
-    'journalEntry',
-    'journal',
-    'fiscalPeriod',
-    'fiscalYear',
-    'budget',
-    'bankStatementLine',
-    'bankStatement',
-    'bankAccount',
-    'accountReceivable',
-    'accountPayable',
-    'chartOfAccount',
-    'taxRecord',
-    'financialForecast',
-    'delivery',
-    'truck',
-    'stockMovement',
-    'transferItem',
-    'stockTransfer',
-    'salesDocumentItem',
-    'salesDocument',
-    'documentSequence',
-    'customer',
-    'salesDocumentItem',
-    'salesDocument',
-    'documentSequence',
-    'customer',
-    // 'salesItem', 
-    // 'sales',
-    'payroll',
-    'inventory',
-    'product',
-    'warehouse',
-    'user',
-    'branch',
+    'auditLog', 'developmentPlan', 'performanceEvaluation', 'goal', 'interview', 'applicant', 'jobPosting',
+    'leaveRequest', 'leaveAllocation', 'leaveType', 'benefitEnrollment', 'benefit', 'taxRecord',
+    'financialAlert', 'financialForecast', 'bankTransaction', 'bankAccount', 'aPPayment', 'accountPayable',
+    'aRPayment', 'accountReceivable', 'bankStatementLine', 'bankStatement', 'budget', 'journalEntry',
+    'fiscalPeriod', 'fiscalYear', 'journal', 'chartOfAccount', 'payroll', 'dailySpendingLimit', 'savingsGoal',
+    'financeTransaction', 'delivery', 'truck', 'gRNItem', 'goodsReceiptNote', 'purchaseOrderItem',
+    'approvalRequest', 'purchaseOrder', 'vendor', 'cashierSession', 'dispatchItem', 'dispatchNote',
+    'sOItem', 'salesOrder', 'documentSequence', 'payment', 'salesDocumentItem', 'salesDocument', 'customer',
+    'transferItem', 'stockTransfer', 'stockMovement', 'stockBatch', 'inventory', 'branchInventory',
+    'product', 'warehouse', 'employeeTransfer', 'roleAssignment', 'rolePermission', 'permission',
+    'role', 'module', 'user', 'branch'
   ];
 
   for (const model of modelsToClear) {
@@ -211,38 +164,43 @@ async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const admin = await prisma.user.create({
-    data: { email: 'admin@lunatech.co.ke', name: 'Admin User', role: 'admin', passwordHash: hashedPassword, branchId: mainWarehouse.id },
+    data: { email: 'admin@zoho.co.ke', name: 'Admin User', role: 'admin', passwordHash: hashedPassword, branchId: mainWarehouse.id },
   });
   await prisma.roleAssignment.create({ data: { userId: admin.id, roleId: superAdminRole.id } });
 
   const manager = await prisma.user.create({
-    data: { email: 'manager@lunatech.co.ke', name: 'Jane Smith', role: 'manager', passwordHash: hashedPassword, branchId: westlandsBranch.id },
+    data: { email: 'manager@zoho.co.ke', name: 'Jane Smith', role: 'manager', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
   await prisma.roleAssignment.create({ data: { userId: manager.id, roleId: branchManagerRole.id } });
 
   const warehouseStaff = await prisma.user.create({
-    data: { email: 'warehouse@lunatech.co.ke', name: 'Bob Wilson', role: 'warehouse_staff', passwordHash: hashedPassword, branchId: mainWarehouse.id },
+    data: { email: 'warehouse@zoho.co.ke', name: 'Bob Wilson', role: 'warehouse_staff', passwordHash: hashedPassword, branchId: mainWarehouse.id },
   });
   await prisma.roleAssignment.create({ data: { userId: warehouseStaff.id, roleId: warehouseRole.id } });
 
   const cashier = await prisma.user.create({
-    data: { email: 'cashier@lunatech.co.ke', name: 'Alice Johnson', role: 'cashier', passwordHash: hashedPassword, branchId: westlandsBranch.id },
+    data: { email: 'cashier@zoho.co.ke', name: 'Alice Johnson', role: 'cashier', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
   await prisma.roleAssignment.create({ data: { userId: cashier.id, roleId: cashierRole.id } });
 
   const driver = await prisma.user.create({
-    data: { email: 'driver@lunatech.co.ke', name: 'Michael Brown', role: 'driver', passwordHash: hashedPassword, branchId: westlandsBranch.id },
+    data: { email: 'driver@zoho.co.ke', name: 'Michael Brown', role: 'driver', passwordHash: hashedPassword, branchId: westlandsBranch.id },
   });
 
   console.log('🛍️ Creating products and inventory...');
   const products = [
-    { sku: 'LAP-001', barcode: '123456789001', name: 'Dell Latitude 5420', description: 'Professional Laptop', category: 'Computers', unit_price: 120000, cost_price: 95000, tax_rate: 0.16, quantity: 60, reorder_level: 5 },
-    { sku: 'LAP-002', barcode: '123456789002', name: 'HP Elitebook 840', description: 'Enterprise Laptop', category: 'Computers', unit_price: 115000, cost_price: 92000, tax_rate: 0.16, quantity: 40, reorder_level: 5 },
+    { sku: 'TRK 5213', barcode: '123456789001', name: 'TRONIC TWIN SOCKET', description: '13A 2G Switched Socket', category: 'ACCESSORIES', unit_price: 350, cost_price: 285, tax_rate: 0.16, quantity: 6000, reorder_level: 2000 },
+    { sku: 'TRK 7864', barcode: '123456788901', name: 'Socket White 1.25mm Copper Cable', description: '1.25mm Copper Cable extension', category: 'Extensions & Adaptors', unit_price: 1545, cost_price: 735, tax_rate: 0.16, quantity: 700, reorder_level: 200 },
+    { sku: 'MG 100L-0063-04', barcode: '123454689001', name: 'MCCB 63A 4-Pole', description: 'MCCB 63A 4-Pole – Industrial Circuit Breaker', category: 'Switch Gear', unit_price: 4860, cost_price: 3500, tax_rate: 0.16, quantity: 60, reorder_level: 15 },
+    { sku: 'EM T18H', barcode: '1208454723401', name: 'Mechanical Timer', description: 'Mechanical Timer Switch 16Amps', category: 'Protection Device', unit_price: 350, cost_price: 285, tax_rate: 0.16, quantity: 6000, reorder_level: 2000 },
+    { sku: 'EST EMGR-03', barcode: '123456789981', name: 'Emergency Solar Floodlight', description: 'ESTIA Solar LED Emergency Flood Light', category: 'FLOODLIGHTS', unit_price: 3100, cost_price: 1400, tax_rate: 0.16, quantity: 30, reorder_level: 5 },
+    { sku: 'VP FG13-BS', barcode: '123456789002', name: 'TRONIC 13A FRIDGE GUARD', description: '13A Fridge Guard', category: 'GUARDS', unit_price: 850, cost_price: 2200, tax_rate: 0.16, quantity: 2580, reorder_level: 500 },
   ];
 
   const createdProducts = [];
   for (const p of products) {
-    const prod = await prisma.product.create({ data: p });
+    const { quantity, reorder_level, ...productData } = p;
+    const prod = await prisma.product.create({ data: productData });
     createdProducts.push(prod);
 
     // Split inventory between warehouses
@@ -254,7 +212,7 @@ async function main() {
   }
 
   console.log('🚚 Creating trucks...');
-  await prisma.truck.create({ data: { registration: 'KCA 123A', model: 'Toyota Hiace', capacity: 2000, license_plate: 'KCA-123A' } });
+  await prisma.truck.create({ data: { registration: 'KCA 123A', model: 'ASHOK LEYLAND', capacity: 2000, license_plate: 'KCA-123A' } });
 
   console.log('🛒 Creating sample sales... (Legacy Sales model removed)');
   // Legacy sales seeding removed

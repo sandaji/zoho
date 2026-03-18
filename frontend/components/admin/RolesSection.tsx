@@ -99,20 +99,20 @@ export default function RolesSection() {
       render: (code: string) => <code className="text-xs bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">{code}</code>,
     },
     {
-      key: "_count",
+      key: "_count.permissions",
       label: "Permissions",
-      render: (count: { permissions: number; users: number } | undefined) => (
+      render: (_: any, role: Role) => (
         <Badge variant="outline" className="font-mono">
-          {count?.permissions || 0} Permissions
+          {role._count?.permissions || 0} Permissions
         </Badge>
       ),
     },
     {
-      key: "_count",
+      key: "_count.users",
       label: "Users",
-      render: (count: { permissions: number; users: number } | undefined) => (
+      render: (_: any, role: Role) => (
         <span className="text-sm text-slate-600">
-          {count?.users || 0} Users
+          {role._count?.users || 0} Users
         </span>
       ),
     },

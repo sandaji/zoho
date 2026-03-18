@@ -39,32 +39,35 @@ export default function ProductsPage() {
   } = useInventory();
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
 
   // Get the active branch inventory data
   const getBranchInventoryData = (product: any) => {
-    if (!filters.branchId || !product.branchInventory) {
+    if (filters.branchId && product.branchInventory) {
+      // Branch selected — use that branch's inventory
+      const branchInv = product.branchInventory.find(
+        (bi: any) => bi.branchId === filters.branchId
+      );
+      if (branchInv) {
+        return { ...branchInv, branch: branchInv.branch?.name || "Unassigned" };
+      }
+      return { quantity: 0, reorder_level: 10, reorder_quantity: 20, branch: "No Inventory" };
+    }
+
+    // No branch selected — aggregate across all branch inventories
+    if (product.branchInventory && product.branchInventory.length > 0) {
+      const totalQty = product.branchInventory.reduce((sum: number, bi: any) => sum + (bi.quantity || 0), 0);
+      const maxReorder = Math.max(...product.branchInventory.map((bi: any) => bi.reorder_level || 10));
+      const maxReorderQty = Math.max(...product.branchInventory.map((bi: any) => bi.reorder_quantity || 20));
       return {
-        quantity: 0,
-        reorder_level: 10,
-        reorder_quantity: 20,
-        branch: "Unassigned",
+        quantity: totalQty,
+        reorder_level: maxReorder,
+        reorder_quantity: maxReorderQty,
+        branch: "All Branches",
       };
     }
-    const branchInv = product.branchInventory.find(
-      (bi: any) => bi.branchId === filters.branchId
-    );
-    if (!branchInv) {
-      return {
-        quantity: 0,
-        reorder_level: 10,
-        reorder_quantity: 20,
-        branch: "No Inventory",
-      };
-    }
-    return {
-      ...branchInv,
-      branch: branchInv.branch?.name || "Unassigned",
-    };
+
+    return { quantity: 0, reorder_level: 10, reorder_quantity: 20, branch: "Unassigned" };
   };
 
   // Transform products for the table
@@ -86,6 +89,7 @@ export default function ProductsPage() {
         : "in_stock" as any,
       lastRestocked: product.updatedAt,
       branch: branchInv.branch,
+      _raw: product, // Keep raw product for editing
     };
   });
 
@@ -204,6 +208,7 @@ export default function ProductsPage() {
           pagination={pagination}
           onSort={setSort}
           onPageChange={goToPage}
+          onEdit={(item) => setEditingProduct((item as any)._raw)}
           currentSort={{
             sortBy: filters.sortBy,
             sortOrder: filters.sortOrder
@@ -216,6 +221,14 @@ export default function ProductsPage() {
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onProductAdded={refresh}
+      />
+
+      {/* Edit Product Dialog */}
+      <AddProductDialog
+        open={!!editingProduct}
+        onOpenChange={(open) => !open && setEditingProduct(null)}
+        onProductAdded={refresh}
+        editProduct={editingProduct}
       />
     </div>
   );
