@@ -7,14 +7,14 @@ import PDFDocument from "pdfkit";
 // APPROVAL THRESHOLDS (KSH - Kenyan Shilling)
 // ============================================================================
 enum ApprovalLevel {
-  STANDARD = 'standard',        // < KSH 10,000
-  HIGH_VALUE = 'high_value',    // KSH 10,000 - 100,000
-  EXECUTIVE = 'executive',      // > KSH 100,000
+  STANDARD = "standard", // < KSH 10,000
+  HIGH_VALUE = "high_value", // KSH 10,000 - 100,000
+  EXECUTIVE = "executive", // > KSH 100,000
 }
 
 const APPROVAL_THRESHOLDS = {
-  STANDARD_MAX: 10000,          // KSH 10,000
-  HIGH_VALUE_MAX: 100000,       // KSH 100,000
+  STANDARD_MAX: 10000, // KSH 10,000
+  HIGH_VALUE_MAX: 100000, // KSH 100,000
   // Above 100k = executive
 };
 
@@ -31,30 +31,31 @@ function getApprovalLevel(poTotal: number): ApprovalLevel {
 // ============================================================================
 // VALID STATE TRANSITIONS (State Machine)
 // ============================================================================
-const VALID_STATE_TRANSITIONS: Record<PurchaseOrderStatus, PurchaseOrderStatus[]> = {
+const VALID_STATE_TRANSITIONS: Record<
+  PurchaseOrderStatus,
+  PurchaseOrderStatus[]
+> = {
   [PurchaseOrderStatus.DRAFT]: [
     PurchaseOrderStatus.SUBMITTED,
-    PurchaseOrderStatus.CANCELLED
+    PurchaseOrderStatus.CANCELLED,
   ],
   [PurchaseOrderStatus.SUBMITTED]: [
     PurchaseOrderStatus.APPROVED,
-    PurchaseOrderStatus.DRAFT,          // Can revert
-    PurchaseOrderStatus.CANCELLED
+    PurchaseOrderStatus.DRAFT, // Can revert
+    PurchaseOrderStatus.CANCELLED,
   ],
   [PurchaseOrderStatus.APPROVED]: [
     PurchaseOrderStatus.PARTIALLY_RECEIVED,
     PurchaseOrderStatus.RECEIVED,
-    PurchaseOrderStatus.CANCELLED
+    PurchaseOrderStatus.CANCELLED,
   ],
   [PurchaseOrderStatus.PARTIALLY_RECEIVED]: [
     PurchaseOrderStatus.RECEIVED,
-    PurchaseOrderStatus.CLOSED
+    PurchaseOrderStatus.CLOSED,
   ],
-  [PurchaseOrderStatus.RECEIVED]: [
-    PurchaseOrderStatus.CLOSED
-  ],
-  [PurchaseOrderStatus.CLOSED]: [],       // Terminal state
-  [PurchaseOrderStatus.CANCELLED]: []     // Terminal state
+  [PurchaseOrderStatus.RECEIVED]: [PurchaseOrderStatus.CLOSED],
+  [PurchaseOrderStatus.CLOSED]: [], // Terminal state
+  [PurchaseOrderStatus.CANCELLED]: [], // Terminal state
 };
 
 export class PurchasingService {
@@ -116,7 +117,10 @@ export class PurchasingService {
       doc.text("Unit Price", priceX, tableTop);
       doc.text("Total", totalX, tableTop);
 
-      doc.moveTo(50, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+      doc
+        .moveTo(50, tableTop + 15)
+        .lineTo(550, tableTop + 15)
+        .stroke();
       doc.font("Helvetica");
 
       let y = tableTop + 25;
@@ -138,11 +142,15 @@ export class PurchasingService {
 
       // -- TOTALS --
       doc.font("Helvetica-Bold");
-      doc.text(`Subtotal: ${po.subtotal.toFixed(2)}`, 400, y, { align: "right" });
+      doc.text(`Subtotal: ${po.subtotal.toFixed(2)}`, 400, y, {
+        align: "right",
+      });
       y += 15;
       doc.text(`Tax: ${po.tax.toFixed(2)}`, 400, y, { align: "right" });
       y += 15;
-      doc.fontSize(12).text(`Total: ${po.total.toFixed(2)}`, 400, y, { align: "right" });
+      doc
+        .fontSize(12)
+        .text(`Total: ${po.total.toFixed(2)}`, 400, y, { align: "right" });
 
       // -- FOOTER --
       doc.fontSize(10).font("Helvetica");
@@ -177,7 +185,11 @@ export class PurchasingService {
     });
 
     if (existing) {
-      throw new AppError(ErrorCode.ALREADY_EXISTS, 409, `Vendor with code "${data.code}" already exists (Name: ${existing.name}). Please use a unique code or update the existing vendor.`);
+      throw new AppError(
+        ErrorCode.ALREADY_EXISTS,
+        409,
+        `Vendor with code "${data.code}" already exists (Name: ${existing.name}). Please use a unique code or update the existing vendor.`,
+      );
     }
 
     return prisma.vendor.create({
@@ -225,7 +237,7 @@ export class PurchasingService {
       paymentTerms: string;
       leadTimeDays: number;
       isActive: boolean;
-    }>
+    }>,
   ) {
     const vendor = await this.getVendorById(id);
 
@@ -241,11 +253,7 @@ export class PurchasingService {
   /**
    * List vendors
    */
-  async listVendors(query: {
-    search?: string;
-    skip?: number;
-    take?: number;
-  }) {
+  async listVendors(query: { search?: string; skip?: number; take?: number }) {
     const { search, skip = 0, take = 50 } = query;
 
     const where: Prisma.VendorWhereInput = {
@@ -280,11 +288,11 @@ export class PurchasingService {
     data: {
       vendorId: string;
       warehouseId?: string; // Optional but recommended
-      branchId?: string;    // If not provided, will be resolved from warehouseId
+      branchId?: string; // If not provided, will be resolved from warehouseId
       items: { productId: string; quantity: number; unitPrice: number }[];
       notes?: string;
       expectedDeliveryDate?: string;
-    }
+    },
   ) {
     return prisma.$transaction(async (tx) => {
       // 1. Validate Vendor
@@ -300,16 +308,24 @@ export class PurchasingService {
       if (data.warehouseId) {
         const warehouse = await tx.warehouse.findUnique({
           where: { id: data.warehouseId },
-          select: { branchId: true }
+          select: { branchId: true },
         });
         if (!warehouse) {
-          throw new AppError(ErrorCode.NOT_FOUND, 404, "Target warehouse not found");
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            "Target warehouse not found",
+          );
         }
         resolvedBranchId = warehouse.branchId;
       }
 
       if (!resolvedBranchId) {
-        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Branch ID or Warehouse ID is required");
+        throw new AppError(
+          ErrorCode.BAD_REQUEST,
+          400,
+          "Branch ID or Warehouse ID is required",
+        );
       }
 
       // 2. Generate PO Number
@@ -330,18 +346,22 @@ export class PurchasingService {
         // Enforce single-vendor logic: Check if product belongs to the PO vendor
         const product = await tx.product.findUnique({
           where: { id: item.productId },
-          select: { vendorId: true, name: true }
+          select: { vendorId: true, name: true },
         });
 
         if (!product) {
-          throw new AppError(ErrorCode.NOT_FOUND, 404, `Product ${item.productId} not found`);
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            `Product ${item.productId} not found`,
+          );
         }
 
         if (product.vendorId !== data.vendorId) {
           throw new AppError(
             ErrorCode.VALIDATION_ERROR,
             400,
-            `Product "${product.name}" does not belong to the selected vendor. SAP discipline requires all items in a PO to match the vendor.`
+            `Product "${product.name}" does not belong to the selected vendor. SAP discipline requires all items in a PO to match the vendor.`,
           );
         }
 
@@ -369,7 +389,9 @@ export class PurchasingService {
           tax: subtotal * 0.16,
           total: subtotal * 1.16,
           notes: data.notes,
-          expectedDeliveryDate: data.expectedDeliveryDate ? new Date(data.expectedDeliveryDate) : null,
+          expectedDeliveryDate: data.expectedDeliveryDate
+            ? new Date(data.expectedDeliveryDate)
+            : null,
           items: {
             create: itemsData,
           },
@@ -421,7 +443,8 @@ export class PurchasingService {
       },
     });
 
-    if (!po) throw new AppError(ErrorCode.NOT_FOUND, 404, "Purchase Order not found");
+    if (!po)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Purchase Order not found");
     return po;
   }
 
@@ -445,11 +468,11 @@ export class PurchasingService {
       skip = 0,
       take = 50,
       userBranchId,
-      userPermissions = []
+      userPermissions = [],
     } = query;
 
     // ✅ NEW: Branch isolation logic
-    const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+    const hasViewAll = userPermissions.includes("purchasing.order.view_all");
     const filterBranchId = branchId || userBranchId;
 
     // Prevent viewing other branches without permission
@@ -457,7 +480,7 @@ export class PurchasingService {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
-        'You can only view Purchase Orders from your branch'
+        "You can only view Purchase Orders from your branch",
       );
     }
 
@@ -478,8 +501,8 @@ export class PurchasingService {
           requestedBy: true,
           approvedBy: true,
           _count: {
-            select: { items: true }
-          }
+            select: { items: true },
+          },
         },
       }),
       prisma.purchaseOrder.count({ where }),
@@ -490,7 +513,7 @@ export class PurchasingService {
 
   /**
    * Update PO Status (Submit, Approve, Close, Cancel)
-   * 
+   *
    * Enforces:
    * - State machine transitions
    * - Segregation of duties (no self-approval)
@@ -501,7 +524,7 @@ export class PurchasingService {
     id: string,
     status: PurchaseOrderStatus,
     userId: string,
-    userPermissions: string[] = []
+    userPermissions: string[] = [],
   ) {
     const po = await this.getPurchaseOrder(id);
 
@@ -510,7 +533,7 @@ export class PurchasingService {
       throw new AppError(
         ErrorCode.INVALID_STATUS,
         400,
-        `Cannot transition from ${po.status} to ${status}. Valid transitions: ${VALID_STATE_TRANSITIONS[po.status]?.join(', ') || 'None'}`
+        `Cannot transition from ${po.status} to ${status}. Valid transitions: ${VALID_STATE_TRANSITIONS[po.status]?.join(", ") || "None"}`,
       );
     }
 
@@ -520,7 +543,7 @@ export class PurchasingService {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          'Segregation of Duties Violation: You cannot approve your own Purchase Order. A different user must approve this LPO.'
+          "Segregation of Duties Violation: You cannot approve your own Purchase Order. A different user must approve this LPO.",
         );
       }
 
@@ -528,35 +551,36 @@ export class PurchasingService {
       const approvalLevel = getApprovalLevel(po.total);
       const requiredPermission = `purchasing.order.approve_${approvalLevel}`;
 
-      const hasRequiredPermission = userPermissions.includes(requiredPermission) ||
-        userPermissions.includes('purchasing.order.approve_executive');
+      const hasRequiredPermission =
+        userPermissions.includes(requiredPermission) ||
+        userPermissions.includes("purchasing.order.approve_executive");
 
       if (!hasRequiredPermission) {
         const thresholdInfo =
           approvalLevel === ApprovalLevel.STANDARD
-            ? 'KSH 10,000'
+            ? "KSH 10,000"
             : approvalLevel === ApprovalLevel.HIGH_VALUE
-              ? 'between KSH 10,000 - 100,000'
-              : 'above KSH 100,000';
+              ? "between KSH 10,000 - 100,000"
+              : "above KSH 100,000";
 
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
           `Insufficient permission to approve this LPO (Amount: KSH ${po.total.toLocaleString()}). ` +
-          `This LPO requires '${requiredPermission}' permission (for amounts ${thresholdInfo}).`
+            `This LPO requires '${requiredPermission}' permission (for amounts ${thresholdInfo}).`,
         );
       }
 
       // ✅ Verify vendor is still active
       const vendor = await prisma.vendor.findUnique({
-        where: { id: po.vendorId }
+        where: { id: po.vendorId },
       });
       if (!vendor?.isActive) {
         throw new AppError(
           ErrorCode.BAD_REQUEST,
           400,
-          `Cannot approve LPO: Vendor "${vendor?.name || 'Unknown'}" has been deactivated. ` +
-          `Please contact the Procurement team to reactivate or select a different vendor.`
+          `Cannot approve LPO: Vendor "${vendor?.name || "Unknown"}" has been deactivated. ` +
+            `Please contact the Procurement team to reactivate or select a different vendor.`,
         );
       }
     }
@@ -580,8 +604,8 @@ export class PurchasingService {
         branch: true,
         requestedBy: true,
         approvedBy: true,
-        items: { include: { product: true } }
-      }
+        items: { include: { product: true } },
+      },
     });
   }
 
@@ -590,7 +614,7 @@ export class PurchasingService {
    */
   private isValidStateTransition(
     currentStatus: PurchaseOrderStatus,
-    newStatus: PurchaseOrderStatus
+    newStatus: PurchaseOrderStatus,
   ): boolean {
     return VALID_STATE_TRANSITIONS[currentStatus]?.includes(newStatus) ?? false;
   }
@@ -606,7 +630,7 @@ export class PurchasingService {
       items: { productId: string; quantity: number }[];
       allowOverReceive?: boolean;
       notes?: string;
-    }
+    },
   ) {
     // RBAC: Check warehouse clerk role
     const user = await prisma.user.findUnique({
@@ -618,14 +642,14 @@ export class PurchasingService {
 
     const allowedRoles = ["WAREHOUSE_CLERK", "WAREHOUSE_MANAGER", "ADMIN"];
     const hasPermission = user?.roles.some((r) =>
-      allowedRoles.includes(r.role.code.toUpperCase())
+      allowedRoles.includes(r.role.code.toUpperCase()),
     );
 
     if (!hasPermission) {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
-        "Only warehouse staff can receive goods"
+        "Only warehouse staff can receive goods",
       );
     }
 
@@ -643,7 +667,7 @@ export class PurchasingService {
         throw new AppError(
           ErrorCode.INVALID_STATUS,
           400,
-          "PO must be APPROVED or PARTIALLY_RECEIVED to receive goods"
+          "PO must be APPROVED or PARTIALLY_RECEIVED to receive goods",
         );
       }
 
@@ -657,7 +681,7 @@ export class PurchasingService {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          "Warehouse must belong to the PO branch"
+          "Warehouse must belong to the PO branch",
         );
       }
 
@@ -671,8 +695,8 @@ export class PurchasingService {
         "GRN-" +
         (lastGRN
           ? (parseInt(lastGRN.grnNumber.split("-")[1]) + 1)
-            .toString()
-            .padStart(6, "0")
+              .toString()
+              .padStart(6, "0")
           : "000001");
 
       // Create GRN
@@ -694,25 +718,22 @@ export class PurchasingService {
         if (receivedItem.quantity <= 0) continue;
 
         const poItem = po.items.find(
-          (item) => item.productId === receivedItem.productId
+          (item) => item.productId === receivedItem.productId,
         );
         if (!poItem) {
           throw new AppError(
             ErrorCode.VALIDATION_ERROR,
             400,
-            `Product ${receivedItem.productId} is not in this PO`
+            `Product ${receivedItem.productId} is not in this PO`,
           );
         }
 
         const remaining = poItem.quantity - poItem.receivedQuantity;
-        if (
-          receivedItem.quantity > remaining &&
-          !data.allowOverReceive
-        ) {
+        if (receivedItem.quantity > remaining && !data.allowOverReceive) {
           throw new AppError(
             ErrorCode.VALIDATION_ERROR,
             400,
-            `Cannot receive ${receivedItem.quantity} of ${poItem.product.name}. Only ${remaining} units remaining.`
+            `Cannot receive ${receivedItem.quantity} of ${poItem.product.name}. Only ${remaining} units remaining.`,
           );
         }
 
@@ -800,20 +821,20 @@ export class PurchasingService {
 
   /**
    * Soft-Delete (Deactivate) a Vendor
-   * 
+   *
    * Prevents deletion if vendor has active Purchase Orders.
    * Uses soft-delete (isActive = false) for audit trail integrity.
    */
   async deleteVendor(vendorId: string): Promise<Vendor> {
     const vendor = await prisma.vendor.findUnique({
-      where: { id: vendorId }
+      where: { id: vendorId },
     });
 
     if (!vendor) {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Vendor not found with ID: ${vendorId}`
+        `Vendor not found with ID: ${vendorId}`,
       );
     }
 
@@ -826,10 +847,10 @@ export class PurchasingService {
             PurchaseOrderStatus.DRAFT,
             PurchaseOrderStatus.SUBMITTED,
             PurchaseOrderStatus.APPROVED,
-            PurchaseOrderStatus.PARTIALLY_RECEIVED
-          ]
-        }
-      }
+            PurchaseOrderStatus.PARTIALLY_RECEIVED,
+          ],
+        },
+      },
     });
 
     if (activePOs > 0) {
@@ -837,7 +858,7 @@ export class PurchasingService {
         ErrorCode.VALIDATION_ERROR,
         400,
         `Cannot deactivate vendor "${vendor.name}": ${activePOs} active LPO(s) exist. ` +
-        `Please cancel or complete these LPOs before deactivating the vendor.`
+          `Please cancel or complete these LPOs before deactivating the vendor.`,
       );
     }
 
@@ -850,4 +871,3 @@ export class PurchasingService {
 }
 
 export type Vendor = Awaited<ReturnType<typeof prisma.vendor.findUnique>>;
-

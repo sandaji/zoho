@@ -6,10 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, TrendingUp, TrendingDown } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { fetchPLQuickPreview } from "@/app/dashboard/finance/lib/api";
-import type { PLQuickPreview } from "@/app/dashboard/finance/types";
+import type { PLQuickPreview as PLQuickPreviewData } from "@/app/dashboard/finance/types";
 
 export const PLQuickPreview = () => {
-  const [current, setCurrent] = useState<PLQuickPreview | null>(null);
+  const [current, setCurrent] = useState<PLQuickPreviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
