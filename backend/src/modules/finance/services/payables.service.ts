@@ -85,7 +85,7 @@ export class PayablesService {
     const allPayables = await prisma.accountPayable.findMany({
       where: {
         status: {
-          in: [APStatus.outstanding, APStatus.partial, APStatus.scheduled],
+          in: [APStatus.outstanding, APStatus.partial, APStatus.overdue],
         },
       },
     });
@@ -94,14 +94,14 @@ export class PayablesService {
     const statusCounts = {
       outstanding: 0,
       partial: 0,
-      scheduled: 0,
+      overdue: 0,
       paid: 0,
     };
 
     const statusTotals = {
       outstanding: 0,
       partial: 0,
-      scheduled: 0,
+      overdue: 0,
       paid: 0,
     };
 
@@ -139,7 +139,7 @@ export class PayablesService {
     );
 
     const totalPayables =
-      statusTotals.outstanding + statusTotals.partial + statusTotals.scheduled;
+      statusTotals.outstanding + statusTotals.partial + statusTotals.overdue;
     const totalAll = totalPayables || 1; // Avoid division by zero
 
     const items = [
@@ -158,11 +158,11 @@ export class PayablesService {
         percentage: (statusTotals.partial / totalAll) * 100,
       },
       {
-        status: "scheduled" as const,
-        label: "Scheduled",
-        count: statusCounts.scheduled,
-        totalAmount: statusTotals.scheduled,
-        percentage: (statusTotals.scheduled / totalAll) * 100,
+        status: "overdue" as const,
+        label: "Overdue",
+        count: statusCounts.overdue,
+        totalAmount: statusTotals.overdue,
+        percentage: (statusTotals.overdue / totalAll) * 100,
       },
       {
         status: "paid" as const,

@@ -73,7 +73,7 @@ router.get(
   "/admin/stats",
   authMiddleware,
   requirePermission("hr.employee.view"),
-  (req, res, next) => adminController.getStats(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => adminController.getStats(req, res, next),
 );
 
 // Branches - Admin only for management, but allow viewing
@@ -81,7 +81,7 @@ router.get(
   "/admin/branches",
   authMiddleware,
   requirePermission("admin.branch.manage"),
-  (req, res, next) => adminController.listBranches(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => adminController.listBranches(req, res, next),
 );
 
 // Warehouses - Allow managers to view
@@ -155,12 +155,12 @@ router.use("/auth", authRoutes);
 // ============================================================================
 
 // Product search - All authenticated users
-router.post("/pos/products/search", authMiddleware, (req, res, next) =>
+router.post("/pos/products/search", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   posController.searchProduct(req, res, next),
 );
 
 // Create sales - Cashiers and above
-router.post("/pos/sales", authMiddleware, (req, res, next) =>
+router.post("/pos/sales", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   posController.createSales(req, res, next),
 );
 
@@ -169,21 +169,21 @@ router.get(
   "/pos/daily-summary",
   authMiddleware,
   requirePermission("sales.order.view_all"),
-  (req, res, next) => posController.getDailySummary(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => posController.getDailySummary(req, res, next),
 );
 
 // Get receipt - All authenticated users
-router.get("/pos/sales/:id/receipt", authMiddleware, (req, res, next) =>
+router.get("/pos/sales/:id/receipt", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   posController.getReceipt(req, res, next),
 );
 
 // Get sales by ID - All authenticated users (must come after specific routes)
-router.get("/pos/sales/:id", authMiddleware, (req, res, next) =>
+router.get("/pos/sales/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   posController.getSalesById(req, res, next),
 );
 
 // List sales - All authenticated users
-router.get("/pos/sales", authMiddleware, (req, res, next) =>
+router.get("/pos/sales", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   posController.listSales(req, res, next),
 );
 
@@ -192,7 +192,7 @@ router.patch(
   "/pos/sales/:id",
   authMiddleware,
   requirePermission("sales.order.manage"),
-  (req, res, next) => posController.updateSales(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => posController.updateSales(req, res, next),
 );
 
 // Approve discount - Managers and admins only
@@ -200,7 +200,7 @@ router.post(
   "/pos/discount/approve",
   authMiddleware,
   requirePermission("sales.order.manage"),
-  (req, res, next) => posController.approveDiscount(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => posController.approveDiscount(req, res, next),
 );
 
 // ============================================================================
@@ -232,7 +232,7 @@ router.use("/products", productRoutes);
 // ============================================================================
 
 // GET /inventory - Get all inventory with filtering and pagination
-router.get("/inventory", authMiddleware, (req, res, next) =>
+router.get("/inventory", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   inventoryController.getInventory(req, res, next),
 );
 
@@ -242,7 +242,7 @@ router.post(
   authMiddleware,
   requirePermission("inventory.stock.adjust"),
   validateFiscalPeriod(),
-  (req, res, next) => inventoryController.adjustInventory(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => inventoryController.adjustInventory(req, res, next),
 );
 
 // POST /inventory/transfer - Transfer between warehouses
@@ -251,19 +251,19 @@ router.post(
   authMiddleware,
   requirePermission("inventory.stock.adjust"),
   validateFiscalPeriod(),
-  (req, res, next) => inventoryController.transferInventory(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => inventoryController.transferInventory(req, res, next),
 );
 
 // Legacy endpoints for backwards compatibility
 router.patch(
   "/inventory/:productId/:warehouseId",
   authMiddleware,
-  (req, res, next) => inventoryController.updateInventory(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => inventoryController.updateInventory(req, res, next),
 );
 router.get(
   "/inventory/:productId/:warehouseId",
   authMiddleware,
-  (req, res, next) => inventoryController.getInventory(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => inventoryController.getInventory(req, res, next),
 );
 
 // ============================================================================
@@ -274,21 +274,21 @@ router.post(
   "/warehouses",
   authMiddleware,
   requirePermission("inventory.warehouse.manage"),
-  (req, res, next) => warehouseController.createWarehouse(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => warehouseController.createWarehouse(req, res, next),
 );
-router.get("/warehouses/:id", authMiddleware, (req, res, next) =>
+router.get("/warehouses/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   warehouseController.getWarehouse(req, res, next),
 );
-router.get("/warehouses", authMiddleware, (req, res, next) =>
+router.get("/warehouses", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   warehouseController.listWarehouses(req, res, next),
 );
 router.patch(
   "/warehouses/:id",
   authMiddleware,
   requirePermission("inventory.warehouse.manage"),
-  (req, res, next) => warehouseController.updateWarehouse(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => warehouseController.updateWarehouse(req, res, next),
 );
-router.get("/warehouses/:id/stock", authMiddleware, (req, res, next) =>
+router.get("/warehouses/:id/stock", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   warehouseController.getWarehouseStock(req, res, next),
 );
 
@@ -297,7 +297,7 @@ router.get("/warehouses/:id/stock", authMiddleware, (req, res, next) =>
 // ============================================================================
 
 // GET /trucks - List all trucks with filtering and pagination
-router.get("/trucks", authMiddleware, (req, res, next) =>
+router.get("/trucks", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   fleetController.getTrucks(req, res, next),
 );
 
@@ -306,7 +306,7 @@ router.post(
   "/deliveries",
   authMiddleware,
   requirePermission("sales.order.create"),
-  (req, res, next) => fleetController.createDelivery(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => fleetController.createDelivery(req, res, next),
 );
 
 // PATCH /deliveries/:id/status - Update delivery status
@@ -314,16 +314,16 @@ router.patch(
   "/deliveries/:id/status",
   authMiddleware,
   requirePermission("sales.order.manage"),
-  (req, res, next) => fleetController.updateDeliveryStatus(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => fleetController.updateDeliveryStatus(req, res, next),
 );
 
 // GET /deliveries/:id/timeline - Get delivery progress timeline
-router.get("/deliveries/:id/timeline", authMiddleware, (req, res, next) =>
+router.get("/deliveries/:id/timeline", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   fleetController.getDeliveryTimeline(req, res, next),
 );
 
 // GET /deliveries - List deliveries with filtering
-router.get("/deliveries", authMiddleware, (req, res, next) =>
+router.get("/deliveries", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   fleetController.listDeliveries(req, res, next),
 );
 
@@ -333,16 +333,16 @@ router.post(
   "/fleet/trucks",
   authMiddleware,
   requirePermission("inventory.product.manage"),
-  (req, res, next) => fleetController.createTruck(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => fleetController.createTruck(req, res, next),
 );
-router.get("/fleet/trucks/:id", authMiddleware, (req, res, next) =>
+router.get("/fleet/trucks/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   fleetController.getTruck(req, res, next),
 );
 router.patch(
   "/fleet/trucks/:id",
   authMiddleware,
   requirePermission("inventory.product.manage"),
-  (req, res, next) => fleetController.updateTruck(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => fleetController.updateTruck(req, res, next),
 );
 
 // Legacy Deliveries
@@ -350,19 +350,19 @@ router.post(
   "/fleet/deliveries",
   authMiddleware,
   requirePermission("sales.order.create"),
-  (req, res, next) => fleetController.createDelivery(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => fleetController.createDelivery(req, res, next),
 );
-router.get("/fleet/deliveries/:id", authMiddleware, (req, res, next) =>
+router.get("/fleet/deliveries/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   fleetController.getDelivery(req, res, next),
 );
-router.get("/fleet/deliveries", authMiddleware, (req, res, next) =>
+router.get("/fleet/deliveries", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   fleetController.listDeliveries(req, res, next),
 );
 router.patch(
   "/fleet/deliveries/:id",
   authMiddleware,
   requirePermission("sales.order.manage"),
-  (req, res, next) => fleetController.updateDelivery(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => fleetController.updateDelivery(req, res, next),
 );
 
 // ============================================================================
@@ -374,16 +374,16 @@ router.post(
   "/hr/users",
   authMiddleware,
   requirePermission("admin.user.manage"),
-  (req, res, next) => hrController.createUser(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => hrController.createUser(req, res, next),
 );
-router.get("/hr/users/:id", authMiddleware, (req, res, next) =>
+router.get("/hr/users/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   hrController.getUser(req, res, next),
 );
 router.patch(
   "/hr/users/:id",
   authMiddleware,
   requirePermission("admin.user.manage"),
-  (req, res, next) => hrController.updateUser(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => hrController.updateUser(req, res, next),
 );
 
 // Payroll
@@ -391,19 +391,19 @@ router.post(
   "/hr/payroll",
   authMiddleware,
   requirePermission("hr.payroll.run"),
-  (req, res, next) => hrController.createPayroll(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => hrController.createPayroll(req, res, next),
 );
-router.get("/hr/payroll/:id", authMiddleware, (req, res, next) =>
+router.get("/hr/payroll/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   hrController.getPayroll(req, res, next),
 );
-router.get("/hr/payroll", authMiddleware, (req, res, next) =>
+router.get("/hr/payroll", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   hrController.listPayroll(req, res, next),
 );
 router.patch(
   "/hr/payroll/:id",
   authMiddleware,
   requirePermission("hr.payroll.run"),
-  (req, res, next) => hrController.updatePayroll(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => hrController.updatePayroll(req, res, next),
 );
 
 // ============================================================================
@@ -416,37 +416,37 @@ router.post(
   "/finance/transactions",
   authMiddleware,
   requirePermission("finance.gl.create"),
-  (req, res, next) => financeController.createTransaction(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => financeController.createTransaction(req, res, next),
 );
-router.get("/finance/transactions/:id", authMiddleware, (req, res, next) =>
+router.get("/finance/transactions/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   financeController.getTransaction(req, res, next),
 );
-router.get("/finance/transactions", authMiddleware, (req, res, next) =>
+router.get("/finance/transactions", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   financeController.listTransactions(req, res, next),
 );
 router.patch(
   "/finance/transactions/:id",
   authMiddleware,
   requirePermission("finance.gl.create"),
-  (req, res, next) => financeController.updateTransaction(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => financeController.updateTransaction(req, res, next),
 );
 router.get(
   "/finance/report",
   authMiddleware,
   requirePermission("finance.report.aging"),
-  (req, res, next) => financeController.getFinancialReport(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => financeController.getFinancialReport(req, res, next),
 );
 router.get(
   "/finance/analytics/revenue",
   authMiddleware,
   requirePermission("finance.report.aging"),
-  (req, res, next) => financeController.getRevenueAnalytics(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => financeController.getRevenueAnalytics(req, res, next),
 );
 router.get(
   "/finance/reports/monthly",
   authMiddleware,
   requirePermission("finance.report.aging"),
-  (req, res, next) => financeController.getMonthlyReport(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => financeController.getMonthlyReport(req, res, next),
 );
 
 // ============================================================================
@@ -457,28 +457,28 @@ router.post(
   "/payroll/run",
   authMiddleware,
   requirePermission("hr.payroll.run"),
-  (req, res, next) => payrollController.runPayroll(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => payrollController.runPayroll(req, res, next),
 );
-router.get("/payroll/:id", authMiddleware, (req, res, next) =>
+router.get("/payroll/:id", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
   payrollController.getPayroll(req, res, next),
 );
 router.patch(
   "/payroll/:id/status",
   authMiddleware,
   requirePermission("hr.payroll.run"),
-  (req, res, next) => payrollController.updatePayrollStatus(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => payrollController.updatePayrollStatus(req, res, next),
 );
 router.get(
   "/payroll/reports/summary",
   authMiddleware,
   requirePermission("hr.payroll.run"),
-  (req, res, next) => payrollController.getPayrollReport(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => payrollController.getPayrollReport(req, res, next),
 );
 router.get(
   "/payroll/analytics/trends",
   authMiddleware,
   requirePermission("hr.payroll.run"),
-  (req, res, next) => payrollController.getPayrollAnalytics(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => payrollController.getPayrollAnalytics(req, res, next),
 );
 
 // ============================================================================
@@ -489,7 +489,7 @@ router.get(
   "/branches/:id/dashboard",
   authMiddleware,
   requirePermission("hr.employee.view"),
-  (req, res, next) => branchController.getDashboard(req, res, next),
+  (req: Request, res: Response, next: NextFunction) => branchController.getDashboard(req, res, next),
 );
 
 // ============================================================================
