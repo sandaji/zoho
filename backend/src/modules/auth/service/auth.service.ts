@@ -294,4 +294,52 @@ export class AuthService {
       permissions,
     };
   }
+
+  /**
+   * Refresh user token
+   * Generates a new JWT token for an authenticated user
+   */
+  async refresh(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { branch: true },
+    });
+
+    if (!user) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
+    }
+
+    // Get permissions for the new token
+    const permissions = await PermissionService.getUserPermissions(user.id);
+    const roles = await PermissionService.getUserRoles(user.id);
+
+    // Add primary role if not in roles list
+    if (user.role && !roles.includes(user.role)) {
+      roles.push(user.role);
+    }
+
+    const tokenPayload: TokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: (user.role || "user") as any,
+      branchId: user.branchId,
+    };
+
+    const token = generateToken(tokenPayload);
+    logger.info({ userId: user.id }, "Token refreshed for user");
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: (user.role || "user") as any,
+        roles,
+        branchId: user.branchId,
+        branch: user.branch,
+        permissions,
+      },
+    };
+  }
 }

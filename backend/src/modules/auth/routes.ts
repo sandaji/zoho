@@ -58,4 +58,15 @@ router.patch(
     authController.updateProfile(req, res, next),
 );
 
+/**
+ * POST /auth/refresh
+ * Refresh authentication token
+ */
+router.post(
+  "/refresh",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    authController.refresh(req, res, next),
+);
+
 export default router;

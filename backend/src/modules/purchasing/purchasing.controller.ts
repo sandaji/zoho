@@ -37,7 +37,8 @@ export class PurchasingController {
   getVendor = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id as string;
-      if (!id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
+      if (!id)
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
 
       const vendor = await this.service.getVendorById(id);
       res.json({
@@ -52,7 +53,8 @@ export class PurchasingController {
   updateVendor = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id as string;
-      if (!id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
+      if (!id)
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Vendor ID is required");
 
       const vendor = await this.service.updateVendor(id, req.body);
       res.json({
@@ -64,11 +66,23 @@ export class PurchasingController {
     }
   };
 
-  createPurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
+  createPurchaseOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      if (!req.user || !req.user.userId) throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
+      if (!req.user || !req.user.userId)
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
 
-      const order = await this.service.createPurchaseOrder(req.user.userId, req.body);
+      const order = await this.service.createPurchaseOrder(
+        req.user.userId,
+        req.body,
+      );
       res.status(201).json({
         success: true,
         data: order,
@@ -78,7 +92,11 @@ export class PurchasingController {
     }
   };
 
-  getPurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
+  getPurchaseOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const id = req.params.id as string;
       if (!id) {
@@ -91,12 +109,12 @@ export class PurchasingController {
       const order = await this.service.getPurchaseOrder(id);
 
       // ✅ NEW: Verify branch access (Branch Isolation)
-      const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+      const hasViewAll = userPermissions.includes("purchasing.order.view_all");
       if (!hasViewAll && order.branchId !== userBranchId) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          'You do not have permission to view Purchase Orders from other branches'
+          "You do not have permission to view Purchase Orders from other branches",
         );
       }
 
@@ -109,7 +127,11 @@ export class PurchasingController {
     }
   };
 
-  listPurchaseOrders = async (req: Request, res: Response, next: NextFunction) => {
+  listPurchaseOrders = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userBranchId = (req as any).user?.branchId;
       const userPermissions = (req as any).user?.permissions || [];
@@ -136,7 +158,11 @@ export class PurchasingController {
   updateStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.user || !req.user.userId) {
-        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
       }
 
       const { status } = req.body;
@@ -154,12 +180,12 @@ export class PurchasingController {
 
       // ✅ NEW: Verify PO belongs to user's branch
       const order = await this.service.getPurchaseOrder(id);
-      const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+      const hasViewAll = userPermissions.includes("purchasing.order.view_all");
       if (!hasViewAll && order.branchId !== userBranchId) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          'Cannot modify Purchase Orders from other branches'
+          "Cannot modify Purchase Orders from other branches",
         );
       }
 
@@ -168,7 +194,7 @@ export class PurchasingController {
         id,
         status as any,
         req.user.userId,
-        userPermissions  // Pass for threshold checking
+        userPermissions, // Pass for threshold checking
       );
 
       res.json({
@@ -180,10 +206,18 @@ export class PurchasingController {
     }
   };
 
-  approvePurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
+  approvePurchaseOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       if (!req.user || !req.user.userId) {
-        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
       }
 
       const id = req.params.id as string;
@@ -197,7 +231,7 @@ export class PurchasingController {
         id,
         PurchaseOrderStatus.APPROVED,
         req.user.userId,
-        userPermissions
+        userPermissions,
       );
 
       res.json({
@@ -212,14 +246,20 @@ export class PurchasingController {
 
   receiveGoods = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      if (!req.user || !req.user.userId) throw new AppError(ErrorCode.UNAUTHORIZED, 401, "User not authenticated");
+      if (!req.user || !req.user.userId)
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
 
       const id = req.params.id as string;
-      if (!id) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      if (!id)
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
       const order = await this.service.receiveGoods(
         id,
         req.user.userId,
-        req.body // expected: { warehouseId, items: [] }
+        req.body, // expected: { warehouseId, items: [] }
       );
 
       res.json({
@@ -244,12 +284,12 @@ export class PurchasingController {
       const order = await this.service.getPurchaseOrder(id);
 
       // ✅ NEW: Verify branch access before generating PDF
-      const hasViewAll = userPermissions.includes('purchasing.order.view_all');
+      const hasViewAll = userPermissions.includes("purchasing.order.view_all");
       if (!hasViewAll && order.branchId !== userBranchId) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          'You do not have permission to download this Purchase Order'
+          "You do not have permission to download this Purchase Order",
         );
       }
 
@@ -277,7 +317,140 @@ export class PurchasingController {
       await this.service.deleteVendor(id);
       res.json({
         success: true,
-        message: "Vendor deactivated successfully"
+        message: "Vendor deactivated successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * GET /purchasing/approvals/pending
+   * Get pending approvals for current user
+   */
+  listPendingApprovals = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const userId = (req as any).user?.userId;
+      if (!userId) {
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
+      }
+
+      const { getPendingApprovalsForUser } =
+        await import("./services/approval.service");
+      const pendingApprovals = await getPendingApprovalsForUser(userId);
+
+      res.json({
+        success: true,
+        data: pendingApprovals,
+        count: pendingApprovals.length,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * POST /purchasing/approvals/{id}/approve
+   * Approve a purchase order through approval workflow
+   */
+  approveApprovalRequest = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const approvalId = req.params.id as string;
+      const userId = (req as any).user?.userId;
+      const { comments } = req.body;
+
+      if (!approvalId || !userId) {
+        throw new AppError(
+          ErrorCode.BAD_REQUEST,
+          400,
+          "Missing required parameters",
+        );
+      }
+
+      const { approvePurchaseOrder } =
+        await import("./services/approval.service");
+      const result = await approvePurchaseOrder(approvalId, userId, comments);
+
+      res.json({
+        success: true,
+        data: result,
+        message: "Purchase order approved successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * POST /purchasing/approvals/{id}/reject
+   * Reject a purchase order through approval workflow
+   */
+  rejectApprovalRequest = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const approvalId = req.params.id as string;
+      const userId = (req as any).user?.userId;
+      const { reason } = req.body;
+
+      if (!approvalId || !userId || !reason) {
+        throw new AppError(
+          ErrorCode.BAD_REQUEST,
+          400,
+          "Missing required parameters",
+        );
+      }
+
+      const { rejectPurchaseOrder } =
+        await import("./services/approval.service");
+      const result = await rejectPurchaseOrder(approvalId, userId, reason);
+
+      res.json({
+        success: true,
+        data: result,
+        message: "Purchase order rejected successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  /**
+   * GET /purchasing/orders/{id}/approvals
+   * Get approval history for a purchase order
+   */
+  listApprovalHistory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const poId = req.params.id as string;
+      if (!poId) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "PO ID is required");
+      }
+
+      const { getApprovalHistory } =
+        await import("./services/approval.service");
+      const history = await getApprovalHistory(poId);
+
+      res.json({
+        success: true,
+        data: history,
       });
     } catch (error) {
       next(error);

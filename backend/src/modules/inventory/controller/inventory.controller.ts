@@ -37,7 +37,7 @@ export class InventoryController {
   async getInventory(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: GetInventoryQueryDTO = req.query as any;
@@ -72,7 +72,7 @@ export class InventoryController {
   async adjustInventory(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: AdjustInventoryDTO = req.body;
@@ -80,7 +80,7 @@ export class InventoryController {
       // Validation
       if (!dto.productId || !dto.warehouseId) {
         throw validationError(
-          "Missing required fields: productId, warehouseId"
+          "Missing required fields: productId, warehouseId",
         );
       }
       if (
@@ -88,7 +88,7 @@ export class InventoryController {
         !["increase", "decrease"].includes(dto.adjustmentType)
       ) {
         throw validationError(
-          "adjustmentType must be 'increase' or 'decrease'"
+          "adjustmentType must be 'increase' or 'decrease'",
         );
       }
       if (!dto.quantity || dto.quantity <= 0) {
@@ -104,7 +104,7 @@ export class InventoryController {
           adjustmentType: dto.adjustmentType,
           quantity: dto.quantity,
         },
-        "POST /inventory/adjust"
+        "POST /inventory/adjust",
       );
 
       const result = await this.service.adjustInventory(dto);
@@ -135,7 +135,7 @@ export class InventoryController {
   async transferInventory(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: TransferInventoryDTO = req.body;
@@ -143,12 +143,12 @@ export class InventoryController {
       // Validation
       if (!dto.productId || !dto.fromWarehouseId || !dto.toWarehouseId) {
         throw validationError(
-          "Missing required fields: productId, fromWarehouseId, toWarehouseId"
+          "Missing required fields: productId, fromWarehouseId, toWarehouseId",
         );
       }
       if (dto.fromWarehouseId === dto.toWarehouseId) {
         throw validationError(
-          "Source and destination warehouses must be different"
+          "Source and destination warehouses must be different",
         );
       }
       if (!dto.quantity || dto.quantity <= 0) {
@@ -162,7 +162,7 @@ export class InventoryController {
           toWarehouse: dto.toWarehouseId,
           quantity: dto.quantity,
         },
-        "POST /inventory/transfer"
+        "POST /inventory/transfer",
       );
 
       const result = await this.service.transferInventory(dto);
@@ -174,6 +174,75 @@ export class InventoryController {
       });
     } catch (error) {
       logger.error(error as Error, "Error in transferInventory");
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/alerts
+   * Retrieve low stock alerts
+   */
+  async getLowStockAlerts(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { InventoryAlertService } =
+        await import("../services/alert.service");
+      const branchId = req.query.branchId as string | undefined;
+      const criticalOnly = req.query.critical === "true";
+
+      let alerts;
+      if (criticalOnly) {
+        alerts = await InventoryAlertService.getCriticalAlerts();
+      } else if (branchId) {
+        alerts = await InventoryAlertService.getBranchAlerts(branchId);
+      } else {
+        alerts = await InventoryAlertService.getLowStockAlerts();
+      }
+
+      res.json({
+        success: true,
+        data: alerts,
+        message: `Found ${alerts.length} low stock alerts`,
+      });
+    } catch (error) {
+      logger.error(error as Error, "Error in getLowStockAlerts");
+      next(error);
+    }
+  }
+
+  /**
+   * POST /inventory/alerts/reorder
+   * Create a reorder suggestion for low stock item
+   */
+  async createReorderSuggestion(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { productId, branchId } = req.body;
+
+      if (!productId || !branchId) {
+        throw validationError("productId and branchId are required");
+      }
+
+      const { InventoryAlertService } =
+        await import("../services/alert.service");
+      const reorderQty = await InventoryAlertService.getSuggestedReorderQty(
+        productId,
+        branchId,
+      );
+
+      res.json({
+        success: true,
+        data: reorderQty,
+        message: "Reorder suggestion calculated successfully",
+      });
+    } catch (error) {
+      logger.error(error as Error, "Error in createReorderSuggestion");
       next(error);
     }
   }

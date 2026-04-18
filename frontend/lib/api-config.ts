@@ -18,6 +18,7 @@ export const API_ENDPOINTS = {
   AUTH_LOGIN: "/v1/auth/login",
   AUTH_REGISTER: "/v1/auth/register",
   AUTH_ME: "/v1/auth/me",
+  AUTH_REFRESH: "/v1/auth/refresh",
 
   // POS
   POS_PRODUCTS_SEARCH: "/v1/pos/products/search",
@@ -33,7 +34,8 @@ export const API_ENDPOINTS = {
   SALES_DOCUMENT_CONVERT: (id: string) => `/v1/sales-documents/documents/${id}/convert`,
   SALES_DOCUMENT_VOID: (id: string) => `/v1/sales-documents/documents/${id}/void`,
   SALES_DOCUMENT_PAYMENT: (id: string) => `/v1/sales-documents/documents/${id}/payments`,
-  SALES_DOCUMENT_CREDIT_NOTE: (invoiceId: string) => `/v1/sales-documents/invoices/${invoiceId}/credit-notes`,
+  SALES_DOCUMENT_CREDIT_NOTE: (invoiceId: string) =>
+    `/v1/sales-documents/invoices/${invoiceId}/credit-notes`,
 
   // Customers
   CUSTOMERS: "/v1/customers",

@@ -114,4 +114,33 @@ export class AuthController {
       next(error);
     }
   }
+
+  /**
+   * POST /auth/refresh
+   * Refresh authentication token
+   */
+  async refresh(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      if (!req.user) {
+        throw new Error("User not authenticated");
+      }
+
+      // Generate a new token for the current user
+      const data = await this.authService.refresh(req.user.userId);
+
+      res.json({
+        success: true,
+        data: {
+          token: data.token,
+          user: data.user,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
