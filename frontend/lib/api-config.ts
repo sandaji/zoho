@@ -4,6 +4,10 @@
  */
 
 import { frontendEnv } from "./env";
+import { getAuthHeaders } from "./api-utils";
+
+// Re-export canonical getAuthHeaders so existing importers of api-config keep working
+export { getAuthHeaders };
 
 // Backend API base URL
 export const API_BASE_URL = frontendEnv.NEXT_PUBLIC_API_URL;
@@ -105,15 +109,4 @@ export const API_ENDPOINTS = {
  */
 export function getApiUrl(endpoint: string): string {
   return `${API_BASE_URL}${endpoint}`;
-}
-
-/**
- * Get auth headers with token
- */
-export function getAuthHeaders(): HeadersInit {
-  const token = localStorage.getItem("auth_token");
-  return {
-    "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
-  };
 }

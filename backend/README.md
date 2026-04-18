@@ -70,3 +70,90 @@ npm run lint
 npm run lint:fix
 npm run type-check
 ```
+
+
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "zoho/backend erp Zoho ERP - Complete monorepo with Next.js frontend and Node.js backend",
+  "keywords": [
+    "erp",
+    "next.js",
+    "typescript",
+    "prisma",
+    "postgresql"
+  ],
+  "license": "ISC",
+  "author": "ijamy vincent",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "npx prisma generate && tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "db:generate": "prisma generate",
+    "perf:migrate": "prisma migrate deploy",
+    "perf:verify": "tsx scripts/verify-performance.ts",
+    "assign-role": "tsx scripts/assign-role.ts",
+    "migrate:sales": "tsx scripts/migrate-sales-to-documents.ts",
+    "migrate:sales:dry-run": "tsx scripts/migrate-sales-to-documents.ts --dry-run",
+    "verify:sales-migration": "tsx scripts/verify-sales-migration.ts",
+    "test": "jest"
+  },
+  "prisma": {
+    "seed": "tsx --env-file=.env prisma/seed.ts"
+  },
+  "dependencies": {
+    "@jest/globals": "^30.3.0",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@prisma/extension-accelerate": "^3.0.1",
+    "@types/pdfkit": "^0.17.5",
+    "bcrypt": "^6.0.0",
+    "boxen": "^8.0.1",
+    "chalk": "^5.6.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.2",
+    "express-validator": "^7.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "pdfkit": "^0.18.0",
+    "pg": "^8.20.0",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "prom-client": "^15.1.3",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.10.0",
+    "uuid": "^13.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@prisma/config": "^7.7.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "@types/supertest": "^7.2.0",
+    "pino-pretty": "^13.1.3",
+    "playwright": "^1.59.1",
+    "prisma": "^7.7.0",
+    "supertest": "^7.2.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.4"
+  }
+}
+

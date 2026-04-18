@@ -41,23 +41,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Hydrate from localStorage on mount
+  // Hydrate from localStorage on mount, then validate the token against the backend.
+  // If the token is stale or has an invalid signature the user is logged out automatically.
   useEffect(() => {
     const storedToken = localStorage.getItem("auth_token");
     const storedUser = localStorage.getItem("auth_user");
 
-    if (storedToken && storedUser) {
-      try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to restore auth state:", error);
-        localStorage.removeItem("auth_token");
-        localStorage.removeItem("auth_user");
-      }
+    if (!storedToken || !storedUser) {
+      setIsLoading(false);
+      return;
     }
 
-    setIsLoading(false);
+    // Optimistically restore state so pages render immediately
+    try {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    } catch (error) {
+      console.error("Failed to restore auth state:", error);
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate the token with the backend in the background
+    const apiBase =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+    fetch(`${apiBase}/v1/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${storedToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          // Token is invalid/expired — clear everything and force re-login
+          console.warn("Stored token rejected by server — logging out.");
+          setToken(null);
+          setUser(null);
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("auth_user");
+        }
+      })
+      .catch(() => {
+        // Server unreachable — keep the token so the UI stays usable offline,
+        // individual API calls will show their own errors.
+        console.warn("Could not validate token: server unreachable.");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   const login = (newToken: string, newUser: User) => {

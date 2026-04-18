@@ -95,7 +95,7 @@ export class FleetService {
    * Atomic transaction ensuring all data is valid before commit
    */
   async createDelivery(
-    dto: CreateDeliveryDTO
+    dto: CreateDeliveryDTO,
   ): Promise<DeliveryDetailResponseDTO> {
     try {
       // Validate input
@@ -119,9 +119,12 @@ export class FleetService {
           throw new Error(`Sales document ${dto.salesId} not found`);
         }
 
-        if (salesDocument.status !== "PAID" && salesDocument.status !== "SENT") {
+        if (
+          salesDocument.status !== "PAID" &&
+          salesDocument.status !== "SENT"
+        ) {
           throw new Error(
-            `Sales document must be paid or sent before delivery (current: ${salesDocument.status})`
+            `Sales document must be paid or sent before delivery (current: ${salesDocument.status})`,
           );
         }
 
@@ -208,11 +211,14 @@ export class FleetService {
         return newDelivery;
       });
 
-      logger.info({
-        id: delivery.id,
-        delivery_no: delivery.delivery_no,
-        sales_id: delivery.salesId,
-      }, "Delivery created");
+      logger.info(
+        {
+          id: delivery.id,
+          delivery_no: delivery.delivery_no,
+          sales_id: delivery.salesId,
+        },
+        "Delivery created",
+      );
 
       return this.formatDeliveryDetailResponse(delivery as any);
     } catch (error) {
@@ -227,7 +233,7 @@ export class FleetService {
    */
   async updateDeliveryStatus(
     id: string,
-    dto: UpdateDeliveryStatusDTO
+    dto: UpdateDeliveryStatusDTO,
   ): Promise<DeliveryDetailResponseDTO> {
     try {
       // Validate status transition
@@ -268,7 +274,7 @@ export class FleetService {
         const allowedNext = validTransitions[current.status] || [];
         if (!allowedNext.includes(dto.status)) {
           throw new Error(
-            `Cannot transition from ${current.status} to ${dto.status}`
+            `Cannot transition from ${current.status} to ${dto.status}`,
           );
         }
 
@@ -448,7 +454,7 @@ export class FleetService {
       ]);
 
       const data = deliveries.map((d: any) =>
-        this.formatDeliveryDetailResponse(d)
+        this.formatDeliveryDetailResponse(d),
       );
 
       const totalPages = Math.ceil(total / limit);
@@ -489,7 +495,7 @@ export class FleetService {
   }
 
   private formatDeliveryDetailResponse(
-    delivery: any
+    delivery: any,
   ): DeliveryDetailResponseDTO {
     return {
       id: delivery.id,
@@ -499,10 +505,10 @@ export class FleetService {
       sales: undefined,
       driver: delivery.driver
         ? {
-          id: delivery.driver.id,
-          name: delivery.driver.name,
-          phone: delivery.driver.phone,
-        }
+            id: delivery.driver.id,
+            name: delivery.driver.name,
+            phone: delivery.driver.phone,
+          }
         : undefined,
       truck: this.formatTruckResponse(delivery.truck),
       destination: delivery.destination,
@@ -610,7 +616,6 @@ export class FleetService {
     const delivery = await this.prisma.delivery.findUnique({
       where: { id },
       include: {
-
         driver: true,
         truck: true,
       },

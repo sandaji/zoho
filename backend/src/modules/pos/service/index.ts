@@ -47,7 +47,7 @@ export class PosService {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `No products found matching: ${searchTerm}`
+        `No products found matching: ${searchTerm}`,
       );
     }
 
@@ -88,12 +88,12 @@ export class PosService {
           if (inventory.length > 0) {
             totalAvailable = inventory.reduce(
               (sum, inv) => sum + (inv.available || 0),
-              0
+              0,
             );
 
             inventoryLocations = inventory.map((inv) => {
               const warehouse = warehouses.find(
-                (w) => w.id === inv.warehouseId
+                (w) => w.id === inv.warehouseId,
               );
               return {
                 warehouseId: inv.warehouseId,
@@ -118,7 +118,7 @@ export class PosService {
           available: totalAvailable,
           inventoryLocations,
         };
-      })
+      }),
     );
 
     // Return array of products for autocomplete
@@ -158,11 +158,11 @@ export class PosService {
     if (!user) throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
 
     // Map DTO items to internal structure for helpers
-    const mappedItemsForHelpers = items.map(i => ({
+    const mappedItemsForHelpers = items.map((i) => ({
       quantity: i.quantity,
       unitPrice: i.unit_price,
       taxRate: i.tax_rate,
-      discount: i.discount
+      discount: i.discount,
     }));
 
     const subtotal = this.calculateSubtotal(mappedItemsForHelpers);
@@ -172,7 +172,7 @@ export class PosService {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
-        "Discounts over 10% require manager approval"
+        "Discounts over 10% require manager approval",
       );
     }
 
@@ -213,7 +213,7 @@ export class PosService {
           throw new AppError(
             ErrorCode.NOT_FOUND,
             404,
-            `Product not found: ${item.productId}`
+            `Product not found: ${item.productId}`,
           );
         }
 
@@ -274,7 +274,7 @@ export class PosService {
           throw new AppError(
             ErrorCode.VALIDATION_ERROR,
             400,
-            `No inventory found for product: ${product.name} in branch`
+            `No inventory found for product: ${product.name} in branch`,
           );
         }
       }
@@ -300,7 +300,7 @@ export class PosService {
           userId,
           grand_total,
         },
-        "Sale created successfully"
+        "Sale created successfully",
       );
 
       return this.formatSalesResponse(sale, createdItems);
@@ -368,7 +368,7 @@ export class PosService {
 
     return {
       data: sales.map((s: { items: any[] }) =>
-        this.formatSalesResponse(s, s.items)
+        this.formatSalesResponse(s, s.items),
       ),
       total,
     };
@@ -379,9 +379,11 @@ export class PosService {
    */
   async updateSales(
     id: string,
-    dto: UpdateSalesDTO
+    dto: UpdateSalesDTO,
   ): Promise<SalesResponseDTO> {
-    const existing = await this.prisma.salesDocument.findUnique({ where: { id } });
+    const existing = await this.prisma.salesDocument.findUnique({
+      where: { id },
+    });
     if (!existing)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Sale not found");
 
@@ -406,7 +408,7 @@ export class PosService {
    * Daily summary
    */
   async getDailySummary(
-    dto: DailySummaryDTO
+    dto: DailySummaryDTO,
   ): Promise<DailySummaryResponseDTO> {
     // Normalize target date
     const targetDate = dto.date ? new Date(dto.date) : new Date();
@@ -435,15 +437,15 @@ export class PosService {
     const total_sales = sales.length;
     const total_revenue = sales.reduce(
       (sum: any, s: { total: any }) => sum + s.total,
-      0
+      0,
     );
     const total_tax = sales.reduce(
       (sum: any, s: { tax: any }) => sum + s.tax,
-      0
+      0,
     );
     const total_discount = sales.reduce(
       (sum: any, s: { discount: any }) => sum + s.discount,
-      0
+      0,
     );
 
     const payment_methods = {
@@ -573,7 +575,7 @@ export class PosService {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
-        "Only managers or admins can approve discounts"
+        "Only managers or admins can approve discounts",
       );
     }
 
@@ -582,7 +584,7 @@ export class PosService {
       throw new AppError(
         ErrorCode.UNAUTHORIZED,
         401,
-        "Invalid manager password"
+        "Invalid manager password",
       );
 
     await this.prisma.salesDocument.update({
@@ -620,7 +622,7 @@ export class PosService {
   }
 
   private calculateSubtotal(
-    items: Array<{ quantity: number; unitPrice: number }>
+    items: Array<{ quantity: number; unitPrice: number }>,
   ): number {
     return items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0);
   }
@@ -631,7 +633,7 @@ export class PosService {
       unitPrice: number;
       taxRate?: number;
       discount?: number;
-    }>
+    }>,
   ): number {
     return items.reduce((sum, i) => {
       const sub = i.quantity * i.unitPrice;
@@ -660,17 +662,17 @@ export class PosService {
       change: (sale.paidAmount || 0) - (sale.total || 0),
       branch: sale.branch
         ? {
-          name: sale.branch.name,
-          code: sale.branch.code,
-          address: sale.branch.address,
-          phone: sale.branch.phone,
-        }
+            name: sale.branch.name,
+            code: sale.branch.code,
+            address: sale.branch.address,
+            phone: sale.branch.phone,
+          }
         : undefined,
       user: sale.createdBy
         ? {
-          name: sale.createdBy.name,
-          email: sale.createdBy.email,
-        }
+            name: sale.createdBy.name,
+            email: sale.createdBy.email,
+          }
         : undefined,
       sales_items: items.map((item: any) => ({
         id: item.id,

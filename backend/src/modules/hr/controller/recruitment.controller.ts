@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from "express";
 import { RecruitmentService } from "../services/recruitment.service";
 
@@ -27,7 +26,9 @@ export class RecruitmentController {
     try {
       const postingId = req.params.id as string;
       if (!postingId) {
-        res.status(400).json({ success: false, error: "Job posting ID is required" });
+        res
+          .status(400)
+          .json({ success: false, error: "Job posting ID is required" });
         return;
       }
       const posting = await recruitmentService.getJobPostingById(postingId);
@@ -50,10 +51,15 @@ export class RecruitmentController {
     try {
       const applicantId = req.params.id as string;
       if (!applicantId) {
-        res.status(400).json({ success: false, error: "Applicant ID is required" });
+        res
+          .status(400)
+          .json({ success: false, error: "Applicant ID is required" });
         return;
       }
-      const applicant = await recruitmentService.updateApplicantStatus(applicantId, req.body.status);
+      const applicant = await recruitmentService.updateApplicantStatus(
+        applicantId,
+        req.body.status,
+      );
       res.json({ success: true, data: applicant });
     } catch (error) {
       next(error);
@@ -73,10 +79,15 @@ export class RecruitmentController {
     try {
       const interviewId = req.params.id as string;
       if (!interviewId) {
-        res.status(400).json({ success: false, error: "Interview ID is required" });
+        res
+          .status(400)
+          .json({ success: false, error: "Interview ID is required" });
         return;
       }
-      const interview = await recruitmentService.updateInterview(interviewId, req.body);
+      const interview = await recruitmentService.updateInterview(
+        interviewId,
+        req.body,
+      );
       res.json({ success: true, data: interview });
     } catch (error) {
       next(error);

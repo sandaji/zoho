@@ -17,14 +17,14 @@ export class FinanceController {
   async createTransaction(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreateTransactionDTO = req.body;
 
       if (!dto.type || !dto.reference_no || !dto.description || !dto.amount) {
         throw validationError(
-          "Missing required fields: type, reference_no, description, amount"
+          "Missing required fields: type, reference_no, description, amount",
         );
       }
 
@@ -42,7 +42,7 @@ export class FinanceController {
   async getTransaction(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -65,7 +65,7 @@ export class FinanceController {
   async listTransactions(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: TransactionListQueryDTO = req.query as any;
@@ -89,7 +89,7 @@ export class FinanceController {
   async updateTransaction(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -113,20 +113,20 @@ export class FinanceController {
   async getFinancialReport(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { startDate, endDate } = req.query;
 
       if (!startDate || !endDate) {
         throw validationError(
-          "Missing required query parameters: startDate, endDate"
+          "Missing required query parameters: startDate, endDate",
         );
       }
 
       const result = await this.service.getFinancialReport(
         startDate as string,
-        endDate as string
+        endDate as string,
       );
 
       res.json({
@@ -141,20 +141,20 @@ export class FinanceController {
   async getRevenueAnalytics(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { startDate, endDate } = req.query;
 
       if (!startDate || !endDate) {
         throw validationError(
-          "Missing required query parameters: startDate, endDate"
+          "Missing required query parameters: startDate, endDate",
         );
       }
 
       const result = await this.service.getRevenueAnalytics(
         startDate as string,
-        endDate as string
+        endDate as string,
       );
 
       res.json({
@@ -169,7 +169,7 @@ export class FinanceController {
   async getMonthlyReport(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { month, year } = req.query;

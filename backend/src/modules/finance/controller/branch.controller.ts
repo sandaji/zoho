@@ -17,7 +17,7 @@ export class BranchController {
   async getDashboard(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };

@@ -26,7 +26,7 @@ export class FleetController {
   async getTrucks(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: GetTrucksQueryDTO = {
@@ -71,7 +71,7 @@ export class FleetController {
   async createDelivery(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreateDeliveryDTO = req.body;
@@ -98,11 +98,14 @@ export class FleetController {
         throw validationError("estimated_km must be greater than 0");
       }
 
-      logger.debug({
-        salesId: dto.salesId,
-        driverId: dto.driverId,
-        truckId: dto.truckId,
-      }, "POST /deliveries");
+      logger.debug(
+        {
+          salesId: dto.salesId,
+          driverId: dto.driverId,
+          truckId: dto.truckId,
+        },
+        "POST /deliveries",
+      );
 
       const result = await this.service.createDelivery(dto);
 
@@ -130,7 +133,7 @@ export class FleetController {
   async updateDeliveryStatus(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -157,7 +160,7 @@ export class FleetController {
 
       if (!validStatuses.includes(dto.status)) {
         throw validationError(
-          `Invalid status. Must be one of: ${validStatuses.join(", ")}`
+          `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
         );
       }
 
@@ -166,10 +169,13 @@ export class FleetController {
         throw validationError("actual_km cannot be negative");
       }
 
-      logger.debug({
-        id,
-        status: dto.status,
-      }, "PATCH /deliveries/:id/status");
+      logger.debug(
+        {
+          id,
+          status: dto.status,
+        },
+        "PATCH /deliveries/:id/status",
+      );
 
       const result = await this.service.updateDeliveryStatus(id, dto);
 
@@ -189,7 +195,7 @@ export class FleetController {
   async getDeliveryTimeline(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -217,7 +223,7 @@ export class FleetController {
   async listDeliveries(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query = {
@@ -256,14 +262,14 @@ export class FleetController {
   async createTruck(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { registration, model, capacity, license_plate } = req.body;
 
       if (!registration || !model || !capacity) {
         throw validationError(
-          "Missing required fields: registration, model, capacity"
+          "Missing required fields: registration, model, capacity",
         );
       }
 
@@ -291,7 +297,7 @@ export class FleetController {
   async getTruck(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -319,7 +325,7 @@ export class FleetController {
   async updateTruck(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -353,7 +359,7 @@ export class FleetController {
   async getDelivery(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -381,7 +387,7 @@ export class FleetController {
   async updateDelivery(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };

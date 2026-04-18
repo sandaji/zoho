@@ -1,7 +1,7 @@
 {
-  "name": "zoho-erp",
+  "name": "zoho",
   "version": "1.0.0",
-  "description": "Zoho ERP - Complete Enterprise Resource Planning System",
+  "description": "A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, TypeScript, and PostgreSQL.",
   "keywords": [
     "zoho",
     "erp",
@@ -21,6 +21,7 @@
   "license": "ISC",
   "author": "ijamy vincent",
   "type": "module",
+  "main": "index.js",
   "workspaces": [
     "frontend",
     "backend"
@@ -65,5 +66,8 @@
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=9.0.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0"
   }
 }

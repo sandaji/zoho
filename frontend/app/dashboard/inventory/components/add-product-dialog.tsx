@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Loader2, Upload, X } from "lucide-react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -21,9 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Upload, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { toast } from "sonner";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";
 import { VendorSelect } from "@/components/ui/vendor-select";
 import { BranchSelect } from "@/components/ui/branch-select";
@@ -34,6 +34,7 @@ interface AddProductDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onProductAdded?: () => void;
+  editProduct?: any;
 }
 
 type ProductFormData = Omit<
@@ -115,11 +116,52 @@ const initialFormData: ProductFormData = {
   status: "active",
 };
 
-export function AddProductDialog({ open, onOpenChange, onProductAdded }: AddProductDialogProps) {
+export function AddProductDialog({ open, onOpenChange, onProductAdded, editProduct }: AddProductDialogProps) {
   const [formData, setFormData] = useState<ProductFormData>(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { token } = useAuth();
+
+  const isEditMode = !!editProduct;
+
+  // Pre-populate form when editing
+  useEffect(() => {
+    if (editProduct) {
+      setFormData({
+        sku: editProduct.sku ?? "",
+        upc: editProduct.upc ?? "",
+        barcode: editProduct.barcode ?? "",
+        name: editProduct.name ?? "",
+        description: editProduct.description ?? "",
+        category: editProduct.category ?? "",
+        subcategory: editProduct.subcategory ?? "",
+        product_type: editProduct.product_type ?? "physical",
+        cost_price: editProduct.cost_price != null ? String(editProduct.cost_price) : "",
+        unit_price: editProduct.unit_price != null ? String(editProduct.unit_price) : "",
+        tax_rate: editProduct.tax_rate != null ? String(Number(editProduct.tax_rate) * 100) : "16",
+        quantity: editProduct.quantity != null ? String(editProduct.quantity) : "0",
+        reorder_level: editProduct.reorder_level != null ? String(editProduct.reorder_level) : "10",
+        reorder_quantity: editProduct.reorder_quantity != null ? String(editProduct.reorder_quantity) : "20",
+        unit_of_measurement: editProduct.unit_of_measurement ?? "pcs",
+        weight: editProduct.weight != null ? String(editProduct.weight) : "",
+        weight_unit: editProduct.weight_unit ?? "kg",
+        length: editProduct.length != null ? String(editProduct.length) : "",
+        width: editProduct.width != null ? String(editProduct.width) : "",
+        height: editProduct.height != null ? String(editProduct.height) : "",
+        dimension_unit: editProduct.dimension_unit ?? "cm",
+        vendorId: editProduct.vendorId ?? "",
+        branchId: editProduct.branchId ?? "",
+        supplier_part_number: editProduct.supplier_part_number ?? "",
+        lead_time_days: editProduct.lead_time_days != null ? String(editProduct.lead_time_days) : "",
+        warehouseId: editProduct.warehouseId ?? "",
+        status: editProduct.status ?? "active",
+      });
+      setImagePreview(editProduct.image_url ?? null);
+    } else {
+      setFormData(initialFormData);
+      setImagePreview(null);
+    }
+  }, [editProduct]);
 
   const handleInputChange = (field: keyof ProductFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -225,9 +267,11 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded }: AddProd
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
+          <DialogTitle>{isEditMode ? "Edit Product" : "Add New Product"}</DialogTitle>
           <DialogDescription>
-            Fill in the product details. Fields marked with * are required.
+            {isEditMode
+              ? "Update the product details below."
+              : "Fill in the product details. Fields marked with * are required."}
           </DialogDescription>
         </DialogHeader>
 
@@ -646,7 +690,7 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded }: AddProd
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Product
+              {isEditMode ? "Update Product" : "Create Product"}
             </Button>
           </DialogFooter>
         </form>

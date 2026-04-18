@@ -1,6 +1,12 @@
 // backend/src/modules/pos/service/sales.service.ts
 import { prisma } from "../../../lib/db";
-import { SalesDocumentType, SalesDocumentStatus, PaymentStatus, PaymentMethod, MovementType } from "../../../generated";
+import {
+  SalesDocumentType,
+  SalesDocumentStatus,
+  PaymentStatus,
+  PaymentMethod,
+  MovementType,
+} from "../../../generated";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { StockValidationService } from "./stock-validation.service";
@@ -29,7 +35,7 @@ function calculateDocumentTotals(
     taxAmount: number;
     discount: number;
     total: number;
-  }[]
+  }[],
 ) {
   let subtotal = 0;
   let tax = 0;
@@ -75,14 +81,14 @@ export class SalesService {
       allowStockOverride?: boolean; // For admin override
     },
     branchId: string,
-    userId: string
+    userId: string,
   ) {
     // REQUIREMENT 3: Prevent direct invoice creation
     if (input.type === SalesDocumentType.INVOICE) {
       throw new AppError(
         ErrorCode.BAD_REQUEST,
         400,
-        "Invoices cannot be created directly. Convert from Draft or Quote, or use POS Sale."
+        "Invoices cannot be created directly. Convert from Draft or Quote, or use POS Sale.",
       );
     }
 
@@ -93,7 +99,7 @@ export class SalesService {
         branchId,
         input.items,
         userId,
-        false // No override allowed for drafts
+        false, // No override allowed for drafts
       );
     }
 
@@ -103,14 +109,14 @@ export class SalesService {
         branchId,
         input.items,
         userId,
-        input.allowStockOverride || false
+        input.allowStockOverride || false,
       );
     }
 
     // Generate document ID
     const documentId = await SequenceService.getNextNumber(
       input.type,
-      branchId
+      branchId,
     );
 
     // Prepare items
@@ -172,33 +178,38 @@ export class SalesService {
   static async convertToInvoice(
     sourceId: string,
     branchId: string,
-    userId: string
+    userId: string,
   ) {
     const source = await prisma.salesDocument.findUnique({
       where: { id: sourceId },
       include: { items: true },
     });
 
-    if (!source) throw new AppError(ErrorCode.NOT_FOUND, 404, "Source document not found");
+    if (!source)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Source document not found");
     if (source.type === SalesDocumentType.INVOICE)
       throw new AppError(ErrorCode.BAD_REQUEST, 400, "Already an invoice");
     if (source.type === SalesDocumentType.CREDIT_NOTE)
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Cannot convert credit note to invoice");
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Cannot convert credit note to invoice",
+      );
 
     // REQUIREMENT 5: Validate stock before converting
     await StockValidationService.validateOrThrow(
       branchId,
-      source.items.map(item => ({
+      source.items.map((item) => ({
         productId: item.productId,
-        quantity: item.quantity
+        quantity: item.quantity,
       })),
       userId,
-      false // No override on conversion
+      false, // No override on conversion
     );
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.INVOICE,
-      branchId
+      branchId,
     );
 
     return prisma.$transaction(async (tx) => {
@@ -244,7 +255,11 @@ export class SalesService {
       });
 
       if (!warehouse) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "No warehouse found for this branch");
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "No warehouse found for this branch",
+        );
       }
 
       // Update inventory & create stock movements
@@ -313,26 +328,19 @@ export class SalesService {
     amountPaid: number;
     notes?: string;
   }) {
-    const {
-      branchId,
-      userId,
-      items,
-      paymentMethod,
-      amountPaid,
-      notes,
-    } = input;
+    const { branchId, userId, items, paymentMethod, amountPaid, notes } = input;
 
     // Validate stock
     await StockValidationService.validateOrThrow(
       branchId,
       items,
       userId,
-      false
+      false,
     );
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.INVOICE,
-      branchId
+      branchId,
     );
 
     const preparedItems = items.map((item) => {
@@ -352,90 +360,97 @@ export class SalesService {
 
     const totals = calculateDocumentTotals(preparedItems);
 
-    return prisma.$transaction(async (tx) => {
-      const invoice = await tx.salesDocument.create({
-        data: {
-          documentId,
-          type: SalesDocumentType.INVOICE,
-          status: SalesDocumentStatus.PAID,
-          paymentStatus: PaymentStatus.PAID,
-          branchId,
-          issueDate: new Date(),
-          subtotal: totals.subtotal,
-          tax: totals.tax,
-          discount: totals.discount,
-          total: totals.total,
-          balance: 0,
-          paidAmount: amountPaid,
-          notes: notes || null,
-          createdById: userId,
-          items: { create: preparedItems },
-        },
-        include: { items: true },
-      });
-
-      await tx.payment.create({
-        data: {
-          salesDocumentId: invoice.id,
-          amount: amountPaid,
-          method: paymentMethod as PaymentMethod,
-          paymentDate: new Date(),
-          createdById: userId,
-        },
-      });
-
-      // Resolve warehouse
-      const warehouse = await tx.warehouse.findFirst({
-        where: { branchId },
-      });
-
-      if (!warehouse) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "No warehouse found for this branch");
-      }
-
-      // Update inventory & create stock movements
-      for (const item of preparedItems) {
-        await tx.inventory.updateMany({
-          where: {
-            productId: item.productId,
-            warehouseId: warehouse.id,
-          },
+    return prisma.$transaction(
+      async (tx) => {
+        const invoice = await tx.salesDocument.create({
           data: {
-            quantity: { decrement: item.quantity },
-            available: { decrement: item.quantity },
+            documentId,
+            type: SalesDocumentType.INVOICE,
+            status: SalesDocumentStatus.PAID,
+            paymentStatus: PaymentStatus.PAID,
+            branchId,
+            issueDate: new Date(),
+            subtotal: totals.subtotal,
+            tax: totals.tax,
+            discount: totals.discount,
+            total: totals.total,
+            balance: 0,
+            paidAmount: amountPaid,
+            notes: notes || null,
+            createdById: userId,
+            items: { create: preparedItems },
           },
+          include: { items: true },
         });
 
-        // (product global quantity update removed)
-
-        await tx.stockMovement.create({
+        await tx.payment.create({
           data: {
-            type: MovementType.OUTBOUND,
-            quantity: item.quantity,
-            productId: item.productId,
-            warehouseId: warehouse.id,
-            salesId: invoice.id,
-            reference: `POS Sale - ${invoice.documentId}`,
+            salesDocumentId: invoice.id,
+            amount: amountPaid,
+            method: paymentMethod as PaymentMethod,
+            paymentDate: new Date(),
             createdById: userId,
           },
         });
-      }
 
-      // Record financial transaction
-      await AccountingService.recordSaleTransaction(tx, {
-        saleId: invoice.id,
-        date: new Date(),
-        amountPaid: amountPaid,
-        paymentMethod: paymentMethod,
-        subtotal: totals.subtotal,
-        tax: totals.tax,
-        total: totals.total,
-        userId: userId,
-        branchId: branchId,
-      });
+        // Resolve warehouse
+        const warehouse = await tx.warehouse.findFirst({
+          where: { branchId },
+        });
 
-      return invoice;
-    }, { timeout: 10000 });
+        if (!warehouse) {
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            "No warehouse found for this branch",
+          );
+        }
+
+        // Update inventory & create stock movements
+        for (const item of preparedItems) {
+          await tx.inventory.updateMany({
+            where: {
+              productId: item.productId,
+              warehouseId: warehouse.id,
+            },
+            data: {
+              quantity: { decrement: item.quantity },
+              available: { decrement: item.quantity },
+            },
+          });
+
+          // (product global quantity update removed)
+
+          await tx.stockMovement.create({
+            data: {
+              type: MovementType.OUTBOUND,
+              quantity: item.quantity,
+              productId: item.productId,
+              warehouseId: warehouse.id,
+              salesId: invoice.id,
+              reference: `POS Sale - ${invoice.documentId}`,
+              createdById: userId,
+            },
+          });
+        }
+
+        // Record financial transaction
+        await AccountingService.recordSaleTransaction(tx, {
+          saleId: invoice.id,
+          date: new Date(),
+          amountPaid: amountPaid,
+          paymentMethod: paymentMethod,
+          subtotal: totals.subtotal,
+          tax: totals.tax,
+          total: totals.total,
+          userId: userId,
+          branchId: branchId,
+        });
+
+        return invoice;
+      },
+      { timeout: 30000 },
+    );
   }
 
   // =============================
@@ -464,11 +479,15 @@ export class SalesService {
 
     // REQUIREMENT: Credit note must link to an invoice
     if (!invoice || invoice.type !== SalesDocumentType.INVOICE)
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Invalid invoice - credit notes must reference an existing invoice");
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Invalid invoice - credit notes must reference an existing invoice",
+      );
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.CREDIT_NOTE,
-      branchId
+      branchId,
     );
 
     const preparedItems = items.map((item) => {
@@ -559,8 +578,8 @@ export class SalesService {
       }
     }
 
-    const limit = parseInt(query.limit || '50');
-    const offset = parseInt(query.offset || '0');
+    const limit = parseInt(query.limit || "50");
+    const offset = parseInt(query.offset || "0");
 
     const [documents, total] = await Promise.all([
       prisma.salesDocument.findMany({
@@ -570,7 +589,7 @@ export class SalesService {
           customer: true,
           payments: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: limit,
         skip: offset,
       }),
@@ -638,16 +657,16 @@ export class SalesService {
     const documents = await prisma.salesDocument.findMany({
       where,
       include: { items: true, payments: true },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       take: query.limit || 50,
       skip: query.offset || 0,
     });
 
-    return documents.map(doc => ({
+    return documents.map((doc) => ({
       id: doc.id,
       invoice_no: doc.documentId,
       status: doc.status,
-      payment_method: doc.payments?.[0]?.method || 'cash',
+      payment_method: doc.payments?.[0]?.method || "cash",
       subtotal: doc.subtotal,
       discount: doc.discount,
       tax: doc.tax,
@@ -674,7 +693,7 @@ export class SalesService {
       id: doc.id,
       invoice_no: doc.documentId,
       status: doc.status,
-      payment_method: doc.payments?.[0]?.method || 'cash',
+      payment_method: doc.payments?.[0]?.method || "cash",
       subtotal: doc.subtotal,
       discount: doc.discount,
       tax: doc.tax,
@@ -682,7 +701,7 @@ export class SalesService {
       amount_paid: doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
       change: 0,
       created_date: doc.createdAt,
-      sales_items: doc.items.map(item => ({
+      sales_items: doc.items.map((item) => ({
         id: item.id,
         productId: item.productId,
         product: item.product,
@@ -711,7 +730,8 @@ export class SalesService {
       where: { id: documentId },
     });
 
-    if (!document) throw new AppError(ErrorCode.NOT_FOUND, 404, 'Document not found');
+    if (!document)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
 
     const payment = await prisma.payment.create({
       data: {
@@ -733,7 +753,9 @@ export class SalesService {
       data: {
         balance: Math.max(0, newBalance),
         paidAmount: (document.paidAmount || 0) + amount,
-        paymentStatus: isPaid ? PaymentStatus.PAID : PaymentStatus.PARTIALLY_PAID,
+        paymentStatus: isPaid
+          ? PaymentStatus.PAID
+          : PaymentStatus.PARTIALLY_PAID,
         status: isPaid ? SalesDocumentStatus.PAID : document.status,
       },
     });

@@ -17,7 +17,7 @@ export class WarehouseController {
   async createWarehouse(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreateWarehouseDTO = req.body;
@@ -30,7 +30,7 @@ export class WarehouseController {
         !dto.branchId
       ) {
         throw validationError(
-          "Missing required fields: code, name, location, capacity, branchId"
+          "Missing required fields: code, name, location, capacity, branchId",
         );
       }
 
@@ -48,7 +48,7 @@ export class WarehouseController {
   async getWarehouse(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -71,7 +71,7 @@ export class WarehouseController {
   async listWarehouses(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: WarehouseListQueryDTO = req.query as any;
@@ -95,7 +95,7 @@ export class WarehouseController {
   async updateWarehouse(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -119,7 +119,7 @@ export class WarehouseController {
   async getWarehouseStock(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };

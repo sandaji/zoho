@@ -150,7 +150,7 @@ export const warehouseService = {
    * Adjust stock
    */
   async adjustStock(data: AdjustStockInput, token: string) {
-    const response = await fetch(`${API_URL}adjust`, {
+    const response = await fetch(`${API_URL}/v1/inventory/adjust`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -216,7 +216,7 @@ export const warehouseService = {
    * Get warehouses list
    */
   async getWarehouses(token: string) {
-    const response = await fetch(`${API_URL}/v1/warehouse/`, {
+    const response = await fetch(`${API_URL}/v1/warehouses`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 
 export default function CreateVendorPage() {
@@ -56,7 +56,7 @@ export default function CreateVendorPage() {
         },
         body: JSON.stringify({
           ...formData,
-          leadTimeDays: parseInt(formData.leadTimeDays.toString()) || 7
+          leadTimeDays: parseInt(formData.leadTimeDays.toString()) || 7,
         }),
       });
 
@@ -78,38 +78,76 @@ export default function CreateVendorPage() {
     <div className="p-6 max-w-3xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/purchasing/vendors">
-          <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
+          <Button variant="ghost" size="icon">
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
         </Link>
         <h1 className="text-2xl font-bold text-slate-900">Add New Vendor</h1>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label>Vendor Code *</Label>
-            <Input name="code" value={formData.code} onChange={handleChange} placeholder="e.g. VEN-001" required />
+            <Input
+              name="code"
+              value={formData.code}
+              onChange={handleChange}
+              placeholder="e.g. VEN-001"
+              required
+            />
           </div>
           <div className="space-y-2">
             <Label>Vendor Name *</Label>
-            <Input name="name" value={formData.name} onChange={handleChange} placeholder="Vendor Name" required />
+            <Input
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Vendor Name"
+              required
+            />
           </div>
 
           <div className="space-y-2">
             <Label>Email</Label>
-            <Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="contact@vendor.com" />
+            <Input
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="contact@vendor.com"
+            />
           </div>
           <div className="space-y-2">
             <Label>Phone</Label>
-            <Input name="phone" value={formData.phone} onChange={handleChange} placeholder="+1 234 567 890" />
+            <Input
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+1 234 567 890"
+            />
           </div>
 
           <div className="space-y-2">
             <Label>Tax ID</Label>
-            <Input name="taxId" value={formData.taxId} onChange={handleChange} placeholder="Tax / VAT ID" />
+            <Input
+              name="taxId"
+              value={formData.taxId}
+              onChange={handleChange}
+              placeholder="Tax / VAT ID"
+            />
           </div>
           <div className="space-y-2">
             <Label>Website</Label>
-            <Input name="website" value={formData.website} onChange={handleChange} placeholder="https://vendor.com" />
+            <Input
+              name="website"
+              value={formData.website}
+              onChange={handleChange}
+              placeholder="https://vendor.com"
+            />
           </div>
 
           <div className="space-y-2">
@@ -143,12 +181,20 @@ export default function CreateVendorPage() {
 
         <div className="space-y-2">
           <Label>Address</Label>
-          <Textarea name="address" value={formData.address} onChange={handleChange} placeholder="Full address" rows={3} />
+          <Textarea
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            placeholder="Full address"
+            rows={3}
+          />
         </div>
 
         <div className="flex justify-end gap-4 pt-4">
           <Link href="/dashboard/purchasing/vendors">
-            <Button variant="outline" type="button">Cancel</Button>
+            <Button variant="outline" type="button">
+              Cancel
+            </Button>
           </Link>
           <Button type="submit" disabled={loading} className="bg-blue-600 hover:bg-blue-700">
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}

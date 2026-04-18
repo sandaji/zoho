@@ -26,10 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 
 // Import new API functions
-import {
-  fetchAllDashboardData,
-  formatCurrencyCompact,
-} from "./lib/api";
+import { fetchAllDashboardData, formatCurrencyCompact } from "./lib/api";
 
 // Import types
 import type {
@@ -41,13 +38,31 @@ import type {
   SavingsGoal,
 } from "./types";
 
-// Import components
+// Import existing components
 import { CreditCardWidget } from "../../../components/finance/credit-card-widget";
 import { CashflowChart } from "../../../components/finance/cashflow-chart";
 import { ExpenseDonutChart } from "../../../components/finance/expense-donut-chart";
 import { RecentTransactions } from "../../../components/finance/recent-transactions";
 import { DailyLimitProgress } from "../../../components/finance/daily-limit-progress";
 import { SavingPlans } from "../../../components/finance/saving-plans";
+
+// Phase 1 - New components
+import { KPIMetricsPanel } from "../../../components/finance/kpi-metrics-panel";
+import { FinancialAlerts } from "../../../components/finance/financial-alerts";
+import { PeriodSelector } from "../../../components/finance/period-selector";
+import { QuickActions } from "../../../components/finance/quick-actions";
+
+// Phase 2 - AR, AP, Bank, P&L components
+import { ARAgingSummary } from "../../../components/finance/ar-aging-summary";
+import { APStatusSummary } from "../../../components/finance/ap-status-summary";
+import { BankAccountsSummary } from "../../../components/finance/bank-accounts-summary";
+import { PLQuickPreview } from "../../../components/finance/pl-quick-preview";
+
+// Phase 3 - Tax, Reconciliation, Trends, Top Customers/Vendors components
+import { TaxSummary } from "../../../components/finance/tax-summary";
+import { ReconciliationStatus } from "../../../components/finance/reconciliation-status";
+import { PeriodTrends } from "../../../components/finance/period-trends";
+import { TopCustomersVendors } from "../../../components/finance/top-customers-vendors";
 
 interface DashboardState {
   summary: FinancialSummary | null;
@@ -168,20 +183,25 @@ const FinanceDashboardPage = () => {
           </DropdownMenu>
         </div>
 
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="gap-2"
-          >
-            <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
-            <span className="hidden sm:inline">Refresh</span>
-          </Button>
-          <Button className="gap-2 bg-[#104f38] hover:bg-[#0d3f2d]">
-            <Download className="h-4 w-4" />
-            <span className="hidden sm:inline">Export</span>
-          </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="w-full sm:w-48">
+            <PeriodSelector />
+          </div>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="gap-2"
+            >
+              <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+            <Button className="gap-2 bg-[#104f38] hover:bg-[#0d3f2d]">
+              <Download className="h-4 w-4" />
+              <span className="hidden sm:inline">Export</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -192,6 +212,53 @@ const FinanceDashboardPage = () => {
           <p className="text-sm">{error}</p>
         </div>
       )}
+
+      {/* KPI Metrics Panel */}
+      <div className="mb-6">
+        <KPIMetricsPanel />
+      </div>
+
+      {/* Alerts & Quick Actions Row */}
+      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-3">
+        {/* Financial Alerts */}
+        <div className="lg:col-span-2">
+          <FinancialAlerts maxAlerts={4} onViewAll={() => setActiveSection("Dashboard")} />
+        </div>
+        {/* Quick Actions */}
+        <QuickActions />
+      </div>
+
+      {/* Phase 2: Core Finance Summaries Row */}
+      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+        {/* AR Aging Summary */}
+        <ARAgingSummary />
+        {/* AP Status Summary */}
+        <APStatusSummary />
+      </div>
+
+      {/* Bank Accounts & P&L Row */}
+      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+        {/* Bank Accounts Summary */}
+        <BankAccountsSummary />
+        {/* P&L Quick Preview */}
+        <PLQuickPreview />
+      </div>
+
+      {/* Phase 3: Tax, Reconciliation, Trends, Top Customers/Vendors Rows */}
+      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+        {/* Tax Summary */}
+        <TaxSummary />
+        {/* Reconciliation Status */}
+        <ReconciliationStatus />
+      </div>
+
+      {/* Period Trends & Top Customers Row */}
+      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+        {/* Period Trends */}
+        <PeriodTrends />
+        {/* Top Customers & Vendors */}
+        <TopCustomersVendors />
+      </div>
 
       {/* Main Grid Layout */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -285,10 +352,7 @@ const FinanceDashboardPage = () => {
 
           {/* Daily Limit */}
           {data.dailySpending && (
-            <DailyLimitProgress
-              spent={data.dailySpending.spent}
-              limit={data.dailySpending.limit}
-            />
+            <DailyLimitProgress spent={data.dailySpending.spent} limit={data.dailySpending.limit} />
           )}
 
           {/* Saving Plans */}

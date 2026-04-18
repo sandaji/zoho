@@ -1,15 +1,15 @@
 /**
  * POSController - POS Operations using SalesDocument Model
- * 
+ *
  * This controller handles point-of-sale operations using the modern SalesDocument model.
  * The legacy Sales model has been removed.
- * 
+ *
  * All operations now use SalesService for unified sales document management.
  */
 
-import { Request, Response, NextFunction } from 'express';
-import { PosService } from '../service';
-import { SalesService } from '../service/sales.service';
+import { Request, Response, NextFunction } from "express";
+import { PosService } from "../service";
+import { SalesService } from "../service/sales.service";
 import {
   CreateSalesDTO,
   UpdateSalesDTO,
@@ -17,9 +17,9 @@ import {
   DailySummaryDTO,
   ProductSearchDTO,
   ApproveDiscountDTO,
-} from '../dto';
-import { validationError } from '../../../lib/errors';
-import { logger } from '../../../lib/logger';
+} from "../dto";
+import { validationError } from "../../../lib/errors";
+import { logger } from "../../../lib/logger";
 
 export class POSController {
   private posService = new PosService();
@@ -27,19 +27,19 @@ export class POSController {
   /**
    * POST /pos/products/search
    * Search product by SKU or barcode
-   * 
+   *
    * Status: ✅ No migration needed (product search is model-agnostic)
    */
   async searchProduct(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: ProductSearchDTO = req.body;
 
       if (!dto.search) {
-        throw validationError('Search term is required');
+        throw validationError("Search term is required");
       }
 
       const result = await this.posService.searchProduct(dto);
@@ -56,31 +56,38 @@ export class POSController {
   /**
    * POST /pos/sales
    * Create new sales order using SalesDocument model
-   * 
+   *
    * Status: ✅ FULL MIGRATION COMPLETE
    */
   async createSales(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreateSalesDTO = req.body;
 
       // Validation
-      if (!dto.branchId || !dto.userId || !dto.items || dto.items.length === 0) {
-        throw validationError('Missing required fields: branchId, userId, items');
+      if (
+        !dto.branchId ||
+        !dto.userId ||
+        !dto.items ||
+        dto.items.length === 0
+      ) {
+        throw validationError(
+          "Missing required fields: branchId, userId, items",
+        );
       }
 
       if (!dto.payment_method) {
-        throw validationError('Payment method is required');
+        throw validationError("Payment method is required");
       }
 
       // Create using SalesDocument model
       const newSaleDocument = await SalesService.createPOSSale({
         branchId: dto.branchId,
         userId: dto.userId,
-        items: dto.items.map(item => ({
+        items: dto.items.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
           unitPrice: item.unit_price,
@@ -96,7 +103,7 @@ export class POSController {
       const response = {
         id: newSaleDocument.id,
         invoice_no: newSaleDocument.documentId,
-        status: 'confirmed',
+        status: "confirmed",
         payment_method: dto.payment_method,
         branchId: dto.branchId,
         userId: dto.userId,
@@ -122,11 +129,14 @@ export class POSController {
         created_date: newSaleDocument.createdAt.toISOString(),
       };
 
-      logger.info({
-        saleDocumentId: newSaleDocument.id,
-        invoice_no: newSaleDocument.documentId,
-        branchId: dto.branchId,
-      }, 'POS sale created using SalesDocument model');
+      logger.info(
+        {
+          saleDocumentId: newSaleDocument.id,
+          invoice_no: newSaleDocument.documentId,
+          branchId: dto.branchId,
+        },
+        "POS sale created using SalesDocument model",
+      );
 
       res.status(201).json({
         success: true,
@@ -140,19 +150,19 @@ export class POSController {
   /**
    * GET /pos/sales/:id
    * Get sales by ID from SalesDocument model
-   * 
+   *
    * Status: ✅ FULL MIGRATION COMPLETE
    */
   async getSalesById(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
 
       if (!id) {
-        throw validationError('ID is required');
+        throw validationError("ID is required");
       }
 
       // Read from SalesDocument model
@@ -170,13 +180,13 @@ export class POSController {
   /**
    * GET /pos/sales
    * List sales with filtering from SalesDocument model
-   * 
+   *
    * Status: ✅ FULL MIGRATION COMPLETE
    */
   async listSales(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: SalesListQueryDTO = req.query as any;
@@ -208,21 +218,21 @@ export class POSController {
   /**
    * PATCH /pos/sales/:id
    * Update sales order
-   * 
+   *
    * Status: ⚠️ NOT YET IMPLEMENTED FOR SALESDOCUMENT
    * TODO: Implement via SalesService.updateDocument() in future step
    */
   async updateSales(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
       const dto: UpdateSalesDTO = req.body;
 
       if (!id) {
-        throw validationError('ID is required');
+        throw validationError("ID is required");
       }
 
       // TODO: Use SalesService.updateDocument() once implemented
@@ -240,13 +250,13 @@ export class POSController {
   /**
    * GET /pos/sales/daily-summary
    * Get daily summary for a branch
-   * 
+   *
    * Status: ⚠️ USING LEGACY SERVICE (will migrate to SalesDocument queries in future step)
    */
   async getDailySummary(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: DailySummaryDTO = {
@@ -268,19 +278,19 @@ export class POSController {
   /**
    * GET /pos/sales/:id/receipt
    * Generate receipt for a sale
-   * 
+   *
    * Status: ⚠️ USING LEGACY SERVICE (PDF generation will migrate in future step)
    */
   async getReceipt(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
 
       if (!id) {
-        throw validationError('Sale ID is required');
+        throw validationError("Sale ID is required");
       }
 
       // TODO: Use SalesService for receipt generation once implemented
@@ -298,20 +308,20 @@ export class POSController {
   /**
    * POST /pos/discount/approve
    * Manager approval for discounts > 10%
-   * 
+   *
    * Status: ⚠️ USING LEGACY SERVICE (discount approval will be migrated in future step)
    */
   async approveDiscount(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: ApproveDiscountDTO = req.body;
 
       if (!dto.salesId || !dto.managerId || !dto.managerPassword) {
         throw validationError(
-          'Missing required fields: salesId, managerId, managerPassword'
+          "Missing required fields: salesId, managerId, managerPassword",
         );
       }
 
@@ -320,7 +330,7 @@ export class POSController {
 
       res.json({
         success: true,
-        message: 'Discount approved successfully',
+        message: "Discount approved successfully",
       });
     } catch (error) {
       next(error);

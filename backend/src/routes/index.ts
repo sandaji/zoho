@@ -1,20 +1,17 @@
-
 import { Router, Request, Response, NextFunction } from "express";
 import { AdminController } from "../modules/admin/admin.controller";
-import { AuthController } from "../modules/auth/controller";
 import { POSController } from "../modules/pos/controller";
 import { InventoryController } from "../modules/inventory/controller";
 import { WarehouseController } from "../modules/warehouse/controllers";
 import { FleetController } from "../modules/fleet/controller";
 import { HrController } from "../modules/hr/controller";
 import { FinanceController } from "../modules/finance/controller";
+import authRoutes from "../modules/auth/routes";
 import financeRoutes from "../modules/finance/finance.routes";
 import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
 import { PayrollController } from "../modules/finance/controller/payroll.controller";
 import { BranchController } from "../modules/finance/controller/branch.controller";
-import {
-  authMiddleware,
-} from "../lib/auth";
+import { authMiddleware } from "../lib/auth";
 import { requirePermission } from "../middleware/rbac.middleware";
 import productRoutes from "../modules/products/routes/product.routes";
 import branchRoutes from "./branches.routes";
@@ -34,7 +31,6 @@ const router = Router();
 
 // Initialize controllers
 const adminController = new AdminController();
-const authController = new AuthController();
 const posController = new POSController();
 const inventoryController = new InventoryController();
 const warehouseController = new WarehouseController();
@@ -70,59 +66,89 @@ const branchController = new BranchController();
 // ============================================================================
 // ADMIN ROUTES (Protected - Admin Only or Manager Access where appropriate)
 // ============================================================================
-router.use('/audit-logs', authMiddleware, auditRoutes);
+router.use("/audit-logs", authMiddleware, auditRoutes);
 
 // Stats - Allow branch managers to view stats
-router.get("/admin/stats", authMiddleware, requirePermission('hr.employee.view'), (req, res, next) =>
-  adminController.getStats(req, res, next)
+router.get(
+  "/admin/stats",
+  authMiddleware,
+  requirePermission("hr.employee.view"),
+  (req, res, next) => adminController.getStats(req, res, next),
 );
 
 // Branches - Admin only for management, but allow viewing
-router.get("/admin/branches", authMiddleware, requirePermission('admin.branch.manage'), (req, res, next) =>
-  adminController.listBranches(req, res, next)
+router.get(
+  "/admin/branches",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req, res, next) => adminController.listBranches(req, res, next),
 );
 
 // Warehouses - Allow managers to view
-router.get("/admin/warehouses", authMiddleware, requirePermission('admin.warehouse.view'), adminController.listWarehouses.bind(adminController));
+router.get(
+  "/admin/warehouses",
+  authMiddleware,
+  requirePermission("admin.warehouse.view"),
+  adminController.listWarehouses.bind(adminController),
+);
 
 // Users - Allow managers to view their team
-router.get("/admin/users", authMiddleware, requirePermission('admin.user.view'), adminController.listUsers.bind(adminController));
+router.get(
+  "/admin/users",
+  authMiddleware,
+  requirePermission("admin.user.view"),
+  adminController.listUsers.bind(adminController),
+);
 
 // New System Access Routes
-router.get("/admin/eligible-employees", authMiddleware, requirePermission('admin.user.manage'), adminController.listEligibleEmployees.bind(adminController));
-router.put("/admin/users/:id/grant-access", authMiddleware, requirePermission('admin.user.manage'), adminController.grantSystemAccess.bind(adminController));
+router.get(
+  "/admin/eligible-employees",
+  authMiddleware,
+  requirePermission("admin.user.manage"),
+  adminController.listEligibleEmployees.bind(adminController),
+);
+router.put(
+  "/admin/users/:id/grant-access",
+  authMiddleware,
+  requirePermission("admin.user.manage"),
+  adminController.grantSystemAccess.bind(adminController),
+);
 
 // Products - Allow managers to view products
-router.get("/admin/products", authMiddleware, requirePermission('admin.product.view'), adminController.listProducts.bind(adminController));
+router.get(
+  "/admin/products",
+  authMiddleware,
+  requirePermission("admin.product.view"),
+  adminController.listProducts.bind(adminController),
+);
 
 // Deliveries
-router.get("/admin/deliveries", authMiddleware, requirePermission('admin.delivery.view'), adminController.listDeliveries.bind(adminController));
+router.get(
+  "/admin/deliveries",
+  authMiddleware,
+  requirePermission("admin.delivery.view"),
+  adminController.listDeliveries.bind(adminController),
+);
 
 // Finance & Payroll
-router.get("/admin/finance/transactions", authMiddleware, requirePermission('admin.finance.view'), adminController.listFinanceTransactions.bind(adminController));
-router.get("/admin/payroll/records", authMiddleware, requirePermission('admin.payroll.view'), adminController.listPayroll.bind(adminController));
+router.get(
+  "/admin/finance/transactions",
+  authMiddleware,
+  requirePermission("admin.finance.view"),
+  adminController.listFinanceTransactions.bind(adminController),
+);
+router.get(
+  "/admin/payroll/records",
+  authMiddleware,
+  requirePermission("admin.payroll.view"),
+  adminController.listPayroll.bind(adminController),
+);
 
 // ============================================================================
-// AUTH ROUTES (Public)
+// AUTH ROUTES (All - Public & Protected)
 // ============================================================================
 
-router.post("/auth/login", (req, res, next) =>
-  authController.login(req, res, next)
-);
-router.post("/auth/register", (req, res, next) =>
-  authController.register(req, res, next)
-);
-
-// ============================================================================
-// AUTH ROUTES (Protected)
-// ============================================================================
-
-router.get("/auth/me", authMiddleware, (req, res, next) =>
-  authController.me(req, res, next)
-);
-router.patch("/auth/profile", authMiddleware, (req, res, next) =>
-  authController.updateProfile(req, res, next)
-);
+router.use("/auth", authRoutes);
 
 // ============================================================================
 // POS ROUTES (Protected - Cashiers can create sales, managers can approve)
@@ -130,51 +156,51 @@ router.patch("/auth/profile", authMiddleware, (req, res, next) =>
 
 // Product search - All authenticated users
 router.post("/pos/products/search", authMiddleware, (req, res, next) =>
-  posController.searchProduct(req, res, next)
+  posController.searchProduct(req, res, next),
 );
 
 // Create sales - Cashiers and above
 router.post("/pos/sales", authMiddleware, (req, res, next) =>
-  posController.createSales(req, res, next)
+  posController.createSales(req, res, next),
 );
 
 // Daily summary - All authenticated users (RBAC middleware handles admin bypass automatically)
 router.get(
   "/pos/daily-summary",
   authMiddleware,
-  requirePermission('sales.order.view_all'),
-  (req, res, next) => posController.getDailySummary(req, res, next)
+  requirePermission("sales.order.view_all"),
+  (req, res, next) => posController.getDailySummary(req, res, next),
 );
 
 // Get receipt - All authenticated users
 router.get("/pos/sales/:id/receipt", authMiddleware, (req, res, next) =>
-  posController.getReceipt(req, res, next)
+  posController.getReceipt(req, res, next),
 );
 
 // Get sales by ID - All authenticated users (must come after specific routes)
 router.get("/pos/sales/:id", authMiddleware, (req, res, next) =>
-  posController.getSalesById(req, res, next)
+  posController.getSalesById(req, res, next),
 );
 
 // List sales - All authenticated users
 router.get("/pos/sales", authMiddleware, (req, res, next) =>
-  posController.listSales(req, res, next)
+  posController.listSales(req, res, next),
 );
 
 // Update sales - Managers and admins only
 router.patch(
   "/pos/sales/:id",
   authMiddleware,
-  requirePermission('sales.order.manage'),
-  (req, res, next) => posController.updateSales(req, res, next)
+  requirePermission("sales.order.manage"),
+  (req, res, next) => posController.updateSales(req, res, next),
 );
 
 // Approve discount - Managers and admins only
 router.post(
   "/pos/discount/approve",
   authMiddleware,
-  requirePermission('sales.order.manage'),
-  (req, res, next) => posController.approveDiscount(req, res, next)
+  requirePermission("sales.order.manage"),
+  (req, res, next) => posController.approveDiscount(req, res, next),
 );
 
 // ============================================================================
@@ -207,57 +233,63 @@ router.use("/products", productRoutes);
 
 // GET /inventory - Get all inventory with filtering and pagination
 router.get("/inventory", authMiddleware, (req, res, next) =>
-  inventoryController.getInventory(req, res, next)
+  inventoryController.getInventory(req, res, next),
 );
 
 // POST /inventory/adjust - Adjust stock (increase/decrease)
 router.post(
   "/inventory/adjust",
   authMiddleware,
-  requirePermission('inventory.stock.adjust'),
+  requirePermission("inventory.stock.adjust"),
   validateFiscalPeriod(),
-  (req, res, next) => inventoryController.adjustInventory(req, res, next)
+  (req, res, next) => inventoryController.adjustInventory(req, res, next),
 );
 
 // POST /inventory/transfer - Transfer between warehouses
 router.post(
   "/inventory/transfer",
   authMiddleware,
-  requirePermission('inventory.stock.adjust'),
+  requirePermission("inventory.stock.adjust"),
   validateFiscalPeriod(),
-  (req, res, next) => inventoryController.transferInventory(req, res, next)
+  (req, res, next) => inventoryController.transferInventory(req, res, next),
 );
 
 // Legacy endpoints for backwards compatibility
 router.patch(
   "/inventory/:productId/:warehouseId",
   authMiddleware,
-  (req, res, next) => inventoryController.updateInventory(req, res, next)
+  (req, res, next) => inventoryController.updateInventory(req, res, next),
 );
 router.get(
   "/inventory/:productId/:warehouseId",
   authMiddleware,
-  (req, res, next) => inventoryController.getInventory(req, res, next)
+  (req, res, next) => inventoryController.getInventory(req, res, next),
 );
 
 // ============================================================================
 // WAREHOUSE ENTITY ROUTES (Protected) - Renamed to /warehouses to avoid conflict with /warehouse management
 // ============================================================================
 
-router.post("/warehouses", authMiddleware, requirePermission('inventory.warehouse.manage'), (req, res, next) =>
-  warehouseController.createWarehouse(req, res, next)
+router.post(
+  "/warehouses",
+  authMiddleware,
+  requirePermission("inventory.warehouse.manage"),
+  (req, res, next) => warehouseController.createWarehouse(req, res, next),
 );
 router.get("/warehouses/:id", authMiddleware, (req, res, next) =>
-  warehouseController.getWarehouse(req, res, next)
+  warehouseController.getWarehouse(req, res, next),
 );
 router.get("/warehouses", authMiddleware, (req, res, next) =>
-  warehouseController.listWarehouses(req, res, next)
+  warehouseController.listWarehouses(req, res, next),
 );
-router.patch("/warehouses/:id", authMiddleware, requirePermission('inventory.warehouse.manage'), (req, res, next) =>
-  warehouseController.updateWarehouse(req, res, next)
+router.patch(
+  "/warehouses/:id",
+  authMiddleware,
+  requirePermission("inventory.warehouse.manage"),
+  (req, res, next) => warehouseController.updateWarehouse(req, res, next),
 );
 router.get("/warehouses/:id/stock", authMiddleware, (req, res, next) =>
-  warehouseController.getWarehouseStock(req, res, next)
+  warehouseController.getWarehouseStock(req, res, next),
 );
 
 // ============================================================================
@@ -266,65 +298,71 @@ router.get("/warehouses/:id/stock", authMiddleware, (req, res, next) =>
 
 // GET /trucks - List all trucks with filtering and pagination
 router.get("/trucks", authMiddleware, (req, res, next) =>
-  fleetController.getTrucks(req, res, next)
+  fleetController.getTrucks(req, res, next),
 );
 
 // POST /deliveries - Create new delivery
-router.post("/deliveries", authMiddleware, requirePermission('sales.order.create'), (req, res, next) =>
-  fleetController.createDelivery(req, res, next)
+router.post(
+  "/deliveries",
+  authMiddleware,
+  requirePermission("sales.order.create"),
+  (req, res, next) => fleetController.createDelivery(req, res, next),
 );
 
 // PATCH /deliveries/:id/status - Update delivery status
 router.patch(
   "/deliveries/:id/status",
   authMiddleware,
-  requirePermission('sales.order.manage'),
-  (req, res, next) => fleetController.updateDeliveryStatus(req, res, next)
+  requirePermission("sales.order.manage"),
+  (req, res, next) => fleetController.updateDeliveryStatus(req, res, next),
 );
 
 // GET /deliveries/:id/timeline - Get delivery progress timeline
 router.get("/deliveries/:id/timeline", authMiddleware, (req, res, next) =>
-  fleetController.getDeliveryTimeline(req, res, next)
+  fleetController.getDeliveryTimeline(req, res, next),
 );
 
 // GET /deliveries - List deliveries with filtering
 router.get("/deliveries", authMiddleware, (req, res, next) =>
-  fleetController.listDeliveries(req, res, next)
+  fleetController.listDeliveries(req, res, next),
 );
 
 // Legacy fleet routes for backwards compatibility
 // Trucks
-router.post("/fleet/trucks", authMiddleware, requirePermission('inventory.product.manage'), (req, res, next) =>
-  fleetController.createTruck(req, res, next)
+router.post(
+  "/fleet/trucks",
+  authMiddleware,
+  requirePermission("inventory.product.manage"),
+  (req, res, next) => fleetController.createTruck(req, res, next),
 );
 router.get("/fleet/trucks/:id", authMiddleware, (req, res, next) =>
-  fleetController.getTruck(req, res, next)
+  fleetController.getTruck(req, res, next),
 );
 router.patch(
   "/fleet/trucks/:id",
   authMiddleware,
-  requirePermission('inventory.product.manage'),
-  (req, res, next) => fleetController.updateTruck(req, res, next)
+  requirePermission("inventory.product.manage"),
+  (req, res, next) => fleetController.updateTruck(req, res, next),
 );
 
 // Legacy Deliveries
 router.post(
   "/fleet/deliveries",
   authMiddleware,
-  requirePermission('sales.order.create'),
-  (req, res, next) => fleetController.createDelivery(req, res, next)
+  requirePermission("sales.order.create"),
+  (req, res, next) => fleetController.createDelivery(req, res, next),
 );
 router.get("/fleet/deliveries/:id", authMiddleware, (req, res, next) =>
-  fleetController.getDelivery(req, res, next)
+  fleetController.getDelivery(req, res, next),
 );
 router.get("/fleet/deliveries", authMiddleware, (req, res, next) =>
-  fleetController.listDeliveries(req, res, next)
+  fleetController.listDeliveries(req, res, next),
 );
 router.patch(
   "/fleet/deliveries/:id",
   authMiddleware,
-  requirePermission('sales.order.manage'),
-  (req, res, next) => fleetController.updateDelivery(req, res, next)
+  requirePermission("sales.order.manage"),
+  (req, res, next) => fleetController.updateDelivery(req, res, next),
 );
 
 // ============================================================================
@@ -332,31 +370,40 @@ router.patch(
 // ============================================================================
 
 // Users
-router.post("/hr/users", authMiddleware, requirePermission('admin.user.manage'), (req, res, next) =>
-  hrController.createUser(req, res, next)
+router.post(
+  "/hr/users",
+  authMiddleware,
+  requirePermission("admin.user.manage"),
+  (req, res, next) => hrController.createUser(req, res, next),
 );
 router.get("/hr/users/:id", authMiddleware, (req, res, next) =>
-  hrController.getUser(req, res, next)
+  hrController.getUser(req, res, next),
 );
-router.patch("/hr/users/:id", authMiddleware, requirePermission('admin.user.manage'), (req, res, next) =>
-  hrController.updateUser(req, res, next)
+router.patch(
+  "/hr/users/:id",
+  authMiddleware,
+  requirePermission("admin.user.manage"),
+  (req, res, next) => hrController.updateUser(req, res, next),
 );
 
 // Payroll
-router.post("/hr/payroll", authMiddleware, requirePermission('hr.payroll.run'), (req, res, next) =>
-  hrController.createPayroll(req, res, next)
+router.post(
+  "/hr/payroll",
+  authMiddleware,
+  requirePermission("hr.payroll.run"),
+  (req, res, next) => hrController.createPayroll(req, res, next),
 );
 router.get("/hr/payroll/:id", authMiddleware, (req, res, next) =>
-  hrController.getPayroll(req, res, next)
+  hrController.getPayroll(req, res, next),
 );
 router.get("/hr/payroll", authMiddleware, (req, res, next) =>
-  hrController.listPayroll(req, res, next)
+  hrController.listPayroll(req, res, next),
 );
 router.patch(
   "/hr/payroll/:id",
   authMiddleware,
-  requirePermission('hr.payroll.run'),
-  (req, res, next) => hrController.updatePayroll(req, res, next)
+  requirePermission("hr.payroll.run"),
+  (req, res, next) => hrController.updatePayroll(req, res, next),
 );
 
 // ============================================================================
@@ -368,67 +415,70 @@ router.use("/finance", financeRoutes);
 router.post(
   "/finance/transactions",
   authMiddleware,
-  requirePermission('finance.gl.create'),
-  (req, res, next) => financeController.createTransaction(req, res, next)
+  requirePermission("finance.gl.create"),
+  (req, res, next) => financeController.createTransaction(req, res, next),
 );
 router.get("/finance/transactions/:id", authMiddleware, (req, res, next) =>
-  financeController.getTransaction(req, res, next)
+  financeController.getTransaction(req, res, next),
 );
 router.get("/finance/transactions", authMiddleware, (req, res, next) =>
-  financeController.listTransactions(req, res, next)
+  financeController.listTransactions(req, res, next),
 );
 router.patch(
   "/finance/transactions/:id",
   authMiddleware,
-  requirePermission('finance.gl.create'),
-  (req, res, next) => financeController.updateTransaction(req, res, next)
+  requirePermission("finance.gl.create"),
+  (req, res, next) => financeController.updateTransaction(req, res, next),
 );
 router.get(
   "/finance/report",
   authMiddleware,
-  requirePermission('finance.report.aging'),
-  (req, res, next) => financeController.getFinancialReport(req, res, next)
+  requirePermission("finance.report.aging"),
+  (req, res, next) => financeController.getFinancialReport(req, res, next),
 );
 router.get(
   "/finance/analytics/revenue",
   authMiddleware,
-  requirePermission('finance.report.aging'),
-  (req, res, next) => financeController.getRevenueAnalytics(req, res, next)
+  requirePermission("finance.report.aging"),
+  (req, res, next) => financeController.getRevenueAnalytics(req, res, next),
 );
 router.get(
   "/finance/reports/monthly",
   authMiddleware,
-  requirePermission('finance.report.aging'),
-  (req, res, next) => financeController.getMonthlyReport(req, res, next)
+  requirePermission("finance.report.aging"),
+  (req, res, next) => financeController.getMonthlyReport(req, res, next),
 );
 
 // ============================================================================
 // PAYROLL ROUTES (Protected - Managers & Admins)
 // ============================================================================
 
-router.post("/payroll/run", authMiddleware, requirePermission('hr.payroll.run'), (req, res, next) =>
-  payrollController.runPayroll(req, res, next)
+router.post(
+  "/payroll/run",
+  authMiddleware,
+  requirePermission("hr.payroll.run"),
+  (req, res, next) => payrollController.runPayroll(req, res, next),
 );
 router.get("/payroll/:id", authMiddleware, (req, res, next) =>
-  payrollController.getPayroll(req, res, next)
+  payrollController.getPayroll(req, res, next),
 );
 router.patch(
   "/payroll/:id/status",
   authMiddleware,
-  requirePermission('hr.payroll.run'),
-  (req, res, next) => payrollController.updatePayrollStatus(req, res, next)
+  requirePermission("hr.payroll.run"),
+  (req, res, next) => payrollController.updatePayrollStatus(req, res, next),
 );
 router.get(
   "/payroll/reports/summary",
   authMiddleware,
-  requirePermission('hr.payroll.run'),
-  (req, res, next) => payrollController.getPayrollReport(req, res, next)
+  requirePermission("hr.payroll.run"),
+  (req, res, next) => payrollController.getPayrollReport(req, res, next),
 );
 router.get(
   "/payroll/analytics/trends",
   authMiddleware,
-  requirePermission('hr.payroll.run'),
-  (req, res, next) => payrollController.getPayrollAnalytics(req, res, next)
+  requirePermission("hr.payroll.run"),
+  (req, res, next) => payrollController.getPayrollAnalytics(req, res, next),
 );
 
 // ============================================================================
@@ -438,8 +488,8 @@ router.get(
 router.get(
   "/branches/:id/dashboard",
   authMiddleware,
-  requirePermission('hr.employee.view'),
-  (req, res, next) => branchController.getDashboard(req, res, next)
+  requirePermission("hr.employee.view"),
+  (req, res, next) => branchController.getDashboard(req, res, next),
 );
 
 // ============================================================================

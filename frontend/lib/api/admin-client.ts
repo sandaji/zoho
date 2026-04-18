@@ -62,7 +62,7 @@ class AdminApiClient {
     if (params?.date) queryParams.append("date", params.date);
 
     const response = await this.request<DailySummary>(
-      `/v1/pos/sales/daily-summary?${queryParams.toString()}`
+      `/v1/pos/daily-summary?${queryParams.toString()}`
     );
     return response.data!;
   }
@@ -109,7 +109,7 @@ class AdminApiClient {
   }
 
   async listUsers(): Promise<User[]> {
-    const response = await this.request<User[]>("/v1/users");
+    const response = await this.request<User[]>("/v1/admin/users");
     return response.data || [];
   }
 

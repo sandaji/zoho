@@ -16,7 +16,7 @@ export class PDFController {
   static async generatePDF(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -26,7 +26,7 @@ export class PDFController {
         throw new AppError(
           ErrorCode.BAD_REQUEST,
           400,
-          "Document ID is required"
+          "Document ID is required",
         );
       }
 
@@ -34,11 +34,7 @@ export class PDFController {
       const document = await SalesService.getDocumentById(id);
 
       if (!document) {
-        throw new AppError(
-          ErrorCode.NOT_FOUND,
-          404,
-          "Document not found"
-        );
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
       }
 
       // Only quotes and invoices can be converted to PDF
@@ -46,7 +42,7 @@ export class PDFController {
         throw new AppError(
           ErrorCode.BAD_REQUEST,
           400,
-          "Only quotes and invoices can be generated as PDF"
+          "Only quotes and invoices can be generated as PDF",
         );
       }
 
@@ -54,7 +50,8 @@ export class PDFController {
       // For now, using default company info
       const companyInfo = {
         name: document.branch?.name || "YOUR COMPANY NAME",
-        address: document.branch?.address || "YOUR COMPANY ADDRESS, CITY, COUNTRY",
+        address:
+          document.branch?.address || "YOUR COMPANY ADDRESS, CITY, COUNTRY",
         phone: [
           document.branch?.phone || "+254 XXX XXX XXX",
           "+254 XXX XXX XXX",
@@ -102,7 +99,7 @@ export class PDFController {
   static async previewDocument(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -111,7 +108,7 @@ export class PDFController {
         throw new AppError(
           ErrorCode.BAD_REQUEST,
           400,
-          "Document ID is required"
+          "Document ID is required",
         );
       }
 
@@ -119,11 +116,7 @@ export class PDFController {
       const document = await SalesService.getDocumentById(id);
 
       if (!document) {
-        throw new AppError(
-          ErrorCode.NOT_FOUND,
-          404,
-          "Document not found"
-        );
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
       }
 
       // Company info
@@ -154,7 +147,7 @@ export class PDFController {
         throw new AppError(
           ErrorCode.BAD_REQUEST,
           400,
-          "Cannot preview this document type"
+          "Cannot preview this document type",
         );
       }
 

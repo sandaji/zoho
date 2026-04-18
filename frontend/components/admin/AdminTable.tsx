@@ -51,17 +51,18 @@ export function AdminTable<T extends Record<string, any>>({
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  const safeData = data || [];
+
   const filteredData = useMemo(() => {
-    if (!search) return data;
+    if (!search) return safeData;
     const q = search.toLowerCase();
-    return data.filter((row) =>
+    return safeData.filter((row) =>
       searchKeys.some((key) => {
-        const value =
-          typeof key === "string" ? getValueByPath(row, key) : (row as any)[key];
+        const value = typeof key === "string" ? getValueByPath(row, key) : (row as any)[key];
         return value != null && String(value).toLowerCase().includes(q);
       })
     );
-  }, [data, search, searchKeys]);
+  }, [safeData, search, searchKeys]);
 
   const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -96,7 +97,10 @@ export function AdminTable<T extends Record<string, any>>({
             <Input
               placeholder="Search…"
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               className="h-9 border-emerald-200 pl-8 text-sm focus-visible:ring-emerald-500"
               aria-label="Search table"
             />
@@ -135,10 +139,11 @@ export function AdminTable<T extends Record<string, any>>({
                   {paginatedData.map((row, rowIndex) => (
                     <TableRow
                       key={rowIndex}
-                      className={`border-emerald-50 transition-colors ${onRowClick
+                      className={`border-emerald-50 transition-colors ${
+                        onRowClick
                           ? "cursor-pointer hover:bg-emerald-50/60"
                           : "hover:bg-emerald-50/40"
-                        }`}
+                      }`}
                       onClick={() => onRowClick?.(row)}
                     >
                       {columns.map((col) => {
@@ -156,10 +161,7 @@ export function AdminTable<T extends Record<string, any>>({
                         );
                       })}
                       {actions && (
-                        <TableCell
-                          className="text-right"
-                          onClick={(e) => e.stopPropagation()}
-                        >
+                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                           {actions(row)}
                         </TableCell>
                       )}
@@ -173,8 +175,7 @@ export function AdminTable<T extends Record<string, any>>({
             {totalPages > 1 && (
               <div className="mt-4 flex items-center justify-between">
                 <p className="text-xs text-emerald-500">
-                  Showing {startIndex + 1}–
-                  {Math.min(startIndex + pageSize, filteredData.length)} of{" "}
+                  Showing {startIndex + 1}–{Math.min(startIndex + pageSize, filteredData.length)} of{" "}
                   {filteredData.length}
                 </p>
                 <div className="flex items-center gap-2">

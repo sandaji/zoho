@@ -1,7 +1,6 @@
 // backend/src/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../lib/jwt';
-import { TokenPayload } from '../types';
 import { AppError, ErrorCode } from '../lib/errors';
 
 /**
@@ -89,25 +88,6 @@ export const authorize = (requiredRoles: string[]) => {
 
     next();
   };
-};
-
-/**
- * Placeholder middleware for legacy code
- * This would normally decode JWT and attach user to req
- */
-export const checkJwt = (req: Request, _res: Response, next: NextFunction): void => {
-  // This is replaced by authenticate middleware above
-  // Keeping for backward compatibility
-  if (!req.user) {
-    // Mock user for demonstration purposes only
-    req.user = {
-      userId: 'user_123',
-      email: 'demo@example.com',
-      role: 'manager' as any,
-      branchId: 'branch_abc',
-    } as TokenPayload;
-  }
-  next();
 };
 
 /**

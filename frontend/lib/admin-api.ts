@@ -1,6 +1,7 @@
 // frontend/lib/admin-api.ts
 import { SalesStatus, DeliveryStatus, TransactionType, PayrollStatus, PaymentMethod } from "./types";
 import { API_BASE_URL, API_ENDPOINTS, getApiUrl } from "./api-config";
+import { getAuthHeadersWithToken } from "./api-utils";
 import { UserRole } from "./auth-context";
 
 // ============================================================================
@@ -170,16 +171,9 @@ export interface MonthlyReport {
 // API FUNCTIONS
 // ============================================================================
 
-const getAuthHeaders = (token: string) => {
-  return {
-    "Content-Type": "application/json",
-    "Authorization": `Bearer ${token}`,
-  };
-};
-
 export const fetchBranches = async (token: string): Promise<Branch[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/branches`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch branches");
@@ -190,7 +184,7 @@ export const fetchBranches = async (token: string): Promise<Branch[]> => {
 
 export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/warehouses`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch warehouses");
@@ -201,7 +195,7 @@ export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
 
 export const fetchVendors = async (token: string): Promise<any[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch vendors");
@@ -212,7 +206,7 @@ export const fetchVendors = async (token: string): Promise<any[]> => {
 
 export const fetchUsers = async (token: string): Promise<User[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/users`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch users");
@@ -223,7 +217,7 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
 
 export const fetchProducts = async (token: string): Promise<Product[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/products`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch products");
@@ -234,19 +228,18 @@ export const fetchProducts = async (token: string): Promise<Product[]> => {
 
 export const fetchSales = async (token: string): Promise<Sales[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/pos/sales`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch sales");
   }
-  // The sales endpoint has a different response structure
   const result = await response.json();
   return result.data;
 };
 
 export const fetchDeliveries = async (token: string): Promise<Delivery[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/deliveries`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch deliveries");
@@ -257,7 +250,7 @@ export const fetchDeliveries = async (token: string): Promise<Delivery[]> => {
 
 export const fetchFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/finance/transactions`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch finance transactions");
@@ -268,7 +261,7 @@ export const fetchFinanceTransactions = async (token: string): Promise<FinanceTr
 
 export const fetchPayroll = async (token: string): Promise<Payroll[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/payroll`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch payroll");
@@ -280,45 +273,33 @@ export const fetchPayroll = async (token: string): Promise<Payroll[]> => {
 export const createProduct = async (token: string, payload: ProductPayload): Promise<Product> => {
   const response = await fetch(`${API_BASE_URL}/v1/products`, {
     method: "POST",
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to create product");
   }
-
   const { data } = await response.json();
   return data;
 };
 
-
 export const fetchDailySummary = async (token: string): Promise<DailySummary> => {
-
   const response = await fetch(getApiUrl(API_ENDPOINTS.POS_DAILY_SUMMARY), {
-
-    headers: getAuthHeaders(token),
-
+    headers: getAuthHeadersWithToken(token),
   });
-
   if (!response.ok) {
     const errorDetails = await response.text().catch(() => "No error details");
     console.error(`Daily summary request failed with status ${response.status}:`, errorDetails);
-
     throw new Error(`Failed to fetch daily summary (${response.status}): ${errorDetails}`);
-
   }
-
   const { data } = await response.json();
-
   return data;
-
-}
+};
 
 export const getFinancialReport = async (token: string, month: number, year: number): Promise<MonthlyReport> => {
   const response = await fetch(`${API_BASE_URL}/v1/finance/report?month=${month}&year=${year}`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch financial report");
@@ -329,7 +310,7 @@ export const getFinancialReport = async (token: string, month: number, year: num
 
 export const getRevenueAnalytics = async (token: string, range: string): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/v1/finance/analytics/revenue?range=${range}`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch revenue analytics");
@@ -340,7 +321,7 @@ export const getRevenueAnalytics = async (token: string, range: string): Promise
 
 export const listFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/finance/transactions`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to list finance transactions");
@@ -351,7 +332,7 @@ export const listFinanceTransactions = async (token: string): Promise<FinanceTra
 
 export const listPayroll = async (token: string): Promise<Payroll[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/hr/payroll`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to list payroll");
@@ -363,7 +344,7 @@ export const listPayroll = async (token: string): Promise<Payroll[]> => {
 export const runPayroll = async (token: string): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/v1/payroll/run`, {
     method: "POST",
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -376,7 +357,7 @@ export const runPayroll = async (token: string): Promise<any> => {
 export const updatePayrollStatus = async (token: string, id: string, status: string): Promise<Payroll> => {
   const response = await fetch(`${API_BASE_URL}/v1/payroll/${id}/status`, {
     method: "PATCH",
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
     body: JSON.stringify({ status }),
   });
   if (!response.ok) {
@@ -386,7 +367,6 @@ export const updatePayrollStatus = async (token: string, id: string, status: str
   const { data } = await response.json();
   return data;
 };
-
 
 export interface ProductPayload {
   sku: string;
@@ -420,48 +400,27 @@ export interface ProductPayload {
 }
 
 export interface UpdateUserPayload {
-
   name?: string;
-
   phone?: string;
-
-  role?: UserRole;
-
+  role?: string;
   branchId?: string | null;
-
   isActive?: boolean;
-
 }
 
-
-
 export const updateUser = async (
-
   token: string,
-
   userId: string,
-
   payload: UpdateUserPayload
-
 ): Promise<User> => {
-
   const response = await fetch(`${API_BASE_URL}/v1/hr/users/${userId}`, {
-
     method: "PATCH",
-
-    headers: getAuthHeaders(token),
-
+    headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
-
   });
-
-
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to update user");
   }
-
   const { data } = await response.json();
   return data;
 };
@@ -472,13 +431,11 @@ export const updateUser = async (
 
 export const getEligibleEmployees = async (token: string): Promise<User[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/eligible-employees`, {
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
   });
-
   if (!response.ok) {
     throw new Error("Failed to fetch eligible employees");
   }
-
   const { data } = await response.json();
   return data;
 };
@@ -490,15 +447,13 @@ export const grantSystemAccess = async (
 ): Promise<User> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/users/${userId}/grant-access`, {
     method: "PUT",
-    headers: getAuthHeaders(token),
+    headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
   });
-
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error || "Failed to grant system access");
   }
-
   const { data } = await response.json();
   return data;
 };

@@ -1,4 +1,3 @@
-
 import { Request, Response, NextFunction } from "express";
 import { PerformanceService } from "../services/performance.service";
 
@@ -47,7 +46,7 @@ export class PerformanceController {
       const evaluatorId = (req as any).user.id;
       const evaluation = await performanceService.createEvaluation({
         ...req.body,
-        evaluatorId
+        evaluatorId,
       });
       res.status(201).json({ success: true, data: evaluation });
     } catch (error) {
@@ -69,7 +68,10 @@ export class PerformanceController {
   async createDevelopmentPlan(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = req.params.userId || (req as any).user.id;
-      const plan = await performanceService.createDevelopmentPlan(userId, req.body);
+      const plan = await performanceService.createDevelopmentPlan(
+        userId,
+        req.body,
+      );
       res.status(201).json({ success: true, data: plan });
     } catch (error) {
       next(error);

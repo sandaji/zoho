@@ -1,6 +1,6 @@
 /**
  * Finance API Client
- * 
+ *
  * Centralized API functions for the Finance Dashboard
  * Handles all data fetching with proper error handling and type safety
  */
@@ -20,6 +20,17 @@ import type {
   SavingsGoalsQueryParams,
   CreateSavingsGoalRequest,
   UpdateSavingsGoalRequest,
+  FinancialKPIsResponse,
+  FiscalPeriodsResponse,
+  FinancialAlertsResponse,
+  BankAccountsResponse,
+  ARAgingSummaryResponse,
+  APStatusSummaryResponse,
+  PLQuickPreviewResponse,
+  TaxSummaryResponse,
+  ReconciliationStatusResponse,
+  PeriodComparisonTrendsResponse,
+  TopCustomersVendorsResponse,
 } from "../types";
 
 // ============================================================================
@@ -52,10 +63,7 @@ export async function fetchTransactions(
   params?: TransactionsQueryParams
 ): Promise<ApiResponse<TransactionsResponse>> {
   const queryString = params ? `?${new URLSearchParams(params as any).toString()}` : "";
-  return apiClient.request<TransactionsResponse>(
-    `/v1/finance/transactions${queryString}`,
-    "GET"
-  );
+  return apiClient.request<TransactionsResponse>(`/v1/finance/transactions${queryString}`, "GET");
 }
 
 /**
@@ -94,10 +102,7 @@ export async function fetchSavingsGoals(
   params?: SavingsGoalsQueryParams
 ): Promise<ApiResponse<SavingsGoalsResponse>> {
   const queryString = params ? `?${new URLSearchParams(params as any).toString()}` : "";
-  return apiClient.request<SavingsGoalsResponse>(
-    `/v1/finance/savings-goals${queryString}`,
-    "GET"
-  );
+  return apiClient.request<SavingsGoalsResponse>(`/v1/finance/savings-goals${queryString}`, "GET");
 }
 
 /**
@@ -107,11 +112,7 @@ export async function fetchSavingsGoals(
 export async function createSavingsGoal(
   data: CreateSavingsGoalRequest
 ): Promise<ApiResponse<SavingsGoalsResponse>> {
-  return apiClient.request<SavingsGoalsResponse>(
-    "/v1/finance/savings-goals",
-    "POST",
-    data
-  );
+  return apiClient.request<SavingsGoalsResponse>("/v1/finance/savings-goals", "POST", data);
 }
 
 /**
@@ -123,23 +124,136 @@ export async function updateSavingsGoal(
   id: string,
   data: UpdateSavingsGoalRequest
 ): Promise<ApiResponse<SavingsGoalsResponse>> {
-  return apiClient.request<SavingsGoalsResponse>(
-    `/v1/finance/savings-goals/${id}`,
-    "PATCH",
-    data
-  );
+  return apiClient.request<SavingsGoalsResponse>(`/v1/finance/savings-goals/${id}`, "PATCH", data);
 }
 
 /**
  * Delete a savings goal
  * @param id - Goal ID
  */
-export async function deleteSavingsGoal(
-  id: string
-): Promise<ApiResponse<void>> {
-  return apiClient.request<void>(
-    `/v1/finance/savings-goals/${id}`,
-    "DELETE"
+export async function deleteSavingsGoal(id: string): Promise<ApiResponse<void>> {
+  return apiClient.request<void>(`/v1/finance/savings-goals/${id}`, "DELETE");
+}
+
+// ============================================================================
+// PHASE 1 API ENDPOINTS - KPIs, Alerts, Periods, Bank Accounts
+// ============================================================================
+
+/**
+ * Fetch financial KPIs (Key Performance Indicators)
+ */
+export async function fetchFinancialKPIs(): Promise<ApiResponse<FinancialKPIsResponse>> {
+  return apiClient.request<FinancialKPIsResponse>("/v1/finance/kpis", "GET");
+}
+
+/**
+ * Fetch fiscal periods
+ * @param year - Optional year filter
+ */
+export async function fetchFiscalPeriods(
+  year?: number
+): Promise<ApiResponse<FiscalPeriodsResponse>> {
+  const queryString = year ? `?year=${year}` : "";
+  return apiClient.request<FiscalPeriodsResponse>(`/v1/finance/periods${queryString}`, "GET");
+}
+
+/**
+ * Fetch financial alerts
+ * Includes overdue invoices, upcoming payments, low cash warnings, etc.
+ */
+export async function fetchFinancialAlerts(): Promise<ApiResponse<FinancialAlertsResponse>> {
+  return apiClient.request<FinancialAlertsResponse>("/v1/finance/alerts", "GET");
+}
+
+/**
+ * Fetch bank accounts summary
+ */
+export async function fetchBankAccounts(): Promise<ApiResponse<BankAccountsResponse>> {
+  return apiClient.request<BankAccountsResponse>("/v1/finance/bank/accounts", "GET");
+}
+
+// ============================================================================
+// PHASE 2 API ENDPOINTS - AR Aging, AP Status, Bank Accounts, P&L Preview
+// ============================================================================
+
+/**
+ * Fetch AR Aging summary
+ */
+export async function fetchARAgingSummary(): Promise<ApiResponse<ARAgingSummaryResponse>> {
+  return apiClient.request<ARAgingSummaryResponse>("/v1/finance/ar/aging", "GET");
+}
+
+/**
+ * Fetch AP Status summary
+ */
+export async function fetchAPStatusSummary(): Promise<ApiResponse<APStatusSummaryResponse>> {
+  return apiClient.request<APStatusSummaryResponse>("/v1/finance/ap/status", "GET");
+}
+
+/**
+ * Fetch P&L Quick Preview for current period
+ * @param startDate - Optional start date for calculation
+ * @param endDate - Optional end date for calculation
+ */
+export async function fetchPLQuickPreview(
+  startDate?: string,
+  endDate?: string
+): Promise<ApiResponse<PLQuickPreviewResponse>> {
+  const params = new URLSearchParams();
+  if (startDate) params.append("startDate", startDate);
+  if (endDate) params.append("endDate", endDate);
+  const queryString = params.toString() ? `?${params.toString()}` : "";
+  return apiClient.request<PLQuickPreviewResponse>(`/v1/finance/pl-preview${queryString}`, "GET");
+}
+
+// ============================================================================
+// PHASE 3 API ENDPOINTS - Tax Summary, Reconciliation, Trends, Top Customers
+// ============================================================================
+
+/**
+ * Fetch tax summary for the current period
+ */
+export async function fetchTaxSummary(): Promise<ApiResponse<TaxSummaryResponse>> {
+  return apiClient.request<TaxSummaryResponse>("/v1/finance/tax-summary", "GET");
+}
+
+/**
+ * Fetch reconciliation status across all accounts
+ */
+export async function fetchReconciliationStatus(): Promise<
+  ApiResponse<ReconciliationStatusResponse>
+> {
+  return apiClient.request<ReconciliationStatusResponse>(
+    "/v1/finance/reconciliation-status",
+    "GET"
+  );
+}
+
+/**
+ * Fetch period comparison trends
+ * @param periods - Number of periods to compare (default: 12 for 12 months)
+ */
+export async function fetchPeriodComparisonTrends(
+  periods?: number
+): Promise<ApiResponse<PeriodComparisonTrendsResponse>> {
+  const queryString = periods ? `?periods=${periods}` : "";
+  return apiClient.request<PeriodComparisonTrendsResponse>(
+    `/v1/finance/period-trends${queryString}`,
+    "GET"
+  );
+}
+
+/**
+ * Fetch top customers and vendors
+ * @param limit - Number of top items to return (default: 5)
+ */
+export async function fetchTopCustomersVendors(
+  limit?: number
+): Promise<ApiResponse<TopCustomersVendorsResponse>> {
+  const queryString = limit ? `?limit=${limit}` : "";
+  return apiClient.request<TopCustomersVendorsResponse>(
+    `/v1/finance/top-customers-vendors${queryString}`,
+    "GET"
   );
 }
 
@@ -153,21 +267,15 @@ export async function deleteSavingsGoal(
  */
 export async function fetchAllDashboardData() {
   try {
-    const [
-      summaryRes,
-      chartRes,
-      transactionsRes,
-      categoriesRes,
-      dailySpendingRes,
-      savingsRes,
-    ] = await Promise.allSettled([
-      fetchFinancialSummary(),
-      fetchChartData(),
-      fetchTransactions({ limit: 5 }),
-      fetchExpenseCategories({ period: "month" }),
-      fetchDailySpending(),
-      fetchSavingsGoals({ status: "active" }),
-    ]);
+    const [summaryRes, chartRes, transactionsRes, categoriesRes, dailySpendingRes, savingsRes] =
+      await Promise.allSettled([
+        fetchFinancialSummary(),
+        fetchChartData(),
+        fetchTransactions({ limit: 5 }),
+        fetchExpenseCategories({ period: "month" }),
+        fetchDailySpending(),
+        fetchSavingsGoals({ status: "active" }),
+      ]);
 
     return {
       summary:
@@ -175,9 +283,7 @@ export async function fetchAllDashboardData() {
           ? summaryRes.value.data
           : null,
       chartData:
-        chartRes.status === "fulfilled" && chartRes.value.success
-          ? chartRes.value.data
-          : [],
+        chartRes.status === "fulfilled" && chartRes.value.success ? chartRes.value.data : [],
       transactions:
         transactionsRes.status === "fulfilled" && transactionsRes.value.success
           ? transactionsRes.value.data?.transactions || []

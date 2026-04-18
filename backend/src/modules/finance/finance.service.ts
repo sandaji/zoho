@@ -17,72 +17,68 @@ export class FinanceService {
       const fiscalYearEnd = new Date(now.getFullYear(), 11, 31); // Dec 31
 
       // Execute all queries in parallel for performance
-      const [
-        totalSales,
-        totalTransactions,
-        totalPayroll,
-        activeProducts
-      ] = await Promise.all([
-        // Total sales revenue
-        prisma.salesDocument.aggregate({
-          where: {
-            createdAt: {
-              gte: fiscalYearStart,
-              lte: fiscalYearEnd,
+      const [totalSales, totalTransactions, totalPayroll, activeProducts] =
+        await Promise.all([
+          // Total sales revenue
+          prisma.salesDocument.aggregate({
+            where: {
+              createdAt: {
+                gte: fiscalYearStart,
+                lte: fiscalYearEnd,
+              },
+              status: {
+                in: ["PAID", "PARTIALLY_PAID", "SENT"],
+              },
             },
-            status: {
-              in: ['PAID', 'PARTIALLY_PAID', 'SENT']
-            }
-          },
-          _sum: {
-            total: true,
-            subtotal: true,
-            tax: true,
-          },
-          _count: true
-        }),
-
-        // Finance transactions (income/expenses)
-        prisma.financeTransaction.groupBy({
-          by: ['type'],
-          where: {
-            createdAt: {
-              gte: fiscalYearStart,
-              lte: fiscalYearEnd,
-            }
-          },
-          _sum: {
-            amount: true
-          }
-        }),
-
-        // Payroll expenses
-        prisma.payroll.aggregate({
-          where: {
-            period_start: {
-              gte: fiscalYearStart,
+            _sum: {
+              total: true,
+              subtotal: true,
+              tax: true,
             },
-            period_end: {
-              lte: fiscalYearEnd,
-            },
-            status: {
-              in: ['approved', 'paid']
-            }
-          },
-          _sum: {
-            net_salary: true,
-            base_salary: true,
-          }
-        }),
+            _count: true,
+          }),
 
-        // Active products count
-        prisma.product.count({
-          where: {
-            isActive: true,
-            status: 'active'
-          }
-        })
-      ]);
+          // Finance transactions (income/expenses)
+          prisma.financeTransaction.groupBy({
+            by: ["type"],
+            where: {
+              createdAt: {
+                gte: fiscalYearStart,
+                lte: fiscalYearEnd,
+              },
+            },
+            _sum: {
+              amount: true,
+            },
+          }),
+
+          // Payroll expenses
+          prisma.payroll.aggregate({
+            where: {
+              period_start: {
+                gte: fiscalYearStart,
+              },
+              period_end: {
+                lte: fiscalYearEnd,
+              },
+              status: {
+                in: ["approved", "paid"],
+              },
+            },
+            _sum: {
+              net_salary: true,
+              base_salary: true,
+            },
+          }),
+
+          // Active products count
+          prisma.product.count({
+            where: {
+              isActive: true,
+              status: "active",
+            },
+          }),
+        ]);
 
       // Low stock products - use raw SQL for field comparison
       const lowStockResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
@@ -100,7 +96,7 @@ export class FinanceService {
 
       // Calculate expenses from transactions and payroll
       const transactionExpenses = totalTransactions
-        .filter(t => t.type === 'expense')
+        .filter((t) => t.type === "expense")
         .reduce((sum, t) => sum + (t._sum.amount || 0), 0);
 
       const payrollExpenses = totalPayroll._sum.net_salary || 0;
@@ -110,34 +106,35 @@ export class FinanceService {
       const profit = revenue - totalExpenses;
 
       // Calculate margins
-      const grossMargin = revenue > 0 ? ((revenue - totalExpenses) / revenue) * 100 : 0;
+      const grossMargin =
+        revenue > 0 ? ((revenue - totalExpenses) / revenue) * 100 : 0;
       const netMargin = revenue > 0 ? (profit / revenue) * 100 : 0;
 
       // Calculate accounts receivable (unpaid sales) from specialized service
       const arSummary = await prisma.accountReceivable.aggregate({
-        where: { status: { in: ['outstanding', 'partial'] } },
-        _sum: { balance: true }
+        where: { status: { in: ["outstanding", "partial"] } },
+        _sum: { balance: true },
       });
       const receivables = arSummary._sum.balance || 0;
 
       // Calculate accounts payable from specialized service
       const apSummary = await prisma.accountPayable.aggregate({
-        where: { status: { in: ['outstanding', 'partial'] } },
-        _sum: { balance: true }
+        where: { status: { in: ["outstanding", "partial"] } },
+        _sum: { balance: true },
       });
       const payables = apSummary._sum.balance || 0;
 
       // Cash balance from Chart of Accounts (Bank + Cash)
       const cashAccounts = await prisma.chartOfAccount.aggregate({
         where: {
-          account_type: 'asset',
+          account_type: "asset",
           OR: [
-            { account_name: { contains: 'Bank', mode: 'insensitive' } },
-            { account_name: { contains: 'Cash', mode: 'insensitive' } },
-            { account_code: { in: ['1001', '1002', '1003'] } }
-          ]
+            { account_name: { contains: "Bank", mode: "insensitive" } },
+            { account_name: { contains: "Cash", mode: "insensitive" } },
+            { account_code: { in: ["1001", "1002", "1003"] } },
+          ],
         },
-        _sum: { current_balance: true }
+        _sum: { current_balance: true },
       });
       const cashBalance = cashAccounts._sum.current_balance || 0;
 
@@ -153,7 +150,7 @@ export class FinanceService {
         salesCount,
         activeProducts,
         lowStockProducts,
-        payrollExpenses
+        payrollExpenses,
       };
     } catch (error) {
       logger.error({ error }, "Error fetching financial summary");
@@ -179,29 +176,29 @@ export class FinanceService {
               lte: fiscalYearEnd,
             },
             status: {
-              in: ['PAID', 'PARTIALLY_PAID', 'SENT']
-            }
+              in: ["PAID", "PARTIALLY_PAID", "SENT"],
+            },
           },
           _sum: {
             total: true,
             subtotal: true,
             tax: true,
             discount: true,
-          }
+          },
         }),
 
         // Operating expenses
         prisma.financeTransaction.aggregate({
           where: {
-            type: 'expense',
+            type: "expense",
             createdAt: {
               gte: fiscalYearStart,
               lte: fiscalYearEnd,
-            }
+            },
           },
           _sum: {
-            amount: true
-          }
+            amount: true,
+          },
         }),
 
         // Payroll expenses
@@ -211,13 +208,13 @@ export class FinanceService {
               gte: fiscalYearStart,
             },
             status: {
-              in: ['approved', 'paid']
-            }
+              in: ["approved", "paid"],
+            },
           },
           _sum: {
             net_salary: true,
-          }
-        })
+          },
+        }),
       ]);
 
       const revenue = salesData._sum.total || 0;
@@ -258,12 +255,14 @@ export class FinanceService {
       const endDate = now;
 
       // Get monthly sales data
-      const monthlySales = await prisma.$queryRaw<Array<{
-        month: number;
-        year: number;
-        revenue: number;
-        count: number;
-      }>>`
+      const monthlySales = await prisma.$queryRaw<
+        Array<{
+          month: number;
+          year: number;
+          revenue: number;
+          count: number;
+        }>
+      >`
         SELECT 
           EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
           EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
@@ -278,11 +277,13 @@ export class FinanceService {
       `;
 
       // Get monthly expenses
-      const monthlyExpenses = await prisma.$queryRaw<Array<{
-        month: number;
-        year: number;
-        expenses: number;
-      }>>`
+      const monthlyExpenses = await prisma.$queryRaw<
+        Array<{
+          month: number;
+          year: number;
+          expenses: number;
+        }>
+      >`
         SELECT 
           EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
           EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
@@ -296,11 +297,13 @@ export class FinanceService {
       `;
 
       // Get monthly payroll
-      const monthlyPayroll = await prisma.$queryRaw<Array<{
-        month: number;
-        year: number;
-        payroll: number;
-      }>>`
+      const monthlyPayroll = await prisma.$queryRaw<
+        Array<{
+          month: number;
+          year: number;
+          payroll: number;
+        }>
+      >`
         SELECT 
           EXTRACT(MONTH FROM period_start)::INTEGER as month,
           EXTRACT(YEAR FROM period_start)::INTEGER as year,
@@ -314,8 +317,20 @@ export class FinanceService {
       `;
 
       // Combine data by month
-      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
 
       const chartData: Array<{
         name: string;
@@ -327,11 +342,18 @@ export class FinanceService {
       const currentMonth = now.getMonth() + 1;
 
       for (let month = 1; month <= currentMonth; month++) {
-        const salesData = monthlySales.find(s => s.month === month) || { revenue: 0 };
-        const expenseData = monthlyExpenses.find(e => e.month === month) || { expenses: 0 };
-        const payrollData = monthlyPayroll.find(p => p.month === month) || { payroll: 0 };
+        const salesData = monthlySales.find((s) => s.month === month) || {
+          revenue: 0,
+        };
+        const expenseData = monthlyExpenses.find((e) => e.month === month) || {
+          expenses: 0,
+        };
+        const payrollData = monthlyPayroll.find((p) => p.month === month) || {
+          payroll: 0,
+        };
 
-        const totalExpenses = (expenseData.expenses || 0) + (payrollData.payroll || 0);
+        const totalExpenses =
+          (expenseData.expenses || 0) + (payrollData.payroll || 0);
         const revenue = salesData.revenue || 0;
         const profit = revenue - totalExpenses;
 
@@ -357,17 +379,17 @@ export class FinanceService {
   async getTopSellingProducts(limit: number = 10) {
     try {
       const topProducts = await prisma.salesDocumentItem.groupBy({
-        by: ['productId'],
+        by: ["productId"],
         _sum: {
           quantity: true,
           total: true,
         },
         orderBy: {
           _sum: {
-            total: 'desc'
-          }
+            total: "desc",
+          },
         },
-        take: limit
+        take: limit,
       });
 
       // Get product details
@@ -381,7 +403,7 @@ export class FinanceService {
               name: true,
               unit_price: true,
               category: true,
-            }
+            },
           });
 
           return {
@@ -389,7 +411,7 @@ export class FinanceService {
             totalQuantity: item._sum.quantity || 0,
             totalRevenue: item._sum.total || 0,
           };
-        })
+        }),
       );
 
       return productsWithDetails;
@@ -408,14 +430,14 @@ export class FinanceService {
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
       const salesByMethod = await prisma.salesDocument.groupBy({
-        by: ['paymentStatus'],
+        by: ["paymentStatus"],
         where: {
           createdAt: {
             gte: startOfMonth,
           },
           status: {
-            in: ['PAID', 'PARTIALLY_PAID', 'SENT']
-          }
+            in: ["PAID", "PARTIALLY_PAID", "SENT"],
+          },
         },
         _sum: {
           total: true,
@@ -423,7 +445,7 @@ export class FinanceService {
         _count: true,
       });
 
-      return salesByMethod.map(item => ({
+      return salesByMethod.map((item) => ({
         method: item.paymentStatus,
         total: item._sum.total || 0,
         count: item._count,
@@ -454,14 +476,12 @@ export class FinanceService {
 
         // Efficiency
         salesGrowth: 0, // Would need historical comparison
-        expenseRatio: summary.revenue > 0
-          ? (summary.expenses / summary.revenue) * 100
-          : 0,
+        expenseRatio:
+          summary.revenue > 0 ? (summary.expenses / summary.revenue) * 100 : 0,
 
         // Other metrics
-        averageSaleValue: summary.salesCount > 0
-          ? summary.revenue / summary.salesCount
-          : 0,
+        averageSaleValue:
+          summary.salesCount > 0 ? summary.revenue / summary.salesCount : 0,
 
         cashPosition: summary.cashBalance,
         outstandingReceivables: summary.accountsReceivable,

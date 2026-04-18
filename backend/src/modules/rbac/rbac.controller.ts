@@ -73,7 +73,10 @@ export class RbacController {
       const { id } = req.params;
       if (!id) throw new Error("ID is required");
       const { permissions } = req.body;
-      const role = await this.rbacService.syncRolePermissions(id as string, permissions);
+      const role = await this.rbacService.syncRolePermissions(
+        id as string,
+        permissions,
+      );
       res.json({ success: true, data: role });
     } catch (error) {
       next(error);
@@ -96,7 +99,10 @@ export class RbacController {
       const { userId } = req.params as { userId: string };
       if (!userId) throw new Error("User ID is required");
       const { roles } = req.body;
-      const result = await this.rbacService.assignUserRoles(userId as string, roles);
+      const result = await this.rbacService.assignUserRoles(
+        userId as string,
+        roles,
+      );
       res.json({ success: true, data: result });
     } catch (error) {
       next(error);

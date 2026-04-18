@@ -43,6 +43,7 @@ interface InventoryTableProps {
   };
   onSort?: (field: string) => void;
   onPageChange?: (page: number) => void;
+  onEdit?: (item: InventoryItem) => void;
   currentSort?: {
     sortBy: string;
     sortOrder: "asc" | "desc";
@@ -92,6 +93,7 @@ export function InventoryTable({
   pagination, 
   onSort, 
   onPageChange,
+  onEdit,
   currentSort
 }: InventoryTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -272,6 +274,7 @@ export function InventoryTable({
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                          onClick={() => onEdit?.(item)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>

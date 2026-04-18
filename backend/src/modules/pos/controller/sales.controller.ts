@@ -1,15 +1,15 @@
 // backend/src/modules/sales/sales.controller.ts
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 import {
   createSalesDocumentSchema,
   listDocumentsQuerySchema,
   convertDocumentSchema,
-  createPOSSaleSchema
-} from '../sales.validation';
-import { SalesDocumentStatus } from '../../../generated/enums';
-import { SalesService } from '../service/sales.service';
-import { AppError, ErrorCode } from '../../../lib/errors';
-import { TokenPayload } from '../../../types';
+  createPOSSaleSchema,
+} from "../sales.validation";
+import { SalesDocumentStatus } from "../../../generated/enums";
+import { SalesService } from "../service/sales.service";
+import { AppError, ErrorCode } from "../../../lib/errors";
+import { TokenPayload } from "../../../types";
 
 interface AuthenticatedRequest extends Request {
   user?: TokenPayload;
@@ -21,11 +21,14 @@ interface AuthenticatedRequest extends Request {
  * It validates incoming data and orchestrates calls to the SalesService.
  */
 export class SalesController {
-
   /**
    * Create a new sales document (Draft, Quote, Invoice, Credit Note)
    */
-  static async createDocument(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async createDocument(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const input = createSalesDocumentSchema.parse(req.body);
       const authReq = req as AuthenticatedRequest;
@@ -35,14 +38,20 @@ export class SalesController {
       const branchId = userBranchId || (input as any).branchId;
 
       if (!branchId || !userId) {
-        res.status(401).json({ success: false, error: 'User context required' });
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
         return;
       }
 
       // Record-level isolation: Ensure user can only create for authorized branches
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {
         if (!req.authorizedBranchIds.includes(branchId)) {
-          throw new AppError(ErrorCode.FORBIDDEN, 403, 'Cannot create document for an unauthorized branch');
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot create document for an unauthorized branch",
+          );
         }
       }
 
@@ -51,10 +60,17 @@ export class SalesController {
         type: input.type as any,
         status: input.status as SalesDocumentStatus | undefined,
         customerId: input.customerId || undefined,
-        issueDate: typeof input.issueDate === 'string' ? new Date(input.issueDate) : input.issueDate,
-        dueDate: input.dueDate ? (typeof input.dueDate === 'string' ? new Date(input.dueDate) : input.dueDate) : undefined,
+        issueDate:
+          typeof input.issueDate === "string"
+            ? new Date(input.issueDate)
+            : input.issueDate,
+        dueDate: input.dueDate
+          ? typeof input.dueDate === "string"
+            ? new Date(input.dueDate)
+            : input.dueDate
+          : undefined,
         notes: input.notes,
-        items: input.items.map(item => ({
+        items: input.items.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
@@ -63,7 +79,11 @@ export class SalesController {
         })),
       };
 
-      const document = await SalesService.createDocument(serviceInput, branchId, userId);
+      const document = await SalesService.createDocument(
+        serviceInput,
+        branchId,
+        userId,
+      );
       res.status(201).json({ success: true, data: document });
     } catch (error) {
       next(error);
@@ -73,7 +93,11 @@ export class SalesController {
   /**
    * List all sales documents with optional filters
    */
-  static async listDocuments(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async listDocuments(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const query = listDocumentsQuerySchema.parse(req.query);
       const authReq = req as AuthenticatedRequest;
@@ -82,10 +106,20 @@ export class SalesController {
       let branchIdFilter = query.branchId || userBranchId;
 
       // Record-level isolation: Enforce authorized branches
-      if (authReq.authorizedBranchIds && authReq.authorizedBranchIds.length > 0) {
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
         // If they requested a specific branch, check if it's authorized
-        if (query.branchId && !authReq.authorizedBranchIds.includes(query.branchId)) {
-          throw new AppError(ErrorCode.FORBIDDEN, 403, 'Unauthorized branch access');
+        if (
+          query.branchId &&
+          !authReq.authorizedBranchIds.includes(query.branchId)
+        ) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Unauthorized branch access",
+          );
         }
         // Force the filter to be restricted to authorized branches
         branchIdFilter = query.branchId || authReq.authorizedBranchIds[0]; // Simplification for now, or we could pass the whole array to service if it supported it.
@@ -93,7 +127,7 @@ export class SalesController {
 
       const documents = await SalesService.listDocuments({
         ...query,
-        branchId: (branchIdFilter || undefined) as string | undefined
+        branchId: (branchIdFilter || undefined) as string | undefined,
       });
       res.status(200).json({ success: true, data: documents });
     } catch (error) {
@@ -104,17 +138,23 @@ export class SalesController {
   /**
    * Get a single sales document by ID
    */
-  static async getDocumentById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async getDocumentById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.id as string;
       if (!id) {
-        res.status(400).json({ success: false, error: 'Document ID is required' });
+        res
+          .status(400)
+          .json({ success: false, error: "Document ID is required" });
         return;
       }
 
       const document = await SalesService.getDocumentById(id);
       if (!document) {
-        res.status(404).json({ success: false, error: 'Document not found' });
+        res.status(404).json({ success: false, error: "Document not found" });
         return;
       }
       res.status(200).json({ success: true, data: document });
@@ -126,11 +166,17 @@ export class SalesController {
   /**
    * Convert a document from one type to another (e.g., Quote to Invoice)
    */
-  static async convertDocument(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async convertDocument(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.id as string;
       if (!id) {
-        res.status(400).json({ success: false, error: 'Document ID is required' });
+        res
+          .status(400)
+          .json({ success: false, error: "Document ID is required" });
         return;
       }
 
@@ -141,23 +187,40 @@ export class SalesController {
       const userId = authReq.user?.userId;
 
       if (!branchId || !userId) {
-        res.status(401).json({ success: false, error: 'User context required' });
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
         return;
       }
 
       // Isolation check
       const source = await SalesService.getDocumentById(id);
       if (!source) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, 'Source document not found');
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Source document not found",
+        );
       }
 
-      if (authReq.authorizedBranchIds && authReq.authorizedBranchIds.length > 0) {
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
         if (!authReq.authorizedBranchIds.includes(source.branchId)) {
-          throw new AppError(ErrorCode.FORBIDDEN, 403, 'Cannot convert document from another branch');
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot convert document from another branch",
+          );
         }
       }
 
-      const convertedDocument = await SalesService.convertToInvoice(id, branchId as string, userId);
+      const convertedDocument = await SalesService.convertToInvoice(
+        id,
+        branchId as string,
+        userId,
+      );
       res.status(201).json({ success: true, data: convertedDocument });
     } catch (error) {
       next(error);
@@ -167,7 +230,11 @@ export class SalesController {
   /**
    * Create a POS sale (simplified invoice creation for retail)
    */
-  static async createPOSSale(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async createPOSSale(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const input = createPOSSaleSchema.parse(req.body);
       const authReq = req as AuthenticatedRequest;
@@ -175,14 +242,23 @@ export class SalesController {
       const userId = authReq.user?.userId || input.userId;
 
       if (!branchId || !userId) {
-        res.status(401).json({ success: false, error: 'User context required' });
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
         return;
       }
 
       // Record-level isolation
-      if (authReq.authorizedBranchIds && authReq.authorizedBranchIds.length > 0) {
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
         if (!authReq.authorizedBranchIds.includes(branchId)) {
-          throw new AppError(ErrorCode.FORBIDDEN, 403, 'Cannot create POS sale for an unauthorized branch');
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot create POS sale for an unauthorized branch",
+          );
         }
       }
 
@@ -190,7 +266,7 @@ export class SalesController {
       const sale = await SalesService.createPOSSale({
         branchId,
         userId,
-        items: input.items.map(item => ({
+        items: input.items.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
           unitPrice: item.unit_price,
@@ -205,7 +281,7 @@ export class SalesController {
       res.status(201).json({
         success: true,
         data: sale,
-        message: 'Sale completed successfully'
+        message: "Sale completed successfully",
       });
     } catch (error) {
       next(error);
@@ -215,21 +291,39 @@ export class SalesController {
   /**
    * Get POS sales history
    */
-  static async getPOSSales(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async getPOSSales(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const authReq = req as AuthenticatedRequest;
-      const { date, payment_method, limit = '50', offset = '0' } = req.query;
-      let branchIdFilter = (authReq.user?.branchId as string) || (req.query.branchId as string);
+      const { date, payment_method, limit = "50", offset = "0" } = req.query;
+      let branchIdFilter =
+        (authReq.user?.branchId as string) || (req.query.branchId as string);
 
-      if (authReq.authorizedBranchIds && authReq.authorizedBranchIds.length > 0) {
-        if (req.query.branchId && !authReq.authorizedBranchIds.includes(req.query.branchId as string)) {
-          throw new AppError(ErrorCode.FORBIDDEN, 403, 'Unauthorized branch access');
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
+        if (
+          req.query.branchId &&
+          !authReq.authorizedBranchIds.includes(req.query.branchId as string)
+        ) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Unauthorized branch access",
+          );
         }
-        branchIdFilter = (req.query.branchId as string) || authReq.authorizedBranchIds?.[0] || "";
+        branchIdFilter =
+          (req.query.branchId as string) ||
+          authReq.authorizedBranchIds?.[0] ||
+          "";
       }
 
       if (!branchIdFilter) {
-        throw new AppError(ErrorCode.BAD_REQUEST, 400, 'Branch ID is required');
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Branch ID is required");
       }
 
       const sales = await SalesService.getPOSSales({
@@ -250,18 +344,22 @@ export class SalesController {
   /**
    * Get a single POS sale by ID
    */
-  static async getPOSSaleById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async getPOSSaleById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.id as string;
       if (!id) {
-        res.status(400).json({ success: false, error: 'Sale ID is required' });
+        res.status(400).json({ success: false, error: "Sale ID is required" });
         return;
       }
 
       const sale = await SalesService.getPOSSaleById(id);
 
       if (!sale) {
-        res.status(404).json({ success: false, error: 'Sale not found' });
+        res.status(404).json({ success: false, error: "Sale not found" });
         return;
       }
 
@@ -274,11 +372,17 @@ export class SalesController {
   /**
    * Void/cancel a sales document
    */
-  static async voidDocument(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async voidDocument(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.id as string;
       if (!id) {
-        res.status(400).json({ success: false, error: 'Document ID is required' });
+        res
+          .status(400)
+          .json({ success: false, error: "Document ID is required" });
         return;
       }
 
@@ -294,11 +398,17 @@ export class SalesController {
   /**
    * Create a credit note from an invoice
    */
-  static async createCreditNote(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async createCreditNote(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const invoiceId = req.params.invoiceId as string;
       if (!invoiceId) {
-        res.status(400).json({ success: false, error: 'Invoice ID is required' });
+        res
+          .status(400)
+          .json({ success: false, error: "Invoice ID is required" });
         return;
       }
 
@@ -309,7 +419,9 @@ export class SalesController {
       const userId = authReq.user?.userId;
 
       if (!branchId || !userId) {
-        res.status(401).json({ success: false, error: 'User context required' });
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
         return;
       }
 
@@ -336,11 +448,17 @@ export class SalesController {
   /**
    * Record a payment for an invoice
    */
-  static async recordPayment(req: Request, res: Response, next: NextFunction): Promise<void> {
+  static async recordPayment(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.id as string;
       if (!id) {
-        res.status(400).json({ success: false, error: 'Document ID is required' });
+        res
+          .status(400)
+          .json({ success: false, error: "Document ID is required" });
         return;
       }
 
@@ -349,7 +467,9 @@ export class SalesController {
       const userId = authReq.user?.userId;
 
       if (!userId) {
-        res.status(401).json({ success: false, error: 'User context required' });
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
         return;
       }
 

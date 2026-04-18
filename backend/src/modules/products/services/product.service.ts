@@ -59,7 +59,7 @@ export class ProductService {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        "No active warehouse found. Please create a warehouse first."
+        "No active warehouse found. Please create a warehouse first.",
       );
     }
 
@@ -80,7 +80,7 @@ export class ProductService {
         throw new AppError(
           ErrorCode.ALREADY_EXISTS,
           409,
-          `Product with SKU "${data.sku}" already exists`
+          `Product with SKU "${data.sku}" already exists`,
         );
       }
 
@@ -94,7 +94,7 @@ export class ProductService {
           throw new AppError(
             ErrorCode.ALREADY_EXISTS,
             409,
-            `Product with UPC "${data.upc}" already exists`
+            `Product with UPC "${data.upc}" already exists`,
           );
         }
       }
@@ -109,7 +109,7 @@ export class ProductService {
         throw new AppError(
           ErrorCode.NOT_FOUND,
           404,
-          "Specified branch not found"
+          "Specified branch not found",
         );
       }
 
@@ -117,7 +117,7 @@ export class ProductService {
         throw new AppError(
           ErrorCode.NOT_FOUND,
           404,
-          "Branch has no active warehouses"
+          "Branch has no active warehouses",
         );
       }
 
@@ -126,7 +126,8 @@ export class ProductService {
       const reorderQuantity = data.reorder_quantity || 20;
 
       // Determine inventory status based on quantity
-      let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" = "in_stock";
+      let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" =
+        "in_stock";
       if (initialQuantity === 0) {
         inventoryStatus = "out_of_stock";
       } else if (initialQuantity < reorderLevel) {
@@ -197,12 +198,15 @@ export class ProductService {
         return product;
       });
 
-      logger.info({
-        productId: result.id,
-        productName: result.name,
-        branchId: data.branchId,
-        initialQuantity,
-      }, `Product created and allocated to branch`);
+      logger.info(
+        {
+          productId: result.id,
+          productName: result.name,
+          branchId: data.branchId,
+          initialQuantity,
+        },
+        `Product created and allocated to branch`,
+      );
 
       return result;
     } catch (error) {
@@ -213,7 +217,7 @@ export class ProductService {
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
-        "Failed to create product"
+        "Failed to create product",
       );
     }
   }
@@ -224,7 +228,8 @@ export class ProductService {
    */
   async getProducts(query: GetProductsQuery) {
     try {
-      const { page, limit, search, category, status, branchId, vendorId } = query;
+      const { page, limit, search, category, status, branchId, vendorId } =
+        query;
       const skip = (page - 1) * limit;
 
       // Build filter conditions for products table
@@ -271,12 +276,12 @@ export class ProductService {
           include: {
             branchInventory: branchId
               ? {
-                where: { branchId },
-                include: { branch: true },
-              }
+                  where: { branchId },
+                  include: { branch: true },
+                }
               : {
-                include: { branch: true },
-              },
+                  include: { branch: true },
+                },
           },
         }),
         prisma.product.count({ where }),
@@ -296,7 +301,7 @@ export class ProductService {
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
-        "Failed to fetch products"
+        "Failed to fetch products",
       );
     }
   }
@@ -323,7 +328,7 @@ export class ProductService {
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
-        "Failed to fetch product"
+        "Failed to fetch product",
       );
     }
   }
@@ -352,7 +357,7 @@ export class ProductService {
           throw new AppError(
             ErrorCode.ALREADY_EXISTS,
             409,
-            `Product with SKU "${data.sku}" already exists`
+            `Product with SKU "${data.sku}" already exists`,
           );
         }
       }
@@ -361,14 +366,14 @@ export class ProductService {
       if (data.vendorId && data.vendorId !== existing.vendorId) {
         // Here we would normally create an approval request instead of updating.
         // For SAP discipline, we check if the user is SUPER_ADMIN.
-        // However, the service doesn't have the user context. 
+        // However, the service doesn't have the user context.
         // We'll throw an error if a non-approved change is attempted
         // AND provide a method to create approval requests.
 
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          "Direct vendor changes are blocked. Please create an approval request."
+          "Direct vendor changes are blocked. Please create an approval request.",
         );
       }
 
@@ -422,11 +427,11 @@ export class ProductService {
       if (error instanceof AppError) {
         throw error;
       }
-      logger.error(error as Error, `Error updating product ${id}`,);
+      logger.error(error as Error, `Error updating product ${id}`);
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
-        "Failed to update product"
+        "Failed to update product",
       );
     }
   }
@@ -476,9 +481,7 @@ export class ProductService {
           },
         },
         take: limit,
-        orderBy: [
-          { name: "asc" },
-        ],
+        orderBy: [{ name: "asc" }],
       });
 
       // Format response with stock information
@@ -507,7 +510,7 @@ export class ProductService {
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
-        "Failed to search products"
+        "Failed to search products",
       );
     }
   }
@@ -544,19 +547,30 @@ export class ProductService {
       throw new AppError(
         ErrorCode.INTERNAL_ERROR,
         500,
-        "Failed to delete product"
+        "Failed to delete product",
       );
     }
   }
   /**
    * Create an approval request for a vendor change
    */
-  async requestVendorChange(userId: string, productId: string, newVendorId: string, notes?: string) {
-    const product = await prisma.product.findUnique({ where: { id: productId } });
-    if (!product) throw new AppError(ErrorCode.NOT_FOUND, 404, "Product not found");
+  async requestVendorChange(
+    userId: string,
+    productId: string,
+    newVendorId: string,
+    notes?: string,
+  ) {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!product)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Product not found");
 
-    const vendor = await prisma.vendor.findUnique({ where: { id: newVendorId } });
-    if (!vendor) throw new AppError(ErrorCode.NOT_FOUND, 404, "Vendor not found");
+    const vendor = await prisma.vendor.findUnique({
+      where: { id: newVendorId },
+    });
+    if (!vendor)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Vendor not found");
 
     return prisma.approvalRequest.create({
       data: {
@@ -569,26 +583,45 @@ export class ProductService {
           newVendorId: newVendorId,
         },
         notes: notes || `Request to change vendor for ${product.name}`,
-      }
+      },
     });
   }
 
   /**
    * Process an approval request (Admin/SuperAdmin only)
    */
-  async processApproval(userId: string, approvalId: string, status: "APPROVED" | "REJECTED", adminNotes?: string) {
+  async processApproval(
+    userId: string,
+    approvalId: string,
+    status: "APPROVED" | "REJECTED",
+    adminNotes?: string,
+  ) {
     return prisma.$transaction(async (tx) => {
-      const request = await tx.approvalRequest.findUnique({ where: { id: approvalId } });
-      if (!request) throw new AppError(ErrorCode.NOT_FOUND, 404, "Approval request not found");
-      if (request.status !== "PENDING") throw new AppError(ErrorCode.INVALID_STATUS, 400, "Request already processed");
+      const request = await tx.approvalRequest.findUnique({
+        where: { id: approvalId },
+      });
+      if (!request)
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Approval request not found",
+        );
+      if (request.status !== "PENDING")
+        throw new AppError(
+          ErrorCode.INVALID_STATUS,
+          400,
+          "Request already processed",
+        );
 
       const updatedRequest = await tx.approvalRequest.update({
         where: { id: approvalId },
         data: {
           status: status,
           approvedById: userId,
-          notes: adminNotes ? `${request.notes} | Admin Note: ${adminNotes}` : request.notes,
-        }
+          notes: adminNotes
+            ? `${request.notes} | Admin Note: ${adminNotes}`
+            : request.notes,
+        },
       });
 
       if (status === "APPROVED") {
@@ -596,7 +629,7 @@ export class ProductService {
         if (request.type === "VENDOR_CHANGE") {
           await tx.product.update({
             where: { id: request.referenceId! },
-            data: { vendorId: data.newVendorId }
+            data: { vendorId: data.newVendorId },
           });
         }
       }

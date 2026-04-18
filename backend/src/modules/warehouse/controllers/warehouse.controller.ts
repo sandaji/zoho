@@ -36,7 +36,7 @@ export class WarehouseController {
   async createWarehouse(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreateWarehouseDTO = req.body;
@@ -49,7 +49,7 @@ export class WarehouseController {
         !dto.branchId
       ) {
         throw validationError(
-          "Missing required fields: code, name, location, capacity, branchId"
+          "Missing required fields: code, name, location, capacity, branchId",
         );
       }
 
@@ -67,7 +67,7 @@ export class WarehouseController {
   async getWarehouse(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params;
@@ -90,7 +90,7 @@ export class WarehouseController {
   async listWarehouses(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: WarehouseListQueryDTO = req.query as any;
@@ -114,7 +114,7 @@ export class WarehouseController {
   async updateWarehouse(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params;
@@ -138,7 +138,7 @@ export class WarehouseController {
   async getWarehouseStock(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params;
@@ -169,7 +169,7 @@ export class WarehouseController {
   async createTransfer(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = req.user?.userId;
@@ -177,14 +177,14 @@ export class WarehouseController {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
-          "User not authenticated"
+          "User not authenticated",
         );
       }
 
       const validated = createTransferSchema.parse(req.body);
       const transfer = await this.inventoryService.createTransfer(
         validated,
-        userId
+        userId,
       );
 
       res.status(201).json({
@@ -204,7 +204,7 @@ export class WarehouseController {
   async fulfillTransfer(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = req.user?.userId;
@@ -212,7 +212,7 @@ export class WarehouseController {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
-          "User not authenticated"
+          "User not authenticated",
         );
       }
 
@@ -220,7 +220,10 @@ export class WarehouseController {
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
-      const transfer = await this.inventoryService.fulfillTransfer(id as string, userId);
+      const transfer = await this.inventoryService.fulfillTransfer(
+        id as string,
+        userId,
+      );
 
       res.json({
         success: true,
@@ -239,7 +242,7 @@ export class WarehouseController {
   async adjustStock(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = req.user?.userId;
@@ -247,7 +250,7 @@ export class WarehouseController {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
-          "User not authenticated"
+          "User not authenticated",
         );
       }
 
@@ -271,7 +274,7 @@ export class WarehouseController {
   async getStockMovements(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const params = {
@@ -304,7 +307,7 @@ export class WarehouseController {
   async getTransfers(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const params = {
@@ -335,14 +338,16 @@ export class WarehouseController {
   async getTransferById(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params;
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
-      const transfer = await this.inventoryService.getTransferById(id as string);
+      const transfer = await this.inventoryService.getTransferById(
+        id as string,
+      );
 
       res.json({
         success: true,
@@ -360,7 +365,7 @@ export class WarehouseController {
   async updateTransferStatus(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const userId = req.user?.userId;
@@ -368,7 +373,7 @@ export class WarehouseController {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
-          "User not authenticated"
+          "User not authenticated",
         );
       }
 
@@ -380,7 +385,7 @@ export class WarehouseController {
       const transfer = await this.inventoryService.updateTransferStatus(
         id as string,
         validated,
-        userId
+        userId,
       );
 
       res.json({
@@ -400,7 +405,7 @@ export class WarehouseController {
   async getWarehouseStats(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const warehouseId = req.query.warehouseId as string | undefined;

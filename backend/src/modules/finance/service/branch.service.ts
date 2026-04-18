@@ -75,7 +75,9 @@ export class BranchService {
         branch_id: branchId,
         branch_name: branch.name,
         branch_code: branch.code || undefined,
-        location: branch.city ? `${branch.city}${branch.address ? `, ${branch.address}` : ''}` : undefined,
+        location: branch.city
+          ? `${branch.city}${branch.address ? `, ${branch.address}` : ""}`
+          : undefined,
         manager_name: branch.users?.[0]?.name,
         kpis,
         sales_metrics: salesMetrics,
@@ -116,19 +118,22 @@ export class BranchService {
           const branchId = branch.id;
 
           // Basic counts
-          const employeeCount = await this.prisma.user.count({ where: { branchId } });
+          const employeeCount = await this.prisma.user.count({
+            where: { branchId },
+          });
 
           // Revenue
           const revenueAggregate = await this.prisma.salesDocument.aggregate({
             where: { branchId, createdAt: { gte: monthStart, lte: monthEnd } },
-            _sum: { total: true }
+            _sum: { total: true },
           });
           const monthRevenue = revenueAggregate._sum.total || 0;
 
-          const totalRevenueAggregate = await this.prisma.salesDocument.aggregate({
-            where: { branchId },
-            _sum: { total: true }
-          });
+          const totalRevenueAggregate =
+            await this.prisma.salesDocument.aggregate({
+              where: { branchId },
+              _sum: { total: true },
+            });
           const totalRevenue = totalRevenueAggregate._sum.total || 0;
 
           // Inventory
@@ -142,40 +147,45 @@ export class BranchService {
 
           // Growth & Margin
           const lastMonthRevenue = await this.getLastMonthRevenue(branchId);
-          const salesGrowth = lastMonthRevenue > 0
-            ? ((monthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
-            : 0;
+          const salesGrowth =
+            lastMonthRevenue > 0
+              ? ((monthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
+              : 0;
 
           // Expenses for margin
-          const expensesAggregate = await this.prisma.financeTransaction.aggregate({
-            where: {
-              // OR: [{ salesDocuments: { branchId } }, { payroll: { user: { branchId } } }], // salesDocuments not in FinanceTransaction
-              OR: [{ payroll: { user: { branchId } } }],
-              type: "expense",
-              createdAt: { gte: monthStart, lte: monthEnd }
-            },
-            _sum: { amount: true }
-          });
+          const expensesAggregate =
+            await this.prisma.financeTransaction.aggregate({
+              where: {
+                // OR: [{ salesDocuments: { branchId } }, { payroll: { user: { branchId } } }], // salesDocuments not in FinanceTransaction
+                OR: [{ payroll: { user: { branchId } } }],
+                type: "expense",
+                createdAt: { gte: monthStart, lte: monthEnd },
+              },
+              _sum: { amount: true },
+            });
           const monthExpenses = expensesAggregate._sum.amount || 0;
 
           // Payroll for margin
           const payrollAggregate = await this.prisma.payroll.aggregate({
             where: {
               user: { branchId },
-              createdAt: { gte: monthStart, lte: monthEnd }
+              createdAt: { gte: monthStart, lte: monthEnd },
             },
-            _sum: { net_salary: true }
+            _sum: { net_salary: true },
           });
           const monthPayroll = payrollAggregate._sum.net_salary || 0;
 
           const netProfit = monthRevenue - monthExpenses - monthPayroll;
-          const profitMargin = monthRevenue > 0 ? (netProfit / monthRevenue) * 100 : 0;
+          const profitMargin =
+            monthRevenue > 0 ? (netProfit / monthRevenue) * 100 : 0;
 
           return {
             id: branch.id,
             name: branch.name,
             code: branch.code,
-            location: branch.city ? `${branch.city}${branch.address ? `, ${branch.address}` : ''}` : "Unknown",
+            location: branch.city
+              ? `${branch.city}${branch.address ? `, ${branch.address}` : ""}`
+              : "Unknown",
             manager_name: branch.users?.[0]?.name || "Unassigned",
             total_revenue: totalRevenue,
             total_employees: employeeCount,
@@ -183,7 +193,7 @@ export class BranchService {
             sales_growth: salesGrowth,
             profit_margin: profitMargin,
           };
-        })
+        }),
       );
 
       return summaries;
@@ -199,7 +209,7 @@ export class BranchService {
   private async getBranchKPIs(
     branchId: string,
     monthStart: Date,
-    monthEnd: Date
+    monthEnd: Date,
   ): Promise<BranchKPIResponseDTO> {
     try {
       const branch = await this.prisma.branch.findUnique({
@@ -227,11 +237,11 @@ export class BranchService {
 
       const totalRevenue = allSales.reduce(
         (sum: number, s: any) => sum + (s.total || 0),
-        0
+        0,
       );
       const monthRevenue = monthSales.reduce(
         (sum: number, s: any) => sum + (s.total || 0),
-        0
+        0,
       );
       const lastMonthRevenue = await this.getLastMonthRevenue(branchId);
 
@@ -245,9 +255,7 @@ export class BranchService {
         where: { branchId },
       });
 
-      const activeEmployees = employees.filter(
-        (e: any) => e.isActive
-      ).length;
+      const activeEmployees = employees.filter((e: any) => e.isActive).length;
 
       // Inventory
       const inventoryData: any[] = await this.prisma.inventory.findMany({
@@ -263,11 +271,11 @@ export class BranchService {
         (sum: number, inv: any) => {
           return sum + (inv.product?.unit_price || 0) * (inv.quantity || 0);
         },
-        0
+        0,
       );
 
       const lowStockItems = inventoryData.filter(
-        (inv: any) => (inv.quantity || 0) < 10
+        (inv: any) => (inv.quantity || 0) < 10,
       ).length;
 
       // Fleet
@@ -288,11 +296,11 @@ export class BranchService {
       });
 
       const activeDeliveries = deliveries.filter(
-        (d: any) => d.status === "pending" || d.status === "in_transit"
+        (d: any) => d.status === "pending" || d.status === "in_transit",
       ).length;
 
       const successfulDeliveries = deliveries.filter(
-        (d: any) => d.status === "delivered"
+        (d: any) => d.status === "delivered",
       ).length;
       const deliverySuccessRate =
         deliveries.length > 0
@@ -312,7 +320,7 @@ export class BranchService {
 
       const totalExpenses = expenses.reduce(
         (sum: number, e: any) => sum + (e.amount || 0),
-        0
+        0,
       );
 
       // Payroll
@@ -327,7 +335,7 @@ export class BranchService {
 
       const totalPayroll = payrolls.reduce(
         (sum: number, p: any) => sum + (p.net_salary || 0),
-        0
+        0,
       );
 
       const netProfit = monthRevenue - totalExpenses - totalPayroll;
@@ -341,7 +349,9 @@ export class BranchService {
         branch_id: branchId,
         branch_name: branch.name,
         branch_code: branch.code || undefined,
-        location: branch.city ? `${branch.city}${branch.address ? `, ${branch.address}` : ''}` : undefined,
+        location: branch.city
+          ? `${branch.city}${branch.address ? `, ${branch.address}` : ""}`
+          : undefined,
         total_sales: allSales.length,
         total_revenue: totalRevenue,
         average_order_value:
@@ -377,7 +387,7 @@ export class BranchService {
   private async getBranchSalesMetrics(
     branchId: string,
     monthStart: Date,
-    monthEnd: Date
+    monthEnd: Date,
   ): Promise<BranchSalesMetricsDTO> {
     try {
       const sales: any[] = await this.prisma.salesDocument.findMany({
@@ -392,7 +402,7 @@ export class BranchService {
 
       const totalRevenue = sales.reduce(
         (sum: number, s: any) => sum + (s.grand_total || 0),
-        0
+        0,
       );
       const totalSales = sales.length;
 
@@ -401,30 +411,37 @@ export class BranchService {
         where: {
           salesDocument: {
             branchId,
-            createdAt: { gte: monthStart, lte: monthEnd }
-          }
+            createdAt: { gte: monthStart, lte: monthEnd },
+          },
         },
         include: {
-          product: true
-        }
+          product: true,
+        },
       });
 
-      const categoryMap = new Map<string, { quantity: number; amount: number }>();
-      salesItems.forEach(item => {
+      const categoryMap = new Map<
+        string,
+        { quantity: number; amount: number }
+      >();
+      salesItems.forEach((item) => {
         const cat = item.product?.category || "Other";
         const existing = categoryMap.get(cat) || { quantity: 0, amount: 0 };
         categoryMap.set(cat, {
           quantity: existing.quantity + (item.quantity || 0),
-          amount: existing.amount + (item.total || 0)
+          amount: existing.amount + (item.total || 0),
         });
       });
 
-      const salesByCategory: SalesCategoryBreakdown[] = Array.from(categoryMap.entries()).map(([category, data]) => ({
-        category,
-        quantity: data.quantity,
-        amount: data.amount,
-        percentage: totalRevenue > 0 ? (data.amount / totalRevenue) * 100 : 0
-      })).sort((a, b) => b.amount - a.amount);
+      const salesByCategory: SalesCategoryBreakdown[] = Array.from(
+        categoryMap.entries(),
+      )
+        .map(([category, data]) => ({
+          category,
+          quantity: data.quantity,
+          amount: data.amount,
+          percentage: totalRevenue > 0 ? (data.amount / totalRevenue) * 100 : 0,
+        }))
+        .sort((a, b) => b.amount - a.amount);
 
       // Daily trend
       const dailyTrend = this.calculateDailySalesTrend(sales);
@@ -435,7 +452,7 @@ export class BranchService {
       return {
         branch_id: branchId,
         period: `${monthStart.getFullYear()}-${String(
-          monthStart.getMonth() + 1
+          monthStart.getMonth() + 1,
         ).padStart(2, "0")}`,
         total_sales: totalSales,
         total_revenue: totalRevenue,
@@ -455,7 +472,7 @@ export class BranchService {
    * Get operations metrics
    */
   private async getBranchOperationsMetrics(
-    branchId: string
+    branchId: string,
   ): Promise<BranchOperationsMetricsDTO> {
     try {
       // Staff
@@ -463,9 +480,7 @@ export class BranchService {
         where: { branchId },
       });
 
-      const activeEmployees = employees.filter(
-        (e: any) => e.isActive
-      ).length;
+      const activeEmployees = employees.filter((e: any) => e.isActive).length;
 
       // Inventory
       const inventory: any[] = await this.prisma.inventory.findMany({
@@ -478,15 +493,15 @@ export class BranchService {
       }, 0);
 
       const lowStockItems = inventory.filter(
-        (inv: any) => (inv.quantity || 0) < 10
+        (inv: any) => (inv.quantity || 0) < 10,
       ).length;
       const outOfStockItems = inventory.filter(
-        (inv: any) => (inv.quantity || 0) === 0
+        (inv: any) => (inv.quantity || 0) === 0,
       ).length;
 
       const totalItems = inventory.reduce(
         (sum: number, inv: any) => sum + (inv.quantity || 0),
-        0
+        0,
       );
       const inventoryTurnover =
         totalItems > 0 ? inventory.length / totalItems : 0;
@@ -496,12 +511,8 @@ export class BranchService {
         where: { deliveries: { some: { driver: { branchId } } } },
       });
 
-      const activeTrucks = trucks.filter(
-        (t: any) => t.isActive
-      ).length;
-      const maintenancePending = trucks.filter(
-        (t: any) => !t.isActive
-      ).length;
+      const activeTrucks = trucks.filter((t: any) => t.isActive).length;
+      const maintenancePending = trucks.filter((t: any) => !t.isActive).length;
 
       const fuelCost = 0; // fuel_cost not in schema
       const utilizationRate =
@@ -518,16 +529,16 @@ export class BranchService {
           warehouse_name: w.name,
           total_capacity: w.capacity || 0,
           current_items: inventory.filter(
-            (inv: any) => inv.warehouseId === w.id
+            (inv: any) => inv.warehouseId === w.id,
           ).length,
           utilization_percentage:
             (w.capacity || 1) > 0
               ? (inventory.filter((inv: any) => inv.warehouseId === w.id)
-                .length /
-                (w.capacity || 1)) *
-              100
+                  .length /
+                  (w.capacity || 1)) *
+                100
               : 0,
-        })
+        }),
       );
 
       const now = new Date();
@@ -536,7 +547,7 @@ export class BranchService {
         branch_id: branchId,
         period: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
           2,
-          "0"
+          "0",
         )}`,
         total_employees: employees.length,
         active_employees: activeEmployees,
@@ -568,7 +579,7 @@ export class BranchService {
   private async getBranchPayrollMetrics(
     branchId: string,
     month: number,
-    year: number
+    year: number,
   ): Promise<BranchPayrollMetricsDTO> {
     try {
       const monthStart = new Date(year, month - 1, 1);
@@ -587,32 +598,32 @@ export class BranchService {
       });
 
       const branchPayrolls = payrolls.filter(
-        (p: any) => p.user?.branchId === branchId
+        (p: any) => p.user?.branchId === branchId,
       );
 
       const totalCost = branchPayrolls.reduce(
         (sum: number, p: any) => sum + (p.net_salary || 0),
-        0
+        0,
       );
       const totalAllowances = branchPayrolls.reduce(
         (sum: number, p: any) => sum + (p.allowances || 0),
-        0
+        0,
       );
       const totalDeductions = branchPayrolls.reduce(
         (sum: number, p: any) => sum + (p.deductions || 0),
-        0
+        0,
       );
 
       const totalTaxes = totalCost * 0.1;
 
       const paidCount = branchPayrolls.filter(
-        (p: any) => p.status === "paid"
+        (p: any) => p.status === "paid",
       ).length;
       const pendingCount = branchPayrolls.filter(
-        (p: any) => p.status === "pending"
+        (p: any) => p.status === "pending",
       ).length;
       const failedCount = branchPayrolls.filter(
-        (p: any) => p.status === "failed"
+        (p: any) => p.status === "failed",
       ).length;
 
       const salaries = branchPayrolls.map((p: any) => p.net_salary || 0);
@@ -646,7 +657,7 @@ export class BranchService {
       });
 
       const byDepartment: PayrollDepartmentBreakdown[] = Array.from(
-        departmentMap.entries()
+        departmentMap.entries(),
       ).map(([dept, data]) => ({
         department: dept,
         employee_count: data.count,
@@ -667,7 +678,7 @@ export class BranchService {
         total_taxes: totalTaxes,
         total_employees_on_payroll: branchPayrolls.length,
         active_payroll_runs: branchPayrolls.filter(
-          (p: any) => p.status === "processed" || p.status === "paid"
+          (p: any) => p.status === "processed" || p.status === "paid",
         ).length,
         pending_payments: pendingCount,
         average_salary: avgSalary,
@@ -689,7 +700,7 @@ export class BranchService {
    */
   private async getRecentSales(
     branchId: string,
-    limit: number
+    limit: number,
   ): Promise<SalesActivityDTO[]> {
     const sales: any[] = await this.prisma.salesDocument.findMany({
       where: { branchId },
@@ -712,12 +723,12 @@ export class BranchService {
    */
   private async getRecentDeliveries(
     branchId: string,
-    limit: number
+    limit: number,
   ): Promise<DeliveryActivityDTO[]> {
     const deliveries: any[] = await this.prisma.delivery.findMany({
       where: {
         // salesDocuments relation invalid in Delivery
-        driver: { branchId }
+        driver: { branchId },
       },
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -737,13 +748,11 @@ export class BranchService {
    */
   private async getRecentTransactions(
     branchId: string,
-    limit: number
+    limit: number,
   ): Promise<TransactionActivityDTO[]> {
     const transactions: any[] = await this.prisma.financeTransaction.findMany({
       where: {
-        OR: [
-          { payroll: { user: { branchId } } }
-        ]
+        OR: [{ payroll: { user: { branchId } } }],
       },
       orderBy: { createdAt: "desc" },
       take: limit,
@@ -832,50 +841,50 @@ export class BranchService {
 
   private async getTopProducts(
     branchId: string,
-    limit: number
+    limit: number,
   ): Promise<TopProductDTO[]> {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const salesByProduct = await this.prisma.salesDocumentItem.groupBy({
-      by: ['productId'],
+      by: ["productId"],
       where: {
         salesDocument: {
           branchId,
-          createdAt: { gte: monthStart }
-        }
+          createdAt: { gte: monthStart },
+        },
       },
       _sum: {
         quantity: true,
-        total: true
+        total: true,
       },
       orderBy: {
         _sum: {
-          total: 'desc'
-        }
+          total: "desc",
+        },
       },
-      take: limit
+      take: limit,
     });
 
-    const productIds = salesByProduct.map(s => s.productId);
+    const productIds = salesByProduct.map((s) => s.productId);
     const products = await this.prisma.product.findMany({
-      where: { id: { in: productIds } }
+      where: { id: { in: productIds } },
     });
 
     const totalRevenueResult = await this.prisma.salesDocument.aggregate({
       where: { branchId, createdAt: { gte: monthStart } },
-      _sum: { total: true }
+      _sum: { total: true },
     });
     const totalRevenue = totalRevenueResult._sum?.total ?? 1;
 
-    return salesByProduct.map(s => {
-      const product = products.find(p => p.id === s.productId);
+    return salesByProduct.map((s) => {
+      const product = products.find((p) => p.id === s.productId);
       return {
         product_id: s.productId,
         product_name: product?.name || "Unknown Product",
         quantity_sold: s._sum?.quantity || 0,
         revenue: s._sum?.total || 0,
-        percentage_of_total: ((s._sum?.total || 0) / totalRevenue) * 100
+        percentage_of_total: ((s._sum?.total || 0) / totalRevenue) * 100,
       };
     });
   }
@@ -905,35 +914,35 @@ export class BranchService {
 
   private async getTopCustomers(
     branchId: string,
-    limit: number
+    limit: number,
   ): Promise<TopCustomerDTO[]> {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const salesByCustomer = await this.prisma.salesDocument.groupBy({
-      by: ['customerId'], // Grouping by customer
+      by: ["customerId"], // Grouping by customer
       where: {
         branchId,
-        createdAt: { gte: monthStart }
+        createdAt: { gte: monthStart },
       },
       _sum: {
-        total: true
+        total: true,
       },
       _count: true,
       orderBy: {
         _sum: {
-          total: 'desc'
-        }
+          total: "desc",
+        },
       },
-      take: limit
+      take: limit,
     });
 
-    return salesByCustomer.map(s => ({
+    return salesByCustomer.map((s) => ({
       customer_id: s.customerId || "Unknown",
       customer_name: "Customer",
       total_purchases: s._count ?? 0,
       total_spent: s._sum?.total || 0,
-      order_count: s._count ?? 0
+      order_count: s._count ?? 0,
     }));
   }
 
@@ -959,7 +968,7 @@ export class BranchService {
 
   private calculateAverageDeliveryTime(deliveries: any[]): number {
     const completedDeliveries = deliveries.filter(
-      (d: any) => d.status === "delivered" && d.expected_delivery
+      (d: any) => d.status === "delivered" && d.expected_delivery,
     );
 
     if (completedDeliveries.length === 0) return 0;
@@ -967,7 +976,7 @@ export class BranchService {
     const totalTime = completedDeliveries.reduce((sum: number, d: any) => {
       const createdTime = new Date(d.createdAt).getTime();
       const deliveredTime = new Date(
-        d.expected_delivery || new Date()
+        d.expected_delivery || new Date(),
       ).getTime();
       return sum + (deliveredTime - createdTime);
     }, 0);
@@ -992,7 +1001,7 @@ export class BranchService {
 
     return lastMonthSales.reduce(
       (sum: number, s: any) => sum + (s.grand_total || 0),
-      0
+      0,
     );
   }
 }

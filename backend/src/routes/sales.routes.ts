@@ -2,11 +2,14 @@
 import { Router } from 'express';
 import { SalesController } from '../modules/pos/controller/sales.controller';
 import { PDFController } from '../modules/pos/controller/pdf.controller';
-import { authenticate } from '../middleware/auth.middleware';
+import { authMiddleware } from '../lib/auth';
 import { requirePermission } from '../middleware/rbac.middleware';
 import { validateFiscalPeriod } from '../middleware/fiscal-period.middleware';
 
 const router = Router();
+
+// Use authMiddleware (canonical) consistently across all routes
+const authenticate = authMiddleware;
 
 router.post(
   '/documents',

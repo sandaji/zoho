@@ -47,7 +47,7 @@ export function validateFrontendEnv(): FrontendEnvConfig {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const errorMessages = error.issues.map(err =>
+      const errorMessages = error.errors.map((err: z.ZodIssue) =>
         `${err.path.join('.')}: ${err.message}`
       ).join('\n');
 

@@ -20,7 +20,7 @@ export class HrController {
   async getHRStats(
     _req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const result = await this.service.getHRStats();
@@ -37,14 +37,14 @@ export class HrController {
   async createUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreateUserDTO = req.body;
 
       if (!dto.email || !dto.password || !dto.name || !dto.role) {
         throw validationError(
-          "Missing required fields: email, password, name, role"
+          "Missing required fields: email, password, name, role",
         );
       }
 
@@ -62,7 +62,7 @@ export class HrController {
   async getUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -85,7 +85,7 @@ export class HrController {
   async updateUser(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -110,7 +110,7 @@ export class HrController {
   async createPayroll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: CreatePayrollDTO = req.body;
@@ -122,7 +122,7 @@ export class HrController {
         !dto.period_end
       ) {
         throw validationError(
-          "Missing required fields: userId, base_salary, period_start, period_end"
+          "Missing required fields: userId, base_salary, period_start, period_end",
         );
       }
 
@@ -140,7 +140,7 @@ export class HrController {
   async getPayroll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -163,7 +163,7 @@ export class HrController {
   async listPayroll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const query: PayrollListQueryDTO = req.query as any;
@@ -187,7 +187,7 @@ export class HrController {
   async updatePayroll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };

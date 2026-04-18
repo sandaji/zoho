@@ -125,10 +125,13 @@ export class EmployeeController {
       }
 
       // Map role from RoleAssignment table
-      const assignedRoles = (employee as any).roles.map((r: any) => r.role.code);
+      const assignedRoles = (employee as any).roles.map(
+        (r: any) => r.role.code,
+      );
       const employeeWithRole = {
         ...employee,
-        role: assignedRoles.length > 0 ? assignedRoles[0] : (employee as any).role,
+        role:
+          assignedRoles.length > 0 ? assignedRoles[0] : (employee as any).role,
       };
 
       // Get transfer history
@@ -165,7 +168,7 @@ export class EmployeeController {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          "Missing required fields: email, name"
+          "Missing required fields: email, name",
         );
       }
 
@@ -178,14 +181,18 @@ export class EmployeeController {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          `Email '${email}' already in use`
+          `Email '${email}' already in use`,
         );
       }
 
       // Record-level isolation: Ensure manager can't create user for another branch
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {
         if (!branchId || !req.authorizedBranchIds.includes(branchId)) {
-          throw new AppError(ErrorCode.FORBIDDEN, 403, "Cannot create user for another branch");
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot create user for another branch",
+          );
         }
       }
 
@@ -202,7 +209,8 @@ export class EmployeeController {
 
       // Hash password if provided, otherwise create a dummy hash since it's required by the schema
       // Employees created here do NOT have system access initially
-      const passwordToHash = password || Math.random().toString(36).slice(-10) + "NoAccess!";
+      const passwordToHash =
+        password || Math.random().toString(36).slice(-10) + "NoAccess!";
       const passwordHash = await bcrypt.hash(passwordToHash, 10);
 
       const employee = await prisma.user.create({
@@ -244,7 +252,9 @@ export class EmployeeController {
    */
   async updateEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const id = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
       const { name, phone, role, branchId, isActive } = req.body;
 
       const where: any = { id };
@@ -308,7 +318,9 @@ export class EmployeeController {
    */
   async transferEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const id = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
       const { toBranchId, toRole, effectiveDate, reason, notes, approvedBy } =
         req.body;
 
@@ -317,7 +329,7 @@ export class EmployeeController {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          "Missing required fields: toBranchId, toRole"
+          "Missing required fields: toBranchId, toRole",
         );
       }
 
@@ -355,7 +367,7 @@ export class EmployeeController {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          `Invalid role: ${toRole}`
+          `Invalid role: ${toRole}`,
         );
       }
 
@@ -408,7 +420,9 @@ export class EmployeeController {
    */
   async getTransferHistory(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const id = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
 
       // Verify employee exists
       const employee = await prisma.user.findUnique({ where: { id } });
@@ -440,7 +454,9 @@ export class EmployeeController {
    */
   async deleteEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const id = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
 
       const where: any = { id };
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {
@@ -469,7 +485,7 @@ export class EmployeeController {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          "Cannot delete employee with associated records. Archive instead or delete related records first."
+          "Cannot delete employee with associated records. Archive instead or delete related records first.",
         );
       }
 

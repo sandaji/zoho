@@ -90,30 +90,46 @@ export function Sidebar() {
     if (isAdminRoute) setAdminOpen(true);
   }, [isAdminRoute]);
 
-  // ── Stats fetch (unchanged) ────────────────────────────────────────────────
+  // ── Stats fetch ──────────────────────────────────────────────────────────
   useEffect(() => {
-    if (!user || (!hasPermission("admin.branch.manage") && !hasPermission("hr.employee.view"))) return;
+    // Guard: must have a user, a valid token, and the right permissions
+    const token = localStorage.getItem("auth_token");
+    if (
+      !user ||
+      !token ||
+      (!hasPermission("admin.branch.manage") && !hasPermission("hr.employee.view"))
+    ) return;
 
     let isMounted = true;
     let retryCount = 0;
     const MAX_RETRIES = 3;
 
     const fetchStats = async () => {
-      try {
-        const token = localStorage.getItem("auth_token");
-        if (!token || !isMounted) return;
+      // Re-check token on every tick — user may have logged out between intervals
+      const currentToken = localStorage.getItem("auth_token");
+      if (!currentToken || !isMounted) return;
 
+      try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(
           `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/admin/stats`,
-          { headers: { Authorization: `Bearer ${token}` }, signal: controller.signal }
+          { headers: { Authorization: `Bearer ${currentToken}` }, signal: controller.signal }
         );
 
         clearTimeout(timeoutId);
 
-        if (response.ok && isMounted) {
+        if (!isMounted) return;
+
+        if (response.status === 401 || response.status === 403) {
+          // Token rejected — stop polling, do not retry
+          console.warn("Stats polling stopped: auth token rejected.");
+          clearInterval(interval);
+          return;
+        }
+
+        if (response.ok) {
           const data = await response.json();
           setStats(data.data || {});
           retryCount = 0;
@@ -124,7 +140,8 @@ export function Sidebar() {
           retryCount++;
           console.warn(`Failed to fetch stats (attempt ${retryCount}/${MAX_RETRIES}):`, error);
         } else if (retryCount === MAX_RETRIES) {
-          console.error("Failed to fetch stats after multiple attempts.");
+          console.error("Failed to fetch stats after multiple attempts. Stopping poll.");
+          clearInterval(interval);
           retryCount++;
         }
       }

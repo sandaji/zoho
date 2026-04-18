@@ -17,7 +17,7 @@ export class PayrollController {
   async runPayroll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const dto: PayrollRunDTO = req.body;
@@ -25,7 +25,7 @@ export class PayrollController {
       // Validate required fields
       if (!dto.period_start || !dto.period_end || !dto.month || !dto.year) {
         throw validationError(
-          "Missing required fields: period_start, period_end, month, year"
+          "Missing required fields: period_start, period_end, month, year",
         );
       }
 
@@ -60,20 +60,20 @@ export class PayrollController {
   async getPayrollReport(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { startDate, endDate } = req.query;
 
       if (!startDate || !endDate) {
         throw validationError(
-          "Missing required query parameters: startDate, endDate"
+          "Missing required query parameters: startDate, endDate",
         );
       }
 
       const result = await this.service.getPayrollReport(
         startDate as string,
-        endDate as string
+        endDate as string,
       );
 
       res.json({
@@ -91,20 +91,20 @@ export class PayrollController {
   async getPayrollAnalytics(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { startDate, endDate } = req.query;
 
       if (!startDate || !endDate) {
         throw validationError(
-          "Missing required query parameters: startDate, endDate"
+          "Missing required query parameters: startDate, endDate",
         );
       }
 
       const result = await this.service.getPayrollAnalytics(
         startDate as string,
-        endDate as string
+        endDate as string,
       );
 
       res.json({
@@ -122,7 +122,7 @@ export class PayrollController {
   async getPayroll(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -148,7 +148,7 @@ export class PayrollController {
   async updatePayrollStatus(
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
@@ -165,7 +165,7 @@ export class PayrollController {
       const result = await this.service.updatePayrollStatus(
         id,
         status,
-        paid_date
+        paid_date,
       );
 
       res.json({

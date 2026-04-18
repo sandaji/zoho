@@ -9,8 +9,6 @@ import {
   ShoppingCart,
   Percent,
   DollarSign,
-  User,
-  Car,
 } from "lucide-react";
 
 export interface StatCardProps {
@@ -222,7 +220,7 @@ export function FleetStatCard(props: Partial<StatCardProps>) {
     <StatCard
       title="Active Trucks"
       value={0}
-      icon={<Car />}
+      icon={<Truck />}
       variant="default"
       {...props}
     />

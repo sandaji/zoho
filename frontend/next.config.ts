@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   typescript: {
     tsconfigPath: "./tsconfig.json",
   },
-  
+
   // API proxy configuration
   rewrites: async () => {
     return {
@@ -43,8 +43,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables
   env: {
-    NEXT_PUBLIC_API_URL:
-      process.env.NEXT_PUBLIC_API_URL 
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 };
 

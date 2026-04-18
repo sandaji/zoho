@@ -81,9 +81,8 @@ export function EnhancedInventoryTable({
 
   const SortIcon = ({ column }: { column: string }) => (
     <ArrowUpDown
-      className={`h-4 w-4 ml-1 inline transition-opacity ${
-        sortColumn === column ? "opacity-100" : "opacity-40"
-      }`}
+      className={`h-4 w-4 ml-1 inline transition-opacity ${sortColumn === column ? "opacity-100" : "opacity-40"
+        }`}
     />
   );
 
