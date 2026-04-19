@@ -12,7 +12,7 @@ import { logger, logSecurityEvent } from "../lib/logger"; // Now this works!
 // ============================================================================
 export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per IP
+  max: 300, // 300 requests per IP per window
   message: "Too many requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,

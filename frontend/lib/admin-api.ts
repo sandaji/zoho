@@ -457,3 +457,29 @@ export const grantSystemAccess = async (
   const { data } = await response.json();
   return data;
 };
+
+// ============================================================================
+// UPDATE PRODUCT
+// ============================================================================
+
+export type UpdateProductPayload = Partial<Omit<ProductPayload, "image_url">> & {
+  image_url?: string | null;
+};
+
+export const updateProduct = async (
+  token: string,
+  productId: string,
+  payload: UpdateProductPayload
+): Promise<Product> => {
+  const response = await fetch(`${API_BASE_URL}/v1/products/${productId}`, {
+    method: "PATCH",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to update product");
+  }
+  const { data } = await response.json();
+  return data;
+};

@@ -225,7 +225,7 @@ export default function CustomersPage() {
                 </Label>
                 <Input
                   id="phone"
-                  placeholder="+254 XXX XXX XXX"
+                  placeholder="+254 711 611 971"
                   value={formData.phone}
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })

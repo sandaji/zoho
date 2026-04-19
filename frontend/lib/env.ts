@@ -56,6 +56,13 @@ const envSchema = z.object({
   NEXT_PUBLIC_GOOGLE_CLIENT_ID: z.string().optional(),
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+
+  // Company defaults (shown on receipts/PDFs — branch DB data takes priority)
+  NEXT_PUBLIC_COMPANY_NAME: z.string().default('Zoho Corporation Ltd'),
+  NEXT_PUBLIC_COMPANY_ADDRESS: z.string().default('Enterprise Road 32, Nairobi, Kenya'),
+  NEXT_PUBLIC_COMPANY_PHONE: z.string().default('+254 711 611 971'),
+  NEXT_PUBLIC_COMPANY_EMAIL: z.string().default('info@zoho.co.ke'),
+  NEXT_PUBLIC_COMPANY_PIN: z.string().default('P123456789X'),
 });
 
 export type FrontendEnvConfig = z.infer<typeof envSchema>;

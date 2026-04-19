@@ -6,9 +6,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   getProducts,
-  getInventoryStats,
-  getCategories,
   getBranches,
+  batchFetchInventoryData,
+  invalidateInventoryCache,
   exportInventoryToCSV,
   type Product,
   type InventoryStats,
@@ -137,26 +137,16 @@ export function useInventory(options: UseInventoryOptions = {}) {
   );
 
   /**
-   * Fetch inventory statistics
+   * Batch-fetch stats and categories in a single API call
    */
-  const fetchStats = useCallback(async () => {
+  const fetchStatsAndCategories = useCallback(async () => {
     try {
-      const response = await getInventoryStats();
-      setStats(response.data);
+      const { stats: fetchedStats, categories: fetchedCategories } =
+        await batchFetchInventoryData();
+      setStats(fetchedStats);
+      setCategories(fetchedCategories);
     } catch (err) {
-      console.error("Failed to fetch stats:", err);
-    }
-  }, []);
-
-  /**
-   * Fetch categories
-   */
-  const fetchCategories = useCallback(async () => {
-    try {
-      const cats = await getCategories();
-      setCategories(cats);
-    } catch (err) {
-      console.error("Failed to fetch categories:", err);
+      console.error("Failed to fetch stats/categories:", err);
     }
   }, []);
 
@@ -178,13 +168,14 @@ export function useInventory(options: UseInventoryOptions = {}) {
    * Refresh all data
    */
   const refresh = useCallback(async () => {
+    // Invalidate cache so refresh gets fresh data
+    invalidateInventoryCache();
     await Promise.all([
       fetchProducts(),
-      fetchStats(),
-      fetchCategories(),
+      fetchStatsAndCategories(),
       fetchBranches(),
     ]);
-  }, [fetchProducts, fetchStats, fetchCategories, fetchBranches]);
+  }, [fetchProducts, fetchStatsAndCategories, fetchBranches]);
 
   /**
    * Update search filter
@@ -286,19 +277,24 @@ export function useInventory(options: UseInventoryOptions = {}) {
     return sum + branchInv.quantity * p.cost_price;
   }, 0);
 
+  // Track whether initial fetch has completed to prevent double-fetching
+  const [initialFetchDone, setInitialFetchDone] = useState(false);
+
   // Initial fetch
   useEffect(() => {
     if (autoFetch) {
-      refresh();
+      refresh().then(() => setInitialFetchDone(true));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoFetch]);
 
-  // Fetch products when sort or filters change
+  // Fetch products when sort or filters change (skip on initial mount)
   useEffect(() => {
-    if (autoFetch) {
+    if (autoFetch && initialFetchDone) {
       fetchProducts({ page: 1 });
     }
-  }, [filters.category, filters.status, filters.branchId, filters.sortBy, filters.sortOrder, filters.search, autoFetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.category, filters.status, filters.branchId, filters.sortBy, filters.sortOrder, filters.search]);
 
   return {
     // Data

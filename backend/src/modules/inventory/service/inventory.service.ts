@@ -445,7 +445,7 @@ export class InventoryService {
   async transferInventory(
     dto: TransferInventoryDTO
   ): Promise<any> {
-    // In a real SAP system, we'd provide a fake user or require it. 
+    // In a real system, we'd provide a fake user or require it. 
     // Here we'll just use a system placeholder if not available.
     return this.initiateTransfer("system", dto);
   }

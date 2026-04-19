@@ -23,6 +23,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { SaleData } from "@/app/dashboard/pos/page";
 import { formatCurrency, safeFormatDate } from "@/lib/utils";
+import { frontendEnv } from "@/lib/env";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;
@@ -135,14 +136,32 @@ const ReceiptContent: React.FC<{
   sale: SaleData;
   changeAmount: number;
 }> = ({ sale, changeAmount }) => {
+  // Branch DB fields take priority — env vars are fallback
+  const companyName =
+    sale.branch?.name ||
+    frontendEnv.NEXT_PUBLIC_COMPANY_NAME;
+
+  const companyAddress =
+    sale.branch?.address ||
+    (sale.branch?.city
+      ? `${sale.branch.city}, Kenya`
+      : frontendEnv.NEXT_PUBLIC_COMPANY_ADDRESS);
+
+  const companyPhone =
+    sale.branch?.phone ||
+    frontendEnv.NEXT_PUBLIC_COMPANY_PHONE;
+
+  const companyEmail = frontendEnv.NEXT_PUBLIC_COMPANY_EMAIL;
+  const companyPin   = frontendEnv.NEXT_PUBLIC_COMPANY_PIN;
+
   return (
     <div className="receipt-content space-y-4 font-mono text-sm">
       {/* Header */}
       <div className="text-center space-y-1">
-        <h2 className="text-2xl font-bold">Your Company Name</h2>
-        <p className="text-xs">123 Business Street, Nairobi</p>
-        <p className="text-xs">Tel: +254 XXX XXX XXX</p>
-        <p className="text-xs">Email: info@yourcompany.com</p>
+        <h2 className="text-2xl font-bold">{companyName}</h2>
+        <p className="text-xs">{companyAddress}</p>
+        <p className="text-xs">Tel: {companyPhone}</p>
+        <p className="text-xs">Email: {companyEmail}</p>
       </div>
 
       <Separator />
@@ -243,7 +262,7 @@ const ReceiptContent: React.FC<{
       <div className="text-center space-y-1 text-xs">
         <p className="font-bold">Thank you for your business!</p>
         <p>Goods sold are not returnable</p>
-        <p>VAT Reg: XXXXXXXXXX</p>
+        <p>VAT Reg: {companyPin}</p>
       </div>
     </div>
   );

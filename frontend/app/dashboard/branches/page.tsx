@@ -54,7 +54,11 @@ export default function BranchesPage() {
 
         const data = await response.json();
         if (data.success) {
-          setBranches(data.data);
+          // Backend returns { data: { branches: [...] } }
+          const list = Array.isArray(data.data)
+            ? data.data
+            : data.data?.branches ?? [];
+          setBranches(list);
         } else {
           throw new Error(data.message || "Failed to fetch branches");
         }

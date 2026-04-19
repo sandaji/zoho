@@ -90,6 +90,36 @@ export interface PaginatedResponse<T> {
   };
 }
 
+// ============================================================================
+// Short-lived response cache to prevent redundant parallel API calls
+// ============================================================================
+interface CachedResponse<T> {
+  data: T;
+  timestamp: number;
+}
+
+const responseCache = new Map<string, CachedResponse<unknown>>();
+const CACHE_TTL_MS = 5000; // 5 seconds — enough to deduplicate concurrent calls
+
+function getCached<T>(key: string): T | null {
+  const entry = responseCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    responseCache.delete(key);
+    return null;
+  }
+  return entry.data as T;
+}
+
+function setCache<T>(key: string, data: T): void {
+  responseCache.set(key, { data, timestamp: Date.now() });
+}
+
+/** Clear the response cache (call after mutations) */
+export function invalidateInventoryCache(): void {
+  responseCache.clear();
+}
+
 /**
  * Get authentication token from localStorage
  */
@@ -158,8 +188,15 @@ export async function getProducts(params?: {
 
   const queryString = queryParams.toString();
   const endpoint = `/v1/products${queryString ? `?${queryString}` : ""}`;
+  const cacheKey = `products:${queryString}`;
 
-  return apiRequest<ApiResponse<PaginatedResponse<Product>>>(endpoint);
+  // Return cached response if available (prevents redundant parallel calls)
+  const cached = getCached<ApiResponse<PaginatedResponse<Product>>>(cacheKey);
+  if (cached) return cached;
+
+  const result = await apiRequest<ApiResponse<PaginatedResponse<Product>>>(endpoint);
+  setCache(cacheKey, result);
+  return result;
 }
 
 /**
@@ -172,18 +209,10 @@ export async function getInventory(): Promise<
 }
 
 /**
- * Get inventory statistics
+ * Compute stats from a list of products (pure function, no API call)
  */
-export async function getInventoryStats(): Promise<
-  ApiResponse<InventoryStats>
-> {
-  // For now, calculate from products endpoint
-  // Later, create a dedicated stats endpoint
-  const response = await getProducts({ limit: 1000 });
-
-  const products = response.data.products;
-
-  const stats: InventoryStats = {
+function computeStatsFromProducts(products: Product[]): InventoryStats {
+  return {
     totalItems: products.length,
     totalValue: products.reduce(
       (sum, p) => {
@@ -205,10 +234,46 @@ export async function getInventoryStats(): Promise<
       .size,
     activeProducts: products.filter((p) => p.status === "active").length,
   };
+}
 
+/**
+ * Extract unique categories from a list of products (pure function)
+ */
+function extractCategoriesFromProducts(products: Product[]): string[] {
+  const categories = products
+    .map((p) => p.category)
+    .filter((c): c is string => Boolean(c));
+  return [...new Set(categories)].sort();
+}
+
+/**
+ * Get inventory statistics
+ */
+export async function getInventoryStats(): Promise<
+  ApiResponse<InventoryStats>
+> {
+  const response = await getProducts({ limit: 1000 });
   return {
     success: true,
-    data: stats,
+    data: computeStatsFromProducts(response.data.products),
+  };
+}
+
+/**
+ * Batch-fetch products, stats, and categories in a SINGLE API call.
+ * This replaces the 3 parallel calls that were hammering the rate limiter.
+ */
+export async function batchFetchInventoryData(): Promise<{
+  stats: InventoryStats;
+  categories: string[];
+}> {
+  // One API call instead of three
+  const response = await getProducts({ limit: 1000 });
+  const products = response.data.products;
+
+  return {
+    stats: computeStatsFromProducts(products),
+    categories: extractCategoriesFromProducts(products),
   };
 }
 
@@ -260,10 +325,7 @@ export async function deleteProduct(id: string): Promise<ApiResponse<void>> {
  */
 export async function getCategories(): Promise<string[]> {
   const response = await getProducts({ limit: 1000 });
-  const categories = response.data.products
-    .map((p) => p.category)
-    .filter((c): c is string => Boolean(c));
-  return [...new Set(categories)].sort();
+  return extractCategoriesFromProducts(response.data.products);
 }
 
 /**

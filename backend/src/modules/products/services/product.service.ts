@@ -71,11 +71,12 @@ export class ProductService {
    */
   async createProduct(data: CreateProductDTO) {
     try {
+      // --- Pre-flight checks (outside transaction to minimise tx duration) ---
+
       // Check if SKU already exists
       const existingSKU = await prisma.product.findUnique({
         where: { sku: data.sku },
       });
-
       if (existingSKU) {
         throw new AppError(
           ErrorCode.ALREADY_EXISTS,
@@ -89,7 +90,6 @@ export class ProductService {
         const existingUPC = await prisma.product.findUnique({
           where: { upc: data.upc },
         });
-
         if (existingUPC) {
           throw new AppError(
             ErrorCode.ALREADY_EXISTS,
@@ -99,26 +99,16 @@ export class ProductService {
         }
       }
 
-      // Verify branch exists
+      // Verify branch and its warehouses exist
       const branch = await prisma.branch.findUnique({
         where: { id: data.branchId },
         include: { warehouses: { where: { isActive: true } } },
       });
-
       if (!branch) {
-        throw new AppError(
-          ErrorCode.NOT_FOUND,
-          404,
-          "Specified branch not found",
-        );
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Specified branch not found");
       }
-
       if (branch.warehouses.length === 0) {
-        throw new AppError(
-          ErrorCode.NOT_FOUND,
-          404,
-          "Branch has no active warehouses",
-        );
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch has no active warehouses");
       }
 
       const initialQuantity = data.quantity || 0;
@@ -135,8 +125,9 @@ export class ProductService {
       }
 
       // Create the product and branch inventory in a transaction
+      // Timeout raised to 15s — remote DB + audit log middleware adds latency
       const result = await prisma.$transaction(async (tx) => {
-        // 1. Create the master product (without quantity fields)
+        // 1. Create the master product
         const product = await tx.product.create({
           data: {
             sku: data.sku,
@@ -165,7 +156,7 @@ export class ProductService {
           },
         });
 
-        // 2. Create BranchInventory record for localized inventory
+        // 2. Create BranchInventory record for localised inventory
         await tx.branchInventory.create({
           data: {
             productId: product.id,
@@ -180,13 +171,12 @@ export class ProductService {
           },
         });
 
-        // 3. Create Inventory record for the primary warehouse in this branch
-        // This maintains warehouse-level tracking for advanced stock operations
+        // 3. Create warehouse-level Inventory record for stock operations
         const primaryWarehouse = branch.warehouses[0];
         await tx.inventory.create({
           data: {
             productId: product.id,
-            warehouseId: primaryWarehouse.id,
+            warehouseId: primaryWarehouse!.id,
             quantity: initialQuantity,
             reserved: 0,
             available: initialQuantity,
@@ -196,6 +186,8 @@ export class ProductService {
         });
 
         return product;
+      }, {
+        timeout: 15000, // 15s — accommodates remote DB latency + audit log writes
       });
 
       logger.info(
@@ -365,7 +357,7 @@ export class ProductService {
       // VENDOR LOCKING: Changes to vendorId require approval
       if (data.vendorId && data.vendorId !== existing.vendorId) {
         // Here we would normally create an approval request instead of updating.
-        // For SAP discipline, we check if the user is SUPER_ADMIN.
+        // For discipline, we check if the user is SUPER_ADMIN.
         // However, the service doesn't have the user context.
         // We'll throw an error if a non-approved change is attempted
         // AND provide a method to create approval requests.

@@ -10,6 +10,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PosService } from "../service";
 import { SalesService } from "../service/sales.service";
+import { prisma } from "../../../lib/db";
 import {
   CreateSalesDTO,
   UpdateSalesDTO,
@@ -99,6 +100,12 @@ export class POSController {
         notes: dto.notes,
       });
 
+      // Fetch branch details for receipt header
+      const branch = await prisma.branch.findUnique({
+        where: { id: dto.branchId },
+        select: { id: true, name: true, address: true, phone: true, city: true },
+      });
+
       // Transform to response format
       const response = {
         id: newSaleDocument.id,
@@ -106,6 +113,15 @@ export class POSController {
         status: "confirmed",
         payment_method: dto.payment_method,
         branchId: dto.branchId,
+        branch: branch
+          ? {
+              id: branch.id,
+              name: branch.name,
+              address: branch.address,
+              phone: branch.phone,
+              city: branch.city,
+            }
+          : null,
         userId: dto.userId,
         subtotal: newSaleDocument.subtotal,
         total_amount: newSaleDocument.subtotal,

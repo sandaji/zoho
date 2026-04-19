@@ -28,7 +28,7 @@ import { WarehouseSelect } from "@/components/ui/warehouse-select";
 import { VendorSelect } from "@/components/ui/vendor-select";
 import { BranchSelect } from "@/components/ui/branch-select";
 
-import { createProduct, ProductPayload } from "@/lib/admin-api";
+import { createProduct, updateProduct, ProductPayload } from "@/lib/admin-api";
 
 interface AddProductDialogProps {
   open: boolean;
@@ -200,7 +200,7 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
       return false;
     }
     if (!formData.vendorId) {
-      toast.error("Vendor is mandatory for SAP-grade product creation");
+      toast.error("Vendor is mandatory for product creation");
       return false;
     }
     if (!formData.branchId) {
@@ -213,15 +213,13 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm() || !token) {
-      return;
-    }
+    if (!validateForm() || !token) return;
 
     setIsLoading(true);
 
     try {
-      // Prepare the payload
-      const payload: ProductPayload = {
+      // Build the common numeric payload fields
+      const basePayload = {
         ...formData,
         upc: formData.upc || null,
         barcode: formData.barcode || null,
@@ -240,7 +238,6 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
         width: formData.width ? parseFloat(formData.width) : null,
         height: formData.height ? parseFloat(formData.height) : null,
         dimension_unit: formData.dimension_unit || null,
-        image_url: imagePreview || null,
         vendorId: formData.vendorId,
         branchId: formData.branchId,
         supplier_part_number: formData.supplier_part_number || null,
@@ -248,16 +245,44 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
         warehouseId: formData.warehouseId || undefined,
       };
 
-      await createProduct(token, payload);
+      if (isEditMode && editProduct?.id) {
+        // UPDATE — PATCH /v1/products/:id
+        // Only send image_url if it changed and is not a base64 string
+        // (base64 images belong in a dedicated upload endpoint, not the product record)
+        const imageChanged = imagePreview !== (editProduct.image_url ?? null);
+        const isBase64 = imagePreview?.startsWith("data:") ?? false;
 
-      toast.success("Product created successfully!");
+        const updatePayload = {
+          ...basePayload,
+          // Only include image_url if it changed AND it's a real URL (not base64)
+          ...(imageChanged && !isBase64 && { image_url: imagePreview }),
+          // Allow clearing the image
+          ...(imageChanged && imagePreview === null && { image_url: null }),
+        };
+
+        await updateProduct(token, editProduct.id, updatePayload);
+        toast.success("Product updated successfully!");
+      } else {
+        // CREATE — POST /v1/products
+        const createPayload: ProductPayload = {
+          ...basePayload,
+          // Strip base64 images — send null until upload endpoint exists
+          image_url: imagePreview && !imagePreview.startsWith("data:")
+            ? imagePreview
+            : null,
+        };
+
+        await createProduct(token, createPayload);
+        toast.success("Product created successfully!");
+      }
+
       setFormData(initialFormData);
       setImagePreview(null);
       onOpenChange(false);
       onProductAdded?.();
     } catch (error) {
-      console.error("Error creating product:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to create product");
+      console.error(isEditMode ? "Error updating product:" : "Error creating product:", error);
+      toast.error(error instanceof Error ? error.message : isEditMode ? "Failed to update product" : "Failed to create product");
     } finally {
       setIsLoading(false);
     }
@@ -298,7 +323,13 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
                     value={formData.sku}
                     onChange={(e) => handleInputChange("sku", e.target.value)}
                     required
+                    disabled={isEditMode}
+                    title={isEditMode ? "SKU cannot be changed after creation" : undefined}
+                    className={isEditMode ? "bg-muted cursor-not-allowed" : ""}
                   />
+                  {isEditMode && (
+                    <p className="text-xs text-muted-foreground">SKU is locked after creation.</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">

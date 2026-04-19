@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { SalesService } from "../service/sales.service";
 import { PDFGenerator } from "../../../lib/pdf-generator";
 import { AppError, ErrorCode } from "../../../lib/errors";
+import { getCompanyInfo } from "../../../config/company.config";
 
 /**
  * PDF Controller
@@ -46,28 +47,8 @@ export class PDFController {
         );
       }
 
-      // Company information (you should fetch this from settings or config)
-      // For now, using default company info
-      const companyInfo = {
-        name: document.branch?.name || "YOUR COMPANY NAME",
-        address:
-          document.branch?.address || "YOUR COMPANY ADDRESS, CITY, COUNTRY",
-        phone: [
-          document.branch?.phone || "+254 XXX XXX XXX",
-          "+254 XXX XXX XXX",
-        ],
-        email: "info@yourcompany.com",
-        pin: "PXXXXXXXXX",
-        bankDetails: {
-          bankName: "YOUR BANK LIMITED, BRANCH NAME",
-          accountName: "YOUR COMPANY NAME",
-          accountNumber: "XXXXXXXXXXXX",
-          bankCode: "XX",
-          branchCode: "XXX",
-          paybillNo: "XXXXXX",
-          paybillAccount: "XXXXXX",
-        },
-      };
+      // Build company info: branch DB fields take priority, env vars are fallback
+      const companyInfo = getCompanyInfo(document.branch ?? undefined);
 
       // Generate HTML based on document type
       let html: string;
@@ -119,23 +100,8 @@ export class PDFController {
         throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
       }
 
-      // Company info
-      const companyInfo = {
-        name: document.branch?.name || "YOUR COMPANY NAME",
-        address: document.branch?.address || "YOUR COMPANY ADDRESS",
-        phone: ["+254 XXX XXX XXX", "+254 XXX XXX XXX"],
-        email: "info@yourcompany.com",
-        pin: "PXXXXXXXXX",
-        bankDetails: {
-          bankName: "YOUR BANK LIMITED",
-          accountName: "YOUR COMPANY NAME",
-          accountNumber: "XXXXXXXXXXXX",
-          bankCode: "XX",
-          branchCode: "XXX",
-          paybillNo: "XXXXXX",
-          paybillAccount: "XXXXXX",
-        },
-      };
+      // Build company info: branch DB fields take priority, env vars are fallback
+      const companyInfo = getCompanyInfo(document.branch ?? undefined);
 
       // Generate HTML
       let html: string;

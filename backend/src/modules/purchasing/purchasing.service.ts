@@ -294,119 +294,124 @@ export class PurchasingService {
       expectedDeliveryDate?: string;
     },
   ) {
-    return prisma.$transaction(async (tx) => {
-      // 1. Validate Vendor
-      const vendor = await tx.vendor.findUnique({
-        where: { id: data.vendorId },
-      });
-      if (!vendor || !vendor.isActive) {
-        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Invalid vendor");
-      }
-
-      // 1b. Resolve Branch ID from Warehouse if needed
-      let resolvedBranchId = data.branchId;
-      if (data.warehouseId) {
-        const warehouse = await tx.warehouse.findUnique({
-          where: { id: data.warehouseId },
-          select: { branchId: true },
+    return prisma.$transaction(
+      async (tx) => {
+        // 1. Validate Vendor
+        const vendor = await tx.vendor.findUnique({
+          where: { id: data.vendorId },
         });
-        if (!warehouse) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            "Target warehouse not found",
-          );
-        }
-        resolvedBranchId = warehouse.branchId;
-      }
-
-      if (!resolvedBranchId) {
-        throw new AppError(
-          ErrorCode.BAD_REQUEST,
-          400,
-          "Branch ID or Warehouse ID is required",
-        );
-      }
-
-      // 2. Generate PO Number
-      const year = new Date().getFullYear();
-      const count = await tx.purchaseOrder.count();
-      const poNumber = `PO-${year}-${(count + 1).toString().padStart(5, "0")}`;
-
-      // 3. Calculate Totals
-      let subtotal = 0;
-      const itemsData: Array<{
-        productId: string;
-        quantity: number;
-        unitPrice: number;
-        subtotal: number;
-      }> = [];
-
-      for (const item of data.items) {
-        // Enforce single-vendor logic: Check if product belongs to the PO vendor
-        const product = await tx.product.findUnique({
-          where: { id: item.productId },
-          select: { vendorId: true, name: true },
-        });
-
-        if (!product) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            `Product ${item.productId} not found`,
-          );
+        if (!vendor || !vendor.isActive) {
+          throw new AppError(ErrorCode.BAD_REQUEST, 400, "Invalid vendor");
         }
 
-        if (product.vendorId !== data.vendorId) {
+        // 1b. Resolve Branch ID from Warehouse if needed
+        let resolvedBranchId = data.branchId;
+        if (data.warehouseId) {
+          const warehouse = await tx.warehouse.findUnique({
+            where: { id: data.warehouseId },
+            select: { branchId: true },
+          });
+          if (!warehouse) {
+            throw new AppError(
+              ErrorCode.NOT_FOUND,
+              404,
+              "Target warehouse not found",
+            );
+          }
+          resolvedBranchId = warehouse.branchId;
+        }
+
+        if (!resolvedBranchId) {
           throw new AppError(
-            ErrorCode.VALIDATION_ERROR,
+            ErrorCode.BAD_REQUEST,
             400,
-            `Product "${product.name}" does not belong to the selected vendor. SAP discipline requires all items in a PO to match the vendor.`,
+            "Branch ID or Warehouse ID is required",
           );
         }
 
-        const itemSubtotal = item.quantity * item.unitPrice;
-        subtotal += itemSubtotal;
+        // 2. Generate PO Number
+        const year = new Date().getFullYear();
+        const count = await tx.purchaseOrder.count();
+        const poNumber = `PO-${year}-${(count + 1).toString().padStart(5, "0")}`;
 
-        itemsData.push({
-          productId: item.productId,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          subtotal: itemSubtotal,
+        // 3. Calculate Totals
+        let subtotal = 0;
+        const itemsData: Array<{
+          productId: string;
+          quantity: number;
+          unitPrice: number;
+          subtotal: number;
+        }> = [];
+
+        for (const item of data.items) {
+          // Enforce single-vendor logic: Check if product belongs to the PO vendor
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { vendorId: true, name: true },
+          });
+
+          if (!product) {
+            throw new AppError(
+              ErrorCode.NOT_FOUND,
+              404,
+              `Product ${item.productId} not found`,
+            );
+          }
+
+          if (product.vendorId !== data.vendorId) {
+            throw new AppError(
+              ErrorCode.VALIDATION_ERROR,
+              400,
+              `Product "${product.name}" does not belong to the selected vendor. SAP discipline requires all items in a PO to match the vendor.`,
+            );
+          }
+
+          const itemSubtotal = item.quantity * item.unitPrice;
+          subtotal += itemSubtotal;
+
+          itemsData.push({
+            productId: item.productId,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            subtotal: itemSubtotal,
+          });
+        }
+
+        // 4. Create PO
+        const po = await tx.purchaseOrder.create({
+          data: {
+            poNumber,
+            vendorId: data.vendorId,
+            branchId: resolvedBranchId,
+            destinationWarehouseId: data.warehouseId || null,
+            requestedById: userId,
+            status: PurchaseOrderStatus.DRAFT,
+            subtotal,
+            tax: subtotal * 0.16,
+            total: subtotal * 1.16,
+            notes: data.notes,
+            expectedDeliveryDate: data.expectedDeliveryDate
+              ? new Date(data.expectedDeliveryDate)
+              : null,
+            items: {
+              create: itemsData,
+            },
+          },
+          include: {
+            items: {
+              include: { product: true },
+            },
+            vendor: true,
+            requestedBy: true,
+          },
         });
-      }
 
-      // 4. Create PO
-      const po = await tx.purchaseOrder.create({
-        data: {
-          poNumber,
-          vendorId: data.vendorId,
-          branchId: resolvedBranchId,
-          destinationWarehouseId: data.warehouseId || null,
-          requestedById: userId,
-          status: PurchaseOrderStatus.DRAFT,
-          subtotal,
-          tax: subtotal * 0.16,
-          total: subtotal * 1.16,
-          notes: data.notes,
-          expectedDeliveryDate: data.expectedDeliveryDate
-            ? new Date(data.expectedDeliveryDate)
-            : null,
-          items: {
-            create: itemsData,
-          },
-        },
-        include: {
-          items: {
-            include: { product: true },
-          },
-          vendor: true,
-          requestedBy: true,
-        },
-      });
-
-      return po;
-    });
+        return po;
+      },
+      {
+        timeout: 30000, // 30 seconds transaction timeout
+      },
+    );
   }
 
   /**

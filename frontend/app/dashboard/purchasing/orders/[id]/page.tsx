@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAuth } from '@/lib/auth-context';
-import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Download, Eye, CheckCircle, Loader2 } from 'lucide-react';
-import ReceiveGoodsModal from './receive-goods-modal';
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft, Download, Eye, CheckCircle, Loader2 } from "lucide-react";
+import ReceiveGoodsModal from "./receive-goods-modal";
 
 import { frontendEnv } from "@/lib/env";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
@@ -17,7 +24,14 @@ const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 interface PurchaseOrderDetail {
   id: string;
   poNumber: string;
-  status: 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'PARTIALLY_RECEIVED' | 'RECEIVED' | 'CLOSED' | 'CANCELLED';
+  status:
+    | "DRAFT"
+    | "SUBMITTED"
+    | "APPROVED"
+    | "PARTIALLY_RECEIVED"
+    | "RECEIVED"
+    | "CLOSED"
+    | "CANCELLED";
   vendor: { id: string; name: string; email?: string; phone?: string };
   branch: { id: string; name: string };
   requestedBy: { id: string; email: string; name: string };
@@ -60,13 +74,13 @@ interface PurchaseOrderDetail {
 }
 
 const statusColors: Record<string, string> = {
-  DRAFT: 'bg-slate-100 text-slate-800',
-  SUBMITTED: 'bg-blue-100 text-blue-800',
-  APPROVED: 'bg-emerald-100 text-emerald-800',
-  PARTIALLY_RECEIVED: 'bg-amber-100 text-amber-800',
-  RECEIVED: 'bg-green-100 text-green-800',
-  CLOSED: 'bg-gray-100 text-gray-800',
-  CANCELLED: 'bg-red-100 text-red-800',
+  DRAFT: "bg-slate-100 text-slate-800",
+  SUBMITTED: "bg-blue-100 text-blue-800",
+  APPROVED: "bg-emerald-100 text-emerald-800",
+  PARTIALLY_RECEIVED: "bg-amber-100 text-amber-800",
+  RECEIVED: "bg-green-100 text-green-800",
+  CLOSED: "bg-gray-100 text-gray-800",
+  CANCELLED: "bg-red-100 text-red-800",
 };
 
 export default function PurchaseOrderDetailPage() {
@@ -83,41 +97,44 @@ export default function PurchaseOrderDetailPage() {
     const fetchPO = async () => {
       try {
         if (!token) {
-          showToast('error', 'Authentication required');
-          router.push('/auth/login');
+          showToast("error", "Authentication required");
+          router.push("/auth/login");
           return;
         }
 
-        const response = await fetch(
-          `${API_URL}/v1/purchasing/orders/${params.id}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        const response = await fetch(`${API_URL}/v1/purchasing/orders/${params.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          cache: "default",
+        });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch purchase order details');
+          throw new Error("Failed to fetch purchase order details");
         }
 
         const data = await response.json();
         setPO(data.data || data);
       } catch (error) {
-        showToast('error', error instanceof Error ? error.message : 'Failed to load purchase order');
+        showToast(
+          "error",
+          error instanceof Error ? error.message : "Failed to load purchase order"
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchPO();
-  }, [params.id, token, router, showToast]);
+    // Only fetch when params.id or token changes - removed router/showToast from dependencies
+    // as they are utilities, not data dependencies
+  }, [params.id, token]);
 
   const handleReceiveSuccess = (updatedPO: PurchaseOrderDetail) => {
     setPO(updatedPO);
     setShowReceiveModal(false);
-    showToast('success', 'Goods received successfully');
+    showToast("success", "Goods received successfully");
   };
 
   const handleApprove = async () => {
@@ -126,23 +143,23 @@ export default function PurchaseOrderDetailPage() {
     try {
       setApproving(true);
       const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/approve`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || 'Failed to approve purchase order');
+        throw new Error(data.message || data.error || "Failed to approve purchase order");
       }
 
-      showToast('success', 'Purchase Order approved successfully');
-      setPO((prev) => prev ? { ...prev, status: 'APPROVED' } : null);
+      showToast("success", "Purchase Order approved successfully");
+      setPO((prev) => (prev ? { ...prev, status: "APPROVED" } : null));
     } catch (error) {
-      showToast('error', error instanceof Error ? error.message : 'Approval failed');
+      showToast("error", error instanceof Error ? error.message : "Approval failed");
     } finally {
       setApproving(false);
     }
@@ -160,9 +177,7 @@ export default function PurchaseOrderDetailPage() {
     return (
       <div className="min-h-screen bg-slate-50 p-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-slate-900 mb-4">
-            Purchase Order Not Found
-          </h1>
+          <h1 className="text-2xl font-bold text-slate-900 mb-4">Purchase Order Not Found</h1>
           <Button onClick={() => router.back()} variant="outline">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Go Back
@@ -172,9 +187,10 @@ export default function PurchaseOrderDetailPage() {
     );
   }
 
-  const canReceiveGoods = ['APPROVED', 'PARTIALLY_RECEIVED'].includes(po.status);
-  const canApprove = (user?.role === 'super_admin' || user?.role === 'branch_manager') &&
-    ['DRAFT', 'SUBMITTED', 'PENDING'].includes(po.status);
+  const canReceiveGoods = ["APPROVED", "PARTIALLY_RECEIVED"].includes(po.status);
+  const canApprove =
+    (user?.role === "super_admin" || user?.role === "branch_manager") &&
+    ["DRAFT", "SUBMITTED", "PENDING"].includes(po.status);
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -182,25 +198,17 @@ export default function PurchaseOrderDetailPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.back()}
-            >
+            <Button variant="outline" size="sm" onClick={() => router.back()}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">
-                {po.poNumber}
-              </h1>
+              <h1 className="text-3xl font-bold text-slate-900">{po.poNumber}</h1>
               <p className="text-sm text-slate-600 mt-1">
                 Created on {new Date(po.createdAt).toLocaleDateString()}
               </p>
             </div>
           </div>
-          <Badge className={statusColors[po.status]}>
-            {po.status.replace(/_/g, ' ')}
-          </Badge>
+          <Badge className={statusColors[po.status]}>{po.status.replace(/_/g, " ")}</Badge>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -214,30 +222,20 @@ export default function PurchaseOrderDetailPage() {
               <CardContent className="pt-6">
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">
-                      Vendor
-                    </div>
-                    <div className="text-base font-semibold text-slate-900">
-                      {po.vendor.name}
-                    </div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">Vendor</div>
+                    <div className="text-base font-semibold text-slate-900">{po.vendor.name}</div>
                     {po.vendor.email && (
                       <div className="text-sm text-slate-600">{po.vendor.email}</div>
                     )}
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">
-                      Branch
-                    </div>
-                    <div className="text-base font-semibold text-slate-900">
-                      {po.branch.name}
-                    </div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">Branch</div>
+                    <div className="text-base font-semibold text-slate-900">{po.branch.name}</div>
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">
-                      Requested By
-                    </div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">Requested By</div>
                     <div className="text-base font-semibold text-slate-900">
                       {po.requestedBy.name}
                     </div>
@@ -245,11 +243,9 @@ export default function PurchaseOrderDetailPage() {
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">
-                      Approved By
-                    </div>
+                    <div className="text-sm font-medium text-slate-600 mb-1">Approved By</div>
                     <div className="text-base font-semibold text-slate-900">
-                      {po.approvedBy?.name || 'Pending'}
+                      {po.approvedBy?.name || "Pending"}
                     </div>
                   </div>
 
@@ -266,9 +262,7 @@ export default function PurchaseOrderDetailPage() {
 
                   {po.notes && (
                     <div className="col-span-2">
-                      <div className="text-sm font-medium text-slate-600 mb-1">
-                        Notes
-                      </div>
+                      <div className="text-sm font-medium text-slate-600 mb-1">Notes</div>
                       <div className="text-slate-700">{po.notes}</div>
                     </div>
                   )}
@@ -285,9 +279,7 @@ export default function PurchaseOrderDetailPage() {
                 <Table>
                   <TableHeader>
                     <TableRow className="border-slate-200 hover:bg-transparent">
-                      <TableHead className="h-12 text-slate-700 font-semibold">
-                        Product
-                      </TableHead>
+                      <TableHead className="h-12 text-slate-700 font-semibold">Product</TableHead>
                       <TableHead className="h-12 text-right text-slate-700 font-semibold">
                         Qty Ordered
                       </TableHead>
@@ -307,31 +299,23 @@ export default function PurchaseOrderDetailPage() {
                       <TableRow key={item.id} className="hover:bg-slate-50">
                         <TableCell className="py-4">
                           <div>
-                            <div className="font-medium text-slate-900">
-                              {item.product.name}
-                            </div>
-                            <div className="text-sm text-slate-600">
-                              SKU: {item.product.sku}
-                            </div>
+                            <div className="font-medium text-slate-900">{item.product.name}</div>
+                            <div className="text-sm text-slate-600">SKU: {item.product.sku}</div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right py-4">
-                          {item.quantity}
-                        </TableCell>
+                        <TableCell className="text-right py-4">{item.quantity}</TableCell>
                         <TableCell className="text-right py-4">
                           KES {item.unitPrice.toFixed(2)}
                         </TableCell>
                         <TableCell className="text-right py-4">
                           <Badge
                             variant={
-                              item.receivedQuantity === item.quantity
-                                ? 'default'
-                                : 'secondary'
+                              item.receivedQuantity === item.quantity ? "default" : "secondary"
                             }
                             className={
                               item.receivedQuantity === item.quantity
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : 'bg-amber-100 text-amber-800'
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-amber-100 text-amber-800"
                             }
                           >
                             {item.receivedQuantity}/{item.quantity}
@@ -362,17 +346,13 @@ export default function PurchaseOrderDetailPage() {
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <div className="font-semibold text-slate-900">
-                              {grn.grnNumber}
-                            </div>
+                            <div className="font-semibold text-slate-900">{grn.grnNumber}</div>
                             <div className="text-sm text-slate-600 mt-1">
-                              Received by {grn.receivedBy.name} on{' '}
+                              Received by {grn.receivedBy.name} on{" "}
                               {new Date(grn.receivedAt).toLocaleDateString()}
                             </div>
                           </div>
-                          <Badge className="bg-green-100 text-green-800">
-                            {grn.status}
-                          </Badge>
+                          <Badge className="bg-green-100 text-green-800">{grn.status}</Badge>
                         </div>
                         <div className="text-sm text-slate-700">
                           <div className="font-medium mb-2">Items received:</div>
@@ -409,16 +389,12 @@ export default function PurchaseOrderDetailPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-600">Tax:</span>
-                    <span className="font-semibold text-slate-900">
-                      KES {po.tax.toFixed(2)}
-                    </span>
+                    <span className="font-semibold text-slate-900">KES {po.tax.toFixed(2)}</span>
                   </div>
                   <div className="h-px bg-slate-200 my-4"></div>
                   <div className="flex justify-between text-lg">
                     <span className="font-semibold text-slate-900">Total:</span>
-                    <span className="font-bold text-emerald-600">
-                      KES {po.total.toFixed(2)}
-                    </span>
+                    <span className="font-bold text-emerald-600">KES {po.total.toFixed(2)}</span>
                   </div>
                 </div>
               </CardContent>

@@ -23,7 +23,14 @@ interface GetOrdersResponse {
         code?: string;
       };
       total: number;
-      status: "DRAFT" | "SUBMITTED" | "APPROVED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CLOSED" | "CANCELLED";
+      status:
+        | "DRAFT"
+        | "SUBMITTED"
+        | "APPROVED"
+        | "PARTIALLY_RECEIVED"
+        | "RECEIVED"
+        | "CLOSED"
+        | "CANCELLED";
       createdAt: string;
       items: Array<{
         id: string;
@@ -109,20 +116,36 @@ class PurchasingService {
    * @returns Created order
    */
   async createOrder(token: string, orderData: any) {
-    const response = await fetch(`${API_URL}/v1/purchasing/orders`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(orderData),
-    });
+    try {
+      const response = await fetch(`${API_URL}/v1/purchasing/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Failed to create purchase order: ${response.statusText}`);
+      if (!response.ok) {
+        let errorMessage = `Failed to create purchase order: ${response.statusText}`;
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error?.message || errorData.message || errorMessage;
+        } catch (e) {
+          // If response body is not JSON, use status text
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to create purchase order: Unknown error");
     }
-
-    return response.json();
   }
 
   /**

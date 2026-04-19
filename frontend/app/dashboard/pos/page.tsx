@@ -44,6 +44,13 @@ export interface SaleData {
   payment_method: PaymentMethod;
   items: CartItem[];
   created_at: string;
+  branch?: {
+    id: string;
+    name: string;
+    address: string | null;
+    phone: string | null;
+    city: string;
+  } | null;
   customer?: {
     name: string;
     email?: string;
