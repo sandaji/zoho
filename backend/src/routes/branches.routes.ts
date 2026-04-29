@@ -11,6 +11,11 @@ import { requirePermission } from "../middleware/rbac.middleware";
 const router = Router();
 const branchController = new BranchController();
 
+// Admin-only: switch branch context and receive a new scoped JWT
+router.post("/branches/:id/switch", authMiddleware, requirePermission('admin.branch.manage'), (req, res, next) =>
+  branchController.switchBranch(req, res, next)
+);
+
 // Get all branches
 router.get("/branches", authMiddleware, requirePermission('admin.branch.manage'), (req, res, next) =>
   branchController.getAllBranches(req, res, next)

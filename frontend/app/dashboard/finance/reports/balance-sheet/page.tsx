@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { API_ENDPOINTS, getAuthHeaders, getApiUrl } from "@/lib/api-config";
+import { hasAuthToken } from "@/lib/api-utils";
 import { Loader2, CalendarIcon, Download, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -43,6 +44,12 @@ export default function BalanceSheetPage() {
 
   const fetchReport = async () => {
     try {
+      // Skip fetching during SSR or when no token is available
+      if (!hasAuthToken()) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       const res = await fetch(
         `${getApiUrl(API_ENDPOINTS.FINANCE_BALANCE_SHEET)}?date=${date.toISOString()}`,
@@ -50,9 +57,9 @@ export default function BalanceSheetPage() {
           headers: getAuthHeaders(),
         }
       );
-      
+
       if (!res.ok) throw new Error("Failed to fetch report");
-      
+
       const json = await res.json();
       setData(json.data);
     } catch (error) {
@@ -74,7 +81,15 @@ export default function BalanceSheetPage() {
     }).format(amount);
   };
 
-  const AccountSection = ({ title, accounts, total }: { title: string, accounts: AccountBalance[], total: number }) => (
+  const AccountSection = ({
+    title,
+    accounts,
+    total,
+  }: {
+    title: string;
+    accounts: AccountBalance[];
+    total: number;
+  }) => (
     <div className="mb-8">
       <h3 className="text-lg font-semibold mb-4 bg-muted p-2 rounded">{title}</h3>
       <Table>
@@ -87,11 +102,11 @@ export default function BalanceSheetPage() {
         </TableHeader>
         <TableBody>
           {accounts.length === 0 ? (
-             <TableRow>
-               <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
-                 No active accounts
-               </TableCell>
-             </TableRow>
+            <TableRow>
+              <TableCell colSpan={3} className="text-center py-4 text-muted-foreground">
+                No active accounts
+              </TableCell>
+            </TableRow>
           ) : (
             accounts.map((acc) => (
               <TableRow key={acc.id}>
@@ -119,9 +134,9 @@ export default function BalanceSheetPage() {
             Financial position as of {format(date, "MMMM dd, yyyy")}
           </p>
         </div>
-        
+
         <div className="flex gap-2">
-           <Popover>
+          <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant={"outline"}
@@ -143,12 +158,12 @@ export default function BalanceSheetPage() {
               />
             </PopoverContent>
           </Popover>
-          
+
           <Button variant="outline" onClick={fetchReport} disabled={loading}>
             <RefreshCw className={cn("h-4 w-4 mr-2", loading && "animate-spin")} />
             Refresh
           </Button>
-           <Button variant="outline">
+          <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -161,44 +176,52 @@ export default function BalanceSheetPage() {
         </div>
       ) : data ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-           <Card className="lg:col-span-2">
-             <CardHeader>
-               <CardTitle>Total Assets = Liabilities + Equity</CardTitle>
-               <CardDescription>
-                  Assets: <span className="font-bold text-foreground">{formatCurrency(data.totalAssets)}</span> | 
-                  Liabilities & Equity: <span className="font-bold text-foreground">{formatCurrency(data.totalLiabilities + data.totalEquity)}</span>
-               </CardDescription>
-             </CardHeader>
-           </Card>
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Total Assets = Liabilities + Equity</CardTitle>
+              <CardDescription>
+                Assets:{" "}
+                <span className="font-bold text-foreground">
+                  {formatCurrency(data.totalAssets)}
+                </span>{" "}
+                | Liabilities & Equity:{" "}
+                <span className="font-bold text-foreground">
+                  {formatCurrency(data.totalLiabilities + data.totalEquity)}
+                </span>
+              </CardDescription>
+            </CardHeader>
+          </Card>
 
-           <Card className="h-fit">
-             <CardHeader>
-               <CardTitle>Assets</CardTitle>
-             </CardHeader>
-             <CardContent>
-                <AccountSection title="Assets" accounts={data.assets} total={data.totalAssets} />
-             </CardContent>
-           </Card>
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle>Assets</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AccountSection title="Assets" accounts={data.assets} total={data.totalAssets} />
+            </CardContent>
+          </Card>
 
-           <Card className="h-fit">
-             <CardHeader>
-               <CardTitle>Liabilities & Equity</CardTitle>
-             </CardHeader>
-             <CardContent>
-                <AccountSection title="Liabilities" accounts={data.liabilities} total={data.totalLiabilities} />
-                <AccountSection title="Equity" accounts={data.equity} total={data.totalEquity} />
-                
-                <div className="mt-8 pt-4 border-t flex justify-between items-center font-bold text-lg">
-                   <span>Total Liabilities + Equity</span>
-                   <span>{formatCurrency(data.totalLiabilities + data.totalEquity)}</span>
-                </div>
-             </CardContent>
-           </Card>
+          <Card className="h-fit">
+            <CardHeader>
+              <CardTitle>Liabilities & Equity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AccountSection
+                title="Liabilities"
+                accounts={data.liabilities}
+                total={data.totalLiabilities}
+              />
+              <AccountSection title="Equity" accounts={data.equity} total={data.totalEquity} />
+
+              <div className="mt-8 pt-4 border-t flex justify-between items-center font-bold text-lg">
+                <span>Total Liabilities + Equity</span>
+                <span>{formatCurrency(data.totalLiabilities + data.totalEquity)}</span>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       ) : (
-        <div className="text-center py-10 text-muted-foreground">
-          No data available.
-        </div>
+        <div className="text-center py-10 text-muted-foreground">No data available.</div>
       )}
     </div>
   );

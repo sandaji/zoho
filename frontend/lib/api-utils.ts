@@ -24,6 +24,31 @@ export function buildQueryString(filters?: Record<string, any>): string {
 }
 
 /**
+ * Check if we have a valid auth token
+ * Returns true only if token exists in localStorage (client-side)
+ * Returns false during SSR or when no token is available
+ */
+export function hasAuthToken(): boolean {
+  try {
+    return typeof window !== "undefined" && !!localStorage.getItem("auth_token");
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Get auth token safely
+ * Returns token only if available, null otherwise
+ */
+export function getAuthToken(): string | null {
+  try {
+    return typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Get auth headers from localStorage
  * Includes Content-Type header and Authorization if token exists
  */

@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
+import { hasAuthToken } from "@/lib/api-utils";
 import { useToast } from "@/lib/toast-context";
 import { formatCurrency, safeFormatDate } from "@/lib/utils";
 
@@ -62,6 +63,12 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
   const [paymentFilter, setPaymentFilter] = useState("all");
 
   const fetchSales = useCallback(async () => {
+    // Skip fetching during SSR or when no token is available
+    if (!hasAuthToken()) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const params = new URLSearchParams({ branchId });
@@ -187,10 +194,8 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
       </CardHeader>
 
       <CardContent className="pt-6 space-y-4">
-
         {/* ── Filters Row ── */}
         <div className="rounded-lg border bg-slate-50 p-4 space-y-4">
-
           {/* Quick presets */}
           <div className="flex flex-wrap gap-2 items-center">
             <span className="text-xs font-medium text-slate-500 mr-1">Quick:</span>
@@ -202,10 +207,14 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
                 className="h-7 text-xs px-3"
                 onClick={() => applyPreset(p)}
               >
-                {p === "today" ? "Today"
-                  : p === "yesterday" ? "Yesterday"
-                    : p === "week" ? "This Week"
-                      : p === "month" ? "This Month"
+                {p === "today"
+                  ? "Today"
+                  : p === "yesterday"
+                    ? "Yesterday"
+                    : p === "week"
+                      ? "This Week"
+                      : p === "month"
+                        ? "This Month"
                         : "All Time"}
               </Button>
             ))}
@@ -246,7 +255,9 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
                 </SelectTrigger>
                 <SelectContent>
                   {Object.entries(PAYMENT_LABELS).map(([value, label]) => (
-                    <SelectItem key={value} value={value}>{label}</SelectItem>
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -255,7 +266,12 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
             {/* Clear button */}
             <div className="flex gap-2">
               {(startDate || endDate) && (
-                <Button variant="ghost" size="sm" className="h-9 text-slate-500" onClick={clearDates}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 text-slate-500"
+                  onClick={clearDates}
+                >
                   <X className="h-4 w-4 mr-1" />
                   Clear Dates
                 </Button>
@@ -277,17 +293,27 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
           {/* Active filter badges */}
           {(paymentFilter !== "all" || startDate || endDate) && (
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="text-xs text-slate-400 self-center"><Filter className="inline h-3 w-3 mr-1" />Active filters:</span>
+              <span className="text-xs text-slate-400 self-center">
+                <Filter className="inline h-3 w-3 mr-1" />
+                Active filters:
+              </span>
               {(startDate || endDate) && (
                 <Badge variant="secondary" className="text-xs">
                   {startDate || "…"} → {endDate || "…"}
-                  <button className="ml-1 opacity-60 hover:opacity-100" onClick={clearDates}>×</button>
+                  <button className="ml-1 opacity-60 hover:opacity-100" onClick={clearDates}>
+                    ×
+                  </button>
                 </Badge>
               )}
               {paymentFilter !== "all" && (
                 <Badge variant="secondary" className="text-xs capitalize">
                   {PAYMENT_LABELS[paymentFilter] ?? paymentFilter}
-                  <button className="ml-1 opacity-60 hover:opacity-100" onClick={() => setPaymentFilter("all")}>×</button>
+                  <button
+                    className="ml-1 opacity-60 hover:opacity-100"
+                    onClick={() => setPaymentFilter("all")}
+                  >
+                    ×
+                  </button>
                 </Badge>
               )}
             </div>

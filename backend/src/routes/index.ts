@@ -68,11 +68,11 @@ const branchController = new BranchController();
 // ============================================================================
 router.use("/audit-logs", authMiddleware, auditRoutes);
 
-// Stats - Allow branch managers to view stats
+// Stats — visible to any authenticated user with branch or admin access
 router.get(
   "/admin/stats",
   authMiddleware,
-  requirePermission("hr.employee.view"),
+  requirePermission("admin.branch.manage"),
   (req: Request, res: Response, next: NextFunction) =>
     adminController.getStats(req, res, next),
 );
@@ -139,6 +139,13 @@ router.get(
   requirePermission("admin.finance.view"),
   adminController.listFinanceTransactions.bind(adminController),
 );
+// Payroll — alias /admin/payroll to the actual /admin/payroll/records handler
+router.get(
+  "/admin/payroll",
+  authMiddleware,
+  requirePermission("admin.payroll.view"),
+  adminController.listPayroll.bind(adminController),
+);
 router.get(
   "/admin/payroll/records",
   authMiddleware,
@@ -172,11 +179,11 @@ router.post(
     posController.createSales(req, res, next),
 );
 
-// Daily summary - All authenticated users (RBAC middleware handles admin bypass automatically)
+// Daily summary — cashiers and managers can view their branch summary
 router.get(
   "/pos/daily-summary",
   authMiddleware,
-  requirePermission("sales.order.view_all"),
+  requirePermission("pos.session.view"),
   (req: Request, res: Response, next: NextFunction) =>
     posController.getDailySummary(req, res, next),
 );

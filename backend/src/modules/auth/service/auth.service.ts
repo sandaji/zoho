@@ -296,6 +296,64 @@ export class AuthService {
   }
 
   /**
+   * Switch branch context for an admin user
+   * Issues a new scoped JWT with the target branchId
+   */
+  async switchBranch(adminUserId: string, targetBranchId: string) {
+    const user = await prisma.user.findUnique({ where: { id: adminUserId }, include: { branch: true } });
+    
+    if (!user) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, 'User not found');
+    }
+
+    if (user.role !== 'admin' && user.role !== 'super_admin') {
+      throw new AppError(ErrorCode.FORBIDDEN, 403, 'Only admin users can switch branch context');
+    }
+
+    let branch = null;
+    let actualTargetBranchId = null;
+
+    if (targetBranchId !== 'all') {
+      branch = await prisma.branch.findUnique({ where: { id: targetBranchId } });
+      if (!branch) {
+        throw new AppError(ErrorCode.NOT_FOUND, 404, 'Target branch not found');
+      }
+      if (!branch.isActive) {
+        throw new AppError(ErrorCode.OPERATION_NOT_ALLOWED, 422, 'Cannot switch to an inactive branch');
+      }
+      actualTargetBranchId = targetBranchId;
+    }
+
+    const tokenPayload: TokenPayload = {
+      userId: user.id,
+      email: user.email,
+      role: user.role as any,
+      branchId: actualTargetBranchId,
+    };
+
+    const token = generateToken(tokenPayload);
+    const permissions = await PermissionService.getUserPermissions(user.id);
+    const roles = await PermissionService.getUserRoles(user.id);
+    if (user.role && !roles.includes(user.role)) roles.push(user.role);
+
+    logger.info({ adminUserId, targetBranchId }, 'Admin switched branch context');
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role as any,
+        roles,
+        branchId: actualTargetBranchId,
+        branch: branch ? { id: branch.id, name: branch.name } : null,
+        permissions,
+      },
+    };
+  }
+
+  /**
    * Refresh user token
    * Generates a new JWT token for an authenticated user
    */

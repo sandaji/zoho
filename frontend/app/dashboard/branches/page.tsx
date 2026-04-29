@@ -1,286 +1,702 @@
-//frontend\app\dashboard\branches\page.tsx
-
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
-  MdAttachMoney,
-  MdPeople,
-  MdTrendingUp,
-  MdLocationOn,
-  MdArrowForward,
-} from "react-icons/md";
-import { StatCard } from "@/components/ui/stats";
-import { API_ENDPOINTS, getApiUrl, getAuthHeaders } from "@/lib/api-config";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Building2,
+  Plus,
+  Search,
+  RefreshCw,
+  Users,
+  Warehouse,
+  MapPin,
+  Pencil,
+  Trash2,
+  Phone,
+  AlertCircle,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { toast } from "sonner";
+import { useAuth } from "@/lib/auth-context";
+import {
+  listBranches,
+  createBranch,
+  updateBranch,
+  deleteBranch,
+  type BranchSummary,
+} from "@/lib/api/branch-api";
 
-interface BranchSummary {
-  id: string;
-  name: string;
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+// Re-use the canonical type from branch-api — no local duplication
+type Branch = BranchSummary;
+
+interface BranchFormData {
   code: string;
-  location: string;
-  manager_name?: string;
-  total_revenue: number;
-  total_employees: number;
-  inventory_value: number;
-  sales_growth: number;
-  profit_margin: number;
+  name: string;
+  city: string;
+  address: string;
+  phone: string;
 }
 
-/**
- * Branches List Page
- * Shows all branches with quick stats and navigation to individual dashboards
- */
+const EMPTY_FORM: BranchFormData = {
+  code: "",
+  name: "",
+  city: "",
+  address: "",
+  phone: "",
+};
+
+// ─── Page ────────────────────────────────────────────────────────────────────
+
 export default function BranchesPage() {
-  const router = useRouter();
+  const { token } = useAuth();
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [branches, setBranches] = useState<BranchSummary[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterBy, setFilterBy] = useState<"all" | "revenue" | "employees">("all");
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<"create" | "edit">("create");
+  const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
+  const [form, setForm] = useState<BranchFormData>(EMPTY_FORM);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Delete dialog
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deletingBranch, setDeletingBranch] = useState<Branch | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // ─── Fetch ───────────────────────────────────────────────────────────────
+
+  const fetchBranches = useCallback(async () => {
+    if (!token) return;
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await listBranches(token);
+      setBranches(data);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to load branches";
+      setError(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [token]);
 
   useEffect(() => {
-    const fetchBranches = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(getApiUrl(API_ENDPOINTS.BRANCHES), {
-          headers: getAuthHeaders(),
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch branches");
-        }
-
-        const data = await response.json();
-        if (data.success) {
-          // Backend returns { data: { branches: [...] } }
-          const list = Array.isArray(data.data)
-            ? data.data
-            : data.data?.branches ?? [];
-          setBranches(list);
-        } else {
-          throw new Error(data.message || "Failed to fetch branches");
-        }
-      } catch (err: any) {
-        console.error("Error fetching branches:", err);
-        setError(err.message || "An error occurred while fetching branches");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchBranches();
-  }, []);
+  }, [fetchBranches]);
 
-  const filteredBranches = branches
-    .filter(
-      (branch) =>
-        branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        branch.code.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (filterBy === "revenue") {
-        return b.total_revenue - a.total_revenue;
-      } else if (filterBy === "employees") {
-        return b.total_employees - a.total_employees;
-      }
-      return 0;
+  // ─── Create / Edit ──────────────────────────────────────────────────────
+
+  const openCreateDialog = () => {
+    setDialogMode("create");
+    setEditingBranch(null);
+    setForm(EMPTY_FORM);
+    setDialogOpen(true);
+  };
+
+  const openEditDialog = (branch: Branch) => {
+    setDialogMode("edit");
+    setEditingBranch(branch);
+    setForm({
+      code: branch.code,
+      name: branch.name,
+      city: branch.city,
+      address: branch.address || "",
+      phone: branch.phone || "",
     });
+    setDialogOpen(true);
+  };
 
-  const totalRevenue = branches.reduce((sum, b) => sum + b.total_revenue, 0);
-  const totalEmployees = branches.reduce((sum, b) => sum + b.total_employees, 0);
-  const avgProfitMargin =
-    branches.length > 0
-      ? branches.reduce((sum, b) => sum + b.profit_margin, 0) / branches.length
-      : 0;
+  const handleSave = async () => {
+    if (!form.code.trim() || !form.name.trim() || !form.city.trim()) {
+      toast.error("Code, Name, and City are required.");
+      return;
+    }
+    if (!token) return;
 
-  if (isLoading) {
+    setIsSaving(true);
+    try {
+      if (dialogMode === "create") {
+        await createBranch(token, {
+          code:    form.code.trim(),
+          name:    form.name.trim(),
+          city:    form.city.trim(),
+          address: form.address.trim() || undefined,
+          phone:   form.phone.trim()   || undefined,
+        });
+        toast.success("Branch created successfully");
+      } else if (editingBranch) {
+        await updateBranch(token, editingBranch.id, {
+          name:    form.name.trim(),
+          city:    form.city.trim(),
+          address: form.address.trim() || undefined,
+          phone:   form.phone.trim()   || undefined,
+        });
+        toast.success("Branch updated successfully");
+      }
+      setDialogOpen(false);
+      fetchBranches();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "An unexpected error occurred");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // ─── Delete ──────────────────────────────────────────────────────────────
+
+  const openDeleteDialog = (branch: Branch) => {
+    setDeletingBranch(branch);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!deletingBranch || !token) return;
+    setIsDeleting(true);
+    try {
+      await deleteBranch(token, deletingBranch.id);
+      toast.success("Branch deleted successfully");
+      setDeleteDialogOpen(false);
+      fetchBranches();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete branch");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // ─── Toggle Active ──────────────────────────────────────────────────────
+
+  const toggleActive = async (branch: Branch) => {
+    if (!token) return;
+    try {
+      await updateBranch(token, branch.id, { isActive: !branch.isActive });
+      toast.success(branch.isActive ? "Branch deactivated" : "Branch activated");
+      fetchBranches();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update branch status");
+    }
+  };
+
+  // ─── Computed ───────────────────────────────────────────────────────────
+
+  const filteredBranches = branches.filter((b) => {
+    if (!search) return true;
+    const q = search.toLowerCase();
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading branches...</p>
-        </div>
-      </div>
+      b.name.toLowerCase().includes(q) ||
+      b.code.toLowerCase().includes(q) ||
+      b.city.toLowerCase().includes(q)
     );
-  }
+  });
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center max-w-md px-6">
-          <div className="bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 mb-6">
-            <h3 className="font-bold text-lg mb-1">Failed to Load Branches</h3>
-            <p className="text-sm opacity-90">{error}</p>
-          </div>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const totalEmployees = branches.reduce((s, b) => s + b.employeeCount, 0);
+  const totalWarehouses = branches.reduce((s, b) => s + b.warehouseCount, 0);
+  const activeBranches = branches.filter((b) => b.isActive).length;
+
+  // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">All Branches</h1>
-          <p className="text-gray-600 mt-1">
-            {branches.length} branches • Total revenue: ${totalRevenue.toLocaleString()}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            Branch Management
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Manage your company locations and branch assignments
           </p>
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <StatCard
-            title="Total Branches"
-            value={branches.length}
-            icon={<MdLocationOn />}
-            variant="info"
-            size="md"
-          />
-          <StatCard
-            title="Total Revenue"
-            value={totalRevenue}
-            icon={<MdAttachMoney />}
-            variant="success"
-            prefix="$"
-            size="md"
-          />
-          <StatCard
-            title="Total Employees"
-            value={totalEmployees}
-            icon={<MdPeople />}
-            variant="info"
-            size="md"
-          />
-          <StatCard
-            title="Avg Profit Margin"
-            value={avgProfitMargin}
-            icon={<MdTrendingUp />}
-            variant="success"
-            suffix="%"
-            size="md"
-          />
-        </div>
-
-        {/* Search and Filters */}
-        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
-            <input
-              type="text"
-              placeholder="Search branches..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+        <div className="flex flex-wrap gap-3">
+          <Button
+            onClick={openCreateDialog}
+            className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Branch
+          </Button>
+          <Button
+            onClick={fetchBranches}
+            disabled={isLoading}
+            variant="outline"
+            className="border-slate-300 dark:border-slate-600"
+          >
+            <RefreshCw
+              className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
             />
-            <select
-              value={filterBy}
-              onChange={(e) => setFilterBy(e.target.value as any)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            >
-              <option value="all">Sort By</option>
-              <option value="revenue">Highest Revenue</option>
-              <option value="employees">Most Employees</option>
-            </select>
+            Refresh
+          </Button>
+        </div>
+      </div>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-500/10">
+                <Building2 className="h-6 w-6 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Total Branches
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {branches.length}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-emerald-500/10">
+                <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Active
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {activeBranches}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-violet-500/10">
+                <Users className="h-6 w-6 text-violet-500" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Total Employees
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {totalEmployees}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-amber-500/10">
+                <Warehouse className="h-6 w-6 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Total Warehouses
+                </p>
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                  {totalWarehouses}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search Bar */}
+      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+        <CardContent className="p-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-500" />
+            <Input
+              id="branch-search"
+              placeholder="Search branches by name, code, or city..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 border-slate-300 dark:border-slate-600"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Loading State */}
+      {isLoading && branches.length === 0 ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-3">
+            <RefreshCw className="h-8 w-8 animate-spin mx-auto text-slate-400" />
+            <p className="text-slate-600 dark:text-slate-400">
+              Loading branches...
+            </p>
           </div>
         </div>
-
-        {/* Branches Grid */}
-        {filteredBranches.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBranches.map((branch) => (
-              <div
-                key={branch.id}
-                className="bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow overflow-hidden cursor-pointer group"
-                onClick={() => router.push(`/dashboard/branch/${branch.id}`)}
-              >
-                {/* Header */}
-                <div className="bg-linear-to-r from-blue-500 to-blue-600 px-6 py-4 text-white">
-                  <h3 className="text-lg font-bold">{branch.name}</h3>
-                  <p className="text-blue-100 text-sm">{branch.code}</p>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 space-y-4">
-                  {/* Location and Manager */}
-                  <div className="flex items-start gap-2">
-                    <MdLocationOn className="text-gray-400 shrink-0 mt-1" />
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600">{branch.location}</p>
-                      {branch.manager_name && (
-                        <p className="text-sm text-gray-500 mt-1">Manager: {branch.manager_name}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase">Revenue</p>
-                      <p className="text-lg font-bold text-gray-900 mt-1">
-                        ${(branch.total_revenue / 1000).toFixed(0)}K
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase">Employees</p>
-                      <p className="text-lg font-bold text-gray-900 mt-1">
-                        {branch.total_employees}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase">Inventory</p>
-                      <p className="text-lg font-bold text-gray-900 mt-1">
-                        ${(branch.inventory_value / 1000).toFixed(0)}K
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 uppercase">Growth</p>
-                      <p className="text-lg font-bold text-green-600 mt-1">
-                        +{branch.sales_growth}%
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Profit Margin */}
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="flex justify-between items-center mb-2">
-                      <p className="text-xs text-gray-500 uppercase">Profit Margin</p>
-                      <p className="font-semibold text-gray-900">{branch.profit_margin}%</p>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="h-2 rounded-full bg-linear-to-r from-green-400 to-green-600"
-                        style={{ width: `${Math.min(branch.profit_margin, 100)}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between group-hover:bg-blue-50 transition-colors">
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
-                    View Dashboard
-                  </span>
-                  <MdArrowForward className="text-gray-400 group-hover:text-blue-600 transition-colors" />
-                </div>
+      ) : (
+        <>
+          {/* Branches Table */}
+          <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
+                Branches ({filteredBranches.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-slate-200 dark:border-slate-700">
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
+                        Code
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
+                        Name
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
+                        City
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
+                        Phone
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-center">
+                        Employees
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-center">
+                        Warehouses
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-center">
+                        Status
+                      </TableHead>
+                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-right">
+                        Actions
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredBranches.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={8}
+                          className="text-center py-12 text-slate-500 dark:text-slate-400"
+                        >
+                          <div className="flex flex-col items-center gap-2">
+                            <Building2 className="h-10 w-10 text-slate-300 dark:text-slate-600" />
+                            <p className="font-medium">No branches found</p>
+                            <p className="text-sm">
+                              {search
+                                ? "Try adjusting your search"
+                                : "Get started by adding your first branch"}
+                            </p>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      filteredBranches.map((branch) => (
+                        <TableRow
+                          key={branch.id}
+                          className="border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                        >
+                          <TableCell className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">
+                            {branch.code}
+                          </TableCell>
+                          <TableCell className="font-medium text-slate-900 dark:text-white">
+                            {branch.name}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
+                              <MapPin className="h-3.5 w-3.5" />
+                              {branch.city}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {branch.phone ? (
+                              <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
+                                <Phone className="h-3.5 w-3.5" />
+                                {branch.phone}
+                              </div>
+                            ) : (
+                              <span className="text-slate-400 dark:text-slate-500 text-sm">
+                                —
+                              </span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge
+                              variant="secondary"
+                              className="bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
+                            >
+                              <Users className="h-3 w-3 mr-1" />
+                              {branch.employeeCount}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge
+                              variant="secondary"
+                              className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+                            >
+                              <Warehouse className="h-3 w-3 mr-1" />
+                              {branch.warehouseCount}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <button
+                              onClick={() => toggleActive(branch)}
+                              title={
+                                branch.isActive
+                                  ? "Click to deactivate"
+                                  : "Click to activate"
+                              }
+                            >
+                              {branch.isActive ? (
+                                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer border-0">
+                                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                                  Active
+                                </Badge>
+                              ) : (
+                                <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer border-0">
+                                  <XCircle className="h-3 w-3 mr-1" />
+                                  Inactive
+                                </Badge>
+                              )}
+                            </button>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
+                                onClick={() => openEditDialog(branch)}
+                                title="Edit branch"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 dark:hover:text-red-400"
+                                onClick={() => openDeleteDialog(branch)}
+                                title="Delete branch"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
               </div>
-            ))}
+            </CardContent>
+          </Card>
+        </>
+      )}
+
+      {/* ── Create / Edit Dialog ────────────────────────────────────────────── */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-[480px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <DialogHeader>
+            <DialogTitle className="text-slate-900 dark:text-white">
+              {dialogMode === "create" ? "Add New Branch" : "Edit Branch"}
+            </DialogTitle>
+            <DialogDescription className="text-slate-500 dark:text-slate-400">
+              {dialogMode === "create"
+                ? "Create a new branch location for your organization."
+                : `Editing branch "${editingBranch?.name}".`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label
+                htmlFor="branch-code"
+                className="text-slate-700 dark:text-slate-300"
+              >
+                Branch Code *
+              </Label>
+              <Input
+                id="branch-code"
+                placeholder="e.g. NRB-001"
+                value={form.code}
+                onChange={(e) => setForm({ ...form, code: e.target.value })}
+                disabled={dialogMode === "edit"}
+                className="border-slate-300 dark:border-slate-600"
+              />
+              {dialogMode === "edit" && (
+                <p className="text-xs text-slate-400">
+                  Branch code cannot be changed after creation.
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="branch-name"
+                className="text-slate-700 dark:text-slate-300"
+              >
+                Branch Name *
+              </Label>
+              <Input
+                id="branch-name"
+                placeholder="e.g. Nairobi Main"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                className="border-slate-300 dark:border-slate-600"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="branch-city"
+                className="text-slate-700 dark:text-slate-300"
+              >
+                City *
+              </Label>
+              <Input
+                id="branch-city"
+                placeholder="e.g. Nairobi"
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                className="border-slate-300 dark:border-slate-600"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="branch-address"
+                className="text-slate-700 dark:text-slate-300"
+              >
+                Address
+              </Label>
+              <Input
+                id="branch-address"
+                placeholder="e.g. 123 Moi Avenue"
+                value={form.address}
+                onChange={(e) => setForm({ ...form, address: e.target.value })}
+                className="border-slate-300 dark:border-slate-600"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="branch-phone"
+                className="text-slate-700 dark:text-slate-300"
+              >
+                Phone
+              </Label>
+              <Input
+                id="branch-phone"
+                placeholder="e.g. +254 700 000 000"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="border-slate-300 dark:border-slate-600"
+              />
+            </div>
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">No branches found matching your search</p>
-          </div>
-        )}
-      </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setDialogOpen(false)}
+              className="border-slate-300 dark:border-slate-600"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white"
+            >
+              {isSaving ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Saving…
+                </>
+              ) : dialogMode === "create" ? (
+                "Create Branch"
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Delete Confirmation ─────────────────────────────────────────────── */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-slate-900 dark:text-white">
+              Delete Branch
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-slate-500 dark:text-slate-400">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-slate-700 dark:text-slate-200">
+                {deletingBranch?.name}
+              </span>
+              ? This action cannot be undone. The branch must have no employees,
+              warehouses, or sales records.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-slate-300 dark:border-slate-600">
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {isDeleting ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Deleting…
+                </>
+              ) : (
+                "Delete"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

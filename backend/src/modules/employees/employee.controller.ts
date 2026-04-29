@@ -185,9 +185,13 @@ export class EmployeeController {
         );
       }
 
+      let targetBranchId = branchId;
       // Record-level isolation: Ensure manager can't create user for another branch
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {
-        if (!branchId || !req.authorizedBranchIds.includes(branchId)) {
+        if (!targetBranchId) {
+          // Auto-assign to the manager's branch if none specified
+          targetBranchId = req.authorizedBranchIds[0];
+        } else if (!req.authorizedBranchIds.includes(targetBranchId)) {
           throw new AppError(
             ErrorCode.FORBIDDEN,
             403,
@@ -197,9 +201,9 @@ export class EmployeeController {
       }
 
       // Validate branch exists if provided
-      if (branchId) {
+      if (targetBranchId) {
         const branch = await prisma.branch.findUnique({
-          where: { id: branchId },
+          where: { id: targetBranchId },
         });
 
         if (!branch) {
@@ -220,7 +224,7 @@ export class EmployeeController {
           phone,
           passwordHash,
           role: role || "cashier",
-          branchId,
+          branchId: targetBranchId,
           hasSystemAccess: false,
         },
         select: {

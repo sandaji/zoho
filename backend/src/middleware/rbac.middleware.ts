@@ -20,7 +20,10 @@ export const requirePermission = (permissionCode: string) => {
 
       // Admin users have full access to all endpoints
       if (req.user.role === 'admin' || req.user.role === 'super_admin') {
-        // Grant GLOBAL scope to admin users
+        // Grant GLOBAL scope to admin users, unless they explicitly switched branch
+        if (req.user.branchId) {
+          req.authorizedBranchIds = [req.user.branchId];
+        }
         next();
         return;
       }

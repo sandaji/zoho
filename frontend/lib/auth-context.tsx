@@ -1,11 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 export interface Branch {
-  id: string;
-  name: string;
-  location: string;
+  id:       string;
+  name:     string;
+  city:     string;
+  address:  string | null;
 }
 
 export type UserRole = "admin" | "super_admin" | "branch_manager" | "manager" | "accountant" | "hr" | "cashier" | "warehouse_staff" | "driver" | "procurement" | "user";
@@ -32,6 +33,7 @@ interface AuthContextType {
   login: (token: string, user: User) => void;
   logout: () => void;
   setUser: (user: User | null) => void;
+  switchBranch: (branchId: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -99,6 +101,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser);
     localStorage.setItem("auth_token", newToken);
     localStorage.setItem("auth_user", JSON.stringify(newUser));
+    // Write cookies so Next.js edge middleware can read them for route protection
+    const maxAge = 60 * 60 * 24 * 7; // 7 days — matches typical JWT expiry
+    document.cookie = `auth_token=${newToken}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(newUser))}; path=/; max-age=${maxAge}; SameSite=Lax`;
   };
 
   const logout = () => {
@@ -106,7 +112,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_user");
+    // Clear the auth cookies
+    document.cookie = "auth_token=; path=/; max-age=0; SameSite=Lax";
+    document.cookie = "auth_user=; path=/; max-age=0; SameSite=Lax";
   };
+
+  /**
+   * Switch branch context (admin only).
+   * Calls the backend to re-issue a JWT scoped to the target branch,
+   * then updates all local state.
+   */
+  const switchBranch = useCallback(async (branchId: string) => {
+    const currentToken = token || localStorage.getItem("auth_token");
+    if (!currentToken) throw new Error("Not authenticated");
+
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const res = await fetch(`${apiBase}/v1/branches/${branchId}/switch`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${currentToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData?.error?.message || "Failed to switch branch");
+    }
+
+    const { data } = await res.json();
+    if (data?.token && data?.user) {
+      login(data.token, data.user);
+    }
+  }, [token, login]);
 
   const value: AuthContextType = {
     user,
@@ -116,6 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     login,
     logout,
     setUser,
+    switchBranch,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

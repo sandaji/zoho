@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { API_ENDPOINTS, getAuthHeaders, getApiUrl } from "@/lib/api-config";
+import { hasAuthToken } from "@/lib/api-utils";
 import { Loader2, CalendarIcon, Download, RefreshCw, ArrowUp, ArrowDown } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
@@ -45,6 +46,12 @@ export default function CashFlowPage() {
 
   const fetchReport = async () => {
     try {
+      // Skip fetching during SSR or when no token is available
+      if (!hasAuthToken()) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       const url = `${getApiUrl(API_ENDPOINTS.FINANCE_CASH_FLOW)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
 
@@ -68,7 +75,15 @@ export default function CashFlowPage() {
     fetchReport();
   }, [startDate, endDate]);
 
-  const DatePicker = ({ date, setDate, label }: { date: Date, setDate: (d: Date) => void, label: string }) => (
+  const DatePicker = ({
+    date,
+    setDate,
+    label,
+  }: {
+    date: Date;
+    setDate: (d: Date) => void;
+    label: string;
+  }) => (
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -83,12 +98,7 @@ export default function CashFlowPage() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="end">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(d) => d && setDate(d)}
-          initialFocus
-        />
+        <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} initialFocus />
       </PopoverContent>
     </Popover>
   );
@@ -99,7 +109,8 @@ export default function CashFlowPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Statement of Cash Flows</h1>
           <p className="text-muted-foreground">
-            Direct Cash Movements for {format(startDate, "MMM d, yyyy")} - {format(endDate, "MMM d, yyyy")}
+            Direct Cash Movements for {format(startDate, "MMM d, yyyy")} -{" "}
+            {format(endDate, "MMM d, yyyy")}
           </p>
         </div>
 
@@ -133,7 +144,9 @@ export default function CashFlowPage() {
                 <ArrowUp className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{formatCurrency(data.summary.cashIn)}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {formatCurrency(data.summary.cashIn)}
+                </div>
               </CardContent>
             </Card>
             <Card>
@@ -142,15 +155,27 @@ export default function CashFlowPage() {
                 <ArrowDown className="h-4 w-4 text-red-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">{formatCurrency(data.summary.cashOut)}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {formatCurrency(data.summary.cashOut)}
+                </div>
               </CardContent>
             </Card>
-            <Card className={cn("border-l-4", data.summary.netChange >= 0 ? "border-l-green-500" : "border-l-red-500")}>
+            <Card
+              className={cn(
+                "border-l-4",
+                data.summary.netChange >= 0 ? "border-l-green-500" : "border-l-red-500"
+              )}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Net Change in Cash</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={cn("text-2xl font-bold", data.summary.netChange >= 0 ? "text-green-600" : "text-red-600")}>
+                <div
+                  className={cn(
+                    "text-2xl font-bold",
+                    data.summary.netChange >= 0 ? "text-green-600" : "text-red-600"
+                  )}
+                >
                   {formatCurrency(data.summary.netChange)}
                 </div>
               </CardContent>
@@ -185,7 +210,12 @@ export default function CashFlowPage() {
                         <TableCell>{format(new Date(entry.date), "MMM d, yyyy")}</TableCell>
                         <TableCell>{entry.description}</TableCell>
                         <TableCell>{entry.account}</TableCell>
-                        <TableCell className={cn("text-right font-medium", entry.amount >= 0 ? "text-green-600" : "text-red-600")}>
+                        <TableCell
+                          className={cn(
+                            "text-right font-medium",
+                            entry.amount >= 0 ? "text-green-600" : "text-red-600"
+                          )}
+                        >
                           {formatCurrency(entry.amount)}
                         </TableCell>
                       </TableRow>
@@ -197,9 +227,7 @@ export default function CashFlowPage() {
           </Card>
         </div>
       ) : (
-        <div className="text-center py-10 text-muted-foreground">
-          No data available.
-        </div>
+        <div className="text-center py-10 text-muted-foreground">No data available.</div>
       )}
     </div>
   );

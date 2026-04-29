@@ -1,27 +1,39 @@
 /**
  * Branch Controller
- * Handles branch management operations
+ * Thin controller layer — delegates to BranchService and AuthService
  */
 
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { logger } from "../../lib/logger";
-import { BranchService } from "../finance/service/branch.service";
+import { BranchService } from "./branch.service";
+import { BranchService as FinanceBranchService } from "../finance/service/branch.service";
+import { AuthService } from "../auth/service/auth.service";
+import { CreateBranchDTO, UpdateBranchDTO } from "./branch.dto";
 
 export class BranchController {
   private branchService = new BranchService();
+  private financeBranchService = new FinanceBranchService();
+  private authService = new AuthService();
 
   /**
-   * Get all branches with employee count
+   * GET /branches
+   * Get all branches with enriched summary data
    */
-  async getAllBranches(_req: Request, res: Response, next: NextFunction) {
+  async getAllBranches(req: Request, res: Response, next: NextFunction) {
     try {
-      const branches = await this.branchService.getAllBranchSummaries();
+      const { search, isActive, page, limit } = req.query;
+
+      const result = await this.branchService.getAllBranches({
+        search: search as string | undefined,
+        isActive: isActive !== undefined ? isActive === "true" : undefined,
+        page: page ? parseInt(page as string, 10) : undefined,
+        limit: limit ? parseInt(limit as string, 10) : undefined,
+        authorizedBranchIds: req.authorizedBranchIds,
+      });
 
       res.json({
         success: true,
-        data: { branches },
+        data: result,
       });
     } catch (error) {
       next(error);
@@ -29,34 +41,13 @@ export class BranchController {
   }
 
   /**
-   * Get single branch
+   * GET /branches/:id
+   * Get single branch with users + warehouses
    */
   async getBranch(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params as { id: string };
-
-      const branch = await prisma.branch.findUnique({
-        where: { id },
-        include: {
-          users: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              phone: true,
-              role: true,
-              isActive: true,
-            },
-          },
-          warehouses: {
-            select: { id: true, name: true, location: true, capacity: true },
-          },
-        },
-      });
-
-      if (!branch) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch not found");
-      }
+      const branch = await this.branchService.getBranch(id);
 
       res.json({
         success: true,
@@ -68,53 +59,13 @@ export class BranchController {
   }
 
   /**
-   * Create new branch
+   * POST /branches
+   * Create a new branch (Admin only)
    */
   async createBranch(req: Request, res: Response, next: NextFunction) {
     try {
-      const { code, name, city, address, phone } = req.body;
-
-      // Validate required fields
-      if (!code || !name || !city) {
-        throw new AppError(
-          ErrorCode.VALIDATION_ERROR,
-          400,
-          "Missing required fields: code, name, city"
-        );
-      }
-
-      // Check if code already exists
-      const existingBranch = await prisma.branch.findUnique({
-        where: { code },
-      });
-
-      if (existingBranch) {
-        throw new AppError(
-          ErrorCode.VALIDATION_ERROR,
-          400,
-          `Branch code '${code}' already exists`
-        );
-      }
-
-      const branch = await prisma.branch.create({
-        data: {
-          code,
-          name,
-          city,
-          address,
-          phone,
-        },
-      });
-
-      // Optional: Assign manager if managerId provided
-      if (req.body.managerId) {
-        await prisma.user.update({
-          where: { id: req.body.managerId },
-          data: { branchId: branch.id, role: "manager" }
-        });
-      }
-
-      logger.info(`Branch created: ${branch.id}`);
+      const dto: CreateBranchDTO = req.body;
+      const branch = await this.branchService.createBranch(dto);
 
       res.status(201).json({
         success: true,
@@ -126,44 +77,18 @@ export class BranchController {
   }
 
   /**
-   * Update branch
+   * PUT /branches/:id
+   * Update a branch (Admin only)
    */
   async updateBranch(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params as { id: string };
-      const { name, city, address, phone, isActive } = req.body;
-
-      const branch = await prisma.branch.findUnique({ where: { id } });
-
-      if (!branch) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch not found");
-      }
-
-      const updatedBranch = await prisma.branch.update({
-        where: { id },
-        data: {
-          name: name ?? branch.name,
-          city: city ?? branch.city,
-          address: address ?? branch.address,
-          phone: phone ?? branch.phone,
-          isActive: isActive ?? branch.isActive,
-        },
-      });
-
-      // Optional: Update manager
-      if (req.body.managerId) {
-        // Clear previous managers for this branch if needed, or just set the new one
-        await prisma.user.update({
-          where: { id: req.body.managerId },
-          data: { branchId: id, role: "manager" }
-        });
-      }
-
-      logger.info(`Branch updated: ${id}`);
+      const dto: UpdateBranchDTO = req.body;
+      const branch = await this.branchService.updateBranch(id, dto);
 
       res.json({
         success: true,
-        data: updatedBranch,
+        data: branch,
       });
     } catch (error) {
       next(error);
@@ -171,41 +96,13 @@ export class BranchController {
   }
 
   /**
-   * Delete branch
+   * DELETE /branches/:id
+   * Delete a branch (Admin only)
    */
   async deleteBranch(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params as { id: string };
-
-      const branch = await prisma.branch.findUnique({
-        where: { id },
-        include: {
-          users: { select: { id: true } },
-          warehouses: { select: { id: true } },
-          salesDocuments: { select: { id: true } },
-        },
-      });
-
-      if (!branch) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch not found");
-      }
-
-      // Check if branch has dependencies
-      if (
-        branch.users.length > 0 ||
-        branch.warehouses.length > 0 ||
-        branch.salesDocuments.length > 0
-      ) {
-        throw new AppError(
-          ErrorCode.VALIDATION_ERROR,
-          400,
-          "Cannot delete branch with associated employees, warehouses, or sales. Transfer or delete them first."
-        );
-      }
-
-      await prisma.branch.delete({ where: { id } });
-
-      logger.info(`Branch deleted: ${id}`);
+      await this.branchService.deleteBranch(id);
 
       res.json({
         success: true,
@@ -217,19 +114,39 @@ export class BranchController {
   }
 
   /**
+   * POST /branches/:id/switch
+   * Admin-only: re-issue JWT scoped to a different branch
+   */
+  async switchBranch(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "Not authenticated");
+      }
+
+      const { id: targetBranchId } = req.params as { id: string };
+      const result = await this.authService.switchBranch(req.user.userId, targetBranchId);
+
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /branches/stats
    * Get branch statistics/dashboard
    */
   async getBranchStats(req: Request, res: Response, next: NextFunction) {
     try {
       const { branchId } = req.query;
-      if (!branchId || typeof branchId !== 'string') {
+      if (!branchId || typeof branchId !== "string") {
         throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Branch ID is required");
       }
 
-      const stats = await this.branchService.getBranchDashboard(branchId as string);
+      const stats = await this.financeBranchService.getBranchDashboard(branchId);
       res.json({
         success: true,
-        data: stats
+        data: stats,
       });
     } catch (error) {
       next(error);

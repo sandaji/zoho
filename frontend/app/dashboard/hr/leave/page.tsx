@@ -1,9 +1,9 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { API_ENDPOINTS, getApiUrl, getAuthHeaders } from "@/lib/api-config";
+import { hasAuthToken } from "@/lib/api-utils";
 import { LeaveBalanceCards } from "./components/leave-balance-cards";
 import { LeaveRequestsTable } from "./components/leave-requests-table";
 import { PendingApprovals } from "./components/pending-approvals";
@@ -18,11 +18,17 @@ export default function LeaveDashboard() {
   const { showToast } = useToast();
 
   const fetchData = async () => {
+    // Skip fetching during SSR or when no token is available
+    if (!hasAuthToken()) {
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const [balanceRes, requestsRes] = await Promise.all([
         fetch(getApiUrl(API_ENDPOINTS.LEAVE_BALANCE), { headers: getAuthHeaders() }),
-        fetch(getApiUrl(API_ENDPOINTS.LEAVE_MY_REQUESTS), { headers: getAuthHeaders() })
+        fetch(getApiUrl(API_ENDPOINTS.LEAVE_MY_REQUESTS), { headers: getAuthHeaders() }),
       ]);
 
       const balanceData = await balanceRes.json();
@@ -32,7 +38,9 @@ export default function LeaveDashboard() {
       if (requestsData.success) setRequests(requestsData.data);
 
       // Optionally fetch pending if user has manager role
-      const pendingRes = await fetch(getApiUrl(API_ENDPOINTS.LEAVE_PENDING), { headers: getAuthHeaders() });
+      const pendingRes = await fetch(getApiUrl(API_ENDPOINTS.LEAVE_PENDING), {
+        headers: getAuthHeaders(),
+      });
       if (pendingRes.ok) {
         const pendingData = await pendingRes.json();
         if (pendingData.success) setPending(pendingData.data);
@@ -64,7 +72,7 @@ export default function LeaveDashboard() {
           <TabsTrigger value="my-leave">My Leave History</TabsTrigger>
           {pending.length > 0 && (
             <TabsTrigger value="approvals">
-              Pending Approvals 
+              Pending Approvals
               <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
                 {pending.length}
               </span>

@@ -7,7 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { API_ENDPOINTS, getAuthHeaders, getApiUrl } from "@/lib/api-config";
-import { Loader2, CalendarIcon, Download, RefreshCw, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { hasAuthToken } from "@/lib/api-utils";
+import {
+  Loader2,
+  CalendarIcon,
+  Download,
+  RefreshCw,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { toast } from "sonner";
 import {
@@ -44,6 +52,12 @@ export default function ProfitLossPage() {
 
   const fetchReport = async () => {
     try {
+      // Skip fetching during SSR or when no token is available
+      if (!hasAuthToken()) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       const url = `${getApiUrl(API_ENDPOINTS.FINANCE_PROFIT_LOSS)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
 
@@ -67,7 +81,17 @@ export default function ProfitLossPage() {
     fetchReport();
   }, [startDate, endDate]);
 
-  const AccountSection = ({ title, accounts, total, positiveIsGood = true }: { title: string, accounts: AccountItem[], total: number, positiveIsGood?: boolean }) => (
+  const AccountSection = ({
+    title,
+    accounts,
+    total,
+    positiveIsGood = true,
+  }: {
+    title: string;
+    accounts: AccountItem[];
+    total: number;
+    positiveIsGood?: boolean;
+  }) => (
     <div className="mb-8">
       <h3 className="text-lg font-semibold mb-4 bg-muted p-2 rounded">{title}</h3>
       <Table>
@@ -96,7 +120,9 @@ export default function ProfitLossPage() {
           )}
           <TableRow className="bg-muted/50 font-bold">
             <TableCell colSpan={2}>Total {title}</TableCell>
-            <TableCell className={cn("text-right", positiveIsGood ? "text-green-600" : "text-red-600")}>
+            <TableCell
+              className={cn("text-right", positiveIsGood ? "text-green-600" : "text-red-600")}
+            >
               {formatCurrency(total)}
             </TableCell>
           </TableRow>
@@ -105,7 +131,15 @@ export default function ProfitLossPage() {
     </div>
   );
 
-  const DatePicker = ({ date, setDate, label }: { date: Date, setDate: (d: Date) => void, label: string }) => (
+  const DatePicker = ({
+    date,
+    setDate,
+    label,
+  }: {
+    date: Date;
+    setDate: (d: Date) => void;
+    label: string;
+  }) => (
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -120,12 +154,7 @@ export default function ProfitLossPage() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="end">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={(d) => d && setDate(d)}
-          initialFocus
-        />
+        <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} initialFocus />
       </PopoverContent>
     </Popover>
   );
@@ -136,7 +165,8 @@ export default function ProfitLossPage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Profit & Loss</h1>
           <p className="text-muted-foreground">
-            Income Statement for {format(startDate, "MMM d, yyyy")} - {format(endDate, "MMM d, yyyy")}
+            Income Statement for {format(startDate, "MMM d, yyyy")} -{" "}
+            {format(endDate, "MMM d, yyyy")}
           </p>
         </div>
 
@@ -170,7 +200,9 @@ export default function ProfitLossPage() {
                 <ArrowUpRight className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{formatCurrency(data.totalRevenue)}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {formatCurrency(data.totalRevenue)}
+                </div>
               </CardContent>
             </Card>
             <Card>
@@ -179,16 +211,32 @@ export default function ProfitLossPage() {
                 <ArrowDownRight className="h-4 w-4 text-red-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">{formatCurrency(data.totalExpenses)}</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {formatCurrency(data.totalExpenses)}
+                </div>
               </CardContent>
             </Card>
-            <Card className={cn("border-l-4", data.netIncome >= 0 ? "border-l-green-500" : "border-l-red-500")}>
+            <Card
+              className={cn(
+                "border-l-4",
+                data.netIncome >= 0 ? "border-l-green-500" : "border-l-red-500"
+              )}
+            >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Net Income</CardTitle>
-                {data.netIncome >= 0 ? <ArrowUpRight className="h-4 w-4 text-green-500" /> : <ArrowDownRight className="h-4 w-4 text-red-500" />}
+                {data.netIncome >= 0 ? (
+                  <ArrowUpRight className="h-4 w-4 text-green-500" />
+                ) : (
+                  <ArrowDownRight className="h-4 w-4 text-red-500" />
+                )}
               </CardHeader>
               <CardContent>
-                <div className={cn("text-2xl font-bold", data.netIncome >= 0 ? "text-green-600" : "text-red-600")}>
+                <div
+                  className={cn(
+                    "text-2xl font-bold",
+                    data.netIncome >= 0 ? "text-green-600" : "text-red-600"
+                  )}
+                >
                   {formatCurrency(data.netIncome)}
                 </div>
               </CardContent>
@@ -200,20 +248,29 @@ export default function ProfitLossPage() {
               <CardTitle>Detailed Statement</CardTitle>
             </CardHeader>
             <CardContent>
-              <AccountSection title="Revenue (Income)" accounts={data.revenueItems} total={data.totalRevenue} />
-              <AccountSection title="Expenses" accounts={data.expenseItems} total={data.totalExpenses} positiveIsGood={false} />
+              <AccountSection
+                title="Revenue (Income)"
+                accounts={data.revenueItems}
+                total={data.totalRevenue}
+              />
+              <AccountSection
+                title="Expenses"
+                accounts={data.expenseItems}
+                total={data.totalExpenses}
+                positiveIsGood={false}
+              />
 
               <div className="mt-8 pt-4 border-t border-double border-t-4 flex justify-between items-center font-bold text-xl">
                 <span>Net Income (Loss)</span>
-                <span className={data.netIncome >= 0 ? "text-green-600" : "text-red-600"}>{formatCurrency(data.netIncome)}</span>
+                <span className={data.netIncome >= 0 ? "text-green-600" : "text-red-600"}>
+                  {formatCurrency(data.netIncome)}
+                </span>
               </div>
             </CardContent>
           </Card>
         </div>
       ) : (
-        <div className="text-center py-10 text-muted-foreground">
-          No data available.
-        </div>
+        <div className="text-center py-10 text-muted-foreground">No data available.</div>
       )}
     </div>
   );

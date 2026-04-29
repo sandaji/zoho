@@ -8,7 +8,7 @@ import { useHasPermission } from "@/hooks/use-permissions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   LayoutDashboard,
   Building2,
@@ -38,6 +38,8 @@ import {
   Shield,
   ChevronDown,
   ChevronRight,
+  ChevronsUpDown,
+  Check,
 } from "lucide-react";
 
 interface MenuItem {
@@ -72,10 +74,17 @@ const ADMIN_SECTIONS = [
   { id: "roles", label: "Roles & Perms", icon: Shield, description: "Access" },
 ];
 
+interface SwitcherBranch {
+  id: string;
+  name: string;
+  code: string;
+  city: string;
+}
+
 export function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout, switchBranch } = useAuth();
   const { hasPermission, hasAnyPermission } = useHasPermission();
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -83,12 +92,65 @@ export function Sidebar() {
   // Track which admin sub-section is active (for the dropdown items)
   const [adminOpen, setAdminOpen] = useState(false);
 
+  // Branch switcher state (admin only)
+  const [switcherBranches, setSwitcherBranches] = useState<SwitcherBranch[]>([]);
+  const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [isSwitching, setIsSwitching] = useState(false);
+  const switcherRef = useRef<HTMLDivElement>(null);
+
   const isAdminRoute = pathname?.startsWith("/dashboard/admin");
+  const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
 
   // Auto-open admin dropdown if on an admin route
   useEffect(() => {
     if (isAdminRoute) setAdminOpen(true);
   }, [isAdminRoute]);
+
+  // Fetch branches for the admin switcher
+  useEffect(() => {
+    if (!isAdminUser || !user) return;
+    const token = localStorage.getItem("auth_token");
+    if (!token) return;
+
+    fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/branches`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.success) {
+          const list = data.data?.branches ?? data.data ?? [];
+          setSwitcherBranches(
+            list.map((b: Record<string, string>) => ({ id: b.id, name: b.name, code: b.code, city: b.city }))
+          );
+        }
+      })
+      .catch(() => { /* silent */ });
+  }, [isAdminUser, user]);
+
+  // Close switcher on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
+        setSwitcherOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const handleBranchSwitch = async (branchId: string) => {
+    if (isSwitching) return;
+    setIsSwitching(true);
+    try {
+      await switchBranch(branchId);
+      setSwitcherOpen(false);
+      router.refresh();
+    } catch (err) {
+      console.error("Branch switch failed:", err);
+    } finally {
+      setIsSwitching(false);
+    }
+  };
 
   // ── Stats fetch ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -153,8 +215,6 @@ export function Sidebar() {
   }, [user]);
 
   if (!user) return null;
-
-  const isAdminUser = hasAnyPermission(["admin.user.manage", "admin.branch.manage"]);
 
   // ── Menu items (unchanged logic) ──────────────────────────────────────────
   const getMenuItems = (): MenuItem[] => {
@@ -354,6 +414,73 @@ export function Sidebar() {
           <div className="w-9 h-9 bg-emerald-600 rounded-full flex items-center justify-center font-bold text-sm mx-auto text-white">
             {user.name.charAt(0).toUpperCase()}
           </div>
+        </div>
+      )}
+
+      {/* Branch Switcher (Admin only) */}
+      {isAdminUser && switcherBranches.length > 0 && (
+        <div ref={switcherRef} className={cn("relative border-b border-slate-800", isCollapsed ? "px-2 py-2" : "px-4 py-3")}>
+          <button
+            onClick={() => setSwitcherOpen(!switcherOpen)}
+            disabled={isSwitching}
+            className={cn(
+              "w-full flex items-center gap-2 rounded-lg text-xs font-medium transition-all duration-200",
+              isCollapsed ? "justify-center p-2" : "px-3 py-2.5",
+              "bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border border-slate-700/50"
+            )}
+            title={isCollapsed ? (user.branch?.name || "Switch Branch") : undefined}
+          >
+            <Building2 className={cn("shrink-0", isCollapsed ? "h-4 w-4" : "h-4 w-4", isSwitching ? "animate-pulse text-sky-400" : "text-sky-400")} />
+            {!isCollapsed && (
+              <>
+                <span className="flex-1 text-left truncate">
+                  {isSwitching ? "Switching…" : (user.branch?.name || "All Branches")}
+                </span>
+                <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+              </>
+            )}
+          </button>
+
+          {/* Dropdown */}
+          {switcherOpen && !isCollapsed && (
+            <div className="absolute left-3 right-3 top-full mt-1 z-50 bg-slate-800 border border-slate-700 rounded-lg shadow-xl max-h-60 overflow-y-auto py-1">
+              <button
+                onClick={() => handleBranchSwitch("all")}
+                disabled={isSwitching}
+                className={cn(
+                  "w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-all duration-150",
+                  !user.branchId
+                    ? "bg-sky-600/20 text-sky-300"
+                    : "text-slate-400 hover:bg-slate-700 hover:text-white"
+                )}
+              >
+                <Building2 className="h-3.5 w-3.5 shrink-0" />
+                <span className="flex-1 text-left truncate">All Branches</span>
+                {!user.branchId && <Check className="h-3.5 w-3.5 shrink-0 text-sky-400" />}
+              </button>
+              {switcherBranches.map((branch) => {
+                const isCurrentBranch = user.branchId === branch.id;
+                return (
+                  <button
+                    key={branch.id}
+                    onClick={() => handleBranchSwitch(branch.id)}
+                    disabled={isSwitching}
+                    className={cn(
+                      "w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-all duration-150",
+                      isCurrentBranch
+                        ? "bg-sky-600/20 text-sky-300"
+                        : "text-slate-400 hover:bg-slate-700 hover:text-white"
+                    )}
+                  >
+                    <Building2 className="h-3.5 w-3.5 shrink-0" />
+                    <span className="flex-1 text-left truncate">{branch.name}</span>
+                    <span className="text-[10px] text-slate-500 font-mono">{branch.code}</span>
+                    {isCurrentBranch && <Check className="h-3.5 w-3.5 shrink-0 text-sky-400" />}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 

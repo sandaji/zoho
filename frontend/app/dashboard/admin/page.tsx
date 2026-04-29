@@ -1,10 +1,9 @@
 "use client";
 
 import { useAuth } from "@/lib/auth-context";
-import { useHasPermission } from "@/hooks/use-permissions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
-import { Shield, Crown } from "lucide-react";
+import { Crown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import AdminOverview from "@/components/admin/AdminOverview";
@@ -33,51 +32,30 @@ const SECTION_META: Record<string, { title: string; subtitle: string; icon: Reac
 
 export default function AdminDashboardPage() {
   const { user, isLoading, isAuthenticated } = useAuth();
-  const { hasAnyPermission } = useHasPermission();
   const router = useRouter();
   const searchParams = useSearchParams();
   const section = searchParams.get("section") || "overview";
 
+  const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
+
   useEffect(() => {
-    if (
-      !isLoading &&
-      (!isAuthenticated ||
-        (user?.role !== "admin" &&
-          !hasAnyPermission(["admin.user.manage", "admin.branch.manage"])))
-    ) {
-      router.push("/auth/login");
+    if (isLoading) return;
+    if (!isAuthenticated || !isAdminUser) {
+      const roleRoutes: Record<string, string> = {
+        procurement:     "/dashboard/purchasing",
+        cashier:         "/dashboard/pos",
+        warehouse_staff: "/dashboard/inventory",
+        driver:          "/dashboard/fleet",
+        hr:              "/dashboard/employees",
+        accountant:      "/dashboard/finance",
+      };
+      const fallback = roleRoutes[user?.role ?? ""] ?? "/dashboard";
+      router.replace(fallback);
     }
-  }, [isLoading, isAuthenticated, user, router, hasAnyPermission]);
+  }, [isLoading, isAuthenticated, isAdminUser, user, router]);
 
-  // ── Loading ──────────────────────────────────────────────────────────────
-  if (isLoading || !user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-emerald-50/30">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600" />
-          <p className="font-medium text-emerald-700">Loading Super Admin…</p>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Unauthorized ─────────────────────────────────────────────────────────
-  if (
-    user.role !== "admin" &&
-    !hasAnyPermission(["admin.user.manage", "admin.branch.manage"])
-  ) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-emerald-50/30">
-        <div className="rounded-xl border border-red-100 bg-white p-10 text-center shadow-sm">
-          <Shield className="mx-auto mb-3 h-12 w-12 text-red-400" />
-          <h1 className="text-xl font-bold text-red-600">Access Denied</h1>
-          <p className="mt-1 text-sm text-slate-500">
-            You don&apos;t have permission to access this page.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Return nothing while auth is resolving or if user isn't admin — no flash of forbidden UI
+  if (isLoading || !user || !isAdminUser) return null;
 
   const renderSection = () => {
     switch (section) {

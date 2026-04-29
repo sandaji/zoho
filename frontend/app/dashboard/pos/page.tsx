@@ -122,18 +122,18 @@ export default function POSPage() {
     [cart]
   );
 
-  const totalDiscount = useMemo(
-    () => cart.reduce((s, i) => s + i.discount, 0),
-    [cart]
-  );
+  const totalDiscount = useMemo(() => cart.reduce((s, i) => s + i.discount, 0), [cart]);
 
   const tax = useMemo(
-    () => cart.reduce((s, i) => s + ((i.quantity * i.unit_price - i.discount) * i.tax_rate), 0),
+    () => cart.reduce((s, i) => s + (i.quantity * i.unit_price - i.discount) * i.tax_rate, 0),
     [cart]
   );
 
   const grandTotal = useMemo(() => subtotal + tax, [subtotal, tax]);
-  const changeAmount = useMemo(() => Math.max(0, amountTendered - grandTotal), [amountTendered, grandTotal]);
+  const changeAmount = useMemo(
+    () => Math.max(0, amountTendered - grandTotal),
+    [amountTendered, grandTotal]
+  );
 
   // ------------------ Cart Logic ------------------
   const addToCart = (product: any) => {
@@ -179,11 +179,7 @@ export default function POSPage() {
       return;
     }
 
-    setCart((prev) =>
-      prev.map((c) =>
-        c.productId === productId ? { ...c, quantity: qty } : c
-      )
-    );
+    setCart((prev) => prev.map((c) => (c.productId === productId ? { ...c, quantity: qty } : c)));
   };
 
   const updateDiscount = (productId: string, discount: number, isPercent: boolean = false) => {
@@ -279,10 +275,13 @@ export default function POSPage() {
         payment_method: paymentMethod,
         items: cart,
         created_at: new Date().toISOString(),
-        customer: selectedCustomer ? {
-          name: selectedCustomer.name,
-          phone: selectedCustomer.phone || undefined,
-        } : undefined,
+        branch: json.data.branch,
+        customer: selectedCustomer
+          ? {
+              name: selectedCustomer.name,
+              phone: selectedCustomer.phone || undefined,
+            }
+          : undefined,
       });
       setShowSuccessModal(true);
     } catch (error) {
@@ -352,13 +351,10 @@ export default function POSPage() {
   return (
     <div className="min-h-screen bg-slate-100">
       <div className="mx-auto max-w-[1700px] px-6 py-6 space-y-6">
-
         {/* ================= HEADER ================= */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-              Point of Sale
-            </h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Point of Sale</h1>
             <p className="text-sm text-muted-foreground">
               {user.branch?.name || "Main Branch"} • Cashier: {user.name}
             </p>
@@ -391,16 +387,12 @@ export default function POSPage() {
 
         {/* ================= MAIN CONTENT ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
           {/* ================= LEFT SIDE ================= */}
           <div className="lg:col-span-2 space-y-6">
-
             {/* Product Search */}
             <Card className="shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base font-medium">
-                  Add Products
-                </CardTitle>
+                <CardTitle className="text-base font-medium">Add Products</CardTitle>
               </CardHeader>
               <CardContent>
                 <AutocompleteProductSearch
@@ -414,12 +406,8 @@ export default function POSPage() {
             {/* Cart */}
             <Card className="shadow-sm">
               <CardHeader className="pb-3 flex items-center justify-between">
-                <CardTitle className="text-base font-medium">
-                  Cart
-                </CardTitle>
-                <span className="text-sm text-muted-foreground">
-                  {cart.length} item(s)
-                </span>
+                <CardTitle className="text-base font-medium">Cart</CardTitle>
+                <span className="text-sm text-muted-foreground">{cart.length} item(s)</span>
               </CardHeader>
               <CardContent>
                 <POSCart
@@ -431,18 +419,14 @@ export default function POSPage() {
                 />
               </CardContent>
             </Card>
-
           </div>
 
           {/* ================= RIGHT SIDE ================= */}
           <div className="space-y-6">
-
             {/* Customer */}
             <Card className="shadow-sm">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base font-medium">
-                  Customer
-                </CardTitle>
+                <CardTitle className="text-base font-medium">Customer</CardTitle>
               </CardHeader>
               <CardContent>
                 <POSCustomerSelect
@@ -455,12 +439,9 @@ export default function POSPage() {
             {/* Payment */}
             <Card className="shadow-md border-slate-300">
               <CardHeader className="pb-3">
-                <CardTitle className="text-base font-medium">
-                  Payment & Summary
-                </CardTitle>
+                <CardTitle className="text-base font-medium">Payment & Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
@@ -479,9 +460,7 @@ export default function POSPage() {
 
                   <div className="border-t pt-3 flex justify-between text-lg font-semibold">
                     <span>Total</span>
-                    <span>
-                      {grandTotal.toLocaleString("en-KE")} KES
-                    </span>
+                    <span>{grandTotal.toLocaleString("en-KE")} KES</span>
                   </div>
                 </div>
 
@@ -501,12 +480,10 @@ export default function POSPage() {
                   notes={notes}
                   setNotes={setNotes}
                 />
-
               </CardContent>
             </Card>
 
             <POSCashier user={user} />
-
           </div>
         </div>
 
@@ -530,10 +507,7 @@ export default function POSPage() {
               toast("Session opened successfully", "success");
               return newSession;
             } catch (err) {
-              toast(
-                err instanceof Error ? err.message : "Failed to open session",
-                "error"
-              );
+              toast(err instanceof Error ? err.message : "Failed to open session", "error");
               throw err;
             }
           }}
@@ -553,28 +527,19 @@ export default function POSPage() {
                 toast("Session closed successfully", "success");
                 setShowCloseDialog(false);
               } catch (err) {
-                toast(
-                  err instanceof Error
-                    ? err.message
-                    : "Failed to close session",
-                  "error"
-                );
+                toast(err instanceof Error ? err.message : "Failed to close session", "error");
               }
             }}
           />
         )}
-
       </div>
 
       <SessionStatusCard
         session={session}
         isLoading={sessionLoading}
         onCloseClick={() => setShowCloseDialog(true)}
-        onReconcileClick={() =>
-          toast("Reconciliation can only be done by managers", "info")
-        }
+        onReconcileClick={() => toast("Reconciliation can only be done by managers", "info")}
       />
     </div>
   );
-
 }
