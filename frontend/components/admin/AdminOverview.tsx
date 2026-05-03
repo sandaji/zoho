@@ -39,6 +39,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { GlobalFinancialsWidget } from "./GlobalFinancialsWidget";
+import { IBTMonitorWidget } from "./IBTMonitorWidget";
+import { GlobalAuditFeed } from "./GlobalAuditFeed";
+import { SystemHealthWidget } from "./SystemHealthWidget";
+import { useAdminBranch } from "@/lib/AdminBranchContext";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const safeNumber = (value: any, defaultValue = 0): number => {

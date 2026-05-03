@@ -66,7 +66,7 @@ export function AdminBranchProvider({ children }: AdminBranchProviderProps) {
     const loadBranches = async () => {
       try {
         const branchData = await fetchBranches(token);
-        const branchOptions: BranchOption[] = branchData.map(b => ({
+        const branchOptions: BranchOption[] = branchData.map((b) => ({
           id: b.id,
           name: b.name,
           code: b.code,
@@ -84,9 +84,8 @@ export function AdminBranchProvider({ children }: AdminBranchProviderProps) {
   }, [token, permissions.canViewGlobalStats]);
 
   // Computed values
-  const selectedBranch = selectedBranchId === "all"
-    ? null
-    : branches.find(b => b.id === selectedBranchId) || null;
+  const selectedBranch =
+    selectedBranchId === "all" ? null : branches.find((b) => b.id === selectedBranchId) || null;
 
   const isAllBranchesSelected = selectedBranchId === "all";
 
@@ -100,11 +99,7 @@ export function AdminBranchProvider({ children }: AdminBranchProviderProps) {
     isAllBranchesSelected,
   };
 
-  return (
-    <AdminBranchContext.Provider value={value}>
-      {children}
-    </AdminBranchContext.Provider>
-  );
+  return <AdminBranchContext.Provider value={value}>{children}</AdminBranchContext.Provider>;
 }
 
 // ============================================================================

@@ -119,20 +119,19 @@ export function GlobalAuditFeed() {
   };
 
   // Filter for high-value actions
-  const highValueActions = ['VOID', 'DELETE', 'APPROVE', 'REJECT'];
-  const filteredLogs = safeData.logs.filter(log =>
-    highValueActions.includes(log.action) ||
-    log.entityType === 'Sale' && log.action === 'CREATE' && log.changes?.total > 1000 ||
-    log.entityType === 'Product' && log.action === 'UPDATE' && log.changes?.unit_price
+  const highValueActions = ["VOID", "DELETE", "APPROVE", "REJECT"];
+  const filteredLogs = safeData.logs.filter(
+    (log) =>
+      highValueActions.includes(log.action) ||
+      (log.entityType === "Sale" && log.action === "CREATE" && log.changes?.total > 1000) ||
+      (log.entityType === "Product" && log.action === "UPDATE" && log.changes?.unit_price)
   );
 
   if (loading && !data) {
     return (
       <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
         <CardHeader>
-          <CardTitle className="text-lg font-bold text-emerald-900">
-            Global Audit Feed
-          </CardTitle>
+          <CardTitle className="text-lg font-bold text-emerald-900">Global Audit Feed</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -152,7 +151,11 @@ export function GlobalAuditFeed() {
           <AlertCircle className="mx-auto mb-3 h-12 w-12 text-red-400" />
           <h3 className="text-base font-semibold text-slate-800">Failed to Load Data</h3>
           <p className="mt-1 text-sm text-slate-500">{error}</p>
-          <Button onClick={loadData} variant="outline" className="mt-4 border-emerald-200 text-emerald-700">
+          <Button
+            onClick={loadData}
+            variant="outline"
+            className="mt-4 border-emerald-200 text-emerald-700"
+          >
             <RefreshCw className="mr-2 h-4 w-4" /> Try Again
           </Button>
         </CardContent>
@@ -164,9 +167,7 @@ export function GlobalAuditFeed() {
     <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-emerald-900">
-            Global Audit Feed
-          </CardTitle>
+          <CardTitle className="text-lg font-bold text-emerald-900">Global Audit Feed</CardTitle>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-xs">
               {filteredLogs.length} high-value actions
@@ -206,10 +207,12 @@ export function GlobalAuditFeed() {
                     className="flex items-start gap-3 rounded-lg border border-emerald-100 bg-emerald-50/30 p-3 hover:bg-emerald-50/50 transition-colors"
                   >
                     {/* Action Badge */}
-                    <div className={cn(
-                      "flex h-8 w-8 items-center justify-center rounded-full",
-                      getActionColor(log.action)
-                    )}>
+                    <div
+                      className={cn(
+                        "flex h-8 w-8 items-center justify-center rounded-full",
+                        getActionColor(log.action)
+                      )}
+                    >
                       <ActionIcon className="h-4 w-4" />
                     </div>
 
@@ -241,13 +244,18 @@ export function GlobalAuditFeed() {
                       {/* Changes summary for high-value updates */}
                       {log.changes && Object.keys(log.changes).length > 0 && (
                         <div className="text-xs text-slate-500 bg-white rounded px-2 py-1 border">
-                          {Object.entries(log.changes).slice(0, 3).map(([key, value]) => (
-                            <span key={key} className="mr-2">
-                              {key}: {typeof value === 'object' ? JSON.stringify(value) : String(value)}
-                            </span>
-                          ))}
+                          {Object.entries(log.changes)
+                            .slice(0, 3)
+                            .map(([key, value]) => (
+                              <span key={key} className="mr-2">
+                                {key}:{" "}
+                                {typeof value === "object" ? JSON.stringify(value) : String(value)}
+                              </span>
+                            ))}
                           {Object.keys(log.changes).length > 3 && (
-                            <span className="text-slate-400">+{Object.keys(log.changes).length - 3} more</span>
+                            <span className="text-slate-400">
+                              +{Object.keys(log.changes).length - 3} more
+                            </span>
                           )}
                         </div>
                       )}

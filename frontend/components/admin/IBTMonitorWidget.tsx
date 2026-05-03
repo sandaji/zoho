@@ -47,9 +47,7 @@ export function IBTMonitorWidget() {
         <CardContent className="py-12 text-center">
           <AlertCircle className="mx-auto mb-3 h-12 w-12 text-red-400" />
           <h3 className="text-base font-semibold text-slate-800">Access Denied</h3>
-          <p className="mt-1 text-sm text-slate-500">
-            You don't have permission to view IBT data.
-          </p>
+          <p className="mt-1 text-sm text-slate-500">You don't have permission to view IBT data.</p>
         </CardContent>
       </Card>
     );
@@ -83,7 +81,7 @@ export function IBTMonitorWidget() {
   };
 
   // Status helpers
-  const getStatusBadge = (status: IBTTransfer['status']) => {
+  const getStatusBadge = (status: IBTTransfer["status"]) => {
     const variants = {
       PENDING: { variant: "secondary" as const, icon: Clock, label: "Pending" },
       IN_TRANSIT: { variant: "default" as const, icon: Truck, label: "In Transit" },
@@ -133,7 +131,11 @@ export function IBTMonitorWidget() {
           <AlertCircle className="mx-auto mb-3 h-12 w-12 text-red-400" />
           <h3 className="text-base font-semibold text-slate-800">Failed to Load Data</h3>
           <p className="mt-1 text-sm text-slate-500">{error}</p>
-          <Button onClick={loadData} variant="outline" className="mt-4 border-emerald-200 text-emerald-700">
+          <Button
+            onClick={loadData}
+            variant="outline"
+            className="mt-4 border-emerald-200 text-emerald-700"
+          >
             <RefreshCw className="mr-2 h-4 w-4" /> Try Again
           </Button>
         </CardContent>
@@ -141,7 +143,8 @@ export function IBTMonitorWidget() {
     );
   }
 
-  const totalActiveTransfers = safeData.summary.pending + safeData.summary.in_transit + safeData.summary.pending_receipt;
+  const totalActiveTransfers =
+    safeData.summary.pending + safeData.summary.in_transit + safeData.summary.pending_receipt;
 
   return (
     <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
@@ -195,7 +198,9 @@ export function IBTMonitorWidget() {
                 <Package className="h-5 w-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-purple-900">{safeData.summary.pending_receipt}</p>
+                <p className="text-2xl font-bold text-purple-900">
+                  {safeData.summary.pending_receipt}
+                </p>
                 <p className="text-xs text-purple-700">Pending Receipt</p>
               </div>
             </div>
@@ -233,18 +238,21 @@ export function IBTMonitorWidget() {
                 </TableHeader>
                 <TableBody>
                   {safeData.transfers
-                    .filter(t => ['PENDING', 'IN_TRANSIT', 'PENDING_RECEIPT', 'DISCREPANCY'].includes(t.status))
+                    .filter((t) =>
+                      ["PENDING", "IN_TRANSIT", "PENDING_RECEIPT", "DISCREPANCY"].includes(t.status)
+                    )
                     .slice(0, 10)
                     .map((transfer) => (
-                      <TableRow key={transfer.id} className="border-emerald-50 hover:bg-emerald-50/50">
+                      <TableRow
+                        key={transfer.id}
+                        className="border-emerald-50 hover:bg-emerald-50/50"
+                      >
                         <TableCell>
                           <div>
                             <p className="text-sm font-semibold text-slate-800">
                               #{transfer.id.slice(-8)}
                             </p>
-                            <p className="text-xs text-slate-500">
-                              by {transfer.createdBy.name}
-                            </p>
+                            <p className="text-xs text-slate-500">by {transfer.createdBy.name}</p>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -266,16 +274,17 @@ export function IBTMonitorWidget() {
                         </TableCell>
                         <TableCell>
                           <div className="text-sm text-slate-800">
-                            {transfer.items.length} item{transfer.items.length !== 1 ? 's' : ''}
+                            {transfer.items.length} item{transfer.items.length !== 1 ? "s" : ""}
                           </div>
                           <div className="text-xs text-slate-500">
-                            {transfer.items.slice(0, 2).map(item => item.product.name).join(', ')}
+                            {transfer.items
+                              .slice(0, 2)
+                              .map((item) => item.product.name)
+                              .join(", ")}
                             {transfer.items.length > 2 && ` +${transfer.items.length - 2} more`}
                           </div>
                         </TableCell>
-                        <TableCell>
-                          {getStatusBadge(transfer.status)}
-                        </TableCell>
+                        <TableCell>{getStatusBadge(transfer.status)}</TableCell>
                         <TableCell>
                           <div className="text-xs text-slate-600">
                             {formatDistanceToNow(new Date(transfer.createdAt), { addSuffix: true })}

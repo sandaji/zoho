@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Crown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AdminBranchProvider } from "@/lib/AdminBranchContext";
 
 import AdminOverview from "@/components/admin/AdminOverview";
 import BranchesSection from "@/components/admin/BranchesSection";
@@ -80,38 +81,40 @@ export default function AdminDashboardPage() {
   const MetaIcon = meta!.icon;
 
   return (
-    <div className="flex flex-col min-h-full bg-emerald-50/20">
-      {/* ── Page heading strip ──────────────────────────────────────────── */}
-      <div className="sticky top-0 z-10 border-b border-emerald-100 bg-white/95 backdrop-blur-sm px-6 py-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg",
-              section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
-            )}>
-              <MetaIcon className={cn(
-                "h-4 w-4",
-                section === "overview" ? "text-emerald-900" : "text-emerald-700"
-              )} />
+    <AdminBranchProvider>
+      <div className="flex flex-col min-h-full bg-emerald-50/20">
+        {/* ── Page heading strip ──────────────────────────────────────────── */}
+        <div className="sticky top-0 z-10 border-b border-emerald-100 bg-white/95 backdrop-blur-sm px-6 py-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-lg",
+                section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
+              )}>
+                <MetaIcon className={cn(
+                  "h-4 w-4",
+                  section === "overview" ? "text-emerald-900" : "text-emerald-700"
+                )} />
+              </div>
+              <div>
+                <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
+                <p className="mt-0.5 text-xs text-emerald-500">{meta!.subtitle}</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
-              <p className="mt-0.5 text-xs text-emerald-500">{meta!.subtitle}</p>
-            </div>
-          </div>
 
-          {/* Super Admin pill */}
-          <div className="flex items-center gap-1.5 rounded-full border border-yellow-200 bg-yellow-50 px-3 py-1">
-            <Crown className="h-3.5 w-3.5 text-yellow-600" />
-            <span className="text-xs font-semibold text-yellow-800">Super Admin</span>
+            {/* Super Admin pill */}
+            <div className="flex items-center gap-1.5 rounded-full border border-yellow-200 bg-yellow-50 px-3 py-1">
+              <Crown className="h-3.5 w-3.5 text-yellow-600" />
+              <span className="text-xs font-semibold text-yellow-800">Super Admin</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* ── Section content ─────────────────────────────────────────────── */}
-      <main className="flex-1 p-5">
-        {renderSection()}
-      </main>
-    </div>
+        {/* ── Section content ─────────────────────────────────────────────── */}
+        <main className="flex-1 p-5">
+          {renderSection()}
+        </main>
+      </div>
+    </AdminBranchProvider>
   );
 }
