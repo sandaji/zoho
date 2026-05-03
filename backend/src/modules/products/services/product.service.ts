@@ -333,6 +333,7 @@ export class ProductService {
       // Check if product exists
       const existing = await prisma.product.findUnique({
         where: { id },
+        include: { branchInventory: true },
       });
 
       if (!existing) {
@@ -414,6 +415,77 @@ export class ProductService {
       });
 
       logger.info(`Product updated: ${product.id} - ${product.name}`);
+
+      // CONSOLIDATION: Update localized inventory if branchId and inventory fields are provided
+      if (data.branchId && (data.quantity !== undefined || data.reorder_level !== undefined || data.reorder_quantity !== undefined)) {
+        const branchInv = existing.branchInventory?.find((bi: any) => bi.branchId === data.branchId);
+        const currentReserved = branchInv?.reserved || 0;
+
+        // Update Branch-level inventory
+        await prisma.branchInventory.upsert({
+          where: {
+            productId_branchId: {
+              productId: id,
+              branchId: data.branchId,
+            }
+          },
+          create: {
+            productId: id,
+            branchId: data.branchId,
+            quantity: data.quantity || 0,
+            available: (data.quantity || 0) - currentReserved,
+            reorder_level: data.reorder_level || 10,
+            reorder_quantity: data.reorder_quantity || 20,
+          },
+          update: {
+            ...(data.quantity !== undefined && { 
+              quantity: data.quantity,
+              available: data.quantity - currentReserved
+            }),
+            ...(data.reorder_level !== undefined && { reorder_level: data.reorder_level }),
+            ...(data.reorder_quantity !== undefined && { reorder_quantity: data.reorder_quantity }),
+          }
+        });
+
+        // Update Warehouse-level inventory (for POS validation)
+        if (data.quantity !== undefined) {
+          const warehouse = await prisma.warehouse.findFirst({
+            where: { branchId: data.branchId, isActive: true }
+          });
+          if (warehouse) {
+            const warehouseInv = await prisma.inventory.findUnique({
+              where: { 
+                productId_warehouseId: { 
+                  productId: id, 
+                  warehouseId: warehouse.id 
+                } 
+              }
+            });
+            const whReserved = warehouseInv?.reserved || 0;
+
+            await prisma.inventory.upsert({
+              where: {
+                productId_warehouseId: {
+                  productId: id,
+                  warehouseId: warehouse.id,
+                }
+              },
+              create: {
+                productId: id,
+                warehouseId: warehouse.id,
+                quantity: data.quantity,
+                available: data.quantity - whReserved,
+              },
+              update: {
+                quantity: data.quantity,
+                available: data.quantity - whReserved,
+              },
+            });
+          }
+        }
+        logger.info(`Inventory synchronized for product ${id} in branch ${data.branchId}`);
+      }
+
       return product;
     } catch (error) {
       if (error instanceof AppError) {

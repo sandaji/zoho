@@ -252,13 +252,25 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
         const imageChanged = imagePreview !== (editProduct.image_url ?? null);
         const isBase64 = imagePreview?.startsWith("data:") ?? false;
 
-        const updatePayload = {
+        const updatePayload: any = {
           ...basePayload,
           // Only include image_url if it changed AND it's a real URL (not base64)
           ...(imageChanged && !isBase64 && { image_url: imagePreview }),
           // Allow clearing the image
           ...(imageChanged && imagePreview === null && { image_url: null }),
         };
+
+        // Remove fields only if they changed (to avoid vendor lock error)
+        if (updatePayload.vendorId === editProduct.vendorId) {
+          // Keep it
+        } else {
+          delete updatePayload.vendorId;
+        }
+
+        // BranchId is not on the Product model but is used for inventory sync
+        // So we should keep it if provided in the form.
+        
+        delete updatePayload.sku; // SKU is always immutable after creation
 
         await updateProduct(token, editProduct.id, updatePayload);
         toast.success("Product updated successfully!");

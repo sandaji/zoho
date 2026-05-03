@@ -199,11 +199,28 @@ export class AdminController {
     try {
       const products = await prisma.product.findMany({
         where: { isActive: true },
+        include: {
+          branchInventory: true,
+        },
         orderBy: { name: 'asc' },
       });
+
+      // Aggregate quantities across branches for global admin view
+      const mappedProducts = products.map((p: any) => {
+        const quantity = p.branchInventory?.reduce((sum: number, inv: any) => sum + (inv.quantity || 0), 0) || 0;
+        // Use the highest reorder level found among branches as the global reference
+        const reorder_level = p.branchInventory?.reduce((max: number, inv: any) => Math.max(max, inv.reorder_level || 10), 0) || 10;
+        
+        return {
+          ...p,
+          quantity,
+          reorder_level,
+        };
+      });
+
       res.json({
         success: true,
-        data: products,
+        data: mappedProducts,
       });
     } catch (error) {
       next(error);
@@ -428,4 +445,5 @@ export class AdminController {
     } catch (error) {
       next(error);
     }
-  } 
+  }
+}
