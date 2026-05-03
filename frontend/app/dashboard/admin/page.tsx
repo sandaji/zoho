@@ -20,16 +20,52 @@ import RolesSection from "@/components/admin/RolesSection";
 import CreditNotesSection from "@/components/admin/CreditNotesSection";
 
 const SECTION_META: Record<string, { title: string; subtitle: string; icon: React.ElementType }> = {
-  overview: { title: "System Overview", subtitle: "Live snapshot across all operations", icon: Crown },
-  branches: { title: "Branch Management", subtitle: "Monitor and manage all branch locations", icon: Shield },
-  warehouses: { title: "Warehouse Management", subtitle: "Storage facilities and inventory allocation", icon: Shield },
-  users: { title: "User Management", subtitle: "Staff accounts, roles, and access levels", icon: Shield },
-  products: { title: "Product Catalog", subtitle: "SKUs, pricing, and stock management", icon: Shield },
+  overview: {
+    title: "System Overview",
+    subtitle: "Live snapshot across all operations",
+    icon: Crown,
+  },
+  branches: {
+    title: "Branch Management",
+    subtitle: "Monitor and manage all branch locations",
+    icon: Shield,
+  },
+  warehouses: {
+    title: "Warehouse Management",
+    subtitle: "Storage facilities and inventory allocation",
+    icon: Shield,
+  },
+  users: {
+    title: "User Management",
+    subtitle: "Staff accounts, roles, and access levels",
+    icon: Shield,
+  },
+  products: {
+    title: "Product Catalog",
+    subtitle: "SKUs, pricing, and stock management",
+    icon: Shield,
+  },
   sales: { title: "Sales Orders", subtitle: "All POS and manual transactions", icon: Shield },
-  deliveries: { title: "Delivery Management", subtitle: "Fleet dispatch and delivery tracking", icon: Shield },
-  finance: { title: "Finance & Transactions", subtitle: "Ledger entries, income and expenses", icon: Shield },
-  payroll: { title: "Payroll Management", subtitle: "Employee salary records and disbursements", icon: Shield },
-  roles: { title: "Roles & Permissions", subtitle: "Define access control for all system roles", icon: Shield },
+  deliveries: {
+    title: "Delivery Management",
+    subtitle: "Fleet dispatch and delivery tracking",
+    icon: Shield,
+  },
+  finance: {
+    title: "Finance & Transactions",
+    subtitle: "Ledger entries, income and expenses",
+    icon: Shield,
+  },
+  payroll: {
+    title: "Payroll Management",
+    subtitle: "Employee salary records and disbursements",
+    icon: Shield,
+  },
+  roles: {
+    title: "Roles & Permissions",
+    subtitle: "Define access control for all system roles",
+    icon: Shield,
+  },
   credit_notes: { title: "Credit Notes", subtitle: "Manage returns and refunds", icon: Shield },
 };
 
@@ -45,12 +81,12 @@ export default function AdminDashboardPage() {
     if (isLoading) return;
     if (!isAuthenticated || !isAdminUser) {
       const roleRoutes: Record<string, string> = {
-        procurement:     "/dashboard/purchasing",
-        cashier:         "/dashboard/pos",
+        procurement: "/dashboard/purchasing",
+        cashier: "/dashboard/pos",
         warehouse_staff: "/dashboard/inventory",
-        driver:          "/dashboard/fleet",
-        hr:              "/dashboard/employees",
-        accountant:      "/dashboard/finance",
+        driver: "/dashboard/fleet",
+        hr: "/dashboard/employees",
+        accountant: "/dashboard/finance",
       };
       const fallback = roleRoutes[user?.role ?? ""] ?? "/dashboard";
       router.replace(fallback);
@@ -62,18 +98,30 @@ export default function AdminDashboardPage() {
 
   const renderSection = () => {
     switch (section) {
-      case "overview": return <AdminOverview />;
-      case "branches": return <BranchesSection />;
-      case "warehouses": return <WarehousesSection />;
-      case "users": return <UsersSection />;
-      case "products": return <ProductsSection />;
-      case "sales": return <SalesSection />;
-      case "deliveries": return <DeliveriesSection />;
-      case "finance": return <FinanceSection />;
-      case "payroll": return <PayrollSection />;
-      case "roles": return <RolesSection />;
-      case "credit_notes": return <CreditNotesSection />;
-      default: return <AdminOverview />;
+      case "overview":
+        return <AdminOverview />;
+      case "branches":
+        return <BranchesSection />;
+      case "warehouses":
+        return <WarehousesSection />;
+      case "users":
+        return <UsersSection />;
+      case "products":
+        return <ProductsSection />;
+      case "sales":
+        return <SalesSection />;
+      case "deliveries":
+        return <DeliveriesSection />;
+      case "finance":
+        return <FinanceSection />;
+      case "payroll":
+        return <PayrollSection />;
+      case "roles":
+        return <RolesSection />;
+      case "credit_notes":
+        return <CreditNotesSection />;
+      default:
+        return <AdminOverview />;
     }
   };
 
@@ -87,14 +135,18 @@ export default function AdminDashboardPage() {
         <div className="sticky top-0 z-10 border-b border-emerald-100 bg-white/95 backdrop-blur-sm px-6 py-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-lg",
-                section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
-              )}>
-                <MetaIcon className={cn(
-                  "h-4 w-4",
-                  section === "overview" ? "text-emerald-900" : "text-emerald-700"
-                )} />
+              <div
+                className={cn(
+                  "flex h-8 w-8 items-center justify-center rounded-lg",
+                  section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
+                )}
+              >
+                <MetaIcon
+                  className={cn(
+                    "h-4 w-4",
+                    section === "overview" ? "text-emerald-900" : "text-emerald-700"
+                  )}
+                />
               </div>
               <div>
                 <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
@@ -111,9 +163,7 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* ── Section content ─────────────────────────────────────────────── */}
-        <main className="flex-1 p-5">
-          {renderSection()}
-        </main>
+        <main className="flex-1 p-5">{renderSection()}</main>
       </div>
     </AdminBranchProvider>
   );
