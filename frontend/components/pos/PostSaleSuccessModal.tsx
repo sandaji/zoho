@@ -1,9 +1,7 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, FileText, Printer, Plus } from "lucide-react";
+// This component is intentionally left empty.
+// PostSaleSuccessModal was a duplicate of POSSaleSuccess.tsx and has been removed.
+// All post-sale success UI is handled by POSSaleSuccess.tsx.
+export {};
 
 interface PostSaleSuccessModalProps {
   isOpen: boolean;

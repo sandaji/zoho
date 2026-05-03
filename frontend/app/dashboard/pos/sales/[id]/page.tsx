@@ -8,7 +8,8 @@ import { useToast } from "@/lib/toast-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Printer, ArrowLeft } from "lucide-react";
-import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
+import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
 
 interface SaleItem {
   id: string;
@@ -54,7 +55,7 @@ export default function InvoicePage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, token } = useAuth();
   const { toast } = useToast();
 
   const [sale, setSale] = useState<Sale | null>(null);
@@ -76,7 +77,7 @@ export default function InvoicePage() {
     try {
       setLoading(true);
       const res = await fetch(getApiUrl(API_ENDPOINTS.POS_SALES_BY_ID(params.id as string)), {
-        headers: getAuthHeaders(),
+        headers: getAuthHeadersWithToken(token || ""),
       });
 
       const json = await res.json();

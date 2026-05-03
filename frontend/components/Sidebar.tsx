@@ -72,6 +72,7 @@ const ADMIN_SECTIONS = [
   { id: "finance", label: "Finance", icon: DollarSign, description: "Ledger" },
   { id: "payroll", label: "Payroll", icon: Wallet, description: "Salaries" },
   { id: "roles", label: "Roles & Perms", icon: Shield, description: "Access" },
+  { id: "credit_notes", label: "Credit Notes", icon: RefreshCw, description: "Returns" },
 ];
 
 interface SwitcherBranch {
@@ -549,7 +550,7 @@ export function Sidebar() {
                       },
                       {
                         groupLabel: "Operations",
-                        sections: ["products", "sales", "deliveries", "finance"],
+                        sections: ["products", "sales", "deliveries", "finance", "credit_notes"],
                       },
                     ].map(({ groupLabel, sections }) => (
                       <div key={groupLabel} className="pt-2">

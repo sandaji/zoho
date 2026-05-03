@@ -1,10 +1,10 @@
 // backend/src/modules/sales/sales.routes.ts
-import { Router } from 'express';
-import { SalesController } from '../modules/pos/controller/sales.controller';
-import { PDFController } from '../modules/pos/controller/pdf.controller';
-import { authMiddleware } from '../lib/auth';
-import { requirePermission } from '../middleware/rbac.middleware';
-import { validateFiscalPeriod } from '../middleware/fiscal-period.middleware';
+import { Router } from "express";
+import { SalesController } from "../modules/pos/controller/sales.controller";
+import { PDFController } from "../modules/pos/controller/pdf.controller";
+import { authMiddleware } from "../lib/auth";
+import { requirePermission } from "../middleware/rbac.middleware";
+import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
 
 const router = Router();
 
@@ -12,95 +12,121 @@ const router = Router();
 const authenticate = authMiddleware;
 
 router.post(
-  '/documents',
+  "/documents",
   authenticate,
-  requirePermission('sales.order.create'),
-  validateFiscalPeriod('issueDate'),
-  SalesController.createDocument
+  requirePermission("sales.order.create"),
+  validateFiscalPeriod("issueDate"),
+  SalesController.createDocument,
 );
 
 router.get(
-  '/documents',
+  "/documents",
   authenticate,
-  requirePermission('sales.order.view_all'),
-  SalesController.listDocuments
+  requirePermission("sales.order.view_all"),
+  SalesController.listDocuments,
 );
 
 router.get(
-  '/documents/:id',
+  "/documents/:id",
   authenticate,
-  requirePermission('sales.order.view_all'),
-  SalesController.getDocumentById
+  requirePermission("sales.order.view_all"),
+  SalesController.getDocumentById,
 );
 
 router.post(
-  '/documents/:id/convert',
+  "/documents/:id/convert",
   authenticate,
-  requirePermission('sales.order.manage'),
+  requirePermission("sales.order.manage"),
   validateFiscalPeriod(),
-  SalesController.convertDocument
+  SalesController.convertDocument,
 );
 
 router.post(
-  '/documents/:id/void',
+  "/documents/:id/void",
   authenticate,
-  requirePermission('sales.order.manage'),
-  SalesController.voidDocument
+  requirePermission("sales.order.manage"),
+  SalesController.voidDocument,
 );
 
 router.post(
-  '/documents/:id/payments',
+  "/documents/:id/payments",
   authenticate,
-  requirePermission('finance.payment.record'),
+  requirePermission("finance.payment.record"),
   validateFiscalPeriod(),
-  SalesController.recordPayment
+  SalesController.recordPayment,
 );
 
 // Credit notes
 router.post(
-  '/invoices/:invoiceId/credit-notes',
+  "/invoices/:invoiceId/credit-notes",
   authenticate,
-  requirePermission('sales.order.manage'),
+  requirePermission("sales.order.manage"),
   validateFiscalPeriod(),
-  SalesController.createCreditNote
+  SalesController.createCreditNote,
+);
+
+router.post(
+  "/documents/:id/approve",
+  authenticate,
+  requirePermission("sales.order.manage"),
+  validateFiscalPeriod(),
+  SalesController.approveCreditNote,
 );
 
 // POS-specific routes
 router.post(
-  '/pos/sales',
+  "/pos/sales",
   authenticate,
-  requirePermission('sales.order.create'),
+  requirePermission("sales.order.create"),
   validateFiscalPeriod(),
-  SalesController.createPOSSale
+  SalesController.createPOSSale,
 );
 
 router.get(
-  '/pos/sales',
+  "/pos/sales",
   authenticate,
-  requirePermission('sales.order.view_all'),
-  SalesController.getPOSSales
+  requirePermission("sales.order.view_all"),
+  SalesController.getPOSSales,
 );
 
 router.get(
-  '/pos/sales/:id',
+  "/pos/sales/:id",
   authenticate,
-  requirePermission('sales.order.view_all'),
-  SalesController.getPOSSaleById
+  requirePermission("sales.order.view_all"),
+  SalesController.getPOSSaleById,
+);
+
+// Park Sale Route
+router.post(
+  "/sales/park",
+  authenticate,
+  requirePermission("sales.order.create"),
+  validateFiscalPeriod(),
+  SalesController.parkSale,
+);
+
+// Hold Sale Route
+router.post(
+  "/sales/hold",
+  authenticate,
+  requirePermission("sales.order.create"),
+  validateFiscalPeriod(),
+  SalesController.holdSale,
 );
 
 // PDF Generation Routes
 router.get(
-  '/documents/:id/pdf',
+  "/documents/:id/pdf",
   authenticate,
-  requirePermission('sales.order.view_all'),
-  PDFController.generatePDF
+  requirePermission("sales.order.view_all"),
+  PDFController.generatePDF,
 );
 
 router.get(
-  '/documents/:id/preview',
+  "/documents/:id/preview",
   authenticate,
-  requirePermission('sales.order.view_all'),
-  PDFController.previewDocument
+  requirePermission("sales.order.view_all"),
+  PDFController.previewDocument,
 );
 
 export default router;

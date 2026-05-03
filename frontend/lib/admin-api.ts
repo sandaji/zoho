@@ -72,6 +72,15 @@ export interface Product {
   updatedAt: string;
 }
 
+export interface SalesItem {
+  id: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  taxRate: number;
+  discount: number;
+}
+
 export interface Sales {
   id: string;
   invoice_no: string;
@@ -85,8 +94,13 @@ export interface Sales {
   user: {
     name: string;
   };
+  subtotal: number;
+  discount: number;
+  tax: number;
   grand_total: number;
+  amount_paid: number;
   createdAt: string;
+  items?: SalesItem[];
 }
 
 export interface Delivery {
@@ -479,6 +493,80 @@ export const updateProduct = async (
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to update product");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+// ============================================================================
+// CREDIT NOTES
+// ============================================================================
+
+export interface CreditNote {
+  id: string;
+  documentId: string;
+  type: string;
+  status: SalesStatus;
+  subtotal: number;
+  tax: number;
+  discount: number;
+  total: number;
+  notes: string | null;
+  createdAt: string;
+  createdBy: {
+    name: string;
+  };
+  approvedBy?: {
+    name: string;
+  } | null;
+}
+
+export const fetchCreditNotes = async (token: string): Promise<CreditNote[]> => {
+  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/documents?type=CREDIT_NOTE`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch credit notes");
+  }
+  const { data } = await response.json();
+  return data || [];
+};
+
+export const approveCreditNote = async (token: string, id: string): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/documents/${id}/approve`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to approve credit note");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const createCreditNote = async (
+  token: string,
+  invoiceId: string,
+  payload: {
+    items: Array<{
+      productId: string;
+      quantity: number;
+      unitPrice: number;
+      taxRate: number;
+      discount: number;
+    }>;
+    reason: string;
+  }
+): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/invoices/${invoiceId}/credit-notes`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to create credit note");
   }
   const { data } = await response.json();
   return data;

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
 import { Sales, fetchSales } from "@/lib/admin-api";
+import CreateCreditNoteDialog from "./CreateCreditNoteDialog";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "../ui/button";
 import { SalesStatus, PaymentMethod } from "@/lib/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const statusVariant = (status: string) => {
   switch (status) {
@@ -34,14 +36,20 @@ export default function SalesSection() {
   const [sales, setSales] = useState<Sales[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSale, setSelectedSale] = useState<Sales | null>(null);
+  const [returnSale, setReturnSale] = useState<Sales | null>(null);
 
-  useEffect(() => {
+  const loadSales = () => {
     if (token) {
+      setLoading(true);
       fetchSales(token)
         .then(setSales)
         .catch(console.error)
         .finally(() => setLoading(false));
     }
+  };
+
+  useEffect(() => {
+    loadSales();
   }, [token]);
 
   const columns: Column<Sales>[] = [
@@ -95,9 +103,21 @@ export default function SalesSection() {
         loading={loading}
         searchKeys={["invoice_no", "branch.name", "user.name", "status"]}
         actions={(sale) => (
-          <Button variant="outline" size="sm" onClick={() => setSelectedSale(sale)}>
-            View Details
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => setSelectedSale(sale)}>
+              View
+            </Button>
+            {sale.status !== "cancelled" && (
+              <Button 
+                variant="destructive" 
+                size="sm" 
+                className="bg-amber-600 hover:bg-amber-700"
+                onClick={() => setReturnSale(sale)}
+              >
+                Return / CN
+              </Button>
+            )}
+          </div>
         )}
       />
 
@@ -141,10 +161,70 @@ export default function SalesSection() {
                   <p className="text-sm">{selectedSale.user?.name || "-"}</p>
                 </div>
               </div>
+
+              {/* Items Table */}
+              <div className="border rounded-md mt-6">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Product ID</TableHead>
+                      <TableHead className="text-right">Qty</TableHead>
+                      <TableHead className="text-right">Price</TableHead>
+                      <TableHead className="text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {selectedSale.items?.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="text-xs font-mono">{item.productId}</TableCell>
+                        <TableCell className="text-right">{item.quantity}</TableCell>
+                        <TableCell className="text-right">KES {item.unitPrice.toLocaleString()}</TableCell>
+                        <TableCell className="text-right">KES {(item.quantity * item.unitPrice).toLocaleString()}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Totals */}
+              <div className="flex flex-col items-end space-y-1 pt-4 border-t">
+                 <div className="flex justify-between w-48 text-sm">
+                   <span className="text-muted-foreground">Subtotal:</span>
+                   <span>KES {selectedSale.subtotal?.toLocaleString()}</span>
+                 </div>
+                 <div className="flex justify-between w-48 text-sm">
+                   <span className="text-muted-foreground">Tax:</span>
+                   <span>KES {selectedSale.tax?.toLocaleString()}</span>
+                 </div>
+                 <div className="flex justify-between w-48 font-bold text-lg pt-2">
+                   <span>Total:</span>
+                   <span>KES {selectedSale.grand_total?.toLocaleString()}</span>
+                 </div>
+              </div>
+
+              <div className="flex justify-end mt-4">
+                <Button 
+                   variant="destructive" 
+                   className="bg-amber-600 hover:bg-amber-700"
+                   onClick={() => {
+                     setSelectedSale(null);
+                     setReturnSale(selectedSale);
+                   }}
+                >
+                  Issue Credit Note
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      <CreateCreditNoteDialog 
+        sale={returnSale}
+        isOpen={!!returnSale}
+        onClose={() => setReturnSale(null)}
+        onSuccess={loadSales}
+      />
     </>
   );
 }

@@ -5,6 +5,8 @@ import {
   listDocumentsQuerySchema,
   convertDocumentSchema,
   createPOSSaleSchema,
+  parkSaleSchema,
+  holdSaleSchema,
 } from "../sales.validation";
 import { SalesDocumentStatus } from "../../../generated/enums";
 import { SalesService } from "../service/sales.service";
@@ -415,10 +417,12 @@ export class SalesController {
       const authReq = req as AuthenticatedRequest;
       const items = req.body.items;
       const reason = req.body.reason;
-      const branchId = authReq.user?.branchId;
+      // branchId may be null for admins viewing "All Branches" — resolved from invoice in service
+      const branchId = authReq.user?.branchId ?? null;
       const userId = authReq.user?.userId;
 
-      if (!branchId || !userId) {
+      // Only userId is strictly required; branchId falls back to the invoice's branch
+      if (!userId) {
         res
           .status(401)
           .json({ success: false, error: "User context required" });
@@ -482,6 +486,178 @@ export class SalesController {
       });
 
       res.status(201).json({ success: true, data: payment });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Approve/Close a credit note
+   */
+  static async approveCreditNote(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const authReq = req as AuthenticatedRequest;
+      const user = authReq.user;
+
+      if (!id) {
+        res
+          .status(400)
+          .json({ success: false, error: "Document ID is required" });
+        return;
+      }
+
+      if (!user) {
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
+        return;
+      }
+
+      // Role check: Only admin, manager, general_manager, branch_manager
+      // Note: mapping general_manager and branch_manager to 'manager' check for simplicity
+      // since they are not in the UserRole enum, or they would be stored as 'manager' in the token.
+      const allowedRoles = ["admin", "super_admin", "manager"];
+      if (!allowedRoles.includes(user.role)) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Only managers and admins can approve credit notes",
+        );
+      }
+
+      const document = await SalesService.approveCreditNote(id, user.userId);
+      res.status(200).json({
+        success: true,
+        data: document,
+        message: "Credit note approved and closed successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Park a sale (temporary hold without payment)
+   */
+  static async parkSale(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const input = parkSaleSchema.parse(req.body);
+      const authReq = req as AuthenticatedRequest;
+      const branchId = authReq.user?.branchId || input.branchId;
+      const userId = authReq.user?.userId || input.userId;
+
+      if (!branchId || !userId) {
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
+        return;
+      }
+
+      // Record-level isolation
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
+        if (!authReq.authorizedBranchIds.includes(branchId)) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot park sale for an unauthorized branch",
+          );
+        }
+      }
+
+      const sale = await SalesService.parkSale({
+        branchId,
+        userId,
+        items: input.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unit_price,
+          taxRate: item.tax_rate,
+          discount: item.discount,
+        })),
+        discount: input.discount,
+        paymentMethod: input.payment_method,
+        customerId: input.customerId,
+        notes: input.notes,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: sale,
+        message: "Sale parked successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Hold a sale (temporary hold without payment)
+   */
+  static async holdSale(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const input = holdSaleSchema.parse(req.body);
+      const authReq = req as AuthenticatedRequest;
+      const branchId = authReq.user?.branchId || input.branchId;
+      const userId = authReq.user?.userId || input.userId;
+
+      if (!branchId || !userId) {
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
+        return;
+      }
+
+      // Record-level isolation
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
+        if (!authReq.authorizedBranchIds.includes(branchId)) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot hold sale for an unauthorized branch",
+          );
+        }
+      }
+
+      const sale = await SalesService.holdSale({
+        branchId,
+        userId,
+        items: input.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unit_price,
+          taxRate: item.tax_rate,
+          discount: item.discount,
+        })),
+        discount: input.discount,
+        paymentMethod: input.payment_method,
+        customerId: input.customerId,
+        notes: input.notes,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: sale,
+        message: "Sale held successfully",
+      });
     } catch (error) {
       next(error);
     }

@@ -66,12 +66,15 @@ enum SalesDocumentType {
 enum SalesDocumentStatus {
   DRAFT
   SENT
+  PARKED
+  HELD
   PARTIALLY_PAID
   PAID
   VOID
   CONVERTED
   CREDITED
   PARTIALLY_CREDITED
+  CLOSED
 
   @@map("sales_document_status")
 }
@@ -255,6 +258,7 @@ model User {
   
   createdSalesOrders      SalesOrder[]
   dispatchNotes           DispatchNote[] @relation(name: "DispatchNoteCreatedBy")
+  approvedSalesDocuments  SalesDocument[] @relation("ApprovedBySD")
 
   isActive        Boolean   @default(true)
   hasSystemAccess Boolean   @default(false)
@@ -654,10 +658,10 @@ model SalesDocument {
   type         SalesDocumentType
   status       SalesDocumentStatus
 
-  // Lifecycle tracking
-  sourceDocumentId String?        @unique @map("source_document_id")
+  // Lifecycle tracking - One-to-many: one invoice can have multiple credit notes
+  sourceDocumentId String?        @map("source_document_id")
   sourceDocument   SalesDocument? @relation("DocumentLifecycle", fields: [sourceDocumentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  childDocument    SalesDocument? @relation("DocumentLifecycle")
+  childDocuments   SalesDocument[] @relation("DocumentLifecycle")
 
   // Foreign keys
   branchId   String
@@ -667,6 +671,9 @@ model SalesDocument {
 
   createdById String
   createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  approvedById String?
+  approvedBy   User?    @relation(name: "ApprovedBySD", fields: [approvedById], references: [id])
 
   // Cashier Session (POS transactions)
   sessionId String?

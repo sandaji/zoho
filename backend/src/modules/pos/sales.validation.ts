@@ -1,5 +1,5 @@
 // backend/src/modules/sales/sales.validation.ts
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Validation schemas for sales endpoints
@@ -17,8 +17,10 @@ const salesDocumentItemSchema = z.object({
 
 // Create sales document schema
 export const createSalesDocumentSchema = z.object({
-  type: z.enum(['DRAFT', 'QUOTE', 'INVOICE', 'CREDIT_NOTE']),
-  status: z.enum(['DRAFT', 'SENT', 'CONVERTED', 'PAID', 'UNPAID', 'VOID']).optional(),
+  type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]),
+  status: z
+    .enum(["DRAFT", "SENT", "CONVERTED", "PAID", "UNPAID", "VOID"])
+    .optional(),
   customerId: z.string().optional(),
   issueDate: z.string().or(z.date()),
   dueDate: z.string().or(z.date()).optional(),
@@ -34,8 +36,10 @@ export const createSalesDocumentSchema = z.object({
 // List documents query schema
 export const listDocumentsQuerySchema = z.object({
   branchId: z.string().optional(),
-  type: z.enum(['DRAFT', 'QUOTE', 'INVOICE', 'CREDIT_NOTE']).optional(),
-  status: z.enum(['DRAFT', 'SENT', 'CONVERTED', 'PAID', 'UNPAID', 'VOID']).optional(),
+  type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]).optional(),
+  status: z
+    .enum(["DRAFT", "SENT", "CONVERTED", "PAID", "UNPAID", "VOID"])
+    .optional(),
   customerId: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
@@ -45,7 +49,7 @@ export const listDocumentsQuerySchema = z.object({
 
 // Convert document schema
 export const convertDocumentSchema = z.object({
-  type: z.enum(['DRAFT', 'QUOTE', 'INVOICE', 'CREDIT_NOTE']),
+  type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]),
 });
 
 // POS sale item schema
@@ -63,7 +67,7 @@ export const createPOSSaleSchema = z.object({
   branchId: z.string(),
   userId: z.string(),
   items: z.array(posSaleItemSchema).min(1),
-  payment_method: z.enum(['cash', 'card', 'mpesa', 'cheque', 'bank_transfer']),
+  payment_method: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer"]),
   amount_paid: z.number().positive(),
   discount: z.number().nonnegative().default(0),
   customer_name: z.string().optional(),
@@ -74,7 +78,7 @@ export const createPOSSaleSchema = z.object({
 // Record payment schema
 export const recordPaymentSchema = z.object({
   amount: z.number().positive(),
-  payment_method: z.enum(['cash', 'card', 'mpesa', 'cheque', 'bank_transfer']),
+  payment_method: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer"]),
   reference: z.string().optional(),
 });
 
@@ -87,4 +91,34 @@ export const createCreditNoteSchema = z.object({
 // Void document schema
 export const voidDocumentSchema = z.object({
   reason: z.string().min(10),
+});
+
+// Park sale schema
+export const parkSaleSchema = z.object({
+  branchId: z.string(),
+  userId: z.string(),
+  items: z.array(posSaleItemSchema).min(1),
+  discount: z.number().nonnegative().default(0),
+  payment_method: z
+    .enum(["cash", "card", "mpesa", "cheque", "bank_transfer"])
+    .optional(),
+  customerId: z.string().optional(),
+  customer_name: z.string().optional(),
+  customer_phone: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+// Hold sale schema
+export const holdSaleSchema = z.object({
+  branchId: z.string(),
+  userId: z.string(),
+  items: z.array(posSaleItemSchema).min(1),
+  discount: z.number().nonnegative().default(0),
+  payment_method: z
+    .enum(["cash", "card", "mpesa", "cheque", "bank_transfer"])
+    .optional(),
+  customerId: z.string().optional(),
+  customer_name: z.string().optional(),
+  customer_phone: z.string().optional(),
+  notes: z.string().optional(),
 });

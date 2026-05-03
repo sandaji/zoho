@@ -310,6 +310,7 @@ exports.Prisma.SalesDocumentScalarFieldEnum = {
   branchId: 'branchId',
   customerId: 'customerId',
   createdById: 'createdById',
+  approvedById: 'approvedById',
   sessionId: 'sessionId',
   subtotal: 'subtotal',
   discount: 'discount',
@@ -1132,12 +1133,15 @@ exports.SalesDocumentType = exports.$Enums.SalesDocumentType = {
 exports.SalesDocumentStatus = exports.$Enums.SalesDocumentStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
+  PARKED: 'PARKED',
+  HELD: 'HELD',
   PARTIALLY_PAID: 'PARTIALLY_PAID',
   PAID: 'PAID',
   VOID: 'VOID',
   CONVERTED: 'CONVERTED',
   CREDITED: 'CREDITED',
-  PARTIALLY_CREDITED: 'PARTIALLY_CREDITED'
+  PARTIALLY_CREDITED: 'PARTIALLY_CREDITED',
+  CLOSED: 'CLOSED'
 };
 
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {

@@ -153,44 +153,24 @@ export function useCashierSession(): CashierSessionHookState {
     [router, token]
   );
 
-  /**
-   * Close current session and calculate variance
-   */
   const closeSession = useCallback(
     async (actualCash: number, notes?: string) => {
+      if (!token) throw new Error("Not authenticated");
+      if (!session) throw new Error("No active session");
       try {
-        if (!session) {
-          throw new Error("No active session");
-        }
-
         setIsLoading(true);
         setError(null);
 
-        const headers: HeadersInit = {
-          "Content-Type": "application/json",
-        };
-
-        if (token) {
-          headers["Authorization"] = `Bearer ${token}`;
-        }
-
         const response = await fetch(`${API_BASE()}/v1/cashier/sessions/${session.id}/close`, {
           method: "POST",
-          headers,
-          body: JSON.stringify({
-            actualCash,
-            notes,
-          }),
+          headers: authHeaders(token),
+          body: JSON.stringify({ actualCash, notes }),
         });
 
-        if (response.status === 401) {
-          router.push("/auth/login");
-          throw new Error("Unauthorized");
-        }
-
+        if (response.status === 401) { router.push("/auth/login"); throw new Error("Unauthorized"); }
         if (!response.ok) {
           const data = await response.json();
-          throw new Error(data.message || "Failed to close session");
+          throw new Error(data.error?.message || data.message || "Failed to close session");
         }
 
         const data = await response.json();
@@ -207,47 +187,25 @@ export function useCashierSession(): CashierSessionHookState {
     [session, router, token]
   );
 
-  /**
-   * Reconcile session (manager only)
-   */
   const reconcileSession = useCallback(
     async (notes?: string) => {
+      if (!token) throw new Error("Not authenticated");
+      if (!session) throw new Error("No active session");
       try {
-        if (!session) {
-          throw new Error("No active session");
-        }
-
         setIsLoading(true);
         setError(null);
 
-        const headers: HeadersInit = {
-          "Content-Type": "application/json",
-        };
-
-        if (token) {
-          headers["Authorization"] = `Bearer ${token}`;
-        }
-
         const response = await fetch(`${API_BASE()}/v1/cashier/sessions/${session.id}/reconcile`, {
           method: "POST",
-          headers,
-          body: JSON.stringify({
-            notes,
-          }),
+          headers: authHeaders(token),
+          body: JSON.stringify({ notes }),
         });
 
-        if (response.status === 401) {
-          router.push("/auth/login");
-          throw new Error("Unauthorized");
-        }
-
-        if (response.status === 403) {
-          throw new Error("Permission denied - manager only");
-        }
-
+        if (response.status === 401) { router.push("/auth/login"); throw new Error("Unauthorized"); }
+        if (response.status === 403) throw new Error("Permission denied - manager only");
         if (!response.ok) {
           const data = await response.json();
-          throw new Error(data.message || "Failed to reconcile session");
+          throw new Error(data.error?.message || data.message || "Failed to reconcile session");
         }
 
         const data = await response.json();

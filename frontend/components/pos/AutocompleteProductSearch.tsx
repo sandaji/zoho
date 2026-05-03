@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
+import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { Package, Loader2, Search, AlertCircle } from "lucide-react";
 
 interface Product {
@@ -18,6 +19,7 @@ interface Product {
 
 interface Props {
   branchId: string;
+  token: string;
   onSelect: (product: Product) => void;
   autoFocus?: boolean;
   searchInputRef?: React.RefObject<HTMLInputElement | null>;
@@ -25,6 +27,7 @@ interface Props {
 
 export function AutocompleteProductSearch({
   branchId,
+  token,
   onSelect,
   autoFocus = true,
   searchInputRef,
@@ -93,11 +96,8 @@ export function AutocompleteProductSearch({
 
         const res = await fetch(getApiUrl(API_ENDPOINTS.POS_PRODUCTS_SEARCH), {
           method: "POST",
-          headers: getAuthHeaders(),
-          body: JSON.stringify({
-            search: trimmedQuery,
-            branchId,
-          }),
+          headers: getAuthHeadersWithToken(token),
+          body: JSON.stringify({ search: trimmedQuery, branchId }),
         });
 
         const json = await res.json();
@@ -120,12 +120,12 @@ export function AutocompleteProductSearch({
       } finally {
         setLoading(false);
       }
-    }, 300); // 300ms debounce
+    }, 300);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [query, branchId]);
+  }, [query, branchId, token]);
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {

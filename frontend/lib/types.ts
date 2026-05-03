@@ -15,6 +15,8 @@ export enum SalesStatus {
   delivered = "delivered",
   cancelled = "cancelled",
   returned = "returned",
+  DRAFT = "DRAFT",
+  CLOSED = "CLOSED",
 }
 
 export enum DeliveryStatus {

@@ -408,12 +408,15 @@ export type SalesDocumentType = (typeof SalesDocumentType)[keyof typeof SalesDoc
 export const SalesDocumentStatus: {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
+  PARKED: 'PARKED',
+  HELD: 'HELD',
   PARTIALLY_PAID: 'PARTIALLY_PAID',
   PAID: 'PAID',
   VOID: 'VOID',
   CONVERTED: 'CONVERTED',
   CREDITED: 'CREDITED',
-  PARTIALLY_CREDITED: 'PARTIALLY_CREDITED'
+  PARTIALLY_CREDITED: 'PARTIALLY_CREDITED',
+  CLOSED: 'CLOSED'
 };
 
 export type SalesDocumentStatus = (typeof SalesDocumentStatus)[keyof typeof SalesDocumentStatus]
@@ -7496,6 +7499,7 @@ export namespace Prisma {
     receivedTransfers: number
     createdSalesOrders: number
     dispatchNotes: number
+    approvedSalesDocuments: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7525,6 +7529,7 @@ export namespace Prisma {
     receivedTransfers?: boolean | UserCountOutputTypeCountReceivedTransfersArgs
     createdSalesOrders?: boolean | UserCountOutputTypeCountCreatedSalesOrdersArgs
     dispatchNotes?: boolean | UserCountOutputTypeCountDispatchNotesArgs
+    approvedSalesDocuments?: boolean | UserCountOutputTypeCountApprovedSalesDocumentsArgs
   }
 
   // Custom InputTypes
@@ -7718,6 +7723,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountDispatchNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DispatchNoteWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovedSalesDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SalesDocumentWhereInput
   }
 
 
@@ -8115,12 +8127,14 @@ export namespace Prisma {
    */
 
   export type SalesDocumentCountOutputType = {
+    childDocuments: number
     items: number
     payments: number
     stockMovements: number
   }
 
   export type SalesDocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    childDocuments?: boolean | SalesDocumentCountOutputTypeCountChildDocumentsArgs
     items?: boolean | SalesDocumentCountOutputTypeCountItemsArgs
     payments?: boolean | SalesDocumentCountOutputTypeCountPaymentsArgs
     stockMovements?: boolean | SalesDocumentCountOutputTypeCountStockMovementsArgs
@@ -8135,6 +8149,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the SalesDocumentCountOutputType
      */
     select?: SalesDocumentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SalesDocumentCountOutputType without action
+   */
+  export type SalesDocumentCountOutputTypeCountChildDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SalesDocumentWhereInput
   }
 
   /**
@@ -9280,6 +9301,7 @@ export namespace Prisma {
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
     createdSalesOrders?: boolean | User$createdSalesOrdersArgs<ExtArgs>
     dispatchNotes?: boolean | User$dispatchNotesArgs<ExtArgs>
+    approvedSalesDocuments?: boolean | User$approvedSalesDocumentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -9356,6 +9378,7 @@ export namespace Prisma {
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
     createdSalesOrders?: boolean | User$createdSalesOrdersArgs<ExtArgs>
     dispatchNotes?: boolean | User$dispatchNotesArgs<ExtArgs>
+    approvedSalesDocuments?: boolean | User$approvedSalesDocumentsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9395,6 +9418,7 @@ export namespace Prisma {
       receivedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       createdSalesOrders: Prisma.$SalesOrderPayload<ExtArgs>[]
       dispatchNotes: Prisma.$DispatchNotePayload<ExtArgs>[]
+      approvedSalesDocuments: Prisma.$SalesDocumentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9829,6 +9853,7 @@ export namespace Prisma {
     receivedTransfers<T extends User$receivedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdSalesOrders<T extends User$createdSalesOrdersArgs<ExtArgs> = {}>(args?: Subset<T, User$createdSalesOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dispatchNotes<T extends User$dispatchNotesArgs<ExtArgs> = {}>(args?: Subset<T, User$dispatchNotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DispatchNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvedSalesDocuments<T extends User$approvedSalesDocumentsArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedSalesDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10910,6 +10935,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DispatchNoteScalarFieldEnum | DispatchNoteScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvedSalesDocuments
+   */
+  export type User$approvedSalesDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalesDocument
+     */
+    select?: SalesDocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalesDocument
+     */
+    omit?: SalesDocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SalesDocumentInclude<ExtArgs> | null
+    where?: SalesDocumentWhereInput
+    orderBy?: SalesDocumentOrderByWithRelationInput | SalesDocumentOrderByWithRelationInput[]
+    cursor?: SalesDocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SalesDocumentScalarFieldEnum | SalesDocumentScalarFieldEnum[]
   }
 
   /**
@@ -25090,6 +25139,7 @@ export namespace Prisma {
     branchId: string | null
     customerId: string | null
     createdById: string | null
+    approvedById: string | null
     sessionId: string | null
     subtotal: number | null
     discount: number | null
@@ -25115,6 +25165,7 @@ export namespace Prisma {
     branchId: string | null
     customerId: string | null
     createdById: string | null
+    approvedById: string | null
     sessionId: string | null
     subtotal: number | null
     discount: number | null
@@ -25140,6 +25191,7 @@ export namespace Prisma {
     branchId: number
     customerId: number
     createdById: number
+    approvedById: number
     sessionId: number
     subtotal: number
     discount: number
@@ -25185,6 +25237,7 @@ export namespace Prisma {
     branchId?: true
     customerId?: true
     createdById?: true
+    approvedById?: true
     sessionId?: true
     subtotal?: true
     discount?: true
@@ -25210,6 +25263,7 @@ export namespace Prisma {
     branchId?: true
     customerId?: true
     createdById?: true
+    approvedById?: true
     sessionId?: true
     subtotal?: true
     discount?: true
@@ -25235,6 +25289,7 @@ export namespace Prisma {
     branchId?: true
     customerId?: true
     createdById?: true
+    approvedById?: true
     sessionId?: true
     subtotal?: true
     discount?: true
@@ -25347,6 +25402,7 @@ export namespace Prisma {
     branchId: string
     customerId: string | null
     createdById: string
+    approvedById: string | null
     sessionId: string | null
     subtotal: number
     discount: number
@@ -25391,6 +25447,7 @@ export namespace Prisma {
     branchId?: boolean
     customerId?: boolean
     createdById?: boolean
+    approvedById?: boolean
     sessionId?: boolean
     subtotal?: boolean
     discount?: boolean
@@ -25406,10 +25463,11 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     sourceDocument?: boolean | SalesDocument$sourceDocumentArgs<ExtArgs>
-    childDocument?: boolean | SalesDocument$childDocumentArgs<ExtArgs>
+    childDocuments?: boolean | SalesDocument$childDocumentsArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     customer?: boolean | SalesDocument$customerArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | SalesDocument$approvedByArgs<ExtArgs>
     session?: boolean | SalesDocument$sessionArgs<ExtArgs>
     items?: boolean | SalesDocument$itemsArgs<ExtArgs>
     payments?: boolean | SalesDocument$paymentsArgs<ExtArgs>
@@ -25426,6 +25484,7 @@ export namespace Prisma {
     branchId?: boolean
     customerId?: boolean
     createdById?: boolean
+    approvedById?: boolean
     sessionId?: boolean
     subtotal?: boolean
     discount?: boolean
@@ -25444,6 +25503,7 @@ export namespace Prisma {
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     customer?: boolean | SalesDocument$customerArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | SalesDocument$approvedByArgs<ExtArgs>
     session?: boolean | SalesDocument$sessionArgs<ExtArgs>
   }, ExtArgs["result"]["salesDocument"]>
 
@@ -25456,6 +25516,7 @@ export namespace Prisma {
     branchId?: boolean
     customerId?: boolean
     createdById?: boolean
+    approvedById?: boolean
     sessionId?: boolean
     subtotal?: boolean
     discount?: boolean
@@ -25474,6 +25535,7 @@ export namespace Prisma {
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     customer?: boolean | SalesDocument$customerArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | SalesDocument$approvedByArgs<ExtArgs>
     session?: boolean | SalesDocument$sessionArgs<ExtArgs>
   }, ExtArgs["result"]["salesDocument"]>
 
@@ -25486,6 +25548,7 @@ export namespace Prisma {
     branchId?: boolean
     customerId?: boolean
     createdById?: boolean
+    approvedById?: boolean
     sessionId?: boolean
     subtotal?: boolean
     discount?: boolean
@@ -25502,13 +25565,14 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SalesDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "type" | "status" | "sourceDocumentId" | "branchId" | "customerId" | "createdById" | "sessionId" | "subtotal" | "discount" | "tax" | "total" | "notes" | "terms" | "paymentStatus" | "paidAmount" | "balance" | "issueDate" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["salesDocument"]>
+  export type SalesDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "type" | "status" | "sourceDocumentId" | "branchId" | "customerId" | "createdById" | "approvedById" | "sessionId" | "subtotal" | "discount" | "tax" | "total" | "notes" | "terms" | "paymentStatus" | "paidAmount" | "balance" | "issueDate" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["salesDocument"]>
   export type SalesDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sourceDocument?: boolean | SalesDocument$sourceDocumentArgs<ExtArgs>
-    childDocument?: boolean | SalesDocument$childDocumentArgs<ExtArgs>
+    childDocuments?: boolean | SalesDocument$childDocumentsArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     customer?: boolean | SalesDocument$customerArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | SalesDocument$approvedByArgs<ExtArgs>
     session?: boolean | SalesDocument$sessionArgs<ExtArgs>
     items?: boolean | SalesDocument$itemsArgs<ExtArgs>
     payments?: boolean | SalesDocument$paymentsArgs<ExtArgs>
@@ -25520,6 +25584,7 @@ export namespace Prisma {
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     customer?: boolean | SalesDocument$customerArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | SalesDocument$approvedByArgs<ExtArgs>
     session?: boolean | SalesDocument$sessionArgs<ExtArgs>
   }
   export type SalesDocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25527,6 +25592,7 @@ export namespace Prisma {
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     customer?: boolean | SalesDocument$customerArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | SalesDocument$approvedByArgs<ExtArgs>
     session?: boolean | SalesDocument$sessionArgs<ExtArgs>
   }
 
@@ -25534,10 +25600,11 @@ export namespace Prisma {
     name: "SalesDocument"
     objects: {
       sourceDocument: Prisma.$SalesDocumentPayload<ExtArgs> | null
-      childDocument: Prisma.$SalesDocumentPayload<ExtArgs> | null
+      childDocuments: Prisma.$SalesDocumentPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs>
       customer: Prisma.$CustomerPayload<ExtArgs> | null
       createdBy: Prisma.$UserPayload<ExtArgs>
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
       session: Prisma.$CashierSessionPayload<ExtArgs> | null
       items: Prisma.$SalesDocumentItemPayload<ExtArgs>[]
       payments: Prisma.$PaymentPayload<ExtArgs>[]
@@ -25552,6 +25619,7 @@ export namespace Prisma {
       branchId: string
       customerId: string | null
       createdById: string
+      approvedById: string | null
       sessionId: string | null
       subtotal: number
       discount: number
@@ -25961,10 +26029,11 @@ export namespace Prisma {
   export interface Prisma__SalesDocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     sourceDocument<T extends SalesDocument$sourceDocumentArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$sourceDocumentArgs<ExtArgs>>): Prisma__SalesDocumentClient<$Result.GetResult<Prisma.$SalesDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    childDocument<T extends SalesDocument$childDocumentArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$childDocumentArgs<ExtArgs>>): Prisma__SalesDocumentClient<$Result.GetResult<Prisma.$SalesDocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    childDocuments<T extends SalesDocument$childDocumentsArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$childDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branch<T extends BranchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BranchDefaultArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customer<T extends SalesDocument$customerArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends SalesDocument$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     session<T extends SalesDocument$sessionArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$sessionArgs<ExtArgs>>): Prisma__CashierSessionClient<$Result.GetResult<Prisma.$CashierSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends SalesDocument$itemsArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesDocumentItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     payments<T extends SalesDocument$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, SalesDocument$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -26006,6 +26075,7 @@ export namespace Prisma {
     readonly branchId: FieldRef<"SalesDocument", 'String'>
     readonly customerId: FieldRef<"SalesDocument", 'String'>
     readonly createdById: FieldRef<"SalesDocument", 'String'>
+    readonly approvedById: FieldRef<"SalesDocument", 'String'>
     readonly sessionId: FieldRef<"SalesDocument", 'String'>
     readonly subtotal: FieldRef<"SalesDocument", 'Float'>
     readonly discount: FieldRef<"SalesDocument", 'Float'>
@@ -26440,9 +26510,9 @@ export namespace Prisma {
   }
 
   /**
-   * SalesDocument.childDocument
+   * SalesDocument.childDocuments
    */
-  export type SalesDocument$childDocumentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SalesDocument$childDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the SalesDocument
      */
@@ -26456,6 +26526,11 @@ export namespace Prisma {
      */
     include?: SalesDocumentInclude<ExtArgs> | null
     where?: SalesDocumentWhereInput
+    orderBy?: SalesDocumentOrderByWithRelationInput | SalesDocumentOrderByWithRelationInput[]
+    cursor?: SalesDocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SalesDocumentScalarFieldEnum | SalesDocumentScalarFieldEnum[]
   }
 
   /**
@@ -26475,6 +26550,25 @@ export namespace Prisma {
      */
     include?: CustomerInclude<ExtArgs> | null
     where?: CustomerWhereInput
+  }
+
+  /**
+   * SalesDocument.approvedBy
+   */
+  export type SalesDocument$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -90443,6 +90537,7 @@ export namespace Prisma {
     branchId: 'branchId',
     customerId: 'customerId',
     createdById: 'createdById',
+    approvedById: 'approvedById',
     sessionId: 'sessionId',
     subtotal: 'subtotal',
     discount: 'discount',
@@ -92104,6 +92199,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferListRelationFilter
     createdSalesOrders?: SalesOrderListRelationFilter
     dispatchNotes?: DispatchNoteListRelationFilter
+    approvedSalesDocuments?: SalesDocumentListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -92145,6 +92241,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferOrderByRelationAggregateInput
     createdSalesOrders?: SalesOrderOrderByRelationAggregateInput
     dispatchNotes?: DispatchNoteOrderByRelationAggregateInput
+    approvedSalesDocuments?: SalesDocumentOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -92189,6 +92286,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferListRelationFilter
     createdSalesOrders?: SalesOrderListRelationFilter
     dispatchNotes?: DispatchNoteListRelationFilter
+    approvedSalesDocuments?: SalesDocumentListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -93381,6 +93479,7 @@ export namespace Prisma {
     branchId?: StringFilter<"SalesDocument"> | string
     customerId?: StringNullableFilter<"SalesDocument"> | string | null
     createdById?: StringFilter<"SalesDocument"> | string
+    approvedById?: StringNullableFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableFilter<"SalesDocument"> | string | null
     subtotal?: FloatFilter<"SalesDocument"> | number
     discount?: FloatFilter<"SalesDocument"> | number
@@ -93396,10 +93495,11 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SalesDocument"> | Date | string
     updatedAt?: DateTimeFilter<"SalesDocument"> | Date | string
     sourceDocument?: XOR<SalesDocumentNullableScalarRelationFilter, SalesDocumentWhereInput> | null
-    childDocument?: XOR<SalesDocumentNullableScalarRelationFilter, SalesDocumentWhereInput> | null
+    childDocuments?: SalesDocumentListRelationFilter
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     session?: XOR<CashierSessionNullableScalarRelationFilter, CashierSessionWhereInput> | null
     items?: SalesDocumentItemListRelationFilter
     payments?: PaymentListRelationFilter
@@ -93415,6 +93515,7 @@ export namespace Prisma {
     branchId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     createdById?: SortOrder
+    approvedById?: SortOrderInput | SortOrder
     sessionId?: SortOrderInput | SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
@@ -93430,10 +93531,11 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     sourceDocument?: SalesDocumentOrderByWithRelationInput
-    childDocument?: SalesDocumentOrderByWithRelationInput
+    childDocuments?: SalesDocumentOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     createdBy?: UserOrderByWithRelationInput
+    approvedBy?: UserOrderByWithRelationInput
     session?: CashierSessionOrderByWithRelationInput
     items?: SalesDocumentItemOrderByRelationAggregateInput
     payments?: PaymentOrderByRelationAggregateInput
@@ -93442,7 +93544,6 @@ export namespace Prisma {
 
   export type SalesDocumentWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    sourceDocumentId?: string
     branchId_documentId?: SalesDocumentBranchIdDocumentIdCompoundUniqueInput
     AND?: SalesDocumentWhereInput | SalesDocumentWhereInput[]
     OR?: SalesDocumentWhereInput[]
@@ -93450,9 +93551,11 @@ export namespace Prisma {
     documentId?: StringFilter<"SalesDocument"> | string
     type?: EnumSalesDocumentTypeFilter<"SalesDocument"> | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFilter<"SalesDocument"> | $Enums.SalesDocumentStatus
+    sourceDocumentId?: StringNullableFilter<"SalesDocument"> | string | null
     branchId?: StringFilter<"SalesDocument"> | string
     customerId?: StringNullableFilter<"SalesDocument"> | string | null
     createdById?: StringFilter<"SalesDocument"> | string
+    approvedById?: StringNullableFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableFilter<"SalesDocument"> | string | null
     subtotal?: FloatFilter<"SalesDocument"> | number
     discount?: FloatFilter<"SalesDocument"> | number
@@ -93468,15 +93571,16 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"SalesDocument"> | Date | string
     updatedAt?: DateTimeFilter<"SalesDocument"> | Date | string
     sourceDocument?: XOR<SalesDocumentNullableScalarRelationFilter, SalesDocumentWhereInput> | null
-    childDocument?: XOR<SalesDocumentNullableScalarRelationFilter, SalesDocumentWhereInput> | null
+    childDocuments?: SalesDocumentListRelationFilter
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     session?: XOR<CashierSessionNullableScalarRelationFilter, CashierSessionWhereInput> | null
     items?: SalesDocumentItemListRelationFilter
     payments?: PaymentListRelationFilter
     stockMovements?: StockMovementListRelationFilter
-  }, "id" | "sourceDocumentId" | "branchId_documentId">
+  }, "id" | "branchId_documentId">
 
   export type SalesDocumentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -93487,6 +93591,7 @@ export namespace Prisma {
     branchId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     createdById?: SortOrder
+    approvedById?: SortOrderInput | SortOrder
     sessionId?: SortOrderInput | SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
@@ -93520,6 +93625,7 @@ export namespace Prisma {
     branchId?: StringWithAggregatesFilter<"SalesDocument"> | string
     customerId?: StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
     createdById?: StringWithAggregatesFilter<"SalesDocument"> | string
+    approvedById?: StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
     subtotal?: FloatWithAggregatesFilter<"SalesDocument"> | number
     discount?: FloatWithAggregatesFilter<"SalesDocument"> | number
@@ -98263,6 +98369,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -98303,6 +98410,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUpdateInput = {
@@ -98343,6 +98451,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -98383,6 +98492,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -99715,11 +99825,12 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
@@ -99735,6 +99846,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -99749,7 +99861,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
@@ -99773,11 +99885,12 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
@@ -99793,6 +99906,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -99807,7 +99921,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
@@ -99822,6 +99936,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -99867,6 +99982,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -106528,6 +106644,7 @@ export namespace Prisma {
     branchId?: SortOrder
     customerId?: SortOrder
     createdById?: SortOrder
+    approvedById?: SortOrder
     sessionId?: SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
@@ -106562,6 +106679,7 @@ export namespace Prisma {
     branchId?: SortOrder
     customerId?: SortOrder
     createdById?: SortOrder
+    approvedById?: SortOrder
     sessionId?: SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
@@ -106587,6 +106705,7 @@ export namespace Prisma {
     branchId?: SortOrder
     customerId?: SortOrder
     createdById?: SortOrder
+    approvedById?: SortOrder
     sessionId?: SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
@@ -110354,6 +110473,13 @@ export namespace Prisma {
     connect?: DispatchNoteWhereUniqueInput | DispatchNoteWhereUniqueInput[]
   }
 
+  export type SalesDocumentCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<SalesDocumentCreateWithoutApprovedByInput, SalesDocumentUncheckedCreateWithoutApprovedByInput> | SalesDocumentCreateWithoutApprovedByInput[] | SalesDocumentUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutApprovedByInput | SalesDocumentCreateOrConnectWithoutApprovedByInput[]
+    createMany?: SalesDocumentCreateManyApprovedByInputEnvelope
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+  }
+
   export type PayrollUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<PayrollCreateWithoutUserInput, PayrollUncheckedCreateWithoutUserInput> | PayrollCreateWithoutUserInput[] | PayrollUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PayrollCreateOrConnectWithoutUserInput | PayrollCreateOrConnectWithoutUserInput[]
@@ -110534,6 +110660,13 @@ export namespace Prisma {
     connectOrCreate?: DispatchNoteCreateOrConnectWithoutDispatchedByInput | DispatchNoteCreateOrConnectWithoutDispatchedByInput[]
     createMany?: DispatchNoteCreateManyDispatchedByInputEnvelope
     connect?: DispatchNoteWhereUniqueInput | DispatchNoteWhereUniqueInput[]
+  }
+
+  export type SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<SalesDocumentCreateWithoutApprovedByInput, SalesDocumentUncheckedCreateWithoutApprovedByInput> | SalesDocumentCreateWithoutApprovedByInput[] | SalesDocumentUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutApprovedByInput | SalesDocumentCreateOrConnectWithoutApprovedByInput[]
+    createMany?: SalesDocumentCreateManyApprovedByInputEnvelope
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -110926,6 +111059,20 @@ export namespace Prisma {
     deleteMany?: DispatchNoteScalarWhereInput | DispatchNoteScalarWhereInput[]
   }
 
+  export type SalesDocumentUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<SalesDocumentCreateWithoutApprovedByInput, SalesDocumentUncheckedCreateWithoutApprovedByInput> | SalesDocumentCreateWithoutApprovedByInput[] | SalesDocumentUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutApprovedByInput | SalesDocumentCreateOrConnectWithoutApprovedByInput[]
+    upsert?: SalesDocumentUpsertWithWhereUniqueWithoutApprovedByInput | SalesDocumentUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: SalesDocumentCreateManyApprovedByInputEnvelope
+    set?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    disconnect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    delete?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    update?: SalesDocumentUpdateWithWhereUniqueWithoutApprovedByInput | SalesDocumentUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: SalesDocumentUpdateManyWithWhereWithoutApprovedByInput | SalesDocumentUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: SalesDocumentScalarWhereInput | SalesDocumentScalarWhereInput[]
+  }
+
   export type PayrollUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<PayrollCreateWithoutUserInput, PayrollUncheckedCreateWithoutUserInput> | PayrollCreateWithoutUserInput[] | PayrollUncheckedCreateWithoutUserInput[]
     connectOrCreate?: PayrollCreateOrConnectWithoutUserInput | PayrollCreateOrConnectWithoutUserInput[]
@@ -111288,6 +111435,20 @@ export namespace Prisma {
     update?: DispatchNoteUpdateWithWhereUniqueWithoutDispatchedByInput | DispatchNoteUpdateWithWhereUniqueWithoutDispatchedByInput[]
     updateMany?: DispatchNoteUpdateManyWithWhereWithoutDispatchedByInput | DispatchNoteUpdateManyWithWhereWithoutDispatchedByInput[]
     deleteMany?: DispatchNoteScalarWhereInput | DispatchNoteScalarWhereInput[]
+  }
+
+  export type SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<SalesDocumentCreateWithoutApprovedByInput, SalesDocumentUncheckedCreateWithoutApprovedByInput> | SalesDocumentCreateWithoutApprovedByInput[] | SalesDocumentUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutApprovedByInput | SalesDocumentCreateOrConnectWithoutApprovedByInput[]
+    upsert?: SalesDocumentUpsertWithWhereUniqueWithoutApprovedByInput | SalesDocumentUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: SalesDocumentCreateManyApprovedByInputEnvelope
+    set?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    disconnect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    delete?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    update?: SalesDocumentUpdateWithWhereUniqueWithoutApprovedByInput | SalesDocumentUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: SalesDocumentUpdateManyWithWhereWithoutApprovedByInput | SalesDocumentUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: SalesDocumentScalarWhereInput | SalesDocumentScalarWhereInput[]
   }
 
   export type UserCreateNestedManyWithoutBranchInput = {
@@ -112976,16 +113137,17 @@ export namespace Prisma {
     deleteMany?: SalesOrderScalarWhereInput | SalesOrderScalarWhereInput[]
   }
 
-  export type SalesDocumentCreateNestedOneWithoutChildDocumentInput = {
-    create?: XOR<SalesDocumentCreateWithoutChildDocumentInput, SalesDocumentUncheckedCreateWithoutChildDocumentInput>
-    connectOrCreate?: SalesDocumentCreateOrConnectWithoutChildDocumentInput
+  export type SalesDocumentCreateNestedOneWithoutChildDocumentsInput = {
+    create?: XOR<SalesDocumentCreateWithoutChildDocumentsInput, SalesDocumentUncheckedCreateWithoutChildDocumentsInput>
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutChildDocumentsInput
     connect?: SalesDocumentWhereUniqueInput
   }
 
-  export type SalesDocumentCreateNestedOneWithoutSourceDocumentInput = {
-    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput>
-    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput
-    connect?: SalesDocumentWhereUniqueInput
+  export type SalesDocumentCreateNestedManyWithoutSourceDocumentInput = {
+    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput> | SalesDocumentCreateWithoutSourceDocumentInput[] | SalesDocumentUncheckedCreateWithoutSourceDocumentInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput | SalesDocumentCreateOrConnectWithoutSourceDocumentInput[]
+    createMany?: SalesDocumentCreateManySourceDocumentInputEnvelope
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
   }
 
   export type BranchCreateNestedOneWithoutSalesDocumentsInput = {
@@ -113003,6 +113165,12 @@ export namespace Prisma {
   export type UserCreateNestedOneWithoutCreatedSalesDocumentsInput = {
     create?: XOR<UserCreateWithoutCreatedSalesDocumentsInput, UserUncheckedCreateWithoutCreatedSalesDocumentsInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreatedSalesDocumentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutApprovedSalesDocumentsInput = {
+    create?: XOR<UserCreateWithoutApprovedSalesDocumentsInput, UserUncheckedCreateWithoutApprovedSalesDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedSalesDocumentsInput
     connect?: UserWhereUniqueInput
   }
 
@@ -113033,10 +113201,11 @@ export namespace Prisma {
     connect?: StockMovementWhereUniqueInput | StockMovementWhereUniqueInput[]
   }
 
-  export type SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput = {
-    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput>
-    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput
-    connect?: SalesDocumentWhereUniqueInput
+  export type SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput = {
+    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput> | SalesDocumentCreateWithoutSourceDocumentInput[] | SalesDocumentUncheckedCreateWithoutSourceDocumentInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput | SalesDocumentCreateOrConnectWithoutSourceDocumentInput[]
+    createMany?: SalesDocumentCreateManySourceDocumentInputEnvelope
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
   }
 
   export type SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput = {
@@ -113072,24 +113241,28 @@ export namespace Prisma {
     set?: $Enums.PaymentStatus | null
   }
 
-  export type SalesDocumentUpdateOneWithoutChildDocumentNestedInput = {
-    create?: XOR<SalesDocumentCreateWithoutChildDocumentInput, SalesDocumentUncheckedCreateWithoutChildDocumentInput>
-    connectOrCreate?: SalesDocumentCreateOrConnectWithoutChildDocumentInput
-    upsert?: SalesDocumentUpsertWithoutChildDocumentInput
+  export type SalesDocumentUpdateOneWithoutChildDocumentsNestedInput = {
+    create?: XOR<SalesDocumentCreateWithoutChildDocumentsInput, SalesDocumentUncheckedCreateWithoutChildDocumentsInput>
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutChildDocumentsInput
+    upsert?: SalesDocumentUpsertWithoutChildDocumentsInput
     disconnect?: SalesDocumentWhereInput | boolean
     delete?: SalesDocumentWhereInput | boolean
     connect?: SalesDocumentWhereUniqueInput
-    update?: XOR<XOR<SalesDocumentUpdateToOneWithWhereWithoutChildDocumentInput, SalesDocumentUpdateWithoutChildDocumentInput>, SalesDocumentUncheckedUpdateWithoutChildDocumentInput>
+    update?: XOR<XOR<SalesDocumentUpdateToOneWithWhereWithoutChildDocumentsInput, SalesDocumentUpdateWithoutChildDocumentsInput>, SalesDocumentUncheckedUpdateWithoutChildDocumentsInput>
   }
 
-  export type SalesDocumentUpdateOneWithoutSourceDocumentNestedInput = {
-    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput>
-    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput
-    upsert?: SalesDocumentUpsertWithoutSourceDocumentInput
-    disconnect?: SalesDocumentWhereInput | boolean
-    delete?: SalesDocumentWhereInput | boolean
-    connect?: SalesDocumentWhereUniqueInput
-    update?: XOR<XOR<SalesDocumentUpdateToOneWithWhereWithoutSourceDocumentInput, SalesDocumentUpdateWithoutSourceDocumentInput>, SalesDocumentUncheckedUpdateWithoutSourceDocumentInput>
+  export type SalesDocumentUpdateManyWithoutSourceDocumentNestedInput = {
+    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput> | SalesDocumentCreateWithoutSourceDocumentInput[] | SalesDocumentUncheckedCreateWithoutSourceDocumentInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput | SalesDocumentCreateOrConnectWithoutSourceDocumentInput[]
+    upsert?: SalesDocumentUpsertWithWhereUniqueWithoutSourceDocumentInput | SalesDocumentUpsertWithWhereUniqueWithoutSourceDocumentInput[]
+    createMany?: SalesDocumentCreateManySourceDocumentInputEnvelope
+    set?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    disconnect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    delete?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    update?: SalesDocumentUpdateWithWhereUniqueWithoutSourceDocumentInput | SalesDocumentUpdateWithWhereUniqueWithoutSourceDocumentInput[]
+    updateMany?: SalesDocumentUpdateManyWithWhereWithoutSourceDocumentInput | SalesDocumentUpdateManyWithWhereWithoutSourceDocumentInput[]
+    deleteMany?: SalesDocumentScalarWhereInput | SalesDocumentScalarWhereInput[]
   }
 
   export type BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput = {
@@ -113116,6 +113289,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCreatedSalesDocumentsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedSalesDocumentsInput, UserUpdateWithoutCreatedSalesDocumentsInput>, UserUncheckedUpdateWithoutCreatedSalesDocumentsInput>
+  }
+
+  export type UserUpdateOneWithoutApprovedSalesDocumentsNestedInput = {
+    create?: XOR<UserCreateWithoutApprovedSalesDocumentsInput, UserUncheckedCreateWithoutApprovedSalesDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedSalesDocumentsInput
+    upsert?: UserUpsertWithoutApprovedSalesDocumentsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovedSalesDocumentsInput, UserUpdateWithoutApprovedSalesDocumentsInput>, UserUncheckedUpdateWithoutApprovedSalesDocumentsInput>
   }
 
   export type CashierSessionUpdateOneWithoutSalesNestedInput = {
@@ -113170,14 +113353,18 @@ export namespace Prisma {
     deleteMany?: StockMovementScalarWhereInput | StockMovementScalarWhereInput[]
   }
 
-  export type SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput = {
-    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput>
-    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput
-    upsert?: SalesDocumentUpsertWithoutSourceDocumentInput
-    disconnect?: SalesDocumentWhereInput | boolean
-    delete?: SalesDocumentWhereInput | boolean
-    connect?: SalesDocumentWhereUniqueInput
-    update?: XOR<XOR<SalesDocumentUpdateToOneWithWhereWithoutSourceDocumentInput, SalesDocumentUpdateWithoutSourceDocumentInput>, SalesDocumentUncheckedUpdateWithoutSourceDocumentInput>
+  export type SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput = {
+    create?: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput> | SalesDocumentCreateWithoutSourceDocumentInput[] | SalesDocumentUncheckedCreateWithoutSourceDocumentInput[]
+    connectOrCreate?: SalesDocumentCreateOrConnectWithoutSourceDocumentInput | SalesDocumentCreateOrConnectWithoutSourceDocumentInput[]
+    upsert?: SalesDocumentUpsertWithWhereUniqueWithoutSourceDocumentInput | SalesDocumentUpsertWithWhereUniqueWithoutSourceDocumentInput[]
+    createMany?: SalesDocumentCreateManySourceDocumentInputEnvelope
+    set?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    disconnect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    delete?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    connect?: SalesDocumentWhereUniqueInput | SalesDocumentWhereUniqueInput[]
+    update?: SalesDocumentUpdateWithWhereUniqueWithoutSourceDocumentInput | SalesDocumentUpdateWithWhereUniqueWithoutSourceDocumentInput[]
+    updateMany?: SalesDocumentUpdateManyWithWhereWithoutSourceDocumentInput | SalesDocumentUpdateManyWithWhereWithoutSourceDocumentInput[]
+    deleteMany?: SalesDocumentScalarWhereInput | SalesDocumentScalarWhereInput[]
   }
 
   export type SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput = {
@@ -116921,10 +117108,11 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
@@ -116939,6 +117127,7 @@ export namespace Prisma {
     sourceDocumentId?: string | null
     branchId: string
     customerId?: string | null
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -116953,7 +117142,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
@@ -117819,6 +118008,74 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type SalesDocumentCreateWithoutApprovedByInput = {
+    id?: string
+    documentId: string
+    type: $Enums.SalesDocumentType
+    status: $Enums.SalesDocumentStatus
+    subtotal: number
+    discount?: number
+    tax: number
+    total: number
+    notes?: string | null
+    terms?: string | null
+    paymentStatus?: $Enums.PaymentStatus | null
+    paidAmount?: number
+    balance: number
+    issueDate?: Date | string
+    dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
+    branch: BranchCreateNestedOneWithoutSalesDocumentsInput
+    customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
+    createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    session?: CashierSessionCreateNestedOneWithoutSalesInput
+    items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
+    payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
+    stockMovements?: StockMovementCreateNestedManyWithoutSalesInput
+  }
+
+  export type SalesDocumentUncheckedCreateWithoutApprovedByInput = {
+    id?: string
+    documentId: string
+    type: $Enums.SalesDocumentType
+    status: $Enums.SalesDocumentStatus
+    sourceDocumentId?: string | null
+    branchId: string
+    customerId?: string | null
+    createdById: string
+    sessionId?: string | null
+    subtotal: number
+    discount?: number
+    tax: number
+    total: number
+    notes?: string | null
+    terms?: string | null
+    paymentStatus?: $Enums.PaymentStatus | null
+    paidAmount?: number
+    balance: number
+    issueDate?: Date | string
+    dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
+    items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
+    payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
+  }
+
+  export type SalesDocumentCreateOrConnectWithoutApprovedByInput = {
+    where: SalesDocumentWhereUniqueInput
+    create: XOR<SalesDocumentCreateWithoutApprovedByInput, SalesDocumentUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type SalesDocumentCreateManyApprovedByInputEnvelope = {
+    data: SalesDocumentCreateManyApprovedByInput | SalesDocumentCreateManyApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchUpsertWithoutUsersInput = {
     update: XOR<BranchUpdateWithoutUsersInput, BranchUncheckedUpdateWithoutUsersInput>
     create: XOR<BranchCreateWithoutUsersInput, BranchUncheckedCreateWithoutUsersInput>
@@ -117972,6 +118229,7 @@ export namespace Prisma {
     branchId?: StringFilter<"SalesDocument"> | string
     customerId?: StringNullableFilter<"SalesDocument"> | string | null
     createdById?: StringFilter<"SalesDocument"> | string
+    approvedById?: StringNullableFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableFilter<"SalesDocument"> | string | null
     subtotal?: FloatFilter<"SalesDocument"> | number
     discount?: FloatFilter<"SalesDocument"> | number
@@ -118669,6 +118927,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"DispatchNote"> | Date | string
   }
 
+  export type SalesDocumentUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: SalesDocumentWhereUniqueInput
+    update: XOR<SalesDocumentUpdateWithoutApprovedByInput, SalesDocumentUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<SalesDocumentCreateWithoutApprovedByInput, SalesDocumentUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type SalesDocumentUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: SalesDocumentWhereUniqueInput
+    data: XOR<SalesDocumentUpdateWithoutApprovedByInput, SalesDocumentUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type SalesDocumentUpdateManyWithWhereWithoutApprovedByInput = {
+    where: SalesDocumentScalarWhereInput
+    data: XOR<SalesDocumentUpdateManyMutationInput, SalesDocumentUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
   export type UserCreateWithoutBranchInput = {
     id?: string
     email: string
@@ -118706,6 +118980,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutBranchInput = {
@@ -118745,6 +119020,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutBranchInput = {
@@ -118861,10 +119137,11 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
@@ -118879,6 +119156,7 @@ export namespace Prisma {
     sourceDocumentId?: string | null
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -118893,7 +119171,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
@@ -119433,6 +119711,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutTransfersInput = {
@@ -119472,6 +119751,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutTransfersInput = {
@@ -119621,6 +119901,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersInput = {
@@ -119660,6 +119941,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type BranchUpsertWithoutTransfersFromInput = {
@@ -121906,11 +122188,12 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
@@ -121925,6 +122208,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -121939,7 +122223,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
   }
@@ -122153,11 +122437,12 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
@@ -122172,6 +122457,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -122186,7 +122472,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
   }
@@ -122409,6 +122695,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutReceivedTransfersInput = {
@@ -122448,6 +122735,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutReceivedTransfersInput = {
@@ -122492,6 +122780,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTransfersInput = {
@@ -122531,6 +122820,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTransfersInput = {
@@ -122708,6 +122998,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedTransfersInput = {
@@ -122747,6 +123038,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUpsertWithoutCreatedTransfersInput = {
@@ -122797,6 +123089,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTransfersInput = {
@@ -122836,6 +123129,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type ProductCreateWithoutTransferItemsInput = {
@@ -123116,10 +123410,11 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
@@ -123134,6 +123429,7 @@ export namespace Prisma {
     sourceDocumentId?: string | null
     branchId: string
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -123148,7 +123444,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
@@ -123290,7 +123586,7 @@ export namespace Prisma {
     data: XOR<SalesOrderUpdateManyMutationInput, SalesOrderUncheckedUpdateManyWithoutCustomerInput>
   }
 
-  export type SalesDocumentCreateWithoutChildDocumentInput = {
+  export type SalesDocumentCreateWithoutChildDocumentsInput = {
     id?: string
     documentId: string
     type: $Enums.SalesDocumentType
@@ -123308,17 +123604,18 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementCreateNestedManyWithoutSalesInput
   }
 
-  export type SalesDocumentUncheckedCreateWithoutChildDocumentInput = {
+  export type SalesDocumentUncheckedCreateWithoutChildDocumentsInput = {
     id?: string
     documentId: string
     type: $Enums.SalesDocumentType
@@ -123327,6 +123624,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -123346,9 +123644,9 @@ export namespace Prisma {
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
   }
 
-  export type SalesDocumentCreateOrConnectWithoutChildDocumentInput = {
+  export type SalesDocumentCreateOrConnectWithoutChildDocumentsInput = {
     where: SalesDocumentWhereUniqueInput
-    create: XOR<SalesDocumentCreateWithoutChildDocumentInput, SalesDocumentUncheckedCreateWithoutChildDocumentInput>
+    create: XOR<SalesDocumentCreateWithoutChildDocumentsInput, SalesDocumentUncheckedCreateWithoutChildDocumentsInput>
   }
 
   export type SalesDocumentCreateWithoutSourceDocumentInput = {
@@ -123369,10 +123667,11 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
@@ -123387,6 +123686,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -123401,7 +123701,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
@@ -123410,6 +123710,11 @@ export namespace Prisma {
   export type SalesDocumentCreateOrConnectWithoutSourceDocumentInput = {
     where: SalesDocumentWhereUniqueInput
     create: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput>
+  }
+
+  export type SalesDocumentCreateManySourceDocumentInputEnvelope = {
+    data: SalesDocumentCreateManySourceDocumentInput | SalesDocumentCreateManySourceDocumentInput[]
+    skipDuplicates?: boolean
   }
 
   export type BranchCreateWithoutSalesDocumentsInput = {
@@ -123535,6 +123840,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSalesDocumentsInput = {
@@ -123574,11 +123880,97 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSalesDocumentsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCreatedSalesDocumentsInput, UserUncheckedCreateWithoutCreatedSalesDocumentsInput>
+  }
+
+  export type UserCreateWithoutApprovedSalesDocumentsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovedSalesDocumentsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovedSalesDocumentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovedSalesDocumentsInput, UserUncheckedCreateWithoutApprovedSalesDocumentsInput>
   }
 
   export type CashierSessionCreateWithoutSalesInput = {
@@ -123746,18 +124138,18 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type SalesDocumentUpsertWithoutChildDocumentInput = {
-    update: XOR<SalesDocumentUpdateWithoutChildDocumentInput, SalesDocumentUncheckedUpdateWithoutChildDocumentInput>
-    create: XOR<SalesDocumentCreateWithoutChildDocumentInput, SalesDocumentUncheckedCreateWithoutChildDocumentInput>
+  export type SalesDocumentUpsertWithoutChildDocumentsInput = {
+    update: XOR<SalesDocumentUpdateWithoutChildDocumentsInput, SalesDocumentUncheckedUpdateWithoutChildDocumentsInput>
+    create: XOR<SalesDocumentCreateWithoutChildDocumentsInput, SalesDocumentUncheckedCreateWithoutChildDocumentsInput>
     where?: SalesDocumentWhereInput
   }
 
-  export type SalesDocumentUpdateToOneWithWhereWithoutChildDocumentInput = {
+  export type SalesDocumentUpdateToOneWithWhereWithoutChildDocumentsInput = {
     where?: SalesDocumentWhereInput
-    data: XOR<SalesDocumentUpdateWithoutChildDocumentInput, SalesDocumentUncheckedUpdateWithoutChildDocumentInput>
+    data: XOR<SalesDocumentUpdateWithoutChildDocumentsInput, SalesDocumentUncheckedUpdateWithoutChildDocumentsInput>
   }
 
-  export type SalesDocumentUpdateWithoutChildDocumentInput = {
+  export type SalesDocumentUpdateWithoutChildDocumentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
@@ -123775,17 +124167,18 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
   }
 
-  export type SalesDocumentUncheckedUpdateWithoutChildDocumentInput = {
+  export type SalesDocumentUncheckedUpdateWithoutChildDocumentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
@@ -123794,6 +124187,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -123813,71 +124207,20 @@ export namespace Prisma {
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
   }
 
-  export type SalesDocumentUpsertWithoutSourceDocumentInput = {
+  export type SalesDocumentUpsertWithWhereUniqueWithoutSourceDocumentInput = {
+    where: SalesDocumentWhereUniqueInput
     update: XOR<SalesDocumentUpdateWithoutSourceDocumentInput, SalesDocumentUncheckedUpdateWithoutSourceDocumentInput>
     create: XOR<SalesDocumentCreateWithoutSourceDocumentInput, SalesDocumentUncheckedCreateWithoutSourceDocumentInput>
-    where?: SalesDocumentWhereInput
   }
 
-  export type SalesDocumentUpdateToOneWithWhereWithoutSourceDocumentInput = {
-    where?: SalesDocumentWhereInput
+  export type SalesDocumentUpdateWithWhereUniqueWithoutSourceDocumentInput = {
+    where: SalesDocumentWhereUniqueInput
     data: XOR<SalesDocumentUpdateWithoutSourceDocumentInput, SalesDocumentUncheckedUpdateWithoutSourceDocumentInput>
   }
 
-  export type SalesDocumentUpdateWithoutSourceDocumentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    documentId?: StringFieldUpdateOperationsInput | string
-    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
-    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
-    subtotal?: FloatFieldUpdateOperationsInput | number
-    discount?: FloatFieldUpdateOperationsInput | number
-    tax?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    terms?: NullableStringFieldUpdateOperationsInput | string | null
-    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
-    paidAmount?: FloatFieldUpdateOperationsInput | number
-    balance?: FloatFieldUpdateOperationsInput | number
-    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
-    branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
-    customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
-    createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
-    session?: CashierSessionUpdateOneWithoutSalesNestedInput
-    items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
-    payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
-    stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
-  }
-
-  export type SalesDocumentUncheckedUpdateWithoutSourceDocumentInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    documentId?: StringFieldUpdateOperationsInput | string
-    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
-    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
-    branchId?: StringFieldUpdateOperationsInput | string
-    customerId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdById?: StringFieldUpdateOperationsInput | string
-    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
-    subtotal?: FloatFieldUpdateOperationsInput | number
-    discount?: FloatFieldUpdateOperationsInput | number
-    tax?: FloatFieldUpdateOperationsInput | number
-    total?: FloatFieldUpdateOperationsInput | number
-    notes?: NullableStringFieldUpdateOperationsInput | string | null
-    terms?: NullableStringFieldUpdateOperationsInput | string | null
-    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
-    paidAmount?: FloatFieldUpdateOperationsInput | number
-    balance?: FloatFieldUpdateOperationsInput | number
-    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
-    items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
-    payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
-    stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
+  export type SalesDocumentUpdateManyWithWhereWithoutSourceDocumentInput = {
+    where: SalesDocumentScalarWhereInput
+    data: XOR<SalesDocumentUpdateManyMutationInput, SalesDocumentUncheckedUpdateManyWithoutSourceDocumentInput>
   }
 
   export type BranchUpsertWithoutSalesDocumentsInput = {
@@ -124026,6 +124369,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSalesDocumentsInput = {
@@ -124042,6 +124386,98 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
     deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+  }
+
+  export type UserUpsertWithoutApprovedSalesDocumentsInput = {
+    update: XOR<UserUpdateWithoutApprovedSalesDocumentsInput, UserUncheckedUpdateWithoutApprovedSalesDocumentsInput>
+    create: XOR<UserCreateWithoutApprovedSalesDocumentsInput, UserUncheckedCreateWithoutApprovedSalesDocumentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovedSalesDocumentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovedSalesDocumentsInput, UserUncheckedUpdateWithoutApprovedSalesDocumentsInput>
+  }
+
+  export type UserUpdateWithoutApprovedSalesDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovedSalesDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
     createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
     transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
@@ -124194,11 +124630,12 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementCreateNestedManyWithoutSalesInput
@@ -124213,6 +124650,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -124227,7 +124665,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
   }
@@ -124349,11 +124787,12 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
@@ -124368,6 +124807,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -124382,7 +124822,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
   }
@@ -124494,11 +124934,12 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     session?: CashierSessionCreateNestedOneWithoutSalesInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementCreateNestedManyWithoutSalesInput
@@ -124513,6 +124954,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -124527,7 +124969,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
   }
@@ -124613,6 +125055,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedPaymentsInput = {
@@ -124652,6 +125095,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedPaymentsInput = {
@@ -124688,11 +125132,12 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
@@ -124707,6 +125152,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -124721,7 +125167,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
   }
@@ -124819,6 +125265,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedPaymentsInput = {
@@ -124858,6 +125305,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type BranchCreateWithoutDocumentSequencesInput = {
@@ -125145,6 +125593,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSalesOrdersInput = {
@@ -125184,6 +125633,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCreatedSalesOrdersInput = {
@@ -125369,6 +125819,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSalesOrdersInput = {
@@ -125408,6 +125859,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type SalesOrderCreateWithoutItemsInput = {
@@ -125782,6 +126234,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutDispatchNotesInput = {
@@ -125821,6 +126274,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutDispatchNotesInput = {
@@ -125949,6 +126403,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDispatchNotesInput = {
@@ -125988,6 +126443,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type DispatchItemUpsertWithWhereUniqueWithoutDispatchNoteInput = {
@@ -126331,6 +126787,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutCashierSessionsInput = {
@@ -126370,6 +126827,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutCashierSessionsInput = {
@@ -126442,11 +126900,12 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentInput
-    childDocument?: SalesDocumentCreateNestedOneWithoutSourceDocumentInput
+    sourceDocument?: SalesDocumentCreateNestedOneWithoutChildDocumentsInput
+    childDocuments?: SalesDocumentCreateNestedManyWithoutSourceDocumentInput
     branch: BranchCreateNestedOneWithoutSalesDocumentsInput
     customer?: CustomerCreateNestedOneWithoutSalesDocumentsInput
     createdBy: UserCreateNestedOneWithoutCreatedSalesDocumentsInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedSalesDocumentsInput
     items?: SalesDocumentItemCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementCreateNestedManyWithoutSalesInput
@@ -126461,6 +126920,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -126474,7 +126934,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    childDocument?: SalesDocumentUncheckedCreateNestedOneWithoutSourceDocumentInput
+    childDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutSourceDocumentInput
     items?: SalesDocumentItemUncheckedCreateNestedManyWithoutSalesDocumentInput
     payments?: PaymentUncheckedCreateNestedManyWithoutSalesDocumentInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutSalesInput
@@ -126538,6 +126998,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCashierSessionsInput = {
@@ -126577,6 +127038,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type BranchUpsertWithoutCashierSessionsInput = {
@@ -126978,6 +127440,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutRequestedPurchaseOrdersInput = {
@@ -127017,6 +127480,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutRequestedPurchaseOrdersInput = {
@@ -127061,6 +127525,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovedPurchaseOrdersInput = {
@@ -127100,6 +127565,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovedPurchaseOrdersInput = {
@@ -127360,6 +127826,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRequestedPurchaseOrdersInput = {
@@ -127399,6 +127866,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUpsertWithoutApprovedPurchaseOrdersInput = {
@@ -127449,6 +127917,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovedPurchaseOrdersInput = {
@@ -127488,6 +127957,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type WarehouseUpsertWithoutPurchaseOrdersInput = {
@@ -127604,6 +128074,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutRequestedApprovalsInput = {
@@ -127643,6 +128114,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutRequestedApprovalsInput = {
@@ -127687,6 +128159,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutApprovedApprovalsInput = {
@@ -127726,6 +128199,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutApprovedApprovalsInput = {
@@ -127781,6 +128255,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRequestedApprovalsInput = {
@@ -127820,6 +128295,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUpsertWithoutApprovedApprovalsInput = {
@@ -127870,6 +128346,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovedApprovalsInput = {
@@ -127909,6 +128386,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type PurchaseOrderCreateWithoutItemsInput = {
@@ -128319,6 +128797,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutReceivedGRNInput = {
@@ -128358,6 +128837,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutReceivedGRNInput = {
@@ -128498,6 +128978,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedGRNInput = {
@@ -128537,6 +129018,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type GRNItemUpsertWithWhereUniqueWithoutGoodsReceiptNoteInput = {
@@ -129002,6 +129484,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutDeliveriesInput = {
@@ -129041,6 +129524,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutDeliveriesInput = {
@@ -129123,6 +129607,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeliveriesInput = {
@@ -129162,6 +129647,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type TruckUpsertWithoutDeliveriesInput = {
@@ -129318,6 +129804,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutPayrollRecordsInput = {
@@ -129357,6 +129844,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutPayrollRecordsInput = {
@@ -129452,6 +129940,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPayrollRecordsInput = {
@@ -129491,6 +129980,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type FinanceTransactionUpsertWithWhereUniqueWithoutPayrollInput = {
@@ -130147,6 +130637,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutLockedPeriodsInput = {
@@ -130186,6 +130677,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutLockedPeriodsInput = {
@@ -130328,6 +130820,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLockedPeriodsInput = {
@@ -130367,6 +130860,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type JournalEntryUpsertWithWhereUniqueWithoutPeriodInput = {
@@ -131729,6 +132223,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutLeaveAllocationsInput = {
@@ -131768,6 +132263,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutLeaveAllocationsInput = {
@@ -131850,6 +132346,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeaveAllocationsInput = {
@@ -131889,6 +132386,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type LeaveTypeUpsertWithoutAllocationsInput = {
@@ -131961,6 +132459,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -132000,6 +132499,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutLeaveRequestsInput = {
@@ -132082,6 +132582,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -132121,6 +132622,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type LeaveTypeUpsertWithoutRequestsInput = {
@@ -132404,6 +132906,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutInterviewsInput = {
@@ -132443,6 +132946,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutInterviewsInput = {
@@ -132535,6 +133039,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInterviewsInput = {
@@ -132574,6 +133079,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutGoalsInput = {
@@ -132613,6 +133119,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutGoalsInput = {
@@ -132652,6 +133159,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutGoalsInput = {
@@ -132707,6 +133215,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGoalsInput = {
@@ -132746,6 +133255,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutEvaluationsInput = {
@@ -132785,6 +133295,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutEvaluationsInput = {
@@ -132824,6 +133335,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutEvaluationsInput = {
@@ -132868,6 +133380,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutGivenEvaluationsInput = {
@@ -132907,6 +133420,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutGivenEvaluationsInput = {
@@ -132962,6 +133476,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEvaluationsInput = {
@@ -133001,6 +133516,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUpsertWithoutGivenEvaluationsInput = {
@@ -133051,6 +133567,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGivenEvaluationsInput = {
@@ -133090,6 +133607,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutDevelopmentPlansInput = {
@@ -133129,6 +133647,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutDevelopmentPlansInput = {
@@ -133168,6 +133687,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutDevelopmentPlansInput = {
@@ -133223,6 +133743,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDevelopmentPlansInput = {
@@ -133262,6 +133783,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type BenefitEnrollmentCreateWithoutBenefitInput = {
@@ -133345,6 +133867,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutBenefitEnrollmentsInput = {
@@ -133384,6 +133907,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutBenefitEnrollmentsInput = {
@@ -133464,6 +133988,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBenefitEnrollmentsInput = {
@@ -133503,6 +134028,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type BenefitUpsertWithoutEnrollmentsInput = {
@@ -133904,6 +134430,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutRolesInput = {
@@ -133943,6 +134470,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutRolesInput = {
@@ -134025,6 +134553,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRolesInput = {
@@ -134064,6 +134593,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type RoleUpsertWithoutUsersInput = {
@@ -134136,6 +134666,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -134175,6 +134706,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -134230,6 +134762,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -134269,6 +134802,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type PayrollCreateManyUserInput = {
@@ -134311,6 +134845,7 @@ export namespace Prisma {
     sourceDocumentId?: string | null
     branchId: string
     customerId?: string | null
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -134623,6 +135158,31 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type SalesDocumentCreateManyApprovedByInput = {
+    id?: string
+    documentId: string
+    type: $Enums.SalesDocumentType
+    status: $Enums.SalesDocumentStatus
+    sourceDocumentId?: string | null
+    branchId: string
+    customerId?: string | null
+    createdById: string
+    sessionId?: string | null
+    subtotal: number
+    discount?: number
+    tax: number
+    total: number
+    notes?: string | null
+    terms?: string | null
+    paymentStatus?: $Enums.PaymentStatus | null
+    paidAmount?: number
+    balance: number
+    issueDate?: Date | string
+    dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type PayrollUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     payroll_no?: StringFieldUpdateOperationsInput | string
@@ -134739,10 +135299,11 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
@@ -134757,6 +135318,7 @@ export namespace Prisma {
     sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -134771,7 +135333,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
@@ -134785,6 +135347,7 @@ export namespace Prisma {
     sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -135717,6 +136280,89 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SalesDocumentUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
+    branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
+    customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    session?: CashierSessionUpdateOneWithoutSalesNestedInput
+    items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
+    payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
+  }
+
+  export type SalesDocumentUncheckedUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
+    items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
+  }
+
+  export type SalesDocumentUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyBranchInput = {
     id?: string
     email: string
@@ -135765,6 +136411,7 @@ export namespace Prisma {
     sourceDocumentId?: string | null
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -135915,6 +136562,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBranchInput = {
@@ -135954,6 +136602,7 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutBranchInput = {
@@ -136080,10 +136729,11 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
@@ -136098,6 +136748,7 @@ export namespace Prisma {
     sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -136112,7 +136763,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
@@ -136126,6 +136777,7 @@ export namespace Prisma {
     sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -137353,6 +138005,7 @@ export namespace Prisma {
     sourceDocumentId?: string | null
     branchId: string
     createdById: string
+    approvedById?: string | null
     sessionId?: string | null
     subtotal: number
     discount?: number
@@ -137414,10 +138067,11 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     session?: CashierSessionUpdateOneWithoutSalesNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
@@ -137432,6 +138086,7 @@ export namespace Prisma {
     sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: StringFieldUpdateOperationsInput | string
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -137446,7 +138101,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
@@ -137460,6 +138115,7 @@ export namespace Prisma {
     sourceDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
     branchId?: StringFieldUpdateOperationsInput | string
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
@@ -137561,6 +138217,31 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SalesDocumentCreateManySourceDocumentInput = {
+    id?: string
+    documentId: string
+    type: $Enums.SalesDocumentType
+    status: $Enums.SalesDocumentStatus
+    branchId: string
+    customerId?: string | null
+    createdById: string
+    approvedById?: string | null
+    sessionId?: string | null
+    subtotal: number
+    discount?: number
+    tax: number
+    total: number
+    notes?: string | null
+    terms?: string | null
+    paymentStatus?: $Enums.PaymentStatus | null
+    paidAmount?: number
+    balance: number
+    issueDate?: Date | string
+    dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type SalesDocumentItemCreateManySalesDocumentInput = {
     id?: string
     productId: string
@@ -137599,6 +138280,89 @@ export namespace Prisma {
     reference?: string | null
     createdById: string
     createdAt?: Date | string
+  }
+
+  export type SalesDocumentUpdateWithoutSourceDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
+    branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
+    customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
+    session?: CashierSessionUpdateOneWithoutSalesNestedInput
+    items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
+    payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
+    stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
+  }
+
+  export type SalesDocumentUncheckedUpdateWithoutSourceDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    branchId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
+    items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
+    payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
+  }
+
+  export type SalesDocumentUncheckedUpdateManyWithoutSourceDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
+    status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    branchId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    terms?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentStatus?: NullableEnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus | null
+    paidAmount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SalesDocumentItemUpdateWithoutSalesDocumentInput = {
@@ -137890,6 +138654,7 @@ export namespace Prisma {
     branchId: string
     customerId?: string | null
     createdById: string
+    approvedById?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -137923,11 +138688,12 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentNestedInput
-    childDocument?: SalesDocumentUpdateOneWithoutSourceDocumentNestedInput
+    sourceDocument?: SalesDocumentUpdateOneWithoutChildDocumentsNestedInput
+    childDocuments?: SalesDocumentUpdateManyWithoutSourceDocumentNestedInput
     branch?: BranchUpdateOneRequiredWithoutSalesDocumentsNestedInput
     customer?: CustomerUpdateOneWithoutSalesDocumentsNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedSalesDocumentsNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedSalesDocumentsNestedInput
     items?: SalesDocumentItemUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUpdateManyWithoutSalesNestedInput
@@ -137942,6 +138708,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -137955,7 +138722,7 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    childDocument?: SalesDocumentUncheckedUpdateOneWithoutSourceDocumentNestedInput
+    childDocuments?: SalesDocumentUncheckedUpdateManyWithoutSourceDocumentNestedInput
     items?: SalesDocumentItemUncheckedUpdateManyWithoutSalesDocumentNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutSalesDocumentNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutSalesNestedInput
@@ -137970,6 +138737,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number

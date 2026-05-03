@@ -14,7 +14,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
+import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
 
 // Customer type
 export interface Customer {
@@ -26,11 +27,12 @@ export interface Customer {
 }
 
 interface POSCustomerSelectProps {
+  token: string;
   selectedCustomer: Customer | null;
   onCustomerSelect: (customer: Customer | null) => void;
 }
 
-export function POSCustomerSelect({ selectedCustomer, onCustomerSelect }: POSCustomerSelectProps) {
+export function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }: POSCustomerSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
@@ -52,8 +54,8 @@ export function POSCustomerSelect({ selectedCustomer, onCustomerSelect }: POSCus
     setIsSearching(true);
     try {
       const res = await fetch(
-        getApiUrl(`${API_ENDPOINTS.CUSTOMERS_SEARCH}?q=${encodeURIComponent(term)}`),
-        { headers: getAuthHeaders() }
+      getApiUrl(`${API_ENDPOINTS.CUSTOMERS_SEARCH}?q=${encodeURIComponent(term)}`),
+      { headers: getAuthHeadersWithToken(token) }
       );
       const json = await res.json();
       if (json.success && json.data) {
@@ -106,7 +108,7 @@ export function POSCustomerSelect({ selectedCustomer, onCustomerSelect }: POSCus
     try {
       const res = await fetch(getApiUrl(API_ENDPOINTS.CUSTOMERS), {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeadersWithToken(token),
         body: JSON.stringify({
           name: newCustomer.name.trim(),
           phone: newCustomer.phone.trim() || null,

@@ -467,10 +467,10 @@ export class SalesService {
       discount?: number;
     }[];
     reason?: string;
-    branchId: string;
+    branchId: string | null;
     userId: string;
   }) {
-    const { invoiceId, items, reason, branchId, userId } = input;
+    const { invoiceId, items, reason, userId } = input;
 
     const invoice = await prisma.salesDocument.findUnique({
       where: { id: invoiceId },
@@ -484,6 +484,10 @@ export class SalesService {
         400,
         "Invalid invoice - credit notes must reference an existing invoice",
       );
+
+    // Admin users in "All Branches" mode have no branchId in their token;
+    // fall back to the invoice's own branch so the sequence number is correct.
+    const branchId = input.branchId ?? invoice.branchId;
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.CREDIT_NOTE,
@@ -656,7 +660,7 @@ export class SalesService {
 
     const documents = await prisma.salesDocument.findMany({
       where,
-      include: { items: true, payments: true },
+      include: { items: true, payments: true, branch: true, createdBy: true },
       orderBy: { createdAt: "desc" },
       take: query.limit || 50,
       skip: query.offset || 0,
@@ -674,6 +678,9 @@ export class SalesService {
       amount_paid: doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
       change: 0,
       created_date: doc.createdAt,
+      createdAt: doc.createdAt,
+      branch: { name: doc.branch?.name },
+      user: { name: doc.createdBy?.name },
       items: doc.items,
     }));
   }
@@ -761,5 +768,217 @@ export class SalesService {
     });
 
     return payment;
+  }
+
+  // =============================
+  // Park Sale (Temporary Hold Without Payment)
+  // =============================
+  static async parkSale(input: {
+    branchId: string;
+    userId: string;
+    items: {
+      productId: string;
+      description?: string;
+      quantity: number;
+      unitPrice: number;
+      taxRate?: number;
+      discount?: number;
+    }[];
+    discount?: number;
+    paymentMethod?: string;
+    customerId?: string;
+    notes?: string;
+  }) {
+    const {
+      branchId,
+      userId,
+      items,
+      discount = 0,
+      paymentMethod,
+      customerId,
+      notes,
+    } = input;
+
+    // Validate that all products exist
+    for (const item of items) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        select: { id: true },
+      });
+      if (!product) {
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          `Product with ID ${item.productId} not found`,
+        );
+      }
+    }
+
+    const documentId = await SequenceService.getNextNumber(
+      SalesDocumentType.INVOICE,
+      branchId,
+    );
+
+    const preparedItems = items.map((item) => {
+      const totals = calculateItemTotals(item);
+      return {
+        productId: item.productId,
+        description: item.description || "POS item",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        taxRate: item.taxRate || 0,
+        subtotal: totals.subtotal,
+        taxAmount: totals.taxAmount,
+        discount: totals.discount,
+        total: totals.total,
+      };
+    });
+
+    const totals = calculateDocumentTotals(preparedItems);
+
+    return prisma.salesDocument.create({
+      data: {
+        documentId,
+        type: SalesDocumentType.INVOICE,
+        status: SalesDocumentStatus.PARKED,
+        paymentStatus: PaymentStatus.UNPAID,
+        branchId,
+        customerId: customerId || undefined,
+        issueDate: new Date(),
+        subtotal: totals.subtotal,
+        tax: totals.tax,
+        discount: discount,
+        total: totals.total + discount,
+        balance: totals.total + discount,
+        paidAmount: 0,
+        notes: notes || null,
+        createdById: userId,
+        items: { create: preparedItems },
+      },
+      include: { items: true },
+    });
+  }
+
+  // =============================
+  // Hold Sale (Temporary Hold Without Payment)
+  // =============================
+  static async holdSale(input: {
+    branchId: string;
+    userId: string;
+    items: {
+      productId: string;
+      description?: string;
+      quantity: number;
+      unitPrice: number;
+      taxRate?: number;
+      discount?: number;
+    }[];
+    discount?: number;
+    paymentMethod?: string;
+    customerId?: string;
+    notes?: string;
+  }) {
+    const {
+      branchId,
+      userId,
+      items,
+      discount = 0,
+      paymentMethod,
+      customerId,
+      notes,
+    } = input;
+
+    // Validate that all products exist
+    for (const item of items) {
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        select: { id: true },
+      });
+      if (!product) {
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          `Product with ID ${item.productId} not found`,
+        );
+      }
+    }
+
+    const documentId = await SequenceService.getNextNumber(
+      SalesDocumentType.INVOICE,
+      branchId,
+    );
+
+    const preparedItems = items.map((item) => {
+      const totals = calculateItemTotals(item);
+      return {
+        productId: item.productId,
+        description: item.description || "POS item",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        taxRate: item.taxRate || 0,
+        subtotal: totals.subtotal,
+        taxAmount: totals.taxAmount,
+        discount: totals.discount,
+        total: totals.total,
+      };
+    });
+
+    const totals = calculateDocumentTotals(preparedItems);
+
+    return prisma.salesDocument.create({
+      data: {
+        documentId,
+        type: SalesDocumentType.INVOICE,
+        status: SalesDocumentStatus.HELD,
+        paymentStatus: PaymentStatus.UNPAID,
+        branchId,
+        customerId: customerId || undefined,
+        issueDate: new Date(),
+        subtotal: totals.subtotal,
+        tax: totals.tax,
+        discount: discount,
+        total: totals.total + discount,
+        balance: totals.total + discount,
+        paidAmount: 0,
+        notes: notes || null,
+        createdById: userId,
+        items: { create: preparedItems },
+      },
+      include: { items: true },
+    });
+  }
+
+  // =============================
+  // Approve/Close Credit Note
+  // =============================
+  static async approveCreditNote(id: string, userId: string) {
+    const document = await prisma.salesDocument.findUnique({
+      where: { id },
+      include: { items: true },
+    });
+
+    if (!document) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Credit note not found");
+    }
+
+    if (document.type !== SalesDocumentType.CREDIT_NOTE) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Document is not a credit note");
+    }
+
+    if (document.status !== SalesDocumentStatus.DRAFT) {
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        `Credit note is already ${document.status.toLowerCase()}`,
+      );
+    }
+
+    return prisma.salesDocument.update({
+      where: { id },
+      data: {
+        status: SalesDocumentStatus.CLOSED,
+        approvedById: userId,
+      },
+    });
   }
 }

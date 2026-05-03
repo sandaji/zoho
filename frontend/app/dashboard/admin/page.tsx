@@ -16,6 +16,7 @@ import DeliveriesSection from "@/components/admin/DeliveriesSection";
 import FinanceSection from "@/components/admin/FinanceSection";
 import PayrollSection from "@/components/admin/PayrollSection";
 import RolesSection from "@/components/admin/RolesSection";
+import CreditNotesSection from "@/components/admin/CreditNotesSection";
 
 const SECTION_META: Record<string, { title: string; subtitle: string; icon: React.ElementType }> = {
   overview: { title: "System Overview", subtitle: "Live snapshot across all operations", icon: Crown },
@@ -28,6 +29,7 @@ const SECTION_META: Record<string, { title: string; subtitle: string; icon: Reac
   finance: { title: "Finance & Transactions", subtitle: "Ledger entries, income and expenses", icon: Shield },
   payroll: { title: "Payroll Management", subtitle: "Employee salary records and disbursements", icon: Shield },
   roles: { title: "Roles & Permissions", subtitle: "Define access control for all system roles", icon: Shield },
+  credit_notes: { title: "Credit Notes", subtitle: "Manage returns and refunds", icon: Shield },
 };
 
 export default function AdminDashboardPage() {
@@ -69,6 +71,7 @@ export default function AdminDashboardPage() {
       case "finance": return <FinanceSection />;
       case "payroll": return <PayrollSection />;
       case "roles": return <RolesSection />;
+      case "credit_notes": return <CreditNotesSection />;
       default: return <AdminOverview />;
     }
   };

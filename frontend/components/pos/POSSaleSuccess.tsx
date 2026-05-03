@@ -1,7 +1,7 @@
 // frontend/components/pos/POSSaleSuccess.tsx
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import {
   Dialog,
@@ -19,11 +19,18 @@ import {
   Download,
   ShoppingBag,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { SaleData } from "@/app/dashboard/pos/page";
 import { formatCurrency, safeFormatDate } from "@/lib/utils";
 import { frontendEnv } from "@/lib/env";
+import { getApiUrl } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/lib/toast-context";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;
@@ -39,15 +46,80 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
   onNewSale,
 }) => {
   const receiptRef = useRef<HTMLDivElement>(null);
-
+  const { toast } = useToast();
+  const { token } = useAuth();
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailAddress, setEmailAddress] = useState("");
+  const [isLoadingEmail, setIsLoadingEmail] = useState(false);
+  const [isLoadingPDF, setIsLoadingPDF] = useState(false);
 
   const handlePrint = useReactToPrint({
     contentRef: receiptRef,
     documentTitle: `Receipt-${sale.invoice_no}`,
   });
 
+  const handleEmailReceipt = async () => {
+    if (!emailAddress.trim()) {
+      toast("Please enter an email address", "warning");
+      return;
+    }
+
+    try {
+      setIsLoadingEmail(true);
+      const res = await fetch(`${getApiUrl("/v1/pos/sales")}/${sale.id}/email`, {
+        method: "POST",
+        headers: getAuthHeadersWithToken(token || ""),
+        body: JSON.stringify({ email: emailAddress }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to send email");
+      }
+
+      toast("Receipt sent successfully", "success");
+      setEmailDialogOpen(false);
+      setEmailAddress("");
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "Failed to send receipt", "error");
+    } finally {
+      setIsLoadingEmail(false);
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      setIsLoadingPDF(true);
+      const res = await fetch(`${getApiUrl("/v1/pos/sales")}/${sale.id}/pdf`, {
+        headers: getAuthHeadersWithToken(token || ""),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to download PDF");
+      }
+
+      // Create blob and trigger download
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `receipt-${sale.invoice_no}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast("Receipt downloaded successfully", "success");
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "Failed to download PDF", "error");
+    } finally {
+      setIsLoadingPDF(false);
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={() => { }}>
+    <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
@@ -83,48 +155,92 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
           </div>
 
           {/* Receipt Preview */}
-          <div
-            ref={receiptRef}
-            className="rounded-lg border bg-white p-8 shadow-inner"
-          >
+          <div ref={receiptRef} className="rounded-lg border bg-white p-8 shadow-inner">
             <ReceiptContent sale={sale} changeAmount={changeAmount} />
           </div>
 
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={handlePrint}
-              className="h-12"
-            >
+            <Button variant="outline" onClick={handlePrint} className="h-12">
               <Printer className="mr-2 h-4 w-4" />
               Print Receipt
             </Button>
-            <Button
-              variant="outline"
-              disabled
-              className="h-12"
-            >
+            <Button variant="outline" onClick={() => setEmailDialogOpen(true)} className="h-12">
               <Mail className="mr-2 h-4 w-4" />
               Email Receipt
             </Button>
             <Button
               variant="outline"
-              disabled
+              onClick={handleDownloadPDF}
+              disabled={isLoadingPDF}
               className="h-12"
             >
-              <Download className="mr-2 h-4 w-4" />
-              Download PDF
+              {isLoadingPDF ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {isLoadingPDF ? "Downloading..." : "Download PDF"}
             </Button>
-            <Button
-              onClick={onNewSale}
-              className="h-12 bg-green-600 hover:bg-green-700"
-            >
+            <Button onClick={onNewSale} className="h-12 bg-green-600 hover:bg-green-700">
               <ShoppingBag className="mr-2 h-4 w-4" />
               New Sale
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
+
+          {/* Email Receipt Dialog */}
+          <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Email Receipt</DialogTitle>
+                <DialogDescription>
+                  Send receipt for invoice {sale.invoice_no} to customer email
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div>
+                  <Label htmlFor="email">Customer Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="customer@example.com"
+                    value={emailAddress}
+                    onChange={(e) => setEmailAddress(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !isLoadingEmail) {
+                        handleEmailReceipt();
+                      }
+                    }}
+                    disabled={isLoadingEmail}
+                    className="mt-2"
+                  />
+                </div>
+                <div className="flex gap-3 justify-end">
+                  <Button
+                    variant="outline"
+                    onClick={() => setEmailDialogOpen(false)}
+                    disabled={isLoadingEmail}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleEmailReceipt}
+                    disabled={isLoadingEmail || !emailAddress.trim()}
+                  >
+                    {isLoadingEmail ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Email"
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </DialogContent>
     </Dialog>
@@ -137,22 +253,16 @@ const ReceiptContent: React.FC<{
   changeAmount: number;
 }> = ({ sale, changeAmount }) => {
   // Branch DB fields take priority — env vars are fallback
-  const companyName =
-    sale.branch?.name ||
-    frontendEnv.NEXT_PUBLIC_COMPANY_NAME;
+  const companyName = sale.branch?.name || frontendEnv.NEXT_PUBLIC_COMPANY_NAME;
 
   const companyAddress =
     sale.branch?.address ||
-    (sale.branch?.city
-      ? `${sale.branch.city}, Kenya`
-      : frontendEnv.NEXT_PUBLIC_COMPANY_ADDRESS);
+    (sale.branch?.city ? `${sale.branch.city}, Kenya` : frontendEnv.NEXT_PUBLIC_COMPANY_ADDRESS);
 
-  const companyPhone =
-    sale.branch?.phone ||
-    frontendEnv.NEXT_PUBLIC_COMPANY_PHONE;
+  const companyPhone = sale.branch?.phone || frontendEnv.NEXT_PUBLIC_COMPANY_PHONE;
 
   const companyEmail = frontendEnv.NEXT_PUBLIC_COMPANY_EMAIL;
-  const companyPin   = frontendEnv.NEXT_PUBLIC_COMPANY_PIN;
+  const companyPin = frontendEnv.NEXT_PUBLIC_COMPANY_PIN;
 
   return (
     <div className="receipt-content space-y-4 font-mono text-sm">
@@ -174,7 +284,9 @@ const ReceiptContent: React.FC<{
         </div>
         <div className="flex justify-between">
           <span>Date:</span>
-          <span>{safeFormatDate(sale.created_at, { dateStyle: "medium", timeStyle: "short" })}</span>
+          <span>
+            {safeFormatDate(sale.created_at, { dateStyle: "medium", timeStyle: "short" })}
+          </span>
         </div>
         {sale.customer && (
           <>
@@ -208,12 +320,8 @@ const ReceiptContent: React.FC<{
             <div key={index} className="grid grid-cols-12 gap-1 text-xs">
               <div className="col-span-6">{item.name}</div>
               <div className="col-span-2 text-center">{item.quantity}</div>
-              <div className="col-span-2 text-right">
-                {formatCurrency(item.unit_price)}
-              </div>
-              <div className="col-span-2 text-right">
-                {formatCurrency(lineTotal)}
-              </div>
+              <div className="col-span-2 text-right">{formatCurrency(item.unit_price)}</div>
+              <div className="col-span-2 text-right">{formatCurrency(lineTotal)}</div>
             </div>
           );
         })}

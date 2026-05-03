@@ -17,7 +17,8 @@ import { SessionOpenDialog } from "@/components/cashier/SessionOpenDialog";
 import { SessionStatusCard } from "@/components/cashier/SessionStatusCard";
 import { CloseSessionDialog } from "@/components/pos/CloseSessionDialog";
 
-import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
+import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
 
 // ------------------ Types ------------------
 type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
@@ -60,7 +61,7 @@ export interface SaleData {
 
 export default function POSPage() {
   const router = useRouter();
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, token, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
 
   // Cashier session management
@@ -237,7 +238,7 @@ export default function POSPage() {
     try {
       const res = await fetch(getApiUrl(API_ENDPOINTS.POS_SALES), {
         method: "POST",
-        headers: getAuthHeaders(),
+        headers: getAuthHeadersWithToken(token || ""),
         body: JSON.stringify({
           branchId: user.branchId,
           userId: user.id,
@@ -305,22 +306,96 @@ export default function POSPage() {
   };
 
   // ------------------ Quick Actions ------------------
-  const handleParkSale = () => {
+  const handleParkSale = async () => {
     if (!cart.length) {
       toast("Cart is empty", "warning");
       return;
     }
-    // TODO: Implement park sale functionality
-    toast("Sale parked (Not implemented)", "info");
+
+    try {
+      setLoading(true);
+      const res = await fetch(getApiUrl("/v1/sales-documents/sales/park"), {
+        method: "POST",
+        headers: getAuthHeadersWithToken(token || ""),
+        body: JSON.stringify({
+          branchId: user.branchId,
+          userId: user.id,
+          items: cart.map((c) => ({
+            productId: c.productId,
+            quantity: c.quantity,
+            unit_price: c.unit_price,
+            tax_rate: c.tax_rate,
+            discount: c.discount,
+            discount_percent: c.discount_percent,
+          })),
+          discount: totalDiscount,
+          payment_method: paymentMethod,
+          customerId: selectedCustomer?.id || undefined,
+          notes: notes || undefined,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        toast(json.message || "Failed to park sale", "error");
+        return;
+      }
+
+      toast("Sale parked successfully", "success");
+      clearCart();
+    } catch (error) {
+      toast("Failed to park sale", "error");
+      console.error("Park sale error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleHoldSale = () => {
+  const handleHoldSale = async () => {
     if (!cart.length) {
       toast("Cart is empty", "warning");
       return;
     }
-    // TODO: Implement hold sale functionality
-    toast("Sale held (Not implemented)", "info");
+
+    try {
+      setLoading(true);
+      const res = await fetch(getApiUrl("/v1/sales-documents/sales/hold"), {
+        method: "POST",
+        headers: getAuthHeadersWithToken(token || ""),
+        body: JSON.stringify({
+          branchId: user.branchId,
+          userId: user.id,
+          items: cart.map((c) => ({
+            productId: c.productId,
+            quantity: c.quantity,
+            unit_price: c.unit_price,
+            tax_rate: c.tax_rate,
+            discount: c.discount,
+            discount_percent: c.discount_percent,
+          })),
+          discount: totalDiscount,
+          payment_method: paymentMethod,
+          customerId: selectedCustomer?.id || undefined,
+          notes: notes || undefined,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (!res.ok || !json.success) {
+        toast(json.message || "Failed to hold sale", "error");
+        return;
+      }
+
+      toast("Sale held successfully", "success");
+      clearCart();
+    } catch (error) {
+      toast("Failed to hold sale", "error");
+      console.error("Hold sale error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // ------------------ Keyboard Shortcuts ------------------
@@ -397,6 +472,7 @@ export default function POSPage() {
               <CardContent>
                 <AutocompleteProductSearch
                   branchId={user.branchId || ""}
+                  token={token || ""}
                   searchInputRef={searchInputRef}
                   onSelect={addToCart}
                 />
@@ -430,6 +506,7 @@ export default function POSPage() {
               </CardHeader>
               <CardContent>
                 <POSCustomerSelect
+                  token={token || ""}
                   selectedCustomer={selectedCustomer}
                   onCustomerSelect={setSelectedCustomer}
                 />

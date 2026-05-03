@@ -51,7 +51,7 @@ export function AdminTable<T extends Record<string, any>>({
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const safeData = data || [];
+  const safeData = Array.isArray(data) ? data : [];
 
   const filteredData = useMemo(() => {
     if (!search) return safeData;

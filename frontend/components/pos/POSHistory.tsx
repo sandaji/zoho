@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,10 +51,12 @@ function todayISO() {
 }
 
 export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
+  const router = useRouter();
   const { toast } = useToast();
   const [sales, setSales] = useState<SaleRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
 
   // Date range state — default to today
   const [startDate, setStartDate] = useState(todayISO());
@@ -100,6 +103,46 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
   useEffect(() => {
     fetchSales();
   }, [fetchSales]);
+
+  // Export sales data
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      const params = new URLSearchParams({ branchId });
+      if (startDate) params.set("startDate", startDate);
+      if (endDate) params.set("endDate", endDate);
+      if (paymentFilter && paymentFilter !== "all") {
+        params.set("payment_method", paymentFilter);
+      }
+      params.set("format", "csv");
+
+      const res = await fetch(`${getApiUrl("/v1/sales")}/export?${params}`, {
+        headers: getAuthHeaders(),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to export sales");
+      }
+
+      // Create blob and trigger download
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `sales-export-${startDate}-to-${endDate}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast("Sales exported successfully", "success");
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "Failed to export sales", "error");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Quick date presets
   const applyPreset = (preset: "today" | "yesterday" | "week" | "month" | "all") => {
@@ -185,9 +228,14 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Button variant="outline" size="sm" disabled>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              disabled={isExporting || sales.length === 0}
+            >
               <Download className="h-4 w-4 mr-2" />
-              Export
+              {isExporting ? "Exporting..." : "Export"}
             </Button>
           </div>
         </div>
@@ -394,10 +442,20 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2">
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => router.push(`/dashboard/pos/sales/${sale.id}`)}
+                        >
                           <Eye className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => router.push(`/dashboard/pos/sales/${sale.id}?print=true`)}
+                        >
                           <Printer className="h-4 w-4" />
                         </Button>
                       </div>

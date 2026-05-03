@@ -77,6 +77,33 @@ router.get(
     adminController.getStats(req, res, next),
 );
 
+// Global consolidated financials (aggregated across all branches)
+router.get(
+  "/admin/global-financials",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.getGlobalFinancials(req, res, next),
+);
+
+// Inter-Branch Transfer monitor
+router.get(
+  "/admin/ibt-monitor",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.getIBTMonitor(req, res, next),
+);
+
+// System health snapshot
+router.get(
+  "/admin/system-health",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.getSystemHealth(req, res, next),
+);
+
 // Branches - Admin only for management, but allow viewing
 router.get(
   "/admin/branches",
