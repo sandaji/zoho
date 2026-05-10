@@ -9,6 +9,7 @@
 import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 import { notFoundError, AppError, ErrorCode } from "../../../lib/errors";
+import { getRequestContext } from "../../../lib/async-context";
 import {
   UpdateInventoryDTO,
   InventoryResponseDTO,
@@ -46,12 +47,20 @@ export class InventoryService {
       },"Fetching inventory", );
 
       // Build dynamic where clause
+      const context = getRequestContext();
       const where: any = {};
+
+      // Branch isolation for non-admins
+      if (context.branchId && context.role !== "admin" && context.role !== "super_admin") {
+        where.warehouse = { branchId: context.branchId };
+      }
 
       if (query.status) {
         where.status = query.status;
       }
       if (query.warehouseId) {
+        // If warehouseId is provided, Prisma will combine it with our branchId filter,
+        // which effectively validates that the requested warehouse belongs to the branch.
         where.warehouseId = query.warehouseId;
       }
       if (query.productId) {
@@ -151,12 +160,16 @@ export class InventoryService {
 
       // Use atomic transaction to ensure consistency
       const result = await this.prisma.$transaction(async (tx: any) => {
-    
-    // Get current inventory state
+        const context = getRequestContext();
+        
+        // Get current inventory state with branch isolation
         const inventory = await tx.inventory.findFirst({
           where: {
             productId: dto.productId,
             warehouseId: dto.warehouseId,
+            warehouse: (context.branchId && context.role !== "admin" && context.role !== "super_admin") 
+              ? { branchId: context.branchId } 
+              : undefined,
           },
           include: {
             product: true,
@@ -274,13 +287,16 @@ export class InventoryService {
       }
 
       return await this.prisma.$transaction(async (tx) => {
-        // 1. Check source inventory
-        const inventory = await tx.inventory.findUnique({
+        const context = getRequestContext();
+
+        // 1. Check source inventory with branch isolation
+        const inventory = await tx.inventory.findFirst({
           where: {
-            productId_warehouseId: {
-              productId: dto.productId,
-              warehouseId: dto.fromWarehouseId,
-            },
+            productId: dto.productId,
+            warehouseId: dto.fromWarehouseId,
+            warehouse: (context.branchId && context.role !== "admin" && context.role !== "super_admin")
+              ? { branchId: context.branchId }
+              : undefined,
           },
         });
 

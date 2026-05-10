@@ -16,12 +16,8 @@ export class HrService {
   private prisma = prisma;
 
   // HR DASHBOARD STATS
-  async getHRStats(authorizedBranchIds?: string[]): Promise<any> {
+  async getHRStats(): Promise<any> {
     try {
-      const branchFilter = authorizedBranchIds && authorizedBranchIds.length > 0 
-        ? { branchId: { in: authorizedBranchIds } } 
-        : {};
-
       const [
         totalEmployees,
         activeJobPostings,
@@ -29,23 +25,14 @@ export class HrService {
         upcomingEvaluations
       ] = await Promise.all([
         this.prisma.user.count({ 
-            where: { 
-                isActive: true,
-                ...branchFilter
-            } 
+            where: { isActive: true } 
         }),
-        this.prisma.jobPosting.count({ where: { status: 'PUBLISHED' } }), // Job postings are usually not branch-bound in this schema yet
+        this.prisma.jobPosting.count({ where: { status: 'PUBLISHED' } }),
         this.prisma.leaveRequest.count({ 
-            where: { 
-                status: 'PENDING',
-                user: branchFilter
-            } 
+            where: { status: 'PENDING' } 
         }),
         this.prisma.performanceEvaluation.count({ 
-            where: { 
-                date: { gte: new Date() }, // Future reviews
-                user: branchFilter
-            } 
+            where: { date: { gte: new Date() } } 
         }),
       ]);
 
@@ -86,15 +73,10 @@ export class HrService {
     }
   }
 
-  async getUser(id: string, authorizedBranchIds?: string[]): Promise<UserResponseDTO> {
+  async getUser(id: string): Promise<UserResponseDTO> {
     try {
-      const where: any = { id };
-      if (authorizedBranchIds && authorizedBranchIds.length > 0) {
-        where.branchId = { in: authorizedBranchIds };
-      }
-
       const user = await this.prisma.user.findFirst({
-        where,
+        where: { id },
       });
 
       if (!user) {
@@ -108,14 +90,9 @@ export class HrService {
     }
   }
 
-  async updateUser(id: string, dto: UpdateUserDTO, authorizedBranchIds?: string[]): Promise<UserResponseDTO> {
+  async updateUser(id: string, dto: UpdateUserDTO): Promise<UserResponseDTO> {
     try {
-      const where: any = { id };
-      if (authorizedBranchIds && authorizedBranchIds.length > 0) {
-        where.branchId = { in: authorizedBranchIds };
-      }
-
-      const user = await this.prisma.user.findFirst({ where });
+      const user = await this.prisma.user.findFirst({ where: { id } });
 
       if (!user) {
         throw notFoundError("User", id);
@@ -197,8 +174,7 @@ export class HrService {
   }
 
   async listPayroll(
-    query: PayrollListQueryDTO,
-    authorizedBranchIds?: string[]
+    query: PayrollListQueryDTO
   ): Promise<{ data: PayrollResponseDTO[]; total: number }> {
     try {
       const page = query.page || 1;
@@ -207,19 +183,8 @@ export class HrService {
 
       const where: any = {};
 
-      if (authorizedBranchIds && authorizedBranchIds.length > 0) {
-        where.user = { branchId: { in: authorizedBranchIds } };
-      }
-
       if (query.status) where.status = query.status;
-      if (query.userId) {
-          // If we already have a branch filter, we need to be careful with nested AND
-          if (where.user) {
-              where.user.id = query.userId;
-          } else {
-              where.userId = query.userId;
-          }
-      }
+      if (query.userId) where.userId = query.userId;
 
       if (query.startDate || query.endDate) {
         where.period_start = {};

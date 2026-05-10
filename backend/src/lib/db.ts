@@ -4,6 +4,64 @@ import { logger } from "./logger";
 import { PrismaClient, Prisma } from "../generated";
 import { getRequestContext } from "./async-context";
 
+const ISOLATION_CONFIGS: Record<string, string> = {
+  Warehouse: "branchId",
+  BranchInventory: "branchId",
+  SalesDocument: "branchId",
+  SalesOrder: "branchId",
+  StockTransfer: "branchId",
+  DocumentSequence: "branchId",
+  CashierSession: "branchId",
+  User: "branchId",
+  Payroll: "user.branchId",
+  LeaveRequest: "user.branchId",
+  PerformanceEvaluation: "user.branchId",
+  Inventory: "warehouse.branchId",
+  StockMovement: "warehouse.branchId",
+  FinanceTransaction: "payroll.user.branchId",
+};
+
+/**
+ * Deeply applies a branch isolation filter to a Prisma where clause
+ */
+function applyIsolation(where: any, path: string, branchId: string) {
+  const parts = path.split(".");
+  let current = where;
+
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i];
+    if (typeof current[part] !== "object" || current[part] === null) {
+      current[part] = {};
+    }
+    current = current[part];
+  }
+
+  const finalKey = parts[parts.length - 1];
+  current[finalKey] = branchId;
+}
+
+const SENSITIVE_FIELDS = ["password", "passwordHash", "token", "secret", "apiKey"];
+
+/**
+ * Strips sensitive fields from data before logging
+ */
+function redact(data: any): any {
+  if (!data) return data;
+  if (typeof data !== "object") return data;
+  
+  const clean = Array.isArray(data) ? [...data] : { ...data };
+  
+  for (const key in clean) {
+    if (SENSITIVE_FIELDS.includes(key)) {
+      clean[key] = "[REDACTED]";
+    } else if (typeof clean[key] === "object") {
+      clean[key] = redact(clean[key]);
+    }
+  }
+  
+  return clean;
+}
+
 interface CustomPrismaClient extends Omit<PrismaClient, "$on"> {
   attendance: any;
   $on(eventType: "query", callback: (event: Prisma.QueryEvent) => void): void;
@@ -57,31 +115,61 @@ function createPrismaClient(): CustomPrismaClient {
   }) as unknown as CustomPrismaClient;
   // ^ FIX 3: Cast to our custom interface. This forces TS to accept the log events.
 
-  // Audit Log Extension
+  // Extended Client for Audit Logging and Branch Isolation
   const extendedClient = client.$extends({
     query: {
       $allModels: {
         async $allOperations({ model, operation, args, query }) {
+          const context = getRequestContext();
+          const isSuperAdmin = context.role === "admin" || context.role === "super_admin";
+
+          // ─── 1. BRANCH ISOLATION ──────────────────────────────────────────
+          // Automatically inject branchId filter for scoped models if not super admin
+          const isolationPath = ISOLATION_CONFIGS[model as string];
+          if (context.branchId && !isSuperAdmin && model !== "AuditLog" && isolationPath) {
+            const isolationOperations = [
+              "findMany",
+              "findFirst",
+              "findUnique",
+              "count",
+              "update",
+              "updateMany",
+              "delete",
+              "deleteMany",
+              "aggregate",
+              "groupBy",
+            ];
+
+            if (isolationOperations.includes(operation)) {
+              args.where = args.where || {};
+              applyIsolation(args.where, isolationPath, context.branchId);
+            }
+          }
+
+          // ─── 2. AUDIT LOGGING ─────────────────────────────────────────────
           if (model === "AuditLog") {
             return query(args);
           }
 
           // Only log CUD operations on single records for now
           if (!["create", "update", "delete"].includes(operation)) {
-            return query(args);
+            const { omit, ...cleanArgs } = args as any;
+            return query(cleanArgs);
           }
 
           let before;
           if (operation === "update" || operation === "delete") {
             try {
+              // Use the base client to avoid recursive extension calls
               // @ts-ignore
-              before = await prisma[model].findUnique({ where: args.where });
+              before = await client[model].findUnique({ where: args.where });
             } catch (e) {
               // failed to find before, maybe doesn't exist or composite key issue
             }
           }
 
-          const result = await query(args);
+          const { omit, ...cleanArgs } = args as any;
+          const result = await query(cleanArgs);
 
           let after;
           if (operation === "create" || operation === "update") {
@@ -89,23 +177,23 @@ function createPrismaClient(): CustomPrismaClient {
           }
 
           const changes = { before: before || null, after: after || null };
-          // result usually has id. If not, try args.
           const entityId = (result as any)?.id || (args as any).where?.id;
 
           if (entityId) {
-            const context = getRequestContext();
-            // Async logging - don't await to avoid blocking?
-            // Better to await to ensure it's captured in this request context?
-            // We'll await for now for safety.
             try {
               // @ts-ignore
-              await prisma.auditLog.create({
+              await client.auditLog.create({
                 data: {
                   entityType: model ?? "Unknown",
                   entityId: entityId,
                   action: operation.toUpperCase() as any,
-                  changes,
+                  changes: redact({
+                    ...changes,
+                    businessAction: context.businessAction || null,
+                    metadata: context.metadata || null,
+                  }),
                   userId: context.userId || null,
+                  branchId: context.branchId || null,
                   ipAddress: context.ipAddress || null,
                 },
               });

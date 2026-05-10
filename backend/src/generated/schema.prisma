@@ -293,6 +293,7 @@ model Branch {
   transfersTo       EmployeeTransfer[] @relation("TransfersTo")
   purchaseOrders    PurchaseOrder[]
   salesOrders       SalesOrder[]
+  auditLogs         AuditLog[]
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -2310,14 +2311,21 @@ model AuditLog {
   entityType String
   entityId   String
   action     AuditAction
-  userId     String?
-  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
-  changes    Json
-  ipAddress  String?
-  timestamp  DateTime    @default(now())
+
+  // Scoping
+  userId   String?
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  branchId String?
+  branch   Branch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+
+  // Payload
+  changes   Json
+  ipAddress String?
+  timestamp DateTime @default(now())
 
   @@index([entityType, entityId])
   @@index([userId])
+  @@index([branchId])
   @@index([timestamp])
   @@map("audit_logs")
 }

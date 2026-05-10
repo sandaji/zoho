@@ -3,7 +3,9 @@ import { asyncContext } from '../lib/async-context';
 
 export const contextMiddleware = (req: Request, _res: Response, next: NextFunction) => {
   const context = {
-    userId: (req as any).user?.userId, // Assuming authMiddleware populates req.user
+    userId: req.user?.userId,
+    branchId: req.user?.branchId,
+    role: req.user?.role,
     ipAddress: (req.headers['x-forwarded-for'] as string) || req.ip,
     userAgent: req.headers['user-agent'],
   };

@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
 import { Product, fetchProducts } from "@/lib/admin-api";
@@ -41,22 +40,25 @@ export default function ProductsSection() {
 
     setIsSaving(true);
     try {
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/${editData.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: editData.name,
-          description: editData.description,
-          category: editData.category,
-          unit_price: editData.unit_price,
-          cost_price: editData.cost_price,
-          reorder_level: editData.reorder_level,
-          isActive: editData.isActive,
-        }),
-      });
+      const response = await fetch(
+        `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/${editData.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: editData.name,
+            description: editData.description,
+            category: editData.category,
+            unit_price: editData.unit_price,
+            cost_price: editData.cost_price,
+            reorder_level: editData.reorder_level,
+            isActive: editData.isActive,
+          }),
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -106,9 +108,9 @@ export default function ProductsSection() {
       render: (quantity: number, row: Product) => {
         const status = getStockStatus(quantity, row.reorder_level);
         return (
-          <div className="flex items-center gap-2">
-            <span>{quantity}</span>
-            <Badge variant={status.variant} className="text-xs">
+          <div className="flex items-center justify-between w-full">
+            <span className="font-medium">{quantity}</span>
+            <Badge variant={status.variant} className="text-xs whitespace-nowrap">
               {status.label}
             </Badge>
           </div>
@@ -304,10 +306,10 @@ export default function ProductsSection() {
                   <p className="text-sm">
                     {selectedProduct && selectedProduct.cost_price
                       ? (
-                        ((selectedProduct.unit_price - selectedProduct.cost_price) /
-                          selectedProduct.cost_price) *
-                        100
-                      ).toFixed(1)
+                          ((selectedProduct.unit_price - selectedProduct.cost_price) /
+                            selectedProduct.cost_price) *
+                          100
+                        ).toFixed(1)
                       : "0"}
                     %
                   </p>

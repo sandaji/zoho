@@ -2,8 +2,10 @@
  * Finance Service - Database-driven financial analytics
  */
 
+import { Prisma } from "../../generated";
 import { prisma } from "../../lib/db";
 import { logger } from "../../lib/logger";
+import { getRequestContext } from "../../lib/async-context";
 
 export class FinanceService {
   /**
@@ -254,6 +256,12 @@ export class FinanceService {
       const startDate = new Date(now.getFullYear(), 0, 1); // Start of year
       const endDate = now;
 
+      const context = getRequestContext();
+      const isAdmin = context.role === "admin" || context.role === "super_admin";
+      const branchFilter = (context.branchId && !isAdmin)
+        ? Prisma.sql`AND "branchId" = ${context.branchId}`
+        : Prisma.empty;
+
       // Get monthly sales data
       const monthlySales = await prisma.$queryRaw<
         Array<{
@@ -272,6 +280,7 @@ export class FinanceService {
         WHERE "createdAt" >= ${startDate}
           AND "createdAt" <= ${endDate}
           AND status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
+          ${branchFilter}
         GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
         ORDER BY year, month
       `;
@@ -292,6 +301,7 @@ export class FinanceService {
         WHERE "createdAt" >= ${startDate}
           AND "createdAt" <= ${endDate}
           AND type = 'expense'
+          ${(context.branchId && !isAdmin) ? Prisma.sql`AND "branchId" = ${context.branchId}` : Prisma.empty}
         GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
         ORDER BY year, month
       `;
@@ -309,9 +319,11 @@ export class FinanceService {
           EXTRACT(YEAR FROM period_start)::INTEGER as year,
           COALESCE(SUM(net_salary), 0)::FLOAT as payroll
         FROM payroll
+        JOIN users ON payroll."userId" = users.id
         WHERE period_start >= ${startDate}
           AND period_start <= ${endDate}
           AND status IN ('approved', 'paid')
+          ${(context.branchId && !isAdmin) ? Prisma.sql`AND users."branchId" = ${context.branchId}` : Prisma.empty}
         GROUP BY EXTRACT(YEAR FROM period_start), EXTRACT(MONTH FROM period_start)
         ORDER BY year, month
       `;

@@ -4,6 +4,7 @@ import 'dotenv/config';
 import { prisma } from '../src/lib/db';
 
 import bcrypt from 'bcrypt';
+import { RbacManagementService } from '../src/modules/admin/service/rbac-management.service';
 
 async function main() {
   console.log('🌱 Starting seed...');
@@ -139,12 +140,8 @@ async function main() {
     await prisma.rolePermission.create({ data: { roleId: superAdminRole.id, permissionId: permId, scope: "GLOBAL" } });
   }
 
-  // Branch Manager
-  const bmPerms = ['hr.employee.view', 'sales.order.create', 'sales.order.view_all'];
-  for (const code of bmPerms) {
-    const id = permissionMap.get(code);
-    if (id) await prisma.rolePermission.create({ data: { roleId: branchManagerRole.id, permissionId: id, scope: "BRANCH" } });
-  }
+  // Branch Manager (Refactored to use Scalable Templates)
+  await RbacManagementService.syncRoleWithBlueprint('branch_manager', 'BRANCH_MANAGER', 'BRANCH');
 
   // Cashier
   const cashierPerms = ['sales.order.create'];

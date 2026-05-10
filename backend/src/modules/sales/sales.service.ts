@@ -1,6 +1,9 @@
 import { Prisma, type PrismaClient } from '../../generated';
 import { AppError, ErrorCode } from '../../lib/errors';
 import { ValuationService } from '../../lib/services/valuation.service';
+import { getRequestContext, setBusinessAction } from '../../lib/async-context';
+import { eventBus } from '../../lib/events';
+import { SALES_EVENTS } from '../../lib/domain-events';
 
 /**
  * Sales Service - Handles sales order and dispatch operations
@@ -31,6 +34,18 @@ export class SalesService {
     const { customerId, branchId, items, notes, createdById } = data;
 
     // Validate inputs
+    const context = getRequestContext();
+    const isAdmin = context.role === "admin" || context.role === "super_admin";
+
+    // Branch isolation: ensure the SO is created for the user's branch
+    if (!isAdmin && context.branchId && branchId !== context.branchId) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        `Unauthorized: You can only create sales orders for branch ${context.branchId}`
+      );
+    }
+
     if (!customerId || !branchId || !createdById) {
       throw new AppError(
         ErrorCode.INVALID_INPUT,
@@ -108,8 +123,8 @@ export class SalesService {
     const tax = subtotal * 0.16;
     const totalAmount = subtotal + tax;
 
-    // Generate unique SO number
-    const soNumber = `SO-${Date.now()}`;
+    // Tag the action for auditing
+    setBusinessAction('CREATE_SALES_ORDER', { customerId, soNumber });
 
     // Create sales order with items in transaction
     const salesOrder = await this.prisma.$transaction(async (tx: any) => {
@@ -144,7 +159,12 @@ export class SalesService {
     });
 
     // Fetch complete sales order with items
-    return this.getSalesOrderById(salesOrder.id);
+    const fullSO = await this.getSalesOrderById(salesOrder.id);
+    
+    // Emit domain event for decoupling
+    eventBus.publish(SALES_EVENTS.ORDER_CREATED, fullSO);
+
+    return fullSO;
   }
 
   /**
@@ -304,18 +324,22 @@ export class SalesService {
       );
     }
 
-    // Verify warehouse exists
+    // Verify warehouse exists (Auto-isolated by Prisma extension)
     const warehouse = await this.prisma.warehouse.findUnique({
       where: { id: warehouseId },
-      select: { id: true },
+      select: { id: true, branchId: true },
     });
+    
     if (!warehouse) {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Warehouse with ID ${warehouseId} not found`
+        `Warehouse with ID ${warehouseId} not found or inaccessible`
       );
     }
+
+    // Tag action for auditing
+    setBusinessAction('DISPATCH_SALES_ORDER', { soId, warehouseId, itemCount: items.length });
 
     // Wrap dispatch in transaction with FIFO depletion
     const dispatchNote = await this.prisma.$transaction(
@@ -416,35 +440,18 @@ export class SalesService {
       where: { id: dispatchNote.id },
       include: {
         dispatchedBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
+          select: { id: true, name: true, email: true },
         },
         items: {
           include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                sku: true,
-              },
-            },
-            soItem: {
-              select: {
-                qtyRequested: true,
-              },
-            },
-          },
-        },
-        salesOrder: {
-          include: {
-            customer: true,
+            product: { select: { id: true, name: true, sku: true } },
           },
         },
       },
     });
+
+    // Emit domain event
+    eventBus.publish(SALES_EVENTS.ORDER_DISPATCHED, fullDispatchNote);
 
     return fullDispatchNote;
   }

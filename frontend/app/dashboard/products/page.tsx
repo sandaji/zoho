@@ -89,7 +89,7 @@ export default function ProductsPage() {
         : "in_stock" as any,
       lastRestocked: product.updatedAt,
       branch: branchInv.branch,
-      _raw: product, // Keep raw product for editing
+      _raw: product, 
     };
   });
 

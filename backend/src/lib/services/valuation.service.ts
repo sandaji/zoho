@@ -1,6 +1,8 @@
 import { Prisma } from '../../generated';
 import { prisma } from '../../lib/prisma';
 import { AppError, ErrorCode } from '../../lib/errors';
+import { eventBus } from '../events';
+import { INVENTORY_EVENTS } from '../domain-events';
 
 /**
  * Interface for batch creation data
@@ -152,6 +154,14 @@ export class ValuationService {
       },
     });
 
+    // Emit domain event
+    eventBus.publish(INVENTORY_EVENTS.STOCK_UPDATED, {
+      productId,
+      warehouseId,
+      quantity,
+      type: 'INCREMENT',
+    });
+
     return batch;
   }
 
@@ -271,6 +281,14 @@ export class ValuationService {
 
       remainingQty -= quantityToTake;
     }
+
+    // Emit domain event
+    eventBus.publish(INVENTORY_EVENTS.STOCK_UPDATED, {
+      productId,
+      warehouseId,
+      quantity: requestedQty,
+      type: 'DECREMENT',
+    });
 
     return {
       totalCost,

@@ -7748,6 +7748,7 @@ export namespace Prisma {
     transfersTo: number
     purchaseOrders: number
     salesOrders: number
+    auditLogs: number
   }
 
   export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7761,6 +7762,7 @@ export namespace Prisma {
     transfersTo?: boolean | BranchCountOutputTypeCountTransfersToArgs
     purchaseOrders?: boolean | BranchCountOutputTypeCountPurchaseOrdersArgs
     salesOrders?: boolean | BranchCountOutputTypeCountSalesOrdersArgs
+    auditLogs?: boolean | BranchCountOutputTypeCountAuditLogsArgs
   }
 
   // Custom InputTypes
@@ -7842,6 +7844,13 @@ export namespace Prisma {
    */
   export type BranchCountOutputTypeCountSalesOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SalesOrderWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
   }
 
 
@@ -11186,6 +11195,7 @@ export namespace Prisma {
     transfersTo?: boolean | Branch$transfersToArgs<ExtArgs>
     purchaseOrders?: boolean | Branch$purchaseOrdersArgs<ExtArgs>
     salesOrders?: boolean | Branch$salesOrdersArgs<ExtArgs>
+    auditLogs?: boolean | Branch$auditLogsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["branch"]>
 
@@ -11237,6 +11247,7 @@ export namespace Prisma {
     transfersTo?: boolean | Branch$transfersToArgs<ExtArgs>
     purchaseOrders?: boolean | Branch$purchaseOrdersArgs<ExtArgs>
     salesOrders?: boolean | Branch$salesOrdersArgs<ExtArgs>
+    auditLogs?: boolean | Branch$auditLogsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BranchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -11255,6 +11266,7 @@ export namespace Prisma {
       transfersTo: Prisma.$EmployeeTransferPayload<ExtArgs>[]
       purchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
       salesOrders: Prisma.$SalesOrderPayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11670,6 +11682,7 @@ export namespace Prisma {
     transfersTo<T extends Branch$transfersToArgs<ExtArgs> = {}>(args?: Subset<T, Branch$transfersToArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     purchaseOrders<T extends Branch$purchaseOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$purchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     salesOrders<T extends Branch$salesOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$salesOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends Branch$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12338,6 +12351,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SalesOrderScalarFieldEnum | SalesOrderScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.auditLogs
+   */
+  export type Branch$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
   }
 
   /**
@@ -89196,6 +89233,7 @@ export namespace Prisma {
     entityId: string | null
     action: $Enums.AuditAction | null
     userId: string | null
+    branchId: string | null
     ipAddress: string | null
     timestamp: Date | null
   }
@@ -89206,6 +89244,7 @@ export namespace Prisma {
     entityId: string | null
     action: $Enums.AuditAction | null
     userId: string | null
+    branchId: string | null
     ipAddress: string | null
     timestamp: Date | null
   }
@@ -89216,6 +89255,7 @@ export namespace Prisma {
     entityId: number
     action: number
     userId: number
+    branchId: number
     changes: number
     ipAddress: number
     timestamp: number
@@ -89229,6 +89269,7 @@ export namespace Prisma {
     entityId?: true
     action?: true
     userId?: true
+    branchId?: true
     ipAddress?: true
     timestamp?: true
   }
@@ -89239,6 +89280,7 @@ export namespace Prisma {
     entityId?: true
     action?: true
     userId?: true
+    branchId?: true
     ipAddress?: true
     timestamp?: true
   }
@@ -89249,6 +89291,7 @@ export namespace Prisma {
     entityId?: true
     action?: true
     userId?: true
+    branchId?: true
     changes?: true
     ipAddress?: true
     timestamp?: true
@@ -89333,6 +89376,7 @@ export namespace Prisma {
     entityId: string
     action: $Enums.AuditAction
     userId: string | null
+    branchId: string | null
     changes: JsonValue
     ipAddress: string | null
     timestamp: Date
@@ -89361,10 +89405,12 @@ export namespace Prisma {
     entityId?: boolean
     action?: boolean
     userId?: boolean
+    branchId?: boolean
     changes?: boolean
     ipAddress?: boolean
     timestamp?: boolean
     user?: boolean | AuditLog$userArgs<ExtArgs>
+    branch?: boolean | AuditLog$branchArgs<ExtArgs>
   }, ExtArgs["result"]["auditLog"]>
 
   export type AuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -89373,10 +89419,12 @@ export namespace Prisma {
     entityId?: boolean
     action?: boolean
     userId?: boolean
+    branchId?: boolean
     changes?: boolean
     ipAddress?: boolean
     timestamp?: boolean
     user?: boolean | AuditLog$userArgs<ExtArgs>
+    branch?: boolean | AuditLog$branchArgs<ExtArgs>
   }, ExtArgs["result"]["auditLog"]>
 
   export type AuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -89385,10 +89433,12 @@ export namespace Prisma {
     entityId?: boolean
     action?: boolean
     userId?: boolean
+    branchId?: boolean
     changes?: boolean
     ipAddress?: boolean
     timestamp?: boolean
     user?: boolean | AuditLog$userArgs<ExtArgs>
+    branch?: boolean | AuditLog$branchArgs<ExtArgs>
   }, ExtArgs["result"]["auditLog"]>
 
   export type AuditLogSelectScalar = {
@@ -89397,26 +89447,31 @@ export namespace Prisma {
     entityId?: boolean
     action?: boolean
     userId?: boolean
+    branchId?: boolean
     changes?: boolean
     ipAddress?: boolean
     timestamp?: boolean
   }
 
-  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "entityType" | "entityId" | "action" | "userId" | "changes" | "ipAddress" | "timestamp", ExtArgs["result"]["auditLog"]>
+  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "entityType" | "entityId" | "action" | "userId" | "branchId" | "changes" | "ipAddress" | "timestamp", ExtArgs["result"]["auditLog"]>
   export type AuditLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | AuditLog$userArgs<ExtArgs>
+    branch?: boolean | AuditLog$branchArgs<ExtArgs>
   }
   export type AuditLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | AuditLog$userArgs<ExtArgs>
+    branch?: boolean | AuditLog$branchArgs<ExtArgs>
   }
   export type AuditLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | AuditLog$userArgs<ExtArgs>
+    branch?: boolean | AuditLog$branchArgs<ExtArgs>
   }
 
   export type $AuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AuditLog"
     objects: {
       user: Prisma.$UserPayload<ExtArgs> | null
+      branch: Prisma.$BranchPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -89424,6 +89479,7 @@ export namespace Prisma {
       entityId: string
       action: $Enums.AuditAction
       userId: string | null
+      branchId: string | null
       changes: Prisma.JsonValue
       ipAddress: string | null
       timestamp: Date
@@ -89822,6 +89878,7 @@ export namespace Prisma {
   export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends AuditLog$userArgs<ExtArgs> = {}>(args?: Subset<T, AuditLog$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    branch<T extends AuditLog$branchArgs<ExtArgs> = {}>(args?: Subset<T, AuditLog$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -89856,6 +89913,7 @@ export namespace Prisma {
     readonly entityId: FieldRef<"AuditLog", 'String'>
     readonly action: FieldRef<"AuditLog", 'AuditAction'>
     readonly userId: FieldRef<"AuditLog", 'String'>
+    readonly branchId: FieldRef<"AuditLog", 'String'>
     readonly changes: FieldRef<"AuditLog", 'Json'>
     readonly ipAddress: FieldRef<"AuditLog", 'String'>
     readonly timestamp: FieldRef<"AuditLog", 'DateTime'>
@@ -90276,6 +90334,25 @@ export namespace Prisma {
      */
     include?: UserInclude<ExtArgs> | null
     where?: UserWhereInput
+  }
+
+  /**
+   * AuditLog.branch
+   */
+  export type AuditLog$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -91442,6 +91519,7 @@ export namespace Prisma {
     entityId: 'entityId',
     action: 'action',
     userId: 'userId',
+    branchId: 'branchId',
     changes: 'changes',
     ipAddress: 'ipAddress',
     timestamp: 'timestamp'
@@ -92346,6 +92424,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferListRelationFilter
     purchaseOrders?: PurchaseOrderListRelationFilter
     salesOrders?: SalesOrderListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
   }
 
   export type BranchOrderByWithRelationInput = {
@@ -92368,6 +92447,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferOrderByRelationAggregateInput
     purchaseOrders?: PurchaseOrderOrderByRelationAggregateInput
     salesOrders?: SalesOrderOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
   }
 
   export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -92393,6 +92473,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferListRelationFilter
     purchaseOrders?: PurchaseOrderListRelationFilter
     salesOrders?: SalesOrderListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
   }, "id" | "code">
 
   export type BranchOrderByWithAggregationInput = {
@@ -98270,10 +98351,12 @@ export namespace Prisma {
     entityId?: StringFilter<"AuditLog"> | string
     action?: EnumAuditActionFilter<"AuditLog"> | $Enums.AuditAction
     userId?: StringNullableFilter<"AuditLog"> | string | null
+    branchId?: StringNullableFilter<"AuditLog"> | string | null
     changes?: JsonFilter<"AuditLog">
     ipAddress?: StringNullableFilter<"AuditLog"> | string | null
     timestamp?: DateTimeFilter<"AuditLog"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }
 
   export type AuditLogOrderByWithRelationInput = {
@@ -98282,10 +98365,12 @@ export namespace Prisma {
     entityId?: SortOrder
     action?: SortOrder
     userId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
     changes?: SortOrder
     ipAddress?: SortOrderInput | SortOrder
     timestamp?: SortOrder
     user?: UserOrderByWithRelationInput
+    branch?: BranchOrderByWithRelationInput
   }
 
   export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
@@ -98297,10 +98382,12 @@ export namespace Prisma {
     entityId?: StringFilter<"AuditLog"> | string
     action?: EnumAuditActionFilter<"AuditLog"> | $Enums.AuditAction
     userId?: StringNullableFilter<"AuditLog"> | string | null
+    branchId?: StringNullableFilter<"AuditLog"> | string | null
     changes?: JsonFilter<"AuditLog">
     ipAddress?: StringNullableFilter<"AuditLog"> | string | null
     timestamp?: DateTimeFilter<"AuditLog"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }, "id">
 
   export type AuditLogOrderByWithAggregationInput = {
@@ -98309,6 +98396,7 @@ export namespace Prisma {
     entityId?: SortOrder
     action?: SortOrder
     userId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
     changes?: SortOrder
     ipAddress?: SortOrderInput | SortOrder
     timestamp?: SortOrder
@@ -98326,6 +98414,7 @@ export namespace Prisma {
     entityId?: StringWithAggregatesFilter<"AuditLog"> | string
     action?: EnumAuditActionWithAggregatesFilter<"AuditLog"> | $Enums.AuditAction
     userId?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
     changes?: JsonWithAggregatesFilter<"AuditLog">
     ipAddress?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
     timestamp?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
@@ -98556,6 +98645,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateInput = {
@@ -98578,6 +98668,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUpdateInput = {
@@ -98600,6 +98691,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateInput = {
@@ -98622,6 +98714,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateManyInput = {
@@ -105122,6 +105215,7 @@ export namespace Prisma {
     ipAddress?: string | null
     timestamp?: Date | string
     user?: UserCreateNestedOneWithoutAuditLogsInput
+    branch?: BranchCreateNestedOneWithoutAuditLogsInput
   }
 
   export type AuditLogUncheckedCreateInput = {
@@ -105130,6 +105224,7 @@ export namespace Prisma {
     entityId: string
     action: $Enums.AuditAction
     userId?: string | null
+    branchId?: string | null
     changes: JsonNullValueInput | InputJsonValue
     ipAddress?: string | null
     timestamp?: Date | string
@@ -105144,6 +105239,7 @@ export namespace Prisma {
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutAuditLogsNestedInput
+    branch?: BranchUpdateOneWithoutAuditLogsNestedInput
   }
 
   export type AuditLogUncheckedUpdateInput = {
@@ -105152,6 +105248,7 @@ export namespace Prisma {
     entityId?: StringFieldUpdateOperationsInput | string
     action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
     userId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     changes?: JsonNullValueInput | InputJsonValue
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -105163,6 +105260,7 @@ export namespace Prisma {
     entityId: string
     action: $Enums.AuditAction
     userId?: string | null
+    branchId?: string | null
     changes: JsonNullValueInput | InputJsonValue
     ipAddress?: string | null
     timestamp?: Date | string
@@ -105184,6 +105282,7 @@ export namespace Prisma {
     entityId?: StringFieldUpdateOperationsInput | string
     action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
     userId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     changes?: JsonNullValueInput | InputJsonValue
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -110250,6 +110349,7 @@ export namespace Prisma {
     entityId?: SortOrder
     action?: SortOrder
     userId?: SortOrder
+    branchId?: SortOrder
     changes?: SortOrder
     ipAddress?: SortOrder
     timestamp?: SortOrder
@@ -110261,6 +110361,7 @@ export namespace Prisma {
     entityId?: SortOrder
     action?: SortOrder
     userId?: SortOrder
+    branchId?: SortOrder
     ipAddress?: SortOrder
     timestamp?: SortOrder
   }
@@ -110271,6 +110372,7 @@ export namespace Prisma {
     entityId?: SortOrder
     action?: SortOrder
     userId?: SortOrder
+    branchId?: SortOrder
     ipAddress?: SortOrder
     timestamp?: SortOrder
   }
@@ -111521,6 +111623,13 @@ export namespace Prisma {
     connect?: SalesOrderWhereUniqueInput | SalesOrderWhereUniqueInput[]
   }
 
+  export type AuditLogCreateNestedManyWithoutBranchInput = {
+    create?: XOR<AuditLogCreateWithoutBranchInput, AuditLogUncheckedCreateWithoutBranchInput> | AuditLogCreateWithoutBranchInput[] | AuditLogUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutBranchInput | AuditLogCreateOrConnectWithoutBranchInput[]
+    createMany?: AuditLogCreateManyBranchInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutBranchInput = {
     create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
@@ -111589,6 +111698,13 @@ export namespace Prisma {
     connectOrCreate?: SalesOrderCreateOrConnectWithoutBranchInput | SalesOrderCreateOrConnectWithoutBranchInput[]
     createMany?: SalesOrderCreateManyBranchInputEnvelope
     connect?: SalesOrderWhereUniqueInput | SalesOrderWhereUniqueInput[]
+  }
+
+  export type AuditLogUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<AuditLogCreateWithoutBranchInput, AuditLogUncheckedCreateWithoutBranchInput> | AuditLogCreateWithoutBranchInput[] | AuditLogUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutBranchInput | AuditLogCreateOrConnectWithoutBranchInput[]
+    createMany?: AuditLogCreateManyBranchInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
   export type UserUpdateManyWithoutBranchNestedInput = {
@@ -111731,6 +111847,20 @@ export namespace Prisma {
     deleteMany?: SalesOrderScalarWhereInput | SalesOrderScalarWhereInput[]
   }
 
+  export type AuditLogUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<AuditLogCreateWithoutBranchInput, AuditLogUncheckedCreateWithoutBranchInput> | AuditLogCreateWithoutBranchInput[] | AuditLogUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutBranchInput | AuditLogCreateOrConnectWithoutBranchInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutBranchInput | AuditLogUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: AuditLogCreateManyBranchInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutBranchInput | AuditLogUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutBranchInput | AuditLogUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutBranchNestedInput = {
     create?: XOR<UserCreateWithoutBranchInput, UserUncheckedCreateWithoutBranchInput> | UserCreateWithoutBranchInput[] | UserUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: UserCreateOrConnectWithoutBranchInput | UserCreateOrConnectWithoutBranchInput[]
@@ -111869,6 +111999,20 @@ export namespace Prisma {
     update?: SalesOrderUpdateWithWhereUniqueWithoutBranchInput | SalesOrderUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: SalesOrderUpdateManyWithWhereWithoutBranchInput | SalesOrderUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: SalesOrderScalarWhereInput | SalesOrderScalarWhereInput[]
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<AuditLogCreateWithoutBranchInput, AuditLogUncheckedCreateWithoutBranchInput> | AuditLogCreateWithoutBranchInput[] | AuditLogUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutBranchInput | AuditLogCreateOrConnectWithoutBranchInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutBranchInput | AuditLogUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: AuditLogCreateManyBranchInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutBranchInput | AuditLogUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutBranchInput | AuditLogUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutTransfersInput = {
@@ -115957,6 +116101,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type BranchCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<BranchCreateWithoutAuditLogsInput, BranchUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutAuditLogsInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type EnumAuditActionFieldUpdateOperationsInput = {
     set?: $Enums.AuditAction
   }
@@ -115969,6 +116119,16 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type BranchUpdateOneWithoutAuditLogsNestedInput = {
+    create?: XOR<BranchCreateWithoutAuditLogsInput, BranchUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutAuditLogsInput
+    upsert?: BranchUpsertWithoutAuditLogsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutAuditLogsInput, BranchUpdateWithoutAuditLogsInput>, BranchUncheckedUpdateWithoutAuditLogsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -116976,6 +117136,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutUsersInput = {
@@ -116997,6 +117158,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutUsersInput = {
@@ -117612,6 +117774,7 @@ export namespace Prisma {
     changes: JsonNullValueInput | InputJsonValue
     ipAddress?: string | null
     timestamp?: Date | string
+    branch?: BranchCreateNestedOneWithoutAuditLogsInput
   }
 
   export type AuditLogUncheckedCreateWithoutUserInput = {
@@ -117619,6 +117782,7 @@ export namespace Prisma {
     entityType: string
     entityId: string
     action: $Enums.AuditAction
+    branchId?: string | null
     changes: JsonNullValueInput | InputJsonValue
     ipAddress?: string | null
     timestamp?: Date | string
@@ -118106,6 +118270,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutUsersInput = {
@@ -118127,6 +118292,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type PayrollUpsertWithWhereUniqueWithoutUserInput = {
@@ -118672,6 +118838,7 @@ export namespace Prisma {
     entityId?: StringFilter<"AuditLog"> | string
     action?: EnumAuditActionFilter<"AuditLog"> | $Enums.AuditAction
     userId?: StringNullableFilter<"AuditLog"> | string | null
+    branchId?: StringNullableFilter<"AuditLog"> | string | null
     changes?: JsonFilter<"AuditLog">
     ipAddress?: StringNullableFilter<"AuditLog"> | string | null
     timestamp?: DateTimeFilter<"AuditLog"> | Date | string
@@ -119451,6 +119618,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AuditLogCreateWithoutBranchInput = {
+    id?: string
+    entityType: string
+    entityId: string
+    action: $Enums.AuditAction
+    changes: JsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    timestamp?: Date | string
+    user?: UserCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutBranchInput = {
+    id?: string
+    entityType: string
+    entityId: string
+    action: $Enums.AuditAction
+    userId?: string | null
+    changes: JsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    timestamp?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutBranchInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutBranchInput, AuditLogUncheckedCreateWithoutBranchInput>
+  }
+
+  export type AuditLogCreateManyBranchInputEnvelope = {
+    data: AuditLogCreateManyBranchInput | AuditLogCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutBranchInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutBranchInput, UserUncheckedUpdateWithoutBranchInput>
@@ -119674,6 +119873,22 @@ export namespace Prisma {
     data: XOR<SalesOrderUpdateManyMutationInput, SalesOrderUncheckedUpdateManyWithoutBranchInput>
   }
 
+  export type AuditLogUpsertWithWhereUniqueWithoutBranchInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutBranchInput, AuditLogUncheckedUpdateWithoutBranchInput>
+    create: XOR<AuditLogCreateWithoutBranchInput, AuditLogUncheckedCreateWithoutBranchInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutBranchInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutBranchInput, AuditLogUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutBranchInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutBranchInput>
+  }
+
   export type UserCreateWithoutTransfersInput = {
     id?: string
     email: string
@@ -119778,6 +119993,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutTransfersFromInput = {
@@ -119799,6 +120015,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutTransfersFromInput = {
@@ -119825,6 +120042,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutTransfersToInput = {
@@ -119846,6 +120064,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutTransfersToInput = {
@@ -119974,6 +120193,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutTransfersFromInput = {
@@ -119995,6 +120215,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUpsertWithoutTransfersToInput = {
@@ -120027,6 +120248,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutTransfersToInput = {
@@ -120048,6 +120270,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateWithoutWarehousesInput = {
@@ -120069,6 +120292,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutWarehousesInput = {
@@ -120090,6 +120314,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutWarehousesInput = {
@@ -120377,6 +120602,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutWarehousesInput = {
@@ -120398,6 +120624,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type InventoryUpsertWithWhereUniqueWithoutWarehouseInput = {
@@ -121310,6 +121537,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutBranchInventoryInput = {
@@ -121331,6 +121559,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutBranchInventoryInput = {
@@ -121457,6 +121686,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutBranchInventoryInput = {
@@ -121478,6 +121708,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type ProductCreateWithoutInventoryInput = {
@@ -123736,6 +123967,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutSalesDocumentsInput = {
@@ -123757,6 +123989,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutSalesDocumentsInput = {
@@ -124253,6 +124486,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutSalesDocumentsInput = {
@@ -124274,6 +124508,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type CustomerUpsertWithoutSalesDocumentsInput = {
@@ -125327,6 +125562,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutDocumentSequencesInput = {
@@ -125348,6 +125584,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutDocumentSequencesInput = {
@@ -125385,6 +125622,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutDocumentSequencesInput = {
@@ -125406,6 +125644,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type CustomerCreateWithoutSalesOrdersInput = {
@@ -125466,6 +125705,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutSalesOrdersInput = {
@@ -125487,6 +125727,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutSalesOrdersInput = {
@@ -125716,6 +125957,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutSalesOrdersInput = {
@@ -125737,6 +125979,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type SOItemUpsertWithWhereUniqueWithoutSalesOrderInput = {
@@ -126854,6 +127097,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutCashierSessionsInput = {
@@ -126875,6 +127119,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutCashierSessionsInput = {
@@ -127071,6 +127316,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutCashierSessionsInput = {
@@ -127092,6 +127338,7 @@ export namespace Prisma {
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type SalesDocumentUpsertWithWhereUniqueWithoutSessionInput = {
@@ -127375,6 +127622,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutPurchaseOrdersInput = {
@@ -127396,6 +127644,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutPurchaseOrdersInput = {
@@ -127755,6 +128004,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
@@ -127776,6 +128026,7 @@ export namespace Prisma {
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserUpsertWithoutRequestedPurchaseOrdersInput = {
@@ -134714,6 +134965,55 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
   }
 
+  export type BranchCreateWithoutAuditLogsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutAuditLogsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutAuditLogsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutAuditLogsInput, BranchUncheckedCreateWithoutAuditLogsInput>
+  }
+
   export type UserUpsertWithoutAuditLogsInput = {
     update: XOR<UserUpdateWithoutAuditLogsInput, UserUncheckedUpdateWithoutAuditLogsInput>
     create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
@@ -134803,6 +135103,61 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
     approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+  }
+
+  export type BranchUpsertWithoutAuditLogsInput = {
+    update: XOR<BranchUpdateWithoutAuditLogsInput, BranchUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<BranchCreateWithoutAuditLogsInput, BranchUncheckedCreateWithoutAuditLogsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutAuditLogsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutAuditLogsInput, BranchUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type BranchUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type PayrollCreateManyUserInput = {
@@ -135023,6 +135378,7 @@ export namespace Prisma {
     entityType: string
     entityId: string
     action: $Enums.AuditAction
+    branchId?: string | null
     changes: JsonNullValueInput | InputJsonValue
     ipAddress?: string | null
     timestamp?: Date | string
@@ -135844,6 +136200,7 @@ export namespace Prisma {
     changes?: JsonNullValueInput | InputJsonValue
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAuditLogsNestedInput
   }
 
   export type AuditLogUncheckedUpdateWithoutUserInput = {
@@ -135851,6 +136208,7 @@ export namespace Prisma {
     entityType?: StringFieldUpdateOperationsInput | string
     entityId?: StringFieldUpdateOperationsInput | string
     action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     changes?: JsonNullValueInput | InputJsonValue
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -135861,6 +136219,7 @@ export namespace Prisma {
     entityType?: StringFieldUpdateOperationsInput | string
     entityId?: StringFieldUpdateOperationsInput | string
     action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     changes?: JsonNullValueInput | InputJsonValue
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -136525,6 +136884,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AuditLogCreateManyBranchInput = {
+    id?: string
+    entityType: string
+    entityId: string
+    action: $Enums.AuditAction
+    userId?: string | null
+    changes: JsonNullValueInput | InputJsonValue
+    ipAddress?: string | null
+    timestamp?: Date | string
+  }
+
   export type UserUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -137093,6 +137463,39 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    changes?: JsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAuditLogsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    changes?: JsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    action?: EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    changes?: JsonNullValueInput | InputJsonValue
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventoryCreateManyWarehouseInput = {

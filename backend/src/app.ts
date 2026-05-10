@@ -4,6 +4,7 @@ import { logger } from "./lib/logger";
 import { prisma } from "./lib/db";
 import { AppError } from "./lib/errors";
 import routes from "./routes/index";
+import { initializeSubscribers } from "./subscribers";
 
 import {
   requestIdMiddleware,
@@ -101,6 +102,9 @@ export async function createApp(): Promise<Express> {
       },
     });
   });
+
+  // 7. INITIALIZE DOMAIN EVENTS
+  initializeSubscribers();
 
   return app;
 }

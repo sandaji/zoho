@@ -120,93 +120,11 @@ export function invalidateInventoryCache(): void {
   responseCache.clear();
 }
 
-/**
- * Get authentication token from localStorage
- */
-const getAuthToken = (): string | null => {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("auth_token");
-};
+import { productClient } from "./product-client";
+import { api } from "./client";
 
-/**
- * Make authenticated API request
- */
-async function apiRequest<T>(
-  endpoint: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = getAuthToken();
-
-  const defaultHeaders: HeadersInit = {
-    "Content-Type": "application/json",
-  };
-
-  if (token) {
-    defaultHeaders["Authorization"] = `Bearer ${token}`;
-  }
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers: Object.assign({}, defaultHeaders, options.headers),
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({
-      message: "An error occurred",
-    }));
-    throw new Error(error.error?.message || error.message || `HTTP ${response.status}`);
-  }
-
-  return response.json();
-}
-
-/**
- * Get all products with optional filters
- */
-export async function getProducts(params?: {
-  page?: number;
-  limit?: number;
-  search?: string;
-  category?: string;
-  status?: string;
-  branchId?: string;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-}): Promise<ApiResponse<PaginatedResponse<Product>>> {
-  const queryParams = new URLSearchParams();
-
-  if (params?.page) queryParams.append("page", params.page.toString());
-  if (params?.limit) queryParams.append("limit", params.limit.toString());
-  if (params?.search) queryParams.append("search", params.search);
-  if (params?.category && params.category !== "all")
-    queryParams.append("category", params.category);
-  if (params?.status && params.status !== "all")
-    queryParams.append("status", params.status);
-  if (params?.branchId) queryParams.append("branchId", params.branchId);
-  if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
-  if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
-
-  const queryString = queryParams.toString();
-  const endpoint = `/v1/products${queryString ? `?${queryString}` : ""}`;
-  const cacheKey = `products:${queryString}`;
-
-  // Return cached response if available (prevents redundant parallel calls)
-  const cached = getCached<ApiResponse<PaginatedResponse<Product>>>(cacheKey);
-  if (cached) return cached;
-
-  const result = await apiRequest<ApiResponse<PaginatedResponse<Product>>>(endpoint);
-  setCache(cacheKey, result);
-  return result;
-}
-
-/**
- * Get inventory with warehouse and branch data
- */
-export async function getInventory(): Promise<
-  ApiResponse<{ inventory: InventoryItem[] }>
-> {
-  return apiRequest<ApiResponse<{ inventory: InventoryItem[] }>>("/v1/inventory");
-}
+// ... types ...
+// (Keeping existing types for compatibility)
 
 /**
  * Compute stats from a list of products (pure function, no API call)
@@ -247,6 +165,34 @@ function extractCategoriesFromProducts(products: Product[]): string[] {
 }
 
 /**
+ * Get all products with optional filters
+ */
+export async function getProducts(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: string;
+  status?: string;
+  branchId?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}): Promise<ApiResponse<PaginatedResponse<Product>>> {
+  return productClient.list(params);
+}
+
+/**
+ * Get inventory with warehouse and branch data
+ */
+export async function getInventory(): Promise<
+  ApiResponse<{ inventory: InventoryItem[] }>
+> {
+  // @ts-ignore - endpoint mapping
+  return api.get<ApiResponse<{ inventory: InventoryItem[] }>>("/v1/inventory");
+}
+
+// ... computeStats and extractCategories ...
+
+/**
  * Get inventory statistics
  */
 export async function getInventoryStats(): Promise<
@@ -261,13 +207,11 @@ export async function getInventoryStats(): Promise<
 
 /**
  * Batch-fetch products, stats, and categories in a SINGLE API call.
- * This replaces the 3 parallel calls that were hammering the rate limiter.
  */
 export async function batchFetchInventoryData(): Promise<{
   stats: InventoryStats;
   categories: string[];
 }> {
-  // One API call instead of three
   const response = await getProducts({ limit: 1000 });
   const products = response.data.products;
 
@@ -283,7 +227,7 @@ export async function batchFetchInventoryData(): Promise<{
 export async function getProductById(
   id: string
 ): Promise<ApiResponse<Product>> {
-  return apiRequest<ApiResponse<Product>>(`/v1/products/${id}`);
+  return productClient.getById(id);
 }
 
 /**
@@ -292,10 +236,7 @@ export async function getProductById(
 export async function createProduct(
   data: Partial<Product>
 ): Promise<ApiResponse<Product>> {
-  return apiRequest<ApiResponse<Product>>("/v1/products", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  return productClient.create(data);
 }
 
 /**
@@ -305,19 +246,14 @@ export async function updateProduct(
   id: string,
   data: Partial<Product>
 ): Promise<ApiResponse<Product>> {
-  return apiRequest<ApiResponse<Product>>(`/v1/products/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+  return productClient.update(id, data);
 }
 
 /**
  * Delete product
  */
 export async function deleteProduct(id: string): Promise<ApiResponse<void>> {
-  return apiRequest<ApiResponse<void>>(`/v1/products/${id}`, {
-    method: "DELETE",
-  });
+  return productClient.remove(id);
 }
 
 /**
@@ -329,14 +265,13 @@ export async function getCategories(): Promise<string[]> {
 }
 
 /**
- * Get branches (from branches API)
+ * Get branches (from admin API)
  */
 export async function getBranches(): Promise<
   ApiResponse<{ branches: Array<{ id: string; name: string; code: string }> }>
 > {
-  return apiRequest<
-    ApiResponse<{ branches: Array<{ id: string; name: string; code: string }> }>
-  >("/v1/admin/branches");
+  // @ts-ignore - endpoint mapping
+  return api.get<ApiResponse<{ branches: Array<{ id: string; name: string; code: string }> }>>("/v1/admin/branches");
 }
 
 /**
