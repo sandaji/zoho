@@ -9077,8 +9077,18 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    lastSequence: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    lastSequence: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -9091,6 +9101,8 @@ export namespace Prisma {
     branchId: string | null
     isActive: boolean | null
     hasSystemAccess: boolean | null
+    salesPrefix: string | null
+    lastSequence: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9105,6 +9117,8 @@ export namespace Prisma {
     branchId: string | null
     isActive: boolean | null
     hasSystemAccess: boolean | null
+    salesPrefix: string | null
+    lastSequence: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -9119,11 +9133,21 @@ export namespace Prisma {
     branchId: number
     isActive: number
     hasSystemAccess: number
+    salesPrefix: number
+    lastSequence: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    lastSequence?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    lastSequence?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -9135,6 +9159,8 @@ export namespace Prisma {
     branchId?: true
     isActive?: true
     hasSystemAccess?: true
+    salesPrefix?: true
+    lastSequence?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9149,6 +9175,8 @@ export namespace Prisma {
     branchId?: true
     isActive?: true
     hasSystemAccess?: true
+    salesPrefix?: true
+    lastSequence?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9163,6 +9191,8 @@ export namespace Prisma {
     branchId?: true
     isActive?: true
     hasSystemAccess?: true
+    salesPrefix?: true
+    lastSequence?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9206,6 +9236,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -9236,6 +9278,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -9250,9 +9294,13 @@ export namespace Prisma {
     branchId: string | null
     isActive: boolean
     hasSystemAccess: boolean
+    salesPrefix: string | null
+    lastSequence: number
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -9281,6 +9329,8 @@ export namespace Prisma {
     branchId?: boolean
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: boolean
+    lastSequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     branch?: boolean | User$branchArgs<ExtArgs>
@@ -9324,6 +9374,8 @@ export namespace Prisma {
     branchId?: boolean
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: boolean
+    lastSequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     branch?: boolean | User$branchArgs<ExtArgs>
@@ -9339,6 +9391,8 @@ export namespace Prisma {
     branchId?: boolean
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: boolean
+    lastSequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     branch?: boolean | User$branchArgs<ExtArgs>
@@ -9354,11 +9408,13 @@ export namespace Prisma {
     branchId?: boolean
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: boolean
+    lastSequence?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "role" | "branchId" | "isActive" | "hasSystemAccess" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "role" | "branchId" | "isActive" | "hasSystemAccess" | "salesPrefix" | "lastSequence" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     branch?: boolean | User$branchArgs<ExtArgs>
     payrollRecords?: boolean | User$payrollRecordsArgs<ExtArgs>
@@ -9439,6 +9495,8 @@ export namespace Prisma {
       branchId: string | null
       isActive: boolean
       hasSystemAccess: boolean
+      salesPrefix: string | null
+      lastSequence: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -9901,6 +9959,8 @@ export namespace Prisma {
     readonly branchId: FieldRef<"User", 'String'>
     readonly isActive: FieldRef<"User", 'Boolean'>
     readonly hasSystemAccess: FieldRef<"User", 'Boolean'>
+    readonly salesPrefix: FieldRef<"User", 'String'>
+    readonly lastSequence: FieldRef<"User", 'Int'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -90398,6 +90458,8 @@ export namespace Prisma {
     branchId: 'branchId',
     isActive: 'isActive',
     hasSystemAccess: 'hasSystemAccess',
+    salesPrefix: 'salesPrefix',
+    lastSequence: 'lastSequence',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -91603,20 +91665,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -91627,6 +91675,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime'
+   */
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DateTime[]'
+   */
+  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
     
 
 
@@ -92248,6 +92310,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
     hasSystemAccess?: BoolFilter<"User"> | boolean
+    salesPrefix?: StringNullableFilter<"User"> | string | null
+    lastSequence?: IntFilter<"User"> | number
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
@@ -92290,6 +92354,8 @@ export namespace Prisma {
     branchId?: SortOrderInput | SortOrder
     isActive?: SortOrder
     hasSystemAccess?: SortOrder
+    salesPrefix?: SortOrderInput | SortOrder
+    lastSequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branch?: BranchOrderByWithRelationInput
@@ -92325,6 +92391,7 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    salesPrefix?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -92335,6 +92402,7 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
     hasSystemAccess?: BoolFilter<"User"> | boolean
+    lastSequence?: IntFilter<"User"> | number
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
@@ -92365,7 +92433,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderListRelationFilter
     dispatchNotes?: DispatchNoteListRelationFilter
     approvedSalesDocuments?: SalesDocumentListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "salesPrefix">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -92377,11 +92445,15 @@ export namespace Prisma {
     branchId?: SortOrderInput | SortOrder
     isActive?: SortOrder
     hasSystemAccess?: SortOrder
+    salesPrefix?: SortOrderInput | SortOrder
+    lastSequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -92397,6 +92469,8 @@ export namespace Prisma {
     branchId?: StringNullableWithAggregatesFilter<"User"> | string | null
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
     hasSystemAccess?: BoolWithAggregatesFilter<"User"> | boolean
+    salesPrefix?: StringNullableWithAggregatesFilter<"User"> | string | null
+    lastSequence?: IntWithAggregatesFilter<"User"> | number
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -98429,6 +98503,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -98471,6 +98547,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -98511,6 +98589,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -98553,6 +98633,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -98594,6 +98676,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -98607,6 +98691,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -98621,6 +98707,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -105323,6 +105411,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -105574,8 +105673,14 @@ export namespace Prisma {
     branchId?: SortOrder
     isActive?: SortOrder
     hasSystemAccess?: SortOrder
+    salesPrefix?: SortOrder
+    lastSequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    lastSequence?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -105588,6 +105693,8 @@ export namespace Prisma {
     branchId?: SortOrder
     isActive?: SortOrder
     hasSystemAccess?: SortOrder
+    salesPrefix?: SortOrder
+    lastSequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -105602,8 +105709,14 @@ export namespace Prisma {
     branchId?: SortOrder
     isActive?: SortOrder
     hasSystemAccess?: SortOrder
+    salesPrefix?: SortOrder
+    lastSequence?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    lastSequence?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -105648,6 +105761,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -105826,17 +105955,6 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type InventoryListRelationFilter = {
     every?: InventoryWhereInput
     some?: InventoryWhereInput
@@ -105909,22 +106027,6 @@ export namespace Prisma {
 
   export type WarehouseSumOrderByAggregateInput = {
     capacity?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumProductTypeFilter<$PrismaModel = never> = {
@@ -110783,6 +110885,14 @@ export namespace Prisma {
     set?: boolean
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -112151,14 +112261,6 @@ export namespace Prisma {
     connectOrCreate?: PurchaseOrderCreateOrConnectWithoutDestinationWarehouseInput | PurchaseOrderCreateOrConnectWithoutDestinationWarehouseInput[]
     createMany?: PurchaseOrderCreateManyDestinationWarehouseInputEnvelope
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type BranchUpdateOneRequiredWithoutWarehousesNestedInput = {
@@ -116164,6 +116266,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -116190,17 +116303,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
-  }
-
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -116237,6 +116339,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -116276,33 +116405,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type NestedEnumProductTypeFilter<$PrismaModel = never> = {
@@ -119119,6 +119221,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollCreateNestedManyWithoutUserInput
@@ -119159,6 +119263,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -119679,6 +119785,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
     hasSystemAccess?: BoolFilter<"User"> | boolean
+    salesPrefix?: StringNullableFilter<"User"> | string | null
+    lastSequence?: IntFilter<"User"> | number
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }
@@ -119898,6 +120006,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -119939,6 +120049,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -120092,6 +120204,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -120133,6 +120247,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -122898,6 +123014,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -122939,6 +123057,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -122983,6 +123103,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -123024,6 +123146,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -123201,6 +123325,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -123242,6 +123368,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -123292,6 +123420,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -123333,6 +123463,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -124045,6 +124177,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -124086,6 +124220,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -124130,6 +124266,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -124171,6 +124309,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -124576,6 +124716,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -124617,6 +124759,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -124667,6 +124811,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -124708,6 +124854,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -125262,6 +125410,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -125303,6 +125453,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -125472,6 +125624,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -125513,6 +125667,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -125806,6 +125962,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -125847,6 +126005,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -126034,6 +126194,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -126075,6 +126237,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -126449,6 +126613,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -126490,6 +126656,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -126618,6 +126786,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -126659,6 +126829,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -127002,6 +127174,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -127043,6 +127217,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -127215,6 +127391,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -127256,6 +127434,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -127661,6 +127841,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -127702,6 +127884,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -127746,6 +127930,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -127787,6 +127973,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -128049,6 +128237,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -128090,6 +128280,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -128140,6 +128332,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -128181,6 +128375,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -128297,6 +128493,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -128338,6 +128536,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -128382,6 +128582,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -128423,6 +128625,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -128478,6 +128682,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -128519,6 +128725,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -128569,6 +128777,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -128610,6 +128820,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -129020,6 +129232,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -129061,6 +129275,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -129201,6 +129417,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -129242,6 +129460,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -129707,6 +129927,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -129748,6 +129970,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -129830,6 +130054,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -129871,6 +130097,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -130027,6 +130255,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -130068,6 +130298,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
@@ -130163,6 +130395,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -130204,6 +130438,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
@@ -130860,6 +131096,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -130901,6 +131139,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -131043,6 +131283,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -131084,6 +131326,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -132446,6 +132690,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -132487,6 +132733,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -132569,6 +132817,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -132610,6 +132860,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -132682,6 +132934,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -132723,6 +132977,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -132805,6 +133061,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -132846,6 +133104,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -133129,6 +133389,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -133170,6 +133432,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -133262,6 +133526,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -133303,6 +133569,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -133342,6 +133610,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -133383,6 +133653,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -133438,6 +133710,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -133479,6 +133753,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -133518,6 +133794,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -133559,6 +133837,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -133603,6 +133883,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -133644,6 +133926,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -133699,6 +133983,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -133740,6 +134026,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -133790,6 +134078,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -133831,6 +134121,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -133870,6 +134162,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -133911,6 +134205,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -133966,6 +134262,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -134007,6 +134305,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -134090,6 +134390,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -134131,6 +134433,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -134211,6 +134515,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -134252,6 +134558,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -134653,6 +134961,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -134694,6 +135004,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -134776,6 +135088,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -134817,6 +135131,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -134889,6 +135205,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutUsersInput
@@ -134930,6 +135248,8 @@ export namespace Prisma {
     branchId?: string | null
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
     payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
@@ -135034,6 +135354,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutUsersNestedInput
@@ -135075,6 +135397,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -136731,6 +137055,8 @@ export namespace Prisma {
     role?: string
     isActive?: boolean
     hasSystemAccess?: boolean
+    salesPrefix?: string | null
+    lastSequence?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -136904,6 +137230,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
@@ -136944,6 +137272,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
@@ -136984,6 +137314,8 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

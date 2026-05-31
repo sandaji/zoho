@@ -5,11 +5,15 @@ import { PDFController } from "../modules/pos/controller/pdf.controller";
 import { authMiddleware } from "../lib/auth";
 import { requirePermission } from "../middleware/rbac.middleware";
 import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
+import { PrefixedDocumentController } from "../modules/pos/controller/prefixed-document.controller";
+import { SalesPerformanceController } from "../modules/pos/controller/sales-performance.controller";
 
 const router = Router();
 
 // Use authMiddleware (canonical) consistently across all routes
 const authenticate = authMiddleware;
+const prefixedCtrl = new PrefixedDocumentController();
+const performanceCtrl = new SalesPerformanceController();
 
 router.post(
   "/documents",
@@ -127,6 +131,49 @@ router.get(
   authenticate,
   requirePermission("sales.order.view_all"),
   PDFController.previewDocument,
+);
+
+// ── Prefixed document routes ──────────────────────────────────────────────────
+// POST /sales-documents/invoices/prefixed — create invoice with user prefix numbering
+router.post(
+  "/invoices/prefixed",
+  authenticate,
+  requirePermission("sales.order.create"),
+  validateFiscalPeriod("issueDate"),
+  (req, res, next) => prefixedCtrl.createPrefixedInvoice(req, res, next),
+);
+
+// POST /sales-documents/quotations/prefixed — create quotation with user prefix numbering
+router.post(
+  "/quotations/prefixed",
+  authenticate,
+  requirePermission("sales.order.create"),
+  validateFiscalPeriod("issueDate"),
+  (req, res, next) => prefixedCtrl.createPrefixedQuotation(req, res, next),
+);
+
+// GET /sales-documents/invoices/prefixed/preview — preview next invoice ID without consuming it
+router.get(
+  "/invoices/prefixed/preview",
+  authenticate,
+  (req, res, next) => prefixedCtrl.previewNextId(req, res, next),
+);
+
+// PATCH /sales-documents/users/:userId/prefix — set/update a user's sales prefix
+router.patch(
+  "/users/:userId/prefix",
+  authenticate,
+  requirePermission("admin.user.manage"),
+  (req, res, next) => prefixedCtrl.setUserPrefix(req, res, next),
+);
+
+// ── Sales performance analytics ───────────────────────────────────────────────
+// GET /sales-documents/performance — aggregated stats by item, day, salesman
+router.get(
+  "/performance",
+  authenticate,
+  requirePermission("sales.order.view_all"),
+  (req, res, next) => performanceCtrl.getSalesPerformance(req, res, next),
 );
 
 export default router;

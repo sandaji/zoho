@@ -4,17 +4,20 @@ import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
 import { Sales, fetchSales } from "@/lib/admin-api";
 import CreateCreditNoteDialog from "./CreateCreditNoteDialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "../ui/button";
 import { SalesStatus, PaymentMethod } from "@/lib/types";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import SalesPerformance from "./sections/SalesPerformance";
 
 const statusVariant = (status: string) => {
   switch (status) {
@@ -37,6 +40,7 @@ export default function SalesSection() {
   const [loading, setLoading] = useState(true);
   const [selectedSale, setSelectedSale] = useState<Sales | null>(null);
   const [returnSale, setReturnSale] = useState<Sales | null>(null);
+  const [viewMode, setViewMode] = useState<"orders" | "performance">("orders");
 
   const loadSales = () => {
     if (token) {
@@ -96,135 +100,171 @@ export default function SalesSection() {
 
   return (
     <>
-      <AdminTable
-        title="Sales Orders"
-        data={sales}
-        columns={columns}
-        loading={loading}
-        searchKeys={["invoice_no", "branch.name", "user.name", "status"]}
-        actions={(sale) => (
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => setSelectedSale(sale)}>
-              View
-            </Button>
-            {sale.status !== "cancelled" && (
-              <Button 
-                variant="destructive" 
-                size="sm" 
-                className="bg-amber-600 hover:bg-amber-700"
-                onClick={() => setReturnSale(sale)}
-              >
-                Return / CN
-              </Button>
-            )}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl font-bold">Sales</h2>
+          <p className="text-sm text-slate-500">
+            View recent transactions and sales performance summary.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setViewMode("orders")}
+              className={`px-3 py-1 rounded ${viewMode === "orders" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 border"}`}
+            >
+              Orders
+            </button>
+            <button
+              onClick={() => setViewMode("performance")}
+              className={`px-3 py-1 rounded ${viewMode === "performance" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 border"}`}
+            >
+              Performance
+            </button>
           </div>
-        )}
-      />
+        </div>
+      </div>
 
-      <Dialog open={!!selectedSale} onOpenChange={() => setSelectedSale(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Sale Details - {selectedSale?.invoice_no}</DialogTitle>
-          </DialogHeader>
-          {selectedSale && (
-            <div className="space-y-4">
-              {/* Header Info */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Invoice</p>
-                  <p className="text-sm font-semibold">{selectedSale.invoice_no}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Status</p>
-                  <Badge variant={statusVariant(selectedSale.status)}>
-                    {selectedSale.status.toUpperCase()}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Date</p>
-                  <p className="text-sm">
-                    {new Date(selectedSale.createdAt).toLocaleString()}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Payment</p>
-                  <Badge variant="outline" className="uppercase">
-                    {selectedSale.payment_method}
-                  </Badge>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Branch</p>
-                  <p className="text-sm">{selectedSale.branch?.name || "-"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Cashier</p>
-                  <p className="text-sm">{selectedSale.user?.name || "-"}</p>
-                </div>
-              </div>
-
-              {/* Items Table */}
-              <div className="border rounded-md mt-6">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Product ID</TableHead>
-                      <TableHead className="text-right">Qty</TableHead>
-                      <TableHead className="text-right">Price</TableHead>
-                      <TableHead className="text-right">Total</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {selectedSale.items?.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell className="text-xs font-mono">{item.productId}</TableCell>
-                        <TableCell className="text-right">{item.quantity}</TableCell>
-                        <TableCell className="text-right">KES {item.unitPrice.toLocaleString()}</TableCell>
-                        <TableCell className="text-right">KES {(item.quantity * item.unitPrice).toLocaleString()}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* Totals */}
-              <div className="flex flex-col items-end space-y-1 pt-4 border-t">
-                 <div className="flex justify-between w-48 text-sm">
-                   <span className="text-muted-foreground">Subtotal:</span>
-                   <span>KES {selectedSale.subtotal?.toLocaleString()}</span>
-                 </div>
-                 <div className="flex justify-between w-48 text-sm">
-                   <span className="text-muted-foreground">Tax:</span>
-                   <span>KES {selectedSale.tax?.toLocaleString()}</span>
-                 </div>
-                 <div className="flex justify-between w-48 font-bold text-lg pt-2">
-                   <span>Total:</span>
-                   <span>KES {selectedSale.grand_total?.toLocaleString()}</span>
-                 </div>
-              </div>
-
-              <div className="flex justify-end mt-4">
-                <Button 
-                   variant="destructive" 
-                   className="bg-amber-600 hover:bg-amber-700"
-                   onClick={() => {
-                     setSelectedSale(null);
-                     setReturnSale(selectedSale);
-                   }}
-                >
-                  Issue Credit Note
+      {viewMode === "orders" ? (
+        <>
+          <AdminTable
+            title="Sales Orders"
+            data={sales}
+            columns={columns}
+            loading={loading}
+            searchKeys={["invoice_no", "branch.name", "user.name", "status"]}
+            actions={(sale) => (
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => setSelectedSale(sale)}>
+                  View
                 </Button>
+                {sale.status !== "cancelled" && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="bg-amber-600 hover:bg-amber-700"
+                    onClick={() => setReturnSale(sale)}
+                  >
+                    Return / CN
+                  </Button>
+                )}
               </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
+            )}
+          />
 
-      <CreateCreditNoteDialog 
-        sale={returnSale}
-        isOpen={!!returnSale}
-        onClose={() => setReturnSale(null)}
-        onSuccess={loadSales}
-      />
+          <Dialog open={!!selectedSale} onOpenChange={() => setSelectedSale(null)}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Sale Details - {selectedSale?.invoice_no}</DialogTitle>
+              </DialogHeader>
+              {selectedSale && (
+                <div className="space-y-4">
+                  {/* Header Info */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Invoice</p>
+                      <p className="text-sm font-semibold">{selectedSale.invoice_no}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Status</p>
+                      <Badge variant={statusVariant(selectedSale.status)}>
+                        {selectedSale.status.toUpperCase()}
+                      </Badge>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Date</p>
+                      <p className="text-sm">{new Date(selectedSale.createdAt).toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Payment</p>
+                      <Badge variant="outline" className="uppercase">
+                        {selectedSale.payment_method}
+                      </Badge>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Branch</p>
+                      <p className="text-sm">{selectedSale.branch?.name || "-"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Cashier</p>
+                      <p className="text-sm">{selectedSale.user?.name || "-"}</p>
+                    </div>
+                  </div>
+
+                  {/* Items Table */}
+                  <div className="border rounded-md mt-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Product ID</TableHead>
+                          <TableHead className="text-right">Qty</TableHead>
+                          <TableHead className="text-right">Price</TableHead>
+                          <TableHead className="text-right">Total</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedSale.items?.map((item) => (
+                          <TableRow key={item.id}>
+                            <TableCell className="text-xs font-mono">{item.productId}</TableCell>
+                            <TableCell className="text-right">{item.quantity}</TableCell>
+                            <TableCell className="text-right">
+                              KES {item.unitPrice.toLocaleString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              KES {(item.quantity * item.unitPrice).toLocaleString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+
+                  {/* Totals */}
+                  <div className="flex flex-col items-end space-y-1 pt-4 border-t">
+                    <div className="flex justify-between w-48 text-sm">
+                      <span className="text-muted-foreground">Subtotal:</span>
+                      <span>KES {selectedSale.subtotal?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between w-48 text-sm">
+                      <span className="text-muted-foreground">Tax:</span>
+                      <span>KES {selectedSale.tax?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between w-48 font-bold text-lg pt-2">
+                      <span>Total:</span>
+                      <span>KES {selectedSale.grand_total?.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end mt-4">
+                    <Button
+                      variant="destructive"
+                      className="bg-amber-600 hover:bg-amber-700"
+                      onClick={() => {
+                        setSelectedSale(null);
+                        setReturnSale(selectedSale);
+                      }}
+                    >
+                      Issue Credit Note
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+
+          <CreateCreditNoteDialog
+            sale={returnSale}
+            isOpen={!!returnSale}
+            onClose={() => setReturnSale(null)}
+            onSuccess={loadSales}
+          />
+        </>
+      ) : (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <SalesPerformance />
+        </div>
+      )}
     </>
   );
 }

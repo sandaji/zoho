@@ -40,7 +40,13 @@ function applyIsolation(where: any, path: string, branchId: string) {
   current[finalKey] = branchId;
 }
 
-const SENSITIVE_FIELDS = ["password", "passwordHash", "token", "secret", "apiKey"];
+const SENSITIVE_FIELDS = [
+  "password",
+  "passwordHash",
+  "token",
+  "secret",
+  "apiKey",
+];
 
 /**
  * Strips sensitive fields from data before logging
@@ -48,9 +54,9 @@ const SENSITIVE_FIELDS = ["password", "passwordHash", "token", "secret", "apiKey
 function redact(data: any): any {
   if (!data) return data;
   if (typeof data !== "object") return data;
-  
+
   const clean = Array.isArray(data) ? [...data] : { ...data };
-  
+
   for (const key in clean) {
     if (SENSITIVE_FIELDS.includes(key)) {
       clean[key] = "[REDACTED]";
@@ -58,7 +64,7 @@ function redact(data: any): any {
       clean[key] = redact(clean[key]);
     }
   }
-  
+
   return clean;
 }
 
@@ -121,12 +127,18 @@ function createPrismaClient(): CustomPrismaClient {
       $allModels: {
         async $allOperations({ model, operation, args, query }) {
           const context = getRequestContext();
-          const isSuperAdmin = context.role === "admin" || context.role === "super_admin";
+          const isSuperAdmin =
+            context.role === "admin" || context.role === "super_admin";
 
           // ─── 1. BRANCH ISOLATION ──────────────────────────────────────────
           // Automatically inject branchId filter for scoped models if not super admin
           const isolationPath = ISOLATION_CONFIGS[model as string];
-          if (context.branchId && !isSuperAdmin && model !== "AuditLog" && isolationPath) {
+          if (
+            context.branchId &&
+            !isSuperAdmin &&
+            model !== "AuditLog" &&
+            isolationPath
+          ) {
             const isolationOperations = [
               "findMany",
               "findFirst",
@@ -141,8 +153,9 @@ function createPrismaClient(): CustomPrismaClient {
             ];
 
             if (isolationOperations.includes(operation)) {
-              args.where = args.where || {};
-              applyIsolation(args.where, isolationPath, context.branchId);
+              const argsAny = args as any;
+              argsAny.where = argsAny.where || {};
+              applyIsolation(argsAny.where, isolationPath, context.branchId);
             }
           }
 

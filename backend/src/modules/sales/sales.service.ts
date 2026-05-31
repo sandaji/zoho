@@ -1,9 +1,9 @@
-import { Prisma, type PrismaClient } from '../../generated';
-import { AppError, ErrorCode } from '../../lib/errors';
-import { ValuationService } from '../../lib/services/valuation.service';
-import { getRequestContext, setBusinessAction } from '../../lib/async-context';
-import { eventBus } from '../../lib/events';
-import { SALES_EVENTS } from '../../lib/domain-events';
+import { Prisma, type PrismaClient } from "../../generated";
+import { AppError, ErrorCode } from "../../lib/errors";
+import { ValuationService } from "../../lib/services/valuation.service";
+import { getRequestContext, setBusinessAction } from "../../lib/async-context";
+import { eventBus } from "../../lib/events";
+import { SALES_EVENTS } from "../../lib/domain-events";
 
 /**
  * Sales Service - Handles sales order and dispatch operations
@@ -42,7 +42,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
-        `Unauthorized: You can only create sales orders for branch ${context.branchId}`
+        `Unauthorized: You can only create sales orders for branch ${context.branchId}`,
       );
     }
 
@@ -50,7 +50,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.INVALID_INPUT,
         400,
-        'Customer, branch, and creator are required'
+        "Customer, branch, and creator are required",
       );
     }
 
@@ -58,7 +58,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.INVALID_INPUT,
         400,
-        'Sales order must have at least one item'
+        "Sales order must have at least one item",
       );
     }
 
@@ -71,7 +71,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Customer with ID ${customerId} not found`
+        `Customer with ID ${customerId} not found`,
       );
     }
 
@@ -84,7 +84,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Branch with ID ${branchId} not found`
+        `Branch with ID ${branchId} not found`,
       );
     }
 
@@ -105,7 +105,7 @@ export class SalesService {
         throw new AppError(
           ErrorCode.NOT_FOUND,
           404,
-          `Product with ID ${item.productId} not found`
+          `Product with ID ${item.productId} not found`,
         );
       }
 
@@ -122,9 +122,10 @@ export class SalesService {
     // Assume 16% tax
     const tax = subtotal * 0.16;
     const totalAmount = subtotal + tax;
+    const soNumber = `SO-${Date.now()}`;
 
     // Tag the action for auditing
-    setBusinessAction('CREATE_SALES_ORDER', { customerId, soNumber });
+    setBusinessAction("CREATE_SALES_ORDER", { customerId, soNumber });
 
     // Create sales order with items in transaction
     const salesOrder = await this.prisma.$transaction(async (tx: any) => {
@@ -138,7 +139,7 @@ export class SalesService {
           totalAmount,
           notes,
           createdById,
-          status: 'DRAFT',
+          status: "DRAFT",
         },
       });
 
@@ -160,7 +161,7 @@ export class SalesService {
 
     // Fetch complete sales order with items
     const fullSO = await this.getSalesOrderById(salesOrder.id);
-    
+
     // Emit domain event for decoupling
     eventBus.publish(SALES_EVENTS.ORDER_CREATED, fullSO);
 
@@ -212,7 +213,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Sales order with ID ${soId} not found`
+        `Sales order with ID ${soId} not found`,
       );
     }
 
@@ -226,7 +227,7 @@ export class SalesService {
     branchId?: string,
     status?: string,
     page: number = 1,
-    limit: number = 50
+    limit: number = 50,
   ): Promise<any> {
     const where: any = {};
     if (branchId) where.branchId = branchId;
@@ -246,7 +247,7 @@ export class SalesService {
           },
           items: true,
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
         take: limit,
       }),
@@ -292,7 +293,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.INVALID_INPUT,
         400,
-        'Sales order, warehouse, and dispatcher are required'
+        "Sales order, warehouse, and dispatcher are required",
       );
     }
 
@@ -300,7 +301,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.INVALID_INPUT,
         400,
-        'Dispatch must include at least one item'
+        "Dispatch must include at least one item",
       );
     }
 
@@ -320,7 +321,7 @@ export class SalesService {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Sales order with ID ${soId} not found`
+        `Sales order with ID ${soId} not found`,
       );
     }
 
@@ -329,17 +330,21 @@ export class SalesService {
       where: { id: warehouseId },
       select: { id: true, branchId: true },
     });
-    
+
     if (!warehouse) {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
-        `Warehouse with ID ${warehouseId} not found or inaccessible`
+        `Warehouse with ID ${warehouseId} not found or inaccessible`,
       );
     }
 
     // Tag action for auditing
-    setBusinessAction('DISPATCH_SALES_ORDER', { soId, warehouseId, itemCount: items.length });
+    setBusinessAction("DISPATCH_SALES_ORDER", {
+      soId,
+      warehouseId,
+      itemCount: items.length,
+    });
 
     // Wrap dispatch in transaction with FIFO depletion
     const dispatchNote = await this.prisma.$transaction(
@@ -362,13 +367,13 @@ export class SalesService {
         for (const dispatchItem of items) {
           // Find the SO item
           const soItem = salesOrder.items.find(
-            (item: any) => item.id === dispatchItem.soItemId
+            (item: any) => item.id === dispatchItem.soItemId,
           );
           if (!soItem) {
             throw new AppError(
               ErrorCode.NOT_FOUND,
               404,
-              `SO item with ID ${dispatchItem.soItemId} not found`
+              `SO item with ID ${dispatchItem.soItemId} not found`,
             );
           }
 
@@ -379,7 +384,7 @@ export class SalesService {
             throw new AppError(
               ErrorCode.INVALID_OPERATION,
               422,
-              `Cannot dispatch ${dispatchItem.qtyToDispatch} units of product ${soItem.product.name}. Only ${availableToDispatch} units available to dispatch.`
+              `Cannot dispatch ${dispatchItem.qtyToDispatch} units of product ${soItem.product.name}. Only ${availableToDispatch} units available to dispatch.`,
             );
           }
 
@@ -388,7 +393,7 @@ export class SalesService {
             tx,
             soItem.productId,
             warehouseId,
-            dispatchItem.qtyToDispatch
+            dispatchItem.qtyToDispatch,
           );
 
           totalCogsSum = totalCogsSum.add(fifoResult.totalCost);
@@ -421,18 +426,18 @@ export class SalesService {
         });
 
         const allDispatched = updatedSOItems.every(
-          (item: any) => item.qtyDispatched >= item.qtyRequested
+          (item: any) => item.qtyDispatched >= item.qtyRequested,
         );
 
         if (allDispatched) {
           await tx.salesOrder.update({
             where: { id: soId },
-            data: { status: 'DISPATCHED' },
+            data: { status: "DISPATCHED" },
           });
         }
 
         return createdDN;
-      }
+      },
     );
 
     // Fetch complete dispatch note with items

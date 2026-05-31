@@ -263,6 +263,8 @@ model User {
 
   isActive        Boolean  @default(true)
   hasSystemAccess Boolean  @default(false)
+  salesPrefix     String?  @unique @map("sales_prefix") // Unique salesman prefix e.g. "VIN", "JOH"
+  lastSequence    Int      @default(0) @map("last_sequence")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

@@ -1,6 +1,8 @@
 import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 import { verifyPassword } from "../../../lib/password";
+import { UserPrefixSequencer } from "../../../lib/sequencer";
+import { SalesDocumentType, Prisma } from "../../../generated";
 import {
   CreateSalesDTO,
   UpdateSalesDTO,
@@ -176,7 +178,12 @@ export class PosService {
       );
     }
 
-    const invoice_no = await this.generateInvoiceNumber(branchId);
+    const seq = await UserPrefixSequencer.getNext(
+      userId,
+      branchId,
+      SalesDocumentType.INVOICE,
+    );
+    const invoice_no = seq.documentId;
     const total_tax = this.calculateTax(mappedItemsForHelpers);
     const grand_total = subtotal - discount + total_tax;
     const paid = amount_paid ?? grand_total;
@@ -241,40 +248,93 @@ export class PosService {
         });
         createdItems.push(salesItem);
 
-        // Pick inventory from branch warehouses with enough available
-        const inventory = await tx.inventory.findFirst({
+        // Deplete stock using FIFO across stock batches within the branch
+        const batches = await tx.stockBatch.findMany({
           where: {
             productId: item.productId,
+            isDepleted: false,
             warehouse: { branchId, isActive: true },
-            available: { gte: item.quantity },
           },
+          orderBy: { receivedAt: "asc" },
         });
 
-        // If inventory record exists, update it; otherwise use product quantity
-        if (inventory) {
-          const newAvailable = inventory.available - item.quantity;
-          const newQuantity = inventory.quantity - item.quantity;
-          const newStatus =
-            newAvailable <= 0
-              ? "out_of_stock"
-              : newAvailable <= 10 // Default reorder level
-                ? "low_stock"
-                : inventory.status;
+        let remainingQty = item.quantity;
+        let itemCogs = new Prisma.Decimal(0);
 
-          await tx.inventory.update({
-            where: { id: inventory.id },
+        for (const batch of batches as any) {
+          if (remainingQty <= 0) break;
+          const take = Math.min(remainingQty, batch.currentQuantity);
+
+          // Update the batch
+          await tx.stockBatch.update({
+            where: { id: batch.id },
             data: {
-              available: newAvailable,
-              quantity: newQuantity,
-              status: newStatus as any,
+              currentQuantity: batch.currentQuantity - take,
+              isDepleted: batch.currentQuantity - take === 0,
             },
           });
-        } else {
-          // If no inventory record exists, we throw error
+
+          // Update warehouse inventory record if present
+          const invRec = await tx.inventory.findUnique({
+            where: {
+              productId_warehouseId: {
+                productId: item.productId,
+                warehouseId: batch.warehouseId,
+              },
+            },
+            select: { id: true, quantity: true, available: true },
+          });
+          if (invRec) {
+            await tx.inventory.update({
+              where: { id: invRec.id },
+              data: {
+                quantity: invRec.quantity - take,
+                available: invRec.available - take,
+              },
+            });
+          }
+
+          // Update branch inventory aggregate
+          const brInv = await tx.branchInventory.findUnique({
+            where: {
+              productId_branchId: { productId: item.productId, branchId },
+            },
+            select: { id: true, quantity: true, available: true },
+          });
+          if (brInv) {
+            await tx.branchInventory.update({
+              where: { id: brInv.id },
+              data: {
+                quantity: brInv.quantity - take,
+                available: brInv.available - take,
+              },
+            });
+          }
+
+          // Record stock movement
+          await tx.stockMovement.create({
+            data: {
+              type: "OUTBOUND",
+              quantity: take,
+              productId: item.productId,
+              warehouseId: batch.warehouseId,
+              salesId: sale.id,
+              reference: invoice_no,
+              createdById: userId,
+            },
+          });
+
+          itemCogs = itemCogs.add(
+            new Prisma.Decimal(take.toString()).mul(batch.unitCost),
+          );
+          remainingQty -= take;
+        }
+
+        if (remainingQty > 0) {
           throw new AppError(
-            ErrorCode.VALIDATION_ERROR,
-            400,
-            `No inventory found for product: ${product.name} in branch`,
+            ErrorCode.INVALID_OPERATION,
+            422,
+            `Insufficient stock for product ${product.name}: requested ${item.quantity}, available ${item.quantity - remainingQty}`,
           );
         }
       }

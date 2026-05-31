@@ -12,7 +12,7 @@ export class HRController {
    */
   async getHRStats(req: Request, res: Response, next: NextFunction) {
     try {
-      const stats = await hrService.getHRStats(req.authorizedBranchIds);
+      const stats = await hrService.getHRStats();
       res.json({ success: true, data: stats });
     } catch (error) {
       next(error);
@@ -37,7 +37,8 @@ export class HRController {
   async getMyBalance(req: Request, res: Response, next: NextFunction) {
     try {
       const userId = (req as any).user.id;
-      const year = parseInt(req.query.year as string) || new Date().getFullYear();
+      const year =
+        parseInt(req.query.year as string) || new Date().getFullYear();
       const balance = await leaveService.getLeaveBalance(userId, year);
       res.json({ success: true, data: balance });
     } catch (error) {
@@ -91,12 +92,16 @@ export class HRController {
       const { id } = req.params;
       const { status } = req.body;
       const processedBy = (req as any).user.id;
-      
-      if (!['APPROVED', 'REJECTED'].includes(status)) {
+
+      if (!["APPROVED", "REJECTED"].includes(status)) {
         throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Invalid status");
       }
 
-      const request = await leaveService.updateRequestStatus(id as string, status, processedBy);
+      const request = await leaveService.updateRequestStatus(
+        id as string,
+        status,
+        processedBy,
+      );
       res.json({ success: true, data: request });
     } catch (error) {
       next(error);

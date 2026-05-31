@@ -1,7 +1,9 @@
-// This component is intentionally left empty.
-// PostSaleSuccessModal was a duplicate of POSSaleSuccess.tsx and has been removed.
-// All post-sale success UI is handled by POSSaleSuccess.tsx.
-export {};
+"use client";
+
+import { useRouter } from "next/navigation";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, FileText, Plus, Printer } from "lucide-react";
 
 interface PostSaleSuccessModalProps {
   isOpen: boolean;

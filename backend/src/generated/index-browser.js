@@ -130,6 +130,8 @@ exports.Prisma.UserScalarFieldEnum = {
   branchId: 'branchId',
   isActive: 'isActive',
   hasSystemAccess: 'hasSystemAccess',
+  salesPrefix: 'salesPrefix',
+  lastSequence: 'lastSequence',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
