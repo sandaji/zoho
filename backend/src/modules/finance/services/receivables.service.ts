@@ -74,6 +74,17 @@ export class ReceivablesService {
         },
       });
 
+      // 3a. If AR references a customer by name, decrement their currentBalance
+      const customer = await tx.customer.findUnique({
+        where: { name: ar.customer_name },
+      });
+      if (customer) {
+        await tx.customer.update({
+          where: { id: customer.id },
+          data: { currentBalance: { decrement: data.amount } },
+        });
+      }
+
       // 3. Create Journal Entry (Debit Cash/Bank, Credit AR)
       // Logic would be similar to AccountingService but specifically for AR
       // For now, we rely on the generic GL service or manual JE if needed.
@@ -122,6 +133,31 @@ export class ReceivablesService {
     });
 
     return report;
+  }
+
+  /**
+   * Resolve a receivable by AR payment id
+   */
+  static async getReceivableByPaymentId(paymentId: string) {
+    const payment = await prisma.aRPayment.findUnique({
+      where: { id: paymentId },
+      include: { account_receivable: true },
+    });
+
+    if (!payment) {
+      throw new AppError(
+        ErrorCode.NOT_FOUND as any,
+        404,
+        "AR payment not found",
+      );
+    }
+
+    return {
+      paymentId: payment.id,
+      receivableId: payment.ar_id,
+      invoiceNo: payment.account_receivable.invoice_no,
+      customerName: payment.account_receivable.customer_name,
+    };
   }
 
   /**

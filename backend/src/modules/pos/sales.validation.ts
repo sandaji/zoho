@@ -70,6 +70,7 @@ export const createPOSSaleSchema = z.object({
   payment_method: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer"]),
   amount_paid: z.number().positive(),
   discount: z.number().nonnegative().default(0),
+  customerId: z.string().optional(),
   customer_name: z.string().optional(),
   customer_phone: z.string().optional(),
   notes: z.string().optional(),

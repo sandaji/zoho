@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(newUser);
     localStorage.setItem("auth_token", newToken);
     localStorage.setItem("auth_user", JSON.stringify(newUser));
-    // Write cookies so Next.js edge middleware can read them for route protection
+    // Write cookies so Next.js edge proxy can read them for route protection
     const maxAge = 60 * 60 * 24 * 7; // 7 days — matches typical JWT expiry
     document.cookie = `auth_token=${newToken}; path=/; max-age=${maxAge}; SameSite=Lax`;
     document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(newUser))}; path=/; max-age=${maxAge}; SameSite=Lax`;

@@ -19,6 +19,7 @@ export interface CreateSalesDTO {
   discount?: number;
   discount_approved_by?: string; // Required for discounts > 10%
   tax?: number;
+  customerId?: string;
   notes?: string;
 }
 

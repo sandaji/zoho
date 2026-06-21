@@ -26,7 +26,7 @@ export type InvoiceDocument = {
 export default function InvoicePrint({ doc }: { doc: InvoiceDocument }) {
   return (
     <div className="max-w-3xl mx-auto bg-white p-6 print:p-0 print:mx-0">
-      <style>{`@media print { .no-print{ display:none !important } .page-break{ page-break-after: always } }
+      <style>{`@media print { .no-print{ display:none !important } .page-break{ page-break-after: always } body { background: #fff; } }
         table { border-collapse: collapse }
       `}</style>
 

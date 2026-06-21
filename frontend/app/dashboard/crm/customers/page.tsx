@@ -6,7 +6,13 @@ import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL } from "@/lib/api-config";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -18,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Loader2, AlertCircle } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface Customer {
@@ -43,6 +50,10 @@ export default function CustomersPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const [customerDetails, setCustomerDetails] = useState<any | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -62,15 +73,12 @@ export default function CustomersPage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${API_BASE_URL}/v1/customers?search=${searchTerm}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/v1/customers?search=${searchTerm}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch customers");
@@ -129,11 +137,7 @@ export default function CustomersPage() {
 
       await response.json();
 
-      showToast(
-        "Success",
-        "Customer created successfully",
-        "success"
-      );
+      showToast("Success", "Customer created successfully", "success");
 
       setFormData({
         name: "",
@@ -158,6 +162,38 @@ export default function CustomersPage() {
       setIsCreating(false);
     }
   };
+
+  const handleOpenDetails = (id: string) => {
+    setSelectedCustomerId(id);
+    setDetailsOpen(true);
+  };
+
+  const handleCloseDetails = () => {
+    setDetailsOpen(false);
+    setSelectedCustomerId(null);
+    setCustomerDetails(null);
+  };
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (!token || !selectedCustomerId || !detailsOpen) return;
+      try {
+        setDetailsLoading(true);
+        const res = await fetch(`${API_BASE_URL}/v1/customers/${selectedCustomerId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to load details");
+        const data = await res.json();
+        setCustomerDetails(data.data || data);
+      } catch (err) {
+        showToast("Error", err instanceof Error ? err.message : "Failed to load details", "error");
+      } finally {
+        setDetailsLoading(false);
+      }
+    };
+
+    fetchDetails();
+  }, [detailsOpen, selectedCustomerId, token, showToast]);
 
   return (
     <div className="space-y-6">
@@ -193,9 +229,7 @@ export default function CustomersPage() {
                   id="name"
                   placeholder="Enter customer name"
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   className="mt-1"
                 />
@@ -211,9 +245,7 @@ export default function CustomersPage() {
                   type="email"
                   placeholder="email@example.com"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="mt-1"
                 />
               </div>
@@ -227,9 +259,7 @@ export default function CustomersPage() {
                   id="phone"
                   placeholder="+254 711 611 971"
                   value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="mt-1"
                 />
               </div>
@@ -243,9 +273,7 @@ export default function CustomersPage() {
                   id="address"
                   placeholder="Street address"
                   value={formData.address}
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                   className="mt-1"
                 />
               </div>
@@ -259,9 +287,7 @@ export default function CustomersPage() {
                   id="taxId"
                   placeholder="A001234567B"
                   value={formData.taxId}
-                  onChange={(e) =>
-                    setFormData({ ...formData, taxId: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
                   className="mt-1"
                 />
               </div>
@@ -274,9 +300,7 @@ export default function CustomersPage() {
                 <select
                   id="customerType"
                   value={formData.customerType}
-                  onChange={(e) =>
-                    setFormData({ ...formData, customerType: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, customerType: e.target.value })}
                   className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
                 >
                   <option value="RETAIL">Retail</option>
@@ -295,9 +319,7 @@ export default function CustomersPage() {
                   type="number"
                   placeholder="0.00"
                   value={formData.creditLimit}
-                  onChange={(e) =>
-                    setFormData({ ...formData, creditLimit: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, creditLimit: e.target.value })}
                   className="mt-1"
                   step="0.01"
                 />
@@ -305,11 +327,7 @@ export default function CustomersPage() {
 
               {/* Buttons */}
               <div className="flex gap-3 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpenDialog(false)}
-                >
+                <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>
                   Cancel
                 </Button>
                 <Button
@@ -371,12 +389,12 @@ export default function CustomersPage() {
                   Current Balance
                 </TableHead>
                 <TableHead className="font-semibold text-emerald-900">Status</TableHead>
+                <TableHead className="font-semibold text-emerald-900">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {customers.map((customer) => {
-                const isOverLimit =
-                  customer.currentBalance > customer.creditLimit;
+                const isOverLimit = customer.currentBalance > customer.creditLimit;
 
                 return (
                   <TableRow
@@ -384,21 +402,15 @@ export default function CustomersPage() {
                     className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
                   >
                     <TableCell>
-                      <div className="font-medium text-slate-900">
-                        {customer.name}
-                      </div>
+                      <div className="font-medium text-slate-900">{customer.name}</div>
                       {customer.email && (
-                        <div className="text-xs text-slate-500">
-                          {customer.email}
-                        </div>
+                        <div className="text-xs text-slate-500">{customer.email}</div>
                       )}
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{customer.customerType}</Badge>
                     </TableCell>
-                    <TableCell className="text-slate-600">
-                      {customer.phone || "-"}
-                    </TableCell>
+                    <TableCell className="text-slate-600">{customer.phone || "-"}</TableCell>
                     <TableCell className="text-right font-mono text-sm">
                       {customer.creditLimit.toLocaleString("en-KE", {
                         style: "currency",
@@ -409,9 +421,7 @@ export default function CustomersPage() {
                       <div
                         className={cn(
                           "text-right font-mono text-sm font-semibold",
-                          isOverLimit
-                            ? "text-red-600"
-                            : "text-emerald-600"
+                          isOverLimit ? "text-red-600" : "text-emerald-600"
                         )}
                       >
                         {customer.currentBalance.toLocaleString("en-KE", {
@@ -419,11 +429,7 @@ export default function CustomersPage() {
                           currency: "KES",
                         })}
                       </div>
-                      {isOverLimit && (
-                        <div className="text-xs text-red-600 mt-1">
-                          Over limit
-                        </div>
-                      )}
+                      {isOverLimit && <div className="text-xs text-red-600 mt-1">Over limit</div>}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -437,6 +443,15 @@ export default function CustomersPage() {
                         {customer.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
+                    <TableCell className="w-32">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleOpenDetails(customer.id)}
+                      >
+                        View
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -445,26 +460,129 @@ export default function CustomersPage() {
         )}
       </div>
 
+      <Dialog
+        open={detailsOpen}
+        onOpenChange={(open) => {
+          if (!open) handleCloseDetails();
+          else setDetailsOpen(true);
+        }}
+      >
+        <DialogContent className="fixed top-0 right-0 left-auto translate-x-0 translate-y-0 h-full max-w-md w-full rounded-none p-6 overflow-auto">
+          <DialogHeader>
+            <DialogTitle>Customer Details</DialogTitle>
+          </DialogHeader>
+
+          {detailsLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+            </div>
+          ) : customerDetails ? (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">{customerDetails.name}</h3>
+                <p className="text-sm text-slate-600">{customerDetails.email || ""}</p>
+                <p className="text-sm text-slate-600">{customerDetails.phone || ""}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-lg border border-slate-200 bg-white p-3">
+                  <p className="text-xs text-slate-500">Credit Limit</p>
+                  <p className="text-sm font-mono font-semibold">
+                    {Number(customerDetails.creditLimit || 0).toLocaleString("en-KE", {
+                      style: "currency",
+                      currency: "KES",
+                    })}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-3">
+                  <p className="text-xs text-slate-500">Current Balance</p>
+                  <p className="text-sm font-mono font-semibold">
+                    {Number(customerDetails.currentBalance || 0).toLocaleString("en-KE", {
+                      style: "currency",
+                      currency: "KES",
+                    })}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold">Recent Invoices</h4>
+                <div className="mt-2 space-y-2">
+                  {(customerDetails.salesDocuments || []).slice(0, 10).map((d: any) => (
+                    <Link
+                      key={d.id}
+                      href={`/dashboard/pos/documents/${d.id}`}
+                      className="block rounded-md border p-2 bg-white hover:bg-slate-50"
+                    >
+                      <div className="flex justify-between text-sm">
+                        <div className="font-medium">{d.documentId || d.id}</div>
+                        <div className="text-slate-600">{d.status}</div>
+                      </div>
+                      <div className="text-xs text-slate-500">
+                        {d.type} •{" "}
+                        {Number(d.total || 0).toLocaleString("en-KE", {
+                          style: "currency",
+                          currency: "KES",
+                        })}{" "}
+                        • Balance:{" "}
+                        {Number(d.balance || 0).toLocaleString("en-KE", {
+                          style: "currency",
+                          currency: "KES",
+                        })}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold">Recent Payments</h4>
+                <div className="mt-2 space-y-2">
+                  {(customerDetails.payments || []).slice(0, 10).map((p: any) => (
+                    <Link
+                      key={p.id}
+                      href={`/dashboard/finance/ar?customerId=${selectedCustomerId}&invoiceNo=${encodeURIComponent(p.salesDocument?.documentId || "")}&paymentId=${p.id}`}
+                      className="block rounded-md border p-2 bg-white text-sm hover:bg-slate-50 flex justify-between"
+                    >
+                      <div>
+                        {Number(p.amount || 0).toLocaleString("en-KE", {
+                          style: "currency",
+                          currency: "KES",
+                        })}
+                      </div>
+                      <div className="text-slate-500">
+                        {p.method || p.source} •{" "}
+                        {new Date(p.createdAt || p.date).toLocaleDateString()}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-sm text-slate-500">No details available</div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* ── Footer Stats ────────────────────────────────────────────────────── */}
       {customers.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div className="rounded-lg border border-slate-200 bg-white p-4">
             <p className="text-sm text-slate-600">Total Customers</p>
-            <p className="mt-2 text-2xl font-bold text-emerald-900">
-              {customers.length}
-            </p>
+            <p className="mt-2 text-2xl font-bold text-emerald-900">{customers.length}</p>
           </div>
 
           <div className="rounded-lg border border-slate-200 bg-white p-4">
             <p className="text-sm text-slate-600">Total Credit Limit</p>
             <p className="mt-2 text-2xl font-bold text-emerald-900">
-              {(
-                customers.reduce((sum, c) => sum + c.creditLimit, 0)
-              ).toLocaleString("en-KE", {
-                style: "currency",
-                currency: "KES",
-                maximumFractionDigits: 0,
-              })}
+              {customers
+                .reduce((sum, c) => sum + c.creditLimit, 0)
+                .toLocaleString("en-KE", {
+                  style: "currency",
+                  currency: "KES",
+                  maximumFractionDigits: 0,
+                })}
             </p>
           </div>
 
@@ -473,20 +591,18 @@ export default function CustomersPage() {
             <p
               className={cn(
                 "mt-2 text-2xl font-bold",
-                customers.some(
-                  (c) => c.currentBalance > c.creditLimit
-                )
+                customers.some((c) => c.currentBalance > c.creditLimit)
                   ? "text-red-600"
                   : "text-emerald-900"
               )}
             >
-              {(
-                customers.reduce((sum, c) => sum + c.currentBalance, 0)
-              ).toLocaleString("en-KE", {
-                style: "currency",
-                currency: "KES",
-                maximumFractionDigits: 0,
-              })}
+              {customers
+                .reduce((sum, c) => sum + c.currentBalance, 0)
+                .toLocaleString("en-KE", {
+                  style: "currency",
+                  currency: "KES",
+                  maximumFractionDigits: 0,
+                })}
             </p>
           </div>
         </div>

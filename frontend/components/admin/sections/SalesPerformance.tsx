@@ -61,12 +61,12 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
     <div className="space-y-4">
       <style>{`@media print { .no-print { display: none !important } }`}</style>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-bold">Sales Performance</h2>
         <div className="no-print flex gap-2">
           <button
             onClick={() => window.print()}
-            className="px-3 py-1 rounded bg-emerald-600 text-white text-sm"
+            className="px-3 py-1 rounded bg-emerald-600 text-white text-sm print:hidden"
           >
             Print
           </button>

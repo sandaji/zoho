@@ -306,6 +306,14 @@ export class SalesService {
         });
       }
 
+      // Update customer's balance when converting to an invoice
+      if (invoice.customerId) {
+        await tx.customer.update({
+          where: { id: invoice.customerId },
+          data: { currentBalance: { increment: invoice.balance } },
+        });
+      }
+
       return invoice;
     });
   }
@@ -327,8 +335,17 @@ export class SalesService {
     paymentMethod: string;
     amountPaid: number;
     notes?: string;
+    customerId?: string;
   }) {
-    const { branchId, userId, items, paymentMethod, amountPaid, notes } = input;
+    const {
+      branchId,
+      userId,
+      items,
+      paymentMethod,
+      amountPaid,
+      notes,
+      customerId,
+    } = input;
 
     // Validate stock
     await StockValidationService.validateOrThrow(
@@ -362,19 +379,27 @@ export class SalesService {
 
     return prisma.$transaction(
       async (tx) => {
+        const balance = Math.max(0, totals.total - amountPaid);
+        const isPaid = balance <= 0;
+
         const invoice = await tx.salesDocument.create({
           data: {
             documentId,
             type: SalesDocumentType.INVOICE,
-            status: SalesDocumentStatus.PAID,
-            paymentStatus: PaymentStatus.PAID,
+            status: isPaid
+              ? SalesDocumentStatus.PAID
+              : SalesDocumentStatus.PARTIALLY_PAID,
+            paymentStatus: isPaid
+              ? PaymentStatus.PAID
+              : PaymentStatus.PARTIALLY_PAID,
             branchId,
+            customerId: customerId || null,
             issueDate: new Date(),
             subtotal: totals.subtotal,
             tax: totals.tax,
             discount: totals.discount,
             total: totals.total,
-            balance: 0,
+            balance: balance,
             paidAmount: amountPaid,
             notes: notes || null,
             createdById: userId,
@@ -386,12 +411,23 @@ export class SalesService {
         await tx.payment.create({
           data: {
             salesDocumentId: invoice.id,
+            customerId: customerId || null,
             amount: amountPaid,
             method: paymentMethod as PaymentMethod,
             paymentDate: new Date(),
             createdById: userId,
           },
         });
+
+        // Update customer balance if they bought on credit/partial payment
+        if (customerId && balance > 0) {
+          await tx.customer.update({
+            where: { id: customerId },
+            data: {
+              currentBalance: { increment: balance },
+            },
+          });
+        }
 
         // Resolve warehouse
         const warehouse = await tx.warehouse.findFirst({
@@ -537,12 +573,30 @@ export class SalesService {
   // Void Document
   // =============================
   static async voidDocument(id: string, reason?: string) {
-    return prisma.salesDocument.update({
-      where: { id },
-      data: {
-        status: SalesDocumentStatus.VOID,
-        notes: reason || "VOIDED",
-      },
+    // Wrap in transaction and adjust customer balance if needed
+    return prisma.$transaction(async (tx) => {
+      const document = await tx.salesDocument.findUnique({ where: { id } });
+      if (!document)
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+
+      // If invoice and has outstanding balance, decrement customer's balance
+      if (document.customerId && document.type === SalesDocumentType.INVOICE) {
+        const outstanding = document.balance || 0;
+        if (outstanding > 0) {
+          await tx.customer.update({
+            where: { id: document.customerId },
+            data: { currentBalance: { decrement: outstanding } },
+          });
+        }
+      }
+
+      return tx.salesDocument.update({
+        where: { id },
+        data: {
+          status: SalesDocumentStatus.VOID,
+          notes: reason || "VOIDED",
+        },
+      });
     });
   }
 
@@ -739,35 +793,46 @@ export class SalesService {
 
     if (!document)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+    // Use transaction: create payment, update document, and update customer balance if any
+    return prisma.$transaction(async (tx) => {
+      const payment = await tx.payment.create({
+        data: {
+          salesDocumentId: documentId,
+          customerId: document.customerId || null,
+          amount,
+          method: paymentMethod as PaymentMethod,
+          reference: reference || null,
+          paymentDate: new Date(),
+          createdById: userId,
+        },
+      });
 
-    const payment = await prisma.payment.create({
-      data: {
-        salesDocumentId: documentId,
-        amount,
-        method: paymentMethod as PaymentMethod,
-        reference: reference || null,
-        paymentDate: new Date(),
-        createdById: userId,
-      },
+      // Update document balance
+      const newBalance = document.balance - amount;
+      const isPaid = newBalance <= 0;
+
+      await tx.salesDocument.update({
+        where: { id: documentId },
+        data: {
+          balance: Math.max(0, newBalance),
+          paidAmount: (document.paidAmount || 0) + amount,
+          paymentStatus: isPaid
+            ? PaymentStatus.PAID
+            : PaymentStatus.PARTIALLY_PAID,
+          status: isPaid ? SalesDocumentStatus.PAID : document.status,
+        },
+      });
+
+      // Update customer balance if document linked to a customer
+      if (document.customerId) {
+        await tx.customer.update({
+          where: { id: document.customerId },
+          data: { currentBalance: { decrement: amount } },
+        });
+      }
+
+      return payment;
     });
-
-    // Update document balance
-    const newBalance = document.balance - amount;
-    const isPaid = newBalance <= 0;
-
-    await prisma.salesDocument.update({
-      where: { id: documentId },
-      data: {
-        balance: Math.max(0, newBalance),
-        paidAmount: (document.paidAmount || 0) + amount,
-        paymentStatus: isPaid
-          ? PaymentStatus.PAID
-          : PaymentStatus.PARTIALLY_PAID,
-        status: isPaid ? SalesDocumentStatus.PAID : document.status,
-      },
-    });
-
-    return payment;
   }
 
   // =============================
@@ -962,7 +1027,11 @@ export class SalesService {
     }
 
     if (document.type !== SalesDocumentType.CREDIT_NOTE) {
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Document is not a credit note");
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Document is not a credit note",
+      );
     }
 
     if (document.status !== SalesDocumentStatus.DRAFT) {

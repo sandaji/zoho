@@ -127,11 +127,11 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   phone: 'phone',
   role: 'role',
+  salesPrefix: 'salesPrefix',
+  lastSequence: 'lastSequence',
   branchId: 'branchId',
   isActive: 'isActive',
   hasSystemAccess: 'hasSystemAccess',
-  salesPrefix: 'salesPrefix',
-  lastSequence: 'lastSequence',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -1055,7 +1055,6 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   entityId: 'entityId',
   action: 'action',
   userId: 'userId',
-  branchId: 'branchId',
   changes: 'changes',
   ipAddress: 'ipAddress',
   timestamp: 'timestamp'

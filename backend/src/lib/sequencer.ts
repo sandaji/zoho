@@ -123,6 +123,11 @@ export class UserPrefixSequencer {
           });
         }
 
+        await tx.user.update({
+          where: { id: userId },
+          data: { lastSequence: num },
+        });
+
         return { nextNumber: num };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },

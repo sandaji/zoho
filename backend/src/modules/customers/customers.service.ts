@@ -111,14 +111,31 @@ export class CustomersService {
       where: { id },
       include: {
         salesDocuments: {
-          take: 5,
+          take: 10,
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
             documentId: true,
             type: true,
+            status: true,
             total: true,
+            balance: true,
             createdAt: true,
+          },
+        },
+        payments: {
+          take: 10,
+          orderBy: { createdAt: "desc" },
+          select: {
+            id: true,
+            amount: true,
+            method: true,
+            createdAt: true,
+            salesDocument: {
+              select: {
+                documentId: true,
+              },
+            },
           },
         },
         _count: {

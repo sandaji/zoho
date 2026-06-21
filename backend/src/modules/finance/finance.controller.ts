@@ -393,6 +393,22 @@ class FinanceController {
     }
   }
 
+  async getReceivableByPaymentId(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { paymentId } = req.params;
+      const receivable =
+        await ReceivablesService.getReceivableByPaymentId(paymentId);
+      res.status(200).json({ status: "success", data: receivable });
+    } catch (error) {
+      logger.error(error, "Error fetching receivable by payment id:");
+      next(error);
+    }
+  }
+
   async recordARPayment(
     req: Request,
     res: Response,

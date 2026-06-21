@@ -118,6 +118,12 @@ router.post(
   (req, res, next) => financeController.recordARPayment(req, res, next),
 );
 router.get(
+  "/ar/payment/:paymentId",
+  requirePermission("finance.gl.view"),
+  (req, res, next) =>
+    financeController.getReceivableByPaymentId(req, res, next),
+);
+router.get(
   "/ar/aging",
   requirePermission("finance.report.aging"),
   (req, res, next) => financeController.getARAgingReport(req, res, next),

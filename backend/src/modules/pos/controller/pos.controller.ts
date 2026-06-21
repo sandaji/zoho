@@ -98,6 +98,7 @@ export class POSController {
         paymentMethod: dto.payment_method,
         amountPaid: dto.amount_paid || 0,
         notes: dto.notes,
+        customerId: dto.customerId,
       });
 
       // Fetch branch details for receipt header

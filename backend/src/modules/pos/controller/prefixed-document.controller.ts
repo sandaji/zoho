@@ -43,7 +43,9 @@ interface CreatePrefixedDocumentDTO {
   items: LineItemInput[];
   // Invoice-only
   paymentMethod?: string;
+  payment_method?: string;
   amountPaid?: number;
+  amount_paid?: number;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -51,8 +53,9 @@ interface CreatePrefixedDocumentDTO {
 function calcItemTotals(item: LineItemInput, productTaxRate: number) {
   const taxRate = item.taxRate ?? productTaxRate;
   const subtotal = item.quantity * item.unitPrice;
-  const taxAmt = subtotal * taxRate;
   const discount = item.discount ?? 0;
+  const taxableAmount = Math.max(subtotal - discount, 0);
+  const taxAmt = taxableAmount * taxRate;
   const total = subtotal + taxAmt - discount;
   return { subtotal, taxAmount: taxAmt, discount, total, taxRate };
 }
@@ -80,8 +83,12 @@ export class PrefixedDocumentController {
       const userId = req.user.userId;
       const body = req.body as CreatePrefixedDocumentDTO;
 
+      const branchId = body.branchId || (body as any).branch_id;
+      const paymentMethod = body.paymentMethod || (body as any).payment_method;
+      const amountPaid = body.amountPaid ?? (body as any).amount_paid;
+
       // ── Validate required fields ──
-      if (!body.branchId)
+      if (!branchId)
         throw new AppError(
           ErrorCode.INVALID_INPUT,
           400,
@@ -95,7 +102,7 @@ export class PrefixedDocumentController {
         );
 
       // ── Validate & hydrate items ──
-      const hydratedItems = await this._hydrateItems(body.items, body.branchId);
+      const hydratedItems = await this._hydrateItems(body.items, branchId);
 
       // ── Compute totals ──
       const lines = hydratedItems.map((h) =>
@@ -106,7 +113,7 @@ export class PrefixedDocumentController {
       // ── Generate prefixed document ID ──
       const { documentId, userPrefix } = await UserPrefixSequencer.getNext(
         userId,
-        body.branchId,
+        branchId,
         SalesDocumentType.INVOICE,
       );
 
@@ -130,7 +137,7 @@ export class PrefixedDocumentController {
               discount: totals.discount,
               total: totals.total,
               balance: 0,
-              paidAmount: body.amountPaid ?? totals.total,
+              paidAmount: amountPaid ?? totals.total,
               notes: body.notes ?? null,
               items: {
                 create: hydratedItems.map((h, idx) => ({

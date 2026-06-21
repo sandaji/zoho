@@ -278,6 +278,7 @@ export class SalesController {
         paymentMethod: input.payment_method,
         amountPaid: input.amount_paid,
         notes: input.notes,
+        customerId: input.customerId,
       });
 
       res.status(201).json({

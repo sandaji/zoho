@@ -1,5 +1,5 @@
 /**
- * Next.js Edge Middleware — Route Access Control
+ * Next.js Edge Proxy — Route Access Control
  *
  * Runs before every request on matching paths.
  * Reads auth_user and auth_token from cookies set at login.
@@ -31,7 +31,7 @@ const ROLE_FALLBACK: Record<string, string> = {
   user:            "/dashboard",
 };
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const authToken   = request.cookies.get("auth_token")?.value;

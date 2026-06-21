@@ -1,15 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { frontendEnv } from "@/lib/env";
-import {
-  Plus,
-  Search,
-  MoreHorizontal,
-  Clock,
-  CheckCircle2,
-  AlertCircle
-} from "lucide-react";
+import { Plus, Search, MoreHorizontal, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,7 +12,7 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
+  TableRow,
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -46,7 +40,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
@@ -54,6 +48,9 @@ export default function ReceivablesPage() {
   const { showToast } = useToast();
   const [receivables, setReceivables] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [highlightInvoiceId, setHighlightInvoiceId] = useState<string | null>(null);
+  const rowRefs = useRef<Record<string, HTMLTableRowElement | null>>({});
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Payment Modal State
@@ -63,7 +60,7 @@ export default function ReceivablesPage() {
     amount: 0,
     paymentMethod: "bank_transfer",
     referenceNo: "",
-    notes: ""
+    notes: "",
   });
 
   useEffect(() => {
@@ -75,11 +72,47 @@ export default function ReceivablesPage() {
       setLoading(true);
       const token = localStorage.getItem("auth_token");
       const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/list`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
       if (data.status === "success") {
+        const invoiceNo = searchParams?.get("invoiceNo");
+        const paymentId = searchParams?.get("paymentId");
+        let matchedReceivableId: string | null = null;
+
+        if (paymentId) {
+          try {
+            const paymentLookup = await fetch(
+              `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/payment/${paymentId}`,
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            const paymentLookupData = await paymentLookup.json();
+            if (paymentLookupData.status === "success") {
+              matchedReceivableId = paymentLookupData.data.receivableId;
+            }
+          } catch (fetchError) {
+            console.warn("Unable to resolve paymentId for highlighting:", fetchError);
+          }
+        }
+
         setReceivables(data.data);
+
+        if (!matchedReceivableId && invoiceNo) {
+          const matched = data.data.find((ar: any) => ar.invoice_no === invoiceNo);
+          if (matched) {
+            matchedReceivableId = matched.id;
+          }
+        }
+
+        if (matchedReceivableId) {
+          setHighlightInvoiceId(matchedReceivableId);
+          setTimeout(() => {
+            const el = rowRefs.current[matchedReceivableId!];
+            if (el && typeof el.scrollIntoView === "function") {
+              el.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          }, 200);
+        }
       }
     } catch (error) {
       console.error("Error fetching receivables:", error);
@@ -93,13 +126,21 @@ export default function ReceivablesPage() {
 
     switch (status) {
       case "paid":
-        return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Paid</Badge>;
+        return (
+          <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">Paid</Badge>
+        );
       case "partial":
-        return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none">Partial</Badge>;
+        return (
+          <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-none">Partial</Badge>
+        );
       case "outstanding":
-        return isOverdue
-          ? <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">Overdue</Badge>
-          : <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Outstanding</Badge>;
+        return isOverdue ? (
+          <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-none">Overdue</Badge>
+        ) : (
+          <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">
+            Outstanding
+          </Badge>
+        );
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -111,7 +152,7 @@ export default function ReceivablesPage() {
       amount: ar.balance,
       paymentMethod: "bank_transfer",
       referenceNo: "",
-      notes: ""
+      notes: "",
     });
     setIsPaymentModalOpen(true);
   };
@@ -125,12 +166,12 @@ export default function ReceivablesPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           receivableId: selectedAR.id,
-          ...paymentData
-        })
+          ...paymentData,
+        }),
       });
       const data = await res.json();
       if (data.status === "success") {
@@ -145,20 +186,25 @@ export default function ReceivablesPage() {
     }
   };
 
-  const filteredReceivables = receivables.filter(ar =>
-    ar.invoice_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    ar.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredReceivables = receivables.filter(
+    (ar) =>
+      ar.invoice_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      ar.customer_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const totalReceivable = receivables.reduce((sum, ar) => sum + ar.balance, 0);
-  const overdueCount = receivables.filter(ar => ar.status !== 'paid' && new Date() > new Date(ar.due_date)).length;
+  const overdueCount = receivables.filter(
+    (ar) => ar.status !== "paid" && new Date() > new Date(ar.due_date)
+  ).length;
 
   return (
     <div className="p-6 space-y-6 text-slate-900">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Accounts Receivable</h1>
-          <p className="text-slate-500">Track and manage customer invoices and expected payments.</p>
+          <p className="text-slate-500">
+            Track and manage customer invoices and expected payments.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" className="text-slate-700 border-slate-200">
@@ -174,16 +220,22 @@ export default function ReceivablesPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="shadow-sm border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Outstanding</CardTitle>
+            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Total Outstanding
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">KES {totalReceivable.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-slate-900">
+              KES {totalReceivable.toLocaleString()}
+            </div>
             <p className="text-xs text-slate-400 mt-1">Across {receivables.length} invoices</p>
           </CardContent>
         </Card>
         <Card className="shadow-sm border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Overdue</CardTitle>
+            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Overdue
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{overdueCount}</div>
@@ -192,7 +244,9 @@ export default function ReceivablesPage() {
         </Card>
         <Card className="shadow-sm border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Collection Rate</CardTitle>
+            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Collection Rate
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">84%</div>
@@ -201,7 +255,9 @@ export default function ReceivablesPage() {
         </Card>
         <Card className="shadow-sm border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Avg. Days to Pay</CardTitle>
+            <CardTitle className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Avg. Days to Pay
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-slate-900">18 Days</div>
@@ -222,9 +278,24 @@ export default function ReceivablesPage() {
             />
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer">All</Badge>
-            <Badge variant="secondary" className="bg-white text-slate-400 border border-slate-100 hover:bg-slate-50 cursor-pointer text-[10px]">Overdue</Badge>
-            <Badge variant="secondary" className="bg-white text-slate-400 border border-slate-100 hover:bg-slate-50 cursor-pointer text-[10px]">Unpaid</Badge>
+            <Badge
+              variant="secondary"
+              className="bg-slate-100 text-slate-600 hover:bg-slate-200 cursor-pointer"
+            >
+              All
+            </Badge>
+            <Badge
+              variant="secondary"
+              className="bg-white text-slate-400 border border-slate-100 hover:bg-slate-50 cursor-pointer text-[10px]"
+            >
+              Overdue
+            </Badge>
+            <Badge
+              variant="secondary"
+              className="bg-white text-slate-400 border border-slate-100 hover:bg-slate-50 cursor-pointer text-[10px]"
+            >
+              Unpaid
+            </Badge>
           </div>
         </div>
 
@@ -235,24 +306,48 @@ export default function ReceivablesPage() {
               <TableHead className="text-slate-500 font-semibold text-xs">Invoice No</TableHead>
               <TableHead className="text-slate-500 font-semibold text-xs">Invoice Date</TableHead>
               <TableHead className="text-slate-500 font-semibold text-xs">Due Date</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-right">Amount</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-right">Balance</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-center">Status</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-right">Action</TableHead>
+              <TableHead className="text-slate-500 font-semibold text-xs text-right">
+                Amount
+              </TableHead>
+              <TableHead className="text-slate-500 font-semibold text-xs text-right">
+                Balance
+              </TableHead>
+              <TableHead className="text-slate-500 font-semibold text-xs text-center">
+                Status
+              </TableHead>
+              <TableHead className="text-slate-500 font-semibold text-xs text-right">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
               Array.from({ length: 5 }).map((_, i) => (
                 <TableRow key={i}>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-4 w-20 ml-auto" /></TableCell>
-                  <TableCell className="text-center"><Skeleton className="h-5 w-16 mx-auto rounded-full" /></TableCell>
-                  <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-full ml-auto" /></TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-32" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-24" />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton className="h-4 w-20 ml-auto" />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton className="h-4 w-20 ml-auto" />
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Skeleton className="h-5 w-16 mx-auto rounded-full" />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton className="h-8 w-8 rounded-full ml-auto" />
+                  </TableCell>
                 </TableRow>
               ))
             ) : filteredReceivables.length === 0 ? (
@@ -269,11 +364,22 @@ export default function ReceivablesPage() {
               </TableRow>
             ) : (
               filteredReceivables.map((ar) => (
-                <TableRow key={ar.id} className="hover:bg-slate-50 transition-colors border-b border-slate-50">
+                <TableRow
+                  key={ar.id}
+                  ref={(el) => (rowRefs.current[ar.id] = el)}
+                  className={
+                    "hover:bg-slate-50 transition-colors border-b border-slate-50 " +
+                    (highlightInvoiceId === ar.id ? "ring-2 ring-amber-300 bg-amber-50" : "")
+                  }
+                >
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-semibold text-sm text-slate-900">{ar.customer_name}</span>
-                      <span className="text-[10px] text-slate-400">{ar.customer_email || "No email"}</span>
+                      <span className="font-semibold text-sm text-slate-900">
+                        {ar.customer_name}
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {ar.customer_email || "No email"}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -286,7 +392,9 @@ export default function ReceivablesPage() {
                   </TableCell>
                   <TableCell className="text-xs text-slate-600">
                     <div className="flex items-center gap-1">
-                      {new Date() > new Date(ar.due_date) && ar.status !== 'paid' && <AlertCircle className="w-3 h-3 text-red-500" />}
+                      {new Date() > new Date(ar.due_date) && ar.status !== "paid" && (
+                        <AlertCircle className="w-3 h-3 text-red-500" />
+                      )}
                       {format(new Date(ar.due_date), "dd/MM/yyyy")}
                     </div>
                   </TableCell>
@@ -339,7 +447,8 @@ export default function ReceivablesPage() {
           <DialogHeader>
             <DialogTitle>Record Customer Payment</DialogTitle>
             <DialogDescription>
-              {selectedAR && `Recording payment for invoice ${selectedAR.invoice_no} (${selectedAR.customer_name})`}
+              {selectedAR &&
+                `Recording payment for invoice ${selectedAR.invoice_no} (${selectedAR.customer_name})`}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -350,7 +459,9 @@ export default function ReceivablesPage() {
                 value={paymentData.amount}
                 onChange={(e) => setPaymentData({ ...paymentData, amount: Number(e.target.value) })}
               />
-              <p className="text-[10px] text-slate-400">Remaining balance: KES {selectedAR?.balance.toLocaleString()}</p>
+              <p className="text-[10px] text-slate-400">
+                Remaining balance: KES {selectedAR?.balance.toLocaleString()}
+              </p>
             </div>
             <div className="space-y-2">
               <Label>Payment Method</Label>
@@ -387,8 +498,12 @@ export default function ReceivablesPage() {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsPaymentModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleRecordPayment} className="bg-blue-600 hover:bg-blue-700">Submit Payment</Button>
+            <Button variant="ghost" onClick={() => setIsPaymentModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleRecordPayment} className="bg-blue-600 hover:bg-blue-700">
+              Submit Payment
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
