@@ -450,7 +450,7 @@ ALTER TABLE "journal_entries" ADD CONSTRAINT "journal_entries_account_id_fkey" F
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "chart_of_accounts"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "accounts_receivable" ADD CONSTRAINT "accounts_receivable_salesId_fkey" FOREIGN KEY ("salesId") REFERENCES "sales"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "accounts_receivable" ADD CONSTRAINT "accounts_receivable_salesId_fkey" FOREIGN KEY ("salesId") REFERENCES "sales_documents"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ar_payments" ADD CONSTRAINT "ar_payments_ar_id_fkey" FOREIGN KEY ("ar_id") REFERENCES "accounts_receivable"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

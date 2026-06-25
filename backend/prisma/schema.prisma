@@ -79,6 +79,8 @@ model Branch {
   salesOrders       SalesOrder[]
   users             User[]
   warehouses        Warehouse[]
+  journal_headers   JournalHeader[]
+  vat_transactions  VATTransaction[]
 
   @@index([code])
   @@index([isActive])
@@ -866,6 +868,7 @@ model ChartOfAccount {
   parent          ChartOfAccount?  @relation("AccountHierarchy", fields: [parent_id], references: [id])
   children        ChartOfAccount[] @relation("AccountHierarchy")
   journal_entries JournalEntry[]
+  journal_lines   JournalLine[]
 
   @@index([account_code])
   @@index([account_type])
@@ -875,14 +878,15 @@ model ChartOfAccount {
 
 /// Journals - Categorize transactions
 model Journal {
-  id        String         @id @default(cuid())
-  code      String         @unique
+  id        String          @id @default(cuid())
+  code      String          @unique
   name      String
   type      JournalType
-  isActive  Boolean        @default(true)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   entries   JournalEntry[]
+  headers   JournalHeader[]
 
   @@map("journals")
 }
@@ -917,6 +921,7 @@ model FiscalPeriod {
   fiscalYear   FiscalYear     @relation(fields: [fiscalYearId], references: [id])
   lockedBy     User?          @relation("LockedPeriods", fields: [lockedById], references: [id])
   entries      JournalEntry[]
+  headers      JournalHeader[]
 
   @@index([lockedById])
   @@map("fiscal_periods")
@@ -1881,4 +1886,103 @@ enum AccessScope {
   GLOBAL
   BRANCH
   OWN
+}
+
+// ============================================
+// ARCHITECTURAL FIX #1: Proper Double-Entry
+// JournalHeader + JournalLine pattern
+// ============================================
+
+model JournalHeader {
+  id           String   @id @default(cuid())
+  entry_no     String   @unique
+  entry_date   DateTime
+  period_id    String
+  journal_id   String?
+  branch_id    String?
+  description  String
+  total_debit  Decimal  @db.Decimal(19, 2)
+  total_credit Decimal  @db.Decimal(19, 2)
+  source_type  String?
+  source_id    String?
+  created_by   String
+  created_at   DateTime @default(now())
+  
+  period       FiscalPeriod  @relation(fields: [period_id], references: [id])
+  journal      Journal?      @relation(fields: [journal_id], references: [id])
+  branch       Branch?       @relation(fields: [branch_id], references: [id])
+  lines        JournalLine[]
+  
+  @@index([entry_no])
+  @@index([entry_date])
+  @@index([period_id])
+  @@index([branch_id])
+  @@index([source_type, source_id])
+  @@map("journal_headers")
+}
+
+model JournalLine {
+  id          String  @id @default(cuid())
+  header_id   String
+  account_id  String
+  line_no     Int
+  description String?
+  debit       Decimal @db.Decimal(19, 2)
+  credit      Decimal @db.Decimal(19, 2)
+  
+  header  JournalHeader  @relation(fields: [header_id], references: [id], onDelete: Cascade)
+  account ChartOfAccount @relation(fields: [account_id], references: [id])
+  
+  @@index([header_id])
+  @@index([account_id])
+  @@map("journal_lines")
+}
+
+// ============================================
+// ARCHITECTURAL FIX #2: Kenya VAT Compliance
+// Input/Output VAT Tracking with eTIMS
+// ============================================
+
+enum VATType {
+  INPUT
+  OUTPUT
+}
+
+model VATTransaction {
+  id                  String    @id @default(cuid())
+  transaction_no      String    @unique
+  vat_type            VATType
+  source_type         String
+  source_id           String
+  source_line_id      String?
+  taxable_amount      Decimal   @db.Decimal(19, 2)
+  vat_rate            Decimal   @db.Decimal(5, 2)
+  vat_amount          Decimal   @db.Decimal(19, 2)
+  is_claimable        Boolean   @default(true)
+  claimed_date        DateTime?
+  claim_period        String?
+  
+  // eTIMS Integration
+  etims_synced        Boolean   @default(false)
+  etims_synced_at     DateTime?
+  etims_cuin          String?
+  etims_cusn          String?
+  etims_qr_code       String?
+  etims_error         String?
+  
+  // Audit
+  branch_id           String
+  created_by          String
+  created_at          DateTime  @default(now())
+  
+  branch              Branch    @relation(fields: [branch_id], references: [id])
+  
+  @@index([transaction_no])
+  @@index([vat_type])
+  @@index([source_type, source_id])
+  @@index([claim_period])
+  @@index([etims_synced])
+  @@index([branch_id])
+  @@index([created_at])
+  @@map("vat_transactions")
 }

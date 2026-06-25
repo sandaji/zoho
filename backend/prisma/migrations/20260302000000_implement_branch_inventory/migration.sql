@@ -36,19 +36,19 @@ INSERT INTO "branch_inventory" (
 )
 SELECT
     concat('bi_', gen_random_uuid()::text),
-    "id" as "productId",
-    COALESCE("branchId", (SELECT "id" FROM "branches" ORDER BY "createdAt" ASC LIMIT 1)) as "branchId",
-    "quantity",
-    "reorder_level",
-    "reorder_quantity",
+    p."id" as "productId",
+    (SELECT "id" FROM "branches" ORDER BY "createdAt" ASC LIMIT 1) as "branchId",
+    p."quantity",
+    p."reorder_level",
+    p."reorder_quantity",
     0 as "reserved",
-    "quantity" as "available",
+    p."quantity" as "available",
     'in_stock'::"inventory_status" as "status",
     NULL as "bin_location",
-    "createdAt",
-    "updatedAt"
-FROM "products"
-WHERE "isActive" = true;
+    p."createdAt",
+    p."updatedAt"
+FROM "products" p
+WHERE p."isActive" = true;
 
 -- Add foreign key constraints
 ALTER TABLE "branch_inventory" ADD CONSTRAINT "branch_inventory_productId_fkey" FOREIGN KEY ("productId") REFERENCES "products"("id") ON DELETE CASCADE ON UPDATE CASCADE;

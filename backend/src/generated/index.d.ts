@@ -349,6 +349,21 @@ export type RoleAssignment = $Result.DefaultSelection<Prisma.$RoleAssignmentPayl
  * 
  */
 export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+/**
+ * Model JournalHeader
+ * 
+ */
+export type JournalHeader = $Result.DefaultSelection<Prisma.$JournalHeaderPayload>
+/**
+ * Model JournalLine
+ * 
+ */
+export type JournalLine = $Result.DefaultSelection<Prisma.$JournalLinePayload>
+/**
+ * Model VATTransaction
+ * 
+ */
+export type VATTransaction = $Result.DefaultSelection<Prisma.$VATTransactionPayload>
 
 /**
  * Enums
@@ -784,6 +799,14 @@ export const AccessScope: {
 
 export type AccessScope = (typeof AccessScope)[keyof typeof AccessScope]
 
+
+export const VATType: {
+  INPUT: 'INPUT',
+  OUTPUT: 'OUTPUT'
+};
+
+export type VATType = (typeof VATType)[keyof typeof VATType]
+
 }
 
 export type InventoryStatus = $Enums.InventoryStatus
@@ -949,6 +972,10 @@ export const PerformanceStatus: typeof $Enums.PerformanceStatus
 export type AccessScope = $Enums.AccessScope
 
 export const AccessScope: typeof $Enums.AccessScope
+
+export type VATType = $Enums.VATType
+
+export const VATType: typeof $Enums.VATType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1740,6 +1767,36 @@ export class PrismaClient<
     * ```
     */
   get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.journalHeader`: Exposes CRUD operations for the **JournalHeader** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JournalHeaders
+    * const journalHeaders = await prisma.journalHeader.findMany()
+    * ```
+    */
+  get journalHeader(): Prisma.JournalHeaderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.journalLine`: Exposes CRUD operations for the **JournalLine** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JournalLines
+    * const journalLines = await prisma.journalLine.findMany()
+    * ```
+    */
+  get journalLine(): Prisma.JournalLineDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.vATTransaction`: Exposes CRUD operations for the **VATTransaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VATTransactions
+    * const vATTransactions = await prisma.vATTransaction.findMany()
+    * ```
+    */
+  get vATTransaction(): Prisma.VATTransactionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -2240,7 +2297,10 @@ export namespace Prisma {
     Role: 'Role',
     RolePermission: 'RolePermission',
     RoleAssignment: 'RoleAssignment',
-    AuditLog: 'AuditLog'
+    AuditLog: 'AuditLog',
+    JournalHeader: 'JournalHeader',
+    JournalLine: 'JournalLine',
+    VATTransaction: 'VATTransaction'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -2256,7 +2316,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -7218,6 +7278,228 @@ export namespace Prisma {
           }
         }
       }
+      JournalHeader: {
+        payload: Prisma.$JournalHeaderPayload<ExtArgs>
+        fields: Prisma.JournalHeaderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JournalHeaderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JournalHeaderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>
+          }
+          findFirst: {
+            args: Prisma.JournalHeaderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JournalHeaderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>
+          }
+          findMany: {
+            args: Prisma.JournalHeaderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>[]
+          }
+          create: {
+            args: Prisma.JournalHeaderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>
+          }
+          createMany: {
+            args: Prisma.JournalHeaderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JournalHeaderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>[]
+          }
+          delete: {
+            args: Prisma.JournalHeaderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>
+          }
+          update: {
+            args: Prisma.JournalHeaderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>
+          }
+          deleteMany: {
+            args: Prisma.JournalHeaderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JournalHeaderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JournalHeaderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>[]
+          }
+          upsert: {
+            args: Prisma.JournalHeaderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalHeaderPayload>
+          }
+          aggregate: {
+            args: Prisma.JournalHeaderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJournalHeader>
+          }
+          groupBy: {
+            args: Prisma.JournalHeaderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JournalHeaderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JournalHeaderCountArgs<ExtArgs>
+            result: $Utils.Optional<JournalHeaderCountAggregateOutputType> | number
+          }
+        }
+      }
+      JournalLine: {
+        payload: Prisma.$JournalLinePayload<ExtArgs>
+        fields: Prisma.JournalLineFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JournalLineFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JournalLineFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>
+          }
+          findFirst: {
+            args: Prisma.JournalLineFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JournalLineFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>
+          }
+          findMany: {
+            args: Prisma.JournalLineFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>[]
+          }
+          create: {
+            args: Prisma.JournalLineCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>
+          }
+          createMany: {
+            args: Prisma.JournalLineCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JournalLineCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>[]
+          }
+          delete: {
+            args: Prisma.JournalLineDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>
+          }
+          update: {
+            args: Prisma.JournalLineUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>
+          }
+          deleteMany: {
+            args: Prisma.JournalLineDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JournalLineUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JournalLineUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>[]
+          }
+          upsert: {
+            args: Prisma.JournalLineUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JournalLinePayload>
+          }
+          aggregate: {
+            args: Prisma.JournalLineAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJournalLine>
+          }
+          groupBy: {
+            args: Prisma.JournalLineGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JournalLineGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JournalLineCountArgs<ExtArgs>
+            result: $Utils.Optional<JournalLineCountAggregateOutputType> | number
+          }
+        }
+      }
+      VATTransaction: {
+        payload: Prisma.$VATTransactionPayload<ExtArgs>
+        fields: Prisma.VATTransactionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VATTransactionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VATTransactionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>
+          }
+          findFirst: {
+            args: Prisma.VATTransactionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VATTransactionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>
+          }
+          findMany: {
+            args: Prisma.VATTransactionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>[]
+          }
+          create: {
+            args: Prisma.VATTransactionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>
+          }
+          createMany: {
+            args: Prisma.VATTransactionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VATTransactionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>[]
+          }
+          delete: {
+            args: Prisma.VATTransactionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>
+          }
+          update: {
+            args: Prisma.VATTransactionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>
+          }
+          deleteMany: {
+            args: Prisma.VATTransactionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VATTransactionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VATTransactionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>[]
+          }
+          upsert: {
+            args: Prisma.VATTransactionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VATTransactionPayload>
+          }
+          aggregate: {
+            args: Prisma.VATTransactionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVATTransaction>
+          }
+          groupBy: {
+            args: Prisma.VATTransactionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VATTransactionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VATTransactionCountArgs<ExtArgs>
+            result: $Utils.Optional<VATTransactionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -7393,6 +7675,9 @@ export namespace Prisma {
     rolePermission?: RolePermissionOmit
     roleAssignment?: RoleAssignmentOmit
     auditLog?: AuditLogOmit
+    journalHeader?: JournalHeaderOmit
+    journalLine?: JournalLineOmit
+    vATTransaction?: VATTransactionOmit
   }
 
   /* Types for Logging */
@@ -7748,6 +8033,8 @@ export namespace Prisma {
     salesOrders: number
     users: number
     warehouses: number
+    journal_headers: number
+    vat_transactions: number
   }
 
   export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7761,6 +8048,8 @@ export namespace Prisma {
     salesOrders?: boolean | BranchCountOutputTypeCountSalesOrdersArgs
     users?: boolean | BranchCountOutputTypeCountUsersArgs
     warehouses?: boolean | BranchCountOutputTypeCountWarehousesArgs
+    journal_headers?: boolean | BranchCountOutputTypeCountJournal_headersArgs
+    vat_transactions?: boolean | BranchCountOutputTypeCountVat_transactionsArgs
   }
 
   // Custom InputTypes
@@ -7842,6 +8131,20 @@ export namespace Prisma {
    */
   export type BranchCountOutputTypeCountWarehousesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WarehouseWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountJournal_headersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalHeaderWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountVat_transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VATTransactionWhereInput
   }
 
 
@@ -8557,6 +8860,7 @@ export namespace Prisma {
     budgets: number
     children: number
     journal_entries: number
+    journal_lines: number
   }
 
   export type ChartOfAccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8564,6 +8868,7 @@ export namespace Prisma {
     budgets?: boolean | ChartOfAccountCountOutputTypeCountBudgetsArgs
     children?: boolean | ChartOfAccountCountOutputTypeCountChildrenArgs
     journal_entries?: boolean | ChartOfAccountCountOutputTypeCountJournal_entriesArgs
+    journal_lines?: boolean | ChartOfAccountCountOutputTypeCountJournal_linesArgs
   }
 
   // Custom InputTypes
@@ -8605,6 +8910,13 @@ export namespace Prisma {
     where?: JournalEntryWhereInput
   }
 
+  /**
+   * ChartOfAccountCountOutputType without action
+   */
+  export type ChartOfAccountCountOutputTypeCountJournal_linesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+  }
+
 
   /**
    * Count Type JournalCountOutputType
@@ -8612,10 +8924,12 @@ export namespace Prisma {
 
   export type JournalCountOutputType = {
     entries: number
+    headers: number
   }
 
   export type JournalCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     entries?: boolean | JournalCountOutputTypeCountEntriesArgs
+    headers?: boolean | JournalCountOutputTypeCountHeadersArgs
   }
 
   // Custom InputTypes
@@ -8634,6 +8948,13 @@ export namespace Prisma {
    */
   export type JournalCountOutputTypeCountEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JournalEntryWhereInput
+  }
+
+  /**
+   * JournalCountOutputType without action
+   */
+  export type JournalCountOutputTypeCountHeadersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalHeaderWhereInput
   }
 
 
@@ -8674,10 +8995,12 @@ export namespace Prisma {
 
   export type FiscalPeriodCountOutputType = {
     entries: number
+    headers: number
   }
 
   export type FiscalPeriodCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     entries?: boolean | FiscalPeriodCountOutputTypeCountEntriesArgs
+    headers?: boolean | FiscalPeriodCountOutputTypeCountHeadersArgs
   }
 
   // Custom InputTypes
@@ -8696,6 +9019,13 @@ export namespace Prisma {
    */
   export type FiscalPeriodCountOutputTypeCountEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JournalEntryWhereInput
+  }
+
+  /**
+   * FiscalPeriodCountOutputType without action
+   */
+  export type FiscalPeriodCountOutputTypeCountHeadersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalHeaderWhereInput
   }
 
 
@@ -9055,6 +9385,37 @@ export namespace Prisma {
    */
   export type RoleCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RoleAssignmentWhereInput
+  }
+
+
+  /**
+   * Count Type JournalHeaderCountOutputType
+   */
+
+  export type JournalHeaderCountOutputType = {
+    lines: number
+  }
+
+  export type JournalHeaderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lines?: boolean | JournalHeaderCountOutputTypeCountLinesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JournalHeaderCountOutputType without action
+   */
+  export type JournalHeaderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeaderCountOutputType
+     */
+    select?: JournalHeaderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JournalHeaderCountOutputType without action
+   */
+  export type JournalHeaderCountOutputTypeCountLinesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
   }
 
 
@@ -11246,6 +11607,8 @@ export namespace Prisma {
     salesOrders?: boolean | Branch$salesOrdersArgs<ExtArgs>
     users?: boolean | Branch$usersArgs<ExtArgs>
     warehouses?: boolean | Branch$warehousesArgs<ExtArgs>
+    journal_headers?: boolean | Branch$journal_headersArgs<ExtArgs>
+    vat_transactions?: boolean | Branch$vat_transactionsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["branch"]>
 
@@ -11297,6 +11660,8 @@ export namespace Prisma {
     salesOrders?: boolean | Branch$salesOrdersArgs<ExtArgs>
     users?: boolean | Branch$usersArgs<ExtArgs>
     warehouses?: boolean | Branch$warehousesArgs<ExtArgs>
+    journal_headers?: boolean | Branch$journal_headersArgs<ExtArgs>
+    vat_transactions?: boolean | Branch$vat_transactionsArgs<ExtArgs>
     _count?: boolean | BranchCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BranchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -11315,6 +11680,8 @@ export namespace Prisma {
       salesOrders: Prisma.$SalesOrderPayload<ExtArgs>[]
       users: Prisma.$UserPayload<ExtArgs>[]
       warehouses: Prisma.$WarehousePayload<ExtArgs>[]
+      journal_headers: Prisma.$JournalHeaderPayload<ExtArgs>[]
+      vat_transactions: Prisma.$VATTransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11730,6 +12097,8 @@ export namespace Prisma {
     salesOrders<T extends Branch$salesOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$salesOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     users<T extends Branch$usersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     warehouses<T extends Branch$warehousesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$warehousesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journal_headers<T extends Branch$journal_headersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$journal_headersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    vat_transactions<T extends Branch$vat_transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$vat_transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12398,6 +12767,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WarehouseScalarFieldEnum | WarehouseScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.journal_headers
+   */
+  export type Branch$journal_headersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    where?: JournalHeaderWhereInput
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    cursor?: JournalHeaderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalHeaderScalarFieldEnum | JournalHeaderScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.vat_transactions
+   */
+  export type Branch$vat_transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    where?: VATTransactionWhereInput
+    orderBy?: VATTransactionOrderByWithRelationInput | VATTransactionOrderByWithRelationInput[]
+    cursor?: VATTransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: VATTransactionScalarFieldEnum | VATTransactionScalarFieldEnum[]
   }
 
   /**
@@ -50985,6 +51402,7 @@ export namespace Prisma {
     parent?: boolean | ChartOfAccount$parentArgs<ExtArgs>
     children?: boolean | ChartOfAccount$childrenArgs<ExtArgs>
     journal_entries?: boolean | ChartOfAccount$journal_entriesArgs<ExtArgs>
+    journal_lines?: boolean | ChartOfAccount$journal_linesArgs<ExtArgs>
     _count?: boolean | ChartOfAccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["chartOfAccount"]>
 
@@ -51045,6 +51463,7 @@ export namespace Prisma {
     parent?: boolean | ChartOfAccount$parentArgs<ExtArgs>
     children?: boolean | ChartOfAccount$childrenArgs<ExtArgs>
     journal_entries?: boolean | ChartOfAccount$journal_entriesArgs<ExtArgs>
+    journal_lines?: boolean | ChartOfAccount$journal_linesArgs<ExtArgs>
     _count?: boolean | ChartOfAccountCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ChartOfAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -51062,6 +51481,7 @@ export namespace Prisma {
       parent: Prisma.$ChartOfAccountPayload<ExtArgs> | null
       children: Prisma.$ChartOfAccountPayload<ExtArgs>[]
       journal_entries: Prisma.$JournalEntryPayload<ExtArgs>[]
+      journal_lines: Prisma.$JournalLinePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -51476,6 +51896,7 @@ export namespace Prisma {
     parent<T extends ChartOfAccount$parentArgs<ExtArgs> = {}>(args?: Subset<T, ChartOfAccount$parentArgs<ExtArgs>>): Prisma__ChartOfAccountClient<$Result.GetResult<Prisma.$ChartOfAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     children<T extends ChartOfAccount$childrenArgs<ExtArgs> = {}>(args?: Subset<T, ChartOfAccount$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChartOfAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     journal_entries<T extends ChartOfAccount$journal_entriesArgs<ExtArgs> = {}>(args?: Subset<T, ChartOfAccount$journal_entriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    journal_lines<T extends ChartOfAccount$journal_linesArgs<ExtArgs> = {}>(args?: Subset<T, ChartOfAccount$journal_linesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -52034,6 +52455,30 @@ export namespace Prisma {
   }
 
   /**
+   * ChartOfAccount.journal_lines
+   */
+  export type ChartOfAccount$journal_linesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
    * ChartOfAccount without action
    */
   export type ChartOfAccountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -52233,6 +52678,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     entries?: boolean | Journal$entriesArgs<ExtArgs>
+    headers?: boolean | Journal$headersArgs<ExtArgs>
     _count?: boolean | JournalCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["journal"]>
 
@@ -52269,6 +52715,7 @@ export namespace Prisma {
   export type JournalOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "type" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["journal"]>
   export type JournalInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     entries?: boolean | Journal$entriesArgs<ExtArgs>
+    headers?: boolean | Journal$headersArgs<ExtArgs>
     _count?: boolean | JournalCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JournalIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -52278,6 +52725,7 @@ export namespace Prisma {
     name: "Journal"
     objects: {
       entries: Prisma.$JournalEntryPayload<ExtArgs>[]
+      headers: Prisma.$JournalHeaderPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -52682,6 +53130,7 @@ export namespace Prisma {
   export interface Prisma__JournalClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     entries<T extends Journal$entriesArgs<ExtArgs> = {}>(args?: Subset<T, Journal$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    headers<T extends Journal$headersArgs<ExtArgs> = {}>(args?: Subset<T, Journal$headersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -53132,6 +53581,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * Journal.headers
+   */
+  export type Journal$headersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    where?: JournalHeaderWhereInput
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    cursor?: JournalHeaderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalHeaderScalarFieldEnum | JournalHeaderScalarFieldEnum[]
   }
 
   /**
@@ -54469,6 +54942,7 @@ export namespace Prisma {
     fiscalYear?: boolean | FiscalYearDefaultArgs<ExtArgs>
     lockedBy?: boolean | FiscalPeriod$lockedByArgs<ExtArgs>
     entries?: boolean | FiscalPeriod$entriesArgs<ExtArgs>
+    headers?: boolean | FiscalPeriod$headersArgs<ExtArgs>
     _count?: boolean | FiscalPeriodCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["fiscalPeriod"]>
 
@@ -54523,6 +54997,7 @@ export namespace Prisma {
     fiscalYear?: boolean | FiscalYearDefaultArgs<ExtArgs>
     lockedBy?: boolean | FiscalPeriod$lockedByArgs<ExtArgs>
     entries?: boolean | FiscalPeriod$entriesArgs<ExtArgs>
+    headers?: boolean | FiscalPeriod$headersArgs<ExtArgs>
     _count?: boolean | FiscalPeriodCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type FiscalPeriodIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -54540,6 +55015,7 @@ export namespace Prisma {
       fiscalYear: Prisma.$FiscalYearPayload<ExtArgs>
       lockedBy: Prisma.$UserPayload<ExtArgs> | null
       entries: Prisma.$JournalEntryPayload<ExtArgs>[]
+      headers: Prisma.$JournalHeaderPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -54950,6 +55426,7 @@ export namespace Prisma {
     fiscalYear<T extends FiscalYearDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FiscalYearDefaultArgs<ExtArgs>>): Prisma__FiscalYearClient<$Result.GetResult<Prisma.$FiscalYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     lockedBy<T extends FiscalPeriod$lockedByArgs<ExtArgs> = {}>(args?: Subset<T, FiscalPeriod$lockedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     entries<T extends FiscalPeriod$entriesArgs<ExtArgs> = {}>(args?: Subset<T, FiscalPeriod$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    headers<T extends FiscalPeriod$headersArgs<ExtArgs> = {}>(args?: Subset<T, FiscalPeriod$headersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -55431,6 +55908,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JournalEntryScalarFieldEnum | JournalEntryScalarFieldEnum[]
+  }
+
+  /**
+   * FiscalPeriod.headers
+   */
+  export type FiscalPeriod$headersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    where?: JournalHeaderWhereInput
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    cursor?: JournalHeaderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalHeaderScalarFieldEnum | JournalHeaderScalarFieldEnum[]
   }
 
   /**
@@ -90358,6 +90859,3747 @@ export namespace Prisma {
 
 
   /**
+   * Model JournalHeader
+   */
+
+  export type AggregateJournalHeader = {
+    _count: JournalHeaderCountAggregateOutputType | null
+    _avg: JournalHeaderAvgAggregateOutputType | null
+    _sum: JournalHeaderSumAggregateOutputType | null
+    _min: JournalHeaderMinAggregateOutputType | null
+    _max: JournalHeaderMaxAggregateOutputType | null
+  }
+
+  export type JournalHeaderAvgAggregateOutputType = {
+    total_debit: Decimal | null
+    total_credit: Decimal | null
+  }
+
+  export type JournalHeaderSumAggregateOutputType = {
+    total_debit: Decimal | null
+    total_credit: Decimal | null
+  }
+
+  export type JournalHeaderMinAggregateOutputType = {
+    id: string | null
+    entry_no: string | null
+    entry_date: Date | null
+    period_id: string | null
+    journal_id: string | null
+    branch_id: string | null
+    description: string | null
+    total_debit: Decimal | null
+    total_credit: Decimal | null
+    source_type: string | null
+    source_id: string | null
+    created_by: string | null
+    created_at: Date | null
+  }
+
+  export type JournalHeaderMaxAggregateOutputType = {
+    id: string | null
+    entry_no: string | null
+    entry_date: Date | null
+    period_id: string | null
+    journal_id: string | null
+    branch_id: string | null
+    description: string | null
+    total_debit: Decimal | null
+    total_credit: Decimal | null
+    source_type: string | null
+    source_id: string | null
+    created_by: string | null
+    created_at: Date | null
+  }
+
+  export type JournalHeaderCountAggregateOutputType = {
+    id: number
+    entry_no: number
+    entry_date: number
+    period_id: number
+    journal_id: number
+    branch_id: number
+    description: number
+    total_debit: number
+    total_credit: number
+    source_type: number
+    source_id: number
+    created_by: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type JournalHeaderAvgAggregateInputType = {
+    total_debit?: true
+    total_credit?: true
+  }
+
+  export type JournalHeaderSumAggregateInputType = {
+    total_debit?: true
+    total_credit?: true
+  }
+
+  export type JournalHeaderMinAggregateInputType = {
+    id?: true
+    entry_no?: true
+    entry_date?: true
+    period_id?: true
+    journal_id?: true
+    branch_id?: true
+    description?: true
+    total_debit?: true
+    total_credit?: true
+    source_type?: true
+    source_id?: true
+    created_by?: true
+    created_at?: true
+  }
+
+  export type JournalHeaderMaxAggregateInputType = {
+    id?: true
+    entry_no?: true
+    entry_date?: true
+    period_id?: true
+    journal_id?: true
+    branch_id?: true
+    description?: true
+    total_debit?: true
+    total_credit?: true
+    source_type?: true
+    source_id?: true
+    created_by?: true
+    created_at?: true
+  }
+
+  export type JournalHeaderCountAggregateInputType = {
+    id?: true
+    entry_no?: true
+    entry_date?: true
+    period_id?: true
+    journal_id?: true
+    branch_id?: true
+    description?: true
+    total_debit?: true
+    total_credit?: true
+    source_type?: true
+    source_id?: true
+    created_by?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type JournalHeaderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JournalHeader to aggregate.
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalHeaders to fetch.
+     */
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JournalHeaderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalHeaders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalHeaders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JournalHeaders
+    **/
+    _count?: true | JournalHeaderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: JournalHeaderAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: JournalHeaderSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JournalHeaderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JournalHeaderMaxAggregateInputType
+  }
+
+  export type GetJournalHeaderAggregateType<T extends JournalHeaderAggregateArgs> = {
+        [P in keyof T & keyof AggregateJournalHeader]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJournalHeader[P]>
+      : GetScalarType<T[P], AggregateJournalHeader[P]>
+  }
+
+
+
+
+  export type JournalHeaderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalHeaderWhereInput
+    orderBy?: JournalHeaderOrderByWithAggregationInput | JournalHeaderOrderByWithAggregationInput[]
+    by: JournalHeaderScalarFieldEnum[] | JournalHeaderScalarFieldEnum
+    having?: JournalHeaderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JournalHeaderCountAggregateInputType | true
+    _avg?: JournalHeaderAvgAggregateInputType
+    _sum?: JournalHeaderSumAggregateInputType
+    _min?: JournalHeaderMinAggregateInputType
+    _max?: JournalHeaderMaxAggregateInputType
+  }
+
+  export type JournalHeaderGroupByOutputType = {
+    id: string
+    entry_no: string
+    entry_date: Date
+    period_id: string
+    journal_id: string | null
+    branch_id: string | null
+    description: string
+    total_debit: Decimal
+    total_credit: Decimal
+    source_type: string | null
+    source_id: string | null
+    created_by: string
+    created_at: Date
+    _count: JournalHeaderCountAggregateOutputType | null
+    _avg: JournalHeaderAvgAggregateOutputType | null
+    _sum: JournalHeaderSumAggregateOutputType | null
+    _min: JournalHeaderMinAggregateOutputType | null
+    _max: JournalHeaderMaxAggregateOutputType | null
+  }
+
+  type GetJournalHeaderGroupByPayload<T extends JournalHeaderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JournalHeaderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JournalHeaderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JournalHeaderGroupByOutputType[P]>
+            : GetScalarType<T[P], JournalHeaderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JournalHeaderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    entry_no?: boolean
+    entry_date?: boolean
+    period_id?: boolean
+    journal_id?: boolean
+    branch_id?: boolean
+    description?: boolean
+    total_debit?: boolean
+    total_credit?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    period?: boolean | FiscalPeriodDefaultArgs<ExtArgs>
+    journal?: boolean | JournalHeader$journalArgs<ExtArgs>
+    branch?: boolean | JournalHeader$branchArgs<ExtArgs>
+    lines?: boolean | JournalHeader$linesArgs<ExtArgs>
+    _count?: boolean | JournalHeaderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["journalHeader"]>
+
+  export type JournalHeaderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    entry_no?: boolean
+    entry_date?: boolean
+    period_id?: boolean
+    journal_id?: boolean
+    branch_id?: boolean
+    description?: boolean
+    total_debit?: boolean
+    total_credit?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    period?: boolean | FiscalPeriodDefaultArgs<ExtArgs>
+    journal?: boolean | JournalHeader$journalArgs<ExtArgs>
+    branch?: boolean | JournalHeader$branchArgs<ExtArgs>
+  }, ExtArgs["result"]["journalHeader"]>
+
+  export type JournalHeaderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    entry_no?: boolean
+    entry_date?: boolean
+    period_id?: boolean
+    journal_id?: boolean
+    branch_id?: boolean
+    description?: boolean
+    total_debit?: boolean
+    total_credit?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    period?: boolean | FiscalPeriodDefaultArgs<ExtArgs>
+    journal?: boolean | JournalHeader$journalArgs<ExtArgs>
+    branch?: boolean | JournalHeader$branchArgs<ExtArgs>
+  }, ExtArgs["result"]["journalHeader"]>
+
+  export type JournalHeaderSelectScalar = {
+    id?: boolean
+    entry_no?: boolean
+    entry_date?: boolean
+    period_id?: boolean
+    journal_id?: boolean
+    branch_id?: boolean
+    description?: boolean
+    total_debit?: boolean
+    total_credit?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+  }
+
+  export type JournalHeaderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "entry_no" | "entry_date" | "period_id" | "journal_id" | "branch_id" | "description" | "total_debit" | "total_credit" | "source_type" | "source_id" | "created_by" | "created_at", ExtArgs["result"]["journalHeader"]>
+  export type JournalHeaderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    period?: boolean | FiscalPeriodDefaultArgs<ExtArgs>
+    journal?: boolean | JournalHeader$journalArgs<ExtArgs>
+    branch?: boolean | JournalHeader$branchArgs<ExtArgs>
+    lines?: boolean | JournalHeader$linesArgs<ExtArgs>
+    _count?: boolean | JournalHeaderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type JournalHeaderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    period?: boolean | FiscalPeriodDefaultArgs<ExtArgs>
+    journal?: boolean | JournalHeader$journalArgs<ExtArgs>
+    branch?: boolean | JournalHeader$branchArgs<ExtArgs>
+  }
+  export type JournalHeaderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    period?: boolean | FiscalPeriodDefaultArgs<ExtArgs>
+    journal?: boolean | JournalHeader$journalArgs<ExtArgs>
+    branch?: boolean | JournalHeader$branchArgs<ExtArgs>
+  }
+
+  export type $JournalHeaderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JournalHeader"
+    objects: {
+      period: Prisma.$FiscalPeriodPayload<ExtArgs>
+      journal: Prisma.$JournalPayload<ExtArgs> | null
+      branch: Prisma.$BranchPayload<ExtArgs> | null
+      lines: Prisma.$JournalLinePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      entry_no: string
+      entry_date: Date
+      period_id: string
+      journal_id: string | null
+      branch_id: string | null
+      description: string
+      total_debit: Prisma.Decimal
+      total_credit: Prisma.Decimal
+      source_type: string | null
+      source_id: string | null
+      created_by: string
+      created_at: Date
+    }, ExtArgs["result"]["journalHeader"]>
+    composites: {}
+  }
+
+  type JournalHeaderGetPayload<S extends boolean | null | undefined | JournalHeaderDefaultArgs> = $Result.GetResult<Prisma.$JournalHeaderPayload, S>
+
+  type JournalHeaderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JournalHeaderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JournalHeaderCountAggregateInputType | true
+    }
+
+  export interface JournalHeaderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JournalHeader'], meta: { name: 'JournalHeader' } }
+    /**
+     * Find zero or one JournalHeader that matches the filter.
+     * @param {JournalHeaderFindUniqueArgs} args - Arguments to find a JournalHeader
+     * @example
+     * // Get one JournalHeader
+     * const journalHeader = await prisma.journalHeader.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JournalHeaderFindUniqueArgs>(args: SelectSubset<T, JournalHeaderFindUniqueArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JournalHeader that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JournalHeaderFindUniqueOrThrowArgs} args - Arguments to find a JournalHeader
+     * @example
+     * // Get one JournalHeader
+     * const journalHeader = await prisma.journalHeader.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JournalHeaderFindUniqueOrThrowArgs>(args: SelectSubset<T, JournalHeaderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JournalHeader that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderFindFirstArgs} args - Arguments to find a JournalHeader
+     * @example
+     * // Get one JournalHeader
+     * const journalHeader = await prisma.journalHeader.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JournalHeaderFindFirstArgs>(args?: SelectSubset<T, JournalHeaderFindFirstArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JournalHeader that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderFindFirstOrThrowArgs} args - Arguments to find a JournalHeader
+     * @example
+     * // Get one JournalHeader
+     * const journalHeader = await prisma.journalHeader.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JournalHeaderFindFirstOrThrowArgs>(args?: SelectSubset<T, JournalHeaderFindFirstOrThrowArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JournalHeaders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JournalHeaders
+     * const journalHeaders = await prisma.journalHeader.findMany()
+     * 
+     * // Get first 10 JournalHeaders
+     * const journalHeaders = await prisma.journalHeader.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const journalHeaderWithIdOnly = await prisma.journalHeader.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JournalHeaderFindManyArgs>(args?: SelectSubset<T, JournalHeaderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JournalHeader.
+     * @param {JournalHeaderCreateArgs} args - Arguments to create a JournalHeader.
+     * @example
+     * // Create one JournalHeader
+     * const JournalHeader = await prisma.journalHeader.create({
+     *   data: {
+     *     // ... data to create a JournalHeader
+     *   }
+     * })
+     * 
+     */
+    create<T extends JournalHeaderCreateArgs>(args: SelectSubset<T, JournalHeaderCreateArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JournalHeaders.
+     * @param {JournalHeaderCreateManyArgs} args - Arguments to create many JournalHeaders.
+     * @example
+     * // Create many JournalHeaders
+     * const journalHeader = await prisma.journalHeader.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JournalHeaderCreateManyArgs>(args?: SelectSubset<T, JournalHeaderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JournalHeaders and returns the data saved in the database.
+     * @param {JournalHeaderCreateManyAndReturnArgs} args - Arguments to create many JournalHeaders.
+     * @example
+     * // Create many JournalHeaders
+     * const journalHeader = await prisma.journalHeader.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JournalHeaders and only return the `id`
+     * const journalHeaderWithIdOnly = await prisma.journalHeader.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JournalHeaderCreateManyAndReturnArgs>(args?: SelectSubset<T, JournalHeaderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JournalHeader.
+     * @param {JournalHeaderDeleteArgs} args - Arguments to delete one JournalHeader.
+     * @example
+     * // Delete one JournalHeader
+     * const JournalHeader = await prisma.journalHeader.delete({
+     *   where: {
+     *     // ... filter to delete one JournalHeader
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JournalHeaderDeleteArgs>(args: SelectSubset<T, JournalHeaderDeleteArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JournalHeader.
+     * @param {JournalHeaderUpdateArgs} args - Arguments to update one JournalHeader.
+     * @example
+     * // Update one JournalHeader
+     * const journalHeader = await prisma.journalHeader.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JournalHeaderUpdateArgs>(args: SelectSubset<T, JournalHeaderUpdateArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JournalHeaders.
+     * @param {JournalHeaderDeleteManyArgs} args - Arguments to filter JournalHeaders to delete.
+     * @example
+     * // Delete a few JournalHeaders
+     * const { count } = await prisma.journalHeader.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JournalHeaderDeleteManyArgs>(args?: SelectSubset<T, JournalHeaderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JournalHeaders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JournalHeaders
+     * const journalHeader = await prisma.journalHeader.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JournalHeaderUpdateManyArgs>(args: SelectSubset<T, JournalHeaderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JournalHeaders and returns the data updated in the database.
+     * @param {JournalHeaderUpdateManyAndReturnArgs} args - Arguments to update many JournalHeaders.
+     * @example
+     * // Update many JournalHeaders
+     * const journalHeader = await prisma.journalHeader.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JournalHeaders and only return the `id`
+     * const journalHeaderWithIdOnly = await prisma.journalHeader.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JournalHeaderUpdateManyAndReturnArgs>(args: SelectSubset<T, JournalHeaderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JournalHeader.
+     * @param {JournalHeaderUpsertArgs} args - Arguments to update or create a JournalHeader.
+     * @example
+     * // Update or create a JournalHeader
+     * const journalHeader = await prisma.journalHeader.upsert({
+     *   create: {
+     *     // ... data to create a JournalHeader
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JournalHeader we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JournalHeaderUpsertArgs>(args: SelectSubset<T, JournalHeaderUpsertArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JournalHeaders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderCountArgs} args - Arguments to filter JournalHeaders to count.
+     * @example
+     * // Count the number of JournalHeaders
+     * const count = await prisma.journalHeader.count({
+     *   where: {
+     *     // ... the filter for the JournalHeaders we want to count
+     *   }
+     * })
+    **/
+    count<T extends JournalHeaderCountArgs>(
+      args?: Subset<T, JournalHeaderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JournalHeaderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JournalHeader.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JournalHeaderAggregateArgs>(args: Subset<T, JournalHeaderAggregateArgs>): Prisma.PrismaPromise<GetJournalHeaderAggregateType<T>>
+
+    /**
+     * Group by JournalHeader.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalHeaderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JournalHeaderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JournalHeaderGroupByArgs['orderBy'] }
+        : { orderBy?: JournalHeaderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JournalHeaderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJournalHeaderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JournalHeader model
+   */
+  readonly fields: JournalHeaderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JournalHeader.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JournalHeaderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    period<T extends FiscalPeriodDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FiscalPeriodDefaultArgs<ExtArgs>>): Prisma__FiscalPeriodClient<$Result.GetResult<Prisma.$FiscalPeriodPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    journal<T extends JournalHeader$journalArgs<ExtArgs> = {}>(args?: Subset<T, JournalHeader$journalArgs<ExtArgs>>): Prisma__JournalClient<$Result.GetResult<Prisma.$JournalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    branch<T extends JournalHeader$branchArgs<ExtArgs> = {}>(args?: Subset<T, JournalHeader$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    lines<T extends JournalHeader$linesArgs<ExtArgs> = {}>(args?: Subset<T, JournalHeader$linesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JournalHeader model
+   */
+  interface JournalHeaderFieldRefs {
+    readonly id: FieldRef<"JournalHeader", 'String'>
+    readonly entry_no: FieldRef<"JournalHeader", 'String'>
+    readonly entry_date: FieldRef<"JournalHeader", 'DateTime'>
+    readonly period_id: FieldRef<"JournalHeader", 'String'>
+    readonly journal_id: FieldRef<"JournalHeader", 'String'>
+    readonly branch_id: FieldRef<"JournalHeader", 'String'>
+    readonly description: FieldRef<"JournalHeader", 'String'>
+    readonly total_debit: FieldRef<"JournalHeader", 'Decimal'>
+    readonly total_credit: FieldRef<"JournalHeader", 'Decimal'>
+    readonly source_type: FieldRef<"JournalHeader", 'String'>
+    readonly source_id: FieldRef<"JournalHeader", 'String'>
+    readonly created_by: FieldRef<"JournalHeader", 'String'>
+    readonly created_at: FieldRef<"JournalHeader", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JournalHeader findUnique
+   */
+  export type JournalHeaderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalHeader to fetch.
+     */
+    where: JournalHeaderWhereUniqueInput
+  }
+
+  /**
+   * JournalHeader findUniqueOrThrow
+   */
+  export type JournalHeaderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalHeader to fetch.
+     */
+    where: JournalHeaderWhereUniqueInput
+  }
+
+  /**
+   * JournalHeader findFirst
+   */
+  export type JournalHeaderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalHeader to fetch.
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalHeaders to fetch.
+     */
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JournalHeaders.
+     */
+    cursor?: JournalHeaderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalHeaders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalHeaders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JournalHeaders.
+     */
+    distinct?: JournalHeaderScalarFieldEnum | JournalHeaderScalarFieldEnum[]
+  }
+
+  /**
+   * JournalHeader findFirstOrThrow
+   */
+  export type JournalHeaderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalHeader to fetch.
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalHeaders to fetch.
+     */
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JournalHeaders.
+     */
+    cursor?: JournalHeaderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalHeaders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalHeaders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JournalHeaders.
+     */
+    distinct?: JournalHeaderScalarFieldEnum | JournalHeaderScalarFieldEnum[]
+  }
+
+  /**
+   * JournalHeader findMany
+   */
+  export type JournalHeaderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalHeaders to fetch.
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalHeaders to fetch.
+     */
+    orderBy?: JournalHeaderOrderByWithRelationInput | JournalHeaderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JournalHeaders.
+     */
+    cursor?: JournalHeaderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalHeaders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalHeaders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JournalHeaders.
+     */
+    distinct?: JournalHeaderScalarFieldEnum | JournalHeaderScalarFieldEnum[]
+  }
+
+  /**
+   * JournalHeader create
+   */
+  export type JournalHeaderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JournalHeader.
+     */
+    data: XOR<JournalHeaderCreateInput, JournalHeaderUncheckedCreateInput>
+  }
+
+  /**
+   * JournalHeader createMany
+   */
+  export type JournalHeaderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JournalHeaders.
+     */
+    data: JournalHeaderCreateManyInput | JournalHeaderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JournalHeader createManyAndReturn
+   */
+  export type JournalHeaderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * The data used to create many JournalHeaders.
+     */
+    data: JournalHeaderCreateManyInput | JournalHeaderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JournalHeader update
+   */
+  export type JournalHeaderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JournalHeader.
+     */
+    data: XOR<JournalHeaderUpdateInput, JournalHeaderUncheckedUpdateInput>
+    /**
+     * Choose, which JournalHeader to update.
+     */
+    where: JournalHeaderWhereUniqueInput
+  }
+
+  /**
+   * JournalHeader updateMany
+   */
+  export type JournalHeaderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JournalHeaders.
+     */
+    data: XOR<JournalHeaderUpdateManyMutationInput, JournalHeaderUncheckedUpdateManyInput>
+    /**
+     * Filter which JournalHeaders to update
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * Limit how many JournalHeaders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JournalHeader updateManyAndReturn
+   */
+  export type JournalHeaderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * The data used to update JournalHeaders.
+     */
+    data: XOR<JournalHeaderUpdateManyMutationInput, JournalHeaderUncheckedUpdateManyInput>
+    /**
+     * Filter which JournalHeaders to update
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * Limit how many JournalHeaders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JournalHeader upsert
+   */
+  export type JournalHeaderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JournalHeader to update in case it exists.
+     */
+    where: JournalHeaderWhereUniqueInput
+    /**
+     * In case the JournalHeader found by the `where` argument doesn't exist, create a new JournalHeader with this data.
+     */
+    create: XOR<JournalHeaderCreateInput, JournalHeaderUncheckedCreateInput>
+    /**
+     * In case the JournalHeader was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JournalHeaderUpdateInput, JournalHeaderUncheckedUpdateInput>
+  }
+
+  /**
+   * JournalHeader delete
+   */
+  export type JournalHeaderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+    /**
+     * Filter which JournalHeader to delete.
+     */
+    where: JournalHeaderWhereUniqueInput
+  }
+
+  /**
+   * JournalHeader deleteMany
+   */
+  export type JournalHeaderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JournalHeaders to delete
+     */
+    where?: JournalHeaderWhereInput
+    /**
+     * Limit how many JournalHeaders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JournalHeader.journal
+   */
+  export type JournalHeader$journalArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Journal
+     */
+    select?: JournalSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Journal
+     */
+    omit?: JournalOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalInclude<ExtArgs> | null
+    where?: JournalWhereInput
+  }
+
+  /**
+   * JournalHeader.branch
+   */
+  export type JournalHeader$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
+  }
+
+  /**
+   * JournalHeader.lines
+   */
+  export type JournalHeader$linesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    cursor?: JournalLineWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
+   * JournalHeader without action
+   */
+  export type JournalHeaderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalHeader
+     */
+    select?: JournalHeaderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalHeader
+     */
+    omit?: JournalHeaderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalHeaderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model JournalLine
+   */
+
+  export type AggregateJournalLine = {
+    _count: JournalLineCountAggregateOutputType | null
+    _avg: JournalLineAvgAggregateOutputType | null
+    _sum: JournalLineSumAggregateOutputType | null
+    _min: JournalLineMinAggregateOutputType | null
+    _max: JournalLineMaxAggregateOutputType | null
+  }
+
+  export type JournalLineAvgAggregateOutputType = {
+    line_no: number | null
+    debit: Decimal | null
+    credit: Decimal | null
+  }
+
+  export type JournalLineSumAggregateOutputType = {
+    line_no: number | null
+    debit: Decimal | null
+    credit: Decimal | null
+  }
+
+  export type JournalLineMinAggregateOutputType = {
+    id: string | null
+    header_id: string | null
+    account_id: string | null
+    line_no: number | null
+    description: string | null
+    debit: Decimal | null
+    credit: Decimal | null
+  }
+
+  export type JournalLineMaxAggregateOutputType = {
+    id: string | null
+    header_id: string | null
+    account_id: string | null
+    line_no: number | null
+    description: string | null
+    debit: Decimal | null
+    credit: Decimal | null
+  }
+
+  export type JournalLineCountAggregateOutputType = {
+    id: number
+    header_id: number
+    account_id: number
+    line_no: number
+    description: number
+    debit: number
+    credit: number
+    _all: number
+  }
+
+
+  export type JournalLineAvgAggregateInputType = {
+    line_no?: true
+    debit?: true
+    credit?: true
+  }
+
+  export type JournalLineSumAggregateInputType = {
+    line_no?: true
+    debit?: true
+    credit?: true
+  }
+
+  export type JournalLineMinAggregateInputType = {
+    id?: true
+    header_id?: true
+    account_id?: true
+    line_no?: true
+    description?: true
+    debit?: true
+    credit?: true
+  }
+
+  export type JournalLineMaxAggregateInputType = {
+    id?: true
+    header_id?: true
+    account_id?: true
+    line_no?: true
+    description?: true
+    debit?: true
+    credit?: true
+  }
+
+  export type JournalLineCountAggregateInputType = {
+    id?: true
+    header_id?: true
+    account_id?: true
+    line_no?: true
+    description?: true
+    debit?: true
+    credit?: true
+    _all?: true
+  }
+
+  export type JournalLineAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JournalLine to aggregate.
+     */
+    where?: JournalLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalLines to fetch.
+     */
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JournalLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JournalLines
+    **/
+    _count?: true | JournalLineCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: JournalLineAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: JournalLineSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JournalLineMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JournalLineMaxAggregateInputType
+  }
+
+  export type GetJournalLineAggregateType<T extends JournalLineAggregateArgs> = {
+        [P in keyof T & keyof AggregateJournalLine]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJournalLine[P]>
+      : GetScalarType<T[P], AggregateJournalLine[P]>
+  }
+
+
+
+
+  export type JournalLineGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JournalLineWhereInput
+    orderBy?: JournalLineOrderByWithAggregationInput | JournalLineOrderByWithAggregationInput[]
+    by: JournalLineScalarFieldEnum[] | JournalLineScalarFieldEnum
+    having?: JournalLineScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JournalLineCountAggregateInputType | true
+    _avg?: JournalLineAvgAggregateInputType
+    _sum?: JournalLineSumAggregateInputType
+    _min?: JournalLineMinAggregateInputType
+    _max?: JournalLineMaxAggregateInputType
+  }
+
+  export type JournalLineGroupByOutputType = {
+    id: string
+    header_id: string
+    account_id: string
+    line_no: number
+    description: string | null
+    debit: Decimal
+    credit: Decimal
+    _count: JournalLineCountAggregateOutputType | null
+    _avg: JournalLineAvgAggregateOutputType | null
+    _sum: JournalLineSumAggregateOutputType | null
+    _min: JournalLineMinAggregateOutputType | null
+    _max: JournalLineMaxAggregateOutputType | null
+  }
+
+  type GetJournalLineGroupByPayload<T extends JournalLineGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JournalLineGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JournalLineGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JournalLineGroupByOutputType[P]>
+            : GetScalarType<T[P], JournalLineGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JournalLineSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    header_id?: boolean
+    account_id?: boolean
+    line_no?: boolean
+    description?: boolean
+    debit?: boolean
+    credit?: boolean
+    header?: boolean | JournalHeaderDefaultArgs<ExtArgs>
+    account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["journalLine"]>
+
+  export type JournalLineSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    header_id?: boolean
+    account_id?: boolean
+    line_no?: boolean
+    description?: boolean
+    debit?: boolean
+    credit?: boolean
+    header?: boolean | JournalHeaderDefaultArgs<ExtArgs>
+    account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["journalLine"]>
+
+  export type JournalLineSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    header_id?: boolean
+    account_id?: boolean
+    line_no?: boolean
+    description?: boolean
+    debit?: boolean
+    credit?: boolean
+    header?: boolean | JournalHeaderDefaultArgs<ExtArgs>
+    account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["journalLine"]>
+
+  export type JournalLineSelectScalar = {
+    id?: boolean
+    header_id?: boolean
+    account_id?: boolean
+    line_no?: boolean
+    description?: boolean
+    debit?: boolean
+    credit?: boolean
+  }
+
+  export type JournalLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "header_id" | "account_id" | "line_no" | "description" | "debit" | "credit", ExtArgs["result"]["journalLine"]>
+  export type JournalLineInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    header?: boolean | JournalHeaderDefaultArgs<ExtArgs>
+    account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+  }
+  export type JournalLineIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    header?: boolean | JournalHeaderDefaultArgs<ExtArgs>
+    account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+  }
+  export type JournalLineIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    header?: boolean | JournalHeaderDefaultArgs<ExtArgs>
+    account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+  }
+
+  export type $JournalLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JournalLine"
+    objects: {
+      header: Prisma.$JournalHeaderPayload<ExtArgs>
+      account: Prisma.$ChartOfAccountPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      header_id: string
+      account_id: string
+      line_no: number
+      description: string | null
+      debit: Prisma.Decimal
+      credit: Prisma.Decimal
+    }, ExtArgs["result"]["journalLine"]>
+    composites: {}
+  }
+
+  type JournalLineGetPayload<S extends boolean | null | undefined | JournalLineDefaultArgs> = $Result.GetResult<Prisma.$JournalLinePayload, S>
+
+  type JournalLineCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JournalLineFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JournalLineCountAggregateInputType | true
+    }
+
+  export interface JournalLineDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JournalLine'], meta: { name: 'JournalLine' } }
+    /**
+     * Find zero or one JournalLine that matches the filter.
+     * @param {JournalLineFindUniqueArgs} args - Arguments to find a JournalLine
+     * @example
+     * // Get one JournalLine
+     * const journalLine = await prisma.journalLine.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JournalLineFindUniqueArgs>(args: SelectSubset<T, JournalLineFindUniqueArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JournalLine that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JournalLineFindUniqueOrThrowArgs} args - Arguments to find a JournalLine
+     * @example
+     * // Get one JournalLine
+     * const journalLine = await prisma.journalLine.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JournalLineFindUniqueOrThrowArgs>(args: SelectSubset<T, JournalLineFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JournalLine that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineFindFirstArgs} args - Arguments to find a JournalLine
+     * @example
+     * // Get one JournalLine
+     * const journalLine = await prisma.journalLine.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JournalLineFindFirstArgs>(args?: SelectSubset<T, JournalLineFindFirstArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JournalLine that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineFindFirstOrThrowArgs} args - Arguments to find a JournalLine
+     * @example
+     * // Get one JournalLine
+     * const journalLine = await prisma.journalLine.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JournalLineFindFirstOrThrowArgs>(args?: SelectSubset<T, JournalLineFindFirstOrThrowArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JournalLines that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JournalLines
+     * const journalLines = await prisma.journalLine.findMany()
+     * 
+     * // Get first 10 JournalLines
+     * const journalLines = await prisma.journalLine.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const journalLineWithIdOnly = await prisma.journalLine.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JournalLineFindManyArgs>(args?: SelectSubset<T, JournalLineFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JournalLine.
+     * @param {JournalLineCreateArgs} args - Arguments to create a JournalLine.
+     * @example
+     * // Create one JournalLine
+     * const JournalLine = await prisma.journalLine.create({
+     *   data: {
+     *     // ... data to create a JournalLine
+     *   }
+     * })
+     * 
+     */
+    create<T extends JournalLineCreateArgs>(args: SelectSubset<T, JournalLineCreateArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JournalLines.
+     * @param {JournalLineCreateManyArgs} args - Arguments to create many JournalLines.
+     * @example
+     * // Create many JournalLines
+     * const journalLine = await prisma.journalLine.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JournalLineCreateManyArgs>(args?: SelectSubset<T, JournalLineCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JournalLines and returns the data saved in the database.
+     * @param {JournalLineCreateManyAndReturnArgs} args - Arguments to create many JournalLines.
+     * @example
+     * // Create many JournalLines
+     * const journalLine = await prisma.journalLine.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JournalLines and only return the `id`
+     * const journalLineWithIdOnly = await prisma.journalLine.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JournalLineCreateManyAndReturnArgs>(args?: SelectSubset<T, JournalLineCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JournalLine.
+     * @param {JournalLineDeleteArgs} args - Arguments to delete one JournalLine.
+     * @example
+     * // Delete one JournalLine
+     * const JournalLine = await prisma.journalLine.delete({
+     *   where: {
+     *     // ... filter to delete one JournalLine
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JournalLineDeleteArgs>(args: SelectSubset<T, JournalLineDeleteArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JournalLine.
+     * @param {JournalLineUpdateArgs} args - Arguments to update one JournalLine.
+     * @example
+     * // Update one JournalLine
+     * const journalLine = await prisma.journalLine.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JournalLineUpdateArgs>(args: SelectSubset<T, JournalLineUpdateArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JournalLines.
+     * @param {JournalLineDeleteManyArgs} args - Arguments to filter JournalLines to delete.
+     * @example
+     * // Delete a few JournalLines
+     * const { count } = await prisma.journalLine.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JournalLineDeleteManyArgs>(args?: SelectSubset<T, JournalLineDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JournalLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JournalLines
+     * const journalLine = await prisma.journalLine.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JournalLineUpdateManyArgs>(args: SelectSubset<T, JournalLineUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JournalLines and returns the data updated in the database.
+     * @param {JournalLineUpdateManyAndReturnArgs} args - Arguments to update many JournalLines.
+     * @example
+     * // Update many JournalLines
+     * const journalLine = await prisma.journalLine.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JournalLines and only return the `id`
+     * const journalLineWithIdOnly = await prisma.journalLine.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JournalLineUpdateManyAndReturnArgs>(args: SelectSubset<T, JournalLineUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JournalLine.
+     * @param {JournalLineUpsertArgs} args - Arguments to update or create a JournalLine.
+     * @example
+     * // Update or create a JournalLine
+     * const journalLine = await prisma.journalLine.upsert({
+     *   create: {
+     *     // ... data to create a JournalLine
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JournalLine we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JournalLineUpsertArgs>(args: SelectSubset<T, JournalLineUpsertArgs<ExtArgs>>): Prisma__JournalLineClient<$Result.GetResult<Prisma.$JournalLinePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JournalLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineCountArgs} args - Arguments to filter JournalLines to count.
+     * @example
+     * // Count the number of JournalLines
+     * const count = await prisma.journalLine.count({
+     *   where: {
+     *     // ... the filter for the JournalLines we want to count
+     *   }
+     * })
+    **/
+    count<T extends JournalLineCountArgs>(
+      args?: Subset<T, JournalLineCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JournalLineCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JournalLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JournalLineAggregateArgs>(args: Subset<T, JournalLineAggregateArgs>): Prisma.PrismaPromise<GetJournalLineAggregateType<T>>
+
+    /**
+     * Group by JournalLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JournalLineGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JournalLineGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JournalLineGroupByArgs['orderBy'] }
+        : { orderBy?: JournalLineGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JournalLineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJournalLineGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JournalLine model
+   */
+  readonly fields: JournalLineFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JournalLine.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JournalLineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    header<T extends JournalHeaderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JournalHeaderDefaultArgs<ExtArgs>>): Prisma__JournalHeaderClient<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    account<T extends ChartOfAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChartOfAccountDefaultArgs<ExtArgs>>): Prisma__ChartOfAccountClient<$Result.GetResult<Prisma.$ChartOfAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JournalLine model
+   */
+  interface JournalLineFieldRefs {
+    readonly id: FieldRef<"JournalLine", 'String'>
+    readonly header_id: FieldRef<"JournalLine", 'String'>
+    readonly account_id: FieldRef<"JournalLine", 'String'>
+    readonly line_no: FieldRef<"JournalLine", 'Int'>
+    readonly description: FieldRef<"JournalLine", 'String'>
+    readonly debit: FieldRef<"JournalLine", 'Decimal'>
+    readonly credit: FieldRef<"JournalLine", 'Decimal'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JournalLine findUnique
+   */
+  export type JournalLineFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalLine to fetch.
+     */
+    where: JournalLineWhereUniqueInput
+  }
+
+  /**
+   * JournalLine findUniqueOrThrow
+   */
+  export type JournalLineFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalLine to fetch.
+     */
+    where: JournalLineWhereUniqueInput
+  }
+
+  /**
+   * JournalLine findFirst
+   */
+  export type JournalLineFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalLine to fetch.
+     */
+    where?: JournalLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalLines to fetch.
+     */
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JournalLines.
+     */
+    cursor?: JournalLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JournalLines.
+     */
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
+   * JournalLine findFirstOrThrow
+   */
+  export type JournalLineFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalLine to fetch.
+     */
+    where?: JournalLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalLines to fetch.
+     */
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JournalLines.
+     */
+    cursor?: JournalLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JournalLines.
+     */
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
+   * JournalLine findMany
+   */
+  export type JournalLineFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * Filter, which JournalLines to fetch.
+     */
+    where?: JournalLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JournalLines to fetch.
+     */
+    orderBy?: JournalLineOrderByWithRelationInput | JournalLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JournalLines.
+     */
+    cursor?: JournalLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JournalLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JournalLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JournalLines.
+     */
+    distinct?: JournalLineScalarFieldEnum | JournalLineScalarFieldEnum[]
+  }
+
+  /**
+   * JournalLine create
+   */
+  export type JournalLineCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JournalLine.
+     */
+    data: XOR<JournalLineCreateInput, JournalLineUncheckedCreateInput>
+  }
+
+  /**
+   * JournalLine createMany
+   */
+  export type JournalLineCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JournalLines.
+     */
+    data: JournalLineCreateManyInput | JournalLineCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JournalLine createManyAndReturn
+   */
+  export type JournalLineCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * The data used to create many JournalLines.
+     */
+    data: JournalLineCreateManyInput | JournalLineCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JournalLine update
+   */
+  export type JournalLineUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JournalLine.
+     */
+    data: XOR<JournalLineUpdateInput, JournalLineUncheckedUpdateInput>
+    /**
+     * Choose, which JournalLine to update.
+     */
+    where: JournalLineWhereUniqueInput
+  }
+
+  /**
+   * JournalLine updateMany
+   */
+  export type JournalLineUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JournalLines.
+     */
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyInput>
+    /**
+     * Filter which JournalLines to update
+     */
+    where?: JournalLineWhereInput
+    /**
+     * Limit how many JournalLines to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JournalLine updateManyAndReturn
+   */
+  export type JournalLineUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * The data used to update JournalLines.
+     */
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyInput>
+    /**
+     * Filter which JournalLines to update
+     */
+    where?: JournalLineWhereInput
+    /**
+     * Limit how many JournalLines to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JournalLine upsert
+   */
+  export type JournalLineUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JournalLine to update in case it exists.
+     */
+    where: JournalLineWhereUniqueInput
+    /**
+     * In case the JournalLine found by the `where` argument doesn't exist, create a new JournalLine with this data.
+     */
+    create: XOR<JournalLineCreateInput, JournalLineUncheckedCreateInput>
+    /**
+     * In case the JournalLine was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JournalLineUpdateInput, JournalLineUncheckedUpdateInput>
+  }
+
+  /**
+   * JournalLine delete
+   */
+  export type JournalLineDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+    /**
+     * Filter which JournalLine to delete.
+     */
+    where: JournalLineWhereUniqueInput
+  }
+
+  /**
+   * JournalLine deleteMany
+   */
+  export type JournalLineDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JournalLines to delete
+     */
+    where?: JournalLineWhereInput
+    /**
+     * Limit how many JournalLines to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JournalLine without action
+   */
+  export type JournalLineDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JournalLine
+     */
+    select?: JournalLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JournalLine
+     */
+    omit?: JournalLineOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JournalLineInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model VATTransaction
+   */
+
+  export type AggregateVATTransaction = {
+    _count: VATTransactionCountAggregateOutputType | null
+    _avg: VATTransactionAvgAggregateOutputType | null
+    _sum: VATTransactionSumAggregateOutputType | null
+    _min: VATTransactionMinAggregateOutputType | null
+    _max: VATTransactionMaxAggregateOutputType | null
+  }
+
+  export type VATTransactionAvgAggregateOutputType = {
+    taxable_amount: Decimal | null
+    vat_rate: Decimal | null
+    vat_amount: Decimal | null
+  }
+
+  export type VATTransactionSumAggregateOutputType = {
+    taxable_amount: Decimal | null
+    vat_rate: Decimal | null
+    vat_amount: Decimal | null
+  }
+
+  export type VATTransactionMinAggregateOutputType = {
+    id: string | null
+    transaction_no: string | null
+    vat_type: $Enums.VATType | null
+    source_type: string | null
+    source_id: string | null
+    source_line_id: string | null
+    taxable_amount: Decimal | null
+    vat_rate: Decimal | null
+    vat_amount: Decimal | null
+    is_claimable: boolean | null
+    claimed_date: Date | null
+    claim_period: string | null
+    etims_synced: boolean | null
+    etims_synced_at: Date | null
+    etims_cuin: string | null
+    etims_cusn: string | null
+    etims_qr_code: string | null
+    etims_error: string | null
+    branch_id: string | null
+    created_by: string | null
+    created_at: Date | null
+  }
+
+  export type VATTransactionMaxAggregateOutputType = {
+    id: string | null
+    transaction_no: string | null
+    vat_type: $Enums.VATType | null
+    source_type: string | null
+    source_id: string | null
+    source_line_id: string | null
+    taxable_amount: Decimal | null
+    vat_rate: Decimal | null
+    vat_amount: Decimal | null
+    is_claimable: boolean | null
+    claimed_date: Date | null
+    claim_period: string | null
+    etims_synced: boolean | null
+    etims_synced_at: Date | null
+    etims_cuin: string | null
+    etims_cusn: string | null
+    etims_qr_code: string | null
+    etims_error: string | null
+    branch_id: string | null
+    created_by: string | null
+    created_at: Date | null
+  }
+
+  export type VATTransactionCountAggregateOutputType = {
+    id: number
+    transaction_no: number
+    vat_type: number
+    source_type: number
+    source_id: number
+    source_line_id: number
+    taxable_amount: number
+    vat_rate: number
+    vat_amount: number
+    is_claimable: number
+    claimed_date: number
+    claim_period: number
+    etims_synced: number
+    etims_synced_at: number
+    etims_cuin: number
+    etims_cusn: number
+    etims_qr_code: number
+    etims_error: number
+    branch_id: number
+    created_by: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type VATTransactionAvgAggregateInputType = {
+    taxable_amount?: true
+    vat_rate?: true
+    vat_amount?: true
+  }
+
+  export type VATTransactionSumAggregateInputType = {
+    taxable_amount?: true
+    vat_rate?: true
+    vat_amount?: true
+  }
+
+  export type VATTransactionMinAggregateInputType = {
+    id?: true
+    transaction_no?: true
+    vat_type?: true
+    source_type?: true
+    source_id?: true
+    source_line_id?: true
+    taxable_amount?: true
+    vat_rate?: true
+    vat_amount?: true
+    is_claimable?: true
+    claimed_date?: true
+    claim_period?: true
+    etims_synced?: true
+    etims_synced_at?: true
+    etims_cuin?: true
+    etims_cusn?: true
+    etims_qr_code?: true
+    etims_error?: true
+    branch_id?: true
+    created_by?: true
+    created_at?: true
+  }
+
+  export type VATTransactionMaxAggregateInputType = {
+    id?: true
+    transaction_no?: true
+    vat_type?: true
+    source_type?: true
+    source_id?: true
+    source_line_id?: true
+    taxable_amount?: true
+    vat_rate?: true
+    vat_amount?: true
+    is_claimable?: true
+    claimed_date?: true
+    claim_period?: true
+    etims_synced?: true
+    etims_synced_at?: true
+    etims_cuin?: true
+    etims_cusn?: true
+    etims_qr_code?: true
+    etims_error?: true
+    branch_id?: true
+    created_by?: true
+    created_at?: true
+  }
+
+  export type VATTransactionCountAggregateInputType = {
+    id?: true
+    transaction_no?: true
+    vat_type?: true
+    source_type?: true
+    source_id?: true
+    source_line_id?: true
+    taxable_amount?: true
+    vat_rate?: true
+    vat_amount?: true
+    is_claimable?: true
+    claimed_date?: true
+    claim_period?: true
+    etims_synced?: true
+    etims_synced_at?: true
+    etims_cuin?: true
+    etims_cusn?: true
+    etims_qr_code?: true
+    etims_error?: true
+    branch_id?: true
+    created_by?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type VATTransactionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VATTransaction to aggregate.
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VATTransactions to fetch.
+     */
+    orderBy?: VATTransactionOrderByWithRelationInput | VATTransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VATTransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VATTransactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VATTransactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VATTransactions
+    **/
+    _count?: true | VATTransactionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: VATTransactionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: VATTransactionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VATTransactionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VATTransactionMaxAggregateInputType
+  }
+
+  export type GetVATTransactionAggregateType<T extends VATTransactionAggregateArgs> = {
+        [P in keyof T & keyof AggregateVATTransaction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVATTransaction[P]>
+      : GetScalarType<T[P], AggregateVATTransaction[P]>
+  }
+
+
+
+
+  export type VATTransactionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VATTransactionWhereInput
+    orderBy?: VATTransactionOrderByWithAggregationInput | VATTransactionOrderByWithAggregationInput[]
+    by: VATTransactionScalarFieldEnum[] | VATTransactionScalarFieldEnum
+    having?: VATTransactionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VATTransactionCountAggregateInputType | true
+    _avg?: VATTransactionAvgAggregateInputType
+    _sum?: VATTransactionSumAggregateInputType
+    _min?: VATTransactionMinAggregateInputType
+    _max?: VATTransactionMaxAggregateInputType
+  }
+
+  export type VATTransactionGroupByOutputType = {
+    id: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id: string | null
+    taxable_amount: Decimal
+    vat_rate: Decimal
+    vat_amount: Decimal
+    is_claimable: boolean
+    claimed_date: Date | null
+    claim_period: string | null
+    etims_synced: boolean
+    etims_synced_at: Date | null
+    etims_cuin: string | null
+    etims_cusn: string | null
+    etims_qr_code: string | null
+    etims_error: string | null
+    branch_id: string
+    created_by: string
+    created_at: Date
+    _count: VATTransactionCountAggregateOutputType | null
+    _avg: VATTransactionAvgAggregateOutputType | null
+    _sum: VATTransactionSumAggregateOutputType | null
+    _min: VATTransactionMinAggregateOutputType | null
+    _max: VATTransactionMaxAggregateOutputType | null
+  }
+
+  type GetVATTransactionGroupByPayload<T extends VATTransactionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VATTransactionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VATTransactionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VATTransactionGroupByOutputType[P]>
+            : GetScalarType<T[P], VATTransactionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VATTransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transaction_no?: boolean
+    vat_type?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    source_line_id?: boolean
+    taxable_amount?: boolean
+    vat_rate?: boolean
+    vat_amount?: boolean
+    is_claimable?: boolean
+    claimed_date?: boolean
+    claim_period?: boolean
+    etims_synced?: boolean
+    etims_synced_at?: boolean
+    etims_cuin?: boolean
+    etims_cusn?: boolean
+    etims_qr_code?: boolean
+    etims_error?: boolean
+    branch_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    branch?: boolean | BranchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["vATTransaction"]>
+
+  export type VATTransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transaction_no?: boolean
+    vat_type?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    source_line_id?: boolean
+    taxable_amount?: boolean
+    vat_rate?: boolean
+    vat_amount?: boolean
+    is_claimable?: boolean
+    claimed_date?: boolean
+    claim_period?: boolean
+    etims_synced?: boolean
+    etims_synced_at?: boolean
+    etims_cuin?: boolean
+    etims_cusn?: boolean
+    etims_qr_code?: boolean
+    etims_error?: boolean
+    branch_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    branch?: boolean | BranchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["vATTransaction"]>
+
+  export type VATTransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transaction_no?: boolean
+    vat_type?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    source_line_id?: boolean
+    taxable_amount?: boolean
+    vat_rate?: boolean
+    vat_amount?: boolean
+    is_claimable?: boolean
+    claimed_date?: boolean
+    claim_period?: boolean
+    etims_synced?: boolean
+    etims_synced_at?: boolean
+    etims_cuin?: boolean
+    etims_cusn?: boolean
+    etims_qr_code?: boolean
+    etims_error?: boolean
+    branch_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+    branch?: boolean | BranchDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["vATTransaction"]>
+
+  export type VATTransactionSelectScalar = {
+    id?: boolean
+    transaction_no?: boolean
+    vat_type?: boolean
+    source_type?: boolean
+    source_id?: boolean
+    source_line_id?: boolean
+    taxable_amount?: boolean
+    vat_rate?: boolean
+    vat_amount?: boolean
+    is_claimable?: boolean
+    claimed_date?: boolean
+    claim_period?: boolean
+    etims_synced?: boolean
+    etims_synced_at?: boolean
+    etims_cuin?: boolean
+    etims_cusn?: boolean
+    etims_qr_code?: boolean
+    etims_error?: boolean
+    branch_id?: boolean
+    created_by?: boolean
+    created_at?: boolean
+  }
+
+  export type VATTransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transaction_no" | "vat_type" | "source_type" | "source_id" | "source_line_id" | "taxable_amount" | "vat_rate" | "vat_amount" | "is_claimable" | "claimed_date" | "claim_period" | "etims_synced" | "etims_synced_at" | "etims_cuin" | "etims_cusn" | "etims_qr_code" | "etims_error" | "branch_id" | "created_by" | "created_at", ExtArgs["result"]["vATTransaction"]>
+  export type VATTransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | BranchDefaultArgs<ExtArgs>
+  }
+  export type VATTransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | BranchDefaultArgs<ExtArgs>
+  }
+  export type VATTransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | BranchDefaultArgs<ExtArgs>
+  }
+
+  export type $VATTransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VATTransaction"
+    objects: {
+      branch: Prisma.$BranchPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      transaction_no: string
+      vat_type: $Enums.VATType
+      source_type: string
+      source_id: string
+      source_line_id: string | null
+      taxable_amount: Prisma.Decimal
+      vat_rate: Prisma.Decimal
+      vat_amount: Prisma.Decimal
+      is_claimable: boolean
+      claimed_date: Date | null
+      claim_period: string | null
+      etims_synced: boolean
+      etims_synced_at: Date | null
+      etims_cuin: string | null
+      etims_cusn: string | null
+      etims_qr_code: string | null
+      etims_error: string | null
+      branch_id: string
+      created_by: string
+      created_at: Date
+    }, ExtArgs["result"]["vATTransaction"]>
+    composites: {}
+  }
+
+  type VATTransactionGetPayload<S extends boolean | null | undefined | VATTransactionDefaultArgs> = $Result.GetResult<Prisma.$VATTransactionPayload, S>
+
+  type VATTransactionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VATTransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VATTransactionCountAggregateInputType | true
+    }
+
+  export interface VATTransactionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VATTransaction'], meta: { name: 'VATTransaction' } }
+    /**
+     * Find zero or one VATTransaction that matches the filter.
+     * @param {VATTransactionFindUniqueArgs} args - Arguments to find a VATTransaction
+     * @example
+     * // Get one VATTransaction
+     * const vATTransaction = await prisma.vATTransaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VATTransactionFindUniqueArgs>(args: SelectSubset<T, VATTransactionFindUniqueArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VATTransaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VATTransactionFindUniqueOrThrowArgs} args - Arguments to find a VATTransaction
+     * @example
+     * // Get one VATTransaction
+     * const vATTransaction = await prisma.vATTransaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VATTransactionFindUniqueOrThrowArgs>(args: SelectSubset<T, VATTransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VATTransaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionFindFirstArgs} args - Arguments to find a VATTransaction
+     * @example
+     * // Get one VATTransaction
+     * const vATTransaction = await prisma.vATTransaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VATTransactionFindFirstArgs>(args?: SelectSubset<T, VATTransactionFindFirstArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VATTransaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionFindFirstOrThrowArgs} args - Arguments to find a VATTransaction
+     * @example
+     * // Get one VATTransaction
+     * const vATTransaction = await prisma.vATTransaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VATTransactionFindFirstOrThrowArgs>(args?: SelectSubset<T, VATTransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VATTransactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VATTransactions
+     * const vATTransactions = await prisma.vATTransaction.findMany()
+     * 
+     * // Get first 10 VATTransactions
+     * const vATTransactions = await prisma.vATTransaction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const vATTransactionWithIdOnly = await prisma.vATTransaction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VATTransactionFindManyArgs>(args?: SelectSubset<T, VATTransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VATTransaction.
+     * @param {VATTransactionCreateArgs} args - Arguments to create a VATTransaction.
+     * @example
+     * // Create one VATTransaction
+     * const VATTransaction = await prisma.vATTransaction.create({
+     *   data: {
+     *     // ... data to create a VATTransaction
+     *   }
+     * })
+     * 
+     */
+    create<T extends VATTransactionCreateArgs>(args: SelectSubset<T, VATTransactionCreateArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VATTransactions.
+     * @param {VATTransactionCreateManyArgs} args - Arguments to create many VATTransactions.
+     * @example
+     * // Create many VATTransactions
+     * const vATTransaction = await prisma.vATTransaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VATTransactionCreateManyArgs>(args?: SelectSubset<T, VATTransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VATTransactions and returns the data saved in the database.
+     * @param {VATTransactionCreateManyAndReturnArgs} args - Arguments to create many VATTransactions.
+     * @example
+     * // Create many VATTransactions
+     * const vATTransaction = await prisma.vATTransaction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VATTransactions and only return the `id`
+     * const vATTransactionWithIdOnly = await prisma.vATTransaction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VATTransactionCreateManyAndReturnArgs>(args?: SelectSubset<T, VATTransactionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VATTransaction.
+     * @param {VATTransactionDeleteArgs} args - Arguments to delete one VATTransaction.
+     * @example
+     * // Delete one VATTransaction
+     * const VATTransaction = await prisma.vATTransaction.delete({
+     *   where: {
+     *     // ... filter to delete one VATTransaction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VATTransactionDeleteArgs>(args: SelectSubset<T, VATTransactionDeleteArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VATTransaction.
+     * @param {VATTransactionUpdateArgs} args - Arguments to update one VATTransaction.
+     * @example
+     * // Update one VATTransaction
+     * const vATTransaction = await prisma.vATTransaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VATTransactionUpdateArgs>(args: SelectSubset<T, VATTransactionUpdateArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VATTransactions.
+     * @param {VATTransactionDeleteManyArgs} args - Arguments to filter VATTransactions to delete.
+     * @example
+     * // Delete a few VATTransactions
+     * const { count } = await prisma.vATTransaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VATTransactionDeleteManyArgs>(args?: SelectSubset<T, VATTransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VATTransactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VATTransactions
+     * const vATTransaction = await prisma.vATTransaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VATTransactionUpdateManyArgs>(args: SelectSubset<T, VATTransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VATTransactions and returns the data updated in the database.
+     * @param {VATTransactionUpdateManyAndReturnArgs} args - Arguments to update many VATTransactions.
+     * @example
+     * // Update many VATTransactions
+     * const vATTransaction = await prisma.vATTransaction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VATTransactions and only return the `id`
+     * const vATTransactionWithIdOnly = await prisma.vATTransaction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VATTransactionUpdateManyAndReturnArgs>(args: SelectSubset<T, VATTransactionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VATTransaction.
+     * @param {VATTransactionUpsertArgs} args - Arguments to update or create a VATTransaction.
+     * @example
+     * // Update or create a VATTransaction
+     * const vATTransaction = await prisma.vATTransaction.upsert({
+     *   create: {
+     *     // ... data to create a VATTransaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VATTransaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VATTransactionUpsertArgs>(args: SelectSubset<T, VATTransactionUpsertArgs<ExtArgs>>): Prisma__VATTransactionClient<$Result.GetResult<Prisma.$VATTransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VATTransactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionCountArgs} args - Arguments to filter VATTransactions to count.
+     * @example
+     * // Count the number of VATTransactions
+     * const count = await prisma.vATTransaction.count({
+     *   where: {
+     *     // ... the filter for the VATTransactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends VATTransactionCountArgs>(
+      args?: Subset<T, VATTransactionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VATTransactionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VATTransaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VATTransactionAggregateArgs>(args: Subset<T, VATTransactionAggregateArgs>): Prisma.PrismaPromise<GetVATTransactionAggregateType<T>>
+
+    /**
+     * Group by VATTransaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VATTransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VATTransactionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VATTransactionGroupByArgs['orderBy'] }
+        : { orderBy?: VATTransactionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VATTransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVATTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VATTransaction model
+   */
+  readonly fields: VATTransactionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VATTransaction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VATTransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    branch<T extends BranchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BranchDefaultArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VATTransaction model
+   */
+  interface VATTransactionFieldRefs {
+    readonly id: FieldRef<"VATTransaction", 'String'>
+    readonly transaction_no: FieldRef<"VATTransaction", 'String'>
+    readonly vat_type: FieldRef<"VATTransaction", 'VATType'>
+    readonly source_type: FieldRef<"VATTransaction", 'String'>
+    readonly source_id: FieldRef<"VATTransaction", 'String'>
+    readonly source_line_id: FieldRef<"VATTransaction", 'String'>
+    readonly taxable_amount: FieldRef<"VATTransaction", 'Decimal'>
+    readonly vat_rate: FieldRef<"VATTransaction", 'Decimal'>
+    readonly vat_amount: FieldRef<"VATTransaction", 'Decimal'>
+    readonly is_claimable: FieldRef<"VATTransaction", 'Boolean'>
+    readonly claimed_date: FieldRef<"VATTransaction", 'DateTime'>
+    readonly claim_period: FieldRef<"VATTransaction", 'String'>
+    readonly etims_synced: FieldRef<"VATTransaction", 'Boolean'>
+    readonly etims_synced_at: FieldRef<"VATTransaction", 'DateTime'>
+    readonly etims_cuin: FieldRef<"VATTransaction", 'String'>
+    readonly etims_cusn: FieldRef<"VATTransaction", 'String'>
+    readonly etims_qr_code: FieldRef<"VATTransaction", 'String'>
+    readonly etims_error: FieldRef<"VATTransaction", 'String'>
+    readonly branch_id: FieldRef<"VATTransaction", 'String'>
+    readonly created_by: FieldRef<"VATTransaction", 'String'>
+    readonly created_at: FieldRef<"VATTransaction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VATTransaction findUnique
+   */
+  export type VATTransactionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which VATTransaction to fetch.
+     */
+    where: VATTransactionWhereUniqueInput
+  }
+
+  /**
+   * VATTransaction findUniqueOrThrow
+   */
+  export type VATTransactionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which VATTransaction to fetch.
+     */
+    where: VATTransactionWhereUniqueInput
+  }
+
+  /**
+   * VATTransaction findFirst
+   */
+  export type VATTransactionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which VATTransaction to fetch.
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VATTransactions to fetch.
+     */
+    orderBy?: VATTransactionOrderByWithRelationInput | VATTransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VATTransactions.
+     */
+    cursor?: VATTransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VATTransactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VATTransactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VATTransactions.
+     */
+    distinct?: VATTransactionScalarFieldEnum | VATTransactionScalarFieldEnum[]
+  }
+
+  /**
+   * VATTransaction findFirstOrThrow
+   */
+  export type VATTransactionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which VATTransaction to fetch.
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VATTransactions to fetch.
+     */
+    orderBy?: VATTransactionOrderByWithRelationInput | VATTransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VATTransactions.
+     */
+    cursor?: VATTransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VATTransactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VATTransactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VATTransactions.
+     */
+    distinct?: VATTransactionScalarFieldEnum | VATTransactionScalarFieldEnum[]
+  }
+
+  /**
+   * VATTransaction findMany
+   */
+  export type VATTransactionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which VATTransactions to fetch.
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VATTransactions to fetch.
+     */
+    orderBy?: VATTransactionOrderByWithRelationInput | VATTransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VATTransactions.
+     */
+    cursor?: VATTransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VATTransactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VATTransactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VATTransactions.
+     */
+    distinct?: VATTransactionScalarFieldEnum | VATTransactionScalarFieldEnum[]
+  }
+
+  /**
+   * VATTransaction create
+   */
+  export type VATTransactionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a VATTransaction.
+     */
+    data: XOR<VATTransactionCreateInput, VATTransactionUncheckedCreateInput>
+  }
+
+  /**
+   * VATTransaction createMany
+   */
+  export type VATTransactionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VATTransactions.
+     */
+    data: VATTransactionCreateManyInput | VATTransactionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VATTransaction createManyAndReturn
+   */
+  export type VATTransactionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * The data used to create many VATTransactions.
+     */
+    data: VATTransactionCreateManyInput | VATTransactionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * VATTransaction update
+   */
+  export type VATTransactionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a VATTransaction.
+     */
+    data: XOR<VATTransactionUpdateInput, VATTransactionUncheckedUpdateInput>
+    /**
+     * Choose, which VATTransaction to update.
+     */
+    where: VATTransactionWhereUniqueInput
+  }
+
+  /**
+   * VATTransaction updateMany
+   */
+  export type VATTransactionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VATTransactions.
+     */
+    data: XOR<VATTransactionUpdateManyMutationInput, VATTransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which VATTransactions to update
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * Limit how many VATTransactions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VATTransaction updateManyAndReturn
+   */
+  export type VATTransactionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * The data used to update VATTransactions.
+     */
+    data: XOR<VATTransactionUpdateManyMutationInput, VATTransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which VATTransactions to update
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * Limit how many VATTransactions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * VATTransaction upsert
+   */
+  export type VATTransactionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the VATTransaction to update in case it exists.
+     */
+    where: VATTransactionWhereUniqueInput
+    /**
+     * In case the VATTransaction found by the `where` argument doesn't exist, create a new VATTransaction with this data.
+     */
+    create: XOR<VATTransactionCreateInput, VATTransactionUncheckedCreateInput>
+    /**
+     * In case the VATTransaction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VATTransactionUpdateInput, VATTransactionUncheckedUpdateInput>
+  }
+
+  /**
+   * VATTransaction delete
+   */
+  export type VATTransactionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+    /**
+     * Filter which VATTransaction to delete.
+     */
+    where: VATTransactionWhereUniqueInput
+  }
+
+  /**
+   * VATTransaction deleteMany
+   */
+  export type VATTransactionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VATTransactions to delete
+     */
+    where?: VATTransactionWhereInput
+    /**
+     * Limit how many VATTransactions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VATTransaction without action
+   */
+  export type VATTransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VATTransaction
+     */
+    select?: VATTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VATTransaction
+     */
+    omit?: VATTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VATTransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -91512,6 +95754,65 @@ export namespace Prisma {
   export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+  export const JournalHeaderScalarFieldEnum: {
+    id: 'id',
+    entry_no: 'entry_no',
+    entry_date: 'entry_date',
+    period_id: 'period_id',
+    journal_id: 'journal_id',
+    branch_id: 'branch_id',
+    description: 'description',
+    total_debit: 'total_debit',
+    total_credit: 'total_credit',
+    source_type: 'source_type',
+    source_id: 'source_id',
+    created_by: 'created_by',
+    created_at: 'created_at'
+  };
+
+  export type JournalHeaderScalarFieldEnum = (typeof JournalHeaderScalarFieldEnum)[keyof typeof JournalHeaderScalarFieldEnum]
+
+
+  export const JournalLineScalarFieldEnum: {
+    id: 'id',
+    header_id: 'header_id',
+    account_id: 'account_id',
+    line_no: 'line_no',
+    description: 'description',
+    debit: 'debit',
+    credit: 'credit'
+  };
+
+  export type JournalLineScalarFieldEnum = (typeof JournalLineScalarFieldEnum)[keyof typeof JournalLineScalarFieldEnum]
+
+
+  export const VATTransactionScalarFieldEnum: {
+    id: 'id',
+    transaction_no: 'transaction_no',
+    vat_type: 'vat_type',
+    source_type: 'source_type',
+    source_id: 'source_id',
+    source_line_id: 'source_line_id',
+    taxable_amount: 'taxable_amount',
+    vat_rate: 'vat_rate',
+    vat_amount: 'vat_amount',
+    is_claimable: 'is_claimable',
+    claimed_date: 'claimed_date',
+    claim_period: 'claim_period',
+    etims_synced: 'etims_synced',
+    etims_synced_at: 'etims_synced_at',
+    etims_cuin: 'etims_cuin',
+    etims_cusn: 'etims_cusn',
+    etims_qr_code: 'etims_qr_code',
+    etims_error: 'etims_error',
+    branch_id: 'branch_id',
+    created_by: 'created_by',
+    created_at: 'created_at'
+  };
+
+  export type VATTransactionScalarFieldEnum = (typeof VATTransactionScalarFieldEnum)[keyof typeof VATTransactionScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -92214,6 +96515,20 @@ export namespace Prisma {
    */
   export type ListEnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction[]'>
     
+
+
+  /**
+   * Reference to a field of type 'VATType'
+   */
+  export type EnumVATTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VATType'>
+    
+
+
+  /**
+   * Reference to a field of type 'VATType[]'
+   */
+  export type ListEnumVATTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VATType[]'>
+    
   /**
    * Deep Input Types
    */
@@ -92420,6 +96735,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderListRelationFilter
     users?: UserListRelationFilter
     warehouses?: WarehouseListRelationFilter
+    journal_headers?: JournalHeaderListRelationFilter
+    vat_transactions?: VATTransactionListRelationFilter
   }
 
   export type BranchOrderByWithRelationInput = {
@@ -92442,6 +96759,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderOrderByRelationAggregateInput
     users?: UserOrderByRelationAggregateInput
     warehouses?: WarehouseOrderByRelationAggregateInput
+    journal_headers?: JournalHeaderOrderByRelationAggregateInput
+    vat_transactions?: VATTransactionOrderByRelationAggregateInput
   }
 
   export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -92467,6 +96786,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderListRelationFilter
     users?: UserListRelationFilter
     warehouses?: WarehouseListRelationFilter
+    journal_headers?: JournalHeaderListRelationFilter
+    vat_transactions?: VATTransactionListRelationFilter
   }, "id" | "code">
 
   export type BranchOrderByWithAggregationInput = {
@@ -95544,6 +99865,7 @@ export namespace Prisma {
     parent?: XOR<ChartOfAccountNullableScalarRelationFilter, ChartOfAccountWhereInput> | null
     children?: ChartOfAccountListRelationFilter
     journal_entries?: JournalEntryListRelationFilter
+    journal_lines?: JournalLineListRelationFilter
   }
 
   export type ChartOfAccountOrderByWithRelationInput = {
@@ -95565,6 +99887,7 @@ export namespace Prisma {
     parent?: ChartOfAccountOrderByWithRelationInput
     children?: ChartOfAccountOrderByRelationAggregateInput
     journal_entries?: JournalEntryOrderByRelationAggregateInput
+    journal_lines?: JournalLineOrderByRelationAggregateInput
   }
 
   export type ChartOfAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -95589,6 +99912,7 @@ export namespace Prisma {
     parent?: XOR<ChartOfAccountNullableScalarRelationFilter, ChartOfAccountWhereInput> | null
     children?: ChartOfAccountListRelationFilter
     journal_entries?: JournalEntryListRelationFilter
+    journal_lines?: JournalLineListRelationFilter
   }, "id" | "account_code">
 
   export type ChartOfAccountOrderByWithAggregationInput = {
@@ -95643,6 +99967,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Journal"> | Date | string
     updatedAt?: DateTimeFilter<"Journal"> | Date | string
     entries?: JournalEntryListRelationFilter
+    headers?: JournalHeaderListRelationFilter
   }
 
   export type JournalOrderByWithRelationInput = {
@@ -95654,6 +99979,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     entries?: JournalEntryOrderByRelationAggregateInput
+    headers?: JournalHeaderOrderByRelationAggregateInput
   }
 
   export type JournalWhereUniqueInput = Prisma.AtLeast<{
@@ -95668,6 +99994,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Journal"> | Date | string
     updatedAt?: DateTimeFilter<"Journal"> | Date | string
     entries?: JournalEntryListRelationFilter
+    headers?: JournalHeaderListRelationFilter
   }, "id" | "code">
 
   export type JournalOrderByWithAggregationInput = {
@@ -95779,6 +100106,7 @@ export namespace Prisma {
     fiscalYear?: XOR<FiscalYearScalarRelationFilter, FiscalYearWhereInput>
     lockedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     entries?: JournalEntryListRelationFilter
+    headers?: JournalHeaderListRelationFilter
   }
 
   export type FiscalPeriodOrderByWithRelationInput = {
@@ -95796,6 +100124,7 @@ export namespace Prisma {
     fiscalYear?: FiscalYearOrderByWithRelationInput
     lockedBy?: UserOrderByWithRelationInput
     entries?: JournalEntryOrderByRelationAggregateInput
+    headers?: JournalHeaderOrderByRelationAggregateInput
   }
 
   export type FiscalPeriodWhereUniqueInput = Prisma.AtLeast<{
@@ -95816,6 +100145,7 @@ export namespace Prisma {
     fiscalYear?: XOR<FiscalYearScalarRelationFilter, FiscalYearWhereInput>
     lockedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     entries?: JournalEntryListRelationFilter
+    headers?: JournalHeaderListRelationFilter
   }, "id">
 
   export type FiscalPeriodOrderByWithAggregationInput = {
@@ -98405,6 +102735,319 @@ export namespace Prisma {
     timestamp?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
   }
 
+  export type JournalHeaderWhereInput = {
+    AND?: JournalHeaderWhereInput | JournalHeaderWhereInput[]
+    OR?: JournalHeaderWhereInput[]
+    NOT?: JournalHeaderWhereInput | JournalHeaderWhereInput[]
+    id?: StringFilter<"JournalHeader"> | string
+    entry_no?: StringFilter<"JournalHeader"> | string
+    entry_date?: DateTimeFilter<"JournalHeader"> | Date | string
+    period_id?: StringFilter<"JournalHeader"> | string
+    journal_id?: StringNullableFilter<"JournalHeader"> | string | null
+    branch_id?: StringNullableFilter<"JournalHeader"> | string | null
+    description?: StringFilter<"JournalHeader"> | string
+    total_debit?: DecimalFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    source_type?: StringNullableFilter<"JournalHeader"> | string | null
+    source_id?: StringNullableFilter<"JournalHeader"> | string | null
+    created_by?: StringFilter<"JournalHeader"> | string
+    created_at?: DateTimeFilter<"JournalHeader"> | Date | string
+    period?: XOR<FiscalPeriodScalarRelationFilter, FiscalPeriodWhereInput>
+    journal?: XOR<JournalNullableScalarRelationFilter, JournalWhereInput> | null
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    lines?: JournalLineListRelationFilter
+  }
+
+  export type JournalHeaderOrderByWithRelationInput = {
+    id?: SortOrder
+    entry_no?: SortOrder
+    entry_date?: SortOrder
+    period_id?: SortOrder
+    journal_id?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
+    description?: SortOrder
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+    source_type?: SortOrderInput | SortOrder
+    source_id?: SortOrderInput | SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    period?: FiscalPeriodOrderByWithRelationInput
+    journal?: JournalOrderByWithRelationInput
+    branch?: BranchOrderByWithRelationInput
+    lines?: JournalLineOrderByRelationAggregateInput
+  }
+
+  export type JournalHeaderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    entry_no?: string
+    AND?: JournalHeaderWhereInput | JournalHeaderWhereInput[]
+    OR?: JournalHeaderWhereInput[]
+    NOT?: JournalHeaderWhereInput | JournalHeaderWhereInput[]
+    entry_date?: DateTimeFilter<"JournalHeader"> | Date | string
+    period_id?: StringFilter<"JournalHeader"> | string
+    journal_id?: StringNullableFilter<"JournalHeader"> | string | null
+    branch_id?: StringNullableFilter<"JournalHeader"> | string | null
+    description?: StringFilter<"JournalHeader"> | string
+    total_debit?: DecimalFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    source_type?: StringNullableFilter<"JournalHeader"> | string | null
+    source_id?: StringNullableFilter<"JournalHeader"> | string | null
+    created_by?: StringFilter<"JournalHeader"> | string
+    created_at?: DateTimeFilter<"JournalHeader"> | Date | string
+    period?: XOR<FiscalPeriodScalarRelationFilter, FiscalPeriodWhereInput>
+    journal?: XOR<JournalNullableScalarRelationFilter, JournalWhereInput> | null
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    lines?: JournalLineListRelationFilter
+  }, "id" | "entry_no">
+
+  export type JournalHeaderOrderByWithAggregationInput = {
+    id?: SortOrder
+    entry_no?: SortOrder
+    entry_date?: SortOrder
+    period_id?: SortOrder
+    journal_id?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
+    description?: SortOrder
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+    source_type?: SortOrderInput | SortOrder
+    source_id?: SortOrderInput | SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    _count?: JournalHeaderCountOrderByAggregateInput
+    _avg?: JournalHeaderAvgOrderByAggregateInput
+    _max?: JournalHeaderMaxOrderByAggregateInput
+    _min?: JournalHeaderMinOrderByAggregateInput
+    _sum?: JournalHeaderSumOrderByAggregateInput
+  }
+
+  export type JournalHeaderScalarWhereWithAggregatesInput = {
+    AND?: JournalHeaderScalarWhereWithAggregatesInput | JournalHeaderScalarWhereWithAggregatesInput[]
+    OR?: JournalHeaderScalarWhereWithAggregatesInput[]
+    NOT?: JournalHeaderScalarWhereWithAggregatesInput | JournalHeaderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JournalHeader"> | string
+    entry_no?: StringWithAggregatesFilter<"JournalHeader"> | string
+    entry_date?: DateTimeWithAggregatesFilter<"JournalHeader"> | Date | string
+    period_id?: StringWithAggregatesFilter<"JournalHeader"> | string
+    journal_id?: StringNullableWithAggregatesFilter<"JournalHeader"> | string | null
+    branch_id?: StringNullableWithAggregatesFilter<"JournalHeader"> | string | null
+    description?: StringWithAggregatesFilter<"JournalHeader"> | string
+    total_debit?: DecimalWithAggregatesFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalWithAggregatesFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    source_type?: StringNullableWithAggregatesFilter<"JournalHeader"> | string | null
+    source_id?: StringNullableWithAggregatesFilter<"JournalHeader"> | string | null
+    created_by?: StringWithAggregatesFilter<"JournalHeader"> | string
+    created_at?: DateTimeWithAggregatesFilter<"JournalHeader"> | Date | string
+  }
+
+  export type JournalLineWhereInput = {
+    AND?: JournalLineWhereInput | JournalLineWhereInput[]
+    OR?: JournalLineWhereInput[]
+    NOT?: JournalLineWhereInput | JournalLineWhereInput[]
+    id?: StringFilter<"JournalLine"> | string
+    header_id?: StringFilter<"JournalLine"> | string
+    account_id?: StringFilter<"JournalLine"> | string
+    line_no?: IntFilter<"JournalLine"> | number
+    description?: StringNullableFilter<"JournalLine"> | string | null
+    debit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    header?: XOR<JournalHeaderScalarRelationFilter, JournalHeaderWhereInput>
+    account?: XOR<ChartOfAccountScalarRelationFilter, ChartOfAccountWhereInput>
+  }
+
+  export type JournalLineOrderByWithRelationInput = {
+    id?: SortOrder
+    header_id?: SortOrder
+    account_id?: SortOrder
+    line_no?: SortOrder
+    description?: SortOrderInput | SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+    header?: JournalHeaderOrderByWithRelationInput
+    account?: ChartOfAccountOrderByWithRelationInput
+  }
+
+  export type JournalLineWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: JournalLineWhereInput | JournalLineWhereInput[]
+    OR?: JournalLineWhereInput[]
+    NOT?: JournalLineWhereInput | JournalLineWhereInput[]
+    header_id?: StringFilter<"JournalLine"> | string
+    account_id?: StringFilter<"JournalLine"> | string
+    line_no?: IntFilter<"JournalLine"> | number
+    description?: StringNullableFilter<"JournalLine"> | string | null
+    debit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    header?: XOR<JournalHeaderScalarRelationFilter, JournalHeaderWhereInput>
+    account?: XOR<ChartOfAccountScalarRelationFilter, ChartOfAccountWhereInput>
+  }, "id">
+
+  export type JournalLineOrderByWithAggregationInput = {
+    id?: SortOrder
+    header_id?: SortOrder
+    account_id?: SortOrder
+    line_no?: SortOrder
+    description?: SortOrderInput | SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+    _count?: JournalLineCountOrderByAggregateInput
+    _avg?: JournalLineAvgOrderByAggregateInput
+    _max?: JournalLineMaxOrderByAggregateInput
+    _min?: JournalLineMinOrderByAggregateInput
+    _sum?: JournalLineSumOrderByAggregateInput
+  }
+
+  export type JournalLineScalarWhereWithAggregatesInput = {
+    AND?: JournalLineScalarWhereWithAggregatesInput | JournalLineScalarWhereWithAggregatesInput[]
+    OR?: JournalLineScalarWhereWithAggregatesInput[]
+    NOT?: JournalLineScalarWhereWithAggregatesInput | JournalLineScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"JournalLine"> | string
+    header_id?: StringWithAggregatesFilter<"JournalLine"> | string
+    account_id?: StringWithAggregatesFilter<"JournalLine"> | string
+    line_no?: IntWithAggregatesFilter<"JournalLine"> | number
+    description?: StringNullableWithAggregatesFilter<"JournalLine"> | string | null
+    debit?: DecimalWithAggregatesFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    credit?: DecimalWithAggregatesFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type VATTransactionWhereInput = {
+    AND?: VATTransactionWhereInput | VATTransactionWhereInput[]
+    OR?: VATTransactionWhereInput[]
+    NOT?: VATTransactionWhereInput | VATTransactionWhereInput[]
+    id?: StringFilter<"VATTransaction"> | string
+    transaction_no?: StringFilter<"VATTransaction"> | string
+    vat_type?: EnumVATTypeFilter<"VATTransaction"> | $Enums.VATType
+    source_type?: StringFilter<"VATTransaction"> | string
+    source_id?: StringFilter<"VATTransaction"> | string
+    source_line_id?: StringNullableFilter<"VATTransaction"> | string | null
+    taxable_amount?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFilter<"VATTransaction"> | boolean
+    claimed_date?: DateTimeNullableFilter<"VATTransaction"> | Date | string | null
+    claim_period?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_synced?: BoolFilter<"VATTransaction"> | boolean
+    etims_synced_at?: DateTimeNullableFilter<"VATTransaction"> | Date | string | null
+    etims_cuin?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_cusn?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_qr_code?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_error?: StringNullableFilter<"VATTransaction"> | string | null
+    branch_id?: StringFilter<"VATTransaction"> | string
+    created_by?: StringFilter<"VATTransaction"> | string
+    created_at?: DateTimeFilter<"VATTransaction"> | Date | string
+    branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
+  }
+
+  export type VATTransactionOrderByWithRelationInput = {
+    id?: SortOrder
+    transaction_no?: SortOrder
+    vat_type?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    source_line_id?: SortOrderInput | SortOrder
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+    is_claimable?: SortOrder
+    claimed_date?: SortOrderInput | SortOrder
+    claim_period?: SortOrderInput | SortOrder
+    etims_synced?: SortOrder
+    etims_synced_at?: SortOrderInput | SortOrder
+    etims_cuin?: SortOrderInput | SortOrder
+    etims_cusn?: SortOrderInput | SortOrder
+    etims_qr_code?: SortOrderInput | SortOrder
+    etims_error?: SortOrderInput | SortOrder
+    branch_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    branch?: BranchOrderByWithRelationInput
+  }
+
+  export type VATTransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    transaction_no?: string
+    AND?: VATTransactionWhereInput | VATTransactionWhereInput[]
+    OR?: VATTransactionWhereInput[]
+    NOT?: VATTransactionWhereInput | VATTransactionWhereInput[]
+    vat_type?: EnumVATTypeFilter<"VATTransaction"> | $Enums.VATType
+    source_type?: StringFilter<"VATTransaction"> | string
+    source_id?: StringFilter<"VATTransaction"> | string
+    source_line_id?: StringNullableFilter<"VATTransaction"> | string | null
+    taxable_amount?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFilter<"VATTransaction"> | boolean
+    claimed_date?: DateTimeNullableFilter<"VATTransaction"> | Date | string | null
+    claim_period?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_synced?: BoolFilter<"VATTransaction"> | boolean
+    etims_synced_at?: DateTimeNullableFilter<"VATTransaction"> | Date | string | null
+    etims_cuin?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_cusn?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_qr_code?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_error?: StringNullableFilter<"VATTransaction"> | string | null
+    branch_id?: StringFilter<"VATTransaction"> | string
+    created_by?: StringFilter<"VATTransaction"> | string
+    created_at?: DateTimeFilter<"VATTransaction"> | Date | string
+    branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
+  }, "id" | "transaction_no">
+
+  export type VATTransactionOrderByWithAggregationInput = {
+    id?: SortOrder
+    transaction_no?: SortOrder
+    vat_type?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    source_line_id?: SortOrderInput | SortOrder
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+    is_claimable?: SortOrder
+    claimed_date?: SortOrderInput | SortOrder
+    claim_period?: SortOrderInput | SortOrder
+    etims_synced?: SortOrder
+    etims_synced_at?: SortOrderInput | SortOrder
+    etims_cuin?: SortOrderInput | SortOrder
+    etims_cusn?: SortOrderInput | SortOrder
+    etims_qr_code?: SortOrderInput | SortOrder
+    etims_error?: SortOrderInput | SortOrder
+    branch_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+    _count?: VATTransactionCountOrderByAggregateInput
+    _avg?: VATTransactionAvgOrderByAggregateInput
+    _max?: VATTransactionMaxOrderByAggregateInput
+    _min?: VATTransactionMinOrderByAggregateInput
+    _sum?: VATTransactionSumOrderByAggregateInput
+  }
+
+  export type VATTransactionScalarWhereWithAggregatesInput = {
+    AND?: VATTransactionScalarWhereWithAggregatesInput | VATTransactionScalarWhereWithAggregatesInput[]
+    OR?: VATTransactionScalarWhereWithAggregatesInput[]
+    NOT?: VATTransactionScalarWhereWithAggregatesInput | VATTransactionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"VATTransaction"> | string
+    transaction_no?: StringWithAggregatesFilter<"VATTransaction"> | string
+    vat_type?: EnumVATTypeWithAggregatesFilter<"VATTransaction"> | $Enums.VATType
+    source_type?: StringWithAggregatesFilter<"VATTransaction"> | string
+    source_id?: StringWithAggregatesFilter<"VATTransaction"> | string
+    source_line_id?: StringNullableWithAggregatesFilter<"VATTransaction"> | string | null
+    taxable_amount?: DecimalWithAggregatesFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalWithAggregatesFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalWithAggregatesFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolWithAggregatesFilter<"VATTransaction"> | boolean
+    claimed_date?: DateTimeNullableWithAggregatesFilter<"VATTransaction"> | Date | string | null
+    claim_period?: StringNullableWithAggregatesFilter<"VATTransaction"> | string | null
+    etims_synced?: BoolWithAggregatesFilter<"VATTransaction"> | boolean
+    etims_synced_at?: DateTimeNullableWithAggregatesFilter<"VATTransaction"> | Date | string | null
+    etims_cuin?: StringNullableWithAggregatesFilter<"VATTransaction"> | string | null
+    etims_cusn?: StringNullableWithAggregatesFilter<"VATTransaction"> | string | null
+    etims_qr_code?: StringNullableWithAggregatesFilter<"VATTransaction"> | string | null
+    etims_error?: StringNullableWithAggregatesFilter<"VATTransaction"> | string | null
+    branch_id?: StringWithAggregatesFilter<"VATTransaction"> | string
+    created_by?: StringWithAggregatesFilter<"VATTransaction"> | string
+    created_at?: DateTimeWithAggregatesFilter<"VATTransaction"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -98644,6 +103287,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateInput = {
@@ -98666,6 +103311,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUpdateInput = {
@@ -98688,6 +103335,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateInput = {
@@ -98710,6 +103359,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchCreateManyInput = {
@@ -102057,6 +106708,7 @@ export namespace Prisma {
     parent?: ChartOfAccountCreateNestedOneWithoutChildrenInput
     children?: ChartOfAccountCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUncheckedCreateInput = {
@@ -102077,6 +106729,7 @@ export namespace Prisma {
     budgets?: BudgetUncheckedCreateNestedManyWithoutAccountInput
     children?: ChartOfAccountUncheckedCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryUncheckedCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUpdateInput = {
@@ -102097,6 +106750,7 @@ export namespace Prisma {
     parent?: ChartOfAccountUpdateOneWithoutChildrenNestedInput
     children?: ChartOfAccountUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateInput = {
@@ -102117,6 +106771,7 @@ export namespace Prisma {
     budgets?: BudgetUncheckedUpdateManyWithoutAccountNestedInput
     children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountCreateManyInput = {
@@ -102175,6 +106830,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     entries?: JournalEntryCreateNestedManyWithoutJournalInput
+    headers?: JournalHeaderCreateNestedManyWithoutJournalInput
   }
 
   export type JournalUncheckedCreateInput = {
@@ -102186,6 +106842,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     entries?: JournalEntryUncheckedCreateNestedManyWithoutJournalInput
+    headers?: JournalHeaderUncheckedCreateNestedManyWithoutJournalInput
   }
 
   export type JournalUpdateInput = {
@@ -102197,6 +106854,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     entries?: JournalEntryUpdateManyWithoutJournalNestedInput
+    headers?: JournalHeaderUpdateManyWithoutJournalNestedInput
   }
 
   export type JournalUncheckedUpdateInput = {
@@ -102208,6 +106866,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     entries?: JournalEntryUncheckedUpdateManyWithoutJournalNestedInput
+    headers?: JournalHeaderUncheckedUpdateManyWithoutJournalNestedInput
   }
 
   export type JournalCreateManyInput = {
@@ -102327,6 +106986,7 @@ export namespace Prisma {
     fiscalYear: FiscalYearCreateNestedOneWithoutPeriodsInput
     lockedBy?: UserCreateNestedOneWithoutLockedPeriodsInput
     entries?: JournalEntryCreateNestedManyWithoutPeriodInput
+    headers?: JournalHeaderCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodUncheckedCreateInput = {
@@ -102342,6 +107002,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     entries?: JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+    headers?: JournalHeaderUncheckedCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodUpdateInput = {
@@ -102357,6 +107018,7 @@ export namespace Prisma {
     fiscalYear?: FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
     lockedBy?: UserUpdateOneWithoutLockedPeriodsNestedInput
     entries?: JournalEntryUpdateManyWithoutPeriodNestedInput
+    headers?: JournalHeaderUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodUncheckedUpdateInput = {
@@ -102372,6 +107034,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     entries?: JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+    headers?: JournalHeaderUncheckedUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodCreateManyInput = {
@@ -105277,6 +109940,354 @@ export namespace Prisma {
     timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JournalHeaderCreateInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    period: FiscalPeriodCreateNestedOneWithoutHeadersInput
+    journal?: JournalCreateNestedOneWithoutHeadersInput
+    branch?: BranchCreateNestedOneWithoutJournal_headersInput
+    lines?: JournalLineCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderUncheckedCreateInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    journal_id?: string | null
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    lines?: JournalLineUncheckedCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    period?: FiscalPeriodUpdateOneRequiredWithoutHeadersNestedInput
+    journal?: JournalUpdateOneWithoutHeadersNestedInput
+    branch?: BranchUpdateOneWithoutJournal_headersNestedInput
+    lines?: JournalLineUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lines?: JournalLineUncheckedUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderCreateManyInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    journal_id?: string | null
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type JournalHeaderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalHeaderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalLineCreateInput = {
+    id?: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+    header: JournalHeaderCreateNestedOneWithoutLinesInput
+    account: ChartOfAccountCreateNestedOneWithoutJournal_linesInput
+  }
+
+  export type JournalLineUncheckedCreateInput = {
+    id?: string
+    header_id: string
+    account_id: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    header?: JournalHeaderUpdateOneRequiredWithoutLinesNestedInput
+    account?: ChartOfAccountUpdateOneRequiredWithoutJournal_linesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    header_id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineCreateManyInput = {
+    id?: string
+    header_id: string
+    account_id: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    header_id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type VATTransactionCreateInput = {
+    id?: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id?: string | null
+    taxable_amount: Decimal | DecimalJsLike | number | string
+    vat_rate: Decimal | DecimalJsLike | number | string
+    vat_amount: Decimal | DecimalJsLike | number | string
+    is_claimable?: boolean
+    claimed_date?: Date | string | null
+    claim_period?: string | null
+    etims_synced?: boolean
+    etims_synced_at?: Date | string | null
+    etims_cuin?: string | null
+    etims_cusn?: string | null
+    etims_qr_code?: string | null
+    etims_error?: string | null
+    created_by: string
+    created_at?: Date | string
+    branch: BranchCreateNestedOneWithoutVat_transactionsInput
+  }
+
+  export type VATTransactionUncheckedCreateInput = {
+    id?: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id?: string | null
+    taxable_amount: Decimal | DecimalJsLike | number | string
+    vat_rate: Decimal | DecimalJsLike | number | string
+    vat_amount: Decimal | DecimalJsLike | number | string
+    is_claimable?: boolean
+    claimed_date?: Date | string | null
+    claim_period?: string | null
+    etims_synced?: boolean
+    etims_synced_at?: Date | string | null
+    etims_cuin?: string | null
+    etims_cusn?: string | null
+    etims_qr_code?: string | null
+    etims_error?: string | null
+    branch_id: string
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type VATTransactionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneRequiredWithoutVat_transactionsNestedInput
+  }
+
+  export type VATTransactionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: StringFieldUpdateOperationsInput | string
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VATTransactionCreateManyInput = {
+    id?: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id?: string | null
+    taxable_amount: Decimal | DecimalJsLike | number | string
+    vat_rate: Decimal | DecimalJsLike | number | string
+    vat_amount: Decimal | DecimalJsLike | number | string
+    is_claimable?: boolean
+    claimed_date?: Date | string | null
+    claim_period?: string | null
+    etims_synced?: boolean
+    etims_synced_at?: Date | string | null
+    etims_cuin?: string | null
+    etims_cusn?: string | null
+    etims_qr_code?: string | null
+    etims_error?: string | null
+    branch_id: string
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type VATTransactionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VATTransactionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: StringFieldUpdateOperationsInput | string
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -105718,6 +110729,18 @@ export namespace Prisma {
     none?: WarehouseWhereInput
   }
 
+  export type JournalHeaderListRelationFilter = {
+    every?: JournalHeaderWhereInput
+    some?: JournalHeaderWhereInput
+    none?: JournalHeaderWhereInput
+  }
+
+  export type VATTransactionListRelationFilter = {
+    every?: VATTransactionWhereInput
+    some?: VATTransactionWhereInput
+    none?: VATTransactionWhereInput
+  }
+
   export type BranchInventoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -105731,6 +110754,14 @@ export namespace Prisma {
   }
 
   export type WarehouseOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JournalHeaderOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type VATTransactionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -108234,6 +113265,12 @@ export namespace Prisma {
     none?: JournalEntryWhereInput
   }
 
+  export type JournalLineListRelationFilter = {
+    every?: JournalLineWhereInput
+    some?: JournalLineWhereInput
+    none?: JournalLineWhereInput
+  }
+
   export type BankStatementOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -108247,6 +113284,10 @@ export namespace Prisma {
   }
 
   export type JournalEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JournalLineOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -110387,6 +115428,217 @@ export namespace Prisma {
     _max?: NestedEnumAuditActionFilter<$PrismaModel>
   }
 
+  export type FiscalPeriodScalarRelationFilter = {
+    is?: FiscalPeriodWhereInput
+    isNot?: FiscalPeriodWhereInput
+  }
+
+  export type JournalHeaderCountOrderByAggregateInput = {
+    id?: SortOrder
+    entry_no?: SortOrder
+    entry_date?: SortOrder
+    period_id?: SortOrder
+    journal_id?: SortOrder
+    branch_id?: SortOrder
+    description?: SortOrder
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type JournalHeaderAvgOrderByAggregateInput = {
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+  }
+
+  export type JournalHeaderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    entry_no?: SortOrder
+    entry_date?: SortOrder
+    period_id?: SortOrder
+    journal_id?: SortOrder
+    branch_id?: SortOrder
+    description?: SortOrder
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type JournalHeaderMinOrderByAggregateInput = {
+    id?: SortOrder
+    entry_no?: SortOrder
+    entry_date?: SortOrder
+    period_id?: SortOrder
+    journal_id?: SortOrder
+    branch_id?: SortOrder
+    description?: SortOrder
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type JournalHeaderSumOrderByAggregateInput = {
+    total_debit?: SortOrder
+    total_credit?: SortOrder
+  }
+
+  export type JournalHeaderScalarRelationFilter = {
+    is?: JournalHeaderWhereInput
+    isNot?: JournalHeaderWhereInput
+  }
+
+  export type JournalLineCountOrderByAggregateInput = {
+    id?: SortOrder
+    header_id?: SortOrder
+    account_id?: SortOrder
+    line_no?: SortOrder
+    description?: SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+  }
+
+  export type JournalLineAvgOrderByAggregateInput = {
+    line_no?: SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+  }
+
+  export type JournalLineMaxOrderByAggregateInput = {
+    id?: SortOrder
+    header_id?: SortOrder
+    account_id?: SortOrder
+    line_no?: SortOrder
+    description?: SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+  }
+
+  export type JournalLineMinOrderByAggregateInput = {
+    id?: SortOrder
+    header_id?: SortOrder
+    account_id?: SortOrder
+    line_no?: SortOrder
+    description?: SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+  }
+
+  export type JournalLineSumOrderByAggregateInput = {
+    line_no?: SortOrder
+    debit?: SortOrder
+    credit?: SortOrder
+  }
+
+  export type EnumVATTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.VATType | EnumVATTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumVATTypeFilter<$PrismaModel> | $Enums.VATType
+  }
+
+  export type VATTransactionCountOrderByAggregateInput = {
+    id?: SortOrder
+    transaction_no?: SortOrder
+    vat_type?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    source_line_id?: SortOrder
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+    is_claimable?: SortOrder
+    claimed_date?: SortOrder
+    claim_period?: SortOrder
+    etims_synced?: SortOrder
+    etims_synced_at?: SortOrder
+    etims_cuin?: SortOrder
+    etims_cusn?: SortOrder
+    etims_qr_code?: SortOrder
+    etims_error?: SortOrder
+    branch_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type VATTransactionAvgOrderByAggregateInput = {
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+  }
+
+  export type VATTransactionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    transaction_no?: SortOrder
+    vat_type?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    source_line_id?: SortOrder
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+    is_claimable?: SortOrder
+    claimed_date?: SortOrder
+    claim_period?: SortOrder
+    etims_synced?: SortOrder
+    etims_synced_at?: SortOrder
+    etims_cuin?: SortOrder
+    etims_cusn?: SortOrder
+    etims_qr_code?: SortOrder
+    etims_error?: SortOrder
+    branch_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type VATTransactionMinOrderByAggregateInput = {
+    id?: SortOrder
+    transaction_no?: SortOrder
+    vat_type?: SortOrder
+    source_type?: SortOrder
+    source_id?: SortOrder
+    source_line_id?: SortOrder
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+    is_claimable?: SortOrder
+    claimed_date?: SortOrder
+    claim_period?: SortOrder
+    etims_synced?: SortOrder
+    etims_synced_at?: SortOrder
+    etims_cuin?: SortOrder
+    etims_cusn?: SortOrder
+    etims_qr_code?: SortOrder
+    etims_error?: SortOrder
+    branch_id?: SortOrder
+    created_by?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type VATTransactionSumOrderByAggregateInput = {
+    taxable_amount?: SortOrder
+    vat_rate?: SortOrder
+    vat_amount?: SortOrder
+  }
+
+  export type EnumVATTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.VATType | EnumVATTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumVATTypeWithAggregatesFilter<$PrismaModel> | $Enums.VATType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumVATTypeFilter<$PrismaModel>
+    _max?: NestedEnumVATTypeFilter<$PrismaModel>
+  }
+
   export type ApprovalRequestCreateNestedManyWithoutApprovedByInput = {
     create?: XOR<ApprovalRequestCreateWithoutApprovedByInput, ApprovalRequestUncheckedCreateWithoutApprovedByInput> | ApprovalRequestCreateWithoutApprovedByInput[] | ApprovalRequestUncheckedCreateWithoutApprovedByInput[]
     connectOrCreate?: ApprovalRequestCreateOrConnectWithoutApprovedByInput | ApprovalRequestCreateOrConnectWithoutApprovedByInput[]
@@ -111631,6 +116883,20 @@ export namespace Prisma {
     connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
   }
 
+  export type JournalHeaderCreateNestedManyWithoutBranchInput = {
+    create?: XOR<JournalHeaderCreateWithoutBranchInput, JournalHeaderUncheckedCreateWithoutBranchInput> | JournalHeaderCreateWithoutBranchInput[] | JournalHeaderUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutBranchInput | JournalHeaderCreateOrConnectWithoutBranchInput[]
+    createMany?: JournalHeaderCreateManyBranchInputEnvelope
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+  }
+
+  export type VATTransactionCreateNestedManyWithoutBranchInput = {
+    create?: XOR<VATTransactionCreateWithoutBranchInput, VATTransactionUncheckedCreateWithoutBranchInput> | VATTransactionCreateWithoutBranchInput[] | VATTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: VATTransactionCreateOrConnectWithoutBranchInput | VATTransactionCreateOrConnectWithoutBranchInput[]
+    createMany?: VATTransactionCreateManyBranchInputEnvelope
+    connect?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+  }
+
   export type BranchInventoryUncheckedCreateNestedManyWithoutBranchInput = {
     create?: XOR<BranchInventoryCreateWithoutBranchInput, BranchInventoryUncheckedCreateWithoutBranchInput> | BranchInventoryCreateWithoutBranchInput[] | BranchInventoryUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: BranchInventoryCreateOrConnectWithoutBranchInput | BranchInventoryCreateOrConnectWithoutBranchInput[]
@@ -111699,6 +116965,20 @@ export namespace Prisma {
     connectOrCreate?: WarehouseCreateOrConnectWithoutBranchInput | WarehouseCreateOrConnectWithoutBranchInput[]
     createMany?: WarehouseCreateManyBranchInputEnvelope
     connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
+  }
+
+  export type JournalHeaderUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<JournalHeaderCreateWithoutBranchInput, JournalHeaderUncheckedCreateWithoutBranchInput> | JournalHeaderCreateWithoutBranchInput[] | JournalHeaderUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutBranchInput | JournalHeaderCreateOrConnectWithoutBranchInput[]
+    createMany?: JournalHeaderCreateManyBranchInputEnvelope
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+  }
+
+  export type VATTransactionUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<VATTransactionCreateWithoutBranchInput, VATTransactionUncheckedCreateWithoutBranchInput> | VATTransactionCreateWithoutBranchInput[] | VATTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: VATTransactionCreateOrConnectWithoutBranchInput | VATTransactionCreateOrConnectWithoutBranchInput[]
+    createMany?: VATTransactionCreateManyBranchInputEnvelope
+    connect?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
   }
 
   export type BranchInventoryUpdateManyWithoutBranchNestedInput = {
@@ -111841,6 +117121,34 @@ export namespace Prisma {
     deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
   }
 
+  export type JournalHeaderUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutBranchInput, JournalHeaderUncheckedCreateWithoutBranchInput> | JournalHeaderCreateWithoutBranchInput[] | JournalHeaderUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutBranchInput | JournalHeaderCreateOrConnectWithoutBranchInput[]
+    upsert?: JournalHeaderUpsertWithWhereUniqueWithoutBranchInput | JournalHeaderUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: JournalHeaderCreateManyBranchInputEnvelope
+    set?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    disconnect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    delete?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    update?: JournalHeaderUpdateWithWhereUniqueWithoutBranchInput | JournalHeaderUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: JournalHeaderUpdateManyWithWhereWithoutBranchInput | JournalHeaderUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
+  }
+
+  export type VATTransactionUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<VATTransactionCreateWithoutBranchInput, VATTransactionUncheckedCreateWithoutBranchInput> | VATTransactionCreateWithoutBranchInput[] | VATTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: VATTransactionCreateOrConnectWithoutBranchInput | VATTransactionCreateOrConnectWithoutBranchInput[]
+    upsert?: VATTransactionUpsertWithWhereUniqueWithoutBranchInput | VATTransactionUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: VATTransactionCreateManyBranchInputEnvelope
+    set?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    disconnect?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    delete?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    connect?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    update?: VATTransactionUpdateWithWhereUniqueWithoutBranchInput | VATTransactionUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: VATTransactionUpdateManyWithWhereWithoutBranchInput | VATTransactionUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: VATTransactionScalarWhereInput | VATTransactionScalarWhereInput[]
+  }
+
   export type BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput = {
     create?: XOR<BranchInventoryCreateWithoutBranchInput, BranchInventoryUncheckedCreateWithoutBranchInput> | BranchInventoryCreateWithoutBranchInput[] | BranchInventoryUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: BranchInventoryCreateOrConnectWithoutBranchInput | BranchInventoryCreateOrConnectWithoutBranchInput[]
@@ -111979,6 +117287,34 @@ export namespace Prisma {
     update?: WarehouseUpdateWithWhereUniqueWithoutBranchInput | WarehouseUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: WarehouseUpdateManyWithWhereWithoutBranchInput | WarehouseUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
+  }
+
+  export type JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutBranchInput, JournalHeaderUncheckedCreateWithoutBranchInput> | JournalHeaderCreateWithoutBranchInput[] | JournalHeaderUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutBranchInput | JournalHeaderCreateOrConnectWithoutBranchInput[]
+    upsert?: JournalHeaderUpsertWithWhereUniqueWithoutBranchInput | JournalHeaderUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: JournalHeaderCreateManyBranchInputEnvelope
+    set?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    disconnect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    delete?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    update?: JournalHeaderUpdateWithWhereUniqueWithoutBranchInput | JournalHeaderUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: JournalHeaderUpdateManyWithWhereWithoutBranchInput | JournalHeaderUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
+  }
+
+  export type VATTransactionUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<VATTransactionCreateWithoutBranchInput, VATTransactionUncheckedCreateWithoutBranchInput> | VATTransactionCreateWithoutBranchInput[] | VATTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: VATTransactionCreateOrConnectWithoutBranchInput | VATTransactionCreateOrConnectWithoutBranchInput[]
+    upsert?: VATTransactionUpsertWithWhereUniqueWithoutBranchInput | VATTransactionUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: VATTransactionCreateManyBranchInputEnvelope
+    set?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    disconnect?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    delete?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    connect?: VATTransactionWhereUniqueInput | VATTransactionWhereUniqueInput[]
+    update?: VATTransactionUpdateWithWhereUniqueWithoutBranchInput | VATTransactionUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: VATTransactionUpdateManyWithWhereWithoutBranchInput | VATTransactionUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: VATTransactionScalarWhereInput | VATTransactionScalarWhereInput[]
   }
 
   export type BranchCreateNestedOneWithoutTransfersFromInput = {
@@ -114687,6 +120023,13 @@ export namespace Prisma {
     connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
   }
 
+  export type JournalLineCreateNestedManyWithoutAccountInput = {
+    create?: XOR<JournalLineCreateWithoutAccountInput, JournalLineUncheckedCreateWithoutAccountInput> | JournalLineCreateWithoutAccountInput[] | JournalLineUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutAccountInput | JournalLineCreateOrConnectWithoutAccountInput[]
+    createMany?: JournalLineCreateManyAccountInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
   export type BankStatementUncheckedCreateNestedManyWithoutAccountInput = {
     create?: XOR<BankStatementCreateWithoutAccountInput, BankStatementUncheckedCreateWithoutAccountInput> | BankStatementCreateWithoutAccountInput[] | BankStatementUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: BankStatementCreateOrConnectWithoutAccountInput | BankStatementCreateOrConnectWithoutAccountInput[]
@@ -114713,6 +120056,13 @@ export namespace Prisma {
     connectOrCreate?: JournalEntryCreateOrConnectWithoutAccountInput | JournalEntryCreateOrConnectWithoutAccountInput[]
     createMany?: JournalEntryCreateManyAccountInputEnvelope
     connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<JournalLineCreateWithoutAccountInput, JournalLineUncheckedCreateWithoutAccountInput> | JournalLineCreateWithoutAccountInput[] | JournalLineUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutAccountInput | JournalLineCreateOrConnectWithoutAccountInput[]
+    createMany?: JournalLineCreateManyAccountInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
   }
 
   export type EnumAccountTypeFieldUpdateOperationsInput = {
@@ -114785,6 +120135,20 @@ export namespace Prisma {
     deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
+  export type JournalLineUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<JournalLineCreateWithoutAccountInput, JournalLineUncheckedCreateWithoutAccountInput> | JournalLineCreateWithoutAccountInput[] | JournalLineUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutAccountInput | JournalLineCreateOrConnectWithoutAccountInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutAccountInput | JournalLineUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: JournalLineCreateManyAccountInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutAccountInput | JournalLineUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutAccountInput | JournalLineUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type BankStatementUncheckedUpdateManyWithoutAccountNestedInput = {
     create?: XOR<BankStatementCreateWithoutAccountInput, BankStatementUncheckedCreateWithoutAccountInput> | BankStatementCreateWithoutAccountInput[] | BankStatementUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: BankStatementCreateOrConnectWithoutAccountInput | BankStatementCreateOrConnectWithoutAccountInput[]
@@ -114841,6 +120205,20 @@ export namespace Prisma {
     deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
+  export type JournalLineUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<JournalLineCreateWithoutAccountInput, JournalLineUncheckedCreateWithoutAccountInput> | JournalLineCreateWithoutAccountInput[] | JournalLineUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutAccountInput | JournalLineCreateOrConnectWithoutAccountInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutAccountInput | JournalLineUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: JournalLineCreateManyAccountInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutAccountInput | JournalLineUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutAccountInput | JournalLineUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
   export type JournalEntryCreateNestedManyWithoutJournalInput = {
     create?: XOR<JournalEntryCreateWithoutJournalInput, JournalEntryUncheckedCreateWithoutJournalInput> | JournalEntryCreateWithoutJournalInput[] | JournalEntryUncheckedCreateWithoutJournalInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutJournalInput | JournalEntryCreateOrConnectWithoutJournalInput[]
@@ -114848,11 +120226,25 @@ export namespace Prisma {
     connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
   }
 
+  export type JournalHeaderCreateNestedManyWithoutJournalInput = {
+    create?: XOR<JournalHeaderCreateWithoutJournalInput, JournalHeaderUncheckedCreateWithoutJournalInput> | JournalHeaderCreateWithoutJournalInput[] | JournalHeaderUncheckedCreateWithoutJournalInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutJournalInput | JournalHeaderCreateOrConnectWithoutJournalInput[]
+    createMany?: JournalHeaderCreateManyJournalInputEnvelope
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+  }
+
   export type JournalEntryUncheckedCreateNestedManyWithoutJournalInput = {
     create?: XOR<JournalEntryCreateWithoutJournalInput, JournalEntryUncheckedCreateWithoutJournalInput> | JournalEntryCreateWithoutJournalInput[] | JournalEntryUncheckedCreateWithoutJournalInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutJournalInput | JournalEntryCreateOrConnectWithoutJournalInput[]
     createMany?: JournalEntryCreateManyJournalInputEnvelope
     connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalHeaderUncheckedCreateNestedManyWithoutJournalInput = {
+    create?: XOR<JournalHeaderCreateWithoutJournalInput, JournalHeaderUncheckedCreateWithoutJournalInput> | JournalHeaderCreateWithoutJournalInput[] | JournalHeaderUncheckedCreateWithoutJournalInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutJournalInput | JournalHeaderCreateOrConnectWithoutJournalInput[]
+    createMany?: JournalHeaderCreateManyJournalInputEnvelope
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
   }
 
   export type EnumJournalTypeFieldUpdateOperationsInput = {
@@ -114873,6 +120265,20 @@ export namespace Prisma {
     deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
+  export type JournalHeaderUpdateManyWithoutJournalNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutJournalInput, JournalHeaderUncheckedCreateWithoutJournalInput> | JournalHeaderCreateWithoutJournalInput[] | JournalHeaderUncheckedCreateWithoutJournalInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutJournalInput | JournalHeaderCreateOrConnectWithoutJournalInput[]
+    upsert?: JournalHeaderUpsertWithWhereUniqueWithoutJournalInput | JournalHeaderUpsertWithWhereUniqueWithoutJournalInput[]
+    createMany?: JournalHeaderCreateManyJournalInputEnvelope
+    set?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    disconnect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    delete?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    update?: JournalHeaderUpdateWithWhereUniqueWithoutJournalInput | JournalHeaderUpdateWithWhereUniqueWithoutJournalInput[]
+    updateMany?: JournalHeaderUpdateManyWithWhereWithoutJournalInput | JournalHeaderUpdateManyWithWhereWithoutJournalInput[]
+    deleteMany?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
+  }
+
   export type JournalEntryUncheckedUpdateManyWithoutJournalNestedInput = {
     create?: XOR<JournalEntryCreateWithoutJournalInput, JournalEntryUncheckedCreateWithoutJournalInput> | JournalEntryCreateWithoutJournalInput[] | JournalEntryUncheckedCreateWithoutJournalInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutJournalInput | JournalEntryCreateOrConnectWithoutJournalInput[]
@@ -114885,6 +120291,20 @@ export namespace Prisma {
     update?: JournalEntryUpdateWithWhereUniqueWithoutJournalInput | JournalEntryUpdateWithWhereUniqueWithoutJournalInput[]
     updateMany?: JournalEntryUpdateManyWithWhereWithoutJournalInput | JournalEntryUpdateManyWithWhereWithoutJournalInput[]
     deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalHeaderUncheckedUpdateManyWithoutJournalNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutJournalInput, JournalHeaderUncheckedCreateWithoutJournalInput> | JournalHeaderCreateWithoutJournalInput[] | JournalHeaderUncheckedCreateWithoutJournalInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutJournalInput | JournalHeaderCreateOrConnectWithoutJournalInput[]
+    upsert?: JournalHeaderUpsertWithWhereUniqueWithoutJournalInput | JournalHeaderUpsertWithWhereUniqueWithoutJournalInput[]
+    createMany?: JournalHeaderCreateManyJournalInputEnvelope
+    set?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    disconnect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    delete?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    update?: JournalHeaderUpdateWithWhereUniqueWithoutJournalInput | JournalHeaderUpdateWithWhereUniqueWithoutJournalInput[]
+    updateMany?: JournalHeaderUpdateManyWithWhereWithoutJournalInput | JournalHeaderUpdateManyWithWhereWithoutJournalInput[]
+    deleteMany?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
   }
 
   export type FiscalPeriodCreateNestedManyWithoutFiscalYearInput = {
@@ -114952,11 +120372,25 @@ export namespace Prisma {
     connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
   }
 
+  export type JournalHeaderCreateNestedManyWithoutPeriodInput = {
+    create?: XOR<JournalHeaderCreateWithoutPeriodInput, JournalHeaderUncheckedCreateWithoutPeriodInput> | JournalHeaderCreateWithoutPeriodInput[] | JournalHeaderUncheckedCreateWithoutPeriodInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutPeriodInput | JournalHeaderCreateOrConnectWithoutPeriodInput[]
+    createMany?: JournalHeaderCreateManyPeriodInputEnvelope
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+  }
+
   export type JournalEntryUncheckedCreateNestedManyWithoutPeriodInput = {
     create?: XOR<JournalEntryCreateWithoutPeriodInput, JournalEntryUncheckedCreateWithoutPeriodInput> | JournalEntryCreateWithoutPeriodInput[] | JournalEntryUncheckedCreateWithoutPeriodInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutPeriodInput | JournalEntryCreateOrConnectWithoutPeriodInput[]
     createMany?: JournalEntryCreateManyPeriodInputEnvelope
     connect?: JournalEntryWhereUniqueInput | JournalEntryWhereUniqueInput[]
+  }
+
+  export type JournalHeaderUncheckedCreateNestedManyWithoutPeriodInput = {
+    create?: XOR<JournalHeaderCreateWithoutPeriodInput, JournalHeaderUncheckedCreateWithoutPeriodInput> | JournalHeaderCreateWithoutPeriodInput[] | JournalHeaderUncheckedCreateWithoutPeriodInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutPeriodInput | JournalHeaderCreateOrConnectWithoutPeriodInput[]
+    createMany?: JournalHeaderCreateManyPeriodInputEnvelope
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
   }
 
   export type FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput = {
@@ -114991,6 +120425,20 @@ export namespace Prisma {
     deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
   }
 
+  export type JournalHeaderUpdateManyWithoutPeriodNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutPeriodInput, JournalHeaderUncheckedCreateWithoutPeriodInput> | JournalHeaderCreateWithoutPeriodInput[] | JournalHeaderUncheckedCreateWithoutPeriodInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutPeriodInput | JournalHeaderCreateOrConnectWithoutPeriodInput[]
+    upsert?: JournalHeaderUpsertWithWhereUniqueWithoutPeriodInput | JournalHeaderUpsertWithWhereUniqueWithoutPeriodInput[]
+    createMany?: JournalHeaderCreateManyPeriodInputEnvelope
+    set?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    disconnect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    delete?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    update?: JournalHeaderUpdateWithWhereUniqueWithoutPeriodInput | JournalHeaderUpdateWithWhereUniqueWithoutPeriodInput[]
+    updateMany?: JournalHeaderUpdateManyWithWhereWithoutPeriodInput | JournalHeaderUpdateManyWithWhereWithoutPeriodInput[]
+    deleteMany?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
+  }
+
   export type JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput = {
     create?: XOR<JournalEntryCreateWithoutPeriodInput, JournalEntryUncheckedCreateWithoutPeriodInput> | JournalEntryCreateWithoutPeriodInput[] | JournalEntryUncheckedCreateWithoutPeriodInput[]
     connectOrCreate?: JournalEntryCreateOrConnectWithoutPeriodInput | JournalEntryCreateOrConnectWithoutPeriodInput[]
@@ -115003,6 +120451,20 @@ export namespace Prisma {
     update?: JournalEntryUpdateWithWhereUniqueWithoutPeriodInput | JournalEntryUpdateWithWhereUniqueWithoutPeriodInput[]
     updateMany?: JournalEntryUpdateManyWithWhereWithoutPeriodInput | JournalEntryUpdateManyWithWhereWithoutPeriodInput[]
     deleteMany?: JournalEntryScalarWhereInput | JournalEntryScalarWhereInput[]
+  }
+
+  export type JournalHeaderUncheckedUpdateManyWithoutPeriodNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutPeriodInput, JournalHeaderUncheckedCreateWithoutPeriodInput> | JournalHeaderCreateWithoutPeriodInput[] | JournalHeaderUncheckedCreateWithoutPeriodInput[]
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutPeriodInput | JournalHeaderCreateOrConnectWithoutPeriodInput[]
+    upsert?: JournalHeaderUpsertWithWhereUniqueWithoutPeriodInput | JournalHeaderUpsertWithWhereUniqueWithoutPeriodInput[]
+    createMany?: JournalHeaderCreateManyPeriodInputEnvelope
+    set?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    disconnect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    delete?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    connect?: JournalHeaderWhereUniqueInput | JournalHeaderWhereUniqueInput[]
+    update?: JournalHeaderUpdateWithWhereUniqueWithoutPeriodInput | JournalHeaderUpdateWithWhereUniqueWithoutPeriodInput[]
+    updateMany?: JournalHeaderUpdateManyWithWhereWithoutPeriodInput | JournalHeaderUpdateManyWithWhereWithoutPeriodInput[]
+    deleteMany?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
   }
 
   export type BankStatementLineCreateNestedOneWithoutJournal_entryInput = {
@@ -116073,6 +121535,140 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
   }
 
+  export type FiscalPeriodCreateNestedOneWithoutHeadersInput = {
+    create?: XOR<FiscalPeriodCreateWithoutHeadersInput, FiscalPeriodUncheckedCreateWithoutHeadersInput>
+    connectOrCreate?: FiscalPeriodCreateOrConnectWithoutHeadersInput
+    connect?: FiscalPeriodWhereUniqueInput
+  }
+
+  export type JournalCreateNestedOneWithoutHeadersInput = {
+    create?: XOR<JournalCreateWithoutHeadersInput, JournalUncheckedCreateWithoutHeadersInput>
+    connectOrCreate?: JournalCreateOrConnectWithoutHeadersInput
+    connect?: JournalWhereUniqueInput
+  }
+
+  export type BranchCreateNestedOneWithoutJournal_headersInput = {
+    create?: XOR<BranchCreateWithoutJournal_headersInput, BranchUncheckedCreateWithoutJournal_headersInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutJournal_headersInput
+    connect?: BranchWhereUniqueInput
+  }
+
+  export type JournalLineCreateNestedManyWithoutHeaderInput = {
+    create?: XOR<JournalLineCreateWithoutHeaderInput, JournalLineUncheckedCreateWithoutHeaderInput> | JournalLineCreateWithoutHeaderInput[] | JournalLineUncheckedCreateWithoutHeaderInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutHeaderInput | JournalLineCreateOrConnectWithoutHeaderInput[]
+    createMany?: JournalLineCreateManyHeaderInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type JournalLineUncheckedCreateNestedManyWithoutHeaderInput = {
+    create?: XOR<JournalLineCreateWithoutHeaderInput, JournalLineUncheckedCreateWithoutHeaderInput> | JournalLineCreateWithoutHeaderInput[] | JournalLineUncheckedCreateWithoutHeaderInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutHeaderInput | JournalLineCreateOrConnectWithoutHeaderInput[]
+    createMany?: JournalLineCreateManyHeaderInputEnvelope
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+  }
+
+  export type FiscalPeriodUpdateOneRequiredWithoutHeadersNestedInput = {
+    create?: XOR<FiscalPeriodCreateWithoutHeadersInput, FiscalPeriodUncheckedCreateWithoutHeadersInput>
+    connectOrCreate?: FiscalPeriodCreateOrConnectWithoutHeadersInput
+    upsert?: FiscalPeriodUpsertWithoutHeadersInput
+    connect?: FiscalPeriodWhereUniqueInput
+    update?: XOR<XOR<FiscalPeriodUpdateToOneWithWhereWithoutHeadersInput, FiscalPeriodUpdateWithoutHeadersInput>, FiscalPeriodUncheckedUpdateWithoutHeadersInput>
+  }
+
+  export type JournalUpdateOneWithoutHeadersNestedInput = {
+    create?: XOR<JournalCreateWithoutHeadersInput, JournalUncheckedCreateWithoutHeadersInput>
+    connectOrCreate?: JournalCreateOrConnectWithoutHeadersInput
+    upsert?: JournalUpsertWithoutHeadersInput
+    disconnect?: JournalWhereInput | boolean
+    delete?: JournalWhereInput | boolean
+    connect?: JournalWhereUniqueInput
+    update?: XOR<XOR<JournalUpdateToOneWithWhereWithoutHeadersInput, JournalUpdateWithoutHeadersInput>, JournalUncheckedUpdateWithoutHeadersInput>
+  }
+
+  export type BranchUpdateOneWithoutJournal_headersNestedInput = {
+    create?: XOR<BranchCreateWithoutJournal_headersInput, BranchUncheckedCreateWithoutJournal_headersInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutJournal_headersInput
+    upsert?: BranchUpsertWithoutJournal_headersInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutJournal_headersInput, BranchUpdateWithoutJournal_headersInput>, BranchUncheckedUpdateWithoutJournal_headersInput>
+  }
+
+  export type JournalLineUpdateManyWithoutHeaderNestedInput = {
+    create?: XOR<JournalLineCreateWithoutHeaderInput, JournalLineUncheckedCreateWithoutHeaderInput> | JournalLineCreateWithoutHeaderInput[] | JournalLineUncheckedCreateWithoutHeaderInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutHeaderInput | JournalLineCreateOrConnectWithoutHeaderInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutHeaderInput | JournalLineUpsertWithWhereUniqueWithoutHeaderInput[]
+    createMany?: JournalLineCreateManyHeaderInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutHeaderInput | JournalLineUpdateWithWhereUniqueWithoutHeaderInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutHeaderInput | JournalLineUpdateManyWithWhereWithoutHeaderInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutHeaderNestedInput = {
+    create?: XOR<JournalLineCreateWithoutHeaderInput, JournalLineUncheckedCreateWithoutHeaderInput> | JournalLineCreateWithoutHeaderInput[] | JournalLineUncheckedCreateWithoutHeaderInput[]
+    connectOrCreate?: JournalLineCreateOrConnectWithoutHeaderInput | JournalLineCreateOrConnectWithoutHeaderInput[]
+    upsert?: JournalLineUpsertWithWhereUniqueWithoutHeaderInput | JournalLineUpsertWithWhereUniqueWithoutHeaderInput[]
+    createMany?: JournalLineCreateManyHeaderInputEnvelope
+    set?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    disconnect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    delete?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    connect?: JournalLineWhereUniqueInput | JournalLineWhereUniqueInput[]
+    update?: JournalLineUpdateWithWhereUniqueWithoutHeaderInput | JournalLineUpdateWithWhereUniqueWithoutHeaderInput[]
+    updateMany?: JournalLineUpdateManyWithWhereWithoutHeaderInput | JournalLineUpdateManyWithWhereWithoutHeaderInput[]
+    deleteMany?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+  }
+
+  export type JournalHeaderCreateNestedOneWithoutLinesInput = {
+    create?: XOR<JournalHeaderCreateWithoutLinesInput, JournalHeaderUncheckedCreateWithoutLinesInput>
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutLinesInput
+    connect?: JournalHeaderWhereUniqueInput
+  }
+
+  export type ChartOfAccountCreateNestedOneWithoutJournal_linesInput = {
+    create?: XOR<ChartOfAccountCreateWithoutJournal_linesInput, ChartOfAccountUncheckedCreateWithoutJournal_linesInput>
+    connectOrCreate?: ChartOfAccountCreateOrConnectWithoutJournal_linesInput
+    connect?: ChartOfAccountWhereUniqueInput
+  }
+
+  export type JournalHeaderUpdateOneRequiredWithoutLinesNestedInput = {
+    create?: XOR<JournalHeaderCreateWithoutLinesInput, JournalHeaderUncheckedCreateWithoutLinesInput>
+    connectOrCreate?: JournalHeaderCreateOrConnectWithoutLinesInput
+    upsert?: JournalHeaderUpsertWithoutLinesInput
+    connect?: JournalHeaderWhereUniqueInput
+    update?: XOR<XOR<JournalHeaderUpdateToOneWithWhereWithoutLinesInput, JournalHeaderUpdateWithoutLinesInput>, JournalHeaderUncheckedUpdateWithoutLinesInput>
+  }
+
+  export type ChartOfAccountUpdateOneRequiredWithoutJournal_linesNestedInput = {
+    create?: XOR<ChartOfAccountCreateWithoutJournal_linesInput, ChartOfAccountUncheckedCreateWithoutJournal_linesInput>
+    connectOrCreate?: ChartOfAccountCreateOrConnectWithoutJournal_linesInput
+    upsert?: ChartOfAccountUpsertWithoutJournal_linesInput
+    connect?: ChartOfAccountWhereUniqueInput
+    update?: XOR<XOR<ChartOfAccountUpdateToOneWithWhereWithoutJournal_linesInput, ChartOfAccountUpdateWithoutJournal_linesInput>, ChartOfAccountUncheckedUpdateWithoutJournal_linesInput>
+  }
+
+  export type BranchCreateNestedOneWithoutVat_transactionsInput = {
+    create?: XOR<BranchCreateWithoutVat_transactionsInput, BranchUncheckedCreateWithoutVat_transactionsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutVat_transactionsInput
+    connect?: BranchWhereUniqueInput
+  }
+
+  export type EnumVATTypeFieldUpdateOperationsInput = {
+    set?: $Enums.VATType
+  }
+
+  export type BranchUpdateOneRequiredWithoutVat_transactionsNestedInput = {
+    create?: XOR<BranchCreateWithoutVat_transactionsInput, BranchUncheckedCreateWithoutVat_transactionsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutVat_transactionsInput
+    upsert?: BranchUpsertWithoutVat_transactionsInput
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutVat_transactionsInput, BranchUpdateWithoutVat_transactionsInput>, BranchUncheckedUpdateWithoutVat_transactionsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -117059,6 +122655,23 @@ export namespace Prisma {
     _max?: NestedEnumAuditActionFilter<$PrismaModel>
   }
 
+  export type NestedEnumVATTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.VATType | EnumVATTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumVATTypeFilter<$PrismaModel> | $Enums.VATType
+  }
+
+  export type NestedEnumVATTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.VATType | EnumVATTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.VATType[] | ListEnumVATTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumVATTypeWithAggregatesFilter<$PrismaModel> | $Enums.VATType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumVATTypeFilter<$PrismaModel>
+    _max?: NestedEnumVATTypeFilter<$PrismaModel>
+  }
+
   export type ApprovalRequestCreateWithoutApprovedByInput = {
     id?: string
     type: $Enums.ApprovalType
@@ -117399,6 +123012,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     fiscalYear: FiscalYearCreateNestedOneWithoutPeriodsInput
     entries?: JournalEntryCreateNestedManyWithoutPeriodInput
+    headers?: JournalHeaderCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodUncheckedCreateWithoutLockedByInput = {
@@ -117413,6 +123027,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     entries?: JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+    headers?: JournalHeaderUncheckedCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodCreateOrConnectWithoutLockedByInput = {
@@ -118150,6 +123765,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutUsersInput = {
@@ -118171,6 +123788,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutUsersInput = {
@@ -119022,6 +124641,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutUsersInput = {
@@ -119043,6 +124664,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchInventoryCreateWithoutBranchInput = {
@@ -119557,6 +125180,104 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type JournalHeaderCreateWithoutBranchInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    period: FiscalPeriodCreateNestedOneWithoutHeadersInput
+    journal?: JournalCreateNestedOneWithoutHeadersInput
+    lines?: JournalLineCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderUncheckedCreateWithoutBranchInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    journal_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    lines?: JournalLineUncheckedCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderCreateOrConnectWithoutBranchInput = {
+    where: JournalHeaderWhereUniqueInput
+    create: XOR<JournalHeaderCreateWithoutBranchInput, JournalHeaderUncheckedCreateWithoutBranchInput>
+  }
+
+  export type JournalHeaderCreateManyBranchInputEnvelope = {
+    data: JournalHeaderCreateManyBranchInput | JournalHeaderCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type VATTransactionCreateWithoutBranchInput = {
+    id?: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id?: string | null
+    taxable_amount: Decimal | DecimalJsLike | number | string
+    vat_rate: Decimal | DecimalJsLike | number | string
+    vat_amount: Decimal | DecimalJsLike | number | string
+    is_claimable?: boolean
+    claimed_date?: Date | string | null
+    claim_period?: string | null
+    etims_synced?: boolean
+    etims_synced_at?: Date | string | null
+    etims_cuin?: string | null
+    etims_cusn?: string | null
+    etims_qr_code?: string | null
+    etims_error?: string | null
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type VATTransactionUncheckedCreateWithoutBranchInput = {
+    id?: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id?: string | null
+    taxable_amount: Decimal | DecimalJsLike | number | string
+    vat_rate: Decimal | DecimalJsLike | number | string
+    vat_amount: Decimal | DecimalJsLike | number | string
+    is_claimable?: boolean
+    claimed_date?: Date | string | null
+    claim_period?: string | null
+    etims_synced?: boolean
+    etims_synced_at?: Date | string | null
+    etims_cuin?: string | null
+    etims_cusn?: string | null
+    etims_qr_code?: string | null
+    etims_error?: string | null
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type VATTransactionCreateOrConnectWithoutBranchInput = {
+    where: VATTransactionWhereUniqueInput
+    create: XOR<VATTransactionCreateWithoutBranchInput, VATTransactionUncheckedCreateWithoutBranchInput>
+  }
+
+  export type VATTransactionCreateManyBranchInputEnvelope = {
+    data: VATTransactionCreateManyBranchInput | VATTransactionCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchInventoryUpsertWithWhereUniqueWithoutBranchInput = {
     where: BranchInventoryWhereUniqueInput
     update: XOR<BranchInventoryUpdateWithoutBranchInput, BranchInventoryUncheckedUpdateWithoutBranchInput>
@@ -119782,6 +125503,84 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Warehouse"> | Date | string
   }
 
+  export type JournalHeaderUpsertWithWhereUniqueWithoutBranchInput = {
+    where: JournalHeaderWhereUniqueInput
+    update: XOR<JournalHeaderUpdateWithoutBranchInput, JournalHeaderUncheckedUpdateWithoutBranchInput>
+    create: XOR<JournalHeaderCreateWithoutBranchInput, JournalHeaderUncheckedCreateWithoutBranchInput>
+  }
+
+  export type JournalHeaderUpdateWithWhereUniqueWithoutBranchInput = {
+    where: JournalHeaderWhereUniqueInput
+    data: XOR<JournalHeaderUpdateWithoutBranchInput, JournalHeaderUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type JournalHeaderUpdateManyWithWhereWithoutBranchInput = {
+    where: JournalHeaderScalarWhereInput
+    data: XOR<JournalHeaderUpdateManyMutationInput, JournalHeaderUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type JournalHeaderScalarWhereInput = {
+    AND?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
+    OR?: JournalHeaderScalarWhereInput[]
+    NOT?: JournalHeaderScalarWhereInput | JournalHeaderScalarWhereInput[]
+    id?: StringFilter<"JournalHeader"> | string
+    entry_no?: StringFilter<"JournalHeader"> | string
+    entry_date?: DateTimeFilter<"JournalHeader"> | Date | string
+    period_id?: StringFilter<"JournalHeader"> | string
+    journal_id?: StringNullableFilter<"JournalHeader"> | string | null
+    branch_id?: StringNullableFilter<"JournalHeader"> | string | null
+    description?: StringFilter<"JournalHeader"> | string
+    total_debit?: DecimalFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFilter<"JournalHeader"> | Decimal | DecimalJsLike | number | string
+    source_type?: StringNullableFilter<"JournalHeader"> | string | null
+    source_id?: StringNullableFilter<"JournalHeader"> | string | null
+    created_by?: StringFilter<"JournalHeader"> | string
+    created_at?: DateTimeFilter<"JournalHeader"> | Date | string
+  }
+
+  export type VATTransactionUpsertWithWhereUniqueWithoutBranchInput = {
+    where: VATTransactionWhereUniqueInput
+    update: XOR<VATTransactionUpdateWithoutBranchInput, VATTransactionUncheckedUpdateWithoutBranchInput>
+    create: XOR<VATTransactionCreateWithoutBranchInput, VATTransactionUncheckedCreateWithoutBranchInput>
+  }
+
+  export type VATTransactionUpdateWithWhereUniqueWithoutBranchInput = {
+    where: VATTransactionWhereUniqueInput
+    data: XOR<VATTransactionUpdateWithoutBranchInput, VATTransactionUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type VATTransactionUpdateManyWithWhereWithoutBranchInput = {
+    where: VATTransactionScalarWhereInput
+    data: XOR<VATTransactionUpdateManyMutationInput, VATTransactionUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type VATTransactionScalarWhereInput = {
+    AND?: VATTransactionScalarWhereInput | VATTransactionScalarWhereInput[]
+    OR?: VATTransactionScalarWhereInput[]
+    NOT?: VATTransactionScalarWhereInput | VATTransactionScalarWhereInput[]
+    id?: StringFilter<"VATTransaction"> | string
+    transaction_no?: StringFilter<"VATTransaction"> | string
+    vat_type?: EnumVATTypeFilter<"VATTransaction"> | $Enums.VATType
+    source_type?: StringFilter<"VATTransaction"> | string
+    source_id?: StringFilter<"VATTransaction"> | string
+    source_line_id?: StringNullableFilter<"VATTransaction"> | string | null
+    taxable_amount?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFilter<"VATTransaction"> | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFilter<"VATTransaction"> | boolean
+    claimed_date?: DateTimeNullableFilter<"VATTransaction"> | Date | string | null
+    claim_period?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_synced?: BoolFilter<"VATTransaction"> | boolean
+    etims_synced_at?: DateTimeNullableFilter<"VATTransaction"> | Date | string | null
+    etims_cuin?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_cusn?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_qr_code?: StringNullableFilter<"VATTransaction"> | string | null
+    etims_error?: StringNullableFilter<"VATTransaction"> | string | null
+    branch_id?: StringFilter<"VATTransaction"> | string
+    created_by?: StringFilter<"VATTransaction"> | string
+    created_at?: DateTimeFilter<"VATTransaction"> | Date | string
+  }
+
   export type BranchCreateWithoutTransfersFromInput = {
     id?: string
     code: string
@@ -119801,6 +125600,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutTransfersFromInput = {
@@ -119822,6 +125623,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutTransfersFromInput = {
@@ -119848,6 +125651,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutTransfersToInput = {
@@ -119869,6 +125674,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutTransfersToInput = {
@@ -119995,6 +125802,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutTransfersFromInput = {
@@ -120016,6 +125825,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUpsertWithoutTransfersToInput = {
@@ -120048,6 +125859,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutTransfersToInput = {
@@ -120069,6 +125882,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserUpsertWithoutTransfersInput = {
@@ -120435,6 +126250,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutWarehousesInput = {
@@ -120456,6 +126273,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutWarehousesInput = {
@@ -120638,6 +126457,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutWarehousesInput = {
@@ -120659,6 +126480,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchInventoryCreateWithoutProductInput = {
@@ -121343,6 +127166,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutBranchInventoryInput = {
@@ -121364,6 +127189,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutBranchInventoryInput = {
@@ -121484,6 +127311,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutBranchInventoryInput = {
@@ -121505,6 +127334,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type ProductUpsertWithoutBranchInventoryInput = {
@@ -123902,6 +129733,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutSalesDocumentsInput = {
@@ -123923,6 +129756,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutSalesDocumentsInput = {
@@ -124435,6 +130270,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutSalesDocumentsInput = {
@@ -124456,6 +130293,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserUpsertWithoutCreatedSalesDocumentsInput = {
@@ -125483,6 +131322,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutDocumentSequencesInput = {
@@ -125504,6 +131345,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutDocumentSequencesInput = {
@@ -125541,6 +131384,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutDocumentSequencesInput = {
@@ -125562,6 +131407,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type DispatchNoteCreateWithoutSalesOrderInput = {
@@ -125613,6 +131460,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutSalesOrdersInput = {
@@ -125634,6 +131483,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutSalesOrdersInput = {
@@ -125847,6 +131698,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutSalesOrdersInput = {
@@ -125868,6 +131721,8 @@ export namespace Prisma {
     salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserUpsertWithoutCreatedSalesOrdersInput = {
@@ -126941,6 +132796,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutCashierSessionsInput = {
@@ -126962,6 +132819,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutCashierSessionsInput = {
@@ -127156,6 +133015,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutCashierSessionsInput = {
@@ -127177,6 +133038,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type UserUpsertWithoutCashierSessionsInput = {
@@ -127673,6 +133536,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
     users?: UserCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
   }
 
   export type BranchUncheckedCreateWithoutPurchaseOrdersInput = {
@@ -127694,6 +133559,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
     users?: UserUncheckedCreateNestedManyWithoutBranchInput
     warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
   }
 
   export type BranchCreateOrConnectWithoutPurchaseOrdersInput = {
@@ -128025,6 +133892,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
     users?: UserUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
   }
 
   export type BranchUncheckedUpdateWithoutPurchaseOrdersInput = {
@@ -128046,6 +133915,8 @@ export namespace Prisma {
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
     users?: UserUncheckedUpdateManyWithoutBranchNestedInput
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type WarehouseUpsertWithoutPurchaseOrdersInput = {
@@ -130357,6 +136228,7 @@ export namespace Prisma {
     budgets?: BudgetCreateNestedManyWithoutAccountInput
     parent?: ChartOfAccountCreateNestedOneWithoutChildrenInput
     journal_entries?: JournalEntryCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUncheckedCreateWithoutChildrenInput = {
@@ -130376,6 +136248,7 @@ export namespace Prisma {
     bank_statements?: BankStatementUncheckedCreateNestedManyWithoutAccountInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutAccountInput
     journal_entries?: JournalEntryUncheckedCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountCreateOrConnectWithoutChildrenInput = {
@@ -130400,6 +136273,7 @@ export namespace Prisma {
     budgets?: BudgetCreateNestedManyWithoutAccountInput
     children?: ChartOfAccountCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUncheckedCreateWithoutParentInput = {
@@ -130419,6 +136293,7 @@ export namespace Prisma {
     budgets?: BudgetUncheckedCreateNestedManyWithoutAccountInput
     children?: ChartOfAccountUncheckedCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryUncheckedCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountCreateOrConnectWithoutParentInput = {
@@ -130484,6 +136359,34 @@ export namespace Prisma {
 
   export type JournalEntryCreateManyAccountInputEnvelope = {
     data: JournalEntryCreateManyAccountInput | JournalEntryCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JournalLineCreateWithoutAccountInput = {
+    id?: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+    header: JournalHeaderCreateNestedOneWithoutLinesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutAccountInput = {
+    id?: string
+    header_id: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutAccountInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutAccountInput, JournalLineUncheckedCreateWithoutAccountInput>
+  }
+
+  export type JournalLineCreateManyAccountInputEnvelope = {
+    data: JournalLineCreateManyAccountInput | JournalLineCreateManyAccountInput[]
     skipDuplicates?: boolean
   }
 
@@ -130587,6 +136490,7 @@ export namespace Prisma {
     budgets?: BudgetUpdateManyWithoutAccountNestedInput
     parent?: ChartOfAccountUpdateOneWithoutChildrenNestedInput
     journal_entries?: JournalEntryUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateWithoutChildrenInput = {
@@ -130606,6 +136510,7 @@ export namespace Prisma {
     bank_statements?: BankStatementUncheckedUpdateManyWithoutAccountNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutAccountNestedInput
     journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUpsertWithWhereUniqueWithoutParentInput = {
@@ -130685,6 +136590,35 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"JournalEntry"> | Date | string
   }
 
+  export type JournalLineUpsertWithWhereUniqueWithoutAccountInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutAccountInput, JournalLineUncheckedUpdateWithoutAccountInput>
+    create: XOR<JournalLineCreateWithoutAccountInput, JournalLineUncheckedCreateWithoutAccountInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutAccountInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutAccountInput, JournalLineUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutAccountInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type JournalLineScalarWhereInput = {
+    AND?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+    OR?: JournalLineScalarWhereInput[]
+    NOT?: JournalLineScalarWhereInput | JournalLineScalarWhereInput[]
+    id?: StringFilter<"JournalLine"> | string
+    header_id?: StringFilter<"JournalLine"> | string
+    account_id?: StringFilter<"JournalLine"> | string
+    line_no?: IntFilter<"JournalLine"> | number
+    description?: StringNullableFilter<"JournalLine"> | string | null
+    debit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFilter<"JournalLine"> | Decimal | DecimalJsLike | number | string
+  }
+
   export type JournalEntryCreateWithoutJournalInput = {
     id?: string
     entry_no: string
@@ -130741,6 +136675,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type JournalHeaderCreateWithoutJournalInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    period: FiscalPeriodCreateNestedOneWithoutHeadersInput
+    branch?: BranchCreateNestedOneWithoutJournal_headersInput
+    lines?: JournalLineCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderUncheckedCreateWithoutJournalInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    lines?: JournalLineUncheckedCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderCreateOrConnectWithoutJournalInput = {
+    where: JournalHeaderWhereUniqueInput
+    create: XOR<JournalHeaderCreateWithoutJournalInput, JournalHeaderUncheckedCreateWithoutJournalInput>
+  }
+
+  export type JournalHeaderCreateManyJournalInputEnvelope = {
+    data: JournalHeaderCreateManyJournalInput | JournalHeaderCreateManyJournalInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JournalEntryUpsertWithWhereUniqueWithoutJournalInput = {
     where: JournalEntryWhereUniqueInput
     update: XOR<JournalEntryUpdateWithoutJournalInput, JournalEntryUncheckedUpdateWithoutJournalInput>
@@ -130757,6 +136733,22 @@ export namespace Prisma {
     data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutJournalInput>
   }
 
+  export type JournalHeaderUpsertWithWhereUniqueWithoutJournalInput = {
+    where: JournalHeaderWhereUniqueInput
+    update: XOR<JournalHeaderUpdateWithoutJournalInput, JournalHeaderUncheckedUpdateWithoutJournalInput>
+    create: XOR<JournalHeaderCreateWithoutJournalInput, JournalHeaderUncheckedCreateWithoutJournalInput>
+  }
+
+  export type JournalHeaderUpdateWithWhereUniqueWithoutJournalInput = {
+    where: JournalHeaderWhereUniqueInput
+    data: XOR<JournalHeaderUpdateWithoutJournalInput, JournalHeaderUncheckedUpdateWithoutJournalInput>
+  }
+
+  export type JournalHeaderUpdateManyWithWhereWithoutJournalInput = {
+    where: JournalHeaderScalarWhereInput
+    data: XOR<JournalHeaderUpdateManyMutationInput, JournalHeaderUncheckedUpdateManyWithoutJournalInput>
+  }
+
   export type FiscalPeriodCreateWithoutFiscalYearInput = {
     id?: string
     name: string
@@ -130769,6 +136761,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     lockedBy?: UserCreateNestedOneWithoutLockedPeriodsInput
     entries?: JournalEntryCreateNestedManyWithoutPeriodInput
+    headers?: JournalHeaderCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodUncheckedCreateWithoutFiscalYearInput = {
@@ -130783,6 +136776,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     entries?: JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+    headers?: JournalHeaderUncheckedCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodCreateOrConnectWithoutFiscalYearInput = {
@@ -130981,6 +136975,48 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type JournalHeaderCreateWithoutPeriodInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    journal?: JournalCreateNestedOneWithoutHeadersInput
+    branch?: BranchCreateNestedOneWithoutJournal_headersInput
+    lines?: JournalLineCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderUncheckedCreateWithoutPeriodInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    journal_id?: string | null
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    lines?: JournalLineUncheckedCreateNestedManyWithoutHeaderInput
+  }
+
+  export type JournalHeaderCreateOrConnectWithoutPeriodInput = {
+    where: JournalHeaderWhereUniqueInput
+    create: XOR<JournalHeaderCreateWithoutPeriodInput, JournalHeaderUncheckedCreateWithoutPeriodInput>
+  }
+
+  export type JournalHeaderCreateManyPeriodInputEnvelope = {
+    data: JournalHeaderCreateManyPeriodInput | JournalHeaderCreateManyPeriodInput[]
+    skipDuplicates?: boolean
+  }
+
   export type FiscalYearUpsertWithoutPeriodsInput = {
     update: XOR<FiscalYearUpdateWithoutPeriodsInput, FiscalYearUncheckedUpdateWithoutPeriodsInput>
     create: XOR<FiscalYearCreateWithoutPeriodsInput, FiscalYearUncheckedCreateWithoutPeriodsInput>
@@ -131123,6 +137159,22 @@ export namespace Prisma {
     data: XOR<JournalEntryUpdateManyMutationInput, JournalEntryUncheckedUpdateManyWithoutPeriodInput>
   }
 
+  export type JournalHeaderUpsertWithWhereUniqueWithoutPeriodInput = {
+    where: JournalHeaderWhereUniqueInput
+    update: XOR<JournalHeaderUpdateWithoutPeriodInput, JournalHeaderUncheckedUpdateWithoutPeriodInput>
+    create: XOR<JournalHeaderCreateWithoutPeriodInput, JournalHeaderUncheckedCreateWithoutPeriodInput>
+  }
+
+  export type JournalHeaderUpdateWithWhereUniqueWithoutPeriodInput = {
+    where: JournalHeaderWhereUniqueInput
+    data: XOR<JournalHeaderUpdateWithoutPeriodInput, JournalHeaderUncheckedUpdateWithoutPeriodInput>
+  }
+
+  export type JournalHeaderUpdateManyWithWhereWithoutPeriodInput = {
+    where: JournalHeaderScalarWhereInput
+    data: XOR<JournalHeaderUpdateManyMutationInput, JournalHeaderUncheckedUpdateManyWithoutPeriodInput>
+  }
+
   export type BankStatementLineCreateWithoutJournal_entryInput = {
     id?: string
     date: Date | string
@@ -131171,6 +137223,7 @@ export namespace Prisma {
     budgets?: BudgetCreateNestedManyWithoutAccountInput
     parent?: ChartOfAccountCreateNestedOneWithoutChildrenInput
     children?: ChartOfAccountCreateNestedManyWithoutParentInput
+    journal_lines?: JournalLineCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUncheckedCreateWithoutJournal_entriesInput = {
@@ -131190,6 +137243,7 @@ export namespace Prisma {
     bank_statements?: BankStatementUncheckedCreateNestedManyWithoutAccountInput
     budgets?: BudgetUncheckedCreateNestedManyWithoutAccountInput
     children?: ChartOfAccountUncheckedCreateNestedManyWithoutParentInput
+    journal_lines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountCreateOrConnectWithoutJournal_entriesInput = {
@@ -131205,6 +137259,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    headers?: JournalHeaderCreateNestedManyWithoutJournalInput
   }
 
   export type JournalUncheckedCreateWithoutEntriesInput = {
@@ -131215,6 +137270,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    headers?: JournalHeaderUncheckedCreateNestedManyWithoutJournalInput
   }
 
   export type JournalCreateOrConnectWithoutEntriesInput = {
@@ -131234,6 +137290,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     fiscalYear: FiscalYearCreateNestedOneWithoutPeriodsInput
     lockedBy?: UserCreateNestedOneWithoutLockedPeriodsInput
+    headers?: JournalHeaderCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodUncheckedCreateWithoutEntriesInput = {
@@ -131248,6 +137305,7 @@ export namespace Prisma {
     lockedById?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    headers?: JournalHeaderUncheckedCreateNestedManyWithoutPeriodInput
   }
 
   export type FiscalPeriodCreateOrConnectWithoutEntriesInput = {
@@ -131320,6 +137378,7 @@ export namespace Prisma {
     budgets?: BudgetUpdateManyWithoutAccountNestedInput
     parent?: ChartOfAccountUpdateOneWithoutChildrenNestedInput
     children?: ChartOfAccountUpdateManyWithoutParentNestedInput
+    journal_lines?: JournalLineUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateWithoutJournal_entriesInput = {
@@ -131339,6 +137398,7 @@ export namespace Prisma {
     bank_statements?: BankStatementUncheckedUpdateManyWithoutAccountNestedInput
     budgets?: BudgetUncheckedUpdateManyWithoutAccountNestedInput
     children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
+    journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type JournalUpsertWithoutEntriesInput = {
@@ -131360,6 +137420,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    headers?: JournalHeaderUpdateManyWithoutJournalNestedInput
   }
 
   export type JournalUncheckedUpdateWithoutEntriesInput = {
@@ -131370,6 +137431,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    headers?: JournalHeaderUncheckedUpdateManyWithoutJournalNestedInput
   }
 
   export type FiscalPeriodUpsertWithoutEntriesInput = {
@@ -131395,6 +137457,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     fiscalYear?: FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
     lockedBy?: UserUpdateOneWithoutLockedPeriodsNestedInput
+    headers?: JournalHeaderUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodUncheckedUpdateWithoutEntriesInput = {
@@ -131409,6 +137472,7 @@ export namespace Prisma {
     lockedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    headers?: JournalHeaderUncheckedUpdateManyWithoutPeriodNestedInput
   }
 
   export type ChartOfAccountCreateWithoutBudgetsInput = {
@@ -131428,6 +137492,7 @@ export namespace Prisma {
     parent?: ChartOfAccountCreateNestedOneWithoutChildrenInput
     children?: ChartOfAccountCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUncheckedCreateWithoutBudgetsInput = {
@@ -131447,6 +137512,7 @@ export namespace Prisma {
     bank_statements?: BankStatementUncheckedCreateNestedManyWithoutAccountInput
     children?: ChartOfAccountUncheckedCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryUncheckedCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountCreateOrConnectWithoutBudgetsInput = {
@@ -131482,6 +137548,7 @@ export namespace Prisma {
     parent?: ChartOfAccountUpdateOneWithoutChildrenNestedInput
     children?: ChartOfAccountUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateWithoutBudgetsInput = {
@@ -131501,6 +137568,7 @@ export namespace Prisma {
     bank_statements?: BankStatementUncheckedUpdateManyWithoutAccountNestedInput
     children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type BankStatementLineCreateWithoutStatementInput = {
@@ -131556,6 +137624,7 @@ export namespace Prisma {
     parent?: ChartOfAccountCreateNestedOneWithoutChildrenInput
     children?: ChartOfAccountCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountUncheckedCreateWithoutBank_statementsInput = {
@@ -131575,6 +137644,7 @@ export namespace Prisma {
     budgets?: BudgetUncheckedCreateNestedManyWithoutAccountInput
     children?: ChartOfAccountUncheckedCreateNestedManyWithoutParentInput
     journal_entries?: JournalEntryUncheckedCreateNestedManyWithoutAccountInput
+    journal_lines?: JournalLineUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type ChartOfAccountCreateOrConnectWithoutBank_statementsInput = {
@@ -131643,6 +137713,7 @@ export namespace Prisma {
     parent?: ChartOfAccountUpdateOneWithoutChildrenNestedInput
     children?: ChartOfAccountUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateWithoutBank_statementsInput = {
@@ -131662,6 +137733,7 @@ export namespace Prisma {
     budgets?: BudgetUncheckedUpdateManyWithoutAccountNestedInput
     children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type JournalEntryCreateWithoutStatement_lineInput = {
@@ -135129,6 +141201,578 @@ export namespace Prisma {
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type FiscalPeriodCreateWithoutHeadersInput = {
+    id?: string
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    status?: $Enums.FiscalStatus
+    isLocked?: boolean
+    lockedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    fiscalYear: FiscalYearCreateNestedOneWithoutPeriodsInput
+    lockedBy?: UserCreateNestedOneWithoutLockedPeriodsInput
+    entries?: JournalEntryCreateNestedManyWithoutPeriodInput
+  }
+
+  export type FiscalPeriodUncheckedCreateWithoutHeadersInput = {
+    id?: string
+    fiscalYearId: string
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    status?: $Enums.FiscalStatus
+    isLocked?: boolean
+    lockedAt?: Date | string | null
+    lockedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    entries?: JournalEntryUncheckedCreateNestedManyWithoutPeriodInput
+  }
+
+  export type FiscalPeriodCreateOrConnectWithoutHeadersInput = {
+    where: FiscalPeriodWhereUniqueInput
+    create: XOR<FiscalPeriodCreateWithoutHeadersInput, FiscalPeriodUncheckedCreateWithoutHeadersInput>
+  }
+
+  export type JournalCreateWithoutHeadersInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.JournalType
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    entries?: JournalEntryCreateNestedManyWithoutJournalInput
+  }
+
+  export type JournalUncheckedCreateWithoutHeadersInput = {
+    id?: string
+    code: string
+    name: string
+    type: $Enums.JournalType
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    entries?: JournalEntryUncheckedCreateNestedManyWithoutJournalInput
+  }
+
+  export type JournalCreateOrConnectWithoutHeadersInput = {
+    where: JournalWhereUniqueInput
+    create: XOR<JournalCreateWithoutHeadersInput, JournalUncheckedCreateWithoutHeadersInput>
+  }
+
+  export type BranchCreateWithoutJournal_headersInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutJournal_headersInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutJournal_headersInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutJournal_headersInput, BranchUncheckedCreateWithoutJournal_headersInput>
+  }
+
+  export type JournalLineCreateWithoutHeaderInput = {
+    id?: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+    account: ChartOfAccountCreateNestedOneWithoutJournal_linesInput
+  }
+
+  export type JournalLineUncheckedCreateWithoutHeaderInput = {
+    id?: string
+    account_id: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineCreateOrConnectWithoutHeaderInput = {
+    where: JournalLineWhereUniqueInput
+    create: XOR<JournalLineCreateWithoutHeaderInput, JournalLineUncheckedCreateWithoutHeaderInput>
+  }
+
+  export type JournalLineCreateManyHeaderInputEnvelope = {
+    data: JournalLineCreateManyHeaderInput | JournalLineCreateManyHeaderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FiscalPeriodUpsertWithoutHeadersInput = {
+    update: XOR<FiscalPeriodUpdateWithoutHeadersInput, FiscalPeriodUncheckedUpdateWithoutHeadersInput>
+    create: XOR<FiscalPeriodCreateWithoutHeadersInput, FiscalPeriodUncheckedCreateWithoutHeadersInput>
+    where?: FiscalPeriodWhereInput
+  }
+
+  export type FiscalPeriodUpdateToOneWithWhereWithoutHeadersInput = {
+    where?: FiscalPeriodWhereInput
+    data: XOR<FiscalPeriodUpdateWithoutHeadersInput, FiscalPeriodUncheckedUpdateWithoutHeadersInput>
+  }
+
+  export type FiscalPeriodUpdateWithoutHeadersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
+    isLocked?: BoolFieldUpdateOperationsInput | boolean
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fiscalYear?: FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
+    lockedBy?: UserUpdateOneWithoutLockedPeriodsNestedInput
+    entries?: JournalEntryUpdateManyWithoutPeriodNestedInput
+  }
+
+  export type FiscalPeriodUncheckedUpdateWithoutHeadersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fiscalYearId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: EnumFiscalStatusFieldUpdateOperationsInput | $Enums.FiscalStatus
+    isLocked?: BoolFieldUpdateOperationsInput | boolean
+    lockedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lockedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    entries?: JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+  }
+
+  export type JournalUpsertWithoutHeadersInput = {
+    update: XOR<JournalUpdateWithoutHeadersInput, JournalUncheckedUpdateWithoutHeadersInput>
+    create: XOR<JournalCreateWithoutHeadersInput, JournalUncheckedCreateWithoutHeadersInput>
+    where?: JournalWhereInput
+  }
+
+  export type JournalUpdateToOneWithWhereWithoutHeadersInput = {
+    where?: JournalWhereInput
+    data: XOR<JournalUpdateWithoutHeadersInput, JournalUncheckedUpdateWithoutHeadersInput>
+  }
+
+  export type JournalUpdateWithoutHeadersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalTypeFieldUpdateOperationsInput | $Enums.JournalType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    entries?: JournalEntryUpdateManyWithoutJournalNestedInput
+  }
+
+  export type JournalUncheckedUpdateWithoutHeadersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumJournalTypeFieldUpdateOperationsInput | $Enums.JournalType
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    entries?: JournalEntryUncheckedUpdateManyWithoutJournalNestedInput
+  }
+
+  export type BranchUpsertWithoutJournal_headersInput = {
+    update: XOR<BranchUpdateWithoutJournal_headersInput, BranchUncheckedUpdateWithoutJournal_headersInput>
+    create: XOR<BranchCreateWithoutJournal_headersInput, BranchUncheckedCreateWithoutJournal_headersInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutJournal_headersInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutJournal_headersInput, BranchUncheckedUpdateWithoutJournal_headersInput>
+  }
+
+  export type BranchUpdateWithoutJournal_headersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutJournal_headersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
+  export type JournalLineUpsertWithWhereUniqueWithoutHeaderInput = {
+    where: JournalLineWhereUniqueInput
+    update: XOR<JournalLineUpdateWithoutHeaderInput, JournalLineUncheckedUpdateWithoutHeaderInput>
+    create: XOR<JournalLineCreateWithoutHeaderInput, JournalLineUncheckedCreateWithoutHeaderInput>
+  }
+
+  export type JournalLineUpdateWithWhereUniqueWithoutHeaderInput = {
+    where: JournalLineWhereUniqueInput
+    data: XOR<JournalLineUpdateWithoutHeaderInput, JournalLineUncheckedUpdateWithoutHeaderInput>
+  }
+
+  export type JournalLineUpdateManyWithWhereWithoutHeaderInput = {
+    where: JournalLineScalarWhereInput
+    data: XOR<JournalLineUpdateManyMutationInput, JournalLineUncheckedUpdateManyWithoutHeaderInput>
+  }
+
+  export type JournalHeaderCreateWithoutLinesInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+    period: FiscalPeriodCreateNestedOneWithoutHeadersInput
+    journal?: JournalCreateNestedOneWithoutHeadersInput
+    branch?: BranchCreateNestedOneWithoutJournal_headersInput
+  }
+
+  export type JournalHeaderUncheckedCreateWithoutLinesInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    journal_id?: string | null
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type JournalHeaderCreateOrConnectWithoutLinesInput = {
+    where: JournalHeaderWhereUniqueInput
+    create: XOR<JournalHeaderCreateWithoutLinesInput, JournalHeaderUncheckedCreateWithoutLinesInput>
+  }
+
+  export type ChartOfAccountCreateWithoutJournal_linesInput = {
+    id?: string
+    account_code: string
+    account_name: string
+    account_type: $Enums.AccountType
+    category: string
+    subcategory?: string | null
+    is_active?: boolean
+    is_system?: boolean
+    current_balance?: number
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bank_statements?: BankStatementCreateNestedManyWithoutAccountInput
+    budgets?: BudgetCreateNestedManyWithoutAccountInput
+    parent?: ChartOfAccountCreateNestedOneWithoutChildrenInput
+    children?: ChartOfAccountCreateNestedManyWithoutParentInput
+    journal_entries?: JournalEntryCreateNestedManyWithoutAccountInput
+  }
+
+  export type ChartOfAccountUncheckedCreateWithoutJournal_linesInput = {
+    id?: string
+    account_code: string
+    account_name: string
+    account_type: $Enums.AccountType
+    parent_id?: string | null
+    category: string
+    subcategory?: string | null
+    is_active?: boolean
+    is_system?: boolean
+    current_balance?: number
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bank_statements?: BankStatementUncheckedCreateNestedManyWithoutAccountInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutAccountInput
+    children?: ChartOfAccountUncheckedCreateNestedManyWithoutParentInput
+    journal_entries?: JournalEntryUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type ChartOfAccountCreateOrConnectWithoutJournal_linesInput = {
+    where: ChartOfAccountWhereUniqueInput
+    create: XOR<ChartOfAccountCreateWithoutJournal_linesInput, ChartOfAccountUncheckedCreateWithoutJournal_linesInput>
+  }
+
+  export type JournalHeaderUpsertWithoutLinesInput = {
+    update: XOR<JournalHeaderUpdateWithoutLinesInput, JournalHeaderUncheckedUpdateWithoutLinesInput>
+    create: XOR<JournalHeaderCreateWithoutLinesInput, JournalHeaderUncheckedCreateWithoutLinesInput>
+    where?: JournalHeaderWhereInput
+  }
+
+  export type JournalHeaderUpdateToOneWithWhereWithoutLinesInput = {
+    where?: JournalHeaderWhereInput
+    data: XOR<JournalHeaderUpdateWithoutLinesInput, JournalHeaderUncheckedUpdateWithoutLinesInput>
+  }
+
+  export type JournalHeaderUpdateWithoutLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    period?: FiscalPeriodUpdateOneRequiredWithoutHeadersNestedInput
+    journal?: JournalUpdateOneWithoutHeadersNestedInput
+    branch?: BranchUpdateOneWithoutJournal_headersNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateWithoutLinesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ChartOfAccountUpsertWithoutJournal_linesInput = {
+    update: XOR<ChartOfAccountUpdateWithoutJournal_linesInput, ChartOfAccountUncheckedUpdateWithoutJournal_linesInput>
+    create: XOR<ChartOfAccountCreateWithoutJournal_linesInput, ChartOfAccountUncheckedCreateWithoutJournal_linesInput>
+    where?: ChartOfAccountWhereInput
+  }
+
+  export type ChartOfAccountUpdateToOneWithWhereWithoutJournal_linesInput = {
+    where?: ChartOfAccountWhereInput
+    data: XOR<ChartOfAccountUpdateWithoutJournal_linesInput, ChartOfAccountUncheckedUpdateWithoutJournal_linesInput>
+  }
+
+  export type ChartOfAccountUpdateWithoutJournal_linesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_code?: StringFieldUpdateOperationsInput | string
+    account_name?: StringFieldUpdateOperationsInput | string
+    account_type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    category?: StringFieldUpdateOperationsInput | string
+    subcategory?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    is_system?: BoolFieldUpdateOperationsInput | boolean
+    current_balance?: FloatFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bank_statements?: BankStatementUpdateManyWithoutAccountNestedInput
+    budgets?: BudgetUpdateManyWithoutAccountNestedInput
+    parent?: ChartOfAccountUpdateOneWithoutChildrenNestedInput
+    children?: ChartOfAccountUpdateManyWithoutParentNestedInput
+    journal_entries?: JournalEntryUpdateManyWithoutAccountNestedInput
+  }
+
+  export type ChartOfAccountUncheckedUpdateWithoutJournal_linesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_code?: StringFieldUpdateOperationsInput | string
+    account_name?: StringFieldUpdateOperationsInput | string
+    account_type?: EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+    parent_id?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    subcategory?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    is_system?: BoolFieldUpdateOperationsInput | boolean
+    current_balance?: FloatFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bank_statements?: BankStatementUncheckedUpdateManyWithoutAccountNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutAccountNestedInput
+    children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
+    journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type BranchCreateWithoutVat_transactionsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutVat_transactionsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutVat_transactionsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutVat_transactionsInput, BranchUncheckedCreateWithoutVat_transactionsInput>
+  }
+
+  export type BranchUpsertWithoutVat_transactionsInput = {
+    update: XOR<BranchUpdateWithoutVat_transactionsInput, BranchUncheckedUpdateWithoutVat_transactionsInput>
+    create: XOR<BranchCreateWithoutVat_transactionsInput, BranchUncheckedCreateWithoutVat_transactionsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutVat_transactionsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutVat_transactionsInput, BranchUncheckedUpdateWithoutVat_transactionsInput>
+  }
+
+  export type BranchUpdateWithoutVat_transactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutVat_transactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+  }
+
   export type ApprovalRequestCreateManyApprovedByInput = {
     id?: string
     type: $Enums.ApprovalType
@@ -135874,6 +142518,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     fiscalYear?: FiscalYearUpdateOneRequiredWithoutPeriodsNestedInput
     entries?: JournalEntryUpdateManyWithoutPeriodNestedInput
+    headers?: JournalHeaderUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodUncheckedUpdateWithoutLockedByInput = {
@@ -135888,6 +142533,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     entries?: JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+    headers?: JournalHeaderUncheckedUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodUncheckedUpdateManyWithoutLockedByInput = {
@@ -136851,6 +143497,44 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type JournalHeaderCreateManyBranchInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    journal_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
+  }
+
+  export type VATTransactionCreateManyBranchInput = {
+    id?: string
+    transaction_no: string
+    vat_type: $Enums.VATType
+    source_type: string
+    source_id: string
+    source_line_id?: string | null
+    taxable_amount: Decimal | DecimalJsLike | number | string
+    vat_rate: Decimal | DecimalJsLike | number | string
+    vat_amount: Decimal | DecimalJsLike | number | string
+    is_claimable?: boolean
+    claimed_date?: Date | string | null
+    claim_period?: string | null
+    etims_synced?: boolean
+    etims_synced_at?: Date | string | null
+    etims_cuin?: string | null
+    etims_cusn?: string | null
+    etims_qr_code?: string | null
+    etims_error?: string | null
+    created_by: string
+    created_at?: Date | string
+  }
+
   export type BranchInventoryUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -137425,6 +144109,122 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalHeaderUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    period?: FiscalPeriodUpdateOneRequiredWithoutHeadersNestedInput
+    journal?: JournalUpdateOneWithoutHeadersNestedInput
+    lines?: JournalLineUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lines?: JournalLineUncheckedUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VATTransactionUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VATTransactionUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VATTransactionUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transaction_no?: StringFieldUpdateOperationsInput | string
+    vat_type?: EnumVATTypeFieldUpdateOperationsInput | $Enums.VATType
+    source_type?: StringFieldUpdateOperationsInput | string
+    source_id?: StringFieldUpdateOperationsInput | string
+    source_line_id?: NullableStringFieldUpdateOperationsInput | string | null
+    taxable_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_rate?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    vat_amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    is_claimable?: BoolFieldUpdateOperationsInput | boolean
+    claimed_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    claim_period?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_synced?: BoolFieldUpdateOperationsInput | boolean
+    etims_synced_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    etims_cuin?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_cusn?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_qr_code?: NullableStringFieldUpdateOperationsInput | string | null
+    etims_error?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type InventoryCreateManyWarehouseInput = {
@@ -139718,6 +146518,15 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type JournalLineCreateManyAccountInput = {
+    id?: string
+    header_id: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+  }
+
   export type BankStatementUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     filename?: StringFieldUpdateOperationsInput | string
@@ -139833,6 +146642,7 @@ export namespace Prisma {
     budgets?: BudgetUpdateManyWithoutAccountNestedInput
     children?: ChartOfAccountUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateWithoutParentInput = {
@@ -139852,6 +146662,7 @@ export namespace Prisma {
     budgets?: BudgetUncheckedUpdateManyWithoutAccountNestedInput
     children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
+    journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type ChartOfAccountUncheckedUpdateManyWithoutParentInput = {
@@ -139937,6 +146748,33 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JournalLineUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    header?: JournalHeaderUpdateOneRequiredWithoutLinesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    header_id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutAccountInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    header_id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
   export type JournalEntryCreateManyJournalInput = {
     id?: string
     entry_no: string
@@ -139957,6 +146795,21 @@ export namespace Prisma {
     approved_date?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type JournalHeaderCreateManyJournalInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    period_id: string
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
   }
 
   export type JournalEntryUpdateWithoutJournalInput = {
@@ -140027,6 +146880,53 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type JournalHeaderUpdateWithoutJournalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    period?: FiscalPeriodUpdateOneRequiredWithoutHeadersNestedInput
+    branch?: BranchUpdateOneWithoutJournal_headersNestedInput
+    lines?: JournalLineUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateWithoutJournalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lines?: JournalLineUncheckedUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateManyWithoutJournalInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_id?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FiscalPeriodCreateManyFiscalYearInput = {
     id?: string
     name: string
@@ -140052,6 +146952,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lockedBy?: UserUpdateOneWithoutLockedPeriodsNestedInput
     entries?: JournalEntryUpdateManyWithoutPeriodNestedInput
+    headers?: JournalHeaderUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodUncheckedUpdateWithoutFiscalYearInput = {
@@ -140066,6 +146967,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     entries?: JournalEntryUncheckedUpdateManyWithoutPeriodNestedInput
+    headers?: JournalHeaderUncheckedUpdateManyWithoutPeriodNestedInput
   }
 
   export type FiscalPeriodUncheckedUpdateManyWithoutFiscalYearInput = {
@@ -140101,6 +147003,21 @@ export namespace Prisma {
     approved_date?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type JournalHeaderCreateManyPeriodInput = {
+    id?: string
+    entry_no: string
+    entry_date: Date | string
+    journal_id?: string | null
+    branch_id?: string | null
+    description: string
+    total_debit: Decimal | DecimalJsLike | number | string
+    total_credit: Decimal | DecimalJsLike | number | string
+    source_type?: string | null
+    source_id?: string | null
+    created_by: string
+    created_at?: Date | string
   }
 
   export type JournalEntryUpdateWithoutPeriodInput = {
@@ -140169,6 +147086,53 @@ export namespace Prisma {
     approved_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JournalHeaderUpdateWithoutPeriodInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    journal?: JournalUpdateOneWithoutHeadersNestedInput
+    branch?: BranchUpdateOneWithoutJournal_headersNestedInput
+    lines?: JournalLineUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateWithoutPeriodInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    lines?: JournalLineUncheckedUpdateManyWithoutHeaderNestedInput
+  }
+
+  export type JournalHeaderUncheckedUpdateManyWithoutPeriodInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entry_no?: StringFieldUpdateOperationsInput | string
+    entry_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    journal_id?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    total_debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total_credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    source_type?: NullableStringFieldUpdateOperationsInput | string | null
+    source_id?: NullableStringFieldUpdateOperationsInput | string | null
+    created_by?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type BankStatementLineCreateManyStatementInput = {
@@ -140713,6 +147677,42 @@ export namespace Prisma {
 
   export type RoleAssignmentUncheckedUpdateManyWithoutRoleInput = {
     userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type JournalLineCreateManyHeaderInput = {
+    id?: string
+    account_id: string
+    line_no: number
+    description?: string | null
+    debit: Decimal | DecimalJsLike | number | string
+    credit: Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineUpdateWithoutHeaderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    account?: ChartOfAccountUpdateOneRequiredWithoutJournal_linesNestedInput
+  }
+
+  export type JournalLineUncheckedUpdateWithoutHeaderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+  }
+
+  export type JournalLineUncheckedUpdateManyWithoutHeaderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_id?: StringFieldUpdateOperationsInput | string
+    line_no?: IntFieldUpdateOperationsInput | number
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    debit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    credit?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
 

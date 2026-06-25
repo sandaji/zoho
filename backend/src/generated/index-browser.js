@@ -1060,6 +1060,56 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   timestamp: 'timestamp'
 };
 
+exports.Prisma.JournalHeaderScalarFieldEnum = {
+  id: 'id',
+  entry_no: 'entry_no',
+  entry_date: 'entry_date',
+  period_id: 'period_id',
+  journal_id: 'journal_id',
+  branch_id: 'branch_id',
+  description: 'description',
+  total_debit: 'total_debit',
+  total_credit: 'total_credit',
+  source_type: 'source_type',
+  source_id: 'source_id',
+  created_by: 'created_by',
+  created_at: 'created_at'
+};
+
+exports.Prisma.JournalLineScalarFieldEnum = {
+  id: 'id',
+  header_id: 'header_id',
+  account_id: 'account_id',
+  line_no: 'line_no',
+  description: 'description',
+  debit: 'debit',
+  credit: 'credit'
+};
+
+exports.Prisma.VATTransactionScalarFieldEnum = {
+  id: 'id',
+  transaction_no: 'transaction_no',
+  vat_type: 'vat_type',
+  source_type: 'source_type',
+  source_id: 'source_id',
+  source_line_id: 'source_line_id',
+  taxable_amount: 'taxable_amount',
+  vat_rate: 'vat_rate',
+  vat_amount: 'vat_amount',
+  is_claimable: 'is_claimable',
+  claimed_date: 'claimed_date',
+  claim_period: 'claim_period',
+  etims_synced: 'etims_synced',
+  etims_synced_at: 'etims_synced_at',
+  etims_cuin: 'etims_cuin',
+  etims_cusn: 'etims_cusn',
+  etims_qr_code: 'etims_qr_code',
+  etims_error: 'etims_error',
+  branch_id: 'branch_id',
+  created_by: 'created_by',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1387,6 +1437,11 @@ exports.AuditAction = exports.$Enums.AuditAction = {
   DELETE: 'DELETE'
 };
 
+exports.VATType = exports.$Enums.VATType = {
+  INPUT: 'INPUT',
+  OUTPUT: 'OUTPUT'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Branch: 'Branch',
@@ -1454,7 +1509,10 @@ exports.Prisma.ModelName = {
   Role: 'Role',
   RolePermission: 'RolePermission',
   RoleAssignment: 'RoleAssignment',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  JournalHeader: 'JournalHeader',
+  JournalLine: 'JournalLine',
+  VATTransaction: 'VATTransaction'
 };
 
 /**
