@@ -8,6 +8,7 @@ import { PayablesService } from "./services/payables.service";
 import { PeriodService } from "./services/period.service";
 import { DashboardFinanceService } from "./services/dashboard.service";
 import { AlertsService } from "./services/alerts.service";
+import { validationError } from "../../lib/errors";
 import { logger } from "../../lib/logger";
 
 class FinanceController {
@@ -400,6 +401,9 @@ class FinanceController {
   ): Promise<void> {
     try {
       const { paymentId } = req.params;
+      if (!paymentId || Array.isArray(paymentId)) {
+        throw validationError("paymentId is required");
+      }
       const receivable =
         await ReceivablesService.getReceivableByPaymentId(paymentId);
       res.status(200).json({ status: "success", data: receivable });

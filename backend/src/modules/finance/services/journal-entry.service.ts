@@ -4,15 +4,14 @@
  */
 
 import { prisma } from "../../../lib/db";
-import { Decimal } from "@prisma/client/runtime/library";
 import { Prisma } from "../../../generated";
 import { logger } from "../../../lib/logger";
 import { AppError, ErrorCode } from "../../../lib/errors";
 
 export interface JournalLineInput {
   accountId: string;
-  debit: Decimal;
-  credit: Decimal;
+  debit: Prisma.Decimal;
+  credit: Prisma.Decimal;
   description?: string;
 }
 
@@ -42,11 +41,11 @@ export class JournalEntryService {
     // Validate balance
     const totalDebits = input.lines.reduce(
       (sum, line) => sum.add(line.debit),
-      new Decimal(0)
+      new Prisma.Decimal(0)
     );
     const totalCredits = input.lines.reduce(
       (sum, line) => sum.add(line.credit),
-      new Decimal(0)
+      new Prisma.Decimal(0)
     );
 
     if (!totalDebits.equals(totalCredits)) {

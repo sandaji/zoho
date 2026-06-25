@@ -5,20 +5,19 @@
  */
 
 import { prisma } from "../../../lib/db";
-import { Decimal } from "@prisma/client/runtime/library";
 import { Prisma } from "../../../generated";
 import { logger } from "../../../lib/logger";
 
 export interface COGSAllocation {
   batchId: string;
   quantity: number;
-  unitCost: Decimal;
-  totalCost: Decimal;
+  unitCost: Prisma.Decimal;
+  totalCost: Prisma.Decimal;
   receivedAt: Date;
 }
 
 export interface COGSCalculationResult {
-  totalCOGS: Decimal;
+  totalCOGS: Prisma.Decimal;
   allocations: COGSAllocation[];
   remainingQuantity: number; // Should be 0 if fully allocated
 }
@@ -51,7 +50,7 @@ export class FifoCOGSService {
     }
 
     let remainingQuantity = quantity;
-    let totalCOGS = new Decimal(0);
+    let totalCOGS = new Prisma.Decimal(0);
     const allocations: COGSAllocation[] = [];
 
     for (const batch of batches) {
@@ -62,8 +61,8 @@ export class FifoCOGSService {
         batch.currentQuantity
       );
 
-      const unitCost = new Decimal(batch.unitCost);
-      const batchCOGS = unitCost.mul(new Decimal(quantityFromBatch));
+      const unitCost = new Prisma.Decimal(batch.unitCost);
+      const batchCOGS = unitCost.mul(new Prisma.Decimal(quantityFromBatch));
       totalCOGS = totalCOGS.add(batchCOGS);
 
       allocations.push({
@@ -109,7 +108,7 @@ export class FifoCOGSService {
       branchId: string;
     }
   ): Promise<{
-    totalCOGS: Decimal;
+    totalCOGS: Prisma.Decimal;
     journalHeaderId: string;
   }> {
     // Calculate COGS using FIFO
@@ -172,7 +171,7 @@ export class FifoCOGSService {
     data: {
       dispatchItemId: string;
       productId: string;
-      cogsAmount: Decimal;
+      cogsAmount: Prisma.Decimal;
       warehouseId: string;
       userId: string;
       branchId: string;
@@ -237,14 +236,14 @@ export class FifoCOGSService {
           line_no: 1,
           description: "Cost of Goods Sold",
           debit: data.cogsAmount,
-          credit: new Decimal(0),
+          credit: new Prisma.Decimal(0),
         },
         {
           header_id: header.id,
           account_id: inventoryAccount.id,
           line_no: 2,
           description: "Inventory Reduction",
-          debit: new Decimal(0),
+          debit: new Prisma.Decimal(0),
           credit: data.cogsAmount,
         },
       ],
@@ -267,7 +266,7 @@ export class FifoCOGSService {
         lte: endDate,
       },
       totalCogs: {
-        gt: new Decimal(0),
+        gt: new Prisma.Decimal(0),
       },
     };
 
@@ -310,8 +309,8 @@ export class FifoCOGSService {
       transactionCount: r._count,
       averageUnitCost:
         r._sum.qtyDispatched && r._sum.qtyDispatched > 0
-          ? (r._sum.totalCogs as Decimal)
-              .div(new Decimal(r._sum.qtyDispatched))
+          ? (r._sum.totalCogs as Prisma.Decimal)
+              .div(new Prisma.Decimal(r._sum.qtyDispatched))
               .toNumber()
           : 0,
     }));

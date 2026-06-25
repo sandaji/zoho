@@ -4,7 +4,6 @@
  */
 
 import { prisma } from "../../../lib/db";
-import { Decimal } from "@prisma/client/runtime/library";
 import { VATType, Prisma } from "../../../generated";
 import { logger } from "../../../lib/logger";
 
@@ -13,9 +12,9 @@ export interface VATTransactionInput {
   sourceType: string;
   sourceId: string;
   sourceLineId?: string;
-  taxableAmount: Decimal;
-  vatRate: Decimal;
-  vatAmount: Decimal;
+  taxableAmount: Prisma.Decimal;
+  vatRate: Prisma.Decimal;
+  vatAmount: Prisma.Decimal;
   isClaimable?: boolean;
   branchId: string;
   createdBy: string;
@@ -24,14 +23,14 @@ export interface VATTransactionInput {
 export interface VAT3ReturnData {
   period: string;
   outputVAT: {
-    taxableSupplies: Decimal | null;
-    vatAmount: Decimal | null;
+    taxableSupplies: Prisma.Decimal | null;
+    vatAmount: Prisma.Decimal | null;
   };
   inputVAT: {
-    claimablePurchases: Decimal | null;
-    vatAmount: Decimal | null;
+    claimablePurchases: Prisma.Decimal | null;
+    vatAmount: Prisma.Decimal | null;
   };
-  vatPayable: Decimal;
+  vatPayable: Prisma.Decimal;
 }
 
 export class VATService {
@@ -85,9 +84,9 @@ export class VATService {
     data: {
       salesDocumentId: string;
       branchId: string;
-      taxableAmount: Decimal;
-      vatRate: Decimal;
-      vatAmount: Decimal;
+      taxableAmount: Prisma.Decimal;
+      vatRate: Prisma.Decimal;
+      vatAmount: Prisma.Decimal;
       userId: string;
     }
   ) {
@@ -112,9 +111,9 @@ export class VATService {
     data: {
       purchaseOrderId: string;
       branchId: string;
-      taxableAmount: Decimal;
-      vatRate: Decimal;
-      vatAmount: Decimal;
+      taxableAmount: Prisma.Decimal;
+      vatRate: Prisma.Decimal;
+      vatAmount: Prisma.Decimal;
       isClaimable?: boolean;
       userId: string;
     }
@@ -161,8 +160,8 @@ export class VATService {
       },
     });
 
-    const vatPayable = (outputVAT._sum.vat_amount || new Decimal(0)).minus(
-      inputVAT._sum.vat_amount || new Decimal(0)
+    const vatPayable = (outputVAT._sum.vat_amount || new Prisma.Decimal(0)).minus(
+      inputVAT._sum.vat_amount || new Prisma.Decimal(0)
     );
 
     return {
