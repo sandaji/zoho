@@ -15,8 +15,8 @@ model User {
   name                    String
   phone                   String?
   role                    String                  @default("warehouse_staff")
-  salesPrefix             String?                 @unique
-  lastSequence            Int                     @default(0)
+  salesPrefix             String?                 @unique @map("salesPrefix")
+  lastSequence            Int                     @default(0) @map("lastSequence")
   branchId                String?
   isActive                Boolean                 @default(true)
   hasSystemAccess         Boolean                 @default(false)

@@ -21,7 +21,7 @@
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
-    "db:seed": "prisma db seed",
+    "db:seed": "prisma db push && prisma generate && prisma db seed",
     "db:reset": "prisma migrate reset",
     "db:generate": "prisma generate",
     "perf:migrate": "prisma migrate deploy",
@@ -33,7 +33,7 @@
     "test": "jest"
   },
   "prisma": {
-    "seed": "tsx --env-file=.env prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.7.0",

@@ -205,8 +205,13 @@ function createPrismaClient(): CustomPrismaClient {
                     businessAction: context.businessAction || null,
                     metadata: context.metadata || null,
                   }),
-                  userId: context.userId || null,
-                  branchId: context.branchId || null,
+                  ...(context.userId
+                    ? {
+                        user: {
+                          connect: { id: context.userId },
+                        },
+                      }
+                    : {}),
                   ipAddress: context.ipAddress || null,
                 },
               });

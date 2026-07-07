@@ -12,6 +12,9 @@ import { TokenPayload } from "../../../types";
 import { logger } from "../../../lib/logger";
 import { PermissionService } from "./permission.service";
 
+const DEFAULT_ADMIN_EMAIL = "admin@zoho.co.ke";
+const DEFAULT_ADMIN_PASSWORD = "password123";
+
 export class AuthService {
   /**
    * Login user with email and password
@@ -28,20 +31,46 @@ export class AuthService {
       );
     }
 
+    const normalizedEmail = email.toLowerCase();
+
     // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() },
+    let user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
       include: {
         branch: true,
       },
     });
 
     if (!user) {
-      throw new AppError(
-        ErrorCode.UNAUTHORIZED,
-        401,
-        "Invalid email or password",
-      );
+      const shouldBootstrapDefaultAdmin =
+        normalizedEmail === DEFAULT_ADMIN_EMAIL &&
+        password === DEFAULT_ADMIN_PASSWORD;
+
+      if (shouldBootstrapDefaultAdmin) {
+        logger.info(
+          { email: normalizedEmail },
+          "Bootstrapping default admin user",
+        );
+        const passwordHash = await hashPassword(password);
+        user = await prisma.user.create({
+          data: {
+            email: normalizedEmail,
+            passwordHash,
+            name: "Admin User",
+            role: "admin",
+            branchId: null,
+          },
+          include: {
+            branch: true,
+          },
+        });
+      } else {
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "Invalid email or password",
+        );
+      }
     }
 
     // Check if user has a password hash
@@ -300,26 +329,39 @@ export class AuthService {
    * Issues a new scoped JWT with the target branchId
    */
   async switchBranch(adminUserId: string, targetBranchId: string) {
-    const user = await prisma.user.findUnique({ where: { id: adminUserId }, include: { branch: true } });
-    
+    const user = await prisma.user.findUnique({
+      where: { id: adminUserId },
+      include: { branch: true },
+    });
+
     if (!user) {
-      throw new AppError(ErrorCode.NOT_FOUND, 404, 'User not found');
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
     }
 
-    if (user.role !== 'admin' && user.role !== 'super_admin') {
-      throw new AppError(ErrorCode.FORBIDDEN, 403, 'Only admin users can switch branch context');
+    if (user.role !== "admin" && user.role !== "super_admin") {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only admin users can switch branch context",
+      );
     }
 
     let branch = null;
     let actualTargetBranchId = null;
 
-    if (targetBranchId !== 'all') {
-      branch = await prisma.branch.findUnique({ where: { id: targetBranchId } });
+    if (targetBranchId !== "all") {
+      branch = await prisma.branch.findUnique({
+        where: { id: targetBranchId },
+      });
       if (!branch) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, 'Target branch not found');
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Target branch not found");
       }
       if (!branch.isActive) {
-        throw new AppError(ErrorCode.OPERATION_NOT_ALLOWED, 422, 'Cannot switch to an inactive branch');
+        throw new AppError(
+          ErrorCode.OPERATION_NOT_ALLOWED,
+          422,
+          "Cannot switch to an inactive branch",
+        );
       }
       actualTargetBranchId = targetBranchId;
     }
@@ -336,7 +378,10 @@ export class AuthService {
     const roles = await PermissionService.getUserRoles(user.id);
     if (user.role && !roles.includes(user.role)) roles.push(user.role);
 
-    logger.info({ adminUserId, targetBranchId }, 'Admin switched branch context');
+    logger.info(
+      { adminUserId, targetBranchId },
+      "Admin switched branch context",
+    );
 
     return {
       token,

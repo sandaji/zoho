@@ -12,15 +12,15 @@ export class PeriodService {
       where: {
         startDate: { lte: date },
         endDate: { gte: date },
-        status: 'open'
-      }
+        status: "open",
+      },
     });
 
     if (!period) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR as any,
         400,
-        "No open fiscal period found for the specified date"
+        "No open fiscal period found for the specified date",
       );
     }
 
@@ -32,14 +32,14 @@ export class PeriodService {
    */
   static async ensurePeriodOpen(periodId: string) {
     const period = await prisma.fiscalPeriod.findUnique({
-      where: { id: periodId }
+      where: { id: periodId },
     });
 
     if (!period || period.status !== FiscalStatus.open) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR as any,
         400,
-        "Fiscal period is closed or locked for posting"
+        "Fiscal period is closed or locked for posting",
       );
     }
 
@@ -59,8 +59,8 @@ export class PeriodService {
           name: year.toString(),
           startDate,
           endDate,
-          status: FiscalStatus.open
-        }
+          status: FiscalStatus.open,
+        },
       });
 
       const periods: Array<{
@@ -73,13 +73,16 @@ export class PeriodService {
       for (let month = 0; month < 12; month++) {
         const pStartDate = new Date(year, month, 1);
         const pEndDate = new Date(year, month + 1, 0, 23, 59, 59);
-        
+
         periods.push({
           fiscalYearId: fiscalYear.id,
-          name: pStartDate.toLocaleString('default', { month: 'short', year: 'numeric' }),
+          name: pStartDate.toLocaleString("default", {
+            month: "short",
+            year: "numeric",
+          }),
           startDate: pStartDate,
           endDate: pEndDate,
-          status: FiscalStatus.open
+          status: FiscalStatus.open,
         });
       }
 
@@ -93,7 +96,7 @@ export class PeriodService {
    */
   static async lock(periodId: string, userId: string) {
     await this.ensurePeriodOpen(periodId);
-    
+
     return prisma.$transaction(async (tx) => {
       const updatedPeriod = await tx.fiscalPeriod.update({
         where: { id: periodId },
@@ -101,19 +104,25 @@ export class PeriodService {
           isLocked: true,
           lockedAt: new Date(),
           lockedById: userId,
-          status: FiscalStatus.locked
+          status: FiscalStatus.locked,
         },
       });
 
       await tx.auditLog.create({
         data: {
-          entityType: 'FiscalPeriod',
+          entityType: "FiscalPeriod",
           entityId: periodId,
-          action: 'UPDATE',
-          userId: userId,
-          changes: { action: 'LOCK', reason: 'Admin Action', status: 'LOCKED' },
-          timestamp: new Date()
-        }
+          action: "UPDATE",
+          ...(userId
+            ? {
+                user: {
+                  connect: { id: userId },
+                },
+              }
+            : {}),
+          changes: { action: "LOCK", reason: "Admin Action", status: "LOCKED" },
+          timestamp: new Date(),
+        },
       });
 
       return updatedPeriod;
@@ -129,9 +138,13 @@ export class PeriodService {
     });
 
     if (!period) {
-      throw new AppError(ErrorCode.NOT_FOUND as any, 404, "Fiscal period not found");
+      throw new AppError(
+        ErrorCode.NOT_FOUND as any,
+        404,
+        "Fiscal period not found",
+      );
     }
-    
+
     return prisma.$transaction(async (tx) => {
       const updatedPeriod = await tx.fiscalPeriod.update({
         where: { id: periodId },
@@ -139,19 +152,25 @@ export class PeriodService {
           isLocked: false,
           lockedAt: null,
           lockedById: null,
-          status: FiscalStatus.open
+          status: FiscalStatus.open,
         },
       });
 
       await tx.auditLog.create({
         data: {
-          entityType: 'FiscalPeriod',
+          entityType: "FiscalPeriod",
           entityId: periodId,
-          action: 'UPDATE',
-          userId: userId || 'system',
-          changes: { action: 'UNLOCK', reason: 'Admin Action', status: 'OPEN' },
-          timestamp: new Date()
-        }
+          action: "UPDATE",
+          ...(userId || "system"
+            ? {
+                user: {
+                  connect: { id: userId || "system" },
+                },
+              }
+            : {}),
+          changes: { action: "UNLOCK", reason: "Admin Action", status: "OPEN" },
+          timestamp: new Date(),
+        },
       });
 
       return updatedPeriod;
@@ -163,25 +182,25 @@ export class PeriodService {
    */
   static async getFiscalPeriods(year?: number) {
     const targetYear = year || new Date().getFullYear();
-    
+
     return prisma.fiscalPeriod.findMany({
       where: {
         fiscalYear: {
-          name: targetYear.toString()
-        }
+          name: targetYear.toString(),
+        },
       },
       orderBy: {
-        startDate: 'asc'
+        startDate: "asc",
       },
       include: {
         lockedBy: {
           select: {
             id: true,
             name: true,
-            email: true
-          }
-        }
-      }
+            email: true,
+          },
+        },
+      },
     });
   }
 }
