@@ -172,6 +172,18 @@ router.post(
   (req, res, next) => financeController.unlockFiscalPeriod(req, res, next),
 );
 
+// Budget Endpoints
+router.get(
+  "/budgets",
+  requirePermission("finance.gl.view"),
+  (req, res, next) => financeController.listBudgets(req, res, next),
+);
+router.post(
+  "/budgets",
+  requirePermission("finance.gl.create"),
+  (req, res, next) => financeController.createBudget(req, res, next),
+);
+
 // Dashboard Finance Endpoints
 router.get(
   "/alerts",

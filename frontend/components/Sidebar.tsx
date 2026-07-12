@@ -10,473 +10,452 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import {
-  LayoutDashboard,
-  Building2,
-  Warehouse,
-  Users,
-  Package,
-  ShoppingCart,
-  Truck,
-  DollarSign,
-  Wallet,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-  Package2,
-  BarChart3,
-  TrendingUp,
-  Home,
-  Briefcase,
-  Calendar,
-  Heart,
-  BookOpen,
-  ArrowUpRight,
-  ArrowDownLeft,
-  RefreshCw,
-  Crown,
-  Shield,
-  ChevronDown,
-  ChevronRight,
-  ChevronsUpDown,
-  Check,
+  LayoutDashboard, Building2, Warehouse, Users, Package,
+  ShoppingCart, Truck, DollarSign, Wallet, Settings, LogOut,
+  Menu, X, BarChart3, Crown, Shield, ChevronDown, ChevronRight,
+  ChevronsUpDown, Check, RefreshCw, BookOpen,
 } from "lucide-react";
 
-interface MenuItem {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  permissions?: string[];
-  badge?: number;
-  children?: MenuItem[];
-}
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-interface Stats {
-  totalBranches?: number;
-  totalWarehouses?: number;
-  totalUsers?: number;
-  totalProducts?: number;
-  pendingDeliveries?: number;
-  lowStockItems?: number;
+interface NavItem {
+  label:        string;
+  href:         string;
+  icon:         React.ComponentType<{ className?: string }>;
+  badge?:       number;
+  children?:    NavItem[];
 }
-
-// ── Admin sub-sections: rendered as a grouped dropdown in the sidebar ────────
-const ADMIN_SECTIONS = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard, description: "System snapshot" },
-  { id: "branches", label: "Branches", icon: Building2, description: "Locations" },
-  { id: "warehouses", label: "Warehouses", icon: Warehouse, description: "Storage" },
-  { id: "users", label: "Users", icon: Users, description: "Staff" },
-  { id: "products", label: "Products", icon: Package, description: "Catalog" },
-  { id: "sales", label: "Sales", icon: ShoppingCart, description: "Orders" },
-  { id: "deliveries", label: "Deliveries", icon: Truck, description: "Fleet" },
-  { id: "finance", label: "Finance", icon: DollarSign, description: "Ledger" },
-  { id: "payroll", label: "Payroll", icon: Wallet, description: "Salaries" },
-  { id: "roles", label: "Roles & Perms", icon: Shield, description: "Access" },
-  { id: "credit_notes", label: "Credit Notes", icon: RefreshCw, description: "Returns" },
-];
 
 interface SwitcherBranch {
-  id: string;
+  id:   string;
   name: string;
   code: string;
-  city: string;
 }
 
+// ─── Role-based nav map ────────────────────────────────────────────────────────
+// Each role gets a clean, flat list of routes it can see.
+// Permissions are the source of truth; role string is only used as a fallback
+// for the admin-only Crown section.
+
+function buildNavItems(
+  role: string,
+  hasPerm: (code: string) => boolean,
+  hasAny: (codes: string[]) => boolean,
+  stats: { lowStockItems?: number; pendingDeliveries?: number }
+): NavItem[] {
+  const items: NavItem[] = [];
+
+  // ── 1. Home / Dashboard ──────────────────────────────────────────────────
+  if (role === "admin" || role === "super_admin") {
+    // Admin gets the Crown section — no generic dashboard link
+  } else if (role === "cashier") {
+    items.push({ label: "POS", href: "/dashboard/pos", icon: ShoppingCart });
+  } else {
+    items.push({ label: "Dashboard", href: "/dashboard", icon: LayoutDashboard });
+  }
+
+  // ── 2. POS ───────────────────────────────────────────────────────────────
+  if (role !== "cashier" && hasAny(["sales.order.create", "sales.order.view_all"])) {
+    items.push({ label: "Point of Sale", href: "/dashboard/pos", icon: ShoppingCart });
+  }
+
+  // ── 3. Inventory (merged — no duplicate Products entry) ──────────────────
+  if (hasAny(["inventory.product.view", "inventory.stock.adjust", "inventory.product.manage"])) {
+    items.push({
+      label: "Inventory",
+      href:  "/dashboard/inventory",
+      icon:  Package,
+      badge: stats.lowStockItems,
+    });
+  }
+
+  // ── 4. Purchasing ─────────────────────────────────────────────────────────
+  if (hasAny(["procurement.vendor.view", "procurement.order.view", "admin.branch.manage"])) {
+    items.push({
+      label:    "Purchasing",
+      href:     "/dashboard/purchasing",
+      icon:     ShoppingCart,
+      children: [
+        { label: "Vendors",         href: "/dashboard/purchasing/vendors", icon: Users    },
+        { label: "Purchase Orders", href: "/dashboard/purchasing/orders",  icon: BookOpen },
+      ],
+    });
+  }
+
+  // ── 5. Fleet & Deliveries ─────────────────────────────────────────────────
+  if (hasAny(["sales.order.view_all", "sales.order.manage"]) || role === "driver") {
+    items.push({
+      label: "Fleet & Deliveries",
+      href:  "/dashboard/fleet",
+      icon:  Truck,
+      badge: stats.pendingDeliveries,
+    });
+  }
+
+  // ── 6. Employees ─────────────────────────────────────────────────────────
+  if (hasAny(["hr.employee.view", "hr.employee.manage"])) {
+    items.push({ label: "Employees", href: "/dashboard/employees", icon: Users });
+  }
+
+  // ── 7. Finance (with sub-routes) ──────────────────────────────────────────
+  if (hasPerm("finance.gl.view")) {
+    items.push({
+      label:    "Finance",
+      href:     "/dashboard/finance",
+      icon:     DollarSign,
+      children: [
+        { label: "Overview",           href: "/dashboard/finance",                icon: LayoutDashboard },
+        { label: "General Ledger",     href: "/dashboard/finance/gl",             icon: BookOpen        },
+        { label: "Accounts Receivable",href: "/dashboard/finance/ar",             icon: DollarSign      },
+        { label: "Accounts Payable",   href: "/dashboard/finance/ap",             icon: Wallet          },
+        { label: "Bank & Cash",        href: "/dashboard/finance/bank",           icon: Wallet          },
+        { label: "Reconciliation",     href: "/dashboard/finance/reconciliation", icon: RefreshCw       },
+      ],
+    });
+  }
+
+  // ── 8. Payroll ────────────────────────────────────────────────────────────
+  if (hasAny(["hr.payroll.view", "hr.payroll.manage"])) {
+    items.push({ label: "Payroll", href: "/dashboard/payroll", icon: Wallet });
+  }
+
+  // ── 9. Branches (non-admin branch managers) ───────────────────────────────
+  if (hasPerm("admin.branch.manage") && role !== "admin" && role !== "super_admin") {
+    items.push({ label: "Branches", href: "/dashboard/branches", icon: Building2 });
+  }
+
+  // ── 10. Reports ───────────────────────────────────────────────────────────
+  if (hasAny(["finance.reports.view", "admin.branch.manage"])) {
+    items.push({ label: "Reports", href: "/dashboard/reports", icon: BarChart3 });
+  }
+
+  // ── 11. Settings (everyone except pure cashiers) ──────────────────────────
+  if (role !== "cashier") {
+    items.push({ label: "Settings", href: "/dashboard/settings", icon: Settings });
+  }
+
+  return items;
+}
+
+// ─── Admin sub-sections ───────────────────────────────────────────────────────
+
+const ADMIN_SECTIONS = [
+  { id: "overview",      label: "Overview",      icon: LayoutDashboard },
+  { id: "branches",      label: "Branches",      icon: Building2       },
+  { id: "warehouses",    label: "Warehouses",     icon: Warehouse       },
+  { id: "users",         label: "Users",          icon: Users           },
+  { id: "products",      label: "Products",       icon: Package         },
+  { id: "sales",         label: "Sales",          icon: ShoppingCart    },
+  { id: "deliveries",    label: "Deliveries",     icon: Truck           },
+  { id: "finance",       label: "Finance",        icon: DollarSign      },
+  { id: "payroll",       label: "Payroll",        icon: Wallet          },
+  { id: "roles",         label: "Roles & Perms",  icon: Shield          },
+  { id: "credit_notes",  label: "Credit Notes",   icon: RefreshCw       },
+];
+
+const ADMIN_GROUPS = [
+  { label: "Command Center", ids: ["overview"]                                    },
+  { label: "Infrastructure", ids: ["branches", "warehouses"]                     },
+  { label: "People",         ids: ["users", "payroll", "roles"]                  },
+  { label: "Operations",     ids: ["products", "sales", "deliveries", "finance", "credit_notes"] },
+];
+
+// ─── Role display names ───────────────────────────────────────────────────────
+
+const ROLE_LABELS: Record<string, string> = {
+  admin:           "Admin",
+  super_admin:     "Super Admin",
+  branch_manager:  "Branch Manager",
+  manager:         "Manager",
+  accountant:      "Accountant",
+  hr:              "HR",
+  cashier:         "Cashier",
+  warehouse_staff: "Warehouse Staff",
+  driver:          "Driver",
+  procurement:     "Procurement",
+  user:            "User",
+};
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export function Sidebar() {
-  const router = useRouter();
+  const router   = useRouter();
   const pathname = usePathname();
   const { user, logout, switchBranch } = useAuth();
   const { hasPermission, hasAnyPermission } = useHasPermission();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [stats, setStats] = useState<Stats>({});
-  // Track which admin sub-section is active (for the dropdown items)
-  const [adminOpen, setAdminOpen] = useState(false);
 
-  // Branch switcher state (admin only)
+  const [isOpen,      setIsOpen]      = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [adminOpen,   setAdminOpen]   = useState(false);
+  const [openChildren, setOpenChildren] = useState<string>("");
+  const [stats, setStats] = useState<{ lowStockItems?: number; pendingDeliveries?: number }>({});
+
+  // Branch switcher (admin only)
   const [switcherBranches, setSwitcherBranches] = useState<SwitcherBranch[]>([]);
-  const [switcherOpen, setSwitcherOpen] = useState(false);
-  const [isSwitching, setIsSwitching] = useState(false);
+  const [switcherOpen,     setSwitcherOpen]     = useState(false);
+  const [isSwitching,      setIsSwitching]      = useState(false);
   const switcherRef = useRef<HTMLDivElement>(null);
 
+  const isAdminUser  = user?.role === "admin" || user?.role === "super_admin";
   const isAdminRoute = pathname?.startsWith("/dashboard/admin");
-  const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
 
-  // Auto-open admin dropdown if on an admin route
-  useEffect(() => {
-    if (isAdminRoute) setAdminOpen(true);
-  }, [isAdminRoute]);
-
-  // Fetch branches for the admin switcher
-  useEffect(() => {
-    if (!isAdminUser || !user) return;
-    const token = localStorage.getItem("auth_token");
-    if (!token) return;
-
-    fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/branches`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data?.success) {
-          const list = data.data?.branches ?? data.data ?? [];
-          setSwitcherBranches(
-            list.map((b: Record<string, string>) => ({ id: b.id, name: b.name, code: b.code, city: b.city }))
-          );
-        }
-      })
-      .catch(() => { /* silent */ });
-  }, [isAdminUser, user]);
+  // Auto-open admin dropdown on admin routes
+  useEffect(() => { if (isAdminRoute) setAdminOpen(true); }, [isAdminRoute]);
 
   // Close switcher on outside click
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (switcherRef.current && !switcherRef.current.contains(e.target as Node)) {
+    const fn = (e: MouseEvent) => {
+      if (switcherRef.current && !switcherRef.current.contains(e.target as Node))
         setSwitcherOpen(false);
-      }
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", fn);
+    return () => document.removeEventListener("mousedown", fn);
   }, []);
 
-  const handleBranchSwitch = async (branchId: string) => {
+  // Fetch branches for admin switcher
+  useEffect(() => {
+    if (!isAdminUser) return;
+    const token = localStorage.getItem("auth_token");
+    if (!token) return;
+    fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/branches`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const list = data?.data?.branches ?? data?.data ?? [];
+        setSwitcherBranches(list.map((b: any) => ({ id: b.id, name: b.name, code: b.code })));
+      })
+      .catch(() => {});
+  }, [isAdminUser]);
+
+  // Stats polling (admin/manager only)
+  useEffect(() => {
+    if (!user || !hasPermission("admin.branch.manage")) return;
+    let alive = true;
+    const poll = async () => {
+      const tok = localStorage.getItem("auth_token");
+      if (!tok || !alive) return;
+      try {
+        const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/admin/stats`, {
+          headers: { Authorization: `Bearer ${tok}` },
+        });
+        if (res.ok && alive) {
+          const d = await res.json();
+          setStats(d.data || {});
+        }
+      } catch {}
+    };
+    poll();
+    const id = setInterval(poll, 60_000);
+    return () => { alive = false; clearInterval(id); };
+  }, [user]);
+
+  if (!user) return null;
+
+  const navItems = buildNavItems(
+    user.role,
+    hasPermission,
+    hasAnyPermission,
+    stats,
+  );
+
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  const isActive = (href: string): boolean => {
+    const base = href.split("?")[0] ?? "";
+    if (base === "/dashboard") return pathname === "/dashboard";
+    return (pathname ?? "").startsWith(base);
+  };
+
+  const activeAdminSection = (() => {
+    if (typeof window === "undefined") return "overview";
+    return new URLSearchParams(window.location.search).get("section") ?? "overview";
+  })();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/auth/login");
+  };
+
+  const handleBranchSwitch = async (id: string) => {
     if (isSwitching) return;
     setIsSwitching(true);
     try {
-      await switchBranch(branchId);
+      await switchBranch(id);
       setSwitcherOpen(false);
       router.refresh();
-    } catch (err) {
-      console.error("Branch switch failed:", err);
+    } catch (e) {
+      console.error("Branch switch failed:", e);
     } finally {
       setIsSwitching(false);
     }
   };
 
-  // ── Stats fetch ──────────────────────────────────────────────────────────
-  useEffect(() => {
-    // Guard: must have a user, a valid token, and the right permissions
-    const token = localStorage.getItem("auth_token");
-    if (
-      !user ||
-      !token ||
-      (!hasPermission("admin.branch.manage") && !hasPermission("hr.employee.view"))
-    ) return;
+  // ── Nav item renderer ─────────────────────────────────────────────────────
 
-    let isMounted = true;
-    let retryCount = 0;
-    const MAX_RETRIES = 3;
+  const NavLink = ({ item }: { item: NavItem }) => {
+    const Icon        = item.icon;
+    const active      = isActive(item.href);
+    const hasChildren = !!item.children?.length;
+    const childOpen   = openChildren === item.href;
 
-    const fetchStats = async () => {
-      // Re-check token on every tick — user may have logged out between intervals
-      const currentToken = localStorage.getItem("auth_token");
-      if (!currentToken || !isMounted) return;
-
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-        const response = await fetch(
-          `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/admin/stats`,
-          { headers: { Authorization: `Bearer ${currentToken}` }, signal: controller.signal }
-        );
-
-        clearTimeout(timeoutId);
-
-        if (!isMounted) return;
-
-        if (response.status === 401 || response.status === 403) {
-          // Token rejected — stop polling, do not retry
-          console.warn("Stats polling stopped: auth token rejected.");
-          clearInterval(interval);
-          return;
-        }
-
-        if (response.ok) {
-          const data = await response.json();
-          setStats(data.data || {});
-          retryCount = 0;
-        }
-      } catch (error) {
-        if (!isMounted) return;
-        if (retryCount < MAX_RETRIES) {
-          retryCount++;
-          console.warn(`Failed to fetch stats (attempt ${retryCount}/${MAX_RETRIES}):`, error);
-        } else if (retryCount === MAX_RETRIES) {
-          console.error("Failed to fetch stats after multiple attempts. Stopping poll.");
-          clearInterval(interval);
-          retryCount++;
-        }
-      }
-    };
-
-    fetchStats();
-    const interval = setInterval(fetchStats, 60000);
-    return () => { isMounted = false; clearInterval(interval); };
-  }, [user]);
-
-  if (!user) return null;
-
-  // ── Menu items (unchanged logic) ──────────────────────────────────────────
-  const getMenuItems = (): MenuItem[] => {
-    const items: MenuItem[] = [];
-    const isCashier = user?.role === "cashier";
-
-    if (!isCashier) {
-      if (isAdminUser) {
-        // Admin dashboard entry point — the dropdown handles sub-navigation
-        items.push({ label: "Admin Dashboard", href: "/dashboard/admin", icon: Crown });
-      } else if (hasPermission("hr.employee.view")) {
-        items.push({ label: "Management System", href: "/dashboard/branch/manager", icon: TrendingUp });
-      } else if (hasAnyPermission(["inventory.product.view", "sales.order.view_all", "finance.gl.view"])) {
-        items.push({ label: "Dashboard", href: "/dashboard", icon: Home });
-      } else if (hasPermission("finance.gl.view")) {
-        items.push({ label: "Finance Dashboard", href: "/dashboard/finance", icon: DollarSign });
-      } else if (hasPermission("hr.employee.view")) {
-        items.push({ label: "HR Dashboard", href: "/dashboard/hr", icon: LayoutDashboard });
-      } else if (hasPermission("sales.order.create")) {
-        items.push({ label: "POS Dashboard", href: "/dashboard/pos", icon: ShoppingCart });
-      } else if (hasPermission("inventory.product.view")) {
-        items.push({ label: "Inventory Dashboard", href: "/dashboard/inventory", icon: Package });
-      } else if (hasPermission("sales.order.view_all")) {
-        items.push({ label: "Deliveries", href: "/dashboard/fleet", icon: Truck });
-      } else {
-        items.push({ label: "Dashboard", href: "/dashboard", icon: LayoutDashboard });
-      }
+    if (hasChildren) {
+      return (
+        <div>
+          <button
+            onClick={() => setOpenChildren(childOpen ? "" : item.href)}
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+              active ? "bg-emerald-600/20 text-emerald-400" : "text-slate-400 hover:text-white hover:bg-slate-800",
+            )}
+            title={isCollapsed ? item.label : undefined}
+          >
+            <Icon className="h-5 w-5 shrink-0" />
+            {!isCollapsed && (
+              <>
+                <span className="flex-1 text-left">{item.label}</span>
+                <ChevronDown className={cn("h-4 w-4 transition-transform", childOpen && "rotate-180")} />
+              </>
+            )}
+          </button>
+          {!isCollapsed && childOpen && (
+            <div className="ml-4 mt-1 pl-3 border-l border-slate-800 space-y-0.5">
+              {item.children!.map(child => {
+                const CIcon = child.icon;
+                const ca    = pathname === child.href;
+                return (
+                  <Link
+                    key={child.href}
+                    href={child.href}
+                    onClick={() => setIsOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-colors",
+                      ca ? "bg-slate-800 text-white" : "text-slate-500 hover:text-white hover:bg-slate-800",
+                    )}
+                  >
+                    <CIcon className="h-4 w-4 shrink-0" />
+                    <span>{child.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      );
     }
 
-    if (hasAnyPermission(["sales.order.create", "sales.order.view_all"])) {
-      items.push({ label: "Point of Sale", href: "/dashboard/pos", icon: ShoppingCart });
-    }
-    if (hasAnyPermission(["inventory.product.view", "inventory.stock.adjust"])) {
-      items.push({ label: "Inventory", href: "/dashboard/inventory", icon: Package, badge: stats.lowStockItems });
-    }
-    if (hasAnyPermission(["inventory.product.view", "inventory.product.manage"])) {
-      items.push({ label: "Products", href: "/dashboard/products", icon: Package2 });
-    }
-    if (hasAnyPermission(["inventory.warehouse.manage", "inventory.stock.view"])) {
-      items.push({ label: "Warehouses", href: "/dashboard/warehouse", icon: Warehouse });
-    }
-    if (hasAnyPermission(["sales.order.view_all", "sales.order.manage"])) {
-      items.push({ label: "Fleet & Deliveries", href: "/dashboard/fleet", icon: Truck, badge: stats.pendingDeliveries });
-    }
-    if (hasAnyPermission(["admin.branch.manage", "purchasing.order.view_all", "purchasing.vendor.view"])) {
-      items.push({
-        label: "Purchasing",
-        href: "/dashboard/purchasing",
-        icon: ShoppingCart,
-        children: [
-          { label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users },
-          { label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen },
-        ],
-      });
-    }
-    if (hasPermission("admin.branch.manage")) {
-      items.push({ label: "Branches", href: "/dashboard/branches", icon: Building2, badge: stats.totalBranches });
-    }
-    if (hasAnyPermission(["hr.employee.view", "hr.employee.manage"])) {
-      items.push({ label: "Employees", href: "/dashboard/employees", icon: Users, badge: stats.totalUsers });
-    }
-    if (hasPermission("hr.recruitment.manage")) {
-      items.push({ label: "Recruitment", href: "/dashboard/hr/recruitment", icon: Briefcase });
-    }
-    if (hasPermission("hr.performance.manage")) {
-      items.push({ label: "Performance", href: "/dashboard/hr/performance", icon: TrendingUp });
-    }
-    if (hasPermission("hr.benefits.manage")) {
-      items.push({ label: "Benefits", href: "/dashboard/hr/benefits", icon: Heart });
-    }
-    if (hasPermission("hr.leave.approve")) {
-      items.push({ label: "Leave Management", href: "/dashboard/hr/leave", icon: Calendar });
-    }
-    if (hasPermission("hr.payroll.run")) {
-      items.push({ label: "Payroll", href: "/dashboard/payroll", icon: Wallet });
-    }
-    if (hasPermission("finance.gl.view")) {
-      const financeChildren: MenuItem[] = [];
-      if (hasPermission("finance.gl.view")) {
-        financeChildren.push({ label: "Overview", href: "/dashboard/finance", icon: LayoutDashboard });
-        financeChildren.push({ label: "General Ledger", href: "/dashboard/finance/gl", icon: BookOpen });
-        financeChildren.push({ label: "Accounts Receivable", href: "/dashboard/finance/ar", icon: ArrowUpRight });
-        financeChildren.push({ label: "Accounts Payable", href: "/dashboard/finance/ap", icon: ArrowDownLeft });
-        financeChildren.push({ label: "Bank & Cash", href: "/dashboard/finance/bank", icon: Wallet });
-        financeChildren.push({ label: "Reconciliation", href: "/dashboard/finance/reconciliation", icon: RefreshCw });
-      }
-      if (hasPermission("finance.settings.periods")) {
-        financeChildren.push({ label: "Settings", href: "/dashboard/finance/settings", icon: Settings });
-      }
-      items.push({ label: "Finance", href: "/dashboard/finance", icon: DollarSign, children: financeChildren });
-    }
-    if (
-      user?.role === "admin" ||
-      user?.role === "super_admin" ||
-      hasPermission("finance.report.aging")
-    ) {
-      items.push({ label: "Reports & Analytics", href: "/dashboard/reports", icon: BarChart3 });
-    }
-    if (!isCashier) {
-      items.push({ label: "Settings", href: "/dashboard/settings", icon: Settings });
-    }
-
-    return items;
+    return (
+      <Link
+        href={item.href}
+        onClick={() => setIsOpen(false)}
+        className={cn(
+          "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+          active ? "bg-emerald-600 text-white" : "text-slate-400 hover:text-white hover:bg-slate-800",
+        )}
+        title={isCollapsed ? item.label : undefined}
+      >
+        <Icon className="h-5 w-5 shrink-0" />
+        {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
+        {!isCollapsed && item.badge !== undefined && item.badge > 0 && (
+          <span className="px-1.5 py-0.5 bg-red-500 text-white text-[10px] rounded-full font-semibold">
+            {item.badge > 99 ? "99+" : item.badge}
+          </span>
+        )}
+      </Link>
+    );
   };
 
-  const menuItems = getMenuItems();
+  // ── Sidebar body ──────────────────────────────────────────────────────────
 
-  const handleLogout = async () => {
-    try {
-      logout();
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("auth_user");
-      router.push("/auth/login");
-      setTimeout(() => { window.location.href = "/auth/login"; }, 500);
-    } catch {
-      localStorage.clear();
-      window.location.href = "/auth/login";
-    }
-  };
-
-  const toggleMobile = () => setIsOpen(!isOpen);
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-    if (!isCollapsed) setAdminOpen(false); // close dropdown when collapsing
-  };
-
-  const isActive = (href: string) => {
-    const baseHref = href.split("?")[0] || "";
-    const basePathname = pathname || "";
-    if (baseHref === "/dashboard/branch/manager") return basePathname === "/dashboard/branch/manager";
-    if (baseHref === "/dashboard/admin") return basePathname === "/dashboard/admin" || basePathname.startsWith("/dashboard/admin");
-    if (baseHref === "/dashboard") return basePathname === "/dashboard";
-    return basePathname.startsWith(baseHref);
-  };
-
-  // Which admin section query param is currently active
-  const activeAdminSection = (() => {
-    if (!isAdminRoute) return "";
-    if (typeof window !== "undefined") {
-      return new URLSearchParams(window.location.search).get("section") || "overview";
-    }
-    return "overview";
-  })();
-
-  const getRoleDisplay = (role: string) => {
-    const roleMap: Record<string, string> = {
-      admin: "Admin", super_admin: "Super Admin", branch_manager: "Branch Manager",
-      manager: "MD", accountant: "Accountant", hr: "HR", cashier: "POS MANAGER",
-      warehouse_staff: "WH STAFF", driver: "Driver", user: "User",
-    };
-    return roleMap[role] || role;
-  };
-
-  // ── Shared sidebar body (used for both desktop and mobile) ────────────────
   const SidebarBody = () => (
     <div className="flex flex-col h-full">
-      {/* Logo */}
-      <div className="flex items-center justify-between px-5 py-5 border-b border-slate-800">
-        {!isCollapsed && (
-          <div className="flex items-center gap-3">
-            <div className="relative w-9 h-9">
-              <Image src="/logo.svg" alt="Zoho ERP" fill className="object-contain" />
+
+      {/* Logo + collapse toggle */}
+      <div className="flex items-center justify-between px-4 py-4 border-b border-slate-800">
+        {!isCollapsed ? (
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-8 h-8 shrink-0">
+              <Image src="/logo.svg" alt="Logo" fill className="object-contain" />
             </div>
-            <span className="text-sky-400 font-bold tracking-wide text-sm">ZOHO ERP</span>
+            <span className="text-sky-400 font-bold text-sm tracking-wider">ZOHO ERP</span>
           </div>
-        )}
-        {isCollapsed && (
-          <div className="relative w-9 h-9 mx-auto">
-            <Image src="/logo.svg" alt="Zoho ERP" fill className="object-contain" />
+        ) : (
+          <div className="relative w-8 h-8 mx-auto shrink-0">
+            <Image src="/logo.svg" alt="Logo" fill className="object-contain" />
           </div>
         )}
         <button
-          onClick={toggleCollapse}
-          className="hidden lg:block p-1.5 hover:bg-slate-800 rounded-lg transition-colors"
-          aria-label="Toggle sidebar"
+          onClick={() => { setIsCollapsed(c => !c); if (!isCollapsed) setAdminOpen(false); }}
+          className="hidden lg:flex p-1.5 hover:bg-slate-800 rounded-lg transition-colors"
         >
-          <Menu className="w-4 h-4 text-sky-400" />
+          <Menu className="w-4 h-4 text-slate-400" />
         </button>
       </div>
 
-      {/* User info */}
+      {/* User block */}
       {!isCollapsed ? (
-        <div className="px-5 py-3.5 border-b border-slate-800">
-          <p className="font-semibold text-sm text-white truncate">{user.name}</p>
-          <div className={cn(
-            "mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold",
+        <div className="px-4 py-3 border-b border-slate-800">
+          <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+          <p className="text-[11px] text-slate-500 truncate">{user.email}</p>
+          <span className={cn(
+            "mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold",
             isAdminUser
-              ? "bg-yellow-400/20 text-yellow-300 border border-yellow-400/30"
-              : "bg-emerald-500/20 text-emerald-300"
+              ? "bg-yellow-400/15 text-yellow-300 border border-yellow-400/20"
+              : "bg-emerald-500/15 text-emerald-400",
           )}>
-            {isAdminUser && <Crown className="w-3 h-3" />}
-            {getRoleDisplay(user.role)}
-          </div>
+            {isAdminUser && <Crown className="w-2.5 h-2.5" />}
+            {ROLE_LABELS[user.role] ?? user.role}
+          </span>
         </div>
       ) : (
-        <div className="px-3 py-3.5 border-b border-slate-800">
-          <div className="w-9 h-9 bg-emerald-600 rounded-full flex items-center justify-center font-bold text-sm mx-auto text-white">
+        <div className="px-3 py-3 border-b border-slate-800 flex justify-center">
+          <div className="w-9 h-9 bg-emerald-700 rounded-full flex items-center justify-center text-white text-sm font-bold">
             {user.name.charAt(0).toUpperCase()}
           </div>
         </div>
       )}
 
-      {/* Branch Switcher (Admin only) */}
+      {/* Branch switcher (admin only) */}
       {isAdminUser && switcherBranches.length > 0 && (
-        <div ref={switcherRef} className={cn("relative border-b border-slate-800", isCollapsed ? "px-2 py-2" : "px-4 py-3")}>
+        <div ref={switcherRef} className={cn("relative border-b border-slate-800", isCollapsed ? "px-2 py-2" : "px-3 py-2.5")}>
           <button
-            onClick={() => setSwitcherOpen(!switcherOpen)}
+            onClick={() => setSwitcherOpen(o => !o)}
             disabled={isSwitching}
             className={cn(
-              "w-full flex items-center gap-2 rounded-lg text-xs font-medium transition-all duration-200",
-              isCollapsed ? "justify-center p-2" : "px-3 py-2.5",
-              "bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border border-slate-700/50"
+              "w-full flex items-center gap-2 rounded-lg text-xs font-medium transition-colors",
+              isCollapsed ? "justify-center p-2" : "px-3 py-2",
+              "bg-slate-800/60 hover:bg-slate-700 text-slate-300 border border-slate-700/50",
             )}
-            title={isCollapsed ? (user.branch?.name || "Switch Branch") : undefined}
           >
-            <Building2 className={cn("shrink-0", isCollapsed ? "h-4 w-4" : "h-4 w-4", isSwitching ? "animate-pulse text-sky-400" : "text-sky-400")} />
+            <Building2 className={cn("shrink-0 h-4 w-4", isSwitching ? "animate-pulse text-sky-400" : "text-sky-400")} />
             {!isCollapsed && (
               <>
                 <span className="flex-1 text-left truncate">
-                  {isSwitching ? "Switching…" : (user.branch?.name || "All Branches")}
+                  {isSwitching ? "Switching…" : (user.branch?.name ?? "All Branches")}
                 </span>
-                <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+                <ChevronsUpDown className="h-3.5 w-3.5 text-slate-500 shrink-0" />
               </>
             )}
           </button>
 
-          {/* Dropdown */}
           {switcherOpen && !isCollapsed && (
-            <div className="absolute left-3 right-3 top-full mt-1 z-50 bg-slate-800 border border-slate-700 rounded-lg shadow-xl max-h-60 overflow-y-auto py-1">
-              <button
-                onClick={() => handleBranchSwitch("all")}
-                disabled={isSwitching}
-                className={cn(
-                  "w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-all duration-150",
-                  !user.branchId
-                    ? "bg-sky-600/20 text-sky-300"
-                    : "text-slate-400 hover:bg-slate-700 hover:text-white"
-                )}
-              >
-                <Building2 className="h-3.5 w-3.5 shrink-0" />
-                <span className="flex-1 text-left truncate">All Branches</span>
-                {!user.branchId && <Check className="h-3.5 w-3.5 shrink-0 text-sky-400" />}
-              </button>
-              {switcherBranches.map((branch) => {
-                const isCurrentBranch = user.branchId === branch.id;
+            <div className="absolute left-3 right-3 top-full mt-1 z-50 bg-slate-800 border border-slate-700 rounded-lg shadow-xl overflow-y-auto max-h-52 py-1">
+              {[{ id: "", name: "All Branches", code: "" }, ...switcherBranches].map(b => {
+                const isCurrent = b.id ? user.branchId === b.id : !user.branchId;
                 return (
                   <button
-                    key={branch.id}
-                    onClick={() => handleBranchSwitch(branch.id)}
+                    key={b.id || "all"}
+                    onClick={() => handleBranchSwitch(b.id || "all")}
                     disabled={isSwitching}
                     className={cn(
-                      "w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-all duration-150",
-                      isCurrentBranch
-                        ? "bg-sky-600/20 text-sky-300"
-                        : "text-slate-400 hover:bg-slate-700 hover:text-white"
+                      "w-full flex items-center gap-2.5 px-3 py-2 text-xs transition-colors",
+                      isCurrent ? "bg-sky-600/20 text-sky-300" : "text-slate-400 hover:bg-slate-700 hover:text-white",
                     )}
                   >
                     <Building2 className="h-3.5 w-3.5 shrink-0" />
-                    <span className="flex-1 text-left truncate">{branch.name}</span>
-                    <span className="text-[10px] text-slate-500 font-mono">{branch.code}</span>
-                    {isCurrentBranch && <Check className="h-3.5 w-3.5 shrink-0 text-sky-400" />}
+                    <span className="flex-1 text-left truncate">{b.name}</span>
+                    {b.code && <span className="font-mono text-[10px] text-slate-500">{b.code}</span>}
+                    {isCurrent && <Check className="h-3.5 w-3.5 text-sky-400 shrink-0" />}
                   </button>
                 );
               })}
@@ -486,179 +465,91 @@ export function Sidebar() {
       )}
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5 scrollbar-hide">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.href);
-          const hasChildren = item.children && item.children.length > 0;
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5 scrollbar-hide">
 
-          // ── ADMIN DASHBOARD: special expandable group ──────────────────
-          if (item.href === "/dashboard/admin" && isAdminUser) {
-            return (
-              <div key="admin-group">
-                {/* Admin header row */}
-                <button
-                  onClick={() => {
-                    if (isCollapsed) {
-                      router.push("/dashboard/admin");
-                    } else {
-                      setAdminOpen((prev) => !prev);
-                      if (!adminOpen) router.push("/dashboard/admin");
-                    }
-                    setIsOpen(false);
-                  }}
-                  className={cn(
-                    "w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                    isAdminRoute
-                      ? "bg-yellow-400/15 text-yellow-300 border border-yellow-400/20"
-                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                  )}
-                  title={isCollapsed ? "Admin Dashboard" : undefined}
-                >
-                  <div className="flex items-center gap-3">
-                    <Crown className={cn(
-                      "h-5 w-5 shrink-0",
-                      isAdminRoute ? "text-yellow-400" : "text-slate-400"
-                    )} />
-                    {!isCollapsed && <span>Admin Dashboard</span>}
-                  </div>
-                  {!isCollapsed && (
-                    <ChevronDown className={cn(
-                      "h-4 w-4 shrink-0 transition-transform duration-200",
-                      adminOpen ? "rotate-180" : "",
-                      isAdminRoute ? "text-yellow-400" : "text-slate-500"
-                    )} />
-                  )}
-                </button>
-
-                {/* Admin sub-section list */}
-                {!isCollapsed && adminOpen && (
-                  <div className="mt-1 ml-3 border-l-2 border-yellow-400/20 pl-3 space-y-0.5 pb-2">
-                    {/* Group labels */}
-                    {[
-                      {
-                        groupLabel: "Command Center",
-                        sections: ["overview"],
-                      },
-                      {
-                        groupLabel: "Infrastructure",
-                        sections: ["branches", "warehouses"],
-                      },
-                      {
-                        groupLabel: "People",
-                        sections: ["users", "payroll", "roles"],
-                      },
-                      {
-                        groupLabel: "Operations",
-                        sections: ["products", "sales", "deliveries", "finance", "credit_notes"],
-                      },
-                    ].map(({ groupLabel, sections }) => (
-                      <div key={groupLabel} className="pt-2">
-                        <p className="px-2 mb-1 text-[9px] font-bold uppercase tracking-widest text-slate-500">
-                          {groupLabel}
-                        </p>
-                        {ADMIN_SECTIONS.filter((s) => sections.includes(s.id)).map((section) => {
-                          const SIcon = section.icon;
-                          const sectionActive = isAdminRoute && activeAdminSection === section.id;
-                          return (
-                            <button
-                              key={section.id}
-                              onClick={() => {
-                                router.push(`/dashboard/admin?section=${section.id}`);
-                                setIsOpen(false);
-                              }}
-                              className={cn(
-                                "w-full flex items-center gap-2.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-150",
-                                sectionActive
-                                  ? "bg-emerald-600 text-white"
-                                  : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                              )}
-                            >
-                              <SIcon className={cn(
-                                "h-3.5 w-3.5 shrink-0",
-                                sectionActive ? "text-white" : "text-slate-500"
-                              )} />
-                              <span className="flex-1 text-left">{section.label}</span>
-                              {sectionActive && <ChevronRight className="h-3 w-3 shrink-0 opacity-60" />}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          // ── Regular items with optional children ───────────────────────
-          return (
-            <div key={`${item.label}-${item.href}`} className="space-y-0.5">
-              <Link
-                href={item.href}
-                onClick={() => !hasChildren && setIsOpen(false)}
-                className={cn(
-                  "flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
-                  active
-                    ? "bg-emerald-600 text-white"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                )}
-                title={isCollapsed ? item.label : undefined}
-              >
-                <div className="flex items-center gap-3">
-                  <Icon className="h-5 w-5 shrink-0" />
-                  {!isCollapsed && <span className="truncate">{item.label}</span>}
-                </div>
-                {!isCollapsed && item.badge !== undefined && item.badge > 0 && (
-                  <span className="px-2 py-0.5 bg-red-500 text-white text-xs rounded-full shrink-0 font-semibold">
-                    {item.badge > 99 ? "99+" : item.badge}
-                  </span>
-                )}
-              </Link>
-
-              {/* Children */}
-              {!isCollapsed && hasChildren && active && (
-                <div className="ml-4 pl-3 border-l border-slate-800 space-y-0.5 pt-1 pb-2">
-                  {item.children?.map((child) => {
-                    const ChildIcon = child.icon;
-                    const childActive = pathname === child.href;
-                    return (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          "flex items-center gap-3 px-3 py-2 rounded-md text-xs font-medium transition-all duration-200",
-                          childActive
-                            ? "bg-slate-800 text-white"
-                            : "text-slate-400 hover:bg-slate-800 hover:text-white"
-                        )}
-                      >
-                        <ChildIcon className="h-4 w-4 shrink-0" />
-                        <span>{child.label}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
+        {/* Admin Crown section */}
+        {isAdminUser && (
+          <div className="mb-1">
+            <button
+              onClick={() => {
+                if (isCollapsed) { router.push("/dashboard/admin"); return; }
+                setAdminOpen(o => !o);
+                if (!adminOpen) router.push("/dashboard/admin");
+              }}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                isAdminRoute
+                  ? "bg-yellow-400/15 text-yellow-300 border border-yellow-400/20"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800",
               )}
-            </div>
-          );
-        })}
+              title={isCollapsed ? "Admin Dashboard" : undefined}
+            >
+              <Crown className={cn("h-5 w-5 shrink-0", isAdminRoute ? "text-yellow-400" : "text-slate-500")} />
+              {!isCollapsed && (
+                <>
+                  <span className="flex-1 text-left">Admin Dashboard</span>
+                  <ChevronDown className={cn("h-4 w-4 transition-transform", adminOpen && "rotate-180")} />
+                </>
+              )}
+            </button>
+
+            {!isCollapsed && adminOpen && (
+              <div className="mt-1 ml-4 pl-3 border-l-2 border-yellow-400/15 space-y-3 py-2">
+                {ADMIN_GROUPS.map(group => (
+                  <div key={group.label}>
+                    <p className="px-1 mb-1 text-[9px] font-bold uppercase tracking-widest text-slate-600">
+                      {group.label}
+                    </p>
+                    <div className="space-y-0.5">
+                      {ADMIN_SECTIONS.filter(s => group.ids.includes(s.id)).map(section => {
+                        const SIcon   = section.icon;
+                        const current = isAdminRoute && activeAdminSection === section.id;
+                        return (
+                          <button
+                            key={section.id}
+                            onClick={() => { router.push(`/dashboard/admin?section=${section.id}`); setIsOpen(false); }}
+                            className={cn(
+                              "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors",
+                              current ? "bg-emerald-600 text-white" : "text-slate-500 hover:text-white hover:bg-slate-800",
+                            )}
+                          >
+                            <SIcon className={cn("h-3.5 w-3.5 shrink-0", current ? "text-white" : "text-slate-600")} />
+                            <span className="flex-1 text-left">{section.label}</span>
+                            {current && <ChevronRight className="h-3 w-3 opacity-60 shrink-0" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Divider between admin Crown and regular nav */}
+        {isAdminUser && navItems.length > 0 && (
+          <div className="border-t border-slate-800/60 my-2" />
+        )}
+
+        {/* Regular nav items */}
+        {navItems.map(item => (
+          <NavLink key={item.href} item={item} />
+        ))}
       </nav>
 
       {/* Logout */}
       <div className="border-t border-slate-800 p-3">
-        <Button
+        <button
           onClick={handleLogout}
-          variant="ghost"
           className={cn(
-            "w-full text-slate-400 hover:text-white hover:bg-red-600/20 transition-all duration-200",
-            isCollapsed ? "justify-center px-0" : "justify-start"
+            "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400 hover:text-white hover:bg-red-600/20 transition-colors",
+            isCollapsed ? "justify-center" : "",
           )}
         >
-          <LogOut className="w-4 h-4" />
-          {!isCollapsed && <span className="ml-2">Logout</span>}
-        </Button>
+          <LogOut className="w-4 h-4 shrink-0" />
+          {!isCollapsed && <span>Logout</span>}
+        </button>
       </div>
     </div>
   );
@@ -666,30 +557,24 @@ export function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="lg:hidden flex items-center justify-between bg-slate-900 text-white px-4 py-3 sticky top-0 z-50 shadow-lg border-b border-slate-800">
+      <div className="lg:hidden flex items-center justify-between bg-slate-900 px-4 py-3 sticky top-0 z-50 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <div className="relative w-7 h-7">
-            <Image src="/logo.svg" alt="Zoho ERP" fill className="object-contain" />
+            <Image src="/logo.svg" alt="Logo" fill className="object-contain" />
           </div>
-          <span className="text-sky-400 font-bold text-sm tracking-wide">ZOHO ERP</span>
+          <span className="text-sky-400 font-bold text-sm tracking-wider">ZOHO ERP</span>
         </div>
-        <button
-          onClick={toggleMobile}
-          className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-          aria-label="Toggle menu"
-        >
-          {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        <button onClick={() => setIsOpen(o => !o)} className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+          {isOpen ? <X className="w-5 h-5 text-slate-400" /> : <Menu className="w-5 h-5 text-slate-400" />}
         </button>
       </div>
 
       {/* Desktop sidebar */}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-40 bg-slate-900 text-white transition-all duration-300 lg:static lg:h-screen border-r border-slate-800",
-          isCollapsed ? "w-[72px]" : "w-64",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-        )}
-      >
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-40 bg-slate-900 text-white transition-all duration-300 lg:static lg:h-screen border-r border-slate-800",
+        isCollapsed ? "w-[68px]" : "w-60",
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+      )}>
         <SidebarBody />
       </aside>
 
@@ -698,7 +583,6 @@ export function Sidebar() {
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
-          aria-label="Close menu"
         />
       )}
     </>

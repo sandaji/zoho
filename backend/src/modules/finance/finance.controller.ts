@@ -8,12 +8,15 @@ import { PayablesService } from "./services/payables.service";
 import { PeriodService } from "./services/period.service";
 import { DashboardFinanceService } from "./services/dashboard.service";
 import { AlertsService } from "./services/alerts.service";
+import { BudgetService } from "./services/budget.service";
 import { validationError } from "../../lib/errors";
 import { logger } from "../../lib/logger";
+import { prisma } from "../../lib/db";
 
 class FinanceController {
   private financeService = new FinanceService();
   private dashboardService = new DashboardFinanceService();
+  private budgetService = new BudgetService();
 
   async getFinancialSummary(
     _req: Request,
@@ -850,6 +853,83 @@ class FinanceController {
           message: "Failed to delete savings goal",
         },
       });
+    }
+  }
+
+  async createBudget(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const {
+        budgetName,
+        fiscalYear,
+        accountId,
+        budgetedAmount,
+        actualAmount,
+        periodStart,
+        periodEnd,
+        periodType,
+        notes,
+        status,
+      } = req.body;
+
+      // @ts-ignore
+      const userId = (req.user as any)?.userId || "system";
+
+      const result = await this.budgetService.createBudget({
+        budgetName,
+        fiscalYear,
+        accountId,
+        budgetedAmount,
+        actualAmount,
+        periodStart,
+        periodEnd,
+        periodType,
+        createdBy: userId,
+        notes,
+        status,
+      });
+
+      res.status(201).json({ status: "success", data: result.data });
+    } catch (error) {
+      logger.error(error, "Error creating budget:");
+      next(error);
+    }
+  }
+
+  async listBudgets(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const fiscalYear = req.query.fiscalYear ? Number(req.query.fiscalYear) : undefined;
+      const accountId = req.query.accountId as string | undefined;
+
+      const budgets = await prisma.budget.findMany({
+        where: {
+          ...(fiscalYear ? { fiscal_year: fiscalYear } : {}),
+          ...(accountId ? { account_id: accountId } : {}),
+        },
+        orderBy: { createdAt: "desc" },
+        include: { account: true },
+      });
+
+      res.status(200).json({
+        status: "success",
+        data: budgets.map((budget) => ({
+          id: budget.id,
+          budgetName: budget.budget_name,
+          fiscalYear: budget.fiscal_year,
+          accountId: budget.account_id,
+          accountCode: budget.account.account_code,
+          accountName: budget.account.account_name,
+          budgetedAmount: budget.budgeted_amount,
+          actualAmount: budget.actual_amount,
+          variance: budget.variance,
+          variancePercent: budget.variance_percent,
+          status: budget.status,
+          periodStart: budget.period_start.toISOString(),
+          periodEnd: budget.period_end.toISOString(),
+        })),
+      });
+    } catch (error) {
+      logger.error(error, "Error listing budgets:");
+      next(error);
     }
   }
 

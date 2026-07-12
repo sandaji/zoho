@@ -1,8 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { frontendEnv } from "@/lib/env";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
+
+interface BudgetFormState {
+  budgetName: string;
+  fiscalYear: number;
+  accountId: string;
+  budgetedAmount: string;
+  actualAmount: string;
+  periodStart: string;
+  periodEnd: string;
+  periodType: "monthly" | "quarterly" | "annually";
+  notes: string;
+  status: "draft" | "submitted" | "approved" | "active" | "closed";
+}
 import {
   Lock,
   Unlock,
@@ -24,9 +37,24 @@ export default function PeriodManagementPage() {
   const [loading, setLoading] = useState(true);
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const [yearToInit, setYearToInit] = useState(new Date().getFullYear());
+  const [budgets, setBudgets] = useState<any[]>([]);
+  const [submittingBudget, setSubmittingBudget] = useState(false);
+  const [budgetForm, setBudgetForm] = useState<BudgetFormState>({
+    budgetName: "",
+    fiscalYear: new Date().getFullYear(),
+    accountId: "",
+    budgetedAmount: "",
+    actualAmount: "",
+    periodStart: `${new Date().getFullYear()}-01-01`,
+    periodEnd: `${new Date().getFullYear()}-12-31`,
+    periodType: "monthly",
+    notes: "",
+    status: "draft",
+  });
 
   useEffect(() => {
     fetchPeriods(yearToInit);
+    fetchBudgets(yearToInit);
   }, [yearToInit]);
 
   const fetchPeriods = async (year: number) => {
@@ -48,6 +76,67 @@ export default function PeriodManagementPage() {
       showErrorToast("Error", { details: "Could not connect to the server." });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBudgets = async (year?: number) => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      const query = year ? `?fiscalYear=${year}` : "";
+      const res = await fetch(`${API_URL}/v1/finance/budgets${query}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (data.status === "success") {
+        setBudgets(data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching budgets:", error);
+    }
+  };
+
+  const handleBudgetSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      setSubmittingBudget(true);
+      const token = localStorage.getItem("auth_token");
+      const res = await fetch(`${API_URL}/v1/finance/budgets`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...budgetForm,
+          budgetedAmount: Number(budgetForm.budgetedAmount),
+          actualAmount: Number(budgetForm.actualAmount || 0),
+          fiscalYear: Number(budgetForm.fiscalYear),
+        }),
+      });
+      const data = await res.json();
+      if (data.status === "success") {
+        showSuccessToast("Budget saved successfully");
+        setBudgetForm({
+          budgetName: "",
+          fiscalYear: yearToInit,
+          accountId: "",
+          budgetedAmount: "",
+          actualAmount: "",
+          periodStart: `${yearToInit}-01-01`,
+          periodEnd: `${yearToInit}-12-31`,
+          periodType: "monthly",
+          notes: "",
+          status: "draft",
+        });
+        fetchBudgets(yearToInit);
+      } else {
+        showErrorToast("Budget could not be saved", { details: data.message || "Please try again." });
+      }
+    } catch (error) {
+      console.error("Error creating budget:", error);
+      showErrorToast("Budget could not be saved", { details: "Could not connect to the server." });
+    } finally {
+      setSubmittingBudget(false);
     }
   };
 
@@ -164,6 +253,93 @@ export default function PeriodManagementPage() {
           </CardContent>
         </Card>
 
+        {/* Budget Card */}
+        <Card className="shadow-sm border-slate-100">
+          <CardHeader>
+            <CardTitle className="text-lg">Create Budget</CardTitle>
+            <CardDescription>Record a budget line for a chart of accounts entry.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-4" onSubmit={handleBudgetSubmit}>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-600">Budget Name</label>
+                <Input
+                  required
+                  value={budgetForm.budgetName}
+                  onChange={(e) => setBudgetForm({ ...budgetForm, budgetName: e.target.value })}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600">Fiscal Year</label>
+                  <Input
+                    type="number"
+                    required
+                    value={budgetForm.fiscalYear}
+                    onChange={(e) => setBudgetForm({ ...budgetForm, fiscalYear: Number(e.target.value) })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600">Account ID</label>
+                  <Input
+                    required
+                    value={budgetForm.accountId}
+                    onChange={(e) => setBudgetForm({ ...budgetForm, accountId: e.target.value })}
+                    placeholder="Enter chart account id"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600">Budgeted Amount</label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={budgetForm.budgetedAmount}
+                    onChange={(e) => setBudgetForm({ ...budgetForm, budgetedAmount: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600">Actual Amount</label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={budgetForm.actualAmount}
+                    onChange={(e) => setBudgetForm({ ...budgetForm, actualAmount: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600">Start Date</label>
+                  <Input
+                    type="date"
+                    required
+                    value={budgetForm.periodStart}
+                    onChange={(e) => setBudgetForm({ ...budgetForm, periodStart: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600">End Date</label>
+                  <Input
+                    type="date"
+                    required
+                    value={budgetForm.periodEnd}
+                    onChange={(e) => setBudgetForm({ ...budgetForm, periodEnd: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <Button type="submit" disabled={submittingBudget} className="bg-blue-600 hover:bg-blue-700">
+                  {submittingBudget ? "Saving..." : "Save Budget"}
+                </Button>
+                <span className="text-xs text-slate-400">Budget variance is calculated automatically.</span>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
         {/* Current Status Card */}
         <div className="lg:col-span-2 space-y-6">
           <Card className="shadow-sm border-slate-100 overflow-hidden">
@@ -238,6 +414,37 @@ export default function PeriodManagementPage() {
                 )}
 
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-sm border-slate-100">
+            <CardHeader>
+              <CardTitle className="text-lg">Budget Overview</CardTitle>
+              <CardDescription>Recently created budget lines for the selected fiscal year.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {budgets.length === 0 ? (
+                <p className="text-sm text-slate-500">No budgets created yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {budgets.map((budget) => (
+                    <div key={budget.id} className="rounded-lg border border-slate-100 p-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-slate-700">{budget.budgetName}</p>
+                          <p className="text-xs text-slate-500">{budget.accountCode} • {budget.accountName}</p>
+                        </div>
+                        <Badge className="bg-slate-100 text-slate-700">{budget.status}</Badge>
+                      </div>
+                      <div className="mt-2 flex items-center justify-between text-sm text-slate-600">
+                        <span>Budgeted: {budget.budgetedAmount.toLocaleString()}</span>
+                        <span>Actual: {budget.actualAmount.toLocaleString()}</span>
+                      </div>
+                      <p className="mt-2 text-xs text-slate-500">Variance: {budget.variance.toLocaleString()} ({budget.variancePercent}%)</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
