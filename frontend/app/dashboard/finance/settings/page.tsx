@@ -16,14 +16,7 @@ interface BudgetFormState {
   notes: string;
   status: "draft" | "submitted" | "approved" | "active" | "closed";
 }
-import {
-  Lock,
-  Unlock,
-  Plus,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw
-} from "lucide-react";
+import { Lock, Unlock, Plus, CheckCircle2, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -68,7 +61,9 @@ export default function PeriodManagementPage() {
       if (data.status === "success") {
         setPeriods(data.data);
       } else {
-        showErrorToast("Failed to fetch periods", { details: data.message || "An unknown error occurred." });
+        showErrorToast("Failed to fetch periods", {
+          details: data.message || "An unknown error occurred.",
+        });
         setPeriods([]);
       }
     } catch (error) {
@@ -130,7 +125,9 @@ export default function PeriodManagementPage() {
         });
         fetchBudgets(yearToInit);
       } else {
-        showErrorToast("Budget could not be saved", { details: data.message || "Please try again." });
+        showErrorToast("Budget could not be saved", {
+          details: data.message || "Please try again.",
+        });
       }
     } catch (error) {
       console.error("Error creating budget:", error);
@@ -148,16 +145,18 @@ export default function PeriodManagementPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ year: yearToInit })
+        body: JSON.stringify({ year: yearToInit }),
       });
       const data = await res.json();
       if (data.status === "success") {
         showSuccessToast(`Fiscal Year ${yearToInit} initialized successfully!`);
         fetchPeriods(yearToInit);
       } else {
-        showErrorToast("Initialization failed", { details: data.message || `Could not initialize fiscal year ${yearToInit}.` });
+        showErrorToast("Initialization failed", {
+          details: data.message || `Could not initialize fiscal year ${yearToInit}.`,
+        });
       }
     } catch (error) {
       console.error("Error initializing year:", error);
@@ -179,13 +178,15 @@ export default function PeriodManagementPage() {
 
       const data = await res.json();
 
-      if (data.status === 'success') {
+      if (data.status === "success") {
         showSuccessToast(`Period ${period.name} has been ${action}ed.`);
         // Refresh the list
-        const updatedPeriods = periods.map(p => p.id === period.id ? { ...data.data } : p);
+        const updatedPeriods = periods.map((p) => (p.id === period.id ? { ...data.data } : p));
         setPeriods(updatedPeriods);
       } else {
-        showErrorToast(`Failed to ${action} period`, { details: data.message || "An unknown error occurred." });
+        showErrorToast(`Failed to ${action} period`, {
+          details: data.message || "An unknown error occurred.",
+        });
       }
     } catch (error) {
       showErrorToast("Error", { details: "Could not connect to the server." });
@@ -194,21 +195,37 @@ export default function PeriodManagementPage() {
     }
   };
 
-  const getStatusBadge = (status: 'open' | 'closed' | 'locked') => {
+  const getStatusBadge = (status: "open" | "closed" | "locked") => {
     switch (status) {
-      case 'open': return <Badge className="bg-blue-50 text-blue-600 text-[10px] uppercase font-bold border-none px-2 py-0">Open</Badge>;
-      case 'locked': return <Badge className="bg-amber-50 text-amber-600 text-[10px] uppercase font-bold border-none px-2 py-0">Locked</Badge>;
-      case 'closed': return <Badge className="bg-slate-100 text-slate-600 text-[10px] uppercase font-bold border-none px-2 py-0">Closed</Badge>;
+      case "open":
+        return (
+          <Badge className="bg-blue-50 text-blue-600 text-[10px] uppercase font-bold border-none px-2 py-0">
+            Open
+          </Badge>
+        );
+      case "locked":
+        return (
+          <Badge className="bg-amber-50 text-amber-600 text-[10px] uppercase font-bold border-none px-2 py-0">
+            Locked
+          </Badge>
+        );
+      case "closed":
+        return (
+          <Badge className="bg-slate-100 text-slate-600 text-[10px] uppercase font-bold border-none px-2 py-0">
+            Closed
+          </Badge>
+        );
     }
-  }
-
+  };
 
   return (
     <div className="p-6 space-y-8 bg-slate-50/30 min-h-screen text-slate-900">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-800">Fiscal Periods</h1>
-          <p className="text-slate-500">Manage accounting periods, open/close years, and maintain fiscal integrity.</p>
+          <p className="text-slate-500">
+            Manage accounting periods, open/close years, and maintain fiscal integrity.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" className="bg-white" onClick={() => fetchPeriods(yearToInit)}>
@@ -246,8 +263,8 @@ export default function PeriodManagementPage() {
             <div className="p-3 bg-amber-50 rounded-lg flex gap-3">
               <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
               <p className="text-[11px] text-amber-700 leading-relaxed">
-                Initializing a fiscal year will create 12 periods from January to December.
-                Ensure this matches your organization's accounting cycle.
+                Initializing a fiscal year will create 12 periods from January to December. Ensure
+                this matches your organization's accounting cycle.
               </p>
             </div>
           </CardContent>
@@ -276,7 +293,9 @@ export default function PeriodManagementPage() {
                     type="number"
                     required
                     value={budgetForm.fiscalYear}
-                    onChange={(e) => setBudgetForm({ ...budgetForm, fiscalYear: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setBudgetForm({ ...budgetForm, fiscalYear: Number(e.target.value) })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -297,7 +316,9 @@ export default function PeriodManagementPage() {
                     step="0.01"
                     required
                     value={budgetForm.budgetedAmount}
-                    onChange={(e) => setBudgetForm({ ...budgetForm, budgetedAmount: e.target.value })}
+                    onChange={(e) =>
+                      setBudgetForm({ ...budgetForm, budgetedAmount: e.target.value })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -331,10 +352,16 @@ export default function PeriodManagementPage() {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <Button type="submit" disabled={submittingBudget} className="bg-blue-600 hover:bg-blue-700">
+                <Button
+                  type="submit"
+                  disabled={submittingBudget}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
                   {submittingBudget ? "Saving..." : "Save Budget"}
                 </Button>
-                <span className="text-xs text-slate-400">Budget variance is calculated automatically.</span>
+                <span className="text-xs text-slate-400">
+                  Budget variance is calculated automatically.
+                </span>
               </div>
             </form>
           </CardContent>
@@ -349,16 +376,21 @@ export default function PeriodManagementPage() {
                 <CardTitle className="text-xl">Fiscal Cycle: {yearToInit}</CardTitle>
                 <CardDescription>{periods.length} Accounting Periods Managed</CardDescription>
               </div>
-              {periods.length > 0 && <Badge className="bg-green-100 text-green-700 border-none font-bold px-3 py-1">
-                Active Year
-              </Badge>}
+              {periods.length > 0 && (
+                <Badge className="bg-green-100 text-green-700 border-none font-bold px-3 py-1">
+                  Active Year
+                </Badge>
+              )}
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {loading ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Array.from({ length: 12 }).map((_, i) => (
-                      <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-slate-50 animate-pulse">
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-4 rounded-xl border border-slate-50 animate-pulse"
+                      >
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 bg-slate-100 rounded-lg" />
                           <div className="space-y-2">
@@ -373,7 +405,10 @@ export default function PeriodManagementPage() {
                 ) : periods.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {periods.map((period, idx) => (
-                      <div key={period.id} className="group flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all">
+                      <div
+                        key={period.id}
+                        className="group flex items-center justify-between p-4 rounded-xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50/30 transition-all"
+                      >
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 bg-white rounded-lg border border-slate-100 flex items-center justify-center text-blue-600 font-bold group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-sm">
                             {idx + 1}
@@ -381,7 +416,8 @@ export default function PeriodManagementPage() {
                           <div>
                             <p className="font-bold text-slate-700">{period.name}</p>
                             <p className="text-[10px] text-slate-400">
-                              {format(new Date(period.startDate), "MMM dd")} - {format(new Date(period.endDate), "MMM dd, yyyy")}
+                              {format(new Date(period.startDate), "MMM dd")} -{" "}
+                              {format(new Date(period.endDate), "MMM dd, yyyy")}
                             </p>
                           </div>
                         </div>
@@ -412,7 +448,6 @@ export default function PeriodManagementPage() {
                     <p className="text-sm text-slate-400">Try initializing the fiscal year.</p>
                   </div>
                 )}
-
               </div>
             </CardContent>
           </Card>
@@ -420,7 +455,9 @@ export default function PeriodManagementPage() {
           <Card className="shadow-sm border-slate-100">
             <CardHeader>
               <CardTitle className="text-lg">Budget Overview</CardTitle>
-              <CardDescription>Recently created budget lines for the selected fiscal year.</CardDescription>
+              <CardDescription>
+                Recently created budget lines for the selected fiscal year.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               {budgets.length === 0 ? (
@@ -432,7 +469,9 @@ export default function PeriodManagementPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium text-slate-700">{budget.budgetName}</p>
-                          <p className="text-xs text-slate-500">{budget.accountCode} • {budget.accountName}</p>
+                          <p className="text-xs text-slate-500">
+                            {budget.accountCode} • {budget.accountName}
+                          </p>
                         </div>
                         <Badge className="bg-slate-100 text-slate-700">{budget.status}</Badge>
                       </div>
@@ -440,7 +479,9 @@ export default function PeriodManagementPage() {
                         <span>Budgeted: {budget.budgetedAmount.toLocaleString()}</span>
                         <span>Actual: {budget.actualAmount.toLocaleString()}</span>
                       </div>
-                      <p className="mt-2 text-xs text-slate-500">Variance: {budget.variance.toLocaleString()} ({budget.variancePercent}%)</p>
+                      <p className="mt-2 text-xs text-slate-500">
+                        Variance: {budget.variance.toLocaleString()} ({budget.variancePercent}%)
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -454,7 +495,9 @@ export default function PeriodManagementPage() {
                 <CheckCircle2 className="w-7 h-7 text-green-500" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Audit Status</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Audit Status
+                </p>
                 <p className="text-lg font-bold text-slate-700">All Reconciled</p>
               </div>
             </div>
@@ -463,7 +506,9 @@ export default function PeriodManagementPage() {
                 <Lock className="w-7 h-7 text-white" />
               </div>
               <div>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Integrity Lock</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  Integrity Lock
+                </p>
                 <p className="text-lg font-bold text-slate-700">Internal Enabled</p>
               </div>
             </div>

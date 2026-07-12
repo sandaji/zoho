@@ -27,9 +27,7 @@ export class BudgetService {
 
       const variance = (input.actualAmount ?? 0) - input.budgetedAmount;
       const variancePercent =
-        input.budgetedAmount > 0
-          ? (variance / input.budgetedAmount) * 100
-          : 0;
+        input.budgetedAmount > 0 ? (variance / input.budgetedAmount) * 100 : 0;
 
       const budget = await prisma.budget.create({
         data: {

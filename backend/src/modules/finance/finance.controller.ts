@@ -856,7 +856,11 @@ class FinanceController {
     }
   }
 
-  async createBudget(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async createBudget(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const {
         budgetName,
@@ -895,9 +899,15 @@ class FinanceController {
     }
   }
 
-  async listBudgets(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async listBudgets(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
-      const fiscalYear = req.query.fiscalYear ? Number(req.query.fiscalYear) : undefined;
+      const fiscalYear = req.query.fiscalYear
+        ? Number(req.query.fiscalYear)
+        : undefined;
       const accountId = req.query.accountId as string | undefined;
 
       const budgets = await prisma.budget.findMany({

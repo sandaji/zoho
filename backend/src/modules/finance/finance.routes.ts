@@ -173,10 +173,8 @@ router.post(
 );
 
 // Budget Endpoints
-router.get(
-  "/budgets",
-  requirePermission("finance.gl.view"),
-  (req, res, next) => financeController.listBudgets(req, res, next),
+router.get("/budgets", requirePermission("finance.gl.view"), (req, res, next) =>
+  financeController.listBudgets(req, res, next),
 );
 router.post(
   "/budgets",
