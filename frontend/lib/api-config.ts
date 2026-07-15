@@ -36,6 +36,8 @@ export const API_ENDPOINTS = {
   SALES_DOCUMENT_PAYMENT: (id: string) => `/v1/sales-documents/documents/${id}/payments`,
   SALES_DOCUMENT_CREDIT_NOTE: (invoiceId: string) =>
     `/v1/sales-documents/invoices/${invoiceId}/credit-notes`,
+  SALES_DOCUMENT_PDF: (id: string) => `/v1/sales-documents/documents/${id}/pdf`,
+  SALES_DOCUMENT_PREVIEW: (id: string) => `/v1/sales-documents/documents/${id}/preview`,
 
   // Customers
   CUSTOMERS: "/v1/customers",

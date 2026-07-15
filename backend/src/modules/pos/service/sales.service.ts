@@ -11,6 +11,7 @@ import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { StockValidationService } from "./stock-validation.service";
 import { AppError, ErrorCode } from "../../../lib/errors";
+import { synchronizeBranchInventory } from "../../../lib/inventory-sync";
 
 // -----------------------------
 // Helpers
@@ -265,16 +266,21 @@ export class SalesService {
       // Update inventory & create stock movements
       for (const item of source.items) {
         // Decrement inventory
-        await tx.inventory.updateMany({
+        const inventoryUpdate = await tx.inventory.updateMany({
           where: {
             productId: item.productId,
             warehouseId: warehouse.id,
+            available: { gte: item.quantity },
           },
           data: {
             quantity: { decrement: item.quantity },
             available: { decrement: item.quantity },
           },
         });
+
+        if (inventoryUpdate.count !== 1) {
+          throw new AppError(ErrorCode.INSUFFICIENT_INVENTORY, 400, "Stock changed before this invoice could be created");
+        }
 
         // (product global quantity update removed)
 
@@ -290,6 +296,10 @@ export class SalesService {
             createdById: userId,
           },
         });
+      }
+
+      for (const productId of new Set(source.items.map((item) => item.productId))) {
+        await synchronizeBranchInventory(tx, productId, branchId);
       }
 
       // REQUIREMENT 2: Handle source document based on type
@@ -444,16 +454,21 @@ export class SalesService {
 
         // Update inventory & create stock movements
         for (const item of preparedItems) {
-          await tx.inventory.updateMany({
+          const inventoryUpdate = await tx.inventory.updateMany({
             where: {
               productId: item.productId,
               warehouseId: warehouse.id,
+              available: { gte: item.quantity },
             },
             data: {
               quantity: { decrement: item.quantity },
               available: { decrement: item.quantity },
             },
           });
+
+          if (inventoryUpdate.count !== 1) {
+            throw new AppError(ErrorCode.INSUFFICIENT_INVENTORY, 400, "Stock changed before this sale could be completed");
+          }
 
           // (product global quantity update removed)
 
@@ -468,6 +483,10 @@ export class SalesService {
               createdById: userId,
             },
           });
+        }
+
+        for (const productId of new Set(preparedItems.map((item) => item.productId))) {
+          await synchronizeBranchInventory(tx, productId, branchId);
         }
 
         // Record financial transaction
@@ -573,13 +592,56 @@ export class SalesService {
   // Void Document
   // =============================
   static async voidDocument(id: string, reason?: string) {
-    // Wrap in transaction and adjust customer balance if needed
     return prisma.$transaction(async (tx) => {
-      const document = await tx.salesDocument.findUnique({ where: { id } });
+      const document = await tx.salesDocument.findUnique({
+        where: { id },
+        include: { items: true },
+      });
       if (!document)
         throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
 
-      // If invoice and has outstanding balance, decrement customer's balance
+      // Restore stock only for invoices that actually deducted stock (PAID / PARTIALLY_PAID / SENT)
+      const stockWasDeducted = document.type === SalesDocumentType.INVOICE &&
+        ([SalesDocumentStatus.PAID, SalesDocumentStatus.PARTIALLY_PAID, SalesDocumentStatus.SENT] as SalesDocumentStatus[]).includes(document.status);
+
+      if (stockWasDeducted) {
+        const warehouse = await tx.warehouse.findFirst({
+          where: { branchId: document.branchId },
+        });
+
+        if (warehouse) {
+          for (const item of document.items) {
+            // Restore warehouse-level inventory
+            await tx.inventory.updateMany({
+              where: { productId: item.productId, warehouseId: warehouse.id },
+              data: {
+                quantity: { increment: item.quantity },
+                available: { increment: item.quantity },
+              },
+            });
+
+            // Create INBOUND movement for audit trail
+            await tx.stockMovement.create({
+              data: {
+                type: MovementType.INBOUND,
+                quantity: item.quantity,
+                productId: item.productId,
+                warehouseId: warehouse.id,
+                salesId: document.id,
+                reference: `Void of ${document.documentId}`,
+                createdById: document.createdById,
+              },
+            });
+          }
+
+          // Re-sync BranchInventory for every affected product
+          for (const productId of new Set(document.items.map((i) => i.productId))) {
+            await synchronizeBranchInventory(tx, productId, document.branchId);
+          }
+        }
+      }
+
+      // Adjust customer balance if invoice had an outstanding balance
       if (document.customerId && document.type === SalesDocumentType.INVOICE) {
         const outstanding = document.balance || 0;
         if (outstanding > 0) {
@@ -592,10 +654,7 @@ export class SalesService {
 
       return tx.salesDocument.update({
         where: { id },
-        data: {
-          status: SalesDocumentStatus.VOID,
-          notes: reason || "VOIDED",
-        },
+        data: { status: SalesDocumentStatus.VOID, notes: reason || "VOIDED" },
       });
     });
   }
@@ -668,6 +727,8 @@ export class SalesService {
         customer: true,
         payments: true,
         branch: true,
+        createdBy: true,
+        approvedBy: true,
       },
     });
   }
@@ -1014,7 +1075,7 @@ export class SalesService {
   }
 
   // =============================
-  // Approve/Close Credit Note
+  // Approve/Close Credit Note — restores stock
   // =============================
   static async approveCreditNote(id: string, userId: string) {
     const document = await prisma.salesDocument.findUnique({
@@ -1022,32 +1083,55 @@ export class SalesService {
       include: { items: true },
     });
 
-    if (!document) {
+    if (!document)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Credit note not found");
-    }
+    if (document.type !== SalesDocumentType.CREDIT_NOTE)
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Document is not a credit note");
+    if (document.status !== SalesDocumentStatus.DRAFT)
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, `Credit note is already ${document.status.toLowerCase()}`);
 
-    if (document.type !== SalesDocumentType.CREDIT_NOTE) {
-      throw new AppError(
-        ErrorCode.BAD_REQUEST,
-        400,
-        "Document is not a credit note",
-      );
-    }
+    return prisma.$transaction(async (tx) => {
+      // Restore stock for each returned item
+      // Credit note items have negative quantities (stored as -qty), so we negate them to get the return qty
+      const warehouse = await tx.warehouse.findFirst({
+        where: { branchId: document.branchId },
+      });
 
-    if (document.status !== SalesDocumentStatus.DRAFT) {
-      throw new AppError(
-        ErrorCode.BAD_REQUEST,
-        400,
-        `Credit note is already ${document.status.toLowerCase()}`,
-      );
-    }
+      if (warehouse) {
+        for (const item of document.items) {
+          const returnQty = Math.abs(item.quantity); // credit note quantities are stored negative
 
-    return prisma.salesDocument.update({
-      where: { id },
-      data: {
-        status: SalesDocumentStatus.CLOSED,
-        approvedById: userId,
-      },
+          await tx.inventory.updateMany({
+            where: { productId: item.productId, warehouseId: warehouse.id },
+            data: {
+              quantity: { increment: returnQty },
+              available: { increment: returnQty },
+            },
+          });
+
+          await tx.stockMovement.create({
+            data: {
+              type: MovementType.INBOUND,
+              quantity: returnQty,
+              productId: item.productId,
+              warehouseId: warehouse.id,
+              salesId: document.id,
+              reference: `Credit Note ${document.documentId} approved`,
+              createdById: userId,
+            },
+          });
+        }
+
+        // Sync BranchInventory for all returned products
+        for (const productId of new Set(document.items.map((i) => i.productId))) {
+          await synchronizeBranchInventory(tx, productId, document.branchId);
+        }
+      }
+
+      return tx.salesDocument.update({
+        where: { id },
+        data: { status: SalesDocumentStatus.CLOSED, approvedById: userId },
+      });
     });
   }
 }

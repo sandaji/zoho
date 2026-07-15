@@ -92,51 +92,52 @@ export function LowStockItems({ items }: LowStockItemsProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
+        <div className="grid space-y-3 grid-cols-6 gap-3 ">
           {items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+              className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-red-700/30 hover:bg-slate-100 dark:hover:bg-green-700/50 transition-colors"
             >
               <div className="flex items-center space-x-3 flex-1 min-w-0">
-                <div className="shrink-0">
+                {/* <div className="shrink-0">
                   <div className="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center border border-slate-200 dark:border-slate-600">
                     <Package className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                   </div>
-                </div>
+                </div> */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2">
                     <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                       {item.name}
                     </p>
-                    <Badge
+                    {/* <Badge
                       variant={getStatusVariant(item.status) as any}
                       className="text-xs"
                     >
                       {getStatusText(item.status)}
-                    </Badge>
+                    </Badge> */}
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                    {item.itemCode} • {item.category}
+                    {item.itemCode} <br />
+                    {/* • {item.category} */}
                   </p>
                   <div className="flex items-center space-x-3 mt-1">
                     <span className="text-xs text-slate-600 dark:text-slate-400">
                       Stock: {item.currentStock} {item.unit}
                     </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-500">•</span>
+                    {/* <span className="text-xs text-slate-500 dark:text-slate-500">•</span>
                     <span className="text-xs text-slate-600 dark:text-slate-400">
                       Min: {item.minStock}
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </div>
-              <Button
+              {/* <Button
                 size="sm"
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <ShoppingCart className="h-3 w-3 mr-1" />
                 Reorder
-              </Button>
+              </Button> */}
             </div>
           ))}
         </div>

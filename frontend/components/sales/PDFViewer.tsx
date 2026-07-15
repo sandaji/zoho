@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +12,10 @@ import {
 } from "@/components/ui/dialog";
 import { Download, Eye, Printer, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { useAuth } from "@/lib/auth-context";
+import { useReactToPrint } from "react-to-print";
 
 interface PDFViewerProps {
   documentId: string;
@@ -27,11 +31,15 @@ export function PDFViewer({
   const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [htmlContent, setHtmlContent] = useState<string>("");
+  const { token } = useAuth();
+  const printRef = useRef<HTMLDivElement>(null);
 
   const fetchHTML = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/sales/documents/${documentId}/pdf`);
+      const response = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)), {
+        headers: getAuthHeadersWithToken(token || ""),
+      });
       
       if (!response.ok) {
         throw new Error("Failed to generate PDF");
@@ -54,88 +62,42 @@ export function PDFViewer({
     }
   };
 
-  const handleDownload = async () => {
-    setLoading(true);
-    try {
-      // Fetch HTML
-      const response = await fetch(`/api/sales/documents/${documentId}/pdf`);
-      
-      if (!response.ok) {
-        throw new Error("Failed to generate PDF");
-      }
-
-      const html = await response.text();
-
-      // Create a new window and print
-      const printWindow = window.open("", "_blank");
-      if (printWindow) {
-        printWindow.document.write(html);
-        printWindow.document.close();
-        
-        // Wait for content to load then trigger download
-        printWindow.onload = () => {
-          // Use html2pdf library if available, otherwise use print
-          if (typeof (window as any).html2pdf !== "undefined") {
-            const opt = {
-              margin: 0.5,
-              filename: `${documentType}-${documentNumber}.pdf`,
-              image: { type: "jpeg", quality: 0.98 },
-              html2canvas: { scale: 2 },
-              jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-            };
-            
-            (window as any).html2pdf().set(opt).from(printWindow.document.body).save();
-            printWindow.close();
-          } else {
-            // Fallback to browser print
-            toast.info("Opening print dialog. Please save as PDF.");
-            printWindow.print();
-          }
-        };
-      }
-      
-      toast.success("PDF ready for download");
-    } catch (error: any) {
-      console.error("Error downloading PDF:", error);
-      toast.error(error.message || "Failed to download PDF");
-    } finally {
+  const print = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `${documentType}-${documentNumber}`,
+    onAfterPrint: () => {
+      setLoading(false);
+    },
+    onPrintError: (error) => {
+      console.error("Print error:", error);
+      toast.error("Failed to print");
       setLoading(false);
     }
-  };
+  });
 
   const handlePrint = async () => {
     setLoading(true);
-    try {
-      const response = await fetch(`/api/sales/documents/${documentId}/pdf`);
-      
-      if (!response.ok) {
-        throw new Error("Failed to generate PDF");
-      }
-
-      const html = await response.text();
-
-      // Open print window
-      const printWindow = window.open("", "_blank");
-      if (printWindow) {
-        printWindow.document.write(html);
-        printWindow.document.close();
-        
-        printWindow.onload = () => {
-          printWindow.print();
-        };
-      }
-      
-      toast.success("Opening print dialog");
-    } catch (error: any) {
-      console.error("Error printing:", error);
-      toast.error(error.message || "Failed to print");
-    } finally {
-      setLoading(false);
+    if (!htmlContent) {
+      await fetchHTML();
     }
+    print();
+  };
+
+  const handleDownload = async () => {
+    setLoading(true);
+    if (!htmlContent) {
+      await fetchHTML();
+    }
+    print();
   };
 
   return (
     <div className="flex gap-2">
+      {/* Hidden print content */}
+      <div style={{ display: "none" }}>
+        <div ref={printRef} dangerouslySetInnerHTML={{ __html: htmlContent }} />
+      </div>
+      
       {/* Preview Button */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogTrigger asChild>

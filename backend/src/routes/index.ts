@@ -26,6 +26,7 @@ import rbacRoutes from "../modules/rbac/rbac.routes";
 import auditRoutes from "../modules/admin/audit.routes";
 import purchasingRoutes from "../modules/purchasing/purchasing.routes";
 import cashierRoutes from "../modules/cashier/routes/session.routes";
+import { PDFController } from "../modules/pos/controller";
 
 const router = Router();
 
@@ -224,20 +225,34 @@ router.get(
 );
 
 // Get sales by ID - All authenticated users (must come after specific routes)
-router.get(
-  "/pos/sales/:id",
-  authMiddleware,
-  (req: Request, res: Response, next: NextFunction) =>
-    posController.getSalesById(req, res, next),
-);
+  router.get(
+    "/pos/sales/:id",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) =>
+      posController.getSalesById(req, res, next),
+  );
 
-// List sales - All authenticated users
-router.get(
-  "/pos/sales",
-  authMiddleware,
-  (req: Request, res: Response, next: NextFunction) =>
-    posController.listSales(req, res, next),
-);
+  // List sales - All authenticated users
+  router.get(
+    "/pos/sales",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) =>
+      posController.listSales(req, res, next),
+  );
+
+  // PDF routes for POS sales (use PDFController)
+  router.get(
+    "/pos/sales/:id/pdf",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) =>
+      PDFController.generatePDF(req, res, next),
+  );
+  router.get(
+    "/pos/sales/:id/preview",
+    authMiddleware,
+    (req: Request, res: Response, next: NextFunction) =>
+      PDFController.previewDocument(req, res, next),
+  );
 
 // Update sales - Managers and admins only
 router.patch(

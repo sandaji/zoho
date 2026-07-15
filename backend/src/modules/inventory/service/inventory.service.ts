@@ -10,6 +10,7 @@ import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 import { notFoundError, AppError, ErrorCode } from "../../../lib/errors";
 import { getRequestContext } from "../../../lib/async-context";
+import { synchronizeBranchInventoryForWarehouse } from "../../../lib/inventory-sync";
 import {
   UpdateInventoryDTO,
   InventoryResponseDTO,
@@ -203,8 +204,9 @@ export class InventoryService {
         // Calculate new available (quantity - reserved)
         const newAvailable = newQuantity - inventory.reserved;
 
-        // Determine new status
-        const reorderLevel = inventory.product.reorder_level || 10;
+        // Determine new status based on quantity
+        // Note: reorder_level lives on BranchInventory/Inventory, not on Product
+        const reorderLevel = 10; // safe default; refine if reorder_level is added to Inventory model
         let newStatus = "in_stock";
         if (newQuantity === 0) {
           newStatus = "out_of_stock";
@@ -212,7 +214,7 @@ export class InventoryService {
           newStatus = "low_stock";
         }
 
-        // Update inventory
+        // Update inventory record (quantity, available, status)
         const updated = await tx.inventory.update({
           where: {
             productId_warehouseId: {
@@ -228,18 +230,10 @@ export class InventoryService {
           },
         });
 
-        // Update product total quantity
-        await tx.product.update({
-          where: { id: dto.productId },
-          data: {
-            quantity: {
-              increment:
-                dto.adjustmentType === "increase"
-                  ? dto.quantity
-                  : -dto.quantity,
-            },
-          },
-        });
+        await synchronizeBranchInventoryForWarehouse(tx, dto.productId, dto.warehouseId);
+
+        // NOTE: Product model no longer has a `quantity` field (removed in migration).
+        // Stock totals are derived from the Inventory table. No product update needed here.
 
         logger.info({
           productId: dto.productId,
@@ -351,6 +345,9 @@ export class InventoryService {
           },
         });
 
+        // Sync BranchInventory
+        await synchronizeBranchInventoryForWarehouse(tx, dto.productId, dto.fromWarehouseId);
+
         return transfer;
       });
     } catch (error) {
@@ -437,6 +434,19 @@ export class InventoryService {
               reference: `Transfer Received: ${transfer.transferNo}`,
             },
           });
+        }
+
+        // Sync BranchInventory for all affected products
+        const [sourceWarehouse, targetWarehouse] = await Promise.all([
+          tx.warehouse.findUnique({ where: { id: transfer.sourceId } }),
+          tx.warehouse.findUnique({ where: { id: transfer.targetId } }),
+        ]);
+        
+        for (const item of dto.items) {
+          await synchronizeBranchInventoryForWarehouse(tx, item.productId, transfer.sourceId);
+          if (sourceWarehouse?.branchId !== targetWarehouse?.branchId) {
+            await synchronizeBranchInventoryForWarehouse(tx, item.productId, transfer.targetId);
+          }
         }
 
         // 4. Finalize Transfer Record
@@ -588,47 +598,34 @@ export class InventoryService {
 
   async adjustStock(dto: StockAdjustmentDTO): Promise<InventoryResponseDTO> {
     try {
-      logger.debug({
-        productId: dto.productId,
-        quantity: dto.quantity,
-      }, "Adjusting stock");
+      logger.debug({ productId: dto.productId, quantity: dto.quantity }, "Adjusting stock");
 
-      const inventory = await this.prisma.inventory.findUnique({
-        where: {
-          productId_warehouseId: {
-            productId: dto.productId,
-            warehouseId: dto.warehouseId,
-          },
-        },
+      const result = await this.prisma.$transaction(async (tx: any) => {
+        const inventory = await tx.inventory.findUnique({
+          where: { productId_warehouseId: { productId: dto.productId, warehouseId: dto.warehouseId } },
+          include: { warehouse: true },
+        });
+
+        if (!inventory) throw notFoundError("Inventory");
+
+        const newQuantity = Math.max(0, inventory.quantity + dto.quantity);
+        const newAvailable = newQuantity - inventory.reserved;
+        const reorderLevel = 10;
+        const newStatus = newQuantity === 0 ? "out_of_stock" : newQuantity < reorderLevel ? "low_stock" : "in_stock";
+
+        const updated = await tx.inventory.update({
+          where: { productId_warehouseId: { productId: dto.productId, warehouseId: dto.warehouseId } },
+          data: { quantity: newQuantity, available: newAvailable, status: newStatus, last_counted: new Date() },
+        });
+
+        // Sync BranchInventory so Products section and POS see the correct stock
+        await synchronizeBranchInventoryForWarehouse(tx, dto.productId, dto.warehouseId);
+
+        logger.info({ productId: dto.productId, newQuantity, reason: dto.reason }, "Stock adjusted");
+        return updated;
       });
 
-      if (!inventory) {
-        throw notFoundError("Inventory");
-      }
-
-      const newQuantity = inventory.quantity + dto.quantity;
-      const newAvailable = newQuantity - inventory.reserved;
-
-      const updated = await this.prisma.inventory.update({
-        where: {
-          productId_warehouseId: {
-            productId: dto.productId,
-            warehouseId: dto.warehouseId,
-          },
-        },
-        data: {
-          quantity: newQuantity,
-          available: newAvailable,
-        },
-      });
-
-      logger.info({
-        productId: dto.productId,
-        newQuantity,
-        reason: dto.reason,
-      }, "Stock adjusted"); 
-
-      return this.formatResponse(updated);
+      return this.formatResponse(result);
     } catch (error) {
       logger.error(error as Error, "Failed to adjust stock");
       throw error;

@@ -15,6 +15,7 @@ import { BranchSelector } from "./components/branch-selector";
 import { KPICards } from "./components/kpi-cards";
 import { EnhancedInventoryTable } from "./components/enhanced-inventory-table";
 import { StockTransferModal } from "./components/stock-transfer-modal";
+import { AdjustStockModal } from "./components/adjust-stock-modal";
 import { useInventory } from "@/hooks/use-inventory";
 import { toast } from "sonner";
 
@@ -22,6 +23,12 @@ interface SelectedItemForTransfer {
   id: string;
   name: string;
   availableStock: number;
+}
+
+interface SelectedItemForAdjustment {
+  id: string;
+  name: string;
+  currentStock: number;
 }
 
 export default function InventoryDashboard() {
@@ -52,6 +59,8 @@ export default function InventoryDashboard() {
   const [selectedBranch, setSelectedBranch] = useState<string>("all");
   const [transferModalOpen, setTransferModalOpen] = useState(false);
   const [selectedItemForTransfer, setSelectedItemForTransfer] = useState<SelectedItemForTransfer | null>(null);
+  const [adjustStockModalOpen, setAdjustStockModalOpen] = useState(false);
+  const [selectedItemForAdjustment, setSelectedItemForAdjustment] = useState<SelectedItemForAdjustment | null>(null);
 
   // Transform products for components that expect the enhanced interface
   const transformedProducts = products.map((product) => {
@@ -106,6 +115,17 @@ export default function InventoryDashboard() {
       availableStock: quantity,
     });
     setTransferModalOpen(true);
+  };
+
+  const handleAdjustStock = (itemId: string) => {
+    const item = products.find((p) => p.id === itemId);
+    const quantity = item?.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+    setSelectedItemForAdjustment({
+      id: itemId,
+      name: item?.name ?? "",
+      currentStock: quantity,
+    });
+    setAdjustStockModalOpen(true);
   };
 
   const handleTransferSubmit = async (data: {
@@ -246,6 +266,7 @@ export default function InventoryDashboard() {
           <EnhancedInventoryTable
             items={transformedProducts}
             isLoading={isLoading}
+            onAdjustStock={handleAdjustStock}
             onInitiateTransfer={handleInitiateTransfer}
             onPageChange={goToPage}
             onSort={setSort}
@@ -289,6 +310,16 @@ export default function InventoryDashboard() {
           )}
         </>
       )}
+
+      {/* Adjust Stock Modal */}
+      <AdjustStockModal
+        open={adjustStockModalOpen}
+        onOpenChange={setAdjustStockModalOpen}
+        productId={selectedItemForAdjustment?.id}
+        productName={selectedItemForAdjustment?.name}
+        currentStock={selectedItemForAdjustment?.currentStock}
+        onAdjustComplete={refresh}
+      />
 
       {/* Stock Transfer Modal */}
       <StockTransferModal

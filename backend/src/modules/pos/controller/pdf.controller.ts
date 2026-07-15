@@ -38,24 +38,23 @@ export class PDFController {
         throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
       }
 
-      // Only quotes and invoices can be converted to PDF
-      if (document.type !== "QUOTE" && document.type !== "INVOICE") {
-        throw new AppError(
-          ErrorCode.BAD_REQUEST,
-          400,
-          "Only quotes and invoices can be generated as PDF",
-        );
-      }
+
 
       // Build company info: branch DB fields take priority, env vars are fallback
       const companyInfo = getCompanyInfo(document.branch ?? undefined);
 
       // Generate HTML based on document type
       let html: string;
-      if (document.type === "QUOTE") {
-        html = PDFGenerator.generateQuoteHTML({ document, companyInfo });
-      } else {
-        html = PDFGenerator.generateInvoiceHTML({ document, companyInfo });
+      switch (document.type) {
+        case "QUOTE":
+          html = PDFGenerator.generateQuoteHTML({ document, companyInfo });
+          break;
+        case "INVOICE":
+        case "DRAFT":
+        case "CREDIT_NOTE":
+        default:
+          html = PDFGenerator.generateInvoiceHTML({ document, companyInfo });
+          break;
       }
 
       // Return HTML (frontend can convert to PDF using html2pdf or similar)
@@ -103,18 +102,18 @@ export class PDFController {
       // Build company info: branch DB fields take priority, env vars are fallback
       const companyInfo = getCompanyInfo(document.branch ?? undefined);
 
-      // Generate HTML
+      // Generate HTML based on document type
       let html: string;
-      if (document.type === "QUOTE") {
-        html = PDFGenerator.generateQuoteHTML({ document, companyInfo });
-      } else if (document.type === "INVOICE") {
-        html = PDFGenerator.generateInvoiceHTML({ document, companyInfo });
-      } else {
-        throw new AppError(
-          ErrorCode.BAD_REQUEST,
-          400,
-          "Cannot preview this document type",
-        );
+      switch (document.type) {
+        case "QUOTE":
+          html = PDFGenerator.generateQuoteHTML({ document, companyInfo });
+          break;
+        case "INVOICE":
+        case "DRAFT":
+        case "CREDIT_NOTE":
+        default:
+          html = PDFGenerator.generateInvoiceHTML({ document, companyInfo });
+          break;
       }
 
       res.setHeader("Content-Type", "text/html");

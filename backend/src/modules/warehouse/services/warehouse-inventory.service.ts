@@ -6,6 +6,7 @@
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { MovementType, TransferStatus } from "../../../generated";
+import { synchronizeBranchInventoryForWarehouse } from "../../../lib/inventory-sync";
 import type {
   CreateTransferInput,
   AdjustStockInput,
@@ -276,6 +277,13 @@ export class WarehouseInventoryService {
       }
 
       // Update transfer status
+      for (const item of transfer.items) {
+        await synchronizeBranchInventoryForWarehouse(tx, item.productId, transfer.sourceId);
+        if (transfer.targetWarehouse.branchId !== transfer.sourceWarehouse.branchId) {
+          await synchronizeBranchInventoryForWarehouse(tx, item.productId, transfer.targetId);
+        }
+      }
+
       const updatedTransfer = await tx.stockTransfer.update({
         where: { id: transferId },
         data: { status: TransferStatus.COMPLETED },
@@ -415,6 +423,8 @@ export class WarehouseInventoryService {
           },
         },
       });
+
+      await synchronizeBranchInventoryForWarehouse(tx, productId, warehouseId);
 
       // (Removed outdated logic storing sum of quantity back to product model)
 

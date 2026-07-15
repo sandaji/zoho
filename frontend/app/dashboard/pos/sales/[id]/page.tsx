@@ -1,7 +1,8 @@
 //frontend/src/app/dashboard/pos/sales/[id]/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
@@ -61,6 +62,12 @@ export default function InvoicePage() {
   const [sale, setSale] = useState<Sale | null>(null);
   const [loading, setLoading] = useState(true);
   const isPrintMode = searchParams.get("print") === "true";
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: `Receipt-${sale?.invoice_no}`,
+  });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -72,6 +79,14 @@ export default function InvoicePage() {
       fetchSale();
     }
   }, [isLoading, isAuthenticated, params.id]);
+
+  useEffect(() => {
+    if (isPrintMode && sale) {
+      setTimeout(() => {
+        handlePrint();
+      }, 500);
+    }
+  }, [isPrintMode, sale, handlePrint]);
 
   const fetchSale = async () => {
     try {
@@ -89,13 +104,6 @@ export default function InvoicePage() {
       }
 
       setSale(json.data);
-
-      // Auto-print if in print mode
-      if (isPrintMode) {
-        setTimeout(() => {
-          window.print();
-        }, 500);
-      }
     } catch (err) {
       toast("Failed to load invoice", "error");
       router.push("/dashboard/pos");
@@ -129,14 +137,14 @@ export default function InvoicePage() {
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        <Button onClick={() => window.print()} className="gap-2 bg-blue-600 hover:bg-blue-700">
+        <Button onClick={handlePrint} className="gap-2 bg-blue-600 hover:bg-blue-700">
           <Printer className="h-4 w-4" />
           Print Receipt
         </Button>
       </div>
 
       {/* Invoice Container - Centered & Sized for Thermal Printer */}
-      <div className="mx-auto max-w-sm">
+      <div ref={printRef} className="mx-auto max-w-sm">
         <Card className="border-0 print:shadow-none">
           <CardContent className="p-6 print:p-4 text-xs print:text-xs">
             {/* Header */}
