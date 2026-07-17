@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -62,38 +62,60 @@ export function PDFViewer({
     }
   };
 
-  const print = useReactToPrint({
+  const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `${documentType}-${documentNumber}`,
-    onAfterPrint: () => {
-      setLoading(false);
+    onBeforePrint: async () => {
+      if (!htmlContent) {
+        await fetchHTML();
+      }
     },
     onPrintError: (error) => {
       console.error("Print error:", error);
       toast.error("Failed to print");
-      setLoading(false);
-    }
+    },
   });
-
-  const handlePrint = async () => {
-    setLoading(true);
-    if (!htmlContent) {
-      await fetchHTML();
-    }
-    print();
-  };
 
   const handleDownload = async () => {
     setLoading(true);
-    if (!htmlContent) {
-      await fetchHTML();
+    try {
+      // Try to download from backend if we have a PDF endpoint
+      const response = await fetch(getApiUrl(`${API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)}?format=pdf`), {
+        headers: getAuthHeadersWithToken(token || ""),
+      });
+
+      if (response.ok) {
+        // Download file if backend provides PDF
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${documentType}-${documentNumber}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast.success("PDF downloaded successfully");
+      } else {
+        // Fallback to print dialog for saving as PDF
+        if (!htmlContent) {
+          await fetchHTML();
+        }
+        handlePrint();
+      }
+    } catch (error: any) {
+      console.error("Error downloading PDF:", error);
+      // Fallback to print
+      if (!htmlContent) {
+        await fetchHTML();
+      }
+      handlePrint();
+    } finally {
+      setLoading(false);
     }
-    print();
   };
 
   return (
     <div className="flex gap-2">
-      {/* Hidden print content */}
+      {/* Hidden div for react-to-print */}
       <div style={{ display: "none" }}>
         <div ref={printRef} dangerouslySetInnerHTML={{ __html: htmlContent }} />
       </div>

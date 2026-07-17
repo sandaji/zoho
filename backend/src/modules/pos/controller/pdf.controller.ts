@@ -12,7 +12,7 @@ import { getCompanyInfo } from "../../../config/company.config";
 export class PDFController {
   /**
    * Generate PDF for a sales document (Quote or Invoice)
-   * Returns HTML that can be converted to PDF on the frontend or backend
+   * Returns HTML or PDF
    */
   static async generatePDF(
     req: Request,
@@ -21,7 +21,7 @@ export class PDFController {
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
-      const { format = "html" } = req.query; // 'html' or 'pdf' (future)
+      const { format = "html" } = req.query; // 'html' or 'pdf'
 
       if (!id) {
         throw new AppError(
@@ -37,8 +37,6 @@ export class PDFController {
       if (!document) {
         throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
       }
-
-
 
       // Build company info: branch DB fields take priority, env vars are fallback
       const companyInfo = getCompanyInfo(document.branch ?? undefined);
@@ -57,15 +55,61 @@ export class PDFController {
           break;
       }
 
-      // Return HTML (frontend can convert to PDF using html2pdf or similar)
+      // Return HTML
       if (format === "html") {
         res.setHeader("Content-Type", "text/html");
         res.send(html);
         return;
       }
 
-      // Future: Convert to PDF on backend using puppeteer or similar
-      // For now, just return HTML
+      // Return PDF using Puppeteer (if available)
+      if (format === "pdf") {
+        try {
+          // Dynamically import puppeteer (in case it's not fully installed yet)
+          const puppeteer = (await import("puppeteer")).default;
+          const browser = await puppeteer.launch({
+            headless: true,
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+          });
+          const page = await browser.newPage();
+          
+          // Set content and wait for everything to load
+          await page.setContent(html, {
+            waitUntil: "domcontentloaded",
+          });
+          
+          // Generate PDF
+          const pdfBuffer = await page.pdf({
+            format: "A4",
+            printBackground: true,
+            margin: {
+              top: "20px",
+              bottom: "20px",
+              left: "20px",
+              right: "20px",
+            },
+          });
+          
+          await browser.close();
+          
+          // Send PDF
+          res.setHeader("Content-Type", "application/pdf");
+          res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="${document.documentId}.pdf"`,
+          );
+          res.send(pdfBuffer);
+          return;
+        } catch (err) {
+          // If Puppeteer isn't ready, just send HTML instead
+          console.warn("Failed to generate PDF with Puppeteer, falling back to HTML:", err);
+          res.setHeader("Content-Type", "text/html");
+          res.send(html);
+          return;
+        }
+      }
+
+      // Fallback to HTML
       res.setHeader("Content-Type", "text/html");
       res.send(html);
     } catch (error) {

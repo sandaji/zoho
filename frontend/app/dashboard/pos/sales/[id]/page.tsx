@@ -1,8 +1,7 @@
-//frontend/src/app/dashboard/pos/sales/[id]/page.tsx
+// frontend/src/app/dashboard/pos/sales/[id]/page.tsx
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useReactToPrint } from "react-to-print";
+import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
@@ -62,12 +61,6 @@ export default function InvoicePage() {
   const [sale, setSale] = useState<Sale | null>(null);
   const [loading, setLoading] = useState(true);
   const isPrintMode = searchParams.get("print") === "true";
-  const printRef = useRef<HTMLDivElement>(null);
-
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle: `Receipt-${sale?.invoice_no}`,
-  });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -80,34 +73,37 @@ export default function InvoicePage() {
     }
   }, [isLoading, isAuthenticated, params.id]);
 
-  useEffect(() => {
-    if (isPrintMode && sale) {
-      setTimeout(() => {
-        handlePrint();
-      }, 500);
-    }
-  }, [isPrintMode, sale, handlePrint]);
-
   const fetchSale = async () => {
     try {
       setLoading(true);
-      const res = await fetch(getApiUrl(API_ENDPOINTS.POS_SALES_BY_ID(params.id as string)), {
+      fetch(getApiUrl(API_ENDPOINTS.POS_SALES_BY_ID(params.id as string)), {
         headers: getAuthHeadersWithToken(token || ""),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        toast(json.message || "Failed to load invoice", "error");
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          setSale(data.data);
+          // Auto-print if in print mode
+          if (isPrintMode) {
+            setTimeout(() => {
+              window.print();
+            }, 500);
+          }
+        } else {
+          toast(data.message || "Failed to load invoice", "error");
+          router.push("/dashboard/pos");
+        }
+      })
+      .catch(() => {
+        toast("Failed to load invoice", "error");
         router.push("/dashboard/pos");
-        return;
-      }
-
-      setSale(json.data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     } catch (err) {
       toast("Failed to load invoice", "error");
       router.push("/dashboard/pos");
-    } finally {
       setLoading(false);
     }
   };
@@ -137,14 +133,14 @@ export default function InvoicePage() {
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        <Button onClick={handlePrint} className="gap-2 bg-blue-600 hover:bg-blue-700">
+        <Button onClick={() => window.print()} className="gap-2 bg-blue-600 hover:bg-blue-700">
           <Printer className="h-4 w-4" />
           Print Receipt
         </Button>
       </div>
 
       {/* Invoice Container - Centered & Sized for Thermal Printer */}
-      <div ref={printRef} className="mx-auto max-w-sm">
+      <div className="mx-auto max-w-sm">
         <Card className="border-0 print:shadow-none">
           <CardContent className="p-6 print:p-4 text-xs print:text-xs">
             {/* Header */}

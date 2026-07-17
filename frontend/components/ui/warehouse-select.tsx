@@ -11,7 +11,8 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { fetchWarehouses, Warehouse } from "@/lib/admin-api";
+import { Warehouse } from "@/lib/admin-api";
+import { warehouseService } from "@/lib/warehouse.service";
 
 interface WarehouseSelectProps {
   value?: string;
@@ -32,8 +33,8 @@ export function WarehouseSelect({
     const loadWarehouses = async () => {
       if (!token) return;
       try {
-        const data = await fetchWarehouses(token);
-        setWarehouses(data || []);
+        const response = await warehouseService.getWarehouses(token);
+        setWarehouses(response.data || []);
       } catch (error) {
         console.error("Error fetching warehouses:", error);
         toast.error("Failed to load warehouses");
