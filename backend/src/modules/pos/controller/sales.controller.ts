@@ -522,15 +522,20 @@ export class SalesController {
         return;
       }
 
-      // Role check: Only admin, manager, general_manager, branch_manager
-      // Note: mapping general_manager and branch_manager to 'manager' check for simplicity
-      // since they are not in the UserRole enum, or they would be stored as 'manager' in the token.
-      const allowedRoles = ["admin", "super_admin", "manager"];
-      if (!allowedRoles.includes(user.role)) {
+      // RBAC check: Use permission-based authorization instead of inline role check
+      // This should be enforced via requirePermission middleware at the route level
+      // For now, keeping the check inline but using proper permission check
+      const { PermissionService } = await import("../../auth/service/permission.service");
+      const hasPermission = await PermissionService.hasPermission(
+        user.userId,
+        "sales.credit_note.approve"
+      );
+
+      if (!hasPermission) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          "Only managers and admins can approve credit notes",
+          "Insufficient permissions to approve credit notes",
         );
       }
 

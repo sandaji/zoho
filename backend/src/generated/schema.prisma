@@ -392,6 +392,7 @@ model SalesDocument {
   createdById      String
   approvedById     String?
   sessionId        String?
+  idempotencyKey   String?             @unique @map("idempotency_key")
   subtotal         Float
   discount         Float               @default(0)
   tax              Float
@@ -424,6 +425,7 @@ model SalesDocument {
   @@index([createdById])
   @@index([sessionId])
   @@index([issueDate])
+  @@index([idempotencyKey])
   @@map("sales_documents")
 }
 

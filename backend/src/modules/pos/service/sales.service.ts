@@ -480,6 +480,7 @@ export class SalesService {
     amountPaid: number;
     notes?: string;
     customerId?: string;
+    idempotencyKey?: string;
   }) {
     const {
       branchId,
@@ -489,7 +490,28 @@ export class SalesService {
       amountPaid,
       notes,
       customerId,
+      idempotencyKey,
     } = input;
+
+    // Idempotency check: if idempotency key provided, check for existing sale
+    if (idempotencyKey) {
+      const existingSale = await prisma.salesDocument.findFirst({
+        where: {
+          idempotencyKey,
+          branchId,
+          type: SalesDocumentType.INVOICE,
+        },
+        include: { items: true, payments: true },
+      });
+
+      if (existingSale) {
+        logger.info(
+          { idempotencyKey, existingSaleId: existingSale.id },
+          "Returning existing sale for idempotency key"
+        );
+        return existingSale;
+      }
+    }
 
     // Validate stock
     await StockValidationService.validateOrThrow(
@@ -547,6 +569,7 @@ export class SalesService {
             paidAmount: amountPaid,
             notes: notes || null,
             createdById: userId,
+            idempotencyKey: idempotencyKey || null,
             items: { create: preparedItems },
           },
           include: { items: true },
@@ -995,6 +1018,230 @@ export class SalesService {
         amount: item.total,
       })),
     };
+  }
+
+  // =============================
+  // Update Sales Document
+  // =============================
+  static async updateDocument(
+    id: string,
+    updates: {
+      status?: SalesDocumentStatus;
+      notes?: string;
+      discount?: number;
+    }
+  ) {
+    const doc = await prisma.salesDocument.findUnique({
+      where: { id },
+    });
+
+    if (!doc) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+    }
+
+    return prisma.salesDocument.update({
+      where: { id },
+      data: updates,
+      include: { items: true, branch: true, createdBy: true },
+    });
+  }
+
+  // =============================
+  // Get Daily Summary
+  // =============================
+  static async getDailySummary(query: {
+    branchId?: string;
+    date?: string;
+  }) {
+    const targetDate = query.date ? new Date(query.date) : new Date();
+    const startOfDay = new Date(targetDate);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(targetDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const where: any = {
+      type: SalesDocumentType.INVOICE,
+      status: SalesDocumentStatus.PAID,
+      createdAt: { gte: startOfDay, lte: endOfDay },
+    };
+
+    if (query.branchId) {
+      where.branchId = query.branchId;
+    }
+
+    const sales = await prisma.salesDocument.findMany({
+      where,
+      include: { 
+        items: { include: { product: true } },
+        payments: true,
+        branch: true,
+      },
+    });
+
+    const totalSales = sales.length;
+    const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
+    const totalTax = sales.reduce((sum, s) => sum + s.tax, 0);
+    const totalDiscount = sales.reduce((sum, s) => sum + s.discount, 0);
+
+    const paymentMethods = {
+      cash: 0,
+      card: 0,
+      mpesa: 0,
+      cheque: 0,
+      bank_transfer: 0,
+    };
+
+    for (const sale of sales) {
+      for (const payment of sale.payments) {
+        const method = payment.method as keyof typeof paymentMethods;
+        if (method in paymentMethods) {
+          paymentMethods[method] += payment.amount;
+        }
+      }
+    }
+
+    const productSales = new Map<string, { name: string; quantity: number; revenue: number }>();
+    for (const sale of sales) {
+      for (const item of sale.items) {
+        const existing = productSales.get(item.productId);
+        if (existing) {
+          existing.quantity += item.quantity;
+          existing.revenue += item.total;
+        } else {
+          productSales.set(item.productId, {
+            name: item.product?.name || "Unknown",
+            quantity: item.quantity,
+            revenue: item.total,
+          });
+        }
+      }
+    }
+
+    const topProducts = Array.from(productSales.entries())
+      .map(([productId, data]) => ({
+        productId,
+        productName: data.name,
+        quantitySold: data.quantity,
+        revenue: data.revenue,
+      }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 10);
+
+    return {
+      date: targetDate.toISOString().slice(0, 10),
+      branchId: query.branchId || "all",
+      totalSales,
+      totalRevenue,
+      totalTax,
+      totalDiscount,
+      paymentMethods,
+      topProducts,
+    };
+  }
+
+  // =============================
+  // Generate Receipt
+  // =============================
+  static async generateReceipt(saleId: string) {
+    const sale = await prisma.salesDocument.findUnique({
+      where: { id: saleId },
+      include: {
+        items: { include: { product: true } },
+        branch: true,
+        createdBy: true,
+        payments: true,
+      },
+    });
+
+    if (!sale) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Sale not found");
+    }
+
+    const company = {
+      name: process.env.COMPANY_NAME || "LUNATECH SYSTEMS LTD",
+      address: process.env.COMPANY_ADDRESS || "123 Tech Plaza, Westlands",
+      phone: process.env.COMPANY_PHONE || "+254 722 123 456",
+      email: process.env.COMPANY_EMAIL || "info@lunatech.co.ke",
+      kraPin: process.env.COMPANY_KRA_PIN || "P051472913Q",
+    };
+
+    return {
+      sale: {
+        id: sale.id,
+        invoice_no: sale.documentId,
+        status: sale.status,
+        payment_method: sale.payments?.[0]?.method || "cash",
+        subtotal: sale.subtotal,
+        discount: sale.discount,
+        tax: sale.tax,
+        grand_total: sale.total,
+        amount_paid: sale.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
+        change: (sale.payments?.reduce((sum, p) => sum + p.amount, 0) || 0) - sale.total,
+        created_date: sale.createdAt,
+        sales_items: sale.items.map((item) => ({
+          id: item.id,
+          productId: item.productId,
+          product: item.product,
+          quantity: item.quantity,
+          unit_price: item.unitPrice,
+          tax_rate: item.taxRate,
+          discount: item.discount,
+          amount: item.total,
+        })),
+      },
+      branch: sale.branch ? {
+        name: sale.branch.name,
+        address: sale.branch.address,
+        phone: sale.branch.phone,
+        code: sale.branch.code,
+      } : null,
+      cashier: sale.createdBy ? {
+        name: sale.createdBy.name,
+        email: sale.createdBy.email,
+      } : null,
+      company,
+    };
+  }
+
+  // =============================
+  // Approve Discount
+  // =============================
+  static async approveDiscount(saleId: string, managerId: string, managerPassword: string) {
+    const manager = await prisma.user.findUnique({
+      where: { id: managerId },
+    });
+
+    if (!manager) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Manager not found");
+    }
+
+    if (!["admin", "super_admin", "manager"].includes(manager.role)) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only managers and admins can approve discounts",
+      );
+    }
+
+    const { verifyPassword } = await import("../../../lib/password");
+    const isValid = await verifyPassword(managerPassword, manager.passwordHash);
+
+    if (!isValid) {
+      throw new AppError(
+        ErrorCode.UNAUTHORIZED,
+        401,
+        "Invalid manager password",
+      );
+    }
+
+    const updated = await prisma.salesDocument.update({
+      where: { id: saleId },
+      data: { notes: `Discount approved by ${manager.name} (${managerId})` },
+    });
+
+    logger.info({ saleId, managerId }, "Discount approved");
+
+    return updated;
   }
 
   // =============================

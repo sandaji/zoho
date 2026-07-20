@@ -67,6 +67,7 @@ export class POSController {
   ): Promise<void> {
     try {
       const dto: CreateSalesDTO = req.body;
+      const idempotencyKey = req.headers["idempotency-key"] as string;
 
       // Validation
       if (
@@ -84,7 +85,7 @@ export class POSController {
         throw validationError("Payment method is required");
       }
 
-      // Create using SalesDocument model
+      // Create using SalesDocument model with idempotency support
       const newSaleDocument = await SalesService.createPOSSale({
         branchId: dto.branchId,
         userId: dto.userId,
@@ -99,6 +100,7 @@ export class POSController {
         amountPaid: dto.amount_paid || 0,
         notes: dto.notes,
         customerId: dto.customerId,
+        idempotencyKey,
       });
 
       // Fetch branch details for receipt header
@@ -236,8 +238,7 @@ export class POSController {
    * PATCH /pos/sales/:id
    * Update sales order
    *
-   * Status: ⚠️ NOT YET IMPLEMENTED FOR SALESDOCUMENT
-   * TODO: Implement via SalesService.updateDocument() in future step
+   * Status: ✅ MIGRATED TO SalesService
    */
   async updateSales(
     req: Request,
@@ -252,8 +253,11 @@ export class POSController {
         throw validationError("ID is required");
       }
 
-      // TODO: Use SalesService.updateDocument() once implemented
-      const result = await this.posService.updateSales(id as string, dto);
+      const result = await SalesService.updateDocument(id, {
+        status: dto.status as any,
+        notes: dto.notes,
+        discount: dto.discount,
+      });
 
       res.json({
         success: true,
@@ -268,7 +272,7 @@ export class POSController {
    * GET /pos/sales/daily-summary
    * Get daily summary for a branch
    *
-   * Status: ⚠️ USING LEGACY SERVICE (will migrate to SalesDocument queries in future step)
+   * Status: ✅ MIGRATED TO SalesService
    */
   async getDailySummary(
     req: Request,
@@ -276,12 +280,10 @@ export class POSController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const dto: DailySummaryDTO = {
+      const result = await SalesService.getDailySummary({
         branchId: req.query.branchId as string,
         date: req.query.date as string,
-      };
-
-      const result = await this.posService.getDailySummary(dto);
+      });
 
       res.json({
         success: true,
@@ -296,7 +298,7 @@ export class POSController {
    * GET /pos/sales/:id/receipt
    * Generate receipt for a sale
    *
-   * Status: ⚠️ USING LEGACY SERVICE (PDF generation will migrate in future step)
+   * Status: ✅ MIGRATED TO SalesService
    */
   async getReceipt(
     req: Request,
@@ -310,8 +312,7 @@ export class POSController {
         throw validationError("Sale ID is required");
       }
 
-      // TODO: Use SalesService for receipt generation once implemented
-      const result = await this.posService.generateReceipt(id as string);
+      const result = await SalesService.generateReceipt(id);
 
       res.json({
         success: true,
@@ -326,7 +327,7 @@ export class POSController {
    * POST /pos/discount/approve
    * Manager approval for discounts > 10%
    *
-   * Status: ⚠️ USING LEGACY SERVICE (discount approval will be migrated in future step)
+   * Status: ✅ MIGRATED TO SalesService
    */
   async approveDiscount(
     req: Request,
@@ -342,8 +343,11 @@ export class POSController {
         );
       }
 
-      // TODO: Implement discount approval for SalesDocument in future step
-      await this.posService.approveDiscount(dto);
+      await SalesService.approveDiscount(
+        dto.salesId,
+        dto.managerId,
+        dto.managerPassword
+      );
 
       res.json({
         success: true,

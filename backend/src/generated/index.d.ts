@@ -27956,6 +27956,7 @@ export namespace Prisma {
     createdById: string | null
     approvedById: string | null
     sessionId: string | null
+    idempotencyKey: string | null
     subtotal: number | null
     discount: number | null
     tax: number | null
@@ -27982,6 +27983,7 @@ export namespace Prisma {
     createdById: string | null
     approvedById: string | null
     sessionId: string | null
+    idempotencyKey: string | null
     subtotal: number | null
     discount: number | null
     tax: number | null
@@ -28008,6 +28010,7 @@ export namespace Prisma {
     createdById: number
     approvedById: number
     sessionId: number
+    idempotencyKey: number
     subtotal: number
     discount: number
     tax: number
@@ -28054,6 +28057,7 @@ export namespace Prisma {
     createdById?: true
     approvedById?: true
     sessionId?: true
+    idempotencyKey?: true
     subtotal?: true
     discount?: true
     tax?: true
@@ -28080,6 +28084,7 @@ export namespace Prisma {
     createdById?: true
     approvedById?: true
     sessionId?: true
+    idempotencyKey?: true
     subtotal?: true
     discount?: true
     tax?: true
@@ -28106,6 +28111,7 @@ export namespace Prisma {
     createdById?: true
     approvedById?: true
     sessionId?: true
+    idempotencyKey?: true
     subtotal?: true
     discount?: true
     tax?: true
@@ -28219,6 +28225,7 @@ export namespace Prisma {
     createdById: string
     approvedById: string | null
     sessionId: string | null
+    idempotencyKey: string | null
     subtotal: number
     discount: number
     tax: number
@@ -28264,6 +28271,7 @@ export namespace Prisma {
     createdById?: boolean
     approvedById?: boolean
     sessionId?: boolean
+    idempotencyKey?: boolean
     subtotal?: boolean
     discount?: boolean
     tax?: boolean
@@ -28301,6 +28309,7 @@ export namespace Prisma {
     createdById?: boolean
     approvedById?: boolean
     sessionId?: boolean
+    idempotencyKey?: boolean
     subtotal?: boolean
     discount?: boolean
     tax?: boolean
@@ -28333,6 +28342,7 @@ export namespace Prisma {
     createdById?: boolean
     approvedById?: boolean
     sessionId?: boolean
+    idempotencyKey?: boolean
     subtotal?: boolean
     discount?: boolean
     tax?: boolean
@@ -28365,6 +28375,7 @@ export namespace Prisma {
     createdById?: boolean
     approvedById?: boolean
     sessionId?: boolean
+    idempotencyKey?: boolean
     subtotal?: boolean
     discount?: boolean
     tax?: boolean
@@ -28380,7 +28391,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SalesDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "type" | "status" | "sourceDocumentId" | "branchId" | "customerId" | "createdById" | "approvedById" | "sessionId" | "subtotal" | "discount" | "tax" | "total" | "notes" | "terms" | "paymentStatus" | "paidAmount" | "balance" | "issueDate" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["salesDocument"]>
+  export type SalesDocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "type" | "status" | "sourceDocumentId" | "branchId" | "customerId" | "createdById" | "approvedById" | "sessionId" | "idempotencyKey" | "subtotal" | "discount" | "tax" | "total" | "notes" | "terms" | "paymentStatus" | "paidAmount" | "balance" | "issueDate" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["salesDocument"]>
   export type SalesDocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     payments?: boolean | SalesDocument$paymentsArgs<ExtArgs>
     items?: boolean | SalesDocument$itemsArgs<ExtArgs>
@@ -28436,6 +28447,7 @@ export namespace Prisma {
       createdById: string
       approvedById: string | null
       sessionId: string | null
+      idempotencyKey: string | null
       subtotal: number
       discount: number
       tax: number
@@ -28892,6 +28904,7 @@ export namespace Prisma {
     readonly createdById: FieldRef<"SalesDocument", 'String'>
     readonly approvedById: FieldRef<"SalesDocument", 'String'>
     readonly sessionId: FieldRef<"SalesDocument", 'String'>
+    readonly idempotencyKey: FieldRef<"SalesDocument", 'String'>
     readonly subtotal: FieldRef<"SalesDocument", 'Float'>
     readonly discount: FieldRef<"SalesDocument", 'Float'>
     readonly tax: FieldRef<"SalesDocument", 'Float'>
@@ -97202,6 +97215,7 @@ export namespace Prisma {
     createdById: 'createdById',
     approvedById: 'approvedById',
     sessionId: 'sessionId',
+    idempotencyKey: 'idempotencyKey',
     subtotal: 'subtotal',
     discount: 'discount',
     tax: 'tax',
@@ -100341,6 +100355,7 @@ export namespace Prisma {
     createdById?: StringFilter<"SalesDocument"> | string
     approvedById?: StringNullableFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableFilter<"SalesDocument"> | string | null
+    idempotencyKey?: StringNullableFilter<"SalesDocument"> | string | null
     subtotal?: FloatFilter<"SalesDocument"> | number
     discount?: FloatFilter<"SalesDocument"> | number
     tax?: FloatFilter<"SalesDocument"> | number
@@ -100377,6 +100392,7 @@ export namespace Prisma {
     createdById?: SortOrder
     approvedById?: SortOrderInput | SortOrder
     sessionId?: SortOrderInput | SortOrder
+    idempotencyKey?: SortOrderInput | SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
     tax?: SortOrder
@@ -100404,6 +100420,7 @@ export namespace Prisma {
 
   export type SalesDocumentWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    idempotencyKey?: string
     branchId_documentId?: SalesDocumentBranchIdDocumentIdCompoundUniqueInput
     AND?: SalesDocumentWhereInput | SalesDocumentWhereInput[]
     OR?: SalesDocumentWhereInput[]
@@ -100440,7 +100457,7 @@ export namespace Prisma {
     sourceDocument?: XOR<SalesDocumentNullableScalarRelationFilter, SalesDocumentWhereInput> | null
     childDocuments?: SalesDocumentListRelationFilter
     stockMovements?: StockMovementListRelationFilter
-  }, "id" | "branchId_documentId">
+  }, "id" | "idempotencyKey" | "branchId_documentId">
 
   export type SalesDocumentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -100453,6 +100470,7 @@ export namespace Prisma {
     createdById?: SortOrder
     approvedById?: SortOrderInput | SortOrder
     sessionId?: SortOrderInput | SortOrder
+    idempotencyKey?: SortOrderInput | SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
     tax?: SortOrder
@@ -100487,6 +100505,7 @@ export namespace Prisma {
     createdById?: StringWithAggregatesFilter<"SalesDocument"> | string
     approvedById?: StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
+    idempotencyKey?: StringNullableWithAggregatesFilter<"SalesDocument"> | string | null
     subtotal?: FloatWithAggregatesFilter<"SalesDocument"> | number
     discount?: FloatWithAggregatesFilter<"SalesDocument"> | number
     tax?: FloatWithAggregatesFilter<"SalesDocument"> | number
@@ -107124,6 +107143,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -107160,6 +107180,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -107184,6 +107205,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -107220,6 +107242,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -107250,6 +107273,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -107270,6 +107294,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -107296,6 +107321,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -114417,6 +114443,7 @@ export namespace Prisma {
     createdById?: SortOrder
     approvedById?: SortOrder
     sessionId?: SortOrder
+    idempotencyKey?: SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
     tax?: SortOrder
@@ -114452,6 +114479,7 @@ export namespace Prisma {
     createdById?: SortOrder
     approvedById?: SortOrder
     sessionId?: SortOrder
+    idempotencyKey?: SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
     tax?: SortOrder
@@ -114478,6 +114506,7 @@ export namespace Prisma {
     createdById?: SortOrder
     approvedById?: SortOrder
     sessionId?: SortOrder
+    idempotencyKey?: SortOrder
     subtotal?: SortOrder
     discount?: SortOrder
     tax?: SortOrder
@@ -126157,6 +126186,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -126191,6 +126221,7 @@ export namespace Prisma {
     customerId?: string | null
     createdById: string
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -126225,6 +126256,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -126259,6 +126291,7 @@ export namespace Prisma {
     customerId?: string | null
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -127164,6 +127197,7 @@ export namespace Prisma {
     createdById?: StringFilter<"SalesDocument"> | string
     approvedById?: StringNullableFilter<"SalesDocument"> | string | null
     sessionId?: StringNullableFilter<"SalesDocument"> | string | null
+    idempotencyKey?: StringNullableFilter<"SalesDocument"> | string | null
     subtotal?: FloatFilter<"SalesDocument"> | number
     discount?: FloatFilter<"SalesDocument"> | number
     tax?: FloatFilter<"SalesDocument"> | number
@@ -127631,6 +127665,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -127665,6 +127700,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -130872,6 +130908,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -130907,6 +130944,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -131115,6 +131153,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -131150,6 +131189,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -132185,6 +132225,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -132219,6 +132260,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -132742,6 +132784,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -132777,6 +132820,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -132805,6 +132849,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -132839,6 +132884,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -133303,6 +133349,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -133338,6 +133385,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -133476,6 +133524,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -133511,6 +133560,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -133639,6 +133689,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -133674,6 +133725,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -133825,6 +133877,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -133860,6 +133913,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -134039,6 +134093,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -134074,6 +134129,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -135711,6 +135767,7 @@ export namespace Prisma {
     documentId: string
     type: $Enums.SalesDocumentType
     status: $Enums.SalesDocumentStatus
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -135745,6 +135802,7 @@ export namespace Prisma {
     customerId?: string | null
     createdById: string
     approvedById?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -144850,6 +144908,7 @@ export namespace Prisma {
     customerId?: string | null
     createdById: string
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -144875,6 +144934,7 @@ export namespace Prisma {
     customerId?: string | null
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -145799,6 +145859,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -145833,6 +145894,7 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -145862,6 +145924,7 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -145882,6 +145945,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -145916,6 +145980,7 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -145945,6 +146010,7 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -146231,6 +146297,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -146632,6 +146699,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -146666,6 +146734,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -146695,6 +146764,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -147969,6 +148039,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -148042,6 +148113,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148076,6 +148148,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148105,6 +148178,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148204,6 +148278,7 @@ export namespace Prisma {
     createdById: string
     approvedById?: string | null
     sessionId?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -148320,6 +148395,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148354,6 +148430,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148383,6 +148460,7 @@ export namespace Prisma {
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     sessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148604,6 +148682,7 @@ export namespace Prisma {
     customerId?: string | null
     createdById: string
     approvedById?: string | null
+    idempotencyKey?: string | null
     subtotal: number
     discount?: number
     tax: number
@@ -148624,6 +148703,7 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     status?: EnumSalesDocumentStatusFieldUpdateOperationsInput | $Enums.SalesDocumentStatus
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148658,6 +148738,7 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number
@@ -148687,6 +148768,7 @@ export namespace Prisma {
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     subtotal?: FloatFieldUpdateOperationsInput | number
     discount?: FloatFieldUpdateOperationsInput | number
     tax?: FloatFieldUpdateOperationsInput | number

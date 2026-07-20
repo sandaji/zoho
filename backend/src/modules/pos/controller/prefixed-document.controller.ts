@@ -170,6 +170,7 @@ export class PrefixedDocumentController {
           }
 
           // 3. Deduct from warehouse inventory using FIFO across stock batches + create stock movements
+          // Batched approach to reduce N+1 queries
           const batches = await tx.stockBatch.findMany({
             where: { warehouse: { branchId: body.branchId, isActive: true } },
             orderBy: { receivedAt: "asc" },
@@ -182,6 +183,20 @@ export class PrefixedDocumentController {
             },
           });
 
+          // Collect all batch updates, inventory updates, and stock movements
+          const batchUpdates: Array<{ id: string; newQuantity: number; isDepleted: boolean }> = [];
+          const inventoryUpdates: Map<string, { quantity: number; available: number }> = new Map();
+          const branchInventoryUpdates: Map<string, { quantity: number; available: number }> = new Map();
+          const stockMovements: Array<{
+            type: MovementType;
+            quantity: number;
+            productId: string;
+            warehouseId: string;
+            salesId: string;
+            reference: string;
+            createdById: string;
+          }> = [];
+
           for (const { product, input } of hydratedItems) {
             let remaining = input.quantity;
 
@@ -190,7 +205,6 @@ export class PrefixedDocumentController {
               (b) => b.productId === product.id && b.currentQuantity > 0,
             );
 
-            // If above filter incorrectly excludes (because currentQuantity truthiness) re-query per product
             const candidateBatches =
               productBatches.length > 0
                 ? productBatches
@@ -207,65 +221,46 @@ export class PrefixedDocumentController {
               if (remaining <= 0) break;
               const take = Math.min(remaining, batch.currentQuantity);
 
-              await tx.stockBatch.update({
-                where: { id: batch.id },
-                data: {
-                  currentQuantity: batch.currentQuantity - take,
-                  isDepleted: batch.currentQuantity - take === 0,
-                },
+              // Collect batch update
+              batchUpdates.push({
+                id: batch.id,
+                newQuantity: batch.currentQuantity - take,
+                isDepleted: batch.currentQuantity - take === 0,
               });
 
-              // Update inventory record for warehouse if exists
-              const inv = await tx.inventory.findUnique({
-                where: {
-                  productId_warehouseId: {
-                    productId: product.id,
-                    warehouseId: batch.warehouseId,
-                  },
-                },
-                select: { id: true, quantity: true, available: true },
-              });
-              if (inv) {
-                await tx.inventory.update({
-                  where: { id: inv.id },
-                  data: {
-                    quantity: inv.quantity - take,
-                    available: inv.available - take,
-                  },
+              // Collect inventory update
+              const invKey = `${product.id}_${batch.warehouseId}`;
+              const currentInv = inventoryUpdates.get(invKey);
+              if (!currentInv) {
+                inventoryUpdates.set(invKey, { quantity: -take, available: -take });
+              } else {
+                inventoryUpdates.set(invKey, {
+                  quantity: currentInv.quantity - take,
+                  available: currentInv.available - take,
                 });
               }
 
-              // Update branch inventory aggregate
-              const brInv = await tx.branchInventory.findUnique({
-                where: {
-                  productId_branchId: {
-                    productId: product.id,
-                    branchId: body.branchId,
-                  },
-                },
-                select: { id: true, quantity: true, available: true },
-              });
-              if (brInv) {
-                await tx.branchInventory.update({
-                  where: { id: brInv.id },
-                  data: {
-                    quantity: brInv.quantity - take,
-                    available: brInv.available - take,
-                  },
+              // Collect branch inventory update
+              const brInvKey = `${product.id}_${body.branchId}`;
+              const currentBrInv = branchInventoryUpdates.get(brInvKey);
+              if (!currentBrInv) {
+                branchInventoryUpdates.set(brInvKey, { quantity: -take, available: -take });
+              } else {
+                branchInventoryUpdates.set(brInvKey, {
+                  quantity: currentBrInv.quantity - take,
+                  available: currentBrInv.available - take,
                 });
               }
 
-              // Create stock movement
-              await tx.stockMovement.create({
-                data: {
-                  type: MovementType.OUTBOUND,
-                  quantity: take,
-                  productId: product.id,
-                  warehouseId: batch.warehouseId,
-                  salesId: doc.id,
-                  reference: `Invoice ${documentId}`,
-                  createdById: userId,
-                },
+              // Collect stock movement
+              stockMovements.push({
+                type: MovementType.OUTBOUND,
+                quantity: take,
+                productId: product.id,
+                warehouseId: batch.warehouseId,
+                salesId: doc.id,
+                reference: `Invoice ${documentId}`,
+                createdById: userId,
               });
 
               remaining -= take;
@@ -278,6 +273,79 @@ export class PrefixedDocumentController {
                 `Insufficient stock for product ${product.name}`,
               );
             }
+          }
+
+          // Execute batch updates
+          // 1. Update stock batches
+          for (const update of batchUpdates) {
+            await tx.stockBatch.update({
+              where: { id: update.id },
+              data: {
+                currentQuantity: update.newQuantity,
+                isDepleted: update.isDepleted,
+              },
+            });
+          }
+
+          // 2. Update inventory records (batch fetch + batch update)
+          if (inventoryUpdates.size > 0) {
+            const inventoryKeys = Array.from(inventoryUpdates.keys());
+            const existingInventories = await tx.inventory.findMany({
+              where: {
+                OR: inventoryKeys.map((key) => {
+                  const [productId, warehouseId] = key.split('_');
+                  return { productId, warehouseId };
+                }),
+              },
+              select: { id: true, productId: true, warehouseId: true, quantity: true, available: true },
+            });
+
+            for (const inv of existingInventories) {
+              const key = `${inv.productId}_${inv.warehouseId}`;
+              const update = inventoryUpdates.get(key);
+              if (update) {
+                await tx.inventory.update({
+                  where: { id: inv.id },
+                  data: {
+                    quantity: inv.quantity + update.quantity,
+                    available: inv.available + update.available,
+                  },
+                });
+              }
+            }
+          }
+
+          // 3. Update branch inventory records (batch fetch + batch update)
+          if (branchInventoryUpdates.size > 0) {
+            const branchInvKeys = Array.from(branchInventoryUpdates.keys());
+            const existingBranchInventories = await tx.branchInventory.findMany({
+              where: {
+                OR: branchInvKeys.map((key) => {
+                  const [productId, branchId] = key.split('_');
+                  return { productId, branchId };
+                }),
+              },
+              select: { id: true, productId: true, branchId: true, quantity: true, available: true },
+            });
+
+            for (const brInv of existingBranchInventories) {
+              const key = `${brInv.productId}_${brInv.branchId}`;
+              const update = branchInventoryUpdates.get(key);
+              if (update) {
+                await tx.branchInventory.update({
+                  where: { id: brInv.id },
+                  data: {
+                    quantity: brInv.quantity + update.quantity,
+                    available: brInv.available + update.available,
+                  },
+                });
+              }
+            }
+          }
+
+          // 4. Create stock movements
+          for (const movement of stockMovements) {
+            await tx.stockMovement.create({ data: movement });
           }
 
           return doc;

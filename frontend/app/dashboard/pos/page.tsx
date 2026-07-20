@@ -159,7 +159,7 @@ export default function POSPage() {
           discount: 0,
           discount_percent: 0,
           available: product.available,
-          tax_rate: 0.16, // Default 16% VAT
+          tax_rate: product.tax_rate ?? 0.16, // Use product's tax rate, default to 16% if not provided
         },
       ]);
     }
@@ -236,10 +236,17 @@ export default function POSPage() {
 
     setLoading(true);
 
+    // Generate idempotency key to prevent duplicate sales
+    const idempotencyKey = crypto.randomUUID();
+
     try {
+      const authHeaders = getAuthHeadersWithToken(token || "");
+      const headers = new Headers(authHeaders);
+      headers.set("Idempotency-Key", idempotencyKey);
+
       const res = await fetch(getApiUrl(API_ENDPOINTS.POS_SALES), {
         method: "POST",
-        headers: getAuthHeadersWithToken(token || ""),
+        headers,
         body: JSON.stringify({
           branchId: user.branchId,
           userId: user.id,
@@ -425,7 +432,7 @@ export default function POSPage() {
 
   // ------------------ UI ------------------
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-slate-100 ml-3">
       <div className="mx-auto max-w-[1700px] px-1 py-1 space-y-4">
         {/* ================= MENU BAR ================= */}
         <POSMenuBar
@@ -450,11 +457,11 @@ export default function POSPage() {
         )}
 
         {/* ================= MAIN RESPONSIVE GRID LAYOUT ================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-10  gap-4 items-start">
           {/* ================= LEFT SIDE (70% - 7 Cols out of 10) ================= */}
           <div className="lg:col-span-7 space-y-4">
             {/* Product Search - Blue tint */}
-            <div className="bg-blue-50/50 border border-blue-700 rounded-lg px-4 py-2 space-y-4">
+            <div className="bg-blue-50/50 border border-blue-100 rounded-lg px-4 py-2 space-y-4">
               <div className="flex items-center justify-between gap-4">
                 <POSQuickActions
                   onPark={handleParkSale}

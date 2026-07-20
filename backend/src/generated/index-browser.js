@@ -329,6 +329,7 @@ exports.Prisma.SalesDocumentScalarFieldEnum = {
   createdById: 'createdById',
   approvedById: 'approvedById',
   sessionId: 'sessionId',
+  idempotencyKey: 'idempotencyKey',
   subtotal: 'subtotal',
   discount: 'discount',
   tax: 'tax',
