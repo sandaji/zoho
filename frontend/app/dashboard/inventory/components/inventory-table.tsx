@@ -12,7 +12,8 @@ import {
   Edit, 
   MoreHorizontal,
   ArrowUpDown,
-  Filter
+  Filter,
+  SlidersHorizontal
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 
@@ -44,6 +45,7 @@ interface InventoryTableProps {
   onSort?: (field: string) => void;
   onPageChange?: (page: number) => void;
   onEdit?: (item: InventoryItem) => void;
+  onAdjustStock?: (item: InventoryItem) => void;
   currentSort?: {
     sortBy: string;
     sortOrder: "asc" | "desc";
@@ -94,6 +96,7 @@ export function InventoryTable({
   onSort, 
   onPageChange,
   onEdit,
+  onAdjustStock,
   currentSort
 }: InventoryTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -275,8 +278,18 @@ export function InventoryTable({
                           size="sm"
                           className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
                           onClick={() => onEdit?.(item)}
+                          title="Edit product"
                         >
                           <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+                          onClick={() => onAdjustStock?.(item)}
+                          title="Adjust stock"
+                        >
+                          <SlidersHorizontal className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="ghost"

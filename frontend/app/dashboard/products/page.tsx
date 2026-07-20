@@ -7,7 +7,8 @@ import {
   Download, 
   RefreshCw, 
   AlertCircle,
-  Package
+  Package,
+  SlidersHorizontal
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +19,8 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InventoryTable } from "../inventory/components/inventory-table";
 import { AddProductDialog } from "../inventory/components/add-product-dialog";
+import { AdjustStockModal } from "../inventory/components/adjust-stock-modal";
+import { CategoryManagementDialog } from "../inventory/components/category-management-dialog";
 import { useState } from "react";
 
 export default function ProductsPage() {
@@ -40,6 +43,8 @@ export default function ProductsPage() {
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [stockAdjustProduct, setStockAdjustProduct] = useState<any | null>(null);
+  const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
 
   // Get the active branch inventory data
   const getBranchInventoryData = (product: any) => {
@@ -128,7 +133,15 @@ export default function ProductsPage() {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button 
+          <Button
+            variant="outline"
+            onClick={() => setIsCategoryDialogOpen(true)}
+            className="border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400"
+          >
+            <SlidersHorizontal className="h-4 w-4 mr-2" />
+            Manage Categories
+          </Button>
+          <Button
             className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
             onClick={() => setIsAddDialogOpen(true)}
           >
@@ -209,6 +222,7 @@ export default function ProductsPage() {
           onSort={setSort}
           onPageChange={goToPage}
           onEdit={(item) => setEditingProduct((item as any)._raw)}
+          onAdjustStock={(item) => setStockAdjustProduct(item)}
           currentSort={{
             sortBy: filters.sortBy,
             sortOrder: filters.sortOrder
@@ -229,6 +243,23 @@ export default function ProductsPage() {
         onOpenChange={(open) => !open && setEditingProduct(null)}
         onProductAdded={refresh}
         editProduct={editingProduct}
+      />
+
+      {/* Adjust Stock Modal */}
+      <AdjustStockModal
+        open={!!stockAdjustProduct}
+        onOpenChange={(open) => !open && setStockAdjustProduct(null)}
+        productId={stockAdjustProduct?.id}
+        productName={stockAdjustProduct?.name}
+        currentStock={stockAdjustProduct?.currentStock}
+        onAdjustComplete={refresh}
+      />
+
+      {/* Category Management Dialog */}
+      <CategoryManagementDialog
+        open={isCategoryDialogOpen}
+        onOpenChange={setIsCategoryDialogOpen}
+        onCategoryAdded={refresh}
       />
     </div>
   );

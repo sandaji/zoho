@@ -2,7 +2,6 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,167 +75,163 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   ];
 
   return (
-    <Card className="shadow-lg sticky top-4">
-      <CardHeader className="border-b bg-linear-to-r from-purple-50 to-pink-50">
-        <CardTitle className="flex items-center gap-2">
-          <CreditCard className="h-5 w-5" />
-          Payment & Checkout
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 pt-6">
-        {/* Order Summary */}
-        <div className="space-y-2 rounded-lg bg-slate-50 p-4">
-          <div className="flex justify-between text-sm">
-            <span className="text-slate-600">Subtotal</span>
-            <span className="font-medium">{formatCurrency(subtotal)}</span>
-          </div>
-          {totalDiscount > 0 && (
-            <div className="flex justify-between text-sm">
-              <span className="text-slate-600">Discount</span>
-              <span className="font-medium text-green-600">-{formatCurrency(totalDiscount)}</span>
-            </div>
-          )}
-          <div className="flex justify-between text-sm">
-            <span className="text-slate-600">Tax (16%)</span>
-            <span className="font-medium">{formatCurrency(tax)}</span>
-          </div>
-          <Separator className="my-2" />
-          <div className="flex justify-between text-lg font-bold">
-            <span>Total</span>
-            <span className="text-2xl">{formatCurrency(grandTotal)}</span>
-          </div>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex items-center gap-2 pb-3 border-b border-emerald-200">
+        <CreditCard className="h-5 w-5 text-emerald-700" />
+        <h3 className="font-semibold text-emerald-900">Payment & Checkout</h3>
+      </div>
+
+      {/* Order Summary - Strong Emerald */}
+      <div className="space-y-2 rounded-lg bg-emerald-100 border border-emerald-200 p-4">
+        <div className="flex justify-between text-sm">
+          <span className="text-emerald-800">Subtotal</span>
+          <span className="font-medium text-emerald-900">{formatCurrency(subtotal)}</span>
         </div>
-
-        {/* Payment Method */}
-        <div className="space-y-2">
-          <Label className="text-sm font-semibold">Payment Method</Label>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full justify-start">
-                {paymentMethods.find(m => m.value === paymentMethod)?.label || "Select Payment Method"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-56">
-              <DropdownMenuGroup>
-                <DropdownMenuLabel className="text-sm font-semibold">Select Payment Method</DropdownMenuLabel>
-                <DropdownMenuRadioGroup
-                  value={paymentMethod}
-                  onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
-                >
-                  {paymentMethods.map((method) => {
-                    const Icon = method.icon;
-                    return (
-                      <DropdownMenuRadioItem value={method.value} key={method.value} className="flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
-                        <span>{method.label}</span>
-                      </DropdownMenuRadioItem>
-                    );
-                  })}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-
-
-
-        {/* Cash Payment Details */}
-        {paymentMethod === "cash" && (
-          <div className="space-y-3 rounded-lg border border-green-200 bg-green-50 p-4">
-            <div>
-              <Label htmlFor="amountTendered" className="text-sm font-semibold">
-                Amount Tendered
-              </Label>
-              <Input
-                id="amountTendered"
-                type="number"
-                value={amountTendered || ""}
-                onChange={(e) => setAmountTendered(parseFloat(e.target.value) || 0)}
-                placeholder="0.00"
-                className="mt-2 text-lg font-bold"
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            {/* Quick Amount Buttons */}
-            <div className="grid grid-cols-4 gap-2">
-              {quickAmounts.map((amount) => (
-                <Button
-                  key={amount.label}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setAmountTendered(amount.value)}
-                  className="text-xs"
-                >
-                  {amount.label}
-                </Button>
-              ))}
-            </div>
-
-            {/* Change Amount */}
-            {amountTendered > 0 && (
-              <div className="rounded-lg bg-white p-3 border border-green-300">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-slate-600">Change Due</span>
-                  <span
-                    className={`text-2xl font-bold ${changeAmount < 0 ? "text-red-600" : "text-green-600"
-                      }`}
-                  >
-                    {formatCurrency(changeAmount)}
-                  </span>
-                </div>
-                {changeAmount < 0 && (
-                  <p className="text-xs text-red-600 mt-1">Insufficient amount tendered</p>
-                )}
-              </div>
-            )}
+        {totalDiscount > 0 && (
+          <div className="flex justify-between text-sm">
+            <span className="text-emerald-800">Discount</span>
+            <span className="font-medium text-emerald-600">-{formatCurrency(totalDiscount)}</span>
           </div>
         )}
-
-        {/* Notes */}
-        <div>
-          <Label htmlFor="notes" className="text-xs text-slate-600">
-            Notes (Optional)
-          </Label>
-          <Textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Add sale notes..."
-            className="mt-1 resize-none"
-            rows={2}
-          />
+        <div className="flex justify-between text-sm">
+          <span className="text-emerald-800">Tax (16%)</span>
+          <span className="font-medium text-emerald-900">{formatCurrency(tax)}</span>
         </div>
+        <Separator className="my-2 bg-emerald-300" />
+        <div className="flex justify-between text-lg font-bold">
+          <span className="text-emerald-900">Total</span>
+          <span className="text-2xl text-emerald-900">{formatCurrency(grandTotal)}</span>
+        </div>
+      </div>
 
-        {/* Checkout Button */}
-        <Button
-          onClick={onCheckout}
-          disabled={
-            loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
-          }
-          className="w-full h-14 text-lg font-bold"
-          size="lg"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-              Processing...
-            </>
-          ) : (
-            <>
-              <CheckCircle2 className="mr-2 h-5 w-5" />
-              Complete Sale (F9)
-            </>
+      {/* Payment Method */}
+      <div className="space-y-2">
+        <Label className="text-sm font-semibold text-emerald-900">Payment Method</Label>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full justify-start border-emerald-200">
+              {paymentMethods.find(m => m.value === paymentMethod)?.label || "Select Payment Method"}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="min-w-56">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-sm font-semibold">Select Payment Method</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={paymentMethod}
+                onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
+              >
+                {paymentMethods.map((method) => {
+                  const Icon = method.icon;
+                  return (
+                    <DropdownMenuRadioItem value={method.value} key={method.value} className="flex items-center gap-2">
+                      <Icon className="h-4 w-4" />
+                      <span>{method.label}</span>
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Cash Payment Details */}
+      {paymentMethod === "cash" && (
+        <div className="space-y-3 rounded-lg border border-emerald-300 bg-emerald-50 p-4">
+          <div>
+            <Label htmlFor="amountTendered" className="text-sm font-semibold text-emerald-900">
+              Amount Tendered
+            </Label>
+            <Input
+              id="amountTendered"
+              type="number"
+              value={amountTendered || ""}
+              onChange={(e) => setAmountTendered(parseFloat(e.target.value) || 0)}
+              placeholder="0.00"
+              className="mt-2 text-lg font-bold border-emerald-300"
+              min="0"
+              step="0.01"
+            />
+          </div>
+
+          {/* Quick Amount Buttons */}
+          <div className="grid grid-cols-4 gap-2">
+            {quickAmounts.map((amount) => (
+              <Button
+                key={amount.label}
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setAmountTendered(amount.value)}
+                className="text-xs border-emerald-200 hover:bg-emerald-100"
+              >
+                {amount.label}
+              </Button>
+            ))}
+          </div>
+
+          {/* Change Amount */}
+          {amountTendered > 0 && (
+            <div className="rounded-lg bg-white p-3 border border-emerald-300">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-emerald-800">Change Due</span>
+                <span
+                  className={`text-2xl font-bold ${changeAmount < 0 ? "text-red-600" : "text-emerald-600"
+                    }`}
+                >
+                  {formatCurrency(changeAmount)}
+                </span>
+              </div>
+              {changeAmount < 0 && (
+                <p className="text-xs text-red-600 mt-1">Insufficient amount tendered</p>
+              )}
+            </div>
           )}
-        </Button>
-
-        {/* Keyboard Shortcut Hints */}
-        <div className="text-xs text-center text-slate-500 space-y-1">
-          <p>F9: Complete Sale • F4: Clear Cart • ESC: Focus Search</p>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {/* Notes */}
+      <div>
+        <Label htmlFor="notes" className="text-xs text-emerald-700">
+          Notes (Optional)
+        </Label>
+        <Textarea
+          id="notes"
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Add sale notes..."
+          className="mt-1 resize-none border-emerald-200"
+          rows={2}
+        />
+      </div>
+
+      {/* Checkout Button */}
+      <Button
+        onClick={onCheckout}
+        disabled={
+          loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
+        }
+        className="w-full h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700"
+        size="lg"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            Processing...
+          </>
+        ) : (
+          <>
+            <CheckCircle2 className="mr-2 h-5 w-5" />
+            Complete Sale (F9)
+          </>
+        )}
+      </Button>
+
+      {/* Keyboard Shortcut Hints */}
+      <div className="text-xs text-center text-emerald-700 space-y-1">
+        <p>F9: Complete Sale • F4: Clear Cart • ESC: Focus Search</p>
+      </div>
+    </div>
   );
 };

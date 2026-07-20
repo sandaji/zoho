@@ -189,6 +189,32 @@ model Product {
   @@map("products")
 }
 
+/// Product Categories
+model Category {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  subcategories Subcategory[]
+
+  @@index([name])
+  @@map("categories")
+}
+
+/// Product Subcategories
+model Subcategory {
+  id         String   @id @default(cuid())
+  name       String
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryId, name])
+  @@index([categoryId])
+  @@map("subcategories")
+}
+
 /// Branch Inventory - Aggregated quantities and settings per branch
 /// This is the junction table that separates master data (Product) from local data (quantities per branch)
 model BranchInventory {

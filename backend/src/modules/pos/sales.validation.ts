@@ -12,7 +12,9 @@ const salesDocumentItemSchema = z.object({
   unitPrice: z.number().nonnegative(),
   taxRate: z.number().nonnegative(),
   discount: z.number().nonnegative().default(0),
-  total: z.number().nonnegative(),
+  // `total` is computed server-side; accept it from the client but never rely on it
+  total: z.number().nonnegative().optional(),
+  description: z.string().optional(),
 });
 
 // Create sales document schema
@@ -24,11 +26,14 @@ export const createSalesDocumentSchema = z.object({
   customerId: z.string().optional(),
   issueDate: z.string().or(z.date()),
   dueDate: z.string().or(z.date()).optional(),
-  subtotal: z.number().nonnegative(),
-  tax: z.number().nonnegative(),
+  // Accept client-computed totals for reference; server always recalculates
+  subtotal: z.number().nonnegative().optional(),
+  tax: z.number().nonnegative().optional(),
   discount: z.number().nonnegative().default(0),
-  total: z.number().nonnegative(),
+  total: z.number().nonnegative().optional(),
   notes: z.string().optional(),
+  // Optional payment method — used when creating an INVOICE directly
+  paymentMethod: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer"]).optional(),
   items: z.array(salesDocumentItemSchema).min(1),
   allowStockOverride: z.boolean().optional(), // For admin override on quotes
 });
@@ -43,6 +48,7 @@ export const listDocumentsQuerySchema = z.object({
   customerId: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
+  search: z.string().optional(),
   limit: z.string().optional(),
   offset: z.string().optional(),
 });

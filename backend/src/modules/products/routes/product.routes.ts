@@ -134,4 +134,120 @@ router.delete("/:id", authenticate, requirePermission('inventory.product.manage'
   }
 });
 
+// Get all categories
+router.get("/categories", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
+  try {
+    const { prisma } = await import("../../../lib/db");
+    
+    // Get all categories with their subcategories
+    const categories = await prisma.category.findMany({
+      include: {
+        subcategories: {
+          orderBy: { name: 'asc' }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+
+    res.json({
+      success: true,
+      data: { categories }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Create category
+router.post("/categories", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
+  try {
+    const { prisma } = await import("../../../lib/db");
+    const { name } = req.body;
+
+    if (!name) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Category name is required");
+    }
+
+    const category = await prisma.category.create({
+      data: { name }
+    });
+
+    res.status(201).json({
+      success: true,
+      data: category
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Delete category
+router.delete("/categories/:id", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
+  try {
+    const { prisma } = await import("../../../lib/db");
+    
+    // Delete subcategories first
+    await prisma.subcategory.deleteMany({
+      where: { categoryId: req.params.id }
+    });
+
+    // Delete category
+    await prisma.category.delete({
+      where: { id: req.params.id }
+    });
+
+    res.json({
+      success: true,
+      message: "Category deleted successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Create subcategory
+router.post("/categories/:categoryId/subcategories", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
+  try {
+    const { prisma } = await import("../../../lib/db");
+    const { name } = req.body;
+    const { categoryId } = req.params;
+
+    if (!name) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Subcategory name is required");
+    }
+
+    const subcategory = await prisma.subcategory.create({
+      data: { 
+        name,
+        categoryId 
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      data: subcategory
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Delete subcategory
+router.delete("/categories/:categoryId/subcategories/:subcategoryId", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
+  try {
+    const { prisma } = await import("../../../lib/db");
+    
+    await prisma.subcategory.delete({
+      where: { id: req.params.subcategoryId }
+    });
+
+    res.json({
+      success: true,
+      message: "Subcategory deleted successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;

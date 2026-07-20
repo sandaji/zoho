@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, User, UserPlus, X, Check, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -132,48 +131,64 @@ export function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }:
 
   return (
     <>
-      {/* Selected Customer Display */}
-      <Card className="shadow-lg border-2 border-slate-200">
-        <CardHeader className="py-3 px-4 border-b bg-linear-to-r from-slate-50 to-slate-100">
-          <CardTitle className="flex items-center justify-between text-base">
-            <span className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Customer
-            </span>
-            <Button variant="ghost" size="sm" onClick={() => setIsOpen(true)} className="h-8">
-              Change
-            </Button>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="py-3 px-4">
+      {/* Customer display — single row */}
+      <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
+        {/* Icon + label */}
+        <div className="flex items-center gap-1.5 text-slate-400 shrink-0">
+          <User className="h-4 w-4" />
+          <span className="text-xs font-medium text-slate-500 hidden sm:inline">Customer</span>
+        </div>
+
+        {/* Divider */}
+        <div className="h-4 w-px bg-slate-200 shrink-0" />
+
+        {/* Customer info or walk-in badge */}
+        <div className="flex-1 min-w-0">
           {selectedCustomer ? (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-slate-900">{selectedCustomer.name}</p>
-                {selectedCustomer.phone && (
-                  <p className="text-sm text-slate-600">{selectedCustomer.phone}</p>
-                )}
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleSelect(null)}
-                className="h-8 text-slate-500 hover:text-slate-700"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+            <div className="flex items-baseline gap-2 min-w-0">
+              <span className="text-sm font-semibold text-slate-900 truncate leading-none">
+                {selectedCustomer.name}
+              </span>
+              {selectedCustomer.phone && (
+                <span className="text-xs text-slate-400 truncate hidden sm:inline">
+                  {selectedCustomer.phone}
+                </span>
+              )}
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-                <Store className="h-3 w-3 mr-1" />
-                Counter Sale
-              </Badge>
-              <span className="text-sm text-slate-500">Walk-in customer</span>
-            </div>
+            <Badge
+              variant="secondary"
+              className="bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-50 font-medium"
+            >
+              <Store className="h-3 w-3 mr-1" />
+              Counter Sale
+            </Badge>
           )}
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-1 shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(true)}
+            className="h-7 px-2 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+          >
+            {selectedCustomer ? "Change" : "Select"}
+          </Button>
+          {selectedCustomer && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => handleSelect(null)}
+              className="h-7 w-7 text-slate-400 hover:text-red-500 hover:bg-red-50"
+              aria-label="Clear customer"
+            >
+              <X className="h-3.5 w-3.5" />
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* Customer Selection Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

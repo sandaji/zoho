@@ -71,6 +71,7 @@ export class SalesService {
       issueDate?: Date;
       dueDate?: Date | null;
       notes?: string;
+      paymentMethod?: string; // Required for direct INVOICE creation
       items: {
         productId: string;
         description?: string;
@@ -79,33 +80,30 @@ export class SalesService {
         taxRate?: number;
         discount?: number;
       }[];
-      allowStockOverride?: boolean; // For admin override
+      allowStockOverride?: boolean;
     },
     branchId: string,
     userId: string,
   ) {
-    // REQUIREMENT 3: Prevent direct invoice creation
+    // ── Direct Invoice creation ───────────────────────────────────────────────
+    // When type is INVOICE we run full stock validation + deduction inside a
+    // transaction, produce an SENT/UNPAID invoice, and record no upfront
+    // payment (the cashier will record payment separately via the AR flow).
     if (input.type === SalesDocumentType.INVOICE) {
-      throw new AppError(
-        ErrorCode.BAD_REQUEST,
-        400,
-        "Invoices cannot be created directly. Convert from Draft or Quote, or use POS Sale.",
-      );
+      return SalesService._createDirectInvoice(input, branchId, userId);
     }
 
-    // REQUIREMENT 4: Stock validation for DRAFT (reject if insufficient)
-    // Quotes can proceed with admin override
+    // ── Draft / Quote ─────────────────────────────────────────────────────────
     if (input.type === SalesDocumentType.DRAFT) {
       await StockValidationService.validateOrThrow(
         branchId,
         input.items,
         userId,
-        false, // No override allowed for drafts
+        false,
       );
     }
 
     if (input.type === SalesDocumentType.QUOTE) {
-      // REQUIREMENT 4: Quotes require admin approval if stock is insufficient
       await StockValidationService.validateOrThrow(
         branchId,
         input.items,
@@ -114,13 +112,16 @@ export class SalesService {
       );
     }
 
-    // Generate document ID
-    const documentId = await SequenceService.getNextNumber(
-      input.type,
-      branchId,
-    );
+    if (input.type === SalesDocumentType.CREDIT_NOTE) {
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Credit notes must be created via the credit-note endpoint.",
+      );
+    }
 
-    // Prepare items
+    const documentId = await SequenceService.getNextNumber(input.type, branchId);
+
     const preparedItems = input.items.map((item) => {
       const totals = calculateItemTotals(item);
       return {
@@ -138,14 +139,11 @@ export class SalesService {
 
     const totals = calculateDocumentTotals(preparedItems);
 
-    // REQUIREMENT: Auto-generate quotation dates
     let finalIssueDate = input.issueDate || new Date();
     let finalDueDate = input.dueDate;
 
     if (input.type === SalesDocumentType.QUOTE) {
-      finalIssueDate = new Date(); // quotation_date = now
-
-      // valid_until = quotation_date + 3 days
+      finalIssueDate = new Date();
       const validUntil = new Date(finalIssueDate);
       validUntil.setDate(validUntil.getDate() + 3);
       finalDueDate = validUntil;
@@ -171,6 +169,142 @@ export class SalesService {
       },
       include: { items: true, customer: true },
     });
+  }
+
+  // ── Private: direct INVOICE creation with stock deduction ─────────────────
+  private static async _createDirectInvoice(
+    input: {
+      customerId?: string;
+      issueDate?: Date;
+      dueDate?: Date | null;
+      notes?: string;
+      paymentMethod?: string;
+      items: {
+        productId: string;
+        description?: string;
+        quantity: number;
+        unitPrice: number;
+        taxRate?: number;
+        discount?: number;
+      }[];
+    },
+    branchId: string,
+    userId: string,
+  ) {
+    // Validate stock availability (no override allowed for direct invoices)
+    await StockValidationService.validateOrThrow(branchId, input.items, userId, false);
+
+    const documentId = await SequenceService.getNextNumber(
+      SalesDocumentType.INVOICE,
+      branchId,
+    );
+
+    const preparedItems = input.items.map((item) => {
+      const totals = calculateItemTotals(item);
+      return {
+        productId: item.productId,
+        description: item.description || "Invoice item",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        taxRate: item.taxRate || 0,
+        subtotal: totals.subtotal,
+        taxAmount: totals.taxAmount,
+        discount: totals.discount,
+        total: totals.total,
+      };
+    });
+
+    const totals = calculateDocumentTotals(preparedItems);
+
+    return prisma.$transaction(
+      async (tx) => {
+        // Create the invoice in SENT / UNPAID state — payment recorded separately
+        const invoice = await tx.salesDocument.create({
+          data: {
+            documentId,
+            type: SalesDocumentType.INVOICE,
+            status: SalesDocumentStatus.SENT,
+            paymentStatus: PaymentStatus.UNPAID,
+            branchId,
+            customerId: input.customerId || null,
+            issueDate: input.issueDate || new Date(),
+            dueDate: input.dueDate || null,
+            subtotal: totals.subtotal,
+            tax: totals.tax,
+            discount: totals.discount,
+            total: totals.total,
+            balance: totals.total,
+            paidAmount: 0,
+            notes: input.notes || null,
+            createdById: userId,
+            items: { create: preparedItems },
+          },
+          include: { items: true, customer: true },
+        });
+
+        // Resolve the branch's default warehouse
+        const warehouse = await tx.warehouse.findFirst({ where: { branchId } });
+        if (!warehouse) {
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            "No warehouse found for this branch — cannot deduct stock.",
+          );
+        }
+
+        // Deduct stock and record movements for every line
+        for (const item of preparedItems) {
+          const inventoryUpdate = await tx.inventory.updateMany({
+            where: {
+              productId: item.productId,
+              warehouseId: warehouse.id,
+              available: { gte: item.quantity },
+            },
+            data: {
+              quantity: { decrement: item.quantity },
+              available: { decrement: item.quantity },
+            },
+          });
+
+          if (inventoryUpdate.count !== 1) {
+            throw new AppError(
+              ErrorCode.INSUFFICIENT_INVENTORY,
+              400,
+              `Insufficient stock for product ${item.productId} — inventory may have changed.`,
+            );
+          }
+
+          await tx.stockMovement.create({
+            data: {
+              type: MovementType.OUTBOUND,
+              quantity: item.quantity,
+              productId: item.productId,
+              warehouseId: warehouse.id,
+              salesId: invoice.id,
+              reference: `Direct Invoice ${invoice.documentId}`,
+              createdById: userId,
+            },
+          });
+        }
+
+        // Sync branch-level aggregate inventory for all affected products
+        const uniqueProductIds = new Set(preparedItems.map((i) => i.productId));
+        for (const productId of uniqueProductIds) {
+          await synchronizeBranchInventory(tx, productId, branchId);
+        }
+
+        // Update customer's outstanding balance if a customer is attached
+        if (invoice.customerId) {
+          await tx.customer.update({
+            where: { id: invoice.customerId },
+            data: { currentBalance: { increment: invoice.total } },
+          });
+        }
+
+        return invoice;
+      },
+      { timeout: 30000 },
+    );
   }
 
   // =============================
@@ -670,6 +804,7 @@ export class SalesService {
     customerId?: string;
     startDate?: string;
     endDate?: string;
+    search?: string;
     limit?: string;
     offset?: string;
   }) {
@@ -680,7 +815,15 @@ export class SalesService {
     if (query.status) where.status = query.status;
     if (query.customerId) where.customerId = query.customerId;
 
-    // REQUIREMENT 6: Date range filtering
+    // Full-text search across documentId and customer name
+    if (query.search && query.search.length >= 2) {
+      where.OR = [
+        { documentId: { contains: query.search, mode: "insensitive" } },
+        { customer: { name: { contains: query.search, mode: "insensitive" } } },
+      ];
+    }
+
+    // Date range filtering on issueDate
     if (query.startDate || query.endDate) {
       where.issueDate = {};
       if (query.startDate) {
@@ -806,7 +949,12 @@ export class SalesService {
   static async getPOSSaleById(id: string) {
     const doc = await prisma.salesDocument.findUnique({
       where: { id },
-      include: { items: { include: { product: true } }, payments: true },
+      include: { 
+        items: { include: { product: true } }, 
+        payments: true,
+        branch: true,
+        createdBy: true,
+      },
     });
 
     if (!doc) return null;
@@ -823,6 +971,19 @@ export class SalesService {
       amount_paid: doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
       change: 0,
       created_date: doc.createdAt,
+      createdAt: doc.createdAt,
+      branch: doc.branch ? {
+        id: doc.branch.id,
+        name: doc.branch.name,
+        code: doc.branch.code,
+        address: doc.branch.address,
+        phone: doc.branch.phone,
+      } : null,
+      user: doc.createdBy ? {
+        id: doc.createdBy.id,
+        name: doc.createdBy.name,
+        email: doc.createdBy.email,
+      } : null,
       sales_items: doc.items.map((item) => ({
         id: item.id,
         productId: item.productId,

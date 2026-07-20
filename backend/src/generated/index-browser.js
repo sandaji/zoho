@@ -207,6 +207,21 @@ exports.Prisma.ProductScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SubcategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  categoryId: 'categoryId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.BranchInventoryScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
@@ -1448,6 +1463,8 @@ exports.Prisma.ModelName = {
   EmployeeTransfer: 'EmployeeTransfer',
   Warehouse: 'Warehouse',
   Product: 'Product',
+  Category: 'Category',
+  Subcategory: 'Subcategory',
   BranchInventory: 'BranchInventory',
   Inventory: 'Inventory',
   StockBatch: 'StockBatch',

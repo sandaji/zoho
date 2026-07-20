@@ -59,7 +59,7 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
     <TableRow className="hover:bg-slate-50">
       <TableCell>
         <div>
-          <p className="font-medium text-slate-900">{item.name}</p>
+          {/* <p className="font-medium text-slate-900">{item.name}</p> */}
           <p className="text-xs text-slate-500">SKU: {item.sku}</p>
           <Badge variant="outline" className="mt-1 text-xs">
             Available: {item.available}
@@ -67,15 +67,17 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
         </div>
       </TableCell>
       <TableCell>
+        <div>
+          <p className="font-medium text-slate-900">{item.name}</p>
+          {/* <p className="text-xs text-slate-500">SKU: {item.sku}</p> */}
+          {/* <Badge variant="outline" className="mt-1 text-xs">
+            Available: {item.available}
+          </Badge> */}
+        </div>
+      </TableCell>
+      <TableCell>
         <div className="flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => onUpdateQuantity(item.productId, item.quantity - 1)}
-          >
-            <Minus className="h-3 w-3" />
-          </Button>
+        
           <Input
             type="number"
             value={item.quantity}
@@ -84,15 +86,6 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
             min="1"
             max={item.available}
           />
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => onUpdateQuantity(item.productId, item.quantity + 1)}
-            disabled={item.quantity >= item.available}
-          >
-            <Plus className="h-3 w-3" />
-          </Button>
         </div>
       </TableCell>
       <TableCell className="text-right font-medium">{formatCurrency(item.unit_price)}</TableCell>

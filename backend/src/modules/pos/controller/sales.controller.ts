@@ -62,6 +62,7 @@ export class SalesController {
         type: input.type as any,
         status: input.status as SalesDocumentStatus | undefined,
         customerId: input.customerId || undefined,
+        paymentMethod: input.paymentMethod || undefined,
         issueDate:
           typeof input.issueDate === "string"
             ? new Date(input.issueDate)
@@ -72,8 +73,10 @@ export class SalesController {
             : input.dueDate
           : undefined,
         notes: input.notes,
+        allowStockOverride: input.allowStockOverride,
         items: input.items.map((item) => ({
           productId: item.productId,
+          description: item.description,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           taxRate: item.taxRate,

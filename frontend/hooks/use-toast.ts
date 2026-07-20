@@ -1,9 +1,10 @@
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 export type ToastType = "success" | "error" | "info";
 
 export function useToast() {
-  function showToast(title: string, description?: string, type: ToastType = "info") {
+  const showToast = useCallback((title: string, description?: string, type: ToastType = "info") => {
     switch (type) {
       case "success":
         toast.success(title, { description });
@@ -14,7 +15,7 @@ export function useToast() {
       default:
         toast(title, { description });
     }
-  }
+  }, []);
 
   return { showToast };
 }

@@ -272,6 +272,11 @@ export default function InvoicePage() {
           .max-w-sm {
             max-width: 80mm;
           }
+          
+          @page {
+            margin: 0;
+            size: 80mm auto;
+          }
         }
       `}</style>
     </div>

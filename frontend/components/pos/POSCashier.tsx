@@ -55,7 +55,7 @@ export const POSCashier: React.FC<POSCashierProps> = ({ user }) => {
           </Avatar>
           <div className="flex-1">
             <p className="font-semibold text-slate-900">{user.name}</p>
-            <p className="text-xs text-slate-500">{user.email}</p>
+            {/* <p className="text-xs text-slate-500">{user.email}</p> */}
           </div>
         </div>
 

@@ -87,7 +87,10 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     accent: sharedAccent("text-sky-300", "text-sky-400", "bg-sky-500/15 text-sky-200", "bg-sky-400"),
     permissions: ["inventory.product.view", "inventory.stock.adjust", "inventory.product.manage"],
     summary: (stats) => stats.lowStockItems ? `${stats.lowStockItems} low stock` : undefined,
-    pages: [{ id: "inventory-overview", label: "Inventory Overview", href: "/dashboard/inventory", icon: Package }],
+    pages: [
+      { id: "inventory-overview", label: "Inventory Overview", href: "/dashboard/inventory", icon: Package },
+      { id: "products", label: "Products", href: "/dashboard/products", icon: Package, permissions: ["inventory.product.view", "inventory.product.manage"] },
+    ],
   },
   {
     id: "procurement",
