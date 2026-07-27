@@ -4,9 +4,10 @@
  */
 
 import { prisma } from "../../../lib/db";
-import { Prisma } from "../../../generated";
+import { Prisma, AccountType } from "../../../generated";
 import { logger } from "../../../lib/logger";
 import { AppError, ErrorCode } from "../../../lib/errors";
+import { PeriodService } from "./period.service";
 
 export interface JournalLineInput {
   accountId: string;
@@ -17,7 +18,7 @@ export interface JournalLineInput {
 
 export interface JournalEntryInput {
   entryDate: Date;
-  periodId: string;
+  periodId?: string;
   journalId?: string;
   branchId?: string;
   description: string;
@@ -30,7 +31,7 @@ export interface JournalEntryInput {
 export class JournalEntryService {
   /**
    * Create a balanced journal entry
-   * Validates that total debits = total credits
+   * Validates that total debits = total credits and period is open
    */
   static async createJournalEntry(
     input: JournalEntryInput,
@@ -38,7 +39,16 @@ export class JournalEntryService {
   ) {
     const client = tx || prisma;
 
-    // Validate balance
+    // 1. Enforce & Validate Period
+    let periodId = input.periodId;
+    if (!periodId) {
+      const activePeriod = await PeriodService.getActivePeriod(input.entryDate);
+      periodId = activePeriod.id;
+    } else {
+      await PeriodService.ensurePeriodOpen(periodId);
+    }
+
+    // 2. Validate balance
     const totalDebits = input.lines.reduce(
       (sum, line) => sum.add(line.debit),
       new Prisma.Decimal(0)
@@ -64,15 +74,15 @@ export class JournalEntryService {
       );
     }
 
-    // Generate entry number
+    // 3. Generate entry number
     const entryNo = await this.generateEntryNumber(client);
 
-    // Create journal header
+    // 4. Create journal header
     const header = await client.journalHeader.create({
       data: {
         entry_no: entryNo,
         entry_date: input.entryDate,
-        period_id: input.periodId,
+        period_id: periodId,
         journal_id: input.journalId,
         branch_id: input.branchId,
         description: input.description,
@@ -84,9 +94,8 @@ export class JournalEntryService {
       },
     });
 
-    // Create journal lines
+    // 5. Create journal lines
     const linePromises = input.lines.map(async (line, index) => {
-      // Validate account exists
       const account = await client.chartOfAccount.findUnique({
         where: { id: line.accountId },
       });
@@ -121,7 +130,7 @@ export class JournalEntryService {
 
     const lines = await Promise.all(linePromises);
 
-    // Update account balances
+    // 6. Update account balances using natural sign conventions
     await this.updateAccountBalances(client, input.lines);
 
     logger.info(
@@ -136,14 +145,29 @@ export class JournalEntryService {
   }
 
   /**
-   * Update account balances after journal entry
+   * Update account balances after journal entry using natural sign conventions:
+   * - Asset / Expense: Debit (+), Credit (-)
+   * - Liability / Equity / Revenue: Credit (+), Debit (-)
    */
   private static async updateAccountBalances(
     client: Prisma.TransactionClient,
     lines: JournalLineInput[]
   ) {
     for (const line of lines) {
-      const netAmount = line.debit.minus(line.credit);
+      const account = await client.chartOfAccount.findUnique({
+        where: { id: line.accountId },
+        select: { account_type: true },
+      });
+
+      if (!account) continue;
+
+      const isNormalDebit =
+        account.account_type === AccountType.asset ||
+        account.account_type === AccountType.expense;
+
+      const netAmount = isNormalDebit
+        ? line.debit.minus(line.credit)
+        : line.credit.minus(line.debit);
 
       await client.chartOfAccount.update({
         where: { id: line.accountId },
@@ -293,7 +317,6 @@ export class JournalEntryService {
     createdBy: string
   ) {
     return await prisma.$transaction(async (tx) => {
-      // Get original entry
       const original = await tx.journalHeader.findUnique({
         where: { id: originalEntryId },
         include: {
@@ -305,11 +328,10 @@ export class JournalEntryService {
         throw new Error("Original journal entry not found");
       }
 
-      // Create reversal entry (debits become credits and vice versa)
       const reversalLines: JournalLineInput[] = original.lines.map(
         (line) => ({
           accountId: line.account_id,
-          debit: line.credit, // Swap debit/credit
+          debit: line.credit,
           credit: line.debit,
           description: `Reversal of ${original.entry_no}: ${line.description}`,
         })
@@ -331,5 +353,258 @@ export class JournalEntryService {
 
       return reversalEntry;
     });
+  }
+
+  // ============================================
+  // Consolidated Financial Reports (JournalHeader/JournalLine)
+  // ============================================
+
+  /**
+   * Balance Sheet Report
+   */
+  static async getBalanceSheet(asOfDate: Date = new Date(), branchId?: string) {
+    const accounts = await prisma.chartOfAccount.findMany({
+      where: {
+        account_type: { in: [AccountType.asset, AccountType.liability, AccountType.equity] },
+        is_active: true,
+      },
+    });
+
+    const whereHeader: Prisma.JournalHeaderWhereInput = {
+      entry_date: { lte: asOfDate },
+    };
+    if (branchId) {
+      whereHeader.branch_id = branchId;
+    }
+
+    const lines = await prisma.journalLine.groupBy({
+      by: ["account_id"],
+      where: {
+        header: whereHeader,
+        account_id: { in: accounts.map((a) => a.id) },
+      },
+      _sum: {
+        debit: true,
+        credit: true,
+      },
+    });
+
+    const accountBalances = accounts
+      .map((acc) => {
+        const lineSummary = lines.find((l) => l.account_id === acc.id);
+        const debit = Number(lineSummary?._sum.debit || 0);
+        const credit = Number(lineSummary?._sum.credit || 0);
+
+        let balance = 0;
+        if (acc.account_type === AccountType.asset) {
+          balance = debit - credit;
+        } else {
+          balance = credit - debit;
+        }
+
+        return {
+          ...acc,
+          balance,
+        };
+      })
+      .filter((acc) => acc.balance !== 0 || acc.current_balance !== 0);
+
+    const assets = accountBalances.filter((a) => a.account_type === AccountType.asset);
+    const liabilities = accountBalances.filter((a) => a.account_type === AccountType.liability);
+    const equity = accountBalances.filter((a) => a.account_type === AccountType.equity);
+
+    return {
+      assets,
+      liabilities,
+      equity,
+      totalAssets: assets.reduce((sum, a) => sum + a.balance, 0),
+      totalLiabilities: liabilities.reduce((sum, a) => sum + a.balance, 0),
+      totalEquity: equity.reduce((sum, a) => sum + a.balance, 0),
+    };
+  }
+
+  /**
+   * Income Statement (P&L) Report
+   */
+  static async getIncomeStatement(startDate: Date, endDate: Date, branchId?: string) {
+    const accounts = await prisma.chartOfAccount.findMany({
+      where: {
+        account_type: { in: [AccountType.revenue, AccountType.expense] },
+        is_active: true,
+      },
+    });
+
+    const whereHeader: Prisma.JournalHeaderWhereInput = {
+      entry_date: { gte: startDate, lte: endDate },
+    };
+    if (branchId) {
+      whereHeader.branch_id = branchId;
+    }
+
+    const lines = await prisma.journalLine.groupBy({
+      by: ["account_id"],
+      where: {
+        header: whereHeader,
+        account_id: { in: accounts.map((a) => a.id) },
+      },
+      _sum: {
+        debit: true,
+        credit: true,
+      },
+    });
+
+    const accountMovements = accounts
+      .map((acc) => {
+        const lineSummary = lines.find((l) => l.account_id === acc.id);
+        const debit = Number(lineSummary?._sum.debit || 0);
+        const credit = Number(lineSummary?._sum.credit || 0);
+
+        let amount = 0;
+        if (acc.account_type === AccountType.revenue) {
+          amount = credit - debit;
+        } else {
+          amount = debit - credit;
+        }
+
+        return {
+          ...acc,
+          amount,
+        };
+      })
+      .filter((acc) => acc.amount !== 0);
+
+    const revenueItems = accountMovements.filter((a) => a.account_type === AccountType.revenue);
+    const expenseItems = accountMovements.filter((a) => a.account_type === AccountType.expense);
+    const totalRevenue = revenueItems.reduce((sum, a) => sum + a.amount, 0);
+    const totalExpenses = expenseItems.reduce((sum, a) => sum + a.amount, 0);
+
+    return {
+      revenueItems,
+      expenseItems,
+      totalRevenue,
+      totalExpenses,
+      netIncome: totalRevenue - totalExpenses,
+    };
+  }
+
+  /**
+   * Cash Flow Statement
+   */
+  static async getCashFlow(startDate: Date, endDate: Date, branchId?: string) {
+    const cashAccounts = await prisma.chartOfAccount.findMany({
+      where: {
+        OR: [
+          { account_code: { in: ["1001", "1002", "1003"] } },
+          { account_name: { contains: "Cash", mode: "insensitive" } },
+          { account_name: { contains: "Bank", mode: "insensitive" } },
+        ],
+      },
+    });
+
+    const cashAccountIds = cashAccounts.map((a) => a.id);
+    if (cashAccountIds.length === 0)
+      return { summary: { cashIn: 0, cashOut: 0, netChange: 0 }, details: [] };
+
+    const whereHeader: Prisma.JournalHeaderWhereInput = {
+      entry_date: { gte: startDate, lte: endDate },
+    };
+    if (branchId) whereHeader.branch_id = branchId;
+
+    const lines = await prisma.journalLine.findMany({
+      where: {
+        account_id: { in: cashAccountIds },
+        header: whereHeader,
+      },
+      include: {
+        header: true,
+        account: true,
+      },
+      orderBy: {
+        header: { entry_date: "desc" },
+      },
+    });
+
+    let totalIn = 0;
+    let totalOut = 0;
+
+    for (const line of lines) {
+      totalIn += Number(line.debit);
+      totalOut += Number(line.credit);
+    }
+
+    return {
+      summary: {
+        cashIn: totalIn,
+        cashOut: totalOut,
+        netChange: totalIn - totalOut,
+      },
+      details: lines.map((l) => ({
+        id: l.id,
+        date: l.header.entry_date,
+        description: l.description || l.header.description,
+        amount: Number(l.debit) - Number(l.credit),
+        account: l.account.account_name,
+      })),
+    };
+  }
+
+  /**
+   * Trial Balance Report
+   * Verifies that total debits match total credits across all accounts
+   */
+  static async getTrialBalance(asOfDate: Date = new Date(), branchId?: string) {
+    const accounts = await prisma.chartOfAccount.findMany({
+      where: { is_active: true },
+      orderBy: { account_code: "asc" },
+    });
+
+    const whereHeader: Prisma.JournalHeaderWhereInput = {
+      entry_date: { lte: asOfDate },
+    };
+    if (branchId) whereHeader.branch_id = branchId;
+
+    const lineSums = await prisma.journalLine.groupBy({
+      by: ["account_id"],
+      where: { header: whereHeader },
+      _sum: {
+        debit: true,
+        credit: true,
+      },
+    });
+
+    let totalDebitSum = 0;
+    let totalCreditSum = 0;
+
+    const rows = accounts
+      .map((acc) => {
+        const sum = lineSums.find((l) => l.account_id === acc.id);
+        const debit = Number(sum?._sum.debit || 0);
+        const credit = Number(sum?._sum.credit || 0);
+
+        totalDebitSum += debit;
+        totalCreditSum += credit;
+
+        return {
+          id: acc.id,
+          accountCode: acc.account_code,
+          accountName: acc.account_name,
+          accountType: acc.account_type,
+          category: acc.category,
+          debit,
+          credit,
+          netBalance: debit - credit,
+        };
+      })
+      .filter((row) => row.debit !== 0 || row.credit !== 0);
+
+    const isBalanced = Math.abs(totalDebitSum - totalCreditSum) < 0.01;
+
+    return {
+      rows,
+      totalDebit: totalDebitSum,
+      totalCredit: totalCreditSum,
+      isBalanced,
+      difference: totalDebitSum - totalCreditSum,
+    };
   }
 }

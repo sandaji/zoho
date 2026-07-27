@@ -56,17 +56,17 @@ export const POSCart: React.FC<POSCartProps> = ({
           <p className="text-slate-400 text-sm mt-1">Search and add products to get started</p>
         </div>
       ) : (
-        <div className="max-h-[500px] overflow-auto">
+        <div className="max-h-[500px] overflow-auto table-auto">
           <Table>
-            <TableHeader className="sticky top-0 bg-slate-50 z-10">
+            <TableHeader className="sticky top-0 bg-green-500/20 z-10">
               <TableRow>
-                <TableHead className="w-[40%]">Item Code</TableHead>
-                <TableHead className="w-[40%]">Name</TableHead>
-                <TableHead className="text-center">Qty</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-right">Discount</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-                <TableHead className="text-center">Action</TableHead>
+                <TableHead className="w-[20%]">Item Code</TableHead>
+                <TableHead className="w-[30%]">Name</TableHead>
+                <TableHead className="text-center w-[10%]">Qty</TableHead>
+                <TableHead className="text-center ">Price</TableHead>
+                <TableHead className="text-center w-[5%]">Discount</TableHead>
+                <TableHead className="text-center w-[20%]">Total</TableHead>
+                <TableHead className="text-center w-[5%]">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

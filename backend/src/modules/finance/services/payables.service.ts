@@ -1,7 +1,9 @@
 // backend/src/modules/finance/services/payables.service.ts
 import { prisma } from "../../../lib/db";
-import { APStatus, PaymentMethod } from "../../../generated";
+import { APStatus, PaymentMethod, Prisma } from "../../../generated";
 import { AppError, ErrorCode } from "../../../lib/errors";
+import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
+import { JournalEntryService } from "./journal-entry.service";
 
 export class PayablesService {
   /**
@@ -17,7 +19,7 @@ export class PayablesService {
   }
 
   /**
-   * Record a payment for a payable
+   * Record a payment for a payable and post to GL
    */
   static async recordPayment(data: {
     payableId: string;
@@ -35,13 +37,13 @@ export class PayablesService {
         throw new AppError(
           ErrorCode.NOT_FOUND as any,
           404,
-          "Payable not found",
+          "Payable not found"
         );
       if (data.amount > ap.balance) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR as any,
           400,
-          "Payment amount exceeds balance",
+          "Payment amount exceeds balance"
         );
       }
 
@@ -73,6 +75,51 @@ export class PayablesService {
         },
       });
 
+      // 3. Post to General Ledger: DR Accounts Payable / CR Cash (Bank/Mobile Money)
+      const apAccount = await AccountingService.getEnsureAccount(
+        DEFAULT_ACCOUNTS.ACCOUNTS_PAYABLE,
+        tx
+      );
+
+      let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
+      if (data.paymentMethod === "mpesa")
+        assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
+      else if (
+        data.paymentMethod === "card" ||
+        data.paymentMethod === "bank_transfer"
+      )
+        assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
+
+      const assetAccount = await AccountingService.getEnsureAccount(
+        assetAccountDef,
+        tx
+      );
+
+      await JournalEntryService.createJournalEntry(
+        {
+          entryDate: new Date(),
+          description: `AP Payment for Bill #${ap.bill_no} (${payment.payment_no})`,
+          lines: [
+            {
+              accountId: apAccount.id,
+              debit: new Prisma.Decimal(data.amount),
+              credit: new Prisma.Decimal(0),
+              description: `Settle AP Bill #${ap.bill_no}`,
+            },
+            {
+              accountId: assetAccount.id,
+              debit: new Prisma.Decimal(0),
+              credit: new Prisma.Decimal(data.amount),
+              description: `Payment via ${data.paymentMethod}`,
+            },
+          ],
+          sourceType: "AP_PAYMENT",
+          sourceId: payment.id,
+          createdBy: data.userId,
+        },
+        tx
+      );
+
       return payment;
     });
   }
@@ -90,7 +137,6 @@ export class PayablesService {
       },
     });
 
-    // Count and sum by status
     const statusCounts = {
       outstanding: 0,
       partial: 0,
@@ -110,37 +156,34 @@ export class PayablesService {
       statusTotals[ap.status as keyof typeof statusTotals] += ap.balance;
     });
 
-    // Get paid amounts (for percentage calculation)
     const paidPayables = await prisma.accountPayable.findMany({
       where: { status: APStatus.paid },
     });
     statusCounts.paid = paidPayables.length;
     statusTotals.paid = paidPayables.reduce(
       (sum, ap) => sum + ap.total_amount,
-      0,
+      0
     );
 
-    // Calculate upcoming payments (due within 30 days)
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
     const upcomingPayables = allPayables.filter(
-      (ap) => ap.due_date <= thirtyDaysFromNow,
+      (ap) => ap.due_date <= thirtyDaysFromNow
     );
     const upcomingTotal = upcomingPayables.reduce(
       (sum, ap) => sum + ap.balance,
-      0,
+      0
     );
 
-    // Calculate overdue
     const overduePayables = allPayables.filter((ap) => ap.due_date < today);
     const overdueTotal = overduePayables.reduce(
       (sum, ap) => sum + ap.balance,
-      0,
+      0
     );
 
     const totalPayables =
       statusTotals.outstanding + statusTotals.partial + statusTotals.overdue;
-    const totalAll = totalPayables || 1; // Avoid division by zero
+    const totalAll = totalPayables || 1;
 
     const items = [
       {

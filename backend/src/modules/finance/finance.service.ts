@@ -82,13 +82,14 @@ export class FinanceService {
           }),
         ]);
 
-      // Low stock products - use raw SQL for field comparison
+      // Low stock products - quantity/reorder_level live in branch_inventory, not products
       const lowStockResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
-        SELECT COUNT(*)::bigint as count
-        FROM products
-        WHERE "isActive" = true
-          AND status = 'active'
-          AND quantity < reorder_level
+        SELECT COUNT(DISTINCT bi."productId")::bigint as count
+        FROM branch_inventory bi
+        JOIN products p ON p.id = bi."productId"
+        WHERE p."isActive" = true
+          AND p.status = 'active'
+          AND bi.quantity < bi.reorder_level
       `;
       const lowStockProducts = Number(lowStockResult[0]?.count || 0);
 
@@ -276,7 +277,7 @@ export class FinanceService {
           EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
           COALESCE(SUM(total), 0)::FLOAT as revenue,
           COUNT(*)::INTEGER as count
-        FROM "SalesDocument"
+        FROM sales_documents
         WHERE "createdAt" >= ${startDate}
           AND "createdAt" <= ${endDate}
           AND status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
@@ -301,7 +302,9 @@ export class FinanceService {
         WHERE "createdAt" >= ${startDate}
           AND "createdAt" <= ${endDate}
           AND type = 'expense'
-          ${(context.branchId && !isAdmin) ? Prisma.sql`AND "branchId" = ${context.branchId}` : Prisma.empty}
+        -- NOTE: finance_transactions has no branchId column in schema.prisma,
+        -- so branch scoping isn't applied here. Add a branchId column via
+        -- migration if per-branch expense filtering is required.
         GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
         ORDER BY year, month
       `;

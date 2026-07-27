@@ -401,7 +401,7 @@ export class BranchService {
       });
 
       const totalRevenue = sales.reduce(
-        (sum: number, s: any) => sum + (s.grand_total || 0),
+        (sum: number, s: any) => sum + (s.total || 0),
         0,
       );
       const totalSales = sales.length;
@@ -553,7 +553,7 @@ export class BranchService {
         active_employees: activeEmployees,
         employee_attendance_rate:
           employees.length > 0 ? (activeEmployees / employees.length) * 100 : 0,
-        departments: this.groupEmployeesByDepartment(employees),
+        departments: await this.groupEmployeesByDepartment(employees),
         total_inventory_value: totalInventoryValue,
         total_items_in_stock: totalItems,
         low_stock_items: lowStockItems,
@@ -641,7 +641,8 @@ export class BranchService {
       >();
 
       branchPayrolls.forEach((payroll: any) => {
-        const dept = payroll.user?.department || "unassigned";
+        // User has no `department` field; role is the closest available grouping
+        const dept = payroll.user?.role || "unassigned";
         const existing = departmentMap.get(dept) || {
           count: 0,
           cost: 0,
@@ -710,7 +711,7 @@ export class BranchService {
 
     return sales.map((s: any) => ({
       id: s.id,
-      reference_no: s.invoice_no,
+      reference_no: s.documentId,
       customer_name: "Walking Customer",
       amount: s.total || 0,
       status: s.status,
@@ -739,7 +740,7 @@ export class BranchService {
       delivery_no: d.delivery_no,
       destination: d.destination || "N/A",
       status: d.status,
-      expected_delivery: d.expected_delivery?.toISOString() || "",
+      expected_delivery: d.scheduled_date?.toISOString() || "",
     }));
   }
 
@@ -946,15 +947,45 @@ export class BranchService {
     }));
   }
 
-  private groupEmployeesByDepartment(employees: any[]): DepartmentDTO[] {
+  /**
+   * NOTE: `User` has no `department` or `salary` field in schema.prisma, so
+   * this groups by `role` (closest available categorical field) instead,
+   * and pulls real compensation from `Payroll.net_salary` for the current
+   * month rather than a nonexistent `emp.salary`.
+   */
+  private async groupEmployeesByDepartment(
+    employees: any[],
+  ): Promise<DepartmentDTO[]> {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const employeeIds = employees.map((e: any) => e.id);
+    const payrolls = employeeIds.length
+      ? await this.prisma.payroll.findMany({
+          where: {
+            userId: { in: employeeIds },
+            createdAt: { gte: monthStart, lte: monthEnd },
+          },
+        })
+      : [];
+
+    const salaryByUser = new Map<string, number>();
+    payrolls.forEach((p: any) => {
+      salaryByUser.set(
+        p.userId,
+        (salaryByUser.get(p.userId) || 0) + (p.net_salary || 0),
+      );
+    });
+
     const deptMap = new Map<string, { count: number; salary: number }>();
 
     employees.forEach((emp: any) => {
-      const dept = emp.department || "unassigned";
+      const dept = emp.role || "unassigned";
       const existing = deptMap.get(dept) || { count: 0, salary: 0 };
       deptMap.set(dept, {
         count: existing.count + 1,
-        salary: existing.salary + (emp.salary || 0),
+        salary: existing.salary + (salaryByUser.get(emp.id) || 0),
       });
     });
 
@@ -968,7 +999,7 @@ export class BranchService {
 
   private calculateAverageDeliveryTime(deliveries: any[]): number {
     const completedDeliveries = deliveries.filter(
-      (d: any) => d.status === "delivered" && d.expected_delivery,
+      (d: any) => d.status === "delivered" && d.scheduled_date,
     );
 
     if (completedDeliveries.length === 0) return 0;
@@ -976,7 +1007,7 @@ export class BranchService {
     const totalTime = completedDeliveries.reduce((sum: number, d: any) => {
       const createdTime = new Date(d.createdAt).getTime();
       const deliveredTime = new Date(
-        d.expected_delivery || new Date(),
+        d.scheduled_date || new Date(),
       ).getTime();
       return sum + (deliveredTime - createdTime);
     }, 0);
@@ -1000,7 +1031,7 @@ export class BranchService {
     });
 
     return lastMonthSales.reduce(
-      (sum: number, s: any) => sum + (s.grand_total || 0),
+      (sum: number, s: any) => sum + (s.total || 0),
       0,
     );
   }

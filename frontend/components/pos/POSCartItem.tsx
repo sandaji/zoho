@@ -56,28 +56,25 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
   };
 
   return (
-    <TableRow className="hover:bg-slate-50">
+    <TableRow className="odd:bg-emerald-50/20 even:bg-slate-50/500 border-b border-default hover:bg-slate-50 text-">
       <TableCell>
         <div>
-          {/* <p className="font-medium text-slate-900">{item.name}</p> */}
-          <p className="text-xs text-slate-500">SKU: {item.sku}</p>
-          <Badge variant="outline" className="mt-1 text-xs">
-            Available: {item.available}
-          </Badge>
+          <p className="text-xs text-slate-900 font-bold">{item.sku}</p>
+          {/*   <Badge
+             variant="success"
+            className="mt-1 text-xs bg-green-400/10 px-1 py-1 text-green-400"
+          >
+             {item.available} Available 
+          </Badge>*/}
         </div>
       </TableCell>
       <TableCell>
         <div>
           <p className="font-medium text-slate-900">{item.name}</p>
-          {/* <p className="text-xs text-slate-500">SKU: {item.sku}</p> */}
-          {/* <Badge variant="outline" className="mt-1 text-xs">
-            Available: {item.available}
-          </Badge> */}
         </div>
       </TableCell>
       <TableCell>
         <div className="flex items-center justify-center gap-2">
-        
           <Input
             type="number"
             value={item.quantity}
@@ -88,7 +85,7 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
           />
         </div>
       </TableCell>
-      <TableCell className="text-right font-medium">{formatCurrency(item.unit_price)}</TableCell>
+      <TableCell className="text-right font-medium">{item.unit_price}</TableCell>
       <TableCell className="text-right">
         <Dialog open={isDiscountDialogOpen} onOpenChange={setIsDiscountDialogOpen}>
           <DialogTrigger asChild>
@@ -99,9 +96,9 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
               onClick={handleOpenDiscountDialog}
             >
               {item.discount > 0 ? (
-                <span className="text-green-600 font-medium">-{formatCurrency(item.discount)}</span>
+                <span className="text-green-600 font-medium">{item.discount}</span>
               ) : (
-                <span className="text-slate-400">Add</span>
+                <span className="text-slate-400">0</span>
               )}
             </Button>
           </DialogTrigger>
@@ -155,7 +152,7 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
           </DialogContent>
         </Dialog>
       </TableCell>
-      <TableCell className="text-right font-bold text-lg">{formatCurrency(lineTotal)}</TableCell>
+      <TableCell className="text-center font-medium text-">{(lineTotal)}</TableCell>
       <TableCell className="text-center">
         <Button
           variant="ghost"

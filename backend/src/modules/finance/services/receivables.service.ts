@@ -1,7 +1,9 @@
 // backend/src/modules/finance/services/receivables.service.ts
 import { prisma } from "../../../lib/db";
-import { ARStatus, PaymentMethod } from "../../../generated";
+import { ARStatus, PaymentMethod, Prisma } from "../../../generated";
 import { AppError, ErrorCode } from "../../../lib/errors";
+import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
+import { JournalEntryService } from "./journal-entry.service";
 
 export class ReceivablesService {
   /**
@@ -10,7 +12,6 @@ export class ReceivablesService {
   static async getAllReceivables() {
     return await prisma.accountReceivable.findMany({
       include: {
-        // sales: true, // Relation not in schema
         payments: true,
       },
       orderBy: { due_date: "asc" },
@@ -18,7 +19,7 @@ export class ReceivablesService {
   }
 
   /**
-   * Record a payment for a receivable
+   * Record a payment for a receivable and post to GL
    */
   static async recordPayment(data: {
     receivableId: string;
@@ -36,13 +37,13 @@ export class ReceivablesService {
         throw new AppError(
           ErrorCode.NOT_FOUND as any,
           404,
-          "Receivable not found",
+          "Receivable not found"
         );
       if (data.amount > ar.balance) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR as any,
           400,
-          "Payment amount exceeds balance",
+          "Payment amount exceeds balance"
         );
       }
 
@@ -74,7 +75,7 @@ export class ReceivablesService {
         },
       });
 
-      // 3a. If AR references a customer by name, decrement their currentBalance
+      // 3. Decrement customer balance if matched
       const customer = await tx.customer.findUnique({
         where: { name: ar.customer_name },
       });
@@ -85,10 +86,50 @@ export class ReceivablesService {
         });
       }
 
-      // 3. Create Journal Entry (Debit Cash/Bank, Credit AR)
-      // Logic would be similar to AccountingService but specifically for AR
-      // For now, we rely on the generic GL service or manual JE if needed.
-      // In a full Odoo-style system, this would be automated here.
+      // 4. Post to General Ledger: DR Cash (Bank/Mobile Money) / CR Accounts Receivable
+      const arAccount = await AccountingService.getEnsureAccount(
+        DEFAULT_ACCOUNTS.ACCOUNTS_RECEIVABLE,
+        tx
+      );
+
+      let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
+      if (data.paymentMethod === "mpesa")
+        assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
+      else if (
+        data.paymentMethod === "card" ||
+        data.paymentMethod === "bank_transfer"
+      )
+        assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
+
+      const assetAccount = await AccountingService.getEnsureAccount(
+        assetAccountDef,
+        tx
+      );
+
+      await JournalEntryService.createJournalEntry(
+        {
+          entryDate: new Date(),
+          description: `AR Payment Collection for Invoice #${ar.invoice_no} (${payment.payment_no})`,
+          lines: [
+            {
+              accountId: assetAccount.id,
+              debit: new Prisma.Decimal(data.amount),
+              credit: new Prisma.Decimal(0),
+              description: `Collection via ${data.paymentMethod}`,
+            },
+            {
+              accountId: arAccount.id,
+              debit: new Prisma.Decimal(0),
+              credit: new Prisma.Decimal(data.amount),
+              description: `Clear AR Invoice #${ar.invoice_no}`,
+            },
+          ],
+          sourceType: "AR_PAYMENT",
+          sourceId: payment.id,
+          createdBy: data.userId,
+        },
+        tx
+      );
 
       return payment;
     });
@@ -115,7 +156,6 @@ export class ReceivablesService {
     receivables.forEach((ar) => {
       const diffTime = Math.abs(today.getTime() - ar.due_date.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
       const isOverdue = today > ar.due_date;
 
       if (!isOverdue) {
@@ -148,7 +188,7 @@ export class ReceivablesService {
       throw new AppError(
         ErrorCode.NOT_FOUND as any,
         404,
-        "AR payment not found",
+        "AR payment not found"
       );
     }
 
@@ -199,7 +239,6 @@ export class ReceivablesService {
       },
     ];
 
-    // Count invoices in each bucket
     const receivables = await prisma.accountReceivable.findMany({
       where: { status: { in: [ARStatus.outstanding, ARStatus.partial] } },
     });
@@ -225,8 +264,7 @@ export class ReceivablesService {
       else counts["over_90_days"]++;
     });
 
-    // Calculate percentages and create structured response
-    const totalAmount = aging.total || 1; // Avoid division by zero
+    const totalAmount = aging.total || 1;
     const bucketsWithData = buckets.map((bucket) => ({
       ...bucket,
       count: counts[bucket.bucket],

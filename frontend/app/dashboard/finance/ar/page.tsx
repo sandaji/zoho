@@ -1,8 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
-import { frontendEnv } from "@/lib/env";
+import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/lib/toast-context";
+import { getApiUrl } from "@/lib/api-config";
+import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { Plus, Search, MoreHorizontal, Clock, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,10 +45,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+
 
 export default function ReceivablesPage() {
-  const { showToast } = useToast();
+  const { token } = useAuth();
+  const { toast } = useToast();
   const [receivables, setReceivables] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [highlightInvoiceId, setHighlightInvoiceId] = useState<string | null>(null);
@@ -64,16 +68,14 @@ export default function ReceivablesPage() {
   });
 
   useEffect(() => {
-    fetchReceivables();
-  }, []);
+    if (token) fetchReceivables();
+  }, [token]);
 
-  const fetchReceivables = async () => {
+  const fetchReceivables = useCallback(async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/list`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const headers = getAuthHeadersWithToken(token || "");
+      const res = await fetch(getApiUrl("/v1/finance/ar/list"), { headers });
       const data = await res.json();
       if (data.status === "success") {
         const invoiceNo = searchParams?.get("invoiceNo");
@@ -83,8 +85,8 @@ export default function ReceivablesPage() {
         if (paymentId) {
           try {
             const paymentLookup = await fetch(
-              `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/payment/${paymentId}`,
-              { headers: { Authorization: `Bearer ${token}` } }
+              getApiUrl(`/v1/finance/ar/payment/${paymentId}`),
+              { headers },
             );
             const paymentLookupData = await paymentLookup.json();
             if (paymentLookupData.status === "success") {
@@ -99,9 +101,7 @@ export default function ReceivablesPage() {
 
         if (!matchedReceivableId && invoiceNo) {
           const matched = data.data.find((ar: any) => ar.invoice_no === invoiceNo);
-          if (matched) {
-            matchedReceivableId = matched.id;
-          }
+          if (matched) matchedReceivableId = matched.id;
         }
 
         if (matchedReceivableId) {
@@ -116,10 +116,11 @@ export default function ReceivablesPage() {
       }
     } catch (error) {
       console.error("Error fetching receivables:", error);
+      toast("Failed to load receivables", "error");
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, searchParams]);
 
   const getStatusBadge = (status: string, dueDate: string) => {
     const isOverdue = new Date() > new Date(dueDate);
@@ -161,13 +162,9 @@ export default function ReceivablesPage() {
     if (!selectedAR) return;
 
     try {
-      const token = localStorage.getItem("auth_token");
-      const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/finance/ar/payment`, {
+      const res = await fetch(getApiUrl("/v1/finance/ar/payment"), {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeadersWithToken(token || ""),
         body: JSON.stringify({
           receivableId: selectedAR.id,
           ...paymentData,
@@ -175,14 +172,14 @@ export default function ReceivablesPage() {
       });
       const data = await res.json();
       if (data.status === "success") {
-        showToast("Payment recorded successfully", undefined, "success");
+        toast("Payment recorded successfully", "success");
         setIsPaymentModalOpen(false);
         fetchReceivables();
       } else {
-        showToast("Error", data.message || "Failed to record payment", "error");
+        toast(data.message || "Failed to record payment", "error");
       }
-    } catch (error) {
-      showToast("Network error", undefined, "error");
+    } catch {
+      toast("Network error — please try again", "error");
     }
   };
 
@@ -249,8 +246,12 @@ export default function ReceivablesPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">84%</div>
-            <p className="text-xs text-green-400 mt-1">+2.4% from last month</p>
+            <div className="text-2xl font-bold text-slate-800">
+              {receivables.length > 0
+                ? `${Math.round((receivables.filter((ar) => ar.status === "paid").length / receivables.length) * 100)}%`
+                : "—"}
+            </div>
+            <p className="text-xs text-slate-400 mt-1">Based on current invoices</p>
           </CardContent>
         </Card>
         <Card className="shadow-sm border-slate-200">
@@ -260,8 +261,8 @@ export default function ReceivablesPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-slate-900">18 Days</div>
-            <p className="text-xs text-slate-400 mt-1">Based on recent history</p>
+            <div className="text-2xl font-bold text-slate-900">—</div>
+            <p className="text-xs text-slate-400 mt-1">Avg. days data pending</p>
           </CardContent>
         </Card>
       </div>

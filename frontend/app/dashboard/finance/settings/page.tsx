@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type FormEvent } from "react";
 import { frontendEnv } from "@/lib/env";
+import { getAuthHeaders } from "@/lib/api-utils";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface BudgetFormState {
@@ -53,9 +54,8 @@ export default function PeriodManagementPage() {
   const fetchPeriods = async (year: number) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("auth_token");
       const res = await fetch(`${API_URL}/v1/finance/periods?year=${year}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: getAuthHeaders(),
       });
       const data = await res.json();
       if (data.status === "success") {
@@ -76,10 +76,9 @@ export default function PeriodManagementPage() {
 
   const fetchBudgets = async (year?: number) => {
     try {
-      const token = localStorage.getItem("auth_token");
       const query = year ? `?fiscalYear=${year}` : "";
       const res = await fetch(`${API_URL}/v1/finance/budgets${query}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: getAuthHeaders(),
       });
       const data = await res.json();
       if (data.status === "success") {
@@ -94,13 +93,9 @@ export default function PeriodManagementPage() {
     e.preventDefault();
     try {
       setSubmittingBudget(true);
-      const token = localStorage.getItem("auth_token");
       const res = await fetch(`${API_URL}/v1/finance/budgets`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({
           ...budgetForm,
           budgetedAmount: Number(budgetForm.budgetedAmount),
@@ -110,28 +105,28 @@ export default function PeriodManagementPage() {
       });
       const data = await res.json();
       if (data.status === "success") {
-        showSuccessToast("Budget saved successfully");
+        showSuccessToast("Budget created successfully!");
+        fetchBudgets(yearToInit);
         setBudgetForm({
           budgetName: "",
-          fiscalYear: yearToInit,
+          fiscalYear: new Date().getFullYear(),
           accountId: "",
           budgetedAmount: "",
           actualAmount: "",
-          periodStart: `${yearToInit}-01-01`,
-          periodEnd: `${yearToInit}-12-31`,
+          periodStart: `${new Date().getFullYear()}-01-01`,
+          periodEnd: `${new Date().getFullYear()}-12-31`,
           periodType: "monthly",
           notes: "",
           status: "draft",
         });
-        fetchBudgets(yearToInit);
       } else {
-        showErrorToast("Budget could not be saved", {
-          details: data.message || "Please try again.",
+        showErrorToast("Failed to create budget", {
+          details: data.message || "An unknown error occurred.",
         });
       }
     } catch (error) {
       console.error("Error creating budget:", error);
-      showErrorToast("Budget could not be saved", { details: "Could not connect to the server." });
+      showErrorToast("Error", { details: "Could not create budget." });
     } finally {
       setSubmittingBudget(false);
     }
@@ -140,13 +135,9 @@ export default function PeriodManagementPage() {
   const initializeYear = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("auth_token");
       const res = await fetch(`${API_URL}/v1/finance/periods/initialize`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ year: yearToInit }),
       });
       const data = await res.json();
@@ -170,10 +161,9 @@ export default function PeriodManagementPage() {
     const action = period.isLocked ? "unlock" : "lock";
     try {
       setLoadingAction(period.id);
-      const token = localStorage.getItem("auth_token");
       const res = await fetch(`${API_URL}/v1/finance/periods/${period.id}/${action}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: getAuthHeaders(),
       });
 
       const data = await res.json();

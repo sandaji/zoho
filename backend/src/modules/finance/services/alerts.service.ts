@@ -269,11 +269,11 @@ export class AlertsService {
         SELECT 
           ba.id as account_id,
           ba.account_name,
-          COUNT(bt.*) as unreconciled_count
-        FROM "BankAccount" ba
-        LEFT JOIN "BankTransaction" bt ON ba.id = bt.account_id AND bt.reconciled = false
+          COUNT(bt.id) as unreconciled_count
+        FROM bank_accounts ba
+        LEFT JOIN bank_transactions bt ON ba.id = bt.bank_account_id AND bt.is_reconciled = false
         GROUP BY ba.id, ba.account_name
-        HAVING COUNT(bt.*) > 0
+        HAVING COUNT(bt.id) > 0
         LIMIT 5
       `;
 

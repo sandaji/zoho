@@ -135,7 +135,8 @@ class FinanceController {
       const date = req.query.date
         ? new Date(req.query.date as string)
         : new Date();
-      const report = await AccountingService.getBalanceSheet(date);
+      const branchId = req.query.branchId as string | undefined;
+      const report = await AccountingService.getBalanceSheet(date, branchId);
       res.status(200).json({ status: "success", data: report });
     } catch (error) {
       logger.error(error, "Error fetching Balance Sheet:");
@@ -155,10 +156,12 @@ class FinanceController {
       const endDate = req.query.endDate
         ? new Date(req.query.endDate as string)
         : new Date();
+      const branchId = req.query.branchId as string | undefined;
 
       const report = await AccountingService.getIncomeStatement(
         startDate,
         endDate,
+        branchId,
       );
       res.status(200).json({ status: "success", data: report });
     } catch (error) {
@@ -179,11 +182,101 @@ class FinanceController {
       const endDate = req.query.endDate
         ? new Date(req.query.endDate as string)
         : new Date();
+      const branchId = req.query.branchId as string | undefined;
 
-      const report = await AccountingService.getCashFlow(startDate, endDate);
+      const report = await AccountingService.getCashFlow(
+        startDate,
+        endDate,
+        branchId,
+      );
       res.status(200).json({ status: "success", data: report });
     } catch (error) {
       logger.error(error, "Error fetching Cash Flow:");
+      next(error);
+    }
+  }
+
+  async getTrialBalance(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const date = req.query.date
+        ? new Date(req.query.date as string)
+        : new Date();
+      const branchId = req.query.branchId as string | undefined;
+      const report = await AccountingService.getTrialBalance(date, branchId);
+      res.status(200).json({ status: "success", data: report });
+    } catch (error) {
+      logger.error(error, "Error fetching Trial Balance:");
+      next(error);
+    }
+  }
+
+  // ============================================
+  // Chart of Accounts CRUD
+  // ============================================
+
+  async getAccounts(
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const accounts = await prisma.chartOfAccount.findMany({
+        orderBy: { account_code: "asc" },
+      });
+      res.status(200).json({ status: "success", data: accounts });
+    } catch (error) {
+      logger.error(error, "Error fetching Chart of Accounts:");
+      next(error);
+    }
+  }
+
+  async createAccount(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { code, name, type, category, is_active } = req.body;
+      const account = await prisma.chartOfAccount.create({
+        data: {
+          account_code: code,
+          account_name: name,
+          account_type: type,
+          category: category || "General",
+          is_active: is_active ?? true,
+          is_system: false,
+        },
+      });
+      res.status(201).json({ status: "success", data: account });
+    } catch (error) {
+      logger.error(error, "Error creating account:");
+      next(error);
+    }
+  }
+
+  async updateAccount(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { name, category, is_active } = req.body;
+      const account = await prisma.chartOfAccount.update({
+        where: { id },
+        data: {
+          account_name: name,
+          category,
+          is_active,
+        },
+      });
+      res.status(200).json({ status: "success", data: account });
+    } catch (error) {
+      logger.error(error, "Error updating account:");
       next(error);
     }
   }

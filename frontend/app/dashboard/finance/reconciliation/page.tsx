@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { useToast } from "@/lib/toast-context";
 
 interface BankAccount {
   id: string;
@@ -24,6 +24,7 @@ interface BankAccount {
 }
 
 export default function ReconciliationDashboard() {
+  const { toast } = useToast();
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
@@ -44,7 +45,7 @@ export default function ReconciliationDashboard() {
       const json = await res.json();
       setAccounts(json.data);
     } catch (error) {
-      toast.error("Error loading bank accounts");
+      toast("Error loading bank accounts", "error");
       console.error(error);
     } finally {
       setLoading(false);
@@ -73,10 +74,10 @@ export default function ReconciliationDashboard() {
 
       if (!res.ok) throw new Error("Upload failed");
       
-      toast.success("Statement uploaded successfully");
+      toast("Statement uploaded successfully", "success");
       router.push(`/dashboard/finance/reconciliation/${selectedAccountId}`);
     } catch (error) {
-      toast.error("Failed to upload statement");
+      toast("Failed to upload statement", "error");
       console.error(error);
     } finally {
       setUploading(false);

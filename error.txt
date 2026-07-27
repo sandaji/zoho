@@ -1,0 +1,178 @@
+Issue 1: Wrong table for stock quantities
+
+In finance.service.ts around line 86 you have:
+
+SELECT COUNT(*)::bigint as count
+FROM products
+WHERE "isActive" = true
+  AND status = 'active'
+  AND quantity < reorder_level
+Why it fails
+
+Your Prisma schema shows:
+
+model Product {
+    ...
+}
+
+does not contain
+
+quantity
+reorder_level
+
+Those fields are actually stored in
+
+model Inventory {
+    quantity Int
+    ...
+    @@map("inventory")
+}
+
+Meaning stock has already been normalized into an Inventory table.
+
+The Finance module is still assuming inventory is stored inside Product.
+
+This query should be rewritten to use inventory (and join products only if product status is needed).
+
+Issue 2: Wrong table name
+
+Your schema contains
+
+model SalesDocument {
+
+   ...
+
+   @@map("sales_documents")
+}
+
+But Finance is querying
+
+FROM "SalesDocument"
+
+That table does not exist.
+
+The actual SQL table is
+
+sales_documents
+
+or whatever PostgreSQL created from the mapping.
+
+That explains:
+
+relation "SalesDocument" does not exist
+
+Every raw query using "SalesDocument" must be updated.
+
+Issue 3: Raw SQL is bypassing Prisma mappings
+
+This query:
+
+FROM "SalesDocument"
+
+would never happen if Prisma ORM was used.
+
+Instead of
+
+prisma.$queryRaw(...)
+
+it should preferably be
+
+prisma.salesDocument.groupBy(...)
+
+or
+
+aggregate(...)
+
+Prisma automatically respects
+
+@@map("sales_documents")
+
+Raw SQL does not.
+
+Issue 4: Top-selling products
+
+I also checked
+
+getTopSellingProducts()
+
+This part is actually good:
+
+prisma.salesDocumentItem.groupBy({
+    _sum: {
+        quantity: true,
+        total: true
+    }
+})
+
+So the quantity error is not coming from here.
+
+It comes from the earlier raw SQL query.
+
+Issue 5: BankAccount
+
+Your logs show
+
+relation "BankAccount" does not exist
+
+I checked your schema.
+
+There is no
+
+model BankAccount
+
+So Finance is querying a table that no longer exists.
+
+That means either:
+
+BankAccount was renamed.
+BankAccount was removed.
+BankAccount hasn't been implemented yet.
+
+FinanceService still assumes it exists.
+
+Root cause
+
+The Finance module mixes two completely different data models.
+
+Some code has already been updated to the new Prisma schema:
+
+prisma.salesDocumentItem.groupBy()
+
+while other parts are still written for the old database:
+
+FROM "SalesDocument"
+
+FROM products
+
+quantity
+
+reorder_level
+
+BankAccount
+
+So the Finance module is currently in a partially migrated state.
+
+What I recommend
+
+Instead of fixing one query at a time, I would perform a complete Finance module migration.
+
+The migration should:
+
+Scan every prisma.$queryRaw() in the Finance module.
+Compare every table and column against schema.prisma.
+Replace outdated table names using the Prisma mappings (@@map).
+Replace removed columns with the new schema equivalents.
+Replace raw SQL with Prisma ORM wherever possible.
+Keep raw SQL only where Prisma cannot express the query efficiently.
+Test every finance endpoint afterwards.
+The files I would inspect next
+
+ these are the highest-priority files:
+
+backend/src/modules/finance/finance.service.ts
+backend/src/modules/finance/service/comprehensive-finance.service.ts
+backend/prisma/schema.prisma
+
+I would also audit every endpoint under /finance, because the errors suggest there are likely additional outdated queries beyond the four already failing.
+
+Given the size of your ERP and the redesigns we've worked through, I would treat this as a schema synchronization task rather than a bug-fixing task: bring the entire Finance module into alignment with the current Prisma schema in one pass, then run endpoint-by-endpoint validation to ensure nothing is left pointing at obsolete tables or columns.

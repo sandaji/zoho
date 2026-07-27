@@ -61,6 +61,28 @@ router.get(
   (req, res, next) => financeController.getCashFlowStatement(req, res, next),
 );
 router.get(
+  "/reports/trial-balance",
+  requirePermission("finance.gl.view"),
+  (req, res, next) => financeController.getTrialBalance(req, res, next),
+);
+
+// Chart of Accounts CRUD
+router.get(
+  "/accounts",
+  requirePermission("finance.gl.view"),
+  (req, res, next) => financeController.getAccounts(req, res, next),
+);
+router.post(
+  "/accounts",
+  requirePermission("finance.gl.create"),
+  (req, res, next) => financeController.createAccount(req, res, next),
+);
+router.patch(
+  "/accounts/:id",
+  requirePermission("finance.gl.create"),
+  (req, res, next) => financeController.updateAccount(req, res, next),
+);
+router.get(
   "/pl-preview",
   hasAnyPermission(["finance.gl.view", "finance.report.aging"]),
   (req, res, next) => financeController.getPLQuickPreview(req, res, next),
