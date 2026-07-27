@@ -27,8 +27,10 @@ export const KPIMetricsPanel = () => {
       try {
         setError(null);
         const response = await fetchFinancialKPIs();
-        if (response.success && response.data?.kpis) {
-          setKpis(response.data.kpis);
+        if (response.success && response.data) {
+          // Backend returns KPIs object directly in data
+          const kpisData = response.data.kpis || response.data;
+          setKpis(kpisData);
         } else {
           setError(response.error?.message || "Failed to load KPIs");
         }

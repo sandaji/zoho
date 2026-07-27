@@ -207,11 +207,11 @@ export default function InvoicePage() {
               )}
               <div className="flex justify-between">
                 <span>Tax (16%)</span>
-                <span className="font-mono">ksh {sale.tax.toFixed(2)}</span>
+                <span className="font-mono">ksh {sale.tax.toFixed(0)}</span>
               </div>
               <div className="flex justify-between border-t pt-1 font-bold">
                 <span>Total</span>
-                <span className="font-mono">ksh {sale.grand_total.toFixed(2)}</span>
+                <span className="font-mono">ksh {sale.grand_total.toFixed(0)}</span>
               </div>
             </div>
 
@@ -223,7 +223,7 @@ export default function InvoicePage() {
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Amount Paid</span>
-                <span className="font-mono font-bold">ksh {sale.amount_paid.toFixed(2)}</span>
+                <span className="font-mono font-bold">ksh {sale.amount_paid.toFixed(0)}</span>
               </div>
               {sale.change > 0 && (
                 <div className="flex justify-between">

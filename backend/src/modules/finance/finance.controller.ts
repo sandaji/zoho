@@ -1061,49 +1061,69 @@ class FinanceController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      // Generate mock tax summary - replace with actual calculation
+      const now = new Date();
+      const yearStart = new Date(now.getFullYear(), 0, 1);
+      const periodLabel = now.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+      });
+
+      const taxTypeLabels: Record<string, string> = {
+        vat: "VAT",
+        income_tax: "Income Tax",
+        payroll_tax: "Payroll Tax",
+        withholding_tax: "Withholding Tax",
+        sales_tax: "Sales Tax",
+      };
+
+      const records = await prisma.taxRecord.findMany({
+        where: { createdAt: { gte: yearStart } },
+      });
+
+      const grouped = new Map<string, { taxable: number; tax: number }>();
+      for (const r of records) {
+        const cur = grouped.get(r.tax_type) || { taxable: 0, tax: 0 };
+        cur.taxable += r.taxable_amount;
+        cur.tax += r.tax_amount;
+        grouped.set(r.tax_type, cur);
+      }
+
+      const totalTax = Array.from(grouped.values()).reduce(
+        (s, v) => s + v.tax,
+        0,
+      );
+      const totalTaxable = Array.from(grouped.values()).reduce(
+        (s, v) => s + v.taxable,
+        0,
+      );
+
+      const categories = Array.from(grouped.entries()).map(([type, v]) => ({
+        category: taxTypeLabels[type] || type,
+        rate: v.taxable > 0 ? Number(((v.tax / v.taxable) * 100).toFixed(2)) : 0,
+        baseAmount: v.taxable,
+        taxAmount: v.tax,
+        percentage:
+          totalTax > 0 ? Number(((v.tax / totalTax) * 100).toFixed(1)) : 0,
+      }));
+
+      const pendingRecord = await prisma.taxRecord.findFirst({
+        where: { status: { in: ["pending", "overdue"] } },
+        orderBy: { due_date: "asc" },
+      });
+
       const taxSummary = {
-        period: new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-        }),
-        categories: [
-          {
-            category: "Income Tax",
-            rate: 15,
-            baseAmount: 1000000,
-            taxAmount: 150000,
-            percentage: 45,
-          },
-          {
-            category: "VAT",
-            rate: 16,
-            baseAmount: 500000,
-            taxAmount: 80000,
-            percentage: 24,
-          },
-          {
-            category: "Withholding Tax",
-            rate: 5,
-            baseAmount: 200000,
-            taxAmount: 10000,
-            percentage: 3,
-          },
-          {
-            category: "Other Taxes",
-            rate: 10,
-            baseAmount: 300000,
-            taxAmount: 90000,
-            percentage: 28,
-          },
-        ],
-        totalTaxable: 2000000,
-        totalTax: 330000,
-        effectiveRate: 16.5,
-        filingStatus: "filed",
-        filingDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-          .toISOString()
-          .split("T")[0],
+        period: periodLabel,
+        categories,
+        totalTaxable,
+        totalTax,
+        effectiveRate:
+          totalTaxable > 0
+            ? Number(((totalTax / totalTaxable) * 100).toFixed(2))
+            : 0,
+        filingStatus: pendingRecord ? pendingRecord.status : "filed",
+        filingDeadline: pendingRecord
+          ? pendingRecord.due_date.toISOString().split("T")[0]
+          : undefined,
       };
 
       res.status(200).json({
@@ -1122,51 +1142,78 @@ class FinanceController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      // Generate mock reconciliation status - replace with actual reconciliation data
+      const bankAccounts = await AccountingService.getBankAccounts();
+
+      const items = await Promise.all(
+        bankAccounts.map(async (acc) => {
+          const [totalLines, unreconciledLines, lastStatement] =
+            await Promise.all([
+              prisma.bankStatementLine.count({
+                where: { statement: { account_id: acc.id } },
+              }),
+              prisma.bankStatementLine.findMany({
+                where: {
+                  statement: { account_id: acc.id },
+                  is_reconciled: false,
+                },
+                orderBy: { date: "asc" },
+              }),
+              prisma.bankStatement.findFirst({
+                where: { account_id: acc.id },
+                orderBy: { upload_date: "desc" },
+              }),
+            ]);
+
+          const unreconciledCount = unreconciledLines.length;
+          const variance = unreconciledLines.reduce(
+            (sum, l) => sum + l.amount,
+            0,
+          );
+          const oldest = unreconciledLines[0];
+          const daysOverdue = oldest
+            ? Math.max(
+                0,
+                Math.floor(
+                  (Date.now() - oldest.date.getTime()) / (1000 * 60 * 60 * 24),
+                ),
+              )
+            : 0;
+
+          let status: "reconciled" | "pending" | "discrepancy" = "reconciled";
+          if (unreconciledCount > 0) {
+            status = daysOverdue > 14 ? "discrepancy" : "pending";
+          }
+
+          return {
+            accountId: acc.id,
+            accountName: acc.account_name,
+            status,
+            lastReconciliationDate: (
+              lastStatement?.upload_date || new Date()
+            ).toISOString(),
+            transactionCount: totalLines,
+            amount: acc.current_balance,
+            variance,
+            daysOverdue,
+          };
+        }),
+      );
+
+      const reconciledCount = items.filter(
+        (i) => i.status === "reconciled",
+      ).length;
+      const pendingCount = items.filter((i) => i.status === "pending").length;
+      const discrepancyCount = items.filter(
+        (i) => i.status === "discrepancy",
+      ).length;
+
       const reconciliationStatus = {
-        items: [
-          {
-            accountId: "1",
-            accountName: "Main Operating Account",
-            status: "reconciled",
-            lastReconciliationDate: new Date(
-              Date.now() - 7 * 24 * 60 * 60 * 1000,
-            ).toISOString(),
-            transactionCount: 245,
-            amount: 500000,
-            variance: 0,
-            daysOverdue: 0,
-          },
-          {
-            accountId: "2",
-            accountName: "Petty Cash",
-            status: "pending",
-            lastReconciliationDate: new Date(
-              Date.now() - 14 * 24 * 60 * 60 * 1000,
-            ).toISOString(),
-            transactionCount: 89,
-            amount: 25000,
-            variance: 500,
-            daysOverdue: 7,
-          },
-          {
-            accountId: "3",
-            accountName: "Savings Account",
-            status: "reconciled",
-            lastReconciliationDate: new Date(
-              Date.now() - 3 * 24 * 60 * 60 * 1000,
-            ).toISOString(),
-            transactionCount: 34,
-            amount: 1000000,
-            variance: 0,
-            daysOverdue: 0,
-          },
-        ],
-        totalAccounts: 3,
-        reconciledCount: 2,
-        pendingCount: 1,
-        discrepancyCount: 0,
-        totalAmount: 1525000,
+        items,
+        totalAccounts: items.length,
+        reconciledCount,
+        pendingCount,
+        discrepancyCount,
+        totalAmount: items.reduce((sum, i) => sum + i.amount, 0),
       };
 
       res.status(200).json({
@@ -1186,54 +1233,89 @@ class FinanceController {
   ): Promise<void> {
     try {
       const periods = parseInt(req.query.periods as string) || 12;
-
-      // Generate mock trend data - replace with actual calculation
-      const trends = [];
       const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth() - (periods - 1), 1);
+
+      const [salesRows, expenseRows, payrollRows] = await Promise.all([
+        prisma.$queryRaw<Array<{ year: number; month: number; revenue: number }>>`
+          SELECT EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
+                 EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
+                 COALESCE(SUM(total), 0)::FLOAT as revenue
+          FROM sales_documents
+          WHERE "createdAt" >= ${startDate}
+            AND status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
+          GROUP BY 1, 2
+          ORDER BY 1, 2
+        `,
+        prisma.$queryRaw<Array<{ year: number; month: number; expenses: number }>>`
+          SELECT EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
+                 EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
+                 COALESCE(SUM(amount), 0)::FLOAT as expenses
+          FROM finance_transactions
+          WHERE "createdAt" >= ${startDate}
+            AND type = 'expense'
+          GROUP BY 1, 2
+          ORDER BY 1, 2
+        `,
+        prisma.$queryRaw<Array<{ year: number; month: number; payroll: number }>>`
+          SELECT EXTRACT(YEAR FROM period_start)::INTEGER as year,
+                 EXTRACT(MONTH FROM period_start)::INTEGER as month,
+                 COALESCE(SUM(net_salary), 0)::FLOAT as payroll
+          FROM payroll
+          WHERE period_start >= ${startDate}
+            AND status IN ('approved', 'paid')
+          GROUP BY 1, 2
+          ORDER BY 1, 2
+        `,
+      ]);
+
+      const trends = [];
       for (let i = periods - 1; i >= 0; i--) {
-        const date = new Date(now);
-        date.setMonth(date.getMonth() - i);
-        const baseRevenue = 500000 + Math.random() * 200000;
-        const baseExpenses = 300000 + Math.random() * 100000;
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+        const revenue =
+          salesRows.find((r) => r.year === y && r.month === m)?.revenue || 0;
+        const opex =
+          expenseRows.find((r) => r.year === y && r.month === m)?.expenses ||
+          0;
+        const payroll =
+          payrollRows.find((r) => r.year === y && r.month === m)?.payroll ||
+          0;
+        const expenses = opex + payroll;
+        const profit = revenue - expenses;
+
         trends.push({
-          period: date.toLocaleDateString("en-US", {
+          period: d.toLocaleDateString("en-US", {
             year: "2-digit",
             month: "short",
           }),
-          revenue: Math.round(baseRevenue),
-          expenses: Math.round(baseExpenses),
-          profit: Math.round(baseRevenue - baseExpenses),
-          margin:
-            Math.round(
-              ((baseRevenue - baseExpenses) / baseRevenue) * 100 * 100,
-            ) / 100,
+          revenue: Math.round(revenue),
+          expenses: Math.round(expenses),
+          profit: Math.round(profit),
+          margin: revenue > 0 ? Number(((profit / revenue) * 100).toFixed(2)) : 0,
         });
       }
 
       const currentPeriod = trends[trends.length - 1];
-      const previousPeriod = trends[trends.length - 2] || trends[0];
-      const revenueGrowth =
-        ((currentPeriod.revenue - previousPeriod.revenue) /
-          previousPeriod.revenue) *
-        100;
-      const expenseChange =
-        ((currentPeriod.expenses - previousPeriod.expenses) /
-          previousPeriod.expenses) *
-        100;
-      const profitChange =
-        ((currentPeriod.profit - previousPeriod.profit) /
-          previousPeriod.profit) *
-        100;
-      const marginTrend = currentPeriod.margin - previousPeriod.margin;
+      const previousPeriod = trends[trends.length - 2] || currentPeriod;
+
+      const pctChange = (a: number, b: number) =>
+        b !== 0 ? Number((((a - b) / Math.abs(b)) * 100).toFixed(2)) : 0;
 
       const trendData = {
         trends,
         currentPeriod,
         previousPeriod,
-        revenueGrowth,
-        expenseChange,
-        profitChange,
-        marginTrend,
+        revenueGrowth: pctChange(currentPeriod.revenue, previousPeriod.revenue),
+        expenseChange: pctChange(
+          currentPeriod.expenses,
+          previousPeriod.expenses,
+        ),
+        profitChange: pctChange(currentPeriod.profit, previousPeriod.profit),
+        marginTrend: Number(
+          (currentPeriod.margin - previousPeriod.margin).toFixed(2),
+        ),
       };
 
       res.status(200).json({
@@ -1253,36 +1335,154 @@ class FinanceController {
   ): Promise<void> {
     try {
       const limit = parseInt(req.query.limit as string) || 5;
-
-      // Generate mock top customers/vendors - replace with actual database query
-      const topCustomers = Array.from(
-        { length: Math.min(limit, 5) },
-        (_, i) => ({
-          customerId: `C${i + 1}`,
-          customerName: `Customer ${String.fromCharCode(65 + i)}`,
-          totalRevenue: 500000 - i * 50000 + Math.random() * 10000,
-          invoiceCount: 15 - i * 2,
-          averageInvoiceValue: 30000 - i * 3000 + Math.random() * 5000,
-          outstandingBalance: 20000 - i * 2000 + Math.random() * 3000,
-          lastTransactionDate: new Date(
-            Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
-          ).toISOString(),
-          trend: 5 - i + Math.random() * 10,
-        }),
+      const now = new Date();
+      const periodStart = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        1,
+      );
+      const previousPeriodStart = new Date(
+        now.getFullYear(),
+        now.getMonth() - 2,
+        1,
+      );
+      const previousPeriodEnd = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        0,
       );
 
-      const topVendors = Array.from({ length: Math.min(limit, 5) }, (_, i) => ({
-        customerId: `V${i + 1}`,
-        customerName: `Vendor ${String.fromCharCode(65 + i)}`,
-        totalRevenue: 400000 - i * 40000 + Math.random() * 10000,
-        invoiceCount: 20 - i * 3,
-        averageInvoiceValue: 25000 - i * 2500 + Math.random() * 5000,
-        outstandingBalance: 30000 - i * 3000 + Math.random() * 5000,
-        lastTransactionDate: new Date(
-          Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
-        ).toISOString(),
-        trend: -(3 + i) - Math.random() * 5,
-      }));
+      // Top Customers - query sales documents grouped by customer
+      const customerData = await prisma.$queryRaw<
+        Array<{
+          customerId: string;
+          customerName: string;
+          totalRevenue: number;
+          invoiceCount: number;
+          lastTransactionDate: Date;
+        }>
+      >`
+        SELECT c.id as "customerId",
+               c.name as "customerName",
+               COALESCE(SUM(sd.total), 0)::FLOAT as "totalRevenue",
+               COUNT(sd.id)::INTEGER as "invoiceCount",
+               MAX(sd."createdAt") as "lastTransactionDate"
+        FROM customers c
+        LEFT JOIN sales_documents sd ON c.id = sd."customerId"
+                                    AND sd."createdAt" >= ${periodStart}
+                                    AND sd.status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
+        WHERE c."isActive" = true
+        GROUP BY c.id, c.name
+        HAVING COUNT(sd.id) > 0
+        ORDER BY "totalRevenue" DESC
+        LIMIT ${limit}
+      `;
+
+      // Get previous period revenue for trend calculation
+      const previousCustomerRevenue = await prisma.$queryRaw<
+        Array<{ customerId: string; revenue: number }>
+      >`
+        SELECT c.id as "customerId",
+               COALESCE(SUM(sd.total), 0)::FLOAT as revenue
+        FROM customers c
+        LEFT JOIN sales_documents sd ON c.id = sd."customerId"
+                                    AND sd."createdAt" >= ${previousPeriodStart}
+                                    AND sd."createdAt" <= ${previousPeriodEnd}
+                                    AND sd.status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
+        WHERE c."isActive" = true
+        GROUP BY c.id
+      `;
+
+      const prevCustomerMap = new Map(
+        previousCustomerRevenue.map((r) => [r.customerId, r.revenue]),
+      );
+
+      const topCustomers = customerData.map((c) => {
+        const prevRevenue = prevCustomerMap.get(c.customerId) || 0;
+        const trend =
+          prevRevenue > 0
+            ? Number((((c.totalRevenue - prevRevenue) / prevRevenue) * 100).toFixed(1))
+            : 0;
+
+        return {
+          customerId: c.customerId,
+          customerName: c.customerName,
+          totalRevenue: Math.round(c.totalRevenue),
+          invoiceCount: c.invoiceCount,
+          averageInvoiceValue:
+            c.invoiceCount > 0
+              ? Math.round(c.totalRevenue / c.invoiceCount)
+              : 0,
+          outstandingBalance: 0, // Would need to query from customer.currentBalance
+          lastTransactionDate: c.lastTransactionDate.toISOString(),
+          trend,
+        };
+      });
+
+      // Top Vendors - query purchase orders grouped by vendor
+      const vendorData = await prisma.$queryRaw<
+        Array<{
+          vendorId: string;
+          vendorName: string;
+          totalExpenses: number;
+          poCount: number;
+          lastTransactionDate: Date;
+        }>
+      >`
+        SELECT v.id as "vendorId",
+               v.name as "vendorName",
+               COALESCE(SUM(po.total), 0)::FLOAT as "totalExpenses",
+               COUNT(po.id)::INTEGER as "poCount",
+               MAX(po."createdAt") as "lastTransactionDate"
+        FROM vendors v
+        LEFT JOIN purchase_orders po ON v.id = po."vendorId"
+                                    AND po."createdAt" >= ${periodStart}
+                                    AND po.status IN ('APPROVED', 'CLOSED')
+        WHERE v."isActive" = true
+        GROUP BY v.id, v.name
+        HAVING COUNT(po.id) > 0
+        ORDER BY "totalExpenses" DESC
+        LIMIT ${limit}
+      `;
+
+      // Get previous period expenses for trend calculation
+      const previousVendorExpenses = await prisma.$queryRaw<
+        Array<{ vendorId: string; expenses: number }>
+      >`
+        SELECT v.id as "vendorId",
+               COALESCE(SUM(po.total), 0)::FLOAT as expenses
+        FROM vendors v
+        LEFT JOIN purchase_orders po ON v.id = po."vendorId"
+                                    AND po."createdAt" >= ${previousPeriodStart}
+                                    AND po."createdAt" <= ${previousPeriodEnd}
+                                    AND po.status IN ('APPROVED', 'CLOSED')
+        WHERE v."isActive" = true
+        GROUP BY v.id
+      `;
+
+      const prevVendorMap = new Map(
+        previousVendorExpenses.map((r) => [r.vendorId, r.expenses]),
+      );
+
+      const topVendors = vendorData.map((v) => {
+        const prevExpenses = prevVendorMap.get(v.vendorId) || 0;
+        const trend =
+          prevExpenses > 0
+            ? Number((((v.totalExpenses - prevExpenses) / prevExpenses) * 100).toFixed(1))
+            : 0;
+
+        return {
+          customerId: v.vendorId,
+          customerName: v.vendorName,
+          totalRevenue: Math.round(v.totalExpenses),
+          invoiceCount: v.poCount,
+          averageInvoiceValue:
+            v.poCount > 0 ? Math.round(v.totalExpenses / v.poCount) : 0,
+          outstandingBalance: 0, // Would need to calculate from unpaid POs
+          lastTransactionDate: v.lastTransactionDate.toISOString(),
+          trend: -trend, // Negative trend for vendors indicates cost reduction
+        };
+      });
 
       const data = {
         topCustomers,
@@ -1295,10 +1495,8 @@ class FinanceController {
           (sum, v) => sum + v.totalRevenue,
           0,
         ),
-        periodStart: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-          .toISOString()
-          .split("T")[0],
-        periodEnd: new Date().toISOString().split("T")[0],
+        periodStart: periodStart.toISOString().split("T")[0],
+        periodEnd: now.toISOString().split("T")[0],
       };
 
       res.status(200).json({

@@ -177,6 +177,26 @@ class ApiClient {
         };
       }
 
+      // Normalize response shape: some backend endpoints return
+      // { status: "success", data } instead of { success: true, data }.
+      // Without this, `result.success` is undefined (falsy) for those
+      // responses and every successful call looks like a failure.
+      if (typeof (data as any).success === "boolean") {
+        return data;
+      }
+      if ((data as any).status === "success") {
+        return { success: true, data: (data as any).data };
+      }
+      if ((data as any).status === "error") {
+        return {
+          success: false,
+          error: (data as any).error || {
+            code: "UNKNOWN_ERROR",
+            message: (data as any).message || "An error occurred",
+          },
+        };
+      }
+
       return data;
     } catch (error) {
       return {

@@ -20,8 +20,10 @@ export const BankAccountsSummary = () => {
         setError(null);
         const response = await fetchBankAccounts();
         if (response.success && response.data) {
-          setAccounts(response.data.accounts);
-          setTotalBalance(response.data.totalBalance);
+          // Backend returns accounts array directly in data
+          const accountsArray = Array.isArray(response.data) ? response.data : response.data.accounts || [];
+          setAccounts(accountsArray);
+          setTotalBalance(response.data.totalBalance || accountsArray.reduce((sum: number, acc: any) => sum + (acc.balance || 0), 0));
         } else {
           setError(response.error?.message || "Failed to load bank accounts");
         }

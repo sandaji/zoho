@@ -15,45 +15,6 @@ import {
 } from "lucide-react";
 import { AddProductDialog } from "./add-product-dialog";
 
-
-
-const recentActivities = [
-  {
-    id: 1,
-    action: "Laptop Dell XPS 13 restocked",
-    user: "John Doe",
-    time: "2 hours ago",
-    type: "restock" as const,
-  },
-  {
-    id: 2,
-    action: "Wireless Mouse stock updated",
-    user: "Jane Smith",
-    time: "4 hours ago",
-    type: "update" as const,
-  },
-  {
-    id: 3,
-    action: "Monthly inventory count completed",
-    user: "System",
-    time: "1 day ago",
-    type: "system" as const,
-  },
-];
-
-const getActivityColor = (type: string) => {
-  switch (type) {
-    case "restock":
-      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400";
-    case "update":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
-    case "system":
-      return "bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400";
-    default:
-      return "bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-400";
-  }
-};
-
 export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }) {
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
 
@@ -120,13 +81,13 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
               </div>
               Quick Actions
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
+            {/* <CardDescription className="text-slate-600 dark:text-slate-400">
               Common inventory tasks
-            </CardDescription>
+            </CardDescription> */}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-8 gap-3">
             {actions.map((action) => {
               const Icon = action.icon;
               return (
@@ -141,9 +102,9 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
                   </div>
                   <div className="space-y-1 text-center">
                     <span className="text-xs font-medium block">{action.title}</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight">
+                    {/* <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight">
                       {action.description}
-                    </span>
+                    </span> */}
                   </div>
                 </Button>
               );
@@ -153,7 +114,7 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
       </Card>
 
       {/* Recent Activities Card */}
-      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
+      {/* <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
         <CardHeader className="pb-4">
           <div className="space-y-1">
             <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
@@ -199,7 +160,7 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
             ))}
           </div>
 
-          {/* View All Button */}
+          {/* View All Button 
           <Button
             variant="ghost"
             className="w-full mt-4 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
@@ -207,10 +168,10 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
             View All Activities
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* System Status Card */}
-      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
+      {/* <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
         <CardHeader className="pb-4">
           <div className="space-y-1">
             <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
@@ -241,7 +202,7 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
     </>
   );

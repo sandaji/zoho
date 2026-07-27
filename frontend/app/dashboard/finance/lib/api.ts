@@ -180,7 +180,7 @@ export async function fetchBankAccounts(): Promise<ApiResponse<BankAccountsRespo
  * Fetch AR Aging summary
  */
 export async function fetchARAgingSummary(): Promise<ApiResponse<ARAgingSummaryResponse>> {
-  return apiClient.request<ARAgingSummaryResponse>("/v1/finance/ar/aging", "GET");
+  return apiClient.request<ARAgingSummaryResponse>("/v1/finance/ar/aging-summary", "GET");
 }
 
 /**
