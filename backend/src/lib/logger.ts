@@ -15,6 +15,14 @@ export const logger = pino({
     environment: process.env.NODE_ENV,
     version: process.env.APP_VERSION || "1.0.0",
   },
+  // Always serialize both `err` and `error` keys - many call sites in this
+  // codebase use logger.error({ error }, ...) instead of the pino convention
+  // logger.error({ err }, ...). Without this, Error objects log as `{}`
+  // since Error has no enumerable own properties.
+  serializers: {
+    err: pino.stdSerializers.err,
+    error: pino.stdSerializers.err,
+  },
   ...(isDev
     ? {
         transport: {
@@ -28,11 +36,7 @@ export const logger = pino({
           },
         },
       }
-    : {
-        serializers: {
-          err: pino.stdSerializers.err,
-        },
-      }),
+    : {}),
 });
 
 // 2. Child Logger for requests

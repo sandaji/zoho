@@ -22,90 +22,46 @@ import {
   TrendingUpIcon,
   Download,
   AlertCircle,
+  Landmark,
+  Receipt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Import new API functions
-import { fetchAllDashboardData, formatCurrencyCompact } from "./lib/api";
+// Real GL-backed financial summary
+import { fetchFinancialSummary, formatCurrencyCompact } from "./lib/api";
+import type { FinancialSummary } from "./types";
 
-// Import types
-import type {
-  FinancialSummary,
-  ChartData,
-  Transaction,
-  ExpenseCategory,
-  DailySpending,
-  SavingsGoal,
-} from "./types";
-
-// Import existing components
-import { CreditCardWidget } from "../../../components/finance/credit-card-widget";
-import { CashflowChart } from "../../../components/finance/cashflow-chart";
-import { ExpenseDonutChart } from "../../../components/finance/expense-donut-chart";
-import { RecentTransactions } from "../../../components/finance/recent-transactions";
-import { DailyLimitProgress } from "../../../components/finance/daily-limit-progress";
-import { SavingPlans } from "../../../components/finance/saving-plans";
-
-// Phase 1 - New components
+// Core dashboard components (all backed by real Chart of Accounts / GL data)
 import { KPIMetricsPanel } from "../../../components/finance/kpi-metrics-panel";
 import { FinancialAlerts } from "../../../components/finance/financial-alerts";
 import { PeriodSelector } from "../../../components/finance/period-selector";
 import { QuickActions } from "../../../components/finance/quick-actions";
-
-// Phase 2 - AR, AP, Bank, P&L components
 import { ARAgingSummary } from "../../../components/finance/ar-aging-summary";
 import { APStatusSummary } from "../../../components/finance/ap-status-summary";
 import { BankAccountsSummary } from "../../../components/finance/bank-accounts-summary";
 import { PLQuickPreview } from "../../../components/finance/pl-quick-preview";
-
-// Phase 3 - Tax, Reconciliation, Trends, Top Customers/Vendors components
 import { TaxSummary } from "../../../components/finance/tax-summary";
 import { ReconciliationStatus } from "../../../components/finance/reconciliation-status";
 import { PeriodTrends } from "../../../components/finance/period-trends";
 import { TopCustomersVendors } from "../../../components/finance/top-customers-vendors";
-
-interface DashboardState {
-  summary: FinancialSummary | null;
-  chartData: ChartData[];
-  transactions: Transaction[];
-  expenseCategories: ExpenseCategory[];
-  dailySpending: DailySpending | null;
-  savingsGoals: SavingsGoal[];
-}
 
 const FinanceDashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("Dashboard");
-
-  const [data, setData] = useState<DashboardState>({
-    summary: null,
-    chartData: [],
-    transactions: [],
-    expenseCategories: [],
-    dailySpending: null,
-    savingsGoals: [],
-  });
+  const [summary, setSummary] = useState<FinancialSummary | null>(null);
 
   const loadDashboardData = async () => {
     try {
       setError(null);
-      const result = await fetchAllDashboardData();
+      const result = await fetchFinancialSummary();
 
-      setData({
-        summary: result.summary || null,
-        chartData: result.chartData || [],
-        transactions: result.transactions || [],
-        expenseCategories: result.expenseCategories || [],
-        dailySpending: result.dailySpending || null,
-        savingsGoals: result.savingsGoals || [],
-      });
-
-      // Log any errors but don't block the UI
-      const errors = Object.entries(result.errors).filter(([_, err]) => err !== null);
-      if (errors.length > 0) {
-        console.warn("Some data failed to load:", result.errors);
+      if (result.success) {
+        setSummary(result.data || null);
+      } else {
+        console.warn("Failed to load financial summary:", result.error);
+        setError(result.error?.message || "Failed to load financial summary.");
       }
     } catch (err) {
       console.error("Error loading dashboard data:", err);
@@ -125,8 +81,7 @@ const FinanceDashboardPage = () => {
     loadDashboardData();
   };
 
-  // Calculate savings (profit)
-  const savings = data.summary?.profit || 0;
+  const netAR = (summary?.accountsReceivable || 0) - (summary?.accountsPayable || 0);
 
   if (loading) {
     return (
@@ -146,7 +101,6 @@ const FinanceDashboardPage = () => {
         <div className="flex items-center gap-4">
           <h1 className="text-3xl font-bold text-gray-900">Finance</h1>
 
-          {/* Navigation Dropdown (replaces sidebar) */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="gap-2">
@@ -213,6 +167,109 @@ const FinanceDashboardPage = () => {
         </div>
       )}
 
+      {/* Executive Summary Strip - real GL data via /v1/finance/summary */}
+      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <Card className="border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-medium text-gray-600">Revenue</CardTitle>
+            <div className="rounded-full bg-green-100 p-1.5">
+              <TrendingUp className="h-3.5 w-3.5 text-green-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold text-gray-900">
+              {summary ? formatCurrencyCompact(summary.revenue) : "—"}
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              {summary ? `${summary.salesCount} sales` : "Loading..."}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-medium text-gray-600">Expenses</CardTitle>
+            <div className="rounded-full bg-red-100 p-1.5">
+              <TrendingDown className="h-3.5 w-3.5 text-red-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold text-gray-900">
+              {summary ? formatCurrencyCompact(summary.expenses) : "—"}
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              {summary && summary.revenue > 0
+                ? `${((summary.expenses / summary.revenue) * 100).toFixed(1)}% of revenue`
+                : "Loading..."}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-medium text-gray-600">Net Income</CardTitle>
+            <div className="rounded-full bg-blue-100 p-1.5">
+              <DollarSign className="h-3.5 w-3.5 text-blue-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold text-gray-900">
+              {summary ? formatCurrencyCompact(summary.profit) : "—"}
+            </div>
+            <p className="mt-1 text-xs text-blue-600">
+              {summary ? `${summary.netMargin.toFixed(1)}% margin` : "Loading..."}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-medium text-gray-600">Cash Position</CardTitle>
+            <div className="rounded-full bg-emerald-100 p-1.5">
+              <Landmark className="h-3.5 w-3.5 text-emerald-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold text-gray-900">
+              {summary ? formatCurrencyCompact(summary.cashBalance) : "—"}
+            </div>
+            <p className="mt-1 text-xs text-gray-500">Across bank accounts</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-medium text-gray-600">AR Outstanding</CardTitle>
+            <div className="rounded-full bg-amber-100 p-1.5">
+              <Receipt className="h-3.5 w-3.5 text-amber-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold text-gray-900">
+              {summary ? formatCurrencyCompact(summary.accountsReceivable) : "—"}
+            </div>
+            <p className="mt-1 text-xs text-gray-500">Owed to you</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-xs font-medium text-gray-600">AP Outstanding</CardTitle>
+            <div className="rounded-full bg-orange-100 p-1.5">
+              <FileText className="h-3.5 w-3.5 text-orange-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-xl font-bold text-gray-900">
+              {summary ? formatCurrencyCompact(summary.accountsPayable) : "—"}
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              {summary ? `Net ${netAR >= 0 ? "+" : ""}${formatCurrencyCompact(netAR)}` : "Loading..."}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* KPI Metrics Panel */}
       <div className="mb-6">
         <KPIMetricsPanel />
@@ -220,150 +277,34 @@ const FinanceDashboardPage = () => {
 
       {/* Alerts & Quick Actions Row */}
       <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-3">
-        {/* Financial Alerts */}
         <div className="lg:col-span-2">
           <FinancialAlerts maxAlerts={4} onViewAll={() => setActiveSection("Dashboard")} />
         </div>
-        {/* Quick Actions */}
         <QuickActions />
       </div>
 
-      {/* Phase 2: Core Finance Summaries Row */}
+      {/* AR / AP Aging Detail Row */}
       <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
-        {/* AR Aging Summary */}
         <ARAgingSummary />
-        {/* AP Status Summary */}
         <APStatusSummary />
       </div>
 
       {/* Bank Accounts & P&L Row */}
       <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
-        {/* Bank Accounts Summary */}
         <BankAccountsSummary />
-        {/* P&L Quick Preview */}
         <PLQuickPreview />
       </div>
 
-      {/* Phase 3: Tax, Reconciliation, Trends, Top Customers/Vendors Rows */}
+      {/* Tax & Reconciliation Row */}
       <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
-        {/* Tax Summary */}
         <TaxSummary />
-        {/* Reconciliation Status */}
         <ReconciliationStatus />
       </div>
 
-      {/* Period Trends & Top Customers Row */}
-      <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
-        {/* Period Trends */}
+      {/* Period Trends & Top Customers/Vendors Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <PeriodTrends />
-        {/* Top Customers & Vendors */}
         <TopCustomersVendors />
-      </div>
-
-      {/* Main Grid Layout */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        {/* Left Column */}
-        <div className="space-y-6 lg:col-span-8">
-          {/* Top Stats Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {/* Income Card */}
-            <Card className="border-gray-200 bg-white shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Income</CardTitle>
-                <div className="rounded-full bg-green-100 p-2">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900">
-                  {data.summary ? formatCurrencyCompact(data.summary.revenue) : "—"}
-                </div>
-                <p className="mt-1 text-xs text-green-600">
-                  {data.summary ? `+${data.summary.salesCount} transactions` : "Loading..."}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Expense Card */}
-            <Card className="border-gray-200 bg-white shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Expense</CardTitle>
-                <div className="rounded-full bg-red-100 p-2">
-                  <TrendingDown className="h-4 w-4 text-red-600" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900">
-                  {data.summary ? formatCurrencyCompact(data.summary.expenses) : "—"}
-                </div>
-                <p className="mt-1 text-xs text-gray-500">
-                  {data.summary
-                    ? `${((data.summary.expenses / data.summary.revenue) * 100).toFixed(1)}% of revenue`
-                    : "Loading..."}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Savings Card */}
-            <Card className="border-gray-200 bg-white shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-gray-600">Savings</CardTitle>
-                <div className="rounded-full bg-blue-100 p-2">
-                  <DollarSign className="h-4 w-4 text-blue-600" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-900">
-                  {data.summary ? formatCurrencyCompact(savings) : "—"}
-                </div>
-                <p className="mt-1 text-xs text-blue-600">
-                  {data.summary ? `${data.summary.netMargin.toFixed(1)}% margin` : "Loading..."}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Cashflow Chart */}
-          <CashflowChart
-            data={data.chartData.map((item) => ({
-              name: item.name,
-              revenue: item.revenue,
-              expenses: item.expenses,
-            }))}
-          />
-
-          {/* Recent Transactions */}
-          <RecentTransactions
-            transactions={data.transactions}
-            onViewAll={() => setActiveSection("Transactions")}
-          />
-        </div>
-
-        {/* Right Column */}
-        <div className="space-y-6 lg:col-span-4">
-          {/* Credit Card Widget */}
-          <CreditCardWidget
-            balance={data.summary?.cashBalance || 0}
-            holderName="Business Account"
-          />
-
-          {/* Expense Statistics */}
-          <ExpenseDonutChart data={data.expenseCategories} />
-
-          {/* Daily Limit */}
-          {data.dailySpending && (
-            <DailyLimitProgress spent={data.dailySpending.spent} limit={data.dailySpending.limit} />
-          )}
-
-          {/* Saving Plans */}
-          <SavingPlans
-            plans={data.savingsGoals}
-            onAddGoal={() => {
-              // TODO: Implement add goal modal
-              console.log("Add savings goal");
-            }}
-          />
-        </div>
       </div>
     </div>
   );

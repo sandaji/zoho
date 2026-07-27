@@ -1,3 +1,5 @@
+// frontend/app/dashboard/finance/DELIVERY_SUMMARY.md
+
 # 🎉 Finance Dashboard Redesign - COMPLETE
 
 ## ✅ What's Been Delivered
