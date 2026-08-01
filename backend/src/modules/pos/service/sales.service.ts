@@ -12,49 +12,12 @@ import { AccountingService } from "../../finance/services/accounting.service";
 import { StockValidationService } from "./stock-validation.service";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { synchronizeBranchInventory } from "../../../lib/inventory-sync";
-
-// -----------------------------
-// Helpers
-// -----------------------------
-function calculateItemTotals(item: {
-  quantity: number;
-  unitPrice: number;
-  taxRate?: number;
-  discount?: number;
-}) {
-  const subtotal = item.quantity * item.unitPrice;
-  const taxAmount = subtotal * (item.taxRate || 0);
-  const discount = item.discount || 0;
-  const total = subtotal + taxAmount - discount;
-
-  return { subtotal, taxAmount, discount, total };
-}
-
-function calculateDocumentTotals(
-  items: {
-    subtotal: number;
-    taxAmount: number;
-    discount: number;
-    total: number;
-  }[],
-) {
-  let subtotal = 0;
-  let tax = 0;
-  let discount = 0;
-
-  for (const item of items) {
-    subtotal += item.subtotal;
-    tax += item.taxAmount;
-    discount += item.discount;
-  }
-
-  return {
-    subtotal,
-    tax,
-    discount,
-    total: subtotal + tax - discount,
-  };
-}
+import { logger } from "../../../lib/logger";
+import { InventoryService } from "../../inventory/service/inventory.service";
+import {
+  calculateItemTotals,
+  calculateDocumentTotals,
+} from "../../../lib/sales-calculator";
 
 // -----------------------------
 // Service
@@ -252,45 +215,17 @@ export class SalesService {
           );
         }
 
-        // Deduct stock and record movements for every line
+        // Deduct stock using canonical FIFO — updates StockBatch, Inventory
+        // ledger, writes StockMovement audit row, and re-syncs BranchInventory.
         for (const item of preparedItems) {
-          const inventoryUpdate = await tx.inventory.updateMany({
-            where: {
-              productId: item.productId,
-              warehouseId: warehouse.id,
-              available: { gte: item.quantity },
-            },
-            data: {
-              quantity: { decrement: item.quantity },
-              available: { decrement: item.quantity },
-            },
+          await InventoryService.depleteStockFIFO(tx, {
+            productId: item.productId,
+            warehouseId: warehouse.id,
+            quantity: item.quantity,
+            userId,
+            salesId: invoice.id,
+            reference: `Direct Invoice ${invoice.documentId}`,
           });
-
-          if (inventoryUpdate.count !== 1) {
-            throw new AppError(
-              ErrorCode.INSUFFICIENT_INVENTORY,
-              400,
-              `Insufficient stock for product ${item.productId} — inventory may have changed.`,
-            );
-          }
-
-          await tx.stockMovement.create({
-            data: {
-              type: MovementType.OUTBOUND,
-              quantity: item.quantity,
-              productId: item.productId,
-              warehouseId: warehouse.id,
-              salesId: invoice.id,
-              reference: `Direct Invoice ${invoice.documentId}`,
-              createdById: userId,
-            },
-          });
-        }
-
-        // Sync branch-level aggregate inventory for all affected products
-        const uniqueProductIds = new Set(preparedItems.map((i) => i.productId));
-        for (const productId of uniqueProductIds) {
-          await synchronizeBranchInventory(tx, productId, branchId);
         }
 
         // Update customer's outstanding balance if a customer is attached
@@ -397,43 +332,16 @@ export class SalesService {
         );
       }
 
-      // Update inventory & create stock movements
+      // Deduct stock using canonical FIFO
       for (const item of source.items) {
-        // Decrement inventory
-        const inventoryUpdate = await tx.inventory.updateMany({
-          where: {
-            productId: item.productId,
-            warehouseId: warehouse.id,
-            available: { gte: item.quantity },
-          },
-          data: {
-            quantity: { decrement: item.quantity },
-            available: { decrement: item.quantity },
-          },
+        await InventoryService.depleteStockFIFO(tx, {
+          productId: item.productId,
+          warehouseId: warehouse.id,
+          quantity: item.quantity,
+          userId,
+          salesId: invoice.id,
+          reference: `Invoice ${invoice.documentId} (converted from ${source.type})`,
         });
-
-        if (inventoryUpdate.count !== 1) {
-          throw new AppError(ErrorCode.INSUFFICIENT_INVENTORY, 400, "Stock changed before this invoice could be created");
-        }
-
-        // (product global quantity update removed)
-
-        // Create stock movement
-        await tx.stockMovement.create({
-          data: {
-            type: MovementType.OUTBOUND,
-            quantity: item.quantity,
-            productId: item.productId,
-            warehouseId: warehouse.id,
-            salesId: invoice.id,
-            reference: `Invoice ${invoice.documentId} (converted from ${source.type})`,
-            createdById: userId,
-          },
-        });
-      }
-
-      for (const productId of new Set(source.items.map((item) => item.productId))) {
-        await synchronizeBranchInventory(tx, productId, branchId);
       }
 
       // REQUIREMENT 2: Handle source document based on type
@@ -609,41 +517,17 @@ export class SalesService {
           );
         }
 
-        // Update inventory & create stock movements
+        // Update inventory using canonical FIFO — correct COGS, StockBatch
+        // depletion, audit trail, and BranchInventory sync all in one call.
         for (const item of preparedItems) {
-          const inventoryUpdate = await tx.inventory.updateMany({
-            where: {
-              productId: item.productId,
-              warehouseId: warehouse.id,
-              available: { gte: item.quantity },
-            },
-            data: {
-              quantity: { decrement: item.quantity },
-              available: { decrement: item.quantity },
-            },
+          await InventoryService.depleteStockFIFO(tx, {
+            productId: item.productId,
+            warehouseId: warehouse.id,
+            quantity: item.quantity,
+            userId,
+            salesId: invoice.id,
+            reference: `POS Sale - ${invoice.documentId}`,
           });
-
-          if (inventoryUpdate.count !== 1) {
-            throw new AppError(ErrorCode.INSUFFICIENT_INVENTORY, 400, "Stock changed before this sale could be completed");
-          }
-
-          // (product global quantity update removed)
-
-          await tx.stockMovement.create({
-            data: {
-              type: MovementType.OUTBOUND,
-              quantity: item.quantity,
-              productId: item.productId,
-              warehouseId: warehouse.id,
-              salesId: invoice.id,
-              reference: `POS Sale - ${invoice.documentId}`,
-              createdById: userId,
-            },
-          });
-        }
-
-        for (const productId of new Set(preparedItems.map((item) => item.productId))) {
-          await synchronizeBranchInventory(tx, productId, branchId);
         }
 
         // Record financial transaction
@@ -939,31 +823,36 @@ export class SalesService {
       };
     }
 
-    const documents = await prisma.salesDocument.findMany({
-      where,
-      include: { items: true, payments: true, branch: true, createdBy: true },
-      orderBy: { createdAt: "desc" },
-      take: query.limit || 50,
-      skip: query.offset || 0,
-    });
+    try {
+      const documents = await prisma.salesDocument.findMany({
+        where,
+        include: { items: true, payments: true, branch: true, createdBy: true },
+        orderBy: { createdAt: "desc" },
+        take: query.limit || 50,
+        skip: query.offset || 0,
+      });
 
-    return documents.map((doc) => ({
-      id: doc.id,
-      invoice_no: doc.documentId,
-      status: doc.status,
-      payment_method: doc.payments?.[0]?.method || "cash",
-      subtotal: doc.subtotal,
-      discount: doc.discount,
-      tax: doc.tax,
-      grand_total: doc.total,
-      amount_paid: doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
-      change: 0,
-      created_date: doc.createdAt,
-      createdAt: doc.createdAt,
-      branch: { name: doc.branch?.name },
-      user: { name: doc.createdBy?.name },
-      items: doc.items,
-    }));
+      return documents.map((doc) => ({
+        id: doc.id,
+        invoice_no: doc.documentId,
+        status: doc.status,
+        payment_method: doc.payments?.[0]?.method || "cash",
+        subtotal: doc.subtotal,
+        discount: doc.discount,
+        tax: doc.tax,
+        grand_total: doc.total,
+        amount_paid: doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
+        change: 0,
+        created_date: doc.createdAt,
+        createdAt: doc.createdAt,
+        branch: { name: doc.branch?.name },
+        user: { name: doc.createdBy?.name },
+        items: doc.items,
+      }));
+    } catch (error) {
+      console.error("Error in getPOSSales:", error);
+      throw error;
+    }
   }
 
   // =============================
@@ -1142,65 +1031,13 @@ export class SalesService {
   // =============================
   // Generate Receipt
   // =============================
+  /**
+   * @deprecated Use DocumentService.generateReceipt (lib/document.service.ts).
+   * Kept only for backward-compat; delegates to the canonical implementation.
+   */
   static async generateReceipt(saleId: string) {
-    const sale = await prisma.salesDocument.findUnique({
-      where: { id: saleId },
-      include: {
-        items: { include: { product: true } },
-        branch: true,
-        createdBy: true,
-        payments: true,
-      },
-    });
-
-    if (!sale) {
-      throw new AppError(ErrorCode.NOT_FOUND, 404, "Sale not found");
-    }
-
-    const company = {
-      name: process.env.COMPANY_NAME || "LUNATECH SYSTEMS LTD",
-      address: process.env.COMPANY_ADDRESS || "123 Tech Plaza, Westlands",
-      phone: process.env.COMPANY_PHONE || "+254 722 123 456",
-      email: process.env.COMPANY_EMAIL || "info@lunatech.co.ke",
-      kraPin: process.env.COMPANY_KRA_PIN || "P051472913Q",
-    };
-
-    return {
-      sale: {
-        id: sale.id,
-        invoice_no: sale.documentId,
-        status: sale.status,
-        payment_method: sale.payments?.[0]?.method || "cash",
-        subtotal: sale.subtotal,
-        discount: sale.discount,
-        tax: sale.tax,
-        grand_total: sale.total,
-        amount_paid: sale.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
-        change: (sale.payments?.reduce((sum, p) => sum + p.amount, 0) || 0) - sale.total,
-        created_date: sale.createdAt,
-        sales_items: sale.items.map((item) => ({
-          id: item.id,
-          productId: item.productId,
-          product: item.product,
-          quantity: item.quantity,
-          unit_price: item.unitPrice,
-          tax_rate: item.taxRate,
-          discount: item.discount,
-          amount: item.total,
-        })),
-      },
-      branch: sale.branch ? {
-        name: sale.branch.name,
-        address: sale.branch.address,
-        phone: sale.branch.phone,
-        code: sale.branch.code,
-      } : null,
-      cashier: sale.createdBy ? {
-        name: sale.createdBy.name,
-        email: sale.createdBy.email,
-      } : null,
-      company,
-    };
+    const { DocumentService } = await import("../../../lib/document.service");
+    return DocumentService.generateReceipt(saleId);
   }
 
   // =============================

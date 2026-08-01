@@ -1,6 +1,4 @@
-/**
- * Fleet Module - Data Transfer Objects
- */
+import { DeliveryStatus } from '@prisma/client';
 
 export interface CreateTruckDTO {
   registration: string;
@@ -28,7 +26,8 @@ export interface TruckResponseDTO {
 }
 
 export interface CreateDeliveryDTO {
-  salesId: string;
+  salesDocumentId?: string;
+  stockTransferId?: string;
   driverId: string;
   truckId: string;
   destination: string;
@@ -148,13 +147,10 @@ export interface DeliveriesListResponseDTO {
  * Update Delivery Status DTO
  */
 export interface UpdateDeliveryStatusDTO {
-  status:
-    | "pending"
-    | "assigned"
-    | "in_transit"
-    | "delivered"
-    | "failed"
-    | "rescheduled";
+  status: DeliveryStatus;
+  podSignature?: string; // Base64 signature
+  podPhotoUrl?: string; // URL to uploaded photo
+  otp?: string; // One-Time Password
   actual_km?: number;
   picked_up_at?: string;
   delivered_at?: string;

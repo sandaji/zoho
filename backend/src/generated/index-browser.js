@@ -281,14 +281,14 @@ exports.Prisma.StockMovementScalarFieldEnum = {
 
 exports.Prisma.StockTransferScalarFieldEnum = {
   id: 'id',
-  transferNo: 'transferNo',
+  documentId: 'documentId',
   status: 'status',
-  sourceId: 'sourceId',
-  targetId: 'targetId',
+  sourceWarehouseId: 'sourceWarehouseId',
+  destinationWarehouseId: 'destinationWarehouseId',
   notes: 'notes',
-  truckRegNo: 'truckRegNo',
-  driverName: 'driverName',
-  attendantName: 'attendantName',
+  truckId: 'truckId',
+  driverId: 'driverId',
+  dispatchedAt: 'dispatchedAt',
   receivedAt: 'receivedAt',
   receivedById: 'receivedById',
   createdById: 'createdById',
@@ -298,9 +298,14 @@ exports.Prisma.StockTransferScalarFieldEnum = {
 
 exports.Prisma.TransferItemScalarFieldEnum = {
   id: 'id',
-  quantity: 'quantity',
+  transferId: 'transferId',
   productId: 'productId',
-  transferId: 'transferId'
+  batchId: 'batchId',
+  unitCost: 'unitCost',
+  requested_qty: 'requested_qty',
+  dispatched_qty: 'dispatched_qty',
+  received_qty: 'received_qty',
+  damaged_qty: 'damaged_qty'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -544,6 +549,7 @@ exports.Prisma.TruckScalarFieldEnum = {
   registration: 'registration',
   model: 'model',
   capacity: 'capacity',
+  vehicle_type: 'vehicle_type',
   license_plate: 'license_plate',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -552,19 +558,28 @@ exports.Prisma.TruckScalarFieldEnum = {
 
 exports.Prisma.DeliveryScalarFieldEnum = {
   id: 'id',
-  delivery_no: 'delivery_no',
+  deliveryNo: 'deliveryNo',
   status: 'status',
   driverId: 'driverId',
   truckId: 'truckId',
   destination: 'destination',
-  estimated_km: 'estimated_km',
-  actual_km: 'actual_km',
-  scheduled_date: 'scheduled_date',
-  picked_up_at: 'picked_up_at',
-  delivered_at: 'delivered_at',
+  estimatedKm: 'estimatedKm',
+  actualKm: 'actualKm',
+  scheduledDate: 'scheduledDate',
+  pickedUpAt: 'pickedUpAt',
+  deliveredAt: 'deliveredAt',
+  podSignatureUrl: 'podSignatureUrl',
+  podPhotoUrl: 'podPhotoUrl',
+  deliveryOtp: 'deliveryOtp',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DeliveryDispatchNoteScalarFieldEnum = {
+  id: 'id',
+  deliveryId: 'deliveryId',
+  dispatchNoteId: 'dispatchNoteId'
 };
 
 exports.Prisma.FinanceTransactionScalarFieldEnum = {
@@ -1183,10 +1198,12 @@ exports.MovementType = exports.$Enums.MovementType = {
 };
 
 exports.TransferStatus = exports.$Enums.TransferStatus = {
-  PENDING: 'PENDING',
-  IN_TRANSIT: 'IN_TRANSIT',
-  PENDING_RECEIPT: 'PENDING_RECEIPT',
-  COMPLETED: 'COMPLETED',
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  DISPATCHED: 'DISPATCHED',
+  PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
+  RECEIVED: 'RECEIVED',
   CANCELLED: 'CANCELLED',
   DISCREPANCY: 'DISCREPANCY'
 };
@@ -1232,7 +1249,9 @@ exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {
   APPROVED: 'APPROVED',
   DISPATCHED: 'DISPATCHED',
   COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  DELIVERED: 'DELIVERED',
+  DELIVERY_FAILED: 'DELIVERY_FAILED'
 };
 
 exports.CashierSessionStatus = exports.$Enums.CashierSessionStatus = {
@@ -1277,7 +1296,8 @@ exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
   in_transit: 'in_transit',
   delivered: 'delivered',
   failed: 'failed',
-  rescheduled: 'rescheduled'
+  rescheduled: 'rescheduled',
+  returned_to_base: 'returned_to_base'
 };
 
 exports.TransactionType = exports.$Enums.TransactionType = {
@@ -1490,6 +1510,7 @@ exports.Prisma.ModelName = {
   GRNItem: 'GRNItem',
   Truck: 'Truck',
   Delivery: 'Delivery',
+  DeliveryDispatchNote: 'DeliveryDispatchNote',
   FinanceTransaction: 'FinanceTransaction',
   SavingsGoal: 'SavingsGoal',
   DailySpendingLimit: 'DailySpendingLimit',

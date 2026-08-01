@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../lib/db';
 import { logger } from '../../lib/logger';
+import { inventoryRepository } from '../../repositories/inventory.repository';
+import { purchasingRepository } from '../../repositories/purchasing.repository';
+import { StatCardBuilder } from '../../utils/stat-card.builder';
 import * as bcrypt from 'bcrypt';
 
 /**
@@ -8,20 +11,10 @@ import * as bcrypt from 'bcrypt';
  */
 export class AdminController {
   /**
-   * Gets high-level statistics for the admin dashboard.
-   * This method is optimized to run all count queries in parallel.
+   * Gets high-level statistics for the admin dashboard using repositories and StatCardBuilder.
    */
   async getStats(_req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await Promise.all([
-        prisma.branch.count({ where: { isActive: true } }),
-        prisma.warehouse.count({ where: { isActive: true } }),
-        prisma.user.count({ where: { isActive: true } }),
-        prisma.product.count({ where: { isActive: true } }),
-        prisma.delivery.count({ where: { status: { in: ['pending', 'assigned', 'in_transit'] } } }),
-        prisma.branchInventory.count({ where: { status: 'low_stock' } }),
-      ]);
-
       const [
         total_branches,
         total_warehouses,
@@ -29,7 +22,23 @@ export class AdminController {
         total_products,
         pending_deliveries,
         low_stock_items,
-      ] = result;
+      ] = await Promise.all([
+        prisma.branch.count({ where: { isActive: true } }),
+        inventoryRepository.getWarehousesCount(),
+        prisma.user.count({ where: { isActive: true } }),
+        inventoryRepository.getActiveProductsCount(),
+        purchasingRepository.getPendingDeliveriesCount(),
+        inventoryRepository.getLowStockItemsCount(),
+      ]);
+
+      const cards = {
+        branches: StatCardBuilder.create("Total Branches", total_branches).setColor("indigo").build(),
+        warehouses: StatCardBuilder.create("Total Warehouses", total_warehouses).setColor("sky").build(),
+        users: StatCardBuilder.create("Active Users", total_users).setColor("emerald").build(),
+        products: StatCardBuilder.create("Total Products", total_products).setColor("violet").build(),
+        deliveries: StatCardBuilder.create("Pending Deliveries", pending_deliveries).setColor("amber").build(),
+        lowStock: StatCardBuilder.create("Low Stock Items", low_stock_items).setColor("rose").build(),
+      };
 
       res.status(200).json({
         total_branches,
@@ -38,6 +47,7 @@ export class AdminController {
         total_products,
         pending_deliveries,
         low_stock_items,
+        cards,
       });
     } catch (error) {
       logger.error(error as Error, 'Error in getStats');
@@ -312,7 +322,7 @@ export class AdminController {
         // Internal transfers — stock movements classified as TRANSFER_OUT to prevent double-count
         prisma.stockTransfer.aggregate({
           where: {
-            status: 'COMPLETED',
+            status: 'RECEIVED',
             createdAt: { gte: since },
           },
           _count: { id: true },

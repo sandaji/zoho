@@ -4,6 +4,8 @@ import { ValuationService } from "../../lib/services/valuation.service";
 import { getRequestContext, setBusinessAction } from "../../lib/async-context";
 import { eventBus } from "../../lib/events";
 import { SALES_EVENTS } from "../../lib/domain-events";
+import { salesRepository } from "../../repositories/sales.repository";
+import { sum, multiply, vat } from "../../utils/money";
 
 /**
  * Sales Service - Handles sales order and dispatch operations
@@ -63,10 +65,7 @@ export class SalesService {
     }
 
     // Verify customer exists
-    const customer = await this.prisma.customer.findUnique({
-      where: { id: customerId },
-      select: { id: true },
-    });
+    const customer = await salesRepository.findCustomerById(customerId);
     if (!customer) {
       throw new AppError(
         ErrorCode.NOT_FOUND,
@@ -76,10 +75,7 @@ export class SalesService {
     }
 
     // Verify branch exists
-    const branch = await this.prisma.branch.findUnique({
-      where: { id: branchId },
-      select: { id: true },
-    });
+    const branch = await salesRepository.findBranchById(branchId);
     if (!branch) {
       throw new AppError(
         ErrorCode.NOT_FOUND,
@@ -97,10 +93,7 @@ export class SalesService {
     }> = [];
 
     for (const item of items) {
-      const product = await this.prisma.product.findUnique({
-        where: { id: item.productId },
-        select: { id: true, tax_rate: true },
-      });
+      const product = await salesRepository.findProductById(item.productId);
       if (!product) {
         throw new AppError(
           ErrorCode.NOT_FOUND,
@@ -109,8 +102,8 @@ export class SalesService {
         );
       }
 
-      const lineSubtotal = item.qtyRequested * item.unitPrice;
-      subtotal += lineSubtotal;
+      const lineSubtotal = multiply(item.qtyRequested, item.unitPrice);
+      subtotal = sum(subtotal, lineSubtotal);
 
       validatedItems.push({
         productId: item.productId,
@@ -119,9 +112,10 @@ export class SalesService {
       });
     }
 
-    // Assume 16% tax
-    const tax = subtotal * 0.16;
-    const totalAmount = subtotal + tax;
+    // Standard 16% VAT computation
+    const vatCalc = vat(subtotal, 16);
+    const tax = vatCalc.vat;
+    const totalAmount = vatCalc.gross;
     const soNumber = `SO-${Date.now()}`;
 
     // Tag the action for auditing

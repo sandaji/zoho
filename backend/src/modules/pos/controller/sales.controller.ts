@@ -12,6 +12,7 @@ import { SalesDocumentStatus } from "../../../generated/enums";
 import { SalesService } from "../service/sales.service";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { TokenPayload } from "../../../types";
+import { RBACService } from "../../../lib/rbac.service";
 
 interface AuthenticatedRequest extends Request {
   user?: TokenPayload;
@@ -525,8 +526,7 @@ export class SalesController {
       // RBAC check: Use permission-based authorization instead of inline role check
       // This should be enforced via requirePermission middleware at the route level
       // For now, keeping the check inline but using proper permission check
-      const { PermissionService } = await import("../../auth/service/permission.service");
-      const hasPermission = await PermissionService.hasPermission(
+      const hasPermission = await RBACService.hasPermission(
         user.userId,
         "sales.credit_note.approve"
       );

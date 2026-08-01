@@ -191,7 +191,7 @@ export class InventoryController {
 
   /**
    * POST /inventory/transfer
-   * Transfer inventory between warehouses
+   * Transfer inventory between warehouses (creates a PENDING_RECEIPT transfer)
    */
   async transferInventory(
     req: Request,
@@ -216,12 +216,104 @@ export class InventoryController {
         throw validationError("quantity must be a positive number");
       }
 
-      const result = await this.service.transferInventory(dto);
+      const result = await this.service.initiateTransfer(
+        req.user!.userId,
+        dto,
+      );
 
       res.status(200).json({
         success: true,
         data: result,
-        message: `Successfully transferred ${dto.quantity} units from warehouse ${dto.fromWarehouseId} to ${dto.toWarehouseId}`,
+        message: `Transfer created and pending receipt: ${dto.quantity} units from warehouse ${dto.fromWarehouseId} to ${dto.toWarehouseId}`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers/:id
+   * Get a single stock transfer with full detail (for the confirm-receipt screen)
+   */
+  async getTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const result = await this.service.getTransferById(id as string);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /inventory/transfers/:id/confirm
+   * Confirm receipt of a pending stock transfer
+   */
+  async confirmTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const { items } = req.body as {
+        items: { productId: string; receivedQuantity: number; notes?: string }[];
+      };
+
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        throw validationError("items array is required");
+      }
+      for (const item of items) {
+        if (!item.productId || item.receivedQuantity === undefined || item.receivedQuantity < 0) {
+          throw validationError(
+            "Each item requires productId and a non-negative receivedQuantity",
+          );
+        }
+      }
+
+      const result = await this.service.confirmTransfer(req.user!.userId, {
+        transferId: id as string,
+        items,
+      });
+
+      res.status(200).json({
+        success: true,
+        data: result,
+        message: "Transfer receipt confirmed",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers
+   * List stock transfers
+   */
+  async listTransfers(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { status, warehouseId } = req.query as {
+        status?: string;
+        warehouseId?: string;
+      };
+
+      const result = await this.service.listTransfers({ status, warehouseId });
+
+      res.status(200).json({
+        success: true,
+        data: result,
       });
     } catch (error) {
       next(error);

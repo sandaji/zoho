@@ -1,5 +1,11 @@
 // frontend/lib/admin-api.ts
-import { SalesStatus, DeliveryStatus, TransactionType, PayrollStatus, PaymentMethod } from "./types";
+import {
+  SalesStatus,
+  DeliveryStatus,
+  TransactionType,
+  PayrollStatus,
+  PaymentMethod,
+} from "./types";
 import { API_BASE_URL, API_ENDPOINTS, getApiUrl } from "./api-config";
 import { getAuthHeadersWithToken } from "./api-utils";
 import { UserRole } from "./auth-context";
@@ -107,10 +113,14 @@ export interface Delivery {
   id: string;
   delivery_no: string;
   status: DeliveryStatus;
-  salesId: string;
-  sales: {
+  salesDocumentId?: string;
+  sales?: {
     invoice_no: string;
     grand_total: number;
+  };
+  stockTransferId?: string;
+  stockTransfer?: {
+    documentId: string;
   };
   driverId: string;
   driver: {
@@ -124,6 +134,111 @@ export interface Delivery {
   };
   destination: string;
   createdAt: string;
+  podSignature?: string;
+  podPhotoUrl?: string;
+  otp?: string;
+  notes?: string;
+}
+
+export interface Truck {
+  id: string;
+  registration: string;
+  model: string;
+  capacity: number;
+  isActive: boolean;
+}
+
+export interface StockTransfer {
+  id: string;
+  documentId: string;
+  status:
+    | "DRAFT"
+    | "PENDING_APPROVAL"
+    | "APPROVED"
+    | "DISPATCHED"
+    | "PARTIALLY_RECEIVED"
+    | "RECEIVED"
+    | "CANCELLED"
+    | "DISCREPANCY";
+  sourceWarehouseId: string;
+  sourceWarehouse: { name: string };
+  destinationWarehouseId: string;
+  destinationWarehouse: { name: string };
+  items: StockTransferItem[];
+  notes: string | null;
+  truckId: string | null;
+  driverId: string | null;
+  dispatchedAt: string | null;
+  receivedAt: string | null;
+  createdById: string;
+  issuedBy: { name: string };
+  receivedBy: { name: string } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StockTransferItem {
+  id: string;
+  productId: string;
+  product: {
+    id: string;
+    name: string;
+    sku: string;
+  };
+  requested_qty: number;
+  dispatched_qty: number | null;
+  received_qty: number | null;
+  damaged_qty: number | null;
+  unitCost: number | null;
+}
+
+export interface RequestStockTransferPayload {
+  sourceWarehouseId: string;
+  destinationWarehouseId: string;
+  items: {
+    productId: string;
+    requested_qty: number;
+  }[];
+  notes?: string;
+}
+
+export interface ApproveStockTransferPayload {
+  notes?: string;
+}
+
+export interface DispatchStockTransferPayload {
+  items: {
+    productId: string;
+    dispatched_qty: number;
+  }[];
+  driverId?: string;
+  truckId?: string;
+}
+
+export interface ReceiveStockTransferPayload {
+  items: {
+    productId: string;
+    received_qty: number;
+    damaged_qty: number;
+  }[];
+  notes?: string;
+}
+
+export interface CreateDeliveryPayload {
+  salesDocumentId?: string;
+  stockTransferId?: string;
+  driverId: string;
+  truckId: string;
+  destination: string;
+  notes?: string;
+}
+
+export interface UpdateDeliveryStatusPayload {
+  status: DeliveryStatus;
+  podSignature?: string;
+  podPhotoUrl?: string;
+  otp?: string;
+  notes?: string;
 }
 
 export interface FinanceTransaction {
@@ -179,7 +294,6 @@ export interface MonthlyReport {
     percentage: number;
   }>;
 }
-
 
 // ============================================================================
 // API FUNCTIONS
@@ -252,11 +366,159 @@ export const fetchSales = async (token: string): Promise<Sales[]> => {
 };
 
 export const fetchDeliveries = async (token: string): Promise<Delivery[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/deliveries`, {
+  const response = await fetch(`${API_BASE_URL}/v1/deliveries`, {
+    // Corrected endpoint
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
     throw new Error("Failed to fetch deliveries");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const createDelivery = async (
+  token: string,
+  payload: CreateDeliveryPayload
+): Promise<Delivery> => {
+  const response = await fetch(`${API_BASE_URL}/v1/deliveries`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to create delivery");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const updateDeliveryStatus = async (
+  token: string,
+  deliveryId: string,
+  payload: UpdateDeliveryStatusPayload
+): Promise<Delivery> => {
+  const response = await fetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/status`, {
+    method: "PATCH",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to update delivery status");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const fetchTrucks = async (token: string): Promise<Truck[]> => {
+  const response = await fetch(`${API_BASE_URL}/v1/trucks`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch trucks");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const fetchStockTransfers = async (token: string): Promise<StockTransfer[]> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Failed to fetch stock transfers");
+  }
+  const payload = await response.json();
+  const data = Array.isArray(payload?.data) ? payload.data : [];
+  return data.map((transfer: any) => ({
+    ...transfer,
+    status: transfer.status?.toUpperCase?.() ?? transfer.status,
+  }));
+};
+
+export const requestStockTransfer = async (
+  token: string,
+  payload: RequestStockTransferPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/request`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to request stock transfer");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const approveStockTransfer = async (
+  token: string,
+  transferId: string,
+  payload: ApproveStockTransferPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/approve`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to approve stock transfer");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const dispatchStockTransfer = async (
+  token: string,
+  transferId: string,
+  payload: DispatchStockTransferPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/dispatch`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to dispatch stock transfer");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const receiveStockTransfer = async (
+  token: string,
+  transferId: string,
+  payload: ReceiveStockTransferPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/receive`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to receive stock transfer");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const fetchStockTransferDetail = async (
+  token: string,
+  transferId: string
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch details for transfer ${transferId}`);
   }
   const { data } = await response.json();
   return data;
@@ -311,7 +573,11 @@ export const fetchDailySummary = async (token: string): Promise<DailySummary> =>
   return data;
 };
 
-export const getFinancialReport = async (token: string, month: number, year: number): Promise<MonthlyReport> => {
+export const getFinancialReport = async (
+  token: string,
+  month: number,
+  year: number
+): Promise<MonthlyReport> => {
   const response = await fetch(`${API_BASE_URL}/v1/finance/report?month=${month}&year=${year}`, {
     headers: getAuthHeadersWithToken(token),
   });
@@ -368,7 +634,11 @@ export const runPayroll = async (token: string): Promise<any> => {
   return data;
 };
 
-export const updatePayrollStatus = async (token: string, id: string, status: string): Promise<Payroll> => {
+export const updatePayrollStatus = async (
+  token: string,
+  id: string,
+  status: string
+): Promise<Payroll> => {
   const response = await fetch(`${API_BASE_URL}/v1/payroll/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
@@ -559,11 +829,14 @@ export const createCreditNote = async (
     reason: string;
   }
 ): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/invoices/${invoiceId}/credit-notes`, {
-    method: "POST",
-    headers: getAuthHeadersWithToken(token),
-    body: JSON.stringify(payload),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/v1/sales-documents/invoices/${invoiceId}/credit-notes`,
+    {
+      method: "POST",
+      headers: getAuthHeadersWithToken(token),
+      body: JSON.stringify(payload),
+    }
+  );
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to create credit note");

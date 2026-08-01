@@ -12,6 +12,7 @@ import { BudgetService } from "./services/budget.service";
 import { validationError } from "../../lib/errors";
 import { logger } from "../../lib/logger";
 import { prisma } from "../../lib/db";
+import { FinanceAnalyticsService } from "./services/finance-analytics.service";
 
 class FinanceController {
   private financeService = new FinanceService();
@@ -1234,68 +1235,43 @@ class FinanceController {
     try {
       const periods = parseInt(req.query.periods as string) || 12;
       const now = new Date();
-      const startDate = new Date(now.getFullYear(), now.getMonth() - (periods - 1), 1);
+      const analytics = new FinanceAnalyticsService();
 
-      const [salesRows, expenseRows, payrollRows] = await Promise.all([
-        prisma.$queryRaw<Array<{ year: number; month: number; revenue: number }>>`
-          SELECT EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
-                 EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
-                 COALESCE(SUM(total), 0)::FLOAT as revenue
-          FROM sales_documents
-          WHERE "createdAt" >= ${startDate}
-            AND status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
-          GROUP BY 1, 2
-          ORDER BY 1, 2
-        `,
-        prisma.$queryRaw<Array<{ year: number; month: number; expenses: number }>>`
-          SELECT EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
-                 EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
-                 COALESCE(SUM(amount), 0)::FLOAT as expenses
-          FROM finance_transactions
-          WHERE "createdAt" >= ${startDate}
-            AND type = 'expense'
-          GROUP BY 1, 2
-          ORDER BY 1, 2
-        `,
-        prisma.$queryRaw<Array<{ year: number; month: number; payroll: number }>>`
-          SELECT EXTRACT(YEAR FROM period_start)::INTEGER as year,
-                 EXTRACT(MONTH FROM period_start)::INTEGER as month,
-                 COALESCE(SUM(net_salary), 0)::FLOAT as payroll
-          FROM payroll
-          WHERE period_start >= ${startDate}
-            AND status IN ('approved', 'paid')
-          GROUP BY 1, 2
-          ORDER BY 1, 2
-        `,
-      ]);
-
-      const trends = [];
+      // Build month list (most-recent `periods` months)
+      const monthList: Array<{ year: number; month: number; date: Date }> = [];
       for (let i = periods - 1; i >= 0; i--) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        const y = d.getFullYear();
-        const m = d.getMonth() + 1;
-        const revenue =
-          salesRows.find((r) => r.year === y && r.month === m)?.revenue || 0;
-        const opex =
-          expenseRows.find((r) => r.year === y && r.month === m)?.expenses ||
-          0;
-        const payroll =
-          payrollRows.find((r) => r.year === y && r.month === m)?.payroll ||
-          0;
-        const expenses = opex + payroll;
-        const profit = revenue - expenses;
-
-        trends.push({
-          period: d.toLocaleDateString("en-US", {
-            year: "2-digit",
-            month: "short",
-          }),
-          revenue: Math.round(revenue),
-          expenses: Math.round(expenses),
-          profit: Math.round(profit),
-          margin: revenue > 0 ? Number(((profit / revenue) * 100).toFixed(2)) : 0,
-        });
+        monthList.push({ year: d.getFullYear(), month: d.getMonth() + 1, date: d });
       }
+
+      // Gather unique years needed and fetch GL monthly data for each
+      const years = [...new Set(monthList.map((m) => m.year))];
+      const glByYearMonth = new Map<string, { revenue: number; expenses: number; profit: number }>();
+      await Promise.all(years.map(async (year) => {
+        const data = await analytics.getMonthlyChartData(year);
+        for (const row of data) {
+          glByYearMonth.set(`${row.year}-${row.month}`, {
+            revenue: row.revenue,
+            expenses: row.expenses,
+            profit: row.profit,
+          });
+        }
+      }));
+
+      const trends = monthList.map(({ year, month, date }) => {
+        const key = `${year}-${month}`;
+        const row = glByYearMonth.get(key) ?? { revenue: 0, expenses: 0, profit: 0 };
+        const revenue = Math.round(row.revenue);
+        const expenses = Math.round(row.expenses);
+        const profit = Math.round(row.profit);
+        return {
+          period: date.toLocaleDateString("en-US", { year: "2-digit", month: "short" }),
+          revenue,
+          expenses,
+          profit,
+          margin: revenue > 0 ? Number(((profit / revenue) * 100).toFixed(2)) : 0,
+        };
+      });
 
       const currentPeriod = trends[trends.length - 1];
       const previousPeriod = trends[trends.length - 2] || currentPeriod;

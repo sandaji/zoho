@@ -10,6 +10,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PosService } from "../service";
 import { SalesService } from "../service/sales.service";
+import { DocumentService } from "../../../lib/document.service";
 import { prisma } from "../../../lib/db";
 import {
   CreateSalesDTO,
@@ -312,7 +313,7 @@ export class POSController {
         throw validationError("Sale ID is required");
       }
 
-      const result = await SalesService.generateReceipt(id);
+      const result = await DocumentService.generateReceipt(id);
 
       res.json({
         success: true,

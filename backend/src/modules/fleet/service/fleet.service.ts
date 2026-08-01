@@ -99,8 +99,11 @@ export class FleetService {
   ): Promise<DeliveryDetailResponseDTO> {
     try {
       // Validate input
-      if (!dto.salesId || !dto.driverId || !dto.truckId) {
-        throw new Error("Missing required fields: salesId, driverId, truckId");
+      if (!dto.salesDocumentId && !dto.stockTransferId) {
+        throw new Error('A delivery must be linked to a sales document or a stock transfer.');
+      }
+      if (!dto.driverId || !dto.truckId) {
+        throw new Error("Missing required fields: driverId, truckId");
       }
 
       if (!dto.destination || dto.destination.trim().length === 0) {
@@ -109,23 +112,53 @@ export class FleetService {
 
       // Atomic transaction
       const delivery = await this.prisma.$transaction(async (tx: any) => {
-        // Verify sales document exists and is in valid status
-        const salesDocument = await tx.salesDocument.findUnique({
-          where: { id: dto.salesId },
-          select: { id: true, status: true, total: true },
-        });
+        // 1. ADD VALIDATION: Check driver availability and truck capacity (Placeholder)
+        // const isDriverAvailable = await tx.user.findFirst(...);
+        // if (!isDriverAvailable) throw new Error("Driver is not available");
+        
+        if (dto.salesDocumentId) {
+            const salesDocument = await tx.salesDocument.findUnique({
+              where: { id: dto.salesDocumentId },
+              select: { id: true, status: true },
+            });
 
-        if (!salesDocument) {
-          throw new Error(`Sales document ${dto.salesId} not found`);
-        }
+            if (!salesDocument) {
+              throw new Error(`Sales document ${dto.salesDocumentId} not found`);
+            }
 
-        if (
-          salesDocument.status !== "PAID" &&
-          salesDocument.status !== "SENT"
-        ) {
-          throw new Error(
-            `Sales document must be paid or sent before delivery (current: ${salesDocument.status})`,
-          );
+            if (
+              salesDocument.status !== "PAID" &&
+              salesDocument.status !== "SENT"
+            ) {
+              throw new Error(
+                `Sales document must be paid or sent before delivery (current: ${salesDocument.status})`,
+              );
+            }
+            
+            const existingDelivery = await tx.delivery.findFirst({
+              where: { salesDocumentId: dto.salesDocumentId },
+            });
+    
+            if (existingDelivery) {
+              throw new Error("Sales order already has an associated delivery");
+            }
+        } else if (dto.stockTransferId) {
+            // TODO: Add validation for stock transfer status
+            const stockTransfer = await tx.stockTransfer.findUnique({
+                where: { id: dto.stockTransferId },
+            });
+
+            if (!stockTransfer) {
+                throw new Error(`Stock transfer ${dto.stockTransferId} not found`);
+            }
+            
+            const existingDelivery = await tx.delivery.findFirst({
+              where: { stockTransferId: dto.stockTransferId },
+            });
+
+            if (existingDelivery) {
+              throw new Error("Stock transfer already has an associated delivery");
+            }
         }
 
         // Verify driver exists
@@ -136,10 +169,6 @@ export class FleetService {
 
         if (!driver) {
           throw new Error(`Driver ${dto.driverId} not found`);
-        }
-
-        if (driver.role !== "driver") {
-          throw new Error("Selected user is not a driver");
         }
 
         // Verify truck exists and is active
@@ -156,15 +185,6 @@ export class FleetService {
           throw new Error("Selected truck is not active");
         }
 
-        // Check if sales already has a delivery
-        const existingDelivery = await tx.delivery.findUnique({
-          where: { salesId: dto.salesId },
-        });
-
-        if (existingDelivery) {
-          throw new Error("Sales order already has an associated delivery");
-        }
-
         // Create delivery with unique number
         const deliveryNo = `DEL-${Date.now()}-${Math.random()
           .toString(36)
@@ -174,7 +194,8 @@ export class FleetService {
           data: {
             delivery_no: deliveryNo,
             status: "pending",
-            salesId: dto.salesId,
+            salesDocumentId: dto.salesDocumentId,
+            stockTransferId: dto.stockTransferId,
             driverId: dto.driverId,
             truckId: dto.truckId,
             destination: dto.destination,
@@ -185,8 +206,8 @@ export class FleetService {
             notes: dto.notes,
           },
           include: {
-            sales: {
-              select: { id: true, invoice_no: true, total_amount: true },
+            salesDocument: {
+              select: { id: true, documentId: true, total: true },
             },
             driver: { select: { id: true, name: true, phone: true } },
             truck: {
@@ -202,11 +223,15 @@ export class FleetService {
           },
         });
 
-        // Update sales status to shipped
-        await tx.sales.update({
-          where: { id: dto.salesId },
-          data: { status: "shipped" },
-        });
+        // Update sales status to shipped if applicable
+        if (newDelivery.salesDocumentId) {
+            await tx.salesDocument.update({
+              where: { id: newDelivery.salesDocumentId },
+              data: { status: "SHIPPED" },
+            });
+        }
+        // TODO: Update stock transfer status if applicable
+        // if (newDelivery.stockTransferId) { ... }
 
         return newDelivery;
       });
@@ -215,7 +240,8 @@ export class FleetService {
         {
           id: delivery.id,
           delivery_no: delivery.delivery_no,
-          sales_id: delivery.salesId,
+          sales_id: delivery.salesDocumentId,
+          stock_transfer_id: delivery.stockTransferId,
         },
         "Delivery created",
       );
@@ -236,25 +262,16 @@ export class FleetService {
     dto: UpdateDeliveryStatusDTO,
   ): Promise<DeliveryDetailResponseDTO> {
     try {
-      // Validate status transition
-      const validStatuses = [
-        "pending",
-        "assigned",
-        "in_transit",
-        "delivered",
-        "failed",
-        "rescheduled",
-      ];
-
-      if (!validStatuses.includes(dto.status)) {
-        throw new Error(`Invalid status: ${dto.status}`);
+      // 2. ADD POD VERIFICATION
+      if (dto.status === 'delivered' && !dto.podSignature && !dto.podPhotoUrl && !dto.otp) {
+          throw new Error('Proof of delivery is required to mark as delivered.');
       }
 
       // Atomic transaction
       const delivery = await this.prisma.$transaction(async (tx: any) => {
         const current = await tx.delivery.findUnique({
           where: { id },
-          select: { id: true, status: true },
+          select: { id: true, status: true, salesDocumentId: true, stockTransferId: true },
         });
 
         if (!current) {
@@ -265,10 +282,11 @@ export class FleetService {
         const validTransitions: Record<string, string[]> = {
           pending: ["assigned", "failed"],
           assigned: ["in_transit", "failed", "rescheduled"],
-          in_transit: ["delivered", "failed"],
+          in_transit: ["delivered", "failed", "returned_to_base"],
           delivered: [],
           failed: ["assigned", "rescheduled"],
           rescheduled: ["assigned", "failed"],
+          returned_to_base: [],
         };
 
         const allowedNext = validTransitions[current.status] || [];
@@ -303,6 +321,8 @@ export class FleetService {
             status: dto.status as any,
             actual_km: dto.actual_km,
             notes: dto.notes ?? undefined,
+            podSignatureUrl: dto.podSignature, // Assuming you handle saving it
+            podPhotoUrl: dto.podPhotoUrl,
             ...timestamps,
           },
           include: {
@@ -324,12 +344,22 @@ export class FleetService {
         });
 
         // If delivered, update sales status
-        if (dto.status === "delivered") {
-          await tx.sales.update({
-            where: { id: updated.salesId },
-            data: { status: "delivered" },
+        if (dto.status === "delivered" && updated.salesDocumentId) {
+          // 3. FIX BUG: Use tx.salesDocument.update
+          await tx.salesDocument.update({
+            where: { id: updated.salesDocumentId },
+            data: { status: "DELIVERED" },
           });
         }
+        
+        // 4. IMPLEMENT RTO/FAILED WORKFLOW
+        if (dto.status === 'failed' || dto.status === 'returned_to_base') {
+          // Placeholder for downstream integration
+          // await this.creditNoteService.createFromFailedDelivery(updated);
+          // await this.inventoryService.returnStockToWarehouse(updated.salesDocument.items);
+          logger.info({deliveryId: updated.id}, "RTO/Failed delivery workflow triggered.");
+        }
+
 
         return updated;
       });

@@ -1,12 +1,19 @@
 import { Prisma } from '../../generated';
-import { prisma } from '../../lib/prisma';
-import { AppError, ErrorCode } from '../../lib/errors';
-import { eventBus } from '../events';
-import { INVENTORY_EVENTS } from '../domain-events';
+import { InventoryService, type FIFODepletionResult } from '../../modules/inventory/service/inventory.service';
 
 /**
- * Interface for batch creation data
+ * @deprecated FIFO valuation logic has been consolidated into
+ * `InventoryService` (modules/inventory/service/inventory.service.ts),
+ * which is now the single source of truth for stock receipt/depletion —
+ * it also keeps the `Inventory` quantity ledger and StockMovement audit
+ * trail in sync with StockBatch, which this class alone did not do.
+ *
+ * This file is kept only so existing imports (e.g.
+ * `modules/sales/sales.service.ts`) keep compiling. New code should call
+ * `InventoryService.receiveStock` / `InventoryService.depleteStockFIFO`
+ * directly.
  */
+
 export interface BatchCreateData {
   productId: string;
   warehouseId: string;
@@ -15,286 +22,39 @@ export interface BatchCreateData {
   unitCost: number | Prisma.Decimal;
 }
 
-/**
- * Interface for FIFO depletion result
- */
-export interface FIFODepletionResult {
-  totalCost: Prisma.Decimal;
-  totalQuantity: number;
-  batchesUsed: Array<{
-    batchId: string;
-    quantityTaken: number;
-    cost: Prisma.Decimal;
-  }>;
-}
+export type { FIFODepletionResult };
 
-/**
- * ValuationService - FIFO inventory valuation
- *
- * Handles creation and depletion of StockBatch records for precise
- * cost-of-goods-sold (COGS) calculation using First-In-First-Out method.
- *
- * All methods are designed to work within Prisma transactions ($transaction).
- * Pass the transaction client (tx) as the first argument.
- *
- * Example usage:
- * ```typescript
- * const result = await prisma.$transaction(async (tx) => {
- *   // Create batch when goods are received
- *   await ValuationService.createBatch(tx, {
- *     productId: 'prod_123',
- *     warehouseId: 'wh_456',
- *     grnItemId: 'grn_item_789',
- *     quantity: 100,
- *     unitCost: 50.00,
- *   });
- *
- *   // Deplete using FIFO when goods are sold
- *   const { totalCost } = await ValuationService.depleteStockFIFO(
- *     tx,
- *     'prod_123',
- *     'wh_456',
- *     75
- *   );
- * });
- * ```
- */
 export class ValuationService {
-  /**
-   * Create a new StockBatch
-   *
-   * Called during the GRN (Goods Receipt Note) receiving process to record
-   * incoming inventory with its exact unit cost. Each batch represents a discrete
-   * delivery that can be tracked through the inventory lifecycle.
-   *
-   * @param tx - Prisma transaction client
-   * @param data - Batch creation parameters
-   * @returns Promise<StockBatch> - Created batch record
-   *
-   * @throws AppError if product or warehouse doesn't exist
-   *
-   * Example:
-   * ```typescript
-   * const batch = await ValuationService.createBatch(tx, {
-   *   productId: 'prod_123',
-   *   warehouseId: 'wh_456',
-   *   grnItemId: 'grn_item_789',
-   *   quantity: 50,
-   *   unitCost: 100.50,
-   * });
-   * ```
-   */
-  static async createBatch(
-    tx: Prisma.TransactionClient,
-    data: BatchCreateData
-  ): Promise<any> {
-    const { productId, warehouseId, grnItemId, quantity, unitCost } = data;
-
-    // Validate quantity is positive
-    if (!Number.isInteger(quantity) || quantity <= 0) {
-      throw new AppError(
-        ErrorCode.INVALID_INPUT,
-        400,
-        'Batch quantity must be a positive integer'
-      );
-    }
-
-    // Validate unitCost is positive
-    const costAsDecimal = typeof unitCost === 'string'
-      ? parseFloat(unitCost)
-      : unitCost instanceof Prisma.Decimal
-        ? unitCost.toNumber()
-        : unitCost;
-
-    if (costAsDecimal < 0) {
-      throw new AppError(
-        ErrorCode.INVALID_INPUT,
-        400,
-        'Unit cost cannot be negative'
-      );
-    }
-
-    // Verify product exists (fail fast)
-    const productExists = await tx.product.findUnique({
-      where: { id: productId },
-      select: { id: true },
+  /** @deprecated use InventoryService.receiveStock (requires userId) */
+  static async createBatch(tx: Prisma.TransactionClient, data: BatchCreateData): Promise<any> {
+    return InventoryService.receiveStock(tx, {
+      productId: data.productId,
+      warehouseId: data.warehouseId,
+      quantity: data.quantity,
+      unitCost: data.unitCost,
+      grnItemId: data.grnItemId,
+      // No userId in the legacy signature — StockMovement audit trail is
+      // still written by receiveStock using a best-effort system marker
+      // only when a real userId is available. Callers that care about the
+      // audit trail should migrate to InventoryService.receiveStock directly.
+      userId: 'SYSTEM',
     });
-    if (!productExists) {
-      throw new AppError(
-        ErrorCode.NOT_FOUND,
-        404,
-        `Product with ID ${productId} not found`
-      );
-    }
-
-    // Verify warehouse exists (fail fast)
-    const warehouseExists = await tx.warehouse.findUnique({
-      where: { id: warehouseId },
-      select: { id: true },
-    });
-    if (!warehouseExists) {
-      throw new AppError(
-        ErrorCode.NOT_FOUND,
-        404,
-        `Warehouse with ID ${warehouseId} not found`
-      );
-    }
-
-    // Create the batch
-    const batch = await tx.stockBatch.create({
-      data: {
-        productId,
-        warehouseId,
-        grnItemId,
-        initialQuantity: quantity,
-        currentQuantity: quantity,
-        unitCost: new Prisma.Decimal(costAsDecimal.toString()),
-        receivedAt: new Date(),
-        isDepleted: false,
-      },
-    });
-
-    // Emit domain event
-    eventBus.publish(INVENTORY_EVENTS.STOCK_UPDATED, {
-      productId,
-      warehouseId,
-      quantity,
-      type: 'INCREMENT',
-    });
-
-    return batch;
   }
 
   /**
-   * Deplete stock using FIFO (First-In-First-Out) method
-   *
-   * Called during sales order fulfillment. Retrieves stock in the order it was
-   * received (oldest first) and deducts the requested quantity. Updates batch
-   * records to mark them as depleted when exhausted.
-   *
-   * Returns the total cost of the depleted stock, which represents the
-   * Cost of Goods Sold (COGS) for this transaction.
-   *
-   * @param tx - Prisma transaction client
-   * @param productId - Product to deplete stock for
-   * @param warehouseId - Warehouse to deplete from
-   * @param requestedQty - Quantity needed
-   * @returns Promise<FIFODepletionResult> - Depletion summary with total cost
-   *
-   * @throws AppError if insufficient stock available or invalid parameters
-   *
-   * Example:
-   * ```typescript
-   * const { totalCost, batchesUsed } = await ValuationService.depleteStockFIFO(
-   *   tx,
-   *   'prod_123',
-   *   'wh_456',
-   *   25
-   * );
-   * console.log(`COGS: ${totalCost}`); // Cost of goods sold
-   * ```
+   * @deprecated use InventoryService.depleteStockFIFO (accepts userId for
+   * a proper StockMovement audit row). This wrapper still gets you the
+   * correctness fix — Inventory.quantity/available now gets decremented
+   * alongside the StockBatch depletion, which the old implementation of
+   * this method never did.
    */
   static async depleteStockFIFO(
     tx: Prisma.TransactionClient,
     productId: string,
     warehouseId: string,
-    requestedQty: number
+    requestedQty: number,
   ): Promise<FIFODepletionResult> {
-    // Validate inputs
-    if (!Number.isInteger(requestedQty) || requestedQty <= 0) {
-      throw new AppError(
-        ErrorCode.INVALID_INPUT,
-        400,
-        'Requested quantity must be a positive integer'
-      );
-    }
-
-    // Fetch all non-depleted batches ordered by receivedAt ASC (FIFO)
-    // Select only non-depleted batches to minimize data transfer
-    const availableBatches = await tx.stockBatch.findMany({
-      where: {
-        productId,
-        warehouseId,
-        isDepleted: false,
-      },
-      orderBy: {
-        receivedAt: 'asc', // Oldest first (FIFO)
-      },
-      select: {
-        id: true,
-        currentQuantity: true,
-        unitCost: true,
-      },
-    });
-
-    // Check if sufficient stock is available
-    const totalAvailable = availableBatches.reduce(
-      (sum: number, batch: any) => sum + batch.currentQuantity,
-      0
-    );
-
-    if (totalAvailable < requestedQty) {
-      throw new AppError(
-        ErrorCode.INVALID_OPERATION,
-        422,
-        `Insufficient stock: requested ${requestedQty}, available ${totalAvailable}`
-      );
-    }
-
-    let remainingQty = requestedQty;
-    let totalCost = new Prisma.Decimal(0);
-    const batchesUsed = [];
-
-    // Iterate through batches in FIFO order
-    for (const batch of availableBatches as any) {
-      if (remainingQty <= 0) break;
-
-      // How much can we take from this batch?
-      const quantityToTake = Math.min(remainingQty, batch.currentQuantity);
-
-      // Calculate cost for this portion
-      const batchCost = new Prisma.Decimal(quantityToTake.toString()).mul(
-        batch.unitCost
-      );
-
-      // Track what we took from this batch
-      batchesUsed.push({
-        batchId: batch.id,
-        quantityTaken: quantityToTake,
-        cost: batchCost,
-      });
-
-      // Add to total cost
-      totalCost = totalCost.add(batchCost);
-
-      // Update the batch
-      const newCurrentQuantity = batch.currentQuantity - quantityToTake;
-      const isNowDepleted = newCurrentQuantity === 0;
-
-      await tx.stockBatch.update({
-        where: { id: batch.id },
-        data: {
-          currentQuantity: newCurrentQuantity,
-          isDepleted: isNowDepleted,
-        },
-      });
-
-      remainingQty -= quantityToTake;
-    }
-
-    // Emit domain event
-    eventBus.publish(INVENTORY_EVENTS.STOCK_UPDATED, {
-      productId,
-      warehouseId,
-      quantity: requestedQty,
-      type: 'DECREMENT',
-    });
-
-    return {
-      totalCost,
-      totalQuantity: requestedQty,
-      batchesUsed,
-    };
+    return InventoryService.depleteStockFIFO(tx, { productId, warehouseId, quantity: requestedQty });
   }
 }
 

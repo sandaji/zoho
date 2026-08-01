@@ -1,18 +1,16 @@
 // backend/src/modules/pos/controller/pdf.controller.ts
 import { Request, Response, NextFunction } from "express";
-import { SalesService } from "../service/sales.service";
-import { PDFGenerator } from "../../../lib/pdf-generator";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { getCompanyInfo } from "../../../config/company.config";
+import { DocumentService } from "../../../lib/document.service";
 
 /**
  * PDF Controller
- * Handles PDF generation for sales documents
+ * Thin HTTP layer — all document rendering is delegated to DocumentService.
  */
 export class PDFController {
   /**
-   * Generate PDF for a sales document (Quote or Invoice)
-   * Returns HTML or PDF
+   * Generate HTML or PDF for a SalesDocument (Quote, Invoice, Credit Note…)
+   * Query param: ?format=html (default) | ?format=pdf
    */
   static async generatePDF(
     req: Request,
@@ -21,104 +19,26 @@ export class PDFController {
   ): Promise<void> {
     try {
       const { id } = req.params as { id: string };
-      const { format = "html" } = req.query; // 'html' or 'pdf'
+      const format = (req.query.format === "pdf" ? "pdf" : "html") as "html" | "pdf";
 
       if (!id) {
-        throw new AppError(
-          ErrorCode.BAD_REQUEST,
-          400,
-          "Document ID is required",
-        );
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Document ID is required");
       }
 
-      // Fetch document with all relations
-      const document = await SalesService.getDocumentById(id);
+      const output = await DocumentService.generateOutput(id, format);
 
-      if (!document) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+      res.setHeader("Content-Type", output.mimeType);
+      if (output.format === "pdf") {
+        res.setHeader("Content-Disposition", `attachment; filename="${output.filename}"`);
       }
-
-      // Build company info: branch DB fields take priority, env vars are fallback
-      const companyInfo = getCompanyInfo(document.branch ?? undefined);
-
-      // Generate HTML based on document type
-      let html: string;
-      switch (document.type) {
-        case "QUOTE":
-          html = PDFGenerator.generateQuoteHTML({ document, companyInfo });
-          break;
-        case "INVOICE":
-        case "DRAFT":
-        case "CREDIT_NOTE":
-        default:
-          html = PDFGenerator.generateInvoiceHTML({ document, companyInfo });
-          break;
-      }
-
-      // Return HTML
-      if (format === "html") {
-        res.setHeader("Content-Type", "text/html");
-        res.send(html);
-        return;
-      }
-
-      // Return PDF using Puppeteer (if available)
-      if (format === "pdf") {
-        try {
-          // Dynamically import puppeteer (in case it's not fully installed yet)
-          const puppeteer = (await import("puppeteer")).default;
-          const browser = await puppeteer.launch({
-            headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
-          });
-          const page = await browser.newPage();
-          
-          // Set content and wait for everything to load
-          await page.setContent(html, {
-            waitUntil: "domcontentloaded",
-          });
-          
-          // Generate PDF
-          const pdfBuffer = await page.pdf({
-            format: "A4",
-            printBackground: true,
-            margin: {
-              top: "20px",
-              bottom: "20px",
-              left: "20px",
-              right: "20px",
-            },
-          });
-          
-          await browser.close();
-          
-          // Send PDF
-          res.setHeader("Content-Type", "application/pdf");
-          res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="${document.documentId}.pdf"`,
-          );
-          res.send(pdfBuffer);
-          return;
-        } catch (err) {
-          // If Puppeteer isn't ready, just send HTML instead
-          console.warn("Failed to generate PDF with Puppeteer, falling back to HTML:", err);
-          res.setHeader("Content-Type", "text/html");
-          res.send(html);
-          return;
-        }
-      }
-
-      // Fallback to HTML
-      res.setHeader("Content-Type", "text/html");
-      res.send(html);
+      res.send(output.content);
     } catch (error) {
       next(error);
     }
   }
 
   /**
-   * Generate preview HTML (for testing)
+   * Preview HTML for a document (always returns HTML, no Puppeteer involved).
    */
   static async previewDocument(
     req: Request,
@@ -129,39 +49,12 @@ export class PDFController {
       const { id } = req.params as { id: string };
 
       if (!id) {
-        throw new AppError(
-          ErrorCode.BAD_REQUEST,
-          400,
-          "Document ID is required",
-        );
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Document ID is required");
       }
 
-      // Fetch document
-      const document = await SalesService.getDocumentById(id);
-
-      if (!document) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
-      }
-
-      // Build company info: branch DB fields take priority, env vars are fallback
-      const companyInfo = getCompanyInfo(document.branch ?? undefined);
-
-      // Generate HTML based on document type
-      let html: string;
-      switch (document.type) {
-        case "QUOTE":
-          html = PDFGenerator.generateQuoteHTML({ document, companyInfo });
-          break;
-        case "INVOICE":
-        case "DRAFT":
-        case "CREDIT_NOTE":
-        default:
-          html = PDFGenerator.generateInvoiceHTML({ document, companyInfo });
-          break;
-      }
-
+      const output = await DocumentService.generateOutput(id, "html");
       res.setHeader("Content-Type", "text/html");
-      res.send(html);
+      res.send(output.content);
     } catch (error) {
       next(error);
     }

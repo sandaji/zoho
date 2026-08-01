@@ -229,13 +229,13 @@ export default function GeneralLedgerPage() {
     }
   };
 
-  const filtered = entries.filter(
+  const filtered = Array.isArray(entries) ? entries.filter(
     (e) =>
       !searchQuery ||
       e.entry_no?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  ) : [];
 
   return (
     <div className="p-6 space-y-6">

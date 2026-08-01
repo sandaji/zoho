@@ -318,7 +318,7 @@ router.post(
     inventoryController.adjustInventory(req, res, next),
 );
 
-// POST /inventory/transfer - Transfer between warehouses
+// POST /inventory/transfer - LEGACY
 router.post(
   "/inventory/transfer",
   authMiddleware,
@@ -326,6 +326,62 @@ router.post(
   validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.transferInventory(req, res, next),
+);
+
+// GET /inventory/transfers - List stock transfers
+router.get(
+  "/inventory/transfers",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.listTransfers(req, res, next),
+);
+
+// GET /inventory/transfers/:id - Get a single transfer with line-item detail
+router.get(
+  "/inventory/transfers/:id",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.getTransfer(req, res, next),
+);
+
+// POST /inventory/transfers/request - Stage 1: Request a new transfer
+router.post(
+  "/inventory/transfers/request",
+  authMiddleware,
+  requirePermission("inventory.stock.adjust"),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.requestTransfer(req, res, next),
+);
+
+// POST /inventory/transfers/:id/approve - Stage 2: Approve a transfer
+router.post(
+  "/inventory/transfers/:id/approve",
+  authMiddleware,
+  requirePermission("inventory.stock.adjust"),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.approveTransfer(req, res, next),
+);
+
+// POST /inventory/transfers/:id/dispatch - Stage 3: Dispatch a transfer
+router.post(
+  "/inventory/transfers/:id/dispatch",
+  authMiddleware,
+  requirePermission("inventory.stock.adjust"),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.dispatchTransfer(req, res, next),
+);
+
+// POST /inventory/transfers/:id/receive - Stage 4: Receive a transfer
+router.post(
+  "/inventory/transfers/:id/receive",
+  authMiddleware,
+  requirePermission("inventory.stock.adjust"),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.receiveTransfer(req, res, next),
 );
 
 // Legacy endpoints for backwards compatibility

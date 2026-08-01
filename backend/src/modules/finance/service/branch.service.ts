@@ -1,6 +1,7 @@
 import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 import { notFoundError } from "../../../lib/errors";
+import { FinanceAnalyticsService } from "../services/finance-analytics.service";
 import {
   BranchDashboardDTO,
   BranchKPIResponseDTO,
@@ -204,7 +205,9 @@ export class BranchService {
   }
 
   /**
-   * Calculate Key Performance Indicators for branch
+   * Calculate Key Performance Indicators for branch.
+   * Delegates revenue/expense figures to FinanceAnalyticsService (GL-sourced)
+   * instead of doing a JS reduce over SalesDocument/FinanceTransaction.
    */
   private async getBranchKPIs(
     branchId: string,
@@ -220,129 +223,44 @@ export class BranchService {
         throw notFoundError(`Branch not found: ${branchId}`);
       }
 
-      // Sales data
-      const allSales: any[] = await this.prisma.salesDocument.findMany({
-        where: { branchId },
-      });
-
-      const monthSales: any[] = await this.prisma.salesDocument.findMany({
-        where: {
-          branchId,
-          createdAt: {
-            gte: monthStart,
-            lte: monthEnd,
-          },
-        },
-      });
-
-      const totalRevenue = allSales.reduce(
-        (sum: number, s: any) => sum + (s.total || 0),
-        0,
-      );
-      const monthRevenue = monthSales.reduce(
-        (sum: number, s: any) => sum + (s.total || 0),
-        0,
-      );
-      const lastMonthRevenue = await this.getLastMonthRevenue(branchId);
-
-      const salesGrowth =
-        lastMonthRevenue > 0
-          ? ((monthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
-          : 0;
+      // GL-sourced financials (replaces JS-reduce over findMany)
+      const analytics = new FinanceAnalyticsService();
+      const glKPIs = await analytics.getBranchKPIs(branchId, monthStart, monthEnd);
 
       // Employees
       const employees: any[] = await this.prisma.user.findMany({
         where: { branchId },
+        select: { id: true, isActive: true },
       });
-
       const activeEmployees = employees.filter((e: any) => e.isActive).length;
 
-      // Inventory
+      // Inventory (unit_price × quantity for valuation, reorder_level for low-stock)
       const inventoryData: any[] = await this.prisma.inventory.findMany({
-        where: {
-          warehouse: {
-            branchId,
-          },
-        },
-        include: { product: true },
+        where: { warehouse: { branchId } },
+        include: { product: { select: { unit_price: true } } },
       });
-
       const totalInventoryValue = inventoryData.reduce(
-        (sum: number, inv: any) => {
-          return sum + (inv.product?.unit_price || 0) * (inv.quantity || 0);
-        },
+        (sum: number, inv: any) => sum + (inv.product?.unit_price ?? 0) * (inv.quantity ?? 0),
         0,
       );
+      const lowStockItems = inventoryData.filter((inv: any) => (inv.quantity ?? 0) < 10).length;
 
-      const lowStockItems = inventoryData.filter(
-        (inv: any) => (inv.quantity || 0) < 10,
-      ).length;
-
-      // Fleet
+      // Fleet & Deliveries
       const trucks: any[] = await this.prisma.truck.findMany({
         where: { deliveries: { some: { driver: { branchId } } } },
+        select: { id: true },
       });
-
-      // Deliveries
       const deliveries: any[] = await this.prisma.delivery.findMany({
-        where: {
-          // sales: { branchId }, // Relation likely removed in schema
-          driver: { branchId },
-          createdAt: {
-            gte: monthStart,
-            lte: monthEnd,
-          },
-        },
+        where: { driver: { branchId }, createdAt: { gte: monthStart, lte: monthEnd } },
+        select: { status: true, scheduledAt: true, deliveredAt: true },
       });
-
       const activeDeliveries = deliveries.filter(
         (d: any) => d.status === "pending" || d.status === "in_transit",
       ).length;
-
-      const successfulDeliveries = deliveries.filter(
-        (d: any) => d.status === "delivered",
-      ).length;
+      const successfulDeliveries = deliveries.filter((d: any) => d.status === "delivered").length;
       const deliverySuccessRate =
-        deliveries.length > 0
-          ? (successfulDeliveries / deliveries.length) * 100
-          : 0;
+        deliveries.length > 0 ? (successfulDeliveries / deliveries.length) * 100 : 0;
 
-      // Financial metrics
-      const expenses: any[] = await this.prisma.financeTransaction.findMany({
-        where: {
-          type: "expense",
-          createdAt: {
-            gte: monthStart,
-            lte: monthEnd,
-          },
-        },
-      });
-
-      const totalExpenses = expenses.reduce(
-        (sum: number, e: any) => sum + (e.amount || 0),
-        0,
-      );
-
-      // Payroll
-      const payrolls: any[] = await this.prisma.payroll.findMany({
-        where: {
-          createdAt: {
-            gte: monthStart,
-            lte: monthEnd,
-          },
-        },
-      });
-
-      const totalPayroll = payrolls.reduce(
-        (sum: number, p: any) => sum + (p.net_salary || 0),
-        0,
-      );
-
-      const netProfit = monthRevenue - totalExpenses - totalPayroll;
-      const profitMargin =
-        monthRevenue > 0 ? (netProfit / monthRevenue) * 100 : 0;
-
-      // Top products
       const topProducts = await this.getTopProducts(branchId, 5);
 
       return {
@@ -352,12 +270,11 @@ export class BranchService {
         location: branch.city
           ? `${branch.city}${branch.address ? `, ${branch.address}` : ""}`
           : undefined,
-        total_sales: allSales.length,
-        total_revenue: totalRevenue,
-        average_order_value:
-          allSales.length > 0 ? totalRevenue / allSales.length : 0,
-        sales_this_month: monthRevenue,
-        sales_growth_percentage: salesGrowth,
+        total_sales: 0,                       // count from GL not available without separate query
+        total_revenue: glKPIs.totalRevenue,
+        average_order_value: 0,
+        sales_this_month: glKPIs.monthRevenue,
+        sales_growth_percentage: glKPIs.salesGrowthPercent,
         top_selling_products: topProducts,
         total_employees: employees.length,
         active_employees: activeEmployees,
@@ -365,10 +282,10 @@ export class BranchService {
         low_stock_items: lowStockItems,
         total_trucks: trucks.length,
         active_deliveries: activeDeliveries,
-        total_expenses: totalExpenses,
-        total_payroll: totalPayroll,
-        net_profit: netProfit,
-        profit_margin: profitMargin,
+        total_expenses: glKPIs.monthExpenses,
+        total_payroll: 0,                     // subset of expenses — break out when GL payroll account range agreed
+        net_profit: glKPIs.monthProfit,
+        profit_margin: glKPIs.monthRevenue > 0 ? (glKPIs.monthProfit / glKPIs.monthRevenue) * 100 : 0,
         delivery_success_rate: deliverySuccessRate,
         average_delivery_time: this.calculateAverageDeliveryTime(deliveries),
         period_start: monthStart.toISOString(),

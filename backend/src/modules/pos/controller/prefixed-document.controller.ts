@@ -18,10 +18,11 @@ import {
   SalesDocumentType,
   SalesDocumentStatus,
   PaymentStatus,
-  MovementType,
 } from "../../../generated";
 import { getCompanyInfo } from "../../../config/company.config";
 import { logger } from "../../../lib/logger";
+import { calculateItemTotals, calculateDocumentTotals } from "../../../lib/sales-calculator";
+import { InventoryService } from "../../inventory/service/inventory.service";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,23 +50,13 @@ interface CreatePrefixedDocumentDTO {
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+// Re-exported from lib/sales-calculator — do NOT reimplement inline.
+// The local names are kept as aliases so existing call-sites need no rename.
+const calcItemTotals = (item: LineItemInput, productTaxRate: number) =>
+  calculateItemTotals({ ...item, taxRate: item.taxRate ?? productTaxRate });
 
-function calcItemTotals(item: LineItemInput, productTaxRate: number) {
-  const taxRate = item.taxRate ?? productTaxRate;
-  const subtotal = item.quantity * item.unitPrice;
-  const discount = item.discount ?? 0;
-  const taxableAmount = Math.max(subtotal - discount, 0);
-  const taxAmt = taxableAmount * taxRate;
-  const total = subtotal + taxAmt - discount;
-  return { subtotal, taxAmount: taxAmt, discount, total, taxRate };
-}
-
-function calcDocumentTotals(lines: ReturnType<typeof calcItemTotals>[]) {
-  const subtotal = lines.reduce((s, l) => s + l.subtotal, 0);
-  const tax = lines.reduce((s, l) => s + l.taxAmount, 0);
-  const discount = lines.reduce((s, l) => s + l.discount, 0);
-  return { subtotal, tax, discount, total: subtotal + tax - discount };
-}
+const calcDocumentTotals = (lines: ReturnType<typeof calcItemTotals>[]) =>
+  calculateDocumentTotals(lines);
 
 // ── Controller ────────────────────────────────────────────────────────────────
 
@@ -169,183 +160,31 @@ export class PrefixedDocumentController {
             });
           }
 
-          // 3. Deduct from warehouse inventory using FIFO across stock batches + create stock movements
-          // Batched approach to reduce N+1 queries
-          const batches = await tx.stockBatch.findMany({
-            where: { warehouse: { branchId: body.branchId, isActive: true } },
-            orderBy: { receivedAt: "asc" },
-            select: {
-              id: true,
-              productId: true,
-              warehouseId: true,
-              currentQuantity: true,
-              unitCost: true,
-            },
-          });
-
-          // Collect all batch updates, inventory updates, and stock movements
-          const batchUpdates: Array<{ id: string; newQuantity: number; isDepleted: boolean }> = [];
-          const inventoryUpdates: Map<string, { quantity: number; available: number }> = new Map();
-          const branchInventoryUpdates: Map<string, { quantity: number; available: number }> = new Map();
-          const stockMovements: Array<{
-            type: MovementType;
-            quantity: number;
-            productId: string;
-            warehouseId: string;
-            salesId: string;
-            reference: string;
-            createdById: string;
-          }> = [];
-
+          // 3. Deduct stock using the canonical InventoryService (FIFO cost lots,
+          //    Inventory ledger, StockMovement audit trail, BranchInventory sync).
+          //    This replaces the bespoke batch-collection loop that was previously here.
           for (const { product, input } of hydratedItems) {
-            let remaining = input.quantity;
-
-            // Filter batches for this product and branch
-            const productBatches = batches.filter(
-              (b) => b.productId === product.id && b.currentQuantity > 0,
-            );
-
-            const candidateBatches =
-              productBatches.length > 0
-                ? productBatches
-                : await tx.stockBatch.findMany({
-                    where: {
-                      productId: product.id,
-                      isDepleted: false,
-                      warehouse: { branchId: body.branchId, isActive: true },
-                    },
-                    orderBy: { receivedAt: "asc" },
-                  });
-
-            for (const batch of candidateBatches as any) {
-              if (remaining <= 0) break;
-              const take = Math.min(remaining, batch.currentQuantity);
-
-              // Collect batch update
-              batchUpdates.push({
-                id: batch.id,
-                newQuantity: batch.currentQuantity - take,
-                isDepleted: batch.currentQuantity - take === 0,
-              });
-
-              // Collect inventory update
-              const invKey = `${product.id}_${batch.warehouseId}`;
-              const currentInv = inventoryUpdates.get(invKey);
-              if (!currentInv) {
-                inventoryUpdates.set(invKey, { quantity: -take, available: -take });
-              } else {
-                inventoryUpdates.set(invKey, {
-                  quantity: currentInv.quantity - take,
-                  available: currentInv.available - take,
-                });
-              }
-
-              // Collect branch inventory update
-              const brInvKey = `${product.id}_${body.branchId}`;
-              const currentBrInv = branchInventoryUpdates.get(brInvKey);
-              if (!currentBrInv) {
-                branchInventoryUpdates.set(brInvKey, { quantity: -take, available: -take });
-              } else {
-                branchInventoryUpdates.set(brInvKey, {
-                  quantity: currentBrInv.quantity - take,
-                  available: currentBrInv.available - take,
-                });
-              }
-
-              // Collect stock movement
-              stockMovements.push({
-                type: MovementType.OUTBOUND,
-                quantity: take,
-                productId: product.id,
-                warehouseId: batch.warehouseId,
-                salesId: doc.id,
-                reference: `Invoice ${documentId}`,
-                createdById: userId,
-              });
-
-              remaining -= take;
-            }
-
-            if (remaining > 0) {
+            // Resolve this product's warehouse within the branch
+            const warehouseForProduct = await tx.warehouse.findFirst({
+              where: { branchId: body.branchId, isActive: true },
+              select: { id: true },
+            });
+            if (!warehouseForProduct) {
               throw new AppError(
-                ErrorCode.INVALID_OPERATION,
-                422,
-                `Insufficient stock for product ${product.name}`,
+                ErrorCode.NOT_FOUND,
+                404,
+                `No active warehouse found for branch ${body.branchId}`,
               );
             }
-          }
 
-          // Execute batch updates
-          // 1. Update stock batches
-          for (const update of batchUpdates) {
-            await tx.stockBatch.update({
-              where: { id: update.id },
-              data: {
-                currentQuantity: update.newQuantity,
-                isDepleted: update.isDepleted,
-              },
+            await InventoryService.depleteStockFIFO(tx, {
+              productId: product.id,
+              warehouseId: warehouseForProduct.id,
+              quantity: input.quantity,
+              userId,
+              salesId: doc.id,
+              reference: `Invoice ${documentId}`,
             });
-          }
-
-          // 2. Update inventory records (batch fetch + batch update)
-          if (inventoryUpdates.size > 0) {
-            const inventoryKeys = Array.from(inventoryUpdates.keys());
-            const existingInventories = await tx.inventory.findMany({
-              where: {
-                OR: inventoryKeys.map((key) => {
-                  const [productId, warehouseId] = key.split('_');
-                  return { productId, warehouseId };
-                }),
-              },
-              select: { id: true, productId: true, warehouseId: true, quantity: true, available: true },
-            });
-
-            for (const inv of existingInventories) {
-              const key = `${inv.productId}_${inv.warehouseId}`;
-              const update = inventoryUpdates.get(key);
-              if (update) {
-                await tx.inventory.update({
-                  where: { id: inv.id },
-                  data: {
-                    quantity: inv.quantity + update.quantity,
-                    available: inv.available + update.available,
-                  },
-                });
-              }
-            }
-          }
-
-          // 3. Update branch inventory records (batch fetch + batch update)
-          if (branchInventoryUpdates.size > 0) {
-            const branchInvKeys = Array.from(branchInventoryUpdates.keys());
-            const existingBranchInventories = await tx.branchInventory.findMany({
-              where: {
-                OR: branchInvKeys.map((key) => {
-                  const [productId, branchId] = key.split('_');
-                  return { productId, branchId };
-                }),
-              },
-              select: { id: true, productId: true, branchId: true, quantity: true, available: true },
-            });
-
-            for (const brInv of existingBranchInventories) {
-              const key = `${brInv.productId}_${brInv.branchId}`;
-              const update = branchInventoryUpdates.get(key);
-              if (update) {
-                await tx.branchInventory.update({
-                  where: { id: brInv.id },
-                  data: {
-                    quantity: brInv.quantity + update.quantity,
-                    available: brInv.available + update.available,
-                  },
-                });
-              }
-            }
-          }
-
-          // 4. Create stock movements
-          for (const movement of stockMovements) {
-            await tx.stockMovement.create({ data: movement });
           }
 
           return doc;

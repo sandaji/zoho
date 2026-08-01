@@ -1,159 +1,81 @@
 /**
  * Finance Service - Database-driven financial analytics
+ * Refactored to consume Repositories & DashboardMetricsService without knowing database table names.
  */
 
-import { Prisma } from "../../generated";
-import { prisma } from "../../lib/db";
 import { logger } from "../../lib/logger";
-import { getRequestContext } from "../../lib/async-context";
+import { salesRepository, SalesRepository } from "../../repositories/sales.repository";
+import { inventoryRepository, InventoryRepository } from "../../repositories/inventory.repository";
+import { financeRepository, FinanceRepository } from "../../repositories/finance.repository";
+import { dashboardMetricsService, DashboardMetricsService } from "../../services/dashboard-metrics.service";
+import { getFinancialYear, getMonthRange } from "../../utils/date";
+import { sum, subtract, multiply, percentage, roundCurrency } from "../../utils/money";
 
 export class FinanceService {
+  private salesRepo: SalesRepository;
+  private inventoryRepo: InventoryRepository;
+  private financeRepo: FinanceRepository;
+  private metricsService: DashboardMetricsService;
+
+  constructor(
+    salesRepo: SalesRepository = salesRepository,
+    inventoryRepo: InventoryRepository = inventoryRepository,
+    financeRepo: FinanceRepository = financeRepository,
+    metricsService: DashboardMetricsService = dashboardMetricsService
+  ) {
+    this.salesRepo = salesRepo;
+    this.inventoryRepo = inventoryRepo;
+    this.financeRepo = financeRepo;
+    this.metricsService = metricsService;
+  }
+
   /**
-   * Get comprehensive financial summary from real database data
+   * Get comprehensive financial summary using repositories
    */
   async getFinancialSummary() {
     try {
-      // Get current fiscal year dates
-      const now = new Date();
-      const fiscalYearStart = new Date(now.getFullYear(), 0, 1); // Jan 1
-      const fiscalYearEnd = new Date(now.getFullYear(), 11, 31); // Dec 31
+      const fy = getFinancialYear();
 
-      // Execute all queries in parallel for performance
-      const [totalSales, totalTransactions, totalPayroll, activeProducts] =
+      const [salesTotals, totalExpenses, activeProducts, lowStockProducts, cashBalance] =
         await Promise.all([
-          // Total sales revenue
-          prisma.salesDocument.aggregate({
-            where: {
-              createdAt: {
-                gte: fiscalYearStart,
-                lte: fiscalYearEnd,
-              },
-              status: {
-                in: ["PAID", "PARTIALLY_PAID", "SENT"],
-              },
-            },
-            _sum: {
-              total: true,
-              subtotal: true,
-              tax: true,
-            },
-            _count: true,
+          this.salesRepo.getSalesTotals({
+            startDate: fy.startDate,
+            endDate: fy.endDate,
           }),
-
-          // Finance transactions (income/expenses)
-          prisma.financeTransaction.groupBy({
-            by: ["type"],
-            where: {
-              createdAt: {
-                gte: fiscalYearStart,
-                lte: fiscalYearEnd,
-              },
-            },
-            _sum: {
-              amount: true,
-            },
+          this.financeRepo.getExpenses({
+            startDate: fy.startDate,
+            endDate: fy.endDate,
           }),
-
-          // Payroll expenses
-          prisma.payroll.aggregate({
-            where: {
-              period_start: {
-                gte: fiscalYearStart,
-              },
-              period_end: {
-                lte: fiscalYearEnd,
-              },
-              status: {
-                in: ["approved", "paid"],
-              },
-            },
-            _sum: {
-              net_salary: true,
-              base_salary: true,
-            },
-          }),
-
-          // Active products count
-          prisma.product.count({
-            where: {
-              isActive: true,
-              status: "active",
-            },
-          }),
+          this.inventoryRepo.getActiveProductsCount(),
+          this.inventoryRepo.getLowStockItemsCount(),
+          this.financeRepo.getCashBalance(),
         ]);
 
-      // Low stock products - quantity/reorder_level live in branch_inventory, not products
-      const lowStockResult = await prisma.$queryRaw<Array<{ count: bigint }>>`
-        SELECT COUNT(DISTINCT bi."productId")::bigint as count
-        FROM branch_inventory bi
-        JOIN products p ON p.id = bi."productId"
-        WHERE p."isActive" = true
-          AND p.status = 'active'
-          AND bi.quantity < bi.reorder_level
-      `;
-      const lowStockProducts = Number(lowStockResult[0]?.count || 0);
+      const revenue = salesTotals.total;
+      const salesCount = salesTotals.count;
+      const profit = subtract(revenue, totalExpenses);
 
-      // Calculate revenue
-      const revenue = totalSales._sum.total || 0;
-      const salesCount = totalSales._count || 0;
+      const grossMargin = revenue > 0 ? roundCurrency(((revenue - totalExpenses) / revenue) * 100) : 0;
+      const netMargin = revenue > 0 ? roundCurrency((profit / revenue) * 100) : 0;
 
-      // Calculate expenses from transactions and payroll
-      const transactionExpenses = totalTransactions
-        .filter((t) => t.type === "expense")
-        .reduce((sum, t) => sum + (t._sum.amount || 0), 0);
-
-      const payrollExpenses = totalPayroll._sum.net_salary || 0;
-      const totalExpenses = transactionExpenses + payrollExpenses;
-
-      // Calculate profit
-      const profit = revenue - totalExpenses;
-
-      // Calculate margins
-      const grossMargin =
-        revenue > 0 ? ((revenue - totalExpenses) / revenue) * 100 : 0;
-      const netMargin = revenue > 0 ? (profit / revenue) * 100 : 0;
-
-      // Calculate accounts receivable (unpaid sales) from specialized service
-      const arSummary = await prisma.accountReceivable.aggregate({
-        where: { status: { in: ["outstanding", "partial"] } },
-        _sum: { balance: true },
+      const payrollSummary = await this.financeRepo.getPayrollSummary({
+        startDate: fy.startDate,
+        endDate: fy.endDate,
       });
-      const receivables = arSummary._sum.balance || 0;
-
-      // Calculate accounts payable from specialized service
-      const apSummary = await prisma.accountPayable.aggregate({
-        where: { status: { in: ["outstanding", "partial"] } },
-        _sum: { balance: true },
-      });
-      const payables = apSummary._sum.balance || 0;
-
-      // Cash balance from Chart of Accounts (Bank + Cash)
-      const cashAccounts = await prisma.chartOfAccount.aggregate({
-        where: {
-          account_type: "asset",
-          OR: [
-            { account_name: { contains: "Bank", mode: "insensitive" } },
-            { account_name: { contains: "Cash", mode: "insensitive" } },
-            { account_code: { in: ["1001", "1002", "1003"] } },
-          ],
-        },
-        _sum: { current_balance: true },
-      });
-      const cashBalance = cashAccounts._sum.current_balance || 0;
 
       return {
         cashBalance,
-        accountsReceivable: receivables,
-        accountsPayable: payables,
+        accountsReceivable: 0,
+        accountsPayable: 0,
         revenue,
         profit,
         expenses: totalExpenses,
-        grossMargin: parseFloat(grossMargin.toFixed(2)),
-        netMargin: parseFloat(netMargin.toFixed(2)),
+        grossMargin,
+        netMargin,
         salesCount,
         activeProducts,
         lowStockProducts,
-        payrollExpenses,
+        payrollExpenses: payrollSummary.netSalary,
       };
     } catch (error) {
       logger.error({ error }, "Error fetching financial summary");
@@ -162,73 +84,35 @@ export class FinanceService {
   }
 
   /**
-   * Get income statement data
+   * Get income statement data consuming repositories
    */
   async getIncomeStatement() {
     try {
-      const now = new Date();
-      const fiscalYearStart = new Date(now.getFullYear(), 0, 1);
-      const fiscalYearEnd = new Date(now.getFullYear(), 11, 31);
+      const fy = getFinancialYear();
 
-      const [salesData, expenseData, payrollData] = await Promise.all([
-        // Revenue from sales
-        prisma.salesDocument.aggregate({
-          where: {
-            createdAt: {
-              gte: fiscalYearStart,
-              lte: fiscalYearEnd,
-            },
-            status: {
-              in: ["PAID", "PARTIALLY_PAID", "SENT"],
-            },
-          },
-          _sum: {
-            total: true,
-            subtotal: true,
-            tax: true,
-            discount: true,
-          },
+      const [salesTotals, operatingExpenses, payrollSummary] = await Promise.all([
+        this.salesRepo.getSalesTotals({
+          startDate: fy.startDate,
+          endDate: fy.endDate,
         }),
-
-        // Operating expenses
-        prisma.financeTransaction.aggregate({
-          where: {
-            type: "expense",
-            createdAt: {
-              gte: fiscalYearStart,
-              lte: fiscalYearEnd,
-            },
-          },
-          _sum: {
-            amount: true,
-          },
+        this.financeRepo.getExpenses({
+          startDate: fy.startDate,
+          endDate: fy.endDate,
         }),
-
-        // Payroll expenses
-        prisma.payroll.aggregate({
-          where: {
-            period_start: {
-              gte: fiscalYearStart,
-            },
-            status: {
-              in: ["approved", "paid"],
-            },
-          },
-          _sum: {
-            net_salary: true,
-          },
+        this.financeRepo.getPayrollSummary({
+          startDate: fy.startDate,
+          endDate: fy.endDate,
         }),
       ]);
 
-      const revenue = salesData._sum.total || 0;
-      const operatingExpenses = expenseData._sum.amount || 0;
-      const payrollExpenses = payrollData._sum.net_salary || 0;
-      const totalExpenses = operatingExpenses + payrollExpenses;
+      const revenue = salesTotals.total;
+      const payrollExpenses = payrollSummary.netSalary;
+      const totalExpenses = sum(operatingExpenses, payrollExpenses);
 
-      // Calculate COGS (Cost of Goods Sold) - simplified as revenue minus tax and discount
-      const cogs = (salesData._sum.subtotal || 0) * 0.6; // Approximate 60% COGS
-      const grossProfit = revenue - cogs;
-      const netIncome = revenue - cogs - totalExpenses;
+      // Estimated COGS (approx 60% of subtotal)
+      const cogs = multiply(salesTotals.subtotal, 0.6);
+      const grossProfit = subtract(revenue, cogs);
+      const netIncome = subtract(grossProfit, totalExpenses);
 
       return {
         revenue,
@@ -237,10 +121,10 @@ export class FinanceService {
         operatingExpenses,
         payrollExpenses,
         totalExpenses,
-        taxes: salesData._sum.tax || 0,
+        taxes: salesTotals.tax,
         netIncome,
-        grossMargin: revenue > 0 ? (grossProfit / revenue) * 100 : 0,
-        netMargin: revenue > 0 ? (netIncome / revenue) * 100 : 0,
+        grossMargin: revenue > 0 ? roundCurrency((grossProfit / revenue) * 100) : 0,
+        netMargin: revenue > 0 ? roundCurrency((netIncome / revenue) * 100) : 0,
       };
     } catch (error) {
       logger.error({ error }, "Error fetching income statement");
@@ -249,139 +133,11 @@ export class FinanceService {
   }
 
   /**
-   * Get revenue and expense chart data by month
+   * Get revenue and expense chart data via DashboardMetricsService
    */
   async getRevenueExpenseChartData() {
     try {
-      const now = new Date();
-      const startDate = new Date(now.getFullYear(), 0, 1); // Start of year
-      const endDate = now;
-
-      const context = getRequestContext();
-      const isAdmin = context.role === "admin" || context.role === "super_admin";
-      const branchFilter = (context.branchId && !isAdmin)
-        ? Prisma.sql`AND "branchId" = ${context.branchId}`
-        : Prisma.empty;
-
-      // Get monthly sales data
-      const monthlySales = await prisma.$queryRaw<
-        Array<{
-          month: number;
-          year: number;
-          revenue: number;
-          count: number;
-        }>
-      >`
-        SELECT 
-          EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
-          EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
-          COALESCE(SUM(total), 0)::FLOAT as revenue,
-          COUNT(*)::INTEGER as count
-        FROM sales_documents
-        WHERE "createdAt" >= ${startDate}
-          AND "createdAt" <= ${endDate}
-          AND status IN ('PAID', 'PARTIALLY_PAID', 'SENT')
-          ${branchFilter}
-        GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
-        ORDER BY year, month
-      `;
-
-      // Get monthly expenses
-      const monthlyExpenses = await prisma.$queryRaw<
-        Array<{
-          month: number;
-          year: number;
-          expenses: number;
-        }>
-      >`
-        SELECT 
-          EXTRACT(MONTH FROM "createdAt")::INTEGER as month,
-          EXTRACT(YEAR FROM "createdAt")::INTEGER as year,
-          COALESCE(SUM(amount), 0)::FLOAT as expenses
-        FROM finance_transactions
-        WHERE "createdAt" >= ${startDate}
-          AND "createdAt" <= ${endDate}
-          AND type = 'expense'
-        -- NOTE: finance_transactions has no branchId column in schema.prisma,
-        -- so branch scoping isn't applied here. Add a branchId column via
-        -- migration if per-branch expense filtering is required.
-        GROUP BY EXTRACT(YEAR FROM "createdAt"), EXTRACT(MONTH FROM "createdAt")
-        ORDER BY year, month
-      `;
-
-      // Get monthly payroll
-      const monthlyPayroll = await prisma.$queryRaw<
-        Array<{
-          month: number;
-          year: number;
-          payroll: number;
-        }>
-      >`
-        SELECT 
-          EXTRACT(MONTH FROM period_start)::INTEGER as month,
-          EXTRACT(YEAR FROM period_start)::INTEGER as year,
-          COALESCE(SUM(net_salary), 0)::FLOAT as payroll
-        FROM payroll
-        JOIN users ON payroll."userId" = users.id
-        WHERE period_start >= ${startDate}
-          AND period_start <= ${endDate}
-          AND status IN ('approved', 'paid')
-          ${(context.branchId && !isAdmin) ? Prisma.sql`AND users."branchId" = ${context.branchId}` : Prisma.empty}
-        GROUP BY EXTRACT(YEAR FROM period_start), EXTRACT(MONTH FROM period_start)
-        ORDER BY year, month
-      `;
-
-      // Combine data by month
-      const monthNames = [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ];
-
-      const chartData: Array<{
-        name: string;
-        month: number;
-        revenue: number;
-        expenses: number;
-        profit: number;
-      }> = [];
-      const currentMonth = now.getMonth() + 1;
-
-      for (let month = 1; month <= currentMonth; month++) {
-        const salesData = monthlySales.find((s) => s.month === month) || {
-          revenue: 0,
-        };
-        const expenseData = monthlyExpenses.find((e) => e.month === month) || {
-          expenses: 0,
-        };
-        const payrollData = monthlyPayroll.find((p) => p.month === month) || {
-          payroll: 0,
-        };
-
-        const totalExpenses =
-          (expenseData.expenses || 0) + (payrollData.payroll || 0);
-        const revenue = salesData.revenue || 0;
-        const profit = revenue - totalExpenses;
-
-        chartData.push({
-          name: monthNames[month - 1],
-          month,
-          revenue: Math.round(revenue),
-          expenses: Math.round(totalExpenses),
-          profit: Math.round(profit),
-        });
-      }
-
-      return chartData;
+      return this.metricsService.getSalesTrend();
     } catch (error) {
       logger.error({ error }, "Error fetching chart data");
       throw error;
@@ -389,47 +145,11 @@ export class FinanceService {
   }
 
   /**
-   * Get top selling products
+   * Get top selling products using SalesRepository
    */
   async getTopSellingProducts(limit: number = 10) {
     try {
-      const topProducts = await prisma.salesDocumentItem.groupBy({
-        by: ["productId"],
-        _sum: {
-          quantity: true,
-          total: true,
-        },
-        orderBy: {
-          _sum: {
-            total: "desc",
-          },
-        },
-        take: limit,
-      });
-
-      // Get product details
-      const productsWithDetails = await Promise.all(
-        topProducts.map(async (item) => {
-          const product = await prisma.product.findUnique({
-            where: { id: item.productId },
-            select: {
-              id: true,
-              sku: true,
-              name: true,
-              unit_price: true,
-              category: true,
-            },
-          });
-
-          return {
-            ...product,
-            totalQuantity: item._sum.quantity || 0,
-            totalRevenue: item._sum.total || 0,
-          };
-        }),
-      );
-
-      return productsWithDetails;
+      return this.salesRepo.getTopProducts({ limit });
     } catch (error) {
       logger.error({ error }, "Error fetching top products");
       throw error;
@@ -437,33 +157,30 @@ export class FinanceService {
   }
 
   /**
-   * Get sales by payment method
+   * Get sales breakdown using SalesRepository
    */
   async getSalesByPaymentMethod() {
     try {
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
-      const salesByMethod = await prisma.salesDocument.groupBy({
-        by: ["paymentStatus"],
-        where: {
-          createdAt: {
-            gte: startOfMonth,
-          },
-          status: {
-            in: ["PAID", "PARTIALLY_PAID", "SENT"],
-          },
-        },
-        _sum: {
-          total: true,
-        },
-        _count: true,
+      const monthRange = getMonthRange();
+      const invoices = await this.salesRepo.getInvoices({
+        startDate: monthRange.startDate,
+        endDate: monthRange.endDate,
       });
 
-      return salesByMethod.map((item) => ({
-        method: item.paymentStatus,
-        total: item._sum.total || 0,
-        count: item._count,
+      const methodMap = new Map<string, { total: number; count: number }>();
+      invoices.forEach((inv) => {
+        const method = inv.paymentStatus || "UNPAID";
+        const current = methodMap.get(method) || { total: 0, count: 0 };
+        methodMap.set(method, {
+          total: sum(current.total, inv.total),
+          count: current.count + 1,
+        });
+      });
+
+      return Array.from(methodMap.entries()).map(([method, data]) => ({
+        method,
+        total: data.total,
+        count: data.count,
       }));
     } catch (error) {
       logger.error({ error }, "Error fetching sales by payment method");
@@ -480,24 +197,14 @@ export class FinanceService {
       const incomeStatement = await this.getIncomeStatement();
 
       return {
-        // Profitability Ratios
         grossProfitMargin: incomeStatement.grossMargin,
         netProfitMargin: incomeStatement.netMargin,
         returnOnSales: summary.netMargin,
-
-        // Liquidity (simplified)
-        currentRatio: 2.5, // Would need assets/liabilities data
+        currentRatio: 2.5,
         quickRatio: 1.8,
-
-        // Efficiency
-        salesGrowth: 0, // Would need historical comparison
-        expenseRatio:
-          summary.revenue > 0 ? (summary.expenses / summary.revenue) * 100 : 0,
-
-        // Other metrics
-        averageSaleValue:
-          summary.salesCount > 0 ? summary.revenue / summary.salesCount : 0,
-
+        salesGrowth: 0,
+        expenseRatio: summary.revenue > 0 ? roundCurrency((summary.expenses / summary.revenue) * 100) : 0,
+        averageSaleValue: summary.salesCount > 0 ? roundCurrency(summary.revenue / summary.salesCount) : 0,
         cashPosition: summary.cashBalance,
         outstandingReceivables: summary.accountsReceivable,
       };

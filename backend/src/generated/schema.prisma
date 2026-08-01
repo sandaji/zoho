@@ -48,6 +48,7 @@ model User {
   createdSalesOrders      SalesOrder[]
   createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
   receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
+  driverTransfers         StockTransfer[]         @relation("DriverTransfers")
   roles                   RoleAssignment[]
   branch                  Branch?                 @relation(fields: [branchId], references: [id])
 
@@ -314,42 +315,49 @@ model StockMovement {
 
 /// Stock Transfers - Transfer stock between warehouses
 model StockTransfer {
-  id              String          @id @default(cuid())
-  transferNo      String          @unique
-  status          TransferStatus  @default(PENDING)
-  sourceId        String
-  targetId        String
-  notes           String?
-  truckRegNo      String?
-  driverName      String?
-  attendantName   String?
-  receivedAt      DateTime?
-  receivedById    String?
-  createdById     String
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  stockMovements  StockMovement[]
-  createdBy       User            @relation("CreatedTransfers", fields: [createdById], references: [id])
-  receivedBy      User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
-  sourceWarehouse Warehouse       @relation("SourceTransfers", fields: [sourceId], references: [id])
-  targetWarehouse Warehouse       @relation("TargetTransfers", fields: [targetId], references: [id])
-  items           TransferItem[]
+  id                     String          @id @default(cuid())
+  documentId             String          @unique @map("document_id")
+  status                 TransferStatus  @default(DRAFT)
+  sourceWarehouseId      String
+  destinationWarehouseId String
+  notes                  String?
+  truckId                String?
+  driverId               String?
+  dispatchedAt           DateTime?
+  receivedAt             DateTime?
+  receivedById           String?
+  createdById            String
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  stockMovements         StockMovement[]
+  createdBy              User            @relation("CreatedTransfers", fields: [createdById], references: [id])
+  receivedBy             User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
+  sourceWarehouse        Warehouse       @relation("SourceTransfers", fields: [sourceWarehouseId], references: [id])
+  destinationWarehouse   Warehouse       @relation("TargetTransfers", fields: [destinationWarehouseId], references: [id])
+  truck                  Truck?          @relation(fields: [truckId], references: [id])
+  driver                 User?           @relation("DriverTransfers", fields: [driverId], references: [id])
+  items                  TransferItem[]
 
   @@index([status])
-  @@index([sourceId])
-  @@index([targetId])
+  @@index([sourceWarehouseId])
+  @@index([destinationWarehouseId])
   @@index([createdAt])
   @@map("stock_transfers")
 }
 
 /// Transfer Items - Line items within a stock transfer
 model TransferItem {
-  id         String        @id @default(cuid())
-  quantity   Int
-  productId  String
-  transferId String
-  product    Product       @relation(fields: [productId], references: [id])
-  transfer   StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  id             String        @id @default(cuid())
+  transferId     String
+  productId      String
+  batchId        String?
+  unitCost       Decimal?      @db.Decimal(19, 2)
+  requested_qty  Int
+  dispatched_qty Int?
+  received_qty   Int?
+  damaged_qty    Int?
+  product        Product       @relation(fields: [productId], references: [id])
+  transfer       StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
 
   @@index([transferId])
   @@index([productId])
@@ -538,16 +546,17 @@ model SOItem {
 
 /// Dispatch Notes - Documents for fulfilling sales orders
 model DispatchNote {
-  id             String         @id @default(cuid())
-  dnNumber       String         @unique @map("dn_number")
+  id             String                 @id @default(cuid())
+  dnNumber       String                 @unique @map("dn_number")
   salesOrderId   String
   dispatchedById String
-  dispatchedAt   DateTime       @default(now()) @map("dispatched_at")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  dispatchedAt   DateTime               @default(now()) @map("dispatched_at")
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
   items          DispatchItem[]
-  dispatchedBy   User           @relation("DispatchNoteCreatedBy", fields: [dispatchedById], references: [id])
-  salesOrder     SalesOrder     @relation(fields: [salesOrderId], references: [id])
+  dispatchedBy   User                   @relation("DispatchNoteCreatedBy", fields: [dispatchedById], references: [id])
+  salesOrder     SalesOrder             @relation(fields: [salesOrderId], references: [id])
+  deliveryItems  DeliveryDispatchNote[]
 
   @@index([dnNumber])
   @@index([salesOrderId])
@@ -755,15 +764,17 @@ model GRNItem {
 
 /// Trucks/Vehicles
 model Truck {
-  id            String     @id @default(cuid())
-  registration  String     @unique
-  model         String
-  capacity      Int
-  license_plate String?    @unique
-  isActive      Boolean    @default(true)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  deliveries    Delivery[]
+  id             String          @id @default(cuid())
+  registration   String          @unique
+  model          String
+  capacity       Int
+  vehicle_type   String?
+  license_plate  String?         @unique
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deliveries     Delivery[]
+  stockTransfers StockTransfer[]
 
   @@index([registration])
   @@index([isActive])
@@ -772,28 +783,46 @@ model Truck {
 
 /// Deliveries
 model Delivery {
-  id             String         @id @default(cuid())
-  delivery_no    String         @unique
-  status         DeliveryStatus @default(pending)
-  driverId       String
-  truckId        String
-  destination    String
-  estimated_km   Int?
-  actual_km      Int?
-  scheduled_date DateTime?
-  picked_up_at   DateTime?
-  delivered_at   DateTime?
-  notes          String?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  driver         User           @relation("DriverDeliveries", fields: [driverId], references: [id])
-  truck          Truck          @relation(fields: [truckId], references: [id])
+  id              String                 @id @default(cuid())
+  deliveryNo      String                 @unique @map("delivery_no")
+  status          DeliveryStatus         @default(pending)
+  driverId        String
+  truckId         String
+  destination     String?
+  estimatedKm     Int?                   @map("estimated_km")
+  actualKm        Int?                   @map("actual_km")
+  scheduledDate   DateTime?              @map("scheduled_date")
+  pickedUpAt      DateTime?              @map("picked_up_at")
+  deliveredAt     DateTime?              @map("delivered_at")
+  podSignatureUrl String?
+  podPhotoUrl     String?
+  deliveryOtp     String?
+  notes           String?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  driver          User                   @relation("DriverDeliveries", fields: [driverId], references: [id])
+  truck           Truck                  @relation(fields: [truckId], references: [id])
+  dispatchNotes   DeliveryDispatchNote[]
 
+  @@index([deliveryNo])
   @@index([driverId])
   @@index([truckId])
   @@index([status])
-  @@index([delivery_no])
   @@map("deliveries")
+}
+
+// Joins Delivery and DispatchNote
+model DeliveryDispatchNote {
+  id             String       @id @default(cuid())
+  deliveryId     String
+  dispatchNoteId String
+  delivery       Delivery     @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  dispatchNote   DispatchNote @relation(fields: [dispatchNoteId], references: [id], onDelete: Cascade)
+
+  @@unique([deliveryId, dispatchNoteId])
+  @@index([deliveryId])
+  @@index([dispatchNoteId])
+  @@map("delivery_dispatch_notes")
 }
 
 /// Finance Transactions - Enhanced with category and date filtering
@@ -1618,6 +1647,7 @@ enum DeliveryStatus {
   delivered
   failed
   rescheduled
+  returned_to_base
 
   @@map("delivery_status")
 }
@@ -1671,10 +1701,12 @@ enum MovementType {
 }
 
 enum TransferStatus {
-  PENDING
-  IN_TRANSIT
-  PENDING_RECEIPT
-  COMPLETED
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  DISPATCHED
+  PARTIALLY_RECEIVED
+  RECEIVED
   CANCELLED
   DISCREPANCY
 
@@ -1741,6 +1773,8 @@ enum SalesOrderStatus {
   DISPATCHED
   COMPLETED
   CANCELLED
+  DELIVERED
+  DELIVERY_FAILED
 
   @@map("sales_order_status")
 }

@@ -12,6 +12,10 @@ import {
   GetInventoryQueryDTO,
   AdjustInventoryDTO,
   TransferInventoryDTO,
+  RequestTransferDTO,
+  ApproveTransferDTO,
+  DispatchTransferDTO,
+  ReceiveTransferDTO,
 } from "../dto";
 import { validationError } from "../../../lib/errors";
 import { logger } from "../../../lib/logger";
@@ -243,6 +247,80 @@ export class InventoryController {
       });
     } catch (error) {
       logger.error(error as Error, "Error in createReorderSuggestion");
+      next(error);
+    }
+  }
+
+  async requestTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const dto: RequestTransferDTO = req.body;
+      const { id: userId } = req.user;
+
+      // Validation
+      if (!dto.sourceWarehouseId || !dto.destinationWarehouseId || !dto.items) {
+        throw validationError(
+          "Missing required fields: sourceWarehouseId, destinationWarehouseId, items",
+        );
+      }
+
+      const result = await this.service.requestTransfer(userId, dto);
+      res.status(201).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async approveTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id: transferId } = req.params;
+      const { id: userId } = req.user;
+      const dto: ApproveTransferDTO = req.body;
+
+      const result = await this.service.approveTransfer(userId, transferId, dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async dispatchTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id: transferId } = req.params;
+      const { id: userId } = req.user;
+      const dto: DispatchTransferDTO = req.body;
+
+      const result = await this.service.dispatchTransfer(userId, transferId, dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async receiveTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { id: transferId } = req.params;
+      const { id: userId } = req.user;
+      const dto: ReceiveTransferDTO = req.body;
+
+      const result = await this.service.receiveTransfer(userId, transferId, dto);
+      res.status(200).json({ success: true, data: result });
+    } catch (error) {
       next(error);
     }
   }

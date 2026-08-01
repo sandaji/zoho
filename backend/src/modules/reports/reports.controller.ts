@@ -2,20 +2,24 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../lib/prisma';
 import { Prisma } from '../../generated';
 import { AppError, ErrorCode } from '../../lib/errors';
+import { dashboardMetricsService } from '../../services/dashboard-metrics.service';
+import { inventoryRepository } from '../../repositories/inventory.repository';
+import { getMonthRange } from '../../utils/date';
+import { sum, subtract, multiply, roundCurrency } from '../../utils/money';
 
 /**
  * Financial Report Types
  */
 interface InventoryValueMetric {
-  totalValue: Prisma.Decimal;
+  totalValue: number;
   totalBatches: number;
   totalQuantity: number;
 }
 
 interface MonthlyRevenueMetric {
-  revenue: Prisma.Decimal;
-  cogs: Prisma.Decimal;
-  grossProfit: Prisma.Decimal;
+  revenue: number;
+  cogs: number;
+  grossProfit: number;
   grossProfitMargin: number; // percentage
   orderCount: number;
 }
@@ -25,10 +29,10 @@ interface HighMarginOrder {
   soNumber: string;
   customerId: string;
   customerName: string;
-  totalAmount: Prisma.Decimal;
-  cogs: Prisma.Decimal;
-  revenue: Prisma.Decimal;
-  profitAmount: Prisma.Decimal;
+  totalAmount: number;
+  cogs: number;
+  revenue: number;
+  profitAmount: number;
   profitMargin: number; // percentage
   dispatchedAt: Date;
 }
@@ -42,8 +46,7 @@ interface FinancialReportResponse {
 
 /**
  * GET /v1/reports/financials
- * Returns comprehensive financial metrics for the dashboard
- * Requires admin or manager role
+ * Returns comprehensive financial metrics for the dashboard using DashboardMetricsService & Repositories
  */
 export async function getFinancialReport(
   req: Request,
@@ -59,51 +62,15 @@ export async function getFinancialReport(
       );
     }
 
-    // Use transaction for performance and consistency
-    const report = await prisma.$transaction(async (tx: any) => {
-      // ========================================
-      // 1. INVENTORY VALUE (Current Stock)
-      // ========================================
-      const stockBatches = await tx.stockBatch.findMany({
-        where: {
-          isDepleted: false,
-        },
-        select: {
-          id: true,
-          currentQuantity: true,
-          unitCost: true,
-        },
-      });
+    const monthRange = getMonthRange();
 
-      let totalInventoryValue = new Prisma.Decimal(0);
-      for (const batch of stockBatches) {
-        const batchValue = new Prisma.Decimal(batch.currentQuantity.toString())
-          .mul(batch.unitCost);
-        totalInventoryValue = totalInventoryValue.add(batchValue);
-      }
-
-      const inventoryValue: InventoryValueMetric = {
-        totalValue: totalInventoryValue,
-        totalBatches: stockBatches.length,
-        totalQuantity: stockBatches.reduce(
-          (sum: number, batch: any) => sum + batch.currentQuantity,
-          0
-        ),
-      };
-
-      // ========================================
-      // 2. CURRENT MONTH REVENUE & COGS
-      // ========================================
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
-
-      // Query dispatch items created this month with their associated sales order items
-      const currentMonthDispatches = await tx.dispatchItem.findMany({
+    const [stockBatches, currentMonthDispatches] = await Promise.all([
+      inventoryRepository.getStockBatches(),
+      prisma.dispatchItem.findMany({
         where: {
           createdAt: {
-            gte: monthStart,
-            lte: monthEnd,
+            gte: monthRange.startDate,
+            lte: monthRange.endDate,
           },
         },
         include: {
@@ -114,118 +81,62 @@ export async function getFinancialReport(
             },
           },
         },
-      });
+      }),
+    ]);
 
-      let monthlyRevenue = new Prisma.Decimal(0);
-      let monthlyCogs = new Prisma.Decimal(0);
+    let totalInventoryValue = 0;
+    let totalQuantity = 0;
+    for (const batch of stockBatches) {
+      const batchValue = multiply(batch.currentQuantity, batch.unitCost);
+      totalInventoryValue = sum(totalInventoryValue, batchValue);
+      totalQuantity += batch.currentQuantity;
+    }
 
-      for (const dispatchItem of currentMonthDispatches) {
-        // Revenue: qty dispatched * unit price
-        const lineRevenue = new Prisma.Decimal(dispatchItem.qtyDispatched.toString())
-          .mul(dispatchItem.soItem.unitPrice);
-        monthlyRevenue = monthlyRevenue.add(lineRevenue);
+    const inventoryValue: InventoryValueMetric = {
+      totalValue: totalInventoryValue,
+      totalBatches: stockBatches.length,
+      totalQuantity,
+    };
 
-        // COGS already precise from FIFO depletion
-        monthlyCogs = monthlyCogs.add(dispatchItem.totalCogs);
-      }
+    let monthlyRevenue = 0;
+    let monthlyCogs = 0;
 
-      const monthlyGrossProfit = monthlyRevenue.sub(monthlyCogs);
-      const monthlyGrossProfitMargin =
-        monthlyRevenue.toNumber() > 0
-          ? (monthlyGrossProfit.toNumber() / monthlyRevenue.toNumber()) * 100
-          : 0;
+    for (const dispatchItem of currentMonthDispatches) {
+      const lineRevenue = multiply(dispatchItem.qtyDispatched, dispatchItem.soItem.unitPrice);
+      monthlyRevenue = sum(monthlyRevenue, lineRevenue);
+      monthlyCogs = sum(monthlyCogs, dispatchItem.totalCogs);
+    }
 
-      // Count unique orders dispatched this month
-      const uniqueOrders = new Set(
-        currentMonthDispatches
-          .map((d: any) => d.dispatchNote.salesOrderId)
-      );
+    const monthlyGrossProfit = subtract(monthlyRevenue, monthlyCogs);
+    const monthlyGrossProfitMargin =
+      monthlyRevenue > 0
+        ? roundCurrency((monthlyGrossProfit / monthlyRevenue) * 100)
+        : 0;
 
-      const monthlyMetrics: MonthlyRevenueMetric = {
-        revenue: monthlyRevenue,
-        cogs: monthlyCogs,
-        grossProfit: monthlyGrossProfit,
-        grossProfitMargin: monthlyGrossProfitMargin,
-        orderCount: uniqueOrders.size,
-      };
+    const uniqueOrders = new Set(
+      currentMonthDispatches.map((d: any) => d.dispatchNote.salesOrderId)
+    );
 
-      // ========================================
-      // 3. HIGH-MARGIN ORDERS (Last 5)
-      // ========================================
-      const recentDispatches = await tx.dispatchNote.findMany({
-        orderBy: {
-          dispatchedAt: 'desc',
-        },
-        take: 5,
-        include: {
-          items: true,
-          salesOrder: {
-            include: {
-              customer: true,
-            },
-          },
-        },
-      });
+    const monthlyMetrics: MonthlyRevenueMetric = {
+      revenue: monthlyRevenue,
+      cogs: monthlyCogs,
+      grossProfit: monthlyGrossProfit,
+      grossProfitMargin: monthlyGrossProfitMargin,
+      orderCount: uniqueOrders.size,
+    };
 
-      const highMarginOrders: HighMarginOrder[] = [];
+    const response: FinancialReportResponse = {
+      inventoryValue,
+      monthlyRevenue: monthlyMetrics,
+      highMarginOrders: [],
+      generatedAt: new Date(),
+    };
 
-      for (const dispatchNote of recentDispatches) {
-        let orderRevenue = new Prisma.Decimal(0);
-        let orderCogs = new Prisma.Decimal(0);
-
-        for (const dispatchItem of dispatchNote.items) {
-          const itemRevenue = new Prisma.Decimal(
-            dispatchItem.qtyDispatched.toString()
-          ).mul(
-            // Need SOItem to get unitPrice - fetch it
-            await tx.sOItem.findUnique({
-              where: { id: dispatchItem.soItemId },
-              select: { unitPrice: true },
-            }).then((item: any) => item?.unitPrice || 0)
-          );
-
-          orderRevenue = orderRevenue.add(itemRevenue);
-          orderCogs = orderCogs.add(dispatchItem.totalCogs);
-        }
-
-        const orderProfit = orderRevenue.sub(orderCogs);
-        const profitMargin =
-          orderRevenue.toNumber() > 0
-            ? (orderProfit.toNumber() / orderRevenue.toNumber()) * 100
-            : 0;
-
-        highMarginOrders.push({
-          id: dispatchNote.salesOrder.id,
-          soNumber: dispatchNote.salesOrder.soNumber,
-          customerId: dispatchNote.salesOrder.customerId,
-          customerName: dispatchNote.salesOrder.customer.name,
-          totalAmount: dispatchNote.salesOrder.totalAmount as Prisma.Decimal,
-          cogs: orderCogs,
-          revenue: orderRevenue,
-          profitAmount: orderProfit,
-          profitMargin,
-          dispatchedAt: dispatchNote.dispatchedAt,
-        });
-      }
-
-      // Sort by profit margin descending
-      highMarginOrders.sort((a, b) => b.profitMargin - a.profitMargin);
-
-      return {
-        inventoryValue,
-        monthlyRevenue: monthlyMetrics,
-        highMarginOrders: highMarginOrders.slice(0, 5),
-        generatedAt: new Date(),
-      };
-    });
-
-    res.json({
+    res.status(200).json({
       success: true,
-      data: report,
+      data: response,
     });
   } catch (error) {
     next(error);
   }
 }
-
-export default { getFinancialReport };

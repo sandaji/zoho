@@ -1,13 +1,16 @@
-export interface CreateTransferInput {
-  sourceId: string;
-  targetId: string;
-  items: Array<{
-    productId: string;
-    quantity: number;
-  }>;
-  notes?: string;
-  driverId?: string;
-}
+import {
+  requestStockTransfer,
+  approveStockTransfer,
+  dispatchStockTransfer,
+  receiveStockTransfer,
+  RequestStockTransferPayload,
+  ApproveStockTransferPayload,
+  DispatchStockTransferPayload,
+  ReceiveStockTransferPayload,
+} from "./admin-api";
+import { frontendEnv } from "./env";
+
+const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 export interface AdjustStockInput {
   warehouseId: string;
@@ -27,37 +30,40 @@ export interface StockMovementParams {
 }
 
 export interface TransferParams {
-  status?: "PENDING" | "IN_TRANSIT" | "COMPLETED" | "CANCELLED";
+  status?: "DRAFT" | "PENDING_APPROVAL" | "APPROVED" | "DISPATCHED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELLED" | "DISCREPANCY";
   sourceId?: string;
   targetId?: string;
   page?: number;
   limit?: number;
 }
 
-import { frontendEnv } from "./env";
-
-const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
-
 export const warehouseService = {
   /**
-   * Create a new stock transfer
+   * Stage 1: Request a new stock transfer
    */
-  async createTransfer(data: CreateTransferInput, token: string) {
-    const response = await fetch(`${API_URL}/v1/warehouse/transfer`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
+  async requestTransfer(data: RequestStockTransferPayload, token: string) {
+    return requestStockTransfer(token, data);
+  },
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Failed to create transfer");
-    }
+  /**
+   * Stage 2: Approve a stock transfer
+   */
+  async approveTransfer(id: string, data: ApproveStockTransferPayload, token: string) {
+    return approveStockTransfer(token, id, data);
+  },
 
-    return response.json();
+  /**
+   * Stage 3: Dispatch a stock transfer
+   */
+  async dispatchTransfer(id: string, data: DispatchStockTransferPayload, token: string) {
+    return dispatchStockTransfer(token, id, data);
+  },
+
+  /**
+   * Stage 4: Receive a stock transfer
+   */
+  async receiveTransfer(id: string, data: ReceiveStockTransferPayload, token: string) {
+    return receiveStockTransfer(token, id, data);
   },
 
   /**
@@ -71,7 +77,7 @@ export const warehouseService = {
     if (params.page) queryParams.append("page", params.page.toString());
     if (params.limit) queryParams.append("limit", params.limit.toString());
 
-    const response = await fetch(`${API_URL}/v1/warehouse/transfers?${queryParams}`, {
+    const response = await fetch(`${API_URL}/v1/inventory/transfers?${queryParams}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -88,7 +94,7 @@ export const warehouseService = {
    * Get a single transfer by ID
    */
   async getTransferById(id: string, token: string) {
-    const response = await fetch(`${API_URL}/v1/warehouse/transfers/${id}`, {
+    const response = await fetch(`${API_URL}/v1/inventory/transfers/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -96,51 +102,6 @@ export const warehouseService = {
 
     if (!response.ok) {
       throw new Error("Failed to fetch transfer");
-    }
-
-    return response.json();
-  },
-
-  /**
-   * Fulfill/receive a transfer
-   */
-  async fulfillTransfer(id: string, token: string) {
-    const response = await fetch(`${API_URL}/v1/warehouse/transfer/${id}/receive`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Failed to fulfill transfer");
-    }
-
-    return response.json();
-  },
-
-  /**
-   * Update transfer status
-   */
-  async updateTransferStatus(
-    id: string,
-    data: { status: "IN_TRANSIT" | "CANCELLED"; notes?: string },
-    token: string
-  ) {
-    const response = await fetch(`${API_URL}/v1/warehouse/transfers/${id}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Failed to update transfer status");
     }
 
     return response.json();

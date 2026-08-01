@@ -193,3 +193,35 @@ export interface InventoryItemDTO {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface RequestTransferDTO {
+  sourceWarehouseId: string;
+  destinationWarehouseId: string;
+  items: {
+    productId: string;
+    requested_qty: number;
+  }[];
+  notes?: string;
+}
+
+export interface ApproveTransferDTO {
+  notes?: string;
+}
+
+export interface DispatchTransferDTO {
+  items: {
+    productId: string;
+    dispatched_qty: number;
+  }[];
+  driverId?: string;
+  truckId?: string;
+}
+
+export interface ReceiveTransferDTO {
+  items: {
+    productId: string;
+    received_qty: number;
+    damaged_qty: number;
+  }[];
+  notes?: string;
+}

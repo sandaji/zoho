@@ -170,6 +170,11 @@ export type Truck = $Result.DefaultSelection<Prisma.$TruckPayload>
  */
 export type Delivery = $Result.DefaultSelection<Prisma.$DeliveryPayload>
 /**
+ * Model DeliveryDispatchNote
+ * 
+ */
+export type DeliveryDispatchNote = $Result.DefaultSelection<Prisma.$DeliveryDispatchNotePayload>
+/**
  * Model FinanceTransaction
  * Finance Transactions - Enhanced with category and date filtering
  */
@@ -463,7 +468,8 @@ export const DeliveryStatus: {
   in_transit: 'in_transit',
   delivered: 'delivered',
   failed: 'failed',
-  rescheduled: 'rescheduled'
+  rescheduled: 'rescheduled',
+  returned_to_base: 'returned_to_base'
 };
 
 export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus]
@@ -523,10 +529,12 @@ export type MovementType = (typeof MovementType)[keyof typeof MovementType]
 
 
 export const TransferStatus: {
-  PENDING: 'PENDING',
-  IN_TRANSIT: 'IN_TRANSIT',
-  PENDING_RECEIPT: 'PENDING_RECEIPT',
-  COMPLETED: 'COMPLETED',
+  DRAFT: 'DRAFT',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
+  APPROVED: 'APPROVED',
+  DISPATCHED: 'DISPATCHED',
+  PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
+  RECEIVED: 'RECEIVED',
   CANCELLED: 'CANCELLED',
   DISCREPANCY: 'DISCREPANCY'
 };
@@ -601,7 +609,9 @@ export const SalesOrderStatus: {
   APPROVED: 'APPROVED',
   DISPATCHED: 'DISPATCHED',
   COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  DELIVERED: 'DELIVERED',
+  DELIVERY_FAILED: 'DELIVERY_FAILED'
 };
 
 export type SalesOrderStatus = (typeof SalesOrderStatus)[keyof typeof SalesOrderStatus]
@@ -1417,6 +1427,16 @@ export class PrismaClient<
     * ```
     */
   get delivery(): Prisma.DeliveryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.deliveryDispatchNote`: Exposes CRUD operations for the **DeliveryDispatchNote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeliveryDispatchNotes
+    * const deliveryDispatchNotes = await prisma.deliveryDispatchNote.findMany()
+    * ```
+    */
+  get deliveryDispatchNote(): Prisma.DeliveryDispatchNoteDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.financeTransaction`: Exposes CRUD operations for the **FinanceTransaction** model.
@@ -2292,6 +2312,7 @@ export namespace Prisma {
     GRNItem: 'GRNItem',
     Truck: 'Truck',
     Delivery: 'Delivery',
+    DeliveryDispatchNote: 'DeliveryDispatchNote',
     FinanceTransaction: 'FinanceTransaction',
     SavingsGoal: 'SavingsGoal',
     DailySpendingLimit: 'DailySpendingLimit',
@@ -2348,7 +2369,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4643,6 +4664,80 @@ export namespace Prisma {
           count: {
             args: Prisma.DeliveryCountArgs<ExtArgs>
             result: $Utils.Optional<DeliveryCountAggregateOutputType> | number
+          }
+        }
+      }
+      DeliveryDispatchNote: {
+        payload: Prisma.$DeliveryDispatchNotePayload<ExtArgs>
+        fields: Prisma.DeliveryDispatchNoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeliveryDispatchNoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeliveryDispatchNoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>
+          }
+          findFirst: {
+            args: Prisma.DeliveryDispatchNoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeliveryDispatchNoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>
+          }
+          findMany: {
+            args: Prisma.DeliveryDispatchNoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>[]
+          }
+          create: {
+            args: Prisma.DeliveryDispatchNoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>
+          }
+          createMany: {
+            args: Prisma.DeliveryDispatchNoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeliveryDispatchNoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>[]
+          }
+          delete: {
+            args: Prisma.DeliveryDispatchNoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>
+          }
+          update: {
+            args: Prisma.DeliveryDispatchNoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>
+          }
+          deleteMany: {
+            args: Prisma.DeliveryDispatchNoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeliveryDispatchNoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeliveryDispatchNoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>[]
+          }
+          upsert: {
+            args: Prisma.DeliveryDispatchNoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeliveryDispatchNotePayload>
+          }
+          aggregate: {
+            args: Prisma.DeliveryDispatchNoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeliveryDispatchNote>
+          }
+          groupBy: {
+            args: Prisma.DeliveryDispatchNoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeliveryDispatchNoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeliveryDispatchNoteCountArgs<ExtArgs>
+            result: $Utils.Optional<DeliveryDispatchNoteCountAggregateOutputType> | number
           }
         }
       }
@@ -7819,6 +7914,7 @@ export namespace Prisma {
     gRNItem?: GRNItemOmit
     truck?: TruckOmit
     delivery?: DeliveryOmit
+    deliveryDispatchNote?: DeliveryDispatchNoteOmit
     financeTransaction?: FinanceTransactionOmit
     savingsGoal?: SavingsGoalOmit
     dailySpendingLimit?: DailySpendingLimitOmit
@@ -7966,6 +8062,7 @@ export namespace Prisma {
     createdSalesOrders: number
     createdTransfers: number
     receivedTransfers: number
+    driverTransfers: number
     roles: number
   }
 
@@ -7996,6 +8093,7 @@ export namespace Prisma {
     createdSalesOrders?: boolean | UserCountOutputTypeCountCreatedSalesOrdersArgs
     createdTransfers?: boolean | UserCountOutputTypeCountCreatedTransfersArgs
     receivedTransfers?: boolean | UserCountOutputTypeCountReceivedTransfersArgs
+    driverTransfers?: boolean | UserCountOutputTypeCountDriverTransfersArgs
     roles?: boolean | UserCountOutputTypeCountRolesArgs
   }
 
@@ -8189,6 +8287,13 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountReceivedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockTransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDriverTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockTransferWhereInput
   }
 
@@ -8773,10 +8878,12 @@ export namespace Prisma {
 
   export type DispatchNoteCountOutputType = {
     items: number
+    deliveryItems: number
   }
 
   export type DispatchNoteCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | DispatchNoteCountOutputTypeCountItemsArgs
+    deliveryItems?: boolean | DispatchNoteCountOutputTypeCountDeliveryItemsArgs
   }
 
   // Custom InputTypes
@@ -8795,6 +8902,13 @@ export namespace Prisma {
    */
   export type DispatchNoteCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DispatchItemWhereInput
+  }
+
+  /**
+   * DispatchNoteCountOutputType without action
+   */
+  export type DispatchNoteCountOutputTypeCountDeliveryItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryDispatchNoteWhereInput
   }
 
 
@@ -9008,10 +9122,12 @@ export namespace Prisma {
 
   export type TruckCountOutputType = {
     deliveries: number
+    stockTransfers: number
   }
 
   export type TruckCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     deliveries?: boolean | TruckCountOutputTypeCountDeliveriesArgs
+    stockTransfers?: boolean | TruckCountOutputTypeCountStockTransfersArgs
   }
 
   // Custom InputTypes
@@ -9030,6 +9146,44 @@ export namespace Prisma {
    */
   export type TruckCountOutputTypeCountDeliveriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DeliveryWhereInput
+  }
+
+  /**
+   * TruckCountOutputType without action
+   */
+  export type TruckCountOutputTypeCountStockTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockTransferWhereInput
+  }
+
+
+  /**
+   * Count Type DeliveryCountOutputType
+   */
+
+  export type DeliveryCountOutputType = {
+    dispatchNotes: number
+  }
+
+  export type DeliveryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    dispatchNotes?: boolean | DeliveryCountOutputTypeCountDispatchNotesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DeliveryCountOutputType without action
+   */
+  export type DeliveryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryCountOutputType
+     */
+    select?: DeliveryCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryCountOutputType without action
+   */
+  export type DeliveryCountOutputTypeCountDispatchNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryDispatchNoteWhereInput
   }
 
 
@@ -9924,6 +10078,7 @@ export namespace Prisma {
     createdSalesOrders?: boolean | User$createdSalesOrdersArgs<ExtArgs>
     createdTransfers?: boolean | User$createdTransfersArgs<ExtArgs>
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
+    driverTransfers?: boolean | User$driverTransfersArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -10007,6 +10162,7 @@ export namespace Prisma {
     createdSalesOrders?: boolean | User$createdSalesOrdersArgs<ExtArgs>
     createdTransfers?: boolean | User$createdTransfersArgs<ExtArgs>
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
+    driverTransfers?: boolean | User$driverTransfersArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -10047,6 +10203,7 @@ export namespace Prisma {
       createdSalesOrders: Prisma.$SalesOrderPayload<ExtArgs>[]
       createdTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       receivedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
+      driverTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       roles: Prisma.$RoleAssignmentPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
     }
@@ -10484,6 +10641,7 @@ export namespace Prisma {
     createdSalesOrders<T extends User$createdSalesOrdersArgs<ExtArgs> = {}>(args?: Subset<T, User$createdSalesOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdTransfers<T extends User$createdTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedTransfers<T extends User$receivedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    driverTransfers<T extends User$driverTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$driverTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branch<T extends User$branchArgs<ExtArgs> = {}>(args?: Subset<T, User$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -11532,6 +11690,30 @@ export namespace Prisma {
    * User.receivedTransfers
    */
   export type User$receivedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockTransfer
+     */
+    select?: StockTransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockTransfer
+     */
+    omit?: StockTransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockTransferInclude<ExtArgs> | null
+    where?: StockTransferWhereInput
+    orderBy?: StockTransferOrderByWithRelationInput | StockTransferOrderByWithRelationInput[]
+    cursor?: StockTransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockTransferScalarFieldEnum | StockTransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.driverTransfers
+   */
+  export type User$driverTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the StockTransfer
      */
@@ -24294,14 +24476,14 @@ export namespace Prisma {
 
   export type StockTransferMinAggregateOutputType = {
     id: string | null
-    transferNo: string | null
+    documentId: string | null
     status: $Enums.TransferStatus | null
-    sourceId: string | null
-    targetId: string | null
+    sourceWarehouseId: string | null
+    destinationWarehouseId: string | null
     notes: string | null
-    truckRegNo: string | null
-    driverName: string | null
-    attendantName: string | null
+    truckId: string | null
+    driverId: string | null
+    dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
     createdById: string | null
@@ -24311,14 +24493,14 @@ export namespace Prisma {
 
   export type StockTransferMaxAggregateOutputType = {
     id: string | null
-    transferNo: string | null
+    documentId: string | null
     status: $Enums.TransferStatus | null
-    sourceId: string | null
-    targetId: string | null
+    sourceWarehouseId: string | null
+    destinationWarehouseId: string | null
     notes: string | null
-    truckRegNo: string | null
-    driverName: string | null
-    attendantName: string | null
+    truckId: string | null
+    driverId: string | null
+    dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
     createdById: string | null
@@ -24328,14 +24510,14 @@ export namespace Prisma {
 
   export type StockTransferCountAggregateOutputType = {
     id: number
-    transferNo: number
+    documentId: number
     status: number
-    sourceId: number
-    targetId: number
+    sourceWarehouseId: number
+    destinationWarehouseId: number
     notes: number
-    truckRegNo: number
-    driverName: number
-    attendantName: number
+    truckId: number
+    driverId: number
+    dispatchedAt: number
     receivedAt: number
     receivedById: number
     createdById: number
@@ -24347,14 +24529,14 @@ export namespace Prisma {
 
   export type StockTransferMinAggregateInputType = {
     id?: true
-    transferNo?: true
+    documentId?: true
     status?: true
-    sourceId?: true
-    targetId?: true
+    sourceWarehouseId?: true
+    destinationWarehouseId?: true
     notes?: true
-    truckRegNo?: true
-    driverName?: true
-    attendantName?: true
+    truckId?: true
+    driverId?: true
+    dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
     createdById?: true
@@ -24364,14 +24546,14 @@ export namespace Prisma {
 
   export type StockTransferMaxAggregateInputType = {
     id?: true
-    transferNo?: true
+    documentId?: true
     status?: true
-    sourceId?: true
-    targetId?: true
+    sourceWarehouseId?: true
+    destinationWarehouseId?: true
     notes?: true
-    truckRegNo?: true
-    driverName?: true
-    attendantName?: true
+    truckId?: true
+    driverId?: true
+    dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
     createdById?: true
@@ -24381,14 +24563,14 @@ export namespace Prisma {
 
   export type StockTransferCountAggregateInputType = {
     id?: true
-    transferNo?: true
+    documentId?: true
     status?: true
-    sourceId?: true
-    targetId?: true
+    sourceWarehouseId?: true
+    destinationWarehouseId?: true
     notes?: true
-    truckRegNo?: true
-    driverName?: true
-    attendantName?: true
+    truckId?: true
+    driverId?: true
+    dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
     createdById?: true
@@ -24471,14 +24653,14 @@ export namespace Prisma {
 
   export type StockTransferGroupByOutputType = {
     id: string
-    transferNo: string
+    documentId: string
     status: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes: string | null
-    truckRegNo: string | null
-    driverName: string | null
-    attendantName: string | null
+    truckId: string | null
+    driverId: string | null
+    dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
     createdById: string
@@ -24505,14 +24687,14 @@ export namespace Prisma {
 
   export type StockTransferSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    transferNo?: boolean
+    documentId?: boolean
     status?: boolean
-    sourceId?: boolean
-    targetId?: boolean
+    sourceWarehouseId?: boolean
+    destinationWarehouseId?: boolean
     notes?: boolean
-    truckRegNo?: boolean
-    driverName?: boolean
-    attendantName?: boolean
+    truckId?: boolean
+    driverId?: boolean
+    dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
     createdById?: boolean
@@ -24522,21 +24704,23 @@ export namespace Prisma {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    targetWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    truck?: boolean | StockTransfer$truckArgs<ExtArgs>
+    driver?: boolean | StockTransfer$driverArgs<ExtArgs>
     items?: boolean | StockTransfer$itemsArgs<ExtArgs>
     _count?: boolean | StockTransferCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockTransfer"]>
 
   export type StockTransferSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    transferNo?: boolean
+    documentId?: boolean
     status?: boolean
-    sourceId?: boolean
-    targetId?: boolean
+    sourceWarehouseId?: boolean
+    destinationWarehouseId?: boolean
     notes?: boolean
-    truckRegNo?: boolean
-    driverName?: boolean
-    attendantName?: boolean
+    truckId?: boolean
+    driverId?: boolean
+    dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
     createdById?: boolean
@@ -24545,19 +24729,21 @@ export namespace Prisma {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    targetWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    truck?: boolean | StockTransfer$truckArgs<ExtArgs>
+    driver?: boolean | StockTransfer$driverArgs<ExtArgs>
   }, ExtArgs["result"]["stockTransfer"]>
 
   export type StockTransferSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    transferNo?: boolean
+    documentId?: boolean
     status?: boolean
-    sourceId?: boolean
-    targetId?: boolean
+    sourceWarehouseId?: boolean
+    destinationWarehouseId?: boolean
     notes?: boolean
-    truckRegNo?: boolean
-    driverName?: boolean
-    attendantName?: boolean
+    truckId?: boolean
+    driverId?: boolean
+    dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
     createdById?: boolean
@@ -24566,19 +24752,21 @@ export namespace Prisma {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    targetWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    truck?: boolean | StockTransfer$truckArgs<ExtArgs>
+    driver?: boolean | StockTransfer$driverArgs<ExtArgs>
   }, ExtArgs["result"]["stockTransfer"]>
 
   export type StockTransferSelectScalar = {
     id?: boolean
-    transferNo?: boolean
+    documentId?: boolean
     status?: boolean
-    sourceId?: boolean
-    targetId?: boolean
+    sourceWarehouseId?: boolean
+    destinationWarehouseId?: boolean
     notes?: boolean
-    truckRegNo?: boolean
-    driverName?: boolean
-    attendantName?: boolean
+    truckId?: boolean
+    driverId?: boolean
+    dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
     createdById?: boolean
@@ -24586,13 +24774,15 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StockTransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transferNo" | "status" | "sourceId" | "targetId" | "notes" | "truckRegNo" | "driverName" | "attendantName" | "receivedAt" | "receivedById" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["stockTransfer"]>
+  export type StockTransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "status" | "sourceWarehouseId" | "destinationWarehouseId" | "notes" | "truckId" | "driverId" | "dispatchedAt" | "receivedAt" | "receivedById" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["stockTransfer"]>
   export type StockTransferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockMovements?: boolean | StockTransfer$stockMovementsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    targetWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    truck?: boolean | StockTransfer$truckArgs<ExtArgs>
+    driver?: boolean | StockTransfer$driverArgs<ExtArgs>
     items?: boolean | StockTransfer$itemsArgs<ExtArgs>
     _count?: boolean | StockTransferCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -24600,13 +24790,17 @@ export namespace Prisma {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    targetWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    truck?: boolean | StockTransfer$truckArgs<ExtArgs>
+    driver?: boolean | StockTransfer$driverArgs<ExtArgs>
   }
   export type StockTransferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
-    targetWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
+    truck?: boolean | StockTransfer$truckArgs<ExtArgs>
+    driver?: boolean | StockTransfer$driverArgs<ExtArgs>
   }
 
   export type $StockTransferPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24616,19 +24810,21 @@ export namespace Prisma {
       createdBy: Prisma.$UserPayload<ExtArgs>
       receivedBy: Prisma.$UserPayload<ExtArgs> | null
       sourceWarehouse: Prisma.$WarehousePayload<ExtArgs>
-      targetWarehouse: Prisma.$WarehousePayload<ExtArgs>
+      destinationWarehouse: Prisma.$WarehousePayload<ExtArgs>
+      truck: Prisma.$TruckPayload<ExtArgs> | null
+      driver: Prisma.$UserPayload<ExtArgs> | null
       items: Prisma.$TransferItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      transferNo: string
+      documentId: string
       status: $Enums.TransferStatus
-      sourceId: string
-      targetId: string
+      sourceWarehouseId: string
+      destinationWarehouseId: string
       notes: string | null
-      truckRegNo: string | null
-      driverName: string | null
-      attendantName: string | null
+      truckId: string | null
+      driverId: string | null
+      dispatchedAt: Date | null
       receivedAt: Date | null
       receivedById: string | null
       createdById: string
@@ -25032,7 +25228,9 @@ export namespace Prisma {
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     receivedBy<T extends StockTransfer$receivedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$receivedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     sourceWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    targetWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    destinationWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    truck<T extends StockTransfer$truckArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$truckArgs<ExtArgs>>): Prisma__TruckClient<$Result.GetResult<Prisma.$TruckPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    driver<T extends StockTransfer$driverArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$driverArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends StockTransfer$itemsArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -25064,14 +25262,14 @@ export namespace Prisma {
    */
   interface StockTransferFieldRefs {
     readonly id: FieldRef<"StockTransfer", 'String'>
-    readonly transferNo: FieldRef<"StockTransfer", 'String'>
+    readonly documentId: FieldRef<"StockTransfer", 'String'>
     readonly status: FieldRef<"StockTransfer", 'TransferStatus'>
-    readonly sourceId: FieldRef<"StockTransfer", 'String'>
-    readonly targetId: FieldRef<"StockTransfer", 'String'>
+    readonly sourceWarehouseId: FieldRef<"StockTransfer", 'String'>
+    readonly destinationWarehouseId: FieldRef<"StockTransfer", 'String'>
     readonly notes: FieldRef<"StockTransfer", 'String'>
-    readonly truckRegNo: FieldRef<"StockTransfer", 'String'>
-    readonly driverName: FieldRef<"StockTransfer", 'String'>
-    readonly attendantName: FieldRef<"StockTransfer", 'String'>
+    readonly truckId: FieldRef<"StockTransfer", 'String'>
+    readonly driverId: FieldRef<"StockTransfer", 'String'>
+    readonly dispatchedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly receivedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly receivedById: FieldRef<"StockTransfer", 'String'>
     readonly createdById: FieldRef<"StockTransfer", 'String'>
@@ -25521,6 +25719,44 @@ export namespace Prisma {
   }
 
   /**
+   * StockTransfer.truck
+   */
+  export type StockTransfer$truckArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Truck
+     */
+    select?: TruckSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Truck
+     */
+    omit?: TruckOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TruckInclude<ExtArgs> | null
+    where?: TruckWhereInput
+  }
+
+  /**
+   * StockTransfer.driver
+   */
+  export type StockTransfer$driverArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * StockTransfer.items
    */
   export type StockTransfer$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25576,63 +25812,109 @@ export namespace Prisma {
   }
 
   export type TransferItemAvgAggregateOutputType = {
-    quantity: number | null
+    unitCost: Decimal | null
+    requested_qty: number | null
+    dispatched_qty: number | null
+    received_qty: number | null
+    damaged_qty: number | null
   }
 
   export type TransferItemSumAggregateOutputType = {
-    quantity: number | null
+    unitCost: Decimal | null
+    requested_qty: number | null
+    dispatched_qty: number | null
+    received_qty: number | null
+    damaged_qty: number | null
   }
 
   export type TransferItemMinAggregateOutputType = {
     id: string | null
-    quantity: number | null
-    productId: string | null
     transferId: string | null
+    productId: string | null
+    batchId: string | null
+    unitCost: Decimal | null
+    requested_qty: number | null
+    dispatched_qty: number | null
+    received_qty: number | null
+    damaged_qty: number | null
   }
 
   export type TransferItemMaxAggregateOutputType = {
     id: string | null
-    quantity: number | null
-    productId: string | null
     transferId: string | null
+    productId: string | null
+    batchId: string | null
+    unitCost: Decimal | null
+    requested_qty: number | null
+    dispatched_qty: number | null
+    received_qty: number | null
+    damaged_qty: number | null
   }
 
   export type TransferItemCountAggregateOutputType = {
     id: number
-    quantity: number
-    productId: number
     transferId: number
+    productId: number
+    batchId: number
+    unitCost: number
+    requested_qty: number
+    dispatched_qty: number
+    received_qty: number
+    damaged_qty: number
     _all: number
   }
 
 
   export type TransferItemAvgAggregateInputType = {
-    quantity?: true
+    unitCost?: true
+    requested_qty?: true
+    dispatched_qty?: true
+    received_qty?: true
+    damaged_qty?: true
   }
 
   export type TransferItemSumAggregateInputType = {
-    quantity?: true
+    unitCost?: true
+    requested_qty?: true
+    dispatched_qty?: true
+    received_qty?: true
+    damaged_qty?: true
   }
 
   export type TransferItemMinAggregateInputType = {
     id?: true
-    quantity?: true
-    productId?: true
     transferId?: true
+    productId?: true
+    batchId?: true
+    unitCost?: true
+    requested_qty?: true
+    dispatched_qty?: true
+    received_qty?: true
+    damaged_qty?: true
   }
 
   export type TransferItemMaxAggregateInputType = {
     id?: true
-    quantity?: true
-    productId?: true
     transferId?: true
+    productId?: true
+    batchId?: true
+    unitCost?: true
+    requested_qty?: true
+    dispatched_qty?: true
+    received_qty?: true
+    damaged_qty?: true
   }
 
   export type TransferItemCountAggregateInputType = {
     id?: true
-    quantity?: true
-    productId?: true
     transferId?: true
+    productId?: true
+    batchId?: true
+    unitCost?: true
+    requested_qty?: true
+    dispatched_qty?: true
+    received_qty?: true
+    damaged_qty?: true
     _all?: true
   }
 
@@ -25724,9 +26006,14 @@ export namespace Prisma {
 
   export type TransferItemGroupByOutputType = {
     id: string
-    quantity: number
-    productId: string
     transferId: string
+    productId: string
+    batchId: string | null
+    unitCost: Decimal | null
+    requested_qty: number
+    dispatched_qty: number | null
+    received_qty: number | null
+    damaged_qty: number | null
     _count: TransferItemCountAggregateOutputType | null
     _avg: TransferItemAvgAggregateOutputType | null
     _sum: TransferItemSumAggregateOutputType | null
@@ -25750,39 +26037,59 @@ export namespace Prisma {
 
   export type TransferItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    quantity?: boolean
-    productId?: boolean
     transferId?: boolean
+    productId?: boolean
+    batchId?: boolean
+    unitCost?: boolean
+    requested_qty?: boolean
+    dispatched_qty?: boolean
+    received_qty?: boolean
+    damaged_qty?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transferItem"]>
 
   export type TransferItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    quantity?: boolean
-    productId?: boolean
     transferId?: boolean
+    productId?: boolean
+    batchId?: boolean
+    unitCost?: boolean
+    requested_qty?: boolean
+    dispatched_qty?: boolean
+    received_qty?: boolean
+    damaged_qty?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transferItem"]>
 
   export type TransferItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    quantity?: boolean
-    productId?: boolean
     transferId?: boolean
+    productId?: boolean
+    batchId?: boolean
+    unitCost?: boolean
+    requested_qty?: boolean
+    dispatched_qty?: boolean
+    received_qty?: boolean
+    damaged_qty?: boolean
     product?: boolean | ProductDefaultArgs<ExtArgs>
     transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transferItem"]>
 
   export type TransferItemSelectScalar = {
     id?: boolean
-    quantity?: boolean
-    productId?: boolean
     transferId?: boolean
+    productId?: boolean
+    batchId?: boolean
+    unitCost?: boolean
+    requested_qty?: boolean
+    dispatched_qty?: boolean
+    received_qty?: boolean
+    damaged_qty?: boolean
   }
 
-  export type TransferItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "quantity" | "productId" | "transferId", ExtArgs["result"]["transferItem"]>
+  export type TransferItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transferId" | "productId" | "batchId" | "unitCost" | "requested_qty" | "dispatched_qty" | "received_qty" | "damaged_qty", ExtArgs["result"]["transferItem"]>
   export type TransferItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
@@ -25804,9 +26111,14 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      quantity: number
-      productId: string
       transferId: string
+      productId: string
+      batchId: string | null
+      unitCost: Prisma.Decimal | null
+      requested_qty: number
+      dispatched_qty: number | null
+      received_qty: number | null
+      damaged_qty: number | null
     }, ExtArgs["result"]["transferItem"]>
     composites: {}
   }
@@ -26233,9 +26545,14 @@ export namespace Prisma {
    */
   interface TransferItemFieldRefs {
     readonly id: FieldRef<"TransferItem", 'String'>
-    readonly quantity: FieldRef<"TransferItem", 'Int'>
-    readonly productId: FieldRef<"TransferItem", 'String'>
     readonly transferId: FieldRef<"TransferItem", 'String'>
+    readonly productId: FieldRef<"TransferItem", 'String'>
+    readonly batchId: FieldRef<"TransferItem", 'String'>
+    readonly unitCost: FieldRef<"TransferItem", 'Decimal'>
+    readonly requested_qty: FieldRef<"TransferItem", 'Int'>
+    readonly dispatched_qty: FieldRef<"TransferItem", 'Int'>
+    readonly received_qty: FieldRef<"TransferItem", 'Int'>
+    readonly damaged_qty: FieldRef<"TransferItem", 'Int'>
   }
     
 
@@ -35684,6 +36001,7 @@ export namespace Prisma {
     items?: boolean | DispatchNote$itemsArgs<ExtArgs>
     dispatchedBy?: boolean | UserDefaultArgs<ExtArgs>
     salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    deliveryItems?: boolean | DispatchNote$deliveryItemsArgs<ExtArgs>
     _count?: boolean | DispatchNoteCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["dispatchNote"]>
 
@@ -35726,6 +36044,7 @@ export namespace Prisma {
     items?: boolean | DispatchNote$itemsArgs<ExtArgs>
     dispatchedBy?: boolean | UserDefaultArgs<ExtArgs>
     salesOrder?: boolean | SalesOrderDefaultArgs<ExtArgs>
+    deliveryItems?: boolean | DispatchNote$deliveryItemsArgs<ExtArgs>
     _count?: boolean | DispatchNoteCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DispatchNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -35743,6 +36062,7 @@ export namespace Prisma {
       items: Prisma.$DispatchItemPayload<ExtArgs>[]
       dispatchedBy: Prisma.$UserPayload<ExtArgs>
       salesOrder: Prisma.$SalesOrderPayload<ExtArgs>
+      deliveryItems: Prisma.$DeliveryDispatchNotePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -36149,6 +36469,7 @@ export namespace Prisma {
     items<T extends DispatchNote$itemsArgs<ExtArgs> = {}>(args?: Subset<T, DispatchNote$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DispatchItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dispatchedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     salesOrder<T extends SalesOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalesOrderDefaultArgs<ExtArgs>>): Prisma__SalesOrderClient<$Result.GetResult<Prisma.$SalesOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    deliveryItems<T extends DispatchNote$deliveryItemsArgs<ExtArgs> = {}>(args?: Subset<T, DispatchNote$deliveryItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -36607,6 +36928,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DispatchItemScalarFieldEnum | DispatchItemScalarFieldEnum[]
+  }
+
+  /**
+   * DispatchNote.deliveryItems
+   */
+  export type DispatchNote$deliveryItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    where?: DeliveryDispatchNoteWhereInput
+    orderBy?: DeliveryDispatchNoteOrderByWithRelationInput | DeliveryDispatchNoteOrderByWithRelationInput[]
+    cursor?: DeliveryDispatchNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeliveryDispatchNoteScalarFieldEnum | DeliveryDispatchNoteScalarFieldEnum[]
   }
 
   /**
@@ -46520,6 +46865,7 @@ export namespace Prisma {
     registration: string | null
     model: string | null
     capacity: number | null
+    vehicle_type: string | null
     license_plate: string | null
     isActive: boolean | null
     createdAt: Date | null
@@ -46531,6 +46877,7 @@ export namespace Prisma {
     registration: string | null
     model: string | null
     capacity: number | null
+    vehicle_type: string | null
     license_plate: string | null
     isActive: boolean | null
     createdAt: Date | null
@@ -46542,6 +46889,7 @@ export namespace Prisma {
     registration: number
     model: number
     capacity: number
+    vehicle_type: number
     license_plate: number
     isActive: number
     createdAt: number
@@ -46563,6 +46911,7 @@ export namespace Prisma {
     registration?: true
     model?: true
     capacity?: true
+    vehicle_type?: true
     license_plate?: true
     isActive?: true
     createdAt?: true
@@ -46574,6 +46923,7 @@ export namespace Prisma {
     registration?: true
     model?: true
     capacity?: true
+    vehicle_type?: true
     license_plate?: true
     isActive?: true
     createdAt?: true
@@ -46585,6 +46935,7 @@ export namespace Prisma {
     registration?: true
     model?: true
     capacity?: true
+    vehicle_type?: true
     license_plate?: true
     isActive?: true
     createdAt?: true
@@ -46683,6 +47034,7 @@ export namespace Prisma {
     registration: string
     model: string
     capacity: number
+    vehicle_type: string | null
     license_plate: string | null
     isActive: boolean
     createdAt: Date
@@ -46713,11 +47065,13 @@ export namespace Prisma {
     registration?: boolean
     model?: boolean
     capacity?: boolean
+    vehicle_type?: boolean
     license_plate?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     deliveries?: boolean | Truck$deliveriesArgs<ExtArgs>
+    stockTransfers?: boolean | Truck$stockTransfersArgs<ExtArgs>
     _count?: boolean | TruckCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["truck"]>
 
@@ -46726,6 +47080,7 @@ export namespace Prisma {
     registration?: boolean
     model?: boolean
     capacity?: boolean
+    vehicle_type?: boolean
     license_plate?: boolean
     isActive?: boolean
     createdAt?: boolean
@@ -46737,6 +47092,7 @@ export namespace Prisma {
     registration?: boolean
     model?: boolean
     capacity?: boolean
+    vehicle_type?: boolean
     license_plate?: boolean
     isActive?: boolean
     createdAt?: boolean
@@ -46748,15 +47104,17 @@ export namespace Prisma {
     registration?: boolean
     model?: boolean
     capacity?: boolean
+    vehicle_type?: boolean
     license_plate?: boolean
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TruckOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "registration" | "model" | "capacity" | "license_plate" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["truck"]>
+  export type TruckOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "registration" | "model" | "capacity" | "vehicle_type" | "license_plate" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["truck"]>
   export type TruckInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     deliveries?: boolean | Truck$deliveriesArgs<ExtArgs>
+    stockTransfers?: boolean | Truck$stockTransfersArgs<ExtArgs>
     _count?: boolean | TruckCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TruckIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -46766,12 +47124,14 @@ export namespace Prisma {
     name: "Truck"
     objects: {
       deliveries: Prisma.$DeliveryPayload<ExtArgs>[]
+      stockTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       registration: string
       model: string
       capacity: number
+      vehicle_type: string | null
       license_plate: string | null
       isActive: boolean
       createdAt: Date
@@ -47171,6 +47531,7 @@ export namespace Prisma {
   export interface Prisma__TruckClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     deliveries<T extends Truck$deliveriesArgs<ExtArgs> = {}>(args?: Subset<T, Truck$deliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    stockTransfers<T extends Truck$stockTransfersArgs<ExtArgs> = {}>(args?: Subset<T, Truck$stockTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -47204,6 +47565,7 @@ export namespace Prisma {
     readonly registration: FieldRef<"Truck", 'String'>
     readonly model: FieldRef<"Truck", 'String'>
     readonly capacity: FieldRef<"Truck", 'Int'>
+    readonly vehicle_type: FieldRef<"Truck", 'String'>
     readonly license_plate: FieldRef<"Truck", 'String'>
     readonly isActive: FieldRef<"Truck", 'Boolean'>
     readonly createdAt: FieldRef<"Truck", 'DateTime'>
@@ -47625,6 +47987,30 @@ export namespace Prisma {
   }
 
   /**
+   * Truck.stockTransfers
+   */
+  export type Truck$stockTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockTransfer
+     */
+    select?: StockTransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockTransfer
+     */
+    omit?: StockTransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockTransferInclude<ExtArgs> | null
+    where?: StockTransferWhereInput
+    orderBy?: StockTransferOrderByWithRelationInput | StockTransferOrderByWithRelationInput[]
+    cursor?: StockTransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockTransferScalarFieldEnum | StockTransferScalarFieldEnum[]
+  }
+
+  /**
    * Truck without action
    */
   export type TruckDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -47656,27 +48042,30 @@ export namespace Prisma {
   }
 
   export type DeliveryAvgAggregateOutputType = {
-    estimated_km: number | null
-    actual_km: number | null
+    estimatedKm: number | null
+    actualKm: number | null
   }
 
   export type DeliverySumAggregateOutputType = {
-    estimated_km: number | null
-    actual_km: number | null
+    estimatedKm: number | null
+    actualKm: number | null
   }
 
   export type DeliveryMinAggregateOutputType = {
     id: string | null
-    delivery_no: string | null
+    deliveryNo: string | null
     status: $Enums.DeliveryStatus | null
     driverId: string | null
     truckId: string | null
     destination: string | null
-    estimated_km: number | null
-    actual_km: number | null
-    scheduled_date: Date | null
-    picked_up_at: Date | null
-    delivered_at: Date | null
+    estimatedKm: number | null
+    actualKm: number | null
+    scheduledDate: Date | null
+    pickedUpAt: Date | null
+    deliveredAt: Date | null
+    podSignatureUrl: string | null
+    podPhotoUrl: string | null
+    deliveryOtp: string | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -47684,16 +48073,19 @@ export namespace Prisma {
 
   export type DeliveryMaxAggregateOutputType = {
     id: string | null
-    delivery_no: string | null
+    deliveryNo: string | null
     status: $Enums.DeliveryStatus | null
     driverId: string | null
     truckId: string | null
     destination: string | null
-    estimated_km: number | null
-    actual_km: number | null
-    scheduled_date: Date | null
-    picked_up_at: Date | null
-    delivered_at: Date | null
+    estimatedKm: number | null
+    actualKm: number | null
+    scheduledDate: Date | null
+    pickedUpAt: Date | null
+    deliveredAt: Date | null
+    podSignatureUrl: string | null
+    podPhotoUrl: string | null
+    deliveryOtp: string | null
     notes: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -47701,16 +48093,19 @@ export namespace Prisma {
 
   export type DeliveryCountAggregateOutputType = {
     id: number
-    delivery_no: number
+    deliveryNo: number
     status: number
     driverId: number
     truckId: number
     destination: number
-    estimated_km: number
-    actual_km: number
-    scheduled_date: number
-    picked_up_at: number
-    delivered_at: number
+    estimatedKm: number
+    actualKm: number
+    scheduledDate: number
+    pickedUpAt: number
+    deliveredAt: number
+    podSignatureUrl: number
+    podPhotoUrl: number
+    deliveryOtp: number
     notes: number
     createdAt: number
     updatedAt: number
@@ -47719,27 +48114,30 @@ export namespace Prisma {
 
 
   export type DeliveryAvgAggregateInputType = {
-    estimated_km?: true
-    actual_km?: true
+    estimatedKm?: true
+    actualKm?: true
   }
 
   export type DeliverySumAggregateInputType = {
-    estimated_km?: true
-    actual_km?: true
+    estimatedKm?: true
+    actualKm?: true
   }
 
   export type DeliveryMinAggregateInputType = {
     id?: true
-    delivery_no?: true
+    deliveryNo?: true
     status?: true
     driverId?: true
     truckId?: true
     destination?: true
-    estimated_km?: true
-    actual_km?: true
-    scheduled_date?: true
-    picked_up_at?: true
-    delivered_at?: true
+    estimatedKm?: true
+    actualKm?: true
+    scheduledDate?: true
+    pickedUpAt?: true
+    deliveredAt?: true
+    podSignatureUrl?: true
+    podPhotoUrl?: true
+    deliveryOtp?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -47747,16 +48145,19 @@ export namespace Prisma {
 
   export type DeliveryMaxAggregateInputType = {
     id?: true
-    delivery_no?: true
+    deliveryNo?: true
     status?: true
     driverId?: true
     truckId?: true
     destination?: true
-    estimated_km?: true
-    actual_km?: true
-    scheduled_date?: true
-    picked_up_at?: true
-    delivered_at?: true
+    estimatedKm?: true
+    actualKm?: true
+    scheduledDate?: true
+    pickedUpAt?: true
+    deliveredAt?: true
+    podSignatureUrl?: true
+    podPhotoUrl?: true
+    deliveryOtp?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -47764,16 +48165,19 @@ export namespace Prisma {
 
   export type DeliveryCountAggregateInputType = {
     id?: true
-    delivery_no?: true
+    deliveryNo?: true
     status?: true
     driverId?: true
     truckId?: true
     destination?: true
-    estimated_km?: true
-    actual_km?: true
-    scheduled_date?: true
-    picked_up_at?: true
-    delivered_at?: true
+    estimatedKm?: true
+    actualKm?: true
+    scheduledDate?: true
+    pickedUpAt?: true
+    deliveredAt?: true
+    podSignatureUrl?: true
+    podPhotoUrl?: true
+    deliveryOtp?: true
     notes?: true
     createdAt?: true
     updatedAt?: true
@@ -47868,16 +48272,19 @@ export namespace Prisma {
 
   export type DeliveryGroupByOutputType = {
     id: string
-    delivery_no: string
+    deliveryNo: string
     status: $Enums.DeliveryStatus
     driverId: string
     truckId: string
-    destination: string
-    estimated_km: number | null
-    actual_km: number | null
-    scheduled_date: Date | null
-    picked_up_at: Date | null
-    delivered_at: Date | null
+    destination: string | null
+    estimatedKm: number | null
+    actualKm: number | null
+    scheduledDate: Date | null
+    pickedUpAt: Date | null
+    deliveredAt: Date | null
+    podSignatureUrl: string | null
+    podPhotoUrl: string | null
+    deliveryOtp: string | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -47904,35 +48311,43 @@ export namespace Prisma {
 
   export type DeliverySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    delivery_no?: boolean
+    deliveryNo?: boolean
     status?: boolean
     driverId?: boolean
     truckId?: boolean
     destination?: boolean
-    estimated_km?: boolean
-    actual_km?: boolean
-    scheduled_date?: boolean
-    picked_up_at?: boolean
-    delivered_at?: boolean
+    estimatedKm?: boolean
+    actualKm?: boolean
+    scheduledDate?: boolean
+    pickedUpAt?: boolean
+    deliveredAt?: boolean
+    podSignatureUrl?: boolean
+    podPhotoUrl?: boolean
+    deliveryOtp?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     driver?: boolean | UserDefaultArgs<ExtArgs>
     truck?: boolean | TruckDefaultArgs<ExtArgs>
+    dispatchNotes?: boolean | Delivery$dispatchNotesArgs<ExtArgs>
+    _count?: boolean | DeliveryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["delivery"]>
 
   export type DeliverySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    delivery_no?: boolean
+    deliveryNo?: boolean
     status?: boolean
     driverId?: boolean
     truckId?: boolean
     destination?: boolean
-    estimated_km?: boolean
-    actual_km?: boolean
-    scheduled_date?: boolean
-    picked_up_at?: boolean
-    delivered_at?: boolean
+    estimatedKm?: boolean
+    actualKm?: boolean
+    scheduledDate?: boolean
+    pickedUpAt?: boolean
+    deliveredAt?: boolean
+    podSignatureUrl?: boolean
+    podPhotoUrl?: boolean
+    deliveryOtp?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -47942,16 +48357,19 @@ export namespace Prisma {
 
   export type DeliverySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    delivery_no?: boolean
+    deliveryNo?: boolean
     status?: boolean
     driverId?: boolean
     truckId?: boolean
     destination?: boolean
-    estimated_km?: boolean
-    actual_km?: boolean
-    scheduled_date?: boolean
-    picked_up_at?: boolean
-    delivered_at?: boolean
+    estimatedKm?: boolean
+    actualKm?: boolean
+    scheduledDate?: boolean
+    pickedUpAt?: boolean
+    deliveredAt?: boolean
+    podSignatureUrl?: boolean
+    podPhotoUrl?: boolean
+    deliveryOtp?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -47961,25 +48379,30 @@ export namespace Prisma {
 
   export type DeliverySelectScalar = {
     id?: boolean
-    delivery_no?: boolean
+    deliveryNo?: boolean
     status?: boolean
     driverId?: boolean
     truckId?: boolean
     destination?: boolean
-    estimated_km?: boolean
-    actual_km?: boolean
-    scheduled_date?: boolean
-    picked_up_at?: boolean
-    delivered_at?: boolean
+    estimatedKm?: boolean
+    actualKm?: boolean
+    scheduledDate?: boolean
+    pickedUpAt?: boolean
+    deliveredAt?: boolean
+    podSignatureUrl?: boolean
+    podPhotoUrl?: boolean
+    deliveryOtp?: boolean
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "delivery_no" | "status" | "driverId" | "truckId" | "destination" | "estimated_km" | "actual_km" | "scheduled_date" | "picked_up_at" | "delivered_at" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["delivery"]>
+  export type DeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "deliveryNo" | "status" | "driverId" | "truckId" | "destination" | "estimatedKm" | "actualKm" | "scheduledDate" | "pickedUpAt" | "deliveredAt" | "podSignatureUrl" | "podPhotoUrl" | "deliveryOtp" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["delivery"]>
   export type DeliveryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     driver?: boolean | UserDefaultArgs<ExtArgs>
     truck?: boolean | TruckDefaultArgs<ExtArgs>
+    dispatchNotes?: boolean | Delivery$dispatchNotesArgs<ExtArgs>
+    _count?: boolean | DeliveryCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DeliveryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     driver?: boolean | UserDefaultArgs<ExtArgs>
@@ -47995,19 +48418,23 @@ export namespace Prisma {
     objects: {
       driver: Prisma.$UserPayload<ExtArgs>
       truck: Prisma.$TruckPayload<ExtArgs>
+      dispatchNotes: Prisma.$DeliveryDispatchNotePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      delivery_no: string
+      deliveryNo: string
       status: $Enums.DeliveryStatus
       driverId: string
       truckId: string
-      destination: string
-      estimated_km: number | null
-      actual_km: number | null
-      scheduled_date: Date | null
-      picked_up_at: Date | null
-      delivered_at: Date | null
+      destination: string | null
+      estimatedKm: number | null
+      actualKm: number | null
+      scheduledDate: Date | null
+      pickedUpAt: Date | null
+      deliveredAt: Date | null
+      podSignatureUrl: string | null
+      podPhotoUrl: string | null
+      deliveryOtp: string | null
       notes: string | null
       createdAt: Date
       updatedAt: Date
@@ -48407,6 +48834,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     driver<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     truck<T extends TruckDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TruckDefaultArgs<ExtArgs>>): Prisma__TruckClient<$Result.GetResult<Prisma.$TruckPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    dispatchNotes<T extends Delivery$dispatchNotesArgs<ExtArgs> = {}>(args?: Subset<T, Delivery$dispatchNotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -48437,16 +48865,19 @@ export namespace Prisma {
    */
   interface DeliveryFieldRefs {
     readonly id: FieldRef<"Delivery", 'String'>
-    readonly delivery_no: FieldRef<"Delivery", 'String'>
+    readonly deliveryNo: FieldRef<"Delivery", 'String'>
     readonly status: FieldRef<"Delivery", 'DeliveryStatus'>
     readonly driverId: FieldRef<"Delivery", 'String'>
     readonly truckId: FieldRef<"Delivery", 'String'>
     readonly destination: FieldRef<"Delivery", 'String'>
-    readonly estimated_km: FieldRef<"Delivery", 'Int'>
-    readonly actual_km: FieldRef<"Delivery", 'Int'>
-    readonly scheduled_date: FieldRef<"Delivery", 'DateTime'>
-    readonly picked_up_at: FieldRef<"Delivery", 'DateTime'>
-    readonly delivered_at: FieldRef<"Delivery", 'DateTime'>
+    readonly estimatedKm: FieldRef<"Delivery", 'Int'>
+    readonly actualKm: FieldRef<"Delivery", 'Int'>
+    readonly scheduledDate: FieldRef<"Delivery", 'DateTime'>
+    readonly pickedUpAt: FieldRef<"Delivery", 'DateTime'>
+    readonly deliveredAt: FieldRef<"Delivery", 'DateTime'>
+    readonly podSignatureUrl: FieldRef<"Delivery", 'String'>
+    readonly podPhotoUrl: FieldRef<"Delivery", 'String'>
+    readonly deliveryOtp: FieldRef<"Delivery", 'String'>
     readonly notes: FieldRef<"Delivery", 'String'>
     readonly createdAt: FieldRef<"Delivery", 'DateTime'>
     readonly updatedAt: FieldRef<"Delivery", 'DateTime'>
@@ -48851,6 +49282,30 @@ export namespace Prisma {
   }
 
   /**
+   * Delivery.dispatchNotes
+   */
+  export type Delivery$dispatchNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    where?: DeliveryDispatchNoteWhereInput
+    orderBy?: DeliveryDispatchNoteOrderByWithRelationInput | DeliveryDispatchNoteOrderByWithRelationInput[]
+    cursor?: DeliveryDispatchNoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeliveryDispatchNoteScalarFieldEnum | DeliveryDispatchNoteScalarFieldEnum[]
+  }
+
+  /**
    * Delivery without action
    */
   export type DeliveryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -48866,6 +49321,1051 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DeliveryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DeliveryDispatchNote
+   */
+
+  export type AggregateDeliveryDispatchNote = {
+    _count: DeliveryDispatchNoteCountAggregateOutputType | null
+    _min: DeliveryDispatchNoteMinAggregateOutputType | null
+    _max: DeliveryDispatchNoteMaxAggregateOutputType | null
+  }
+
+  export type DeliveryDispatchNoteMinAggregateOutputType = {
+    id: string | null
+    deliveryId: string | null
+    dispatchNoteId: string | null
+  }
+
+  export type DeliveryDispatchNoteMaxAggregateOutputType = {
+    id: string | null
+    deliveryId: string | null
+    dispatchNoteId: string | null
+  }
+
+  export type DeliveryDispatchNoteCountAggregateOutputType = {
+    id: number
+    deliveryId: number
+    dispatchNoteId: number
+    _all: number
+  }
+
+
+  export type DeliveryDispatchNoteMinAggregateInputType = {
+    id?: true
+    deliveryId?: true
+    dispatchNoteId?: true
+  }
+
+  export type DeliveryDispatchNoteMaxAggregateInputType = {
+    id?: true
+    deliveryId?: true
+    dispatchNoteId?: true
+  }
+
+  export type DeliveryDispatchNoteCountAggregateInputType = {
+    id?: true
+    deliveryId?: true
+    dispatchNoteId?: true
+    _all?: true
+  }
+
+  export type DeliveryDispatchNoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeliveryDispatchNote to aggregate.
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDispatchNotes to fetch.
+     */
+    orderBy?: DeliveryDispatchNoteOrderByWithRelationInput | DeliveryDispatchNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeliveryDispatchNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDispatchNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDispatchNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeliveryDispatchNotes
+    **/
+    _count?: true | DeliveryDispatchNoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeliveryDispatchNoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeliveryDispatchNoteMaxAggregateInputType
+  }
+
+  export type GetDeliveryDispatchNoteAggregateType<T extends DeliveryDispatchNoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeliveryDispatchNote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeliveryDispatchNote[P]>
+      : GetScalarType<T[P], AggregateDeliveryDispatchNote[P]>
+  }
+
+
+
+
+  export type DeliveryDispatchNoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeliveryDispatchNoteWhereInput
+    orderBy?: DeliveryDispatchNoteOrderByWithAggregationInput | DeliveryDispatchNoteOrderByWithAggregationInput[]
+    by: DeliveryDispatchNoteScalarFieldEnum[] | DeliveryDispatchNoteScalarFieldEnum
+    having?: DeliveryDispatchNoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeliveryDispatchNoteCountAggregateInputType | true
+    _min?: DeliveryDispatchNoteMinAggregateInputType
+    _max?: DeliveryDispatchNoteMaxAggregateInputType
+  }
+
+  export type DeliveryDispatchNoteGroupByOutputType = {
+    id: string
+    deliveryId: string
+    dispatchNoteId: string
+    _count: DeliveryDispatchNoteCountAggregateOutputType | null
+    _min: DeliveryDispatchNoteMinAggregateOutputType | null
+    _max: DeliveryDispatchNoteMaxAggregateOutputType | null
+  }
+
+  type GetDeliveryDispatchNoteGroupByPayload<T extends DeliveryDispatchNoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeliveryDispatchNoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeliveryDispatchNoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeliveryDispatchNoteGroupByOutputType[P]>
+            : GetScalarType<T[P], DeliveryDispatchNoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeliveryDispatchNoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deliveryId?: boolean
+    dispatchNoteId?: boolean
+    delivery?: boolean | DeliveryDefaultArgs<ExtArgs>
+    dispatchNote?: boolean | DispatchNoteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryDispatchNote"]>
+
+  export type DeliveryDispatchNoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deliveryId?: boolean
+    dispatchNoteId?: boolean
+    delivery?: boolean | DeliveryDefaultArgs<ExtArgs>
+    dispatchNote?: boolean | DispatchNoteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryDispatchNote"]>
+
+  export type DeliveryDispatchNoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deliveryId?: boolean
+    dispatchNoteId?: boolean
+    delivery?: boolean | DeliveryDefaultArgs<ExtArgs>
+    dispatchNote?: boolean | DispatchNoteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deliveryDispatchNote"]>
+
+  export type DeliveryDispatchNoteSelectScalar = {
+    id?: boolean
+    deliveryId?: boolean
+    dispatchNoteId?: boolean
+  }
+
+  export type DeliveryDispatchNoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "deliveryId" | "dispatchNoteId", ExtArgs["result"]["deliveryDispatchNote"]>
+  export type DeliveryDispatchNoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    delivery?: boolean | DeliveryDefaultArgs<ExtArgs>
+    dispatchNote?: boolean | DispatchNoteDefaultArgs<ExtArgs>
+  }
+  export type DeliveryDispatchNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    delivery?: boolean | DeliveryDefaultArgs<ExtArgs>
+    dispatchNote?: boolean | DispatchNoteDefaultArgs<ExtArgs>
+  }
+  export type DeliveryDispatchNoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    delivery?: boolean | DeliveryDefaultArgs<ExtArgs>
+    dispatchNote?: boolean | DispatchNoteDefaultArgs<ExtArgs>
+  }
+
+  export type $DeliveryDispatchNotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeliveryDispatchNote"
+    objects: {
+      delivery: Prisma.$DeliveryPayload<ExtArgs>
+      dispatchNote: Prisma.$DispatchNotePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      deliveryId: string
+      dispatchNoteId: string
+    }, ExtArgs["result"]["deliveryDispatchNote"]>
+    composites: {}
+  }
+
+  type DeliveryDispatchNoteGetPayload<S extends boolean | null | undefined | DeliveryDispatchNoteDefaultArgs> = $Result.GetResult<Prisma.$DeliveryDispatchNotePayload, S>
+
+  type DeliveryDispatchNoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeliveryDispatchNoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeliveryDispatchNoteCountAggregateInputType | true
+    }
+
+  export interface DeliveryDispatchNoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeliveryDispatchNote'], meta: { name: 'DeliveryDispatchNote' } }
+    /**
+     * Find zero or one DeliveryDispatchNote that matches the filter.
+     * @param {DeliveryDispatchNoteFindUniqueArgs} args - Arguments to find a DeliveryDispatchNote
+     * @example
+     * // Get one DeliveryDispatchNote
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeliveryDispatchNoteFindUniqueArgs>(args: SelectSubset<T, DeliveryDispatchNoteFindUniqueArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeliveryDispatchNote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeliveryDispatchNoteFindUniqueOrThrowArgs} args - Arguments to find a DeliveryDispatchNote
+     * @example
+     * // Get one DeliveryDispatchNote
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeliveryDispatchNoteFindUniqueOrThrowArgs>(args: SelectSubset<T, DeliveryDispatchNoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeliveryDispatchNote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteFindFirstArgs} args - Arguments to find a DeliveryDispatchNote
+     * @example
+     * // Get one DeliveryDispatchNote
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeliveryDispatchNoteFindFirstArgs>(args?: SelectSubset<T, DeliveryDispatchNoteFindFirstArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeliveryDispatchNote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteFindFirstOrThrowArgs} args - Arguments to find a DeliveryDispatchNote
+     * @example
+     * // Get one DeliveryDispatchNote
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeliveryDispatchNoteFindFirstOrThrowArgs>(args?: SelectSubset<T, DeliveryDispatchNoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeliveryDispatchNotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeliveryDispatchNotes
+     * const deliveryDispatchNotes = await prisma.deliveryDispatchNote.findMany()
+     * 
+     * // Get first 10 DeliveryDispatchNotes
+     * const deliveryDispatchNotes = await prisma.deliveryDispatchNote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deliveryDispatchNoteWithIdOnly = await prisma.deliveryDispatchNote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeliveryDispatchNoteFindManyArgs>(args?: SelectSubset<T, DeliveryDispatchNoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeliveryDispatchNote.
+     * @param {DeliveryDispatchNoteCreateArgs} args - Arguments to create a DeliveryDispatchNote.
+     * @example
+     * // Create one DeliveryDispatchNote
+     * const DeliveryDispatchNote = await prisma.deliveryDispatchNote.create({
+     *   data: {
+     *     // ... data to create a DeliveryDispatchNote
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeliveryDispatchNoteCreateArgs>(args: SelectSubset<T, DeliveryDispatchNoteCreateArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeliveryDispatchNotes.
+     * @param {DeliveryDispatchNoteCreateManyArgs} args - Arguments to create many DeliveryDispatchNotes.
+     * @example
+     * // Create many DeliveryDispatchNotes
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeliveryDispatchNoteCreateManyArgs>(args?: SelectSubset<T, DeliveryDispatchNoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeliveryDispatchNotes and returns the data saved in the database.
+     * @param {DeliveryDispatchNoteCreateManyAndReturnArgs} args - Arguments to create many DeliveryDispatchNotes.
+     * @example
+     * // Create many DeliveryDispatchNotes
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeliveryDispatchNotes and only return the `id`
+     * const deliveryDispatchNoteWithIdOnly = await prisma.deliveryDispatchNote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeliveryDispatchNoteCreateManyAndReturnArgs>(args?: SelectSubset<T, DeliveryDispatchNoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeliveryDispatchNote.
+     * @param {DeliveryDispatchNoteDeleteArgs} args - Arguments to delete one DeliveryDispatchNote.
+     * @example
+     * // Delete one DeliveryDispatchNote
+     * const DeliveryDispatchNote = await prisma.deliveryDispatchNote.delete({
+     *   where: {
+     *     // ... filter to delete one DeliveryDispatchNote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeliveryDispatchNoteDeleteArgs>(args: SelectSubset<T, DeliveryDispatchNoteDeleteArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeliveryDispatchNote.
+     * @param {DeliveryDispatchNoteUpdateArgs} args - Arguments to update one DeliveryDispatchNote.
+     * @example
+     * // Update one DeliveryDispatchNote
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeliveryDispatchNoteUpdateArgs>(args: SelectSubset<T, DeliveryDispatchNoteUpdateArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeliveryDispatchNotes.
+     * @param {DeliveryDispatchNoteDeleteManyArgs} args - Arguments to filter DeliveryDispatchNotes to delete.
+     * @example
+     * // Delete a few DeliveryDispatchNotes
+     * const { count } = await prisma.deliveryDispatchNote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeliveryDispatchNoteDeleteManyArgs>(args?: SelectSubset<T, DeliveryDispatchNoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeliveryDispatchNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeliveryDispatchNotes
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeliveryDispatchNoteUpdateManyArgs>(args: SelectSubset<T, DeliveryDispatchNoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeliveryDispatchNotes and returns the data updated in the database.
+     * @param {DeliveryDispatchNoteUpdateManyAndReturnArgs} args - Arguments to update many DeliveryDispatchNotes.
+     * @example
+     * // Update many DeliveryDispatchNotes
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeliveryDispatchNotes and only return the `id`
+     * const deliveryDispatchNoteWithIdOnly = await prisma.deliveryDispatchNote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeliveryDispatchNoteUpdateManyAndReturnArgs>(args: SelectSubset<T, DeliveryDispatchNoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeliveryDispatchNote.
+     * @param {DeliveryDispatchNoteUpsertArgs} args - Arguments to update or create a DeliveryDispatchNote.
+     * @example
+     * // Update or create a DeliveryDispatchNote
+     * const deliveryDispatchNote = await prisma.deliveryDispatchNote.upsert({
+     *   create: {
+     *     // ... data to create a DeliveryDispatchNote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeliveryDispatchNote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeliveryDispatchNoteUpsertArgs>(args: SelectSubset<T, DeliveryDispatchNoteUpsertArgs<ExtArgs>>): Prisma__DeliveryDispatchNoteClient<$Result.GetResult<Prisma.$DeliveryDispatchNotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeliveryDispatchNotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteCountArgs} args - Arguments to filter DeliveryDispatchNotes to count.
+     * @example
+     * // Count the number of DeliveryDispatchNotes
+     * const count = await prisma.deliveryDispatchNote.count({
+     *   where: {
+     *     // ... the filter for the DeliveryDispatchNotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeliveryDispatchNoteCountArgs>(
+      args?: Subset<T, DeliveryDispatchNoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeliveryDispatchNoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeliveryDispatchNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeliveryDispatchNoteAggregateArgs>(args: Subset<T, DeliveryDispatchNoteAggregateArgs>): Prisma.PrismaPromise<GetDeliveryDispatchNoteAggregateType<T>>
+
+    /**
+     * Group by DeliveryDispatchNote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeliveryDispatchNoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeliveryDispatchNoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeliveryDispatchNoteGroupByArgs['orderBy'] }
+        : { orderBy?: DeliveryDispatchNoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeliveryDispatchNoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeliveryDispatchNoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeliveryDispatchNote model
+   */
+  readonly fields: DeliveryDispatchNoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeliveryDispatchNote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeliveryDispatchNoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    delivery<T extends DeliveryDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DeliveryDefaultArgs<ExtArgs>>): Prisma__DeliveryClient<$Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    dispatchNote<T extends DispatchNoteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DispatchNoteDefaultArgs<ExtArgs>>): Prisma__DispatchNoteClient<$Result.GetResult<Prisma.$DispatchNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeliveryDispatchNote model
+   */
+  interface DeliveryDispatchNoteFieldRefs {
+    readonly id: FieldRef<"DeliveryDispatchNote", 'String'>
+    readonly deliveryId: FieldRef<"DeliveryDispatchNote", 'String'>
+    readonly dispatchNoteId: FieldRef<"DeliveryDispatchNote", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeliveryDispatchNote findUnique
+   */
+  export type DeliveryDispatchNoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDispatchNote to fetch.
+     */
+    where: DeliveryDispatchNoteWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDispatchNote findUniqueOrThrow
+   */
+  export type DeliveryDispatchNoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDispatchNote to fetch.
+     */
+    where: DeliveryDispatchNoteWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDispatchNote findFirst
+   */
+  export type DeliveryDispatchNoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDispatchNote to fetch.
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDispatchNotes to fetch.
+     */
+    orderBy?: DeliveryDispatchNoteOrderByWithRelationInput | DeliveryDispatchNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeliveryDispatchNotes.
+     */
+    cursor?: DeliveryDispatchNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDispatchNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDispatchNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryDispatchNotes.
+     */
+    distinct?: DeliveryDispatchNoteScalarFieldEnum | DeliveryDispatchNoteScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDispatchNote findFirstOrThrow
+   */
+  export type DeliveryDispatchNoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDispatchNote to fetch.
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDispatchNotes to fetch.
+     */
+    orderBy?: DeliveryDispatchNoteOrderByWithRelationInput | DeliveryDispatchNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeliveryDispatchNotes.
+     */
+    cursor?: DeliveryDispatchNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDispatchNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDispatchNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryDispatchNotes.
+     */
+    distinct?: DeliveryDispatchNoteScalarFieldEnum | DeliveryDispatchNoteScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDispatchNote findMany
+   */
+  export type DeliveryDispatchNoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * Filter, which DeliveryDispatchNotes to fetch.
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeliveryDispatchNotes to fetch.
+     */
+    orderBy?: DeliveryDispatchNoteOrderByWithRelationInput | DeliveryDispatchNoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeliveryDispatchNotes.
+     */
+    cursor?: DeliveryDispatchNoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeliveryDispatchNotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeliveryDispatchNotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeliveryDispatchNotes.
+     */
+    distinct?: DeliveryDispatchNoteScalarFieldEnum | DeliveryDispatchNoteScalarFieldEnum[]
+  }
+
+  /**
+   * DeliveryDispatchNote create
+   */
+  export type DeliveryDispatchNoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeliveryDispatchNote.
+     */
+    data: XOR<DeliveryDispatchNoteCreateInput, DeliveryDispatchNoteUncheckedCreateInput>
+  }
+
+  /**
+   * DeliveryDispatchNote createMany
+   */
+  export type DeliveryDispatchNoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeliveryDispatchNotes.
+     */
+    data: DeliveryDispatchNoteCreateManyInput | DeliveryDispatchNoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeliveryDispatchNote createManyAndReturn
+   */
+  export type DeliveryDispatchNoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeliveryDispatchNotes.
+     */
+    data: DeliveryDispatchNoteCreateManyInput | DeliveryDispatchNoteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryDispatchNote update
+   */
+  export type DeliveryDispatchNoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeliveryDispatchNote.
+     */
+    data: XOR<DeliveryDispatchNoteUpdateInput, DeliveryDispatchNoteUncheckedUpdateInput>
+    /**
+     * Choose, which DeliveryDispatchNote to update.
+     */
+    where: DeliveryDispatchNoteWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDispatchNote updateMany
+   */
+  export type DeliveryDispatchNoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeliveryDispatchNotes.
+     */
+    data: XOR<DeliveryDispatchNoteUpdateManyMutationInput, DeliveryDispatchNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which DeliveryDispatchNotes to update
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * Limit how many DeliveryDispatchNotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryDispatchNote updateManyAndReturn
+   */
+  export type DeliveryDispatchNoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * The data used to update DeliveryDispatchNotes.
+     */
+    data: XOR<DeliveryDispatchNoteUpdateManyMutationInput, DeliveryDispatchNoteUncheckedUpdateManyInput>
+    /**
+     * Filter which DeliveryDispatchNotes to update
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * Limit how many DeliveryDispatchNotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeliveryDispatchNote upsert
+   */
+  export type DeliveryDispatchNoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeliveryDispatchNote to update in case it exists.
+     */
+    where: DeliveryDispatchNoteWhereUniqueInput
+    /**
+     * In case the DeliveryDispatchNote found by the `where` argument doesn't exist, create a new DeliveryDispatchNote with this data.
+     */
+    create: XOR<DeliveryDispatchNoteCreateInput, DeliveryDispatchNoteUncheckedCreateInput>
+    /**
+     * In case the DeliveryDispatchNote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeliveryDispatchNoteUpdateInput, DeliveryDispatchNoteUncheckedUpdateInput>
+  }
+
+  /**
+   * DeliveryDispatchNote delete
+   */
+  export type DeliveryDispatchNoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+    /**
+     * Filter which DeliveryDispatchNote to delete.
+     */
+    where: DeliveryDispatchNoteWhereUniqueInput
+  }
+
+  /**
+   * DeliveryDispatchNote deleteMany
+   */
+  export type DeliveryDispatchNoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeliveryDispatchNotes to delete
+     */
+    where?: DeliveryDispatchNoteWhereInput
+    /**
+     * Limit how many DeliveryDispatchNotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeliveryDispatchNote without action
+   */
+  export type DeliveryDispatchNoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeliveryDispatchNote
+     */
+    select?: DeliveryDispatchNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeliveryDispatchNote
+     */
+    omit?: DeliveryDispatchNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeliveryDispatchNoteInclude<ExtArgs> | null
   }
 
 
@@ -97158,14 +98658,14 @@ export namespace Prisma {
 
   export const StockTransferScalarFieldEnum: {
     id: 'id',
-    transferNo: 'transferNo',
+    documentId: 'documentId',
     status: 'status',
-    sourceId: 'sourceId',
-    targetId: 'targetId',
+    sourceWarehouseId: 'sourceWarehouseId',
+    destinationWarehouseId: 'destinationWarehouseId',
     notes: 'notes',
-    truckRegNo: 'truckRegNo',
-    driverName: 'driverName',
-    attendantName: 'attendantName',
+    truckId: 'truckId',
+    driverId: 'driverId',
+    dispatchedAt: 'dispatchedAt',
     receivedAt: 'receivedAt',
     receivedById: 'receivedById',
     createdById: 'createdById',
@@ -97178,9 +98678,14 @@ export namespace Prisma {
 
   export const TransferItemScalarFieldEnum: {
     id: 'id',
-    quantity: 'quantity',
+    transferId: 'transferId',
     productId: 'productId',
-    transferId: 'transferId'
+    batchId: 'batchId',
+    unitCost: 'unitCost',
+    requested_qty: 'requested_qty',
+    dispatched_qty: 'dispatched_qty',
+    received_qty: 'received_qty',
+    damaged_qty: 'damaged_qty'
   };
 
   export type TransferItemScalarFieldEnum = (typeof TransferItemScalarFieldEnum)[keyof typeof TransferItemScalarFieldEnum]
@@ -97475,6 +98980,7 @@ export namespace Prisma {
     registration: 'registration',
     model: 'model',
     capacity: 'capacity',
+    vehicle_type: 'vehicle_type',
     license_plate: 'license_plate',
     isActive: 'isActive',
     createdAt: 'createdAt',
@@ -97486,22 +98992,34 @@ export namespace Prisma {
 
   export const DeliveryScalarFieldEnum: {
     id: 'id',
-    delivery_no: 'delivery_no',
+    deliveryNo: 'deliveryNo',
     status: 'status',
     driverId: 'driverId',
     truckId: 'truckId',
     destination: 'destination',
-    estimated_km: 'estimated_km',
-    actual_km: 'actual_km',
-    scheduled_date: 'scheduled_date',
-    picked_up_at: 'picked_up_at',
-    delivered_at: 'delivered_at',
+    estimatedKm: 'estimatedKm',
+    actualKm: 'actualKm',
+    scheduledDate: 'scheduledDate',
+    pickedUpAt: 'pickedUpAt',
+    deliveredAt: 'deliveredAt',
+    podSignatureUrl: 'podSignatureUrl',
+    podPhotoUrl: 'podPhotoUrl',
+    deliveryOtp: 'deliveryOtp',
     notes: 'notes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type DeliveryScalarFieldEnum = (typeof DeliveryScalarFieldEnum)[keyof typeof DeliveryScalarFieldEnum]
+
+
+  export const DeliveryDispatchNoteScalarFieldEnum: {
+    id: 'id',
+    deliveryId: 'deliveryId',
+    dispatchNoteId: 'dispatchNoteId'
+  };
+
+  export type DeliveryDispatchNoteScalarFieldEnum = (typeof DeliveryDispatchNoteScalarFieldEnum)[keyof typeof DeliveryDispatchNoteScalarFieldEnum]
 
 
   export const FinanceTransactionScalarFieldEnum: {
@@ -98950,6 +100468,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderListRelationFilter
     createdTransfers?: StockTransferListRelationFilter
     receivedTransfers?: StockTransferListRelationFilter
+    driverTransfers?: StockTransferListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }
@@ -98994,6 +100513,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderOrderByRelationAggregateInput
     createdTransfers?: StockTransferOrderByRelationAggregateInput
     receivedTransfers?: StockTransferOrderByRelationAggregateInput
+    driverTransfers?: StockTransferOrderByRelationAggregateInput
     roles?: RoleAssignmentOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
   }
@@ -99041,6 +100561,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderListRelationFilter
     createdTransfers?: StockTransferListRelationFilter
     receivedTransfers?: StockTransferListRelationFilter
+    driverTransfers?: StockTransferListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }, "id" | "email" | "salesPrefix">
@@ -100078,14 +101599,14 @@ export namespace Prisma {
     OR?: StockTransferWhereInput[]
     NOT?: StockTransferWhereInput | StockTransferWhereInput[]
     id?: StringFilter<"StockTransfer"> | string
-    transferNo?: StringFilter<"StockTransfer"> | string
+    documentId?: StringFilter<"StockTransfer"> | string
     status?: EnumTransferStatusFilter<"StockTransfer"> | $Enums.TransferStatus
-    sourceId?: StringFilter<"StockTransfer"> | string
-    targetId?: StringFilter<"StockTransfer"> | string
+    sourceWarehouseId?: StringFilter<"StockTransfer"> | string
+    destinationWarehouseId?: StringFilter<"StockTransfer"> | string
     notes?: StringNullableFilter<"StockTransfer"> | string | null
-    truckRegNo?: StringNullableFilter<"StockTransfer"> | string | null
-    driverName?: StringNullableFilter<"StockTransfer"> | string | null
-    attendantName?: StringNullableFilter<"StockTransfer"> | string | null
+    truckId?: StringNullableFilter<"StockTransfer"> | string | null
+    driverId?: StringNullableFilter<"StockTransfer"> | string | null
+    dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
     createdById?: StringFilter<"StockTransfer"> | string
@@ -100095,20 +101616,22 @@ export namespace Prisma {
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     receivedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     sourceWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
-    targetWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
+    destinationWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
+    truck?: XOR<TruckNullableScalarRelationFilter, TruckWhereInput> | null
+    driver?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: TransferItemListRelationFilter
   }
 
   export type StockTransferOrderByWithRelationInput = {
     id?: SortOrder
-    transferNo?: SortOrder
+    documentId?: SortOrder
     status?: SortOrder
-    sourceId?: SortOrder
-    targetId?: SortOrder
+    sourceWarehouseId?: SortOrder
+    destinationWarehouseId?: SortOrder
     notes?: SortOrderInput | SortOrder
-    truckRegNo?: SortOrderInput | SortOrder
-    driverName?: SortOrderInput | SortOrder
-    attendantName?: SortOrderInput | SortOrder
+    truckId?: SortOrderInput | SortOrder
+    driverId?: SortOrderInput | SortOrder
+    dispatchedAt?: SortOrderInput | SortOrder
     receivedAt?: SortOrderInput | SortOrder
     receivedById?: SortOrderInput | SortOrder
     createdById?: SortOrder
@@ -100118,23 +101641,25 @@ export namespace Prisma {
     createdBy?: UserOrderByWithRelationInput
     receivedBy?: UserOrderByWithRelationInput
     sourceWarehouse?: WarehouseOrderByWithRelationInput
-    targetWarehouse?: WarehouseOrderByWithRelationInput
+    destinationWarehouse?: WarehouseOrderByWithRelationInput
+    truck?: TruckOrderByWithRelationInput
+    driver?: UserOrderByWithRelationInput
     items?: TransferItemOrderByRelationAggregateInput
   }
 
   export type StockTransferWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    transferNo?: string
+    documentId?: string
     AND?: StockTransferWhereInput | StockTransferWhereInput[]
     OR?: StockTransferWhereInput[]
     NOT?: StockTransferWhereInput | StockTransferWhereInput[]
     status?: EnumTransferStatusFilter<"StockTransfer"> | $Enums.TransferStatus
-    sourceId?: StringFilter<"StockTransfer"> | string
-    targetId?: StringFilter<"StockTransfer"> | string
+    sourceWarehouseId?: StringFilter<"StockTransfer"> | string
+    destinationWarehouseId?: StringFilter<"StockTransfer"> | string
     notes?: StringNullableFilter<"StockTransfer"> | string | null
-    truckRegNo?: StringNullableFilter<"StockTransfer"> | string | null
-    driverName?: StringNullableFilter<"StockTransfer"> | string | null
-    attendantName?: StringNullableFilter<"StockTransfer"> | string | null
+    truckId?: StringNullableFilter<"StockTransfer"> | string | null
+    driverId?: StringNullableFilter<"StockTransfer"> | string | null
+    dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
     createdById?: StringFilter<"StockTransfer"> | string
@@ -100144,20 +101669,22 @@ export namespace Prisma {
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     receivedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     sourceWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
-    targetWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
+    destinationWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
+    truck?: XOR<TruckNullableScalarRelationFilter, TruckWhereInput> | null
+    driver?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: TransferItemListRelationFilter
-  }, "id" | "transferNo">
+  }, "id" | "documentId">
 
   export type StockTransferOrderByWithAggregationInput = {
     id?: SortOrder
-    transferNo?: SortOrder
+    documentId?: SortOrder
     status?: SortOrder
-    sourceId?: SortOrder
-    targetId?: SortOrder
+    sourceWarehouseId?: SortOrder
+    destinationWarehouseId?: SortOrder
     notes?: SortOrderInput | SortOrder
-    truckRegNo?: SortOrderInput | SortOrder
-    driverName?: SortOrderInput | SortOrder
-    attendantName?: SortOrderInput | SortOrder
+    truckId?: SortOrderInput | SortOrder
+    driverId?: SortOrderInput | SortOrder
+    dispatchedAt?: SortOrderInput | SortOrder
     receivedAt?: SortOrderInput | SortOrder
     receivedById?: SortOrderInput | SortOrder
     createdById?: SortOrder
@@ -100173,14 +101700,14 @@ export namespace Prisma {
     OR?: StockTransferScalarWhereWithAggregatesInput[]
     NOT?: StockTransferScalarWhereWithAggregatesInput | StockTransferScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"StockTransfer"> | string
-    transferNo?: StringWithAggregatesFilter<"StockTransfer"> | string
+    documentId?: StringWithAggregatesFilter<"StockTransfer"> | string
     status?: EnumTransferStatusWithAggregatesFilter<"StockTransfer"> | $Enums.TransferStatus
-    sourceId?: StringWithAggregatesFilter<"StockTransfer"> | string
-    targetId?: StringWithAggregatesFilter<"StockTransfer"> | string
+    sourceWarehouseId?: StringWithAggregatesFilter<"StockTransfer"> | string
+    destinationWarehouseId?: StringWithAggregatesFilter<"StockTransfer"> | string
     notes?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
-    truckRegNo?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
-    driverName?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
-    attendantName?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    truckId?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    driverId?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    dispatchedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
     createdById?: StringWithAggregatesFilter<"StockTransfer"> | string
@@ -100193,18 +101720,28 @@ export namespace Prisma {
     OR?: TransferItemWhereInput[]
     NOT?: TransferItemWhereInput | TransferItemWhereInput[]
     id?: StringFilter<"TransferItem"> | string
-    quantity?: IntFilter<"TransferItem"> | number
-    productId?: StringFilter<"TransferItem"> | string
     transferId?: StringFilter<"TransferItem"> | string
+    productId?: StringFilter<"TransferItem"> | string
+    batchId?: StringNullableFilter<"TransferItem"> | string | null
+    unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFilter<"TransferItem"> | number
+    dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
+    received_qty?: IntNullableFilter<"TransferItem"> | number | null
+    damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     transfer?: XOR<StockTransferScalarRelationFilter, StockTransferWhereInput>
   }
 
   export type TransferItemOrderByWithRelationInput = {
     id?: SortOrder
-    quantity?: SortOrder
-    productId?: SortOrder
     transferId?: SortOrder
+    productId?: SortOrder
+    batchId?: SortOrderInput | SortOrder
+    unitCost?: SortOrderInput | SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrderInput | SortOrder
+    received_qty?: SortOrderInput | SortOrder
+    damaged_qty?: SortOrderInput | SortOrder
     product?: ProductOrderByWithRelationInput
     transfer?: StockTransferOrderByWithRelationInput
   }
@@ -100214,18 +101751,28 @@ export namespace Prisma {
     AND?: TransferItemWhereInput | TransferItemWhereInput[]
     OR?: TransferItemWhereInput[]
     NOT?: TransferItemWhereInput | TransferItemWhereInput[]
-    quantity?: IntFilter<"TransferItem"> | number
-    productId?: StringFilter<"TransferItem"> | string
     transferId?: StringFilter<"TransferItem"> | string
+    productId?: StringFilter<"TransferItem"> | string
+    batchId?: StringNullableFilter<"TransferItem"> | string | null
+    unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFilter<"TransferItem"> | number
+    dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
+    received_qty?: IntNullableFilter<"TransferItem"> | number | null
+    damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     transfer?: XOR<StockTransferScalarRelationFilter, StockTransferWhereInput>
   }, "id">
 
   export type TransferItemOrderByWithAggregationInput = {
     id?: SortOrder
-    quantity?: SortOrder
-    productId?: SortOrder
     transferId?: SortOrder
+    productId?: SortOrder
+    batchId?: SortOrderInput | SortOrder
+    unitCost?: SortOrderInput | SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrderInput | SortOrder
+    received_qty?: SortOrderInput | SortOrder
+    damaged_qty?: SortOrderInput | SortOrder
     _count?: TransferItemCountOrderByAggregateInput
     _avg?: TransferItemAvgOrderByAggregateInput
     _max?: TransferItemMaxOrderByAggregateInput
@@ -100238,9 +101785,14 @@ export namespace Prisma {
     OR?: TransferItemScalarWhereWithAggregatesInput[]
     NOT?: TransferItemScalarWhereWithAggregatesInput | TransferItemScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"TransferItem"> | string
-    quantity?: IntWithAggregatesFilter<"TransferItem"> | number
-    productId?: StringWithAggregatesFilter<"TransferItem"> | string
     transferId?: StringWithAggregatesFilter<"TransferItem"> | string
+    productId?: StringWithAggregatesFilter<"TransferItem"> | string
+    batchId?: StringNullableWithAggregatesFilter<"TransferItem"> | string | null
+    unitCost?: DecimalNullableWithAggregatesFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntWithAggregatesFilter<"TransferItem"> | number
+    dispatched_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
+    received_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
+    damaged_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
   }
 
   export type CustomerWhereInput = {
@@ -100968,6 +102520,7 @@ export namespace Prisma {
     items?: DispatchItemListRelationFilter
     dispatchedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     salesOrder?: XOR<SalesOrderScalarRelationFilter, SalesOrderWhereInput>
+    deliveryItems?: DeliveryDispatchNoteListRelationFilter
   }
 
   export type DispatchNoteOrderByWithRelationInput = {
@@ -100981,6 +102534,7 @@ export namespace Prisma {
     items?: DispatchItemOrderByRelationAggregateInput
     dispatchedBy?: UserOrderByWithRelationInput
     salesOrder?: SalesOrderOrderByWithRelationInput
+    deliveryItems?: DeliveryDispatchNoteOrderByRelationAggregateInput
   }
 
   export type DispatchNoteWhereUniqueInput = Prisma.AtLeast<{
@@ -100997,6 +102551,7 @@ export namespace Prisma {
     items?: DispatchItemListRelationFilter
     dispatchedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     salesOrder?: XOR<SalesOrderScalarRelationFilter, SalesOrderWhereInput>
+    deliveryItems?: DeliveryDispatchNoteListRelationFilter
   }, "id" | "dnNumber">
 
   export type DispatchNoteOrderByWithAggregationInput = {
@@ -101823,11 +103378,13 @@ export namespace Prisma {
     registration?: StringFilter<"Truck"> | string
     model?: StringFilter<"Truck"> | string
     capacity?: IntFilter<"Truck"> | number
+    vehicle_type?: StringNullableFilter<"Truck"> | string | null
     license_plate?: StringNullableFilter<"Truck"> | string | null
     isActive?: BoolFilter<"Truck"> | boolean
     createdAt?: DateTimeFilter<"Truck"> | Date | string
     updatedAt?: DateTimeFilter<"Truck"> | Date | string
     deliveries?: DeliveryListRelationFilter
+    stockTransfers?: StockTransferListRelationFilter
   }
 
   export type TruckOrderByWithRelationInput = {
@@ -101835,11 +103392,13 @@ export namespace Prisma {
     registration?: SortOrder
     model?: SortOrder
     capacity?: SortOrder
+    vehicle_type?: SortOrderInput | SortOrder
     license_plate?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     deliveries?: DeliveryOrderByRelationAggregateInput
+    stockTransfers?: StockTransferOrderByRelationAggregateInput
   }
 
   export type TruckWhereUniqueInput = Prisma.AtLeast<{
@@ -101851,10 +103410,12 @@ export namespace Prisma {
     NOT?: TruckWhereInput | TruckWhereInput[]
     model?: StringFilter<"Truck"> | string
     capacity?: IntFilter<"Truck"> | number
+    vehicle_type?: StringNullableFilter<"Truck"> | string | null
     isActive?: BoolFilter<"Truck"> | boolean
     createdAt?: DateTimeFilter<"Truck"> | Date | string
     updatedAt?: DateTimeFilter<"Truck"> | Date | string
     deliveries?: DeliveryListRelationFilter
+    stockTransfers?: StockTransferListRelationFilter
   }, "id" | "registration" | "license_plate">
 
   export type TruckOrderByWithAggregationInput = {
@@ -101862,6 +103423,7 @@ export namespace Prisma {
     registration?: SortOrder
     model?: SortOrder
     capacity?: SortOrder
+    vehicle_type?: SortOrderInput | SortOrder
     license_plate?: SortOrderInput | SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -101881,6 +103443,7 @@ export namespace Prisma {
     registration?: StringWithAggregatesFilter<"Truck"> | string
     model?: StringWithAggregatesFilter<"Truck"> | string
     capacity?: IntWithAggregatesFilter<"Truck"> | number
+    vehicle_type?: StringNullableWithAggregatesFilter<"Truck"> | string | null
     license_plate?: StringNullableWithAggregatesFilter<"Truck"> | string | null
     isActive?: BoolWithAggregatesFilter<"Truck"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Truck"> | Date | string
@@ -101892,76 +103455,91 @@ export namespace Prisma {
     OR?: DeliveryWhereInput[]
     NOT?: DeliveryWhereInput | DeliveryWhereInput[]
     id?: StringFilter<"Delivery"> | string
-    delivery_no?: StringFilter<"Delivery"> | string
+    deliveryNo?: StringFilter<"Delivery"> | string
     status?: EnumDeliveryStatusFilter<"Delivery"> | $Enums.DeliveryStatus
     driverId?: StringFilter<"Delivery"> | string
     truckId?: StringFilter<"Delivery"> | string
-    destination?: StringFilter<"Delivery"> | string
-    estimated_km?: IntNullableFilter<"Delivery"> | number | null
-    actual_km?: IntNullableFilter<"Delivery"> | number | null
-    scheduled_date?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    picked_up_at?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    delivered_at?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    destination?: StringNullableFilter<"Delivery"> | string | null
+    estimatedKm?: IntNullableFilter<"Delivery"> | number | null
+    actualKm?: IntNullableFilter<"Delivery"> | number | null
+    scheduledDate?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    pickedUpAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    deliveredAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    podSignatureUrl?: StringNullableFilter<"Delivery"> | string | null
+    podPhotoUrl?: StringNullableFilter<"Delivery"> | string | null
+    deliveryOtp?: StringNullableFilter<"Delivery"> | string | null
     notes?: StringNullableFilter<"Delivery"> | string | null
     createdAt?: DateTimeFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeFilter<"Delivery"> | Date | string
     driver?: XOR<UserScalarRelationFilter, UserWhereInput>
     truck?: XOR<TruckScalarRelationFilter, TruckWhereInput>
+    dispatchNotes?: DeliveryDispatchNoteListRelationFilter
   }
 
   export type DeliveryOrderByWithRelationInput = {
     id?: SortOrder
-    delivery_no?: SortOrder
+    deliveryNo?: SortOrder
     status?: SortOrder
     driverId?: SortOrder
     truckId?: SortOrder
-    destination?: SortOrder
-    estimated_km?: SortOrderInput | SortOrder
-    actual_km?: SortOrderInput | SortOrder
-    scheduled_date?: SortOrderInput | SortOrder
-    picked_up_at?: SortOrderInput | SortOrder
-    delivered_at?: SortOrderInput | SortOrder
+    destination?: SortOrderInput | SortOrder
+    estimatedKm?: SortOrderInput | SortOrder
+    actualKm?: SortOrderInput | SortOrder
+    scheduledDate?: SortOrderInput | SortOrder
+    pickedUpAt?: SortOrderInput | SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    podSignatureUrl?: SortOrderInput | SortOrder
+    podPhotoUrl?: SortOrderInput | SortOrder
+    deliveryOtp?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     driver?: UserOrderByWithRelationInput
     truck?: TruckOrderByWithRelationInput
+    dispatchNotes?: DeliveryDispatchNoteOrderByRelationAggregateInput
   }
 
   export type DeliveryWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    delivery_no?: string
+    deliveryNo?: string
     AND?: DeliveryWhereInput | DeliveryWhereInput[]
     OR?: DeliveryWhereInput[]
     NOT?: DeliveryWhereInput | DeliveryWhereInput[]
     status?: EnumDeliveryStatusFilter<"Delivery"> | $Enums.DeliveryStatus
     driverId?: StringFilter<"Delivery"> | string
     truckId?: StringFilter<"Delivery"> | string
-    destination?: StringFilter<"Delivery"> | string
-    estimated_km?: IntNullableFilter<"Delivery"> | number | null
-    actual_km?: IntNullableFilter<"Delivery"> | number | null
-    scheduled_date?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    picked_up_at?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    delivered_at?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    destination?: StringNullableFilter<"Delivery"> | string | null
+    estimatedKm?: IntNullableFilter<"Delivery"> | number | null
+    actualKm?: IntNullableFilter<"Delivery"> | number | null
+    scheduledDate?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    pickedUpAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    deliveredAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    podSignatureUrl?: StringNullableFilter<"Delivery"> | string | null
+    podPhotoUrl?: StringNullableFilter<"Delivery"> | string | null
+    deliveryOtp?: StringNullableFilter<"Delivery"> | string | null
     notes?: StringNullableFilter<"Delivery"> | string | null
     createdAt?: DateTimeFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeFilter<"Delivery"> | Date | string
     driver?: XOR<UserScalarRelationFilter, UserWhereInput>
     truck?: XOR<TruckScalarRelationFilter, TruckWhereInput>
-  }, "id" | "delivery_no">
+    dispatchNotes?: DeliveryDispatchNoteListRelationFilter
+  }, "id" | "deliveryNo">
 
   export type DeliveryOrderByWithAggregationInput = {
     id?: SortOrder
-    delivery_no?: SortOrder
+    deliveryNo?: SortOrder
     status?: SortOrder
     driverId?: SortOrder
     truckId?: SortOrder
-    destination?: SortOrder
-    estimated_km?: SortOrderInput | SortOrder
-    actual_km?: SortOrderInput | SortOrder
-    scheduled_date?: SortOrderInput | SortOrder
-    picked_up_at?: SortOrderInput | SortOrder
-    delivered_at?: SortOrderInput | SortOrder
+    destination?: SortOrderInput | SortOrder
+    estimatedKm?: SortOrderInput | SortOrder
+    actualKm?: SortOrderInput | SortOrder
+    scheduledDate?: SortOrderInput | SortOrder
+    pickedUpAt?: SortOrderInput | SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    podSignatureUrl?: SortOrderInput | SortOrder
+    podPhotoUrl?: SortOrderInput | SortOrder
+    deliveryOtp?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -101977,19 +103555,71 @@ export namespace Prisma {
     OR?: DeliveryScalarWhereWithAggregatesInput[]
     NOT?: DeliveryScalarWhereWithAggregatesInput | DeliveryScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Delivery"> | string
-    delivery_no?: StringWithAggregatesFilter<"Delivery"> | string
+    deliveryNo?: StringWithAggregatesFilter<"Delivery"> | string
     status?: EnumDeliveryStatusWithAggregatesFilter<"Delivery"> | $Enums.DeliveryStatus
     driverId?: StringWithAggregatesFilter<"Delivery"> | string
     truckId?: StringWithAggregatesFilter<"Delivery"> | string
-    destination?: StringWithAggregatesFilter<"Delivery"> | string
-    estimated_km?: IntNullableWithAggregatesFilter<"Delivery"> | number | null
-    actual_km?: IntNullableWithAggregatesFilter<"Delivery"> | number | null
-    scheduled_date?: DateTimeNullableWithAggregatesFilter<"Delivery"> | Date | string | null
-    picked_up_at?: DateTimeNullableWithAggregatesFilter<"Delivery"> | Date | string | null
-    delivered_at?: DateTimeNullableWithAggregatesFilter<"Delivery"> | Date | string | null
+    destination?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
+    estimatedKm?: IntNullableWithAggregatesFilter<"Delivery"> | number | null
+    actualKm?: IntNullableWithAggregatesFilter<"Delivery"> | number | null
+    scheduledDate?: DateTimeNullableWithAggregatesFilter<"Delivery"> | Date | string | null
+    pickedUpAt?: DateTimeNullableWithAggregatesFilter<"Delivery"> | Date | string | null
+    deliveredAt?: DateTimeNullableWithAggregatesFilter<"Delivery"> | Date | string | null
+    podSignatureUrl?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
+    podPhotoUrl?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
+    deliveryOtp?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
     notes?: StringNullableWithAggregatesFilter<"Delivery"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Delivery"> | Date | string
+  }
+
+  export type DeliveryDispatchNoteWhereInput = {
+    AND?: DeliveryDispatchNoteWhereInput | DeliveryDispatchNoteWhereInput[]
+    OR?: DeliveryDispatchNoteWhereInput[]
+    NOT?: DeliveryDispatchNoteWhereInput | DeliveryDispatchNoteWhereInput[]
+    id?: StringFilter<"DeliveryDispatchNote"> | string
+    deliveryId?: StringFilter<"DeliveryDispatchNote"> | string
+    dispatchNoteId?: StringFilter<"DeliveryDispatchNote"> | string
+    delivery?: XOR<DeliveryScalarRelationFilter, DeliveryWhereInput>
+    dispatchNote?: XOR<DispatchNoteScalarRelationFilter, DispatchNoteWhereInput>
+  }
+
+  export type DeliveryDispatchNoteOrderByWithRelationInput = {
+    id?: SortOrder
+    deliveryId?: SortOrder
+    dispatchNoteId?: SortOrder
+    delivery?: DeliveryOrderByWithRelationInput
+    dispatchNote?: DispatchNoteOrderByWithRelationInput
+  }
+
+  export type DeliveryDispatchNoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    deliveryId_dispatchNoteId?: DeliveryDispatchNoteDeliveryIdDispatchNoteIdCompoundUniqueInput
+    AND?: DeliveryDispatchNoteWhereInput | DeliveryDispatchNoteWhereInput[]
+    OR?: DeliveryDispatchNoteWhereInput[]
+    NOT?: DeliveryDispatchNoteWhereInput | DeliveryDispatchNoteWhereInput[]
+    deliveryId?: StringFilter<"DeliveryDispatchNote"> | string
+    dispatchNoteId?: StringFilter<"DeliveryDispatchNote"> | string
+    delivery?: XOR<DeliveryScalarRelationFilter, DeliveryWhereInput>
+    dispatchNote?: XOR<DispatchNoteScalarRelationFilter, DispatchNoteWhereInput>
+  }, "id" | "deliveryId_dispatchNoteId">
+
+  export type DeliveryDispatchNoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    deliveryId?: SortOrder
+    dispatchNoteId?: SortOrder
+    _count?: DeliveryDispatchNoteCountOrderByAggregateInput
+    _max?: DeliveryDispatchNoteMaxOrderByAggregateInput
+    _min?: DeliveryDispatchNoteMinOrderByAggregateInput
+  }
+
+  export type DeliveryDispatchNoteScalarWhereWithAggregatesInput = {
+    AND?: DeliveryDispatchNoteScalarWhereWithAggregatesInput | DeliveryDispatchNoteScalarWhereWithAggregatesInput[]
+    OR?: DeliveryDispatchNoteScalarWhereWithAggregatesInput[]
+    NOT?: DeliveryDispatchNoteScalarWhereWithAggregatesInput | DeliveryDispatchNoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DeliveryDispatchNote"> | string
+    deliveryId?: StringWithAggregatesFilter<"DeliveryDispatchNote"> | string
+    dispatchNoteId?: StringWithAggregatesFilter<"DeliveryDispatchNote"> | string
   }
 
   export type FinanceTransactionWhereInput = {
@@ -105571,6 +107201,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -105615,6 +107246,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -105657,6 +107289,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -105701,6 +107334,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -106013,7 +107647,7 @@ export namespace Prisma {
     stockBatches?: StockBatchCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
     branch: BranchCreateNestedOneWithoutWarehousesInput
   }
 
@@ -106032,7 +107666,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferUncheckedCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseUpdateInput = {
@@ -106049,7 +107683,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
     branch?: BranchUpdateOneRequiredWithoutWarehousesNestedInput
   }
 
@@ -106068,7 +107702,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type WarehouseCreateManyInput = {
@@ -106853,12 +108487,10 @@ export namespace Prisma {
 
   export type StockTransferCreateInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -106866,20 +108498,22 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
-    targetWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -106891,12 +108525,10 @@ export namespace Prisma {
 
   export type StockTransferUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -106904,20 +108536,22 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
-    targetWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -106929,14 +108563,14 @@ export namespace Prisma {
 
   export type StockTransferCreateManyInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -106946,12 +108580,10 @@ export namespace Prisma {
 
   export type StockTransferUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -106959,14 +108591,14 @@ export namespace Prisma {
 
   export type StockTransferUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -106976,49 +108608,84 @@ export namespace Prisma {
 
   export type TransferItemCreateInput = {
     id?: string
-    quantity: number
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
     product: ProductCreateNestedOneWithoutTransferItemsInput
     transfer: StockTransferCreateNestedOneWithoutItemsInput
   }
 
   export type TransferItemUncheckedCreateInput = {
     id?: string
-    quantity: number
-    productId: string
     transferId: string
+    productId: string
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
   }
 
   export type TransferItemUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     product?: ProductUpdateOneRequiredWithoutTransferItemsNestedInput
     transfer?: StockTransferUpdateOneRequiredWithoutItemsNestedInput
   }
 
   export type TransferItemUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
-    productId?: StringFieldUpdateOperationsInput | string
     transferId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TransferItemCreateManyInput = {
     id?: string
-    quantity: number
-    productId: string
     transferId: string
+    productId: string
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
   }
 
   export type TransferItemUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TransferItemUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
-    productId?: StringFieldUpdateOperationsInput | string
     transferId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type CustomerCreateInput = {
@@ -107795,6 +109462,7 @@ export namespace Prisma {
     items?: DispatchItemCreateNestedManyWithoutDispatchNoteInput
     dispatchedBy: UserCreateNestedOneWithoutDispatchNotesInput
     salesOrder: SalesOrderCreateNestedOneWithoutDispatchNotesInput
+    deliveryItems?: DeliveryDispatchNoteCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteUncheckedCreateInput = {
@@ -107806,6 +109474,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: DispatchItemUncheckedCreateNestedManyWithoutDispatchNoteInput
+    deliveryItems?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteUpdateInput = {
@@ -107817,6 +109486,7 @@ export namespace Prisma {
     items?: DispatchItemUpdateManyWithoutDispatchNoteNestedInput
     dispatchedBy?: UserUpdateOneRequiredWithoutDispatchNotesNestedInput
     salesOrder?: SalesOrderUpdateOneRequiredWithoutDispatchNotesNestedInput
+    deliveryItems?: DeliveryDispatchNoteUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteUncheckedUpdateInput = {
@@ -107828,6 +109498,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput
+    deliveryItems?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteCreateManyInput = {
@@ -108716,11 +110387,13 @@ export namespace Prisma {
     registration: string
     model: string
     capacity: number
+    vehicle_type?: string | null
     license_plate?: string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     deliveries?: DeliveryCreateNestedManyWithoutTruckInput
+    stockTransfers?: StockTransferCreateNestedManyWithoutTruckInput
   }
 
   export type TruckUncheckedCreateInput = {
@@ -108728,11 +110401,13 @@ export namespace Prisma {
     registration: string
     model: string
     capacity: number
+    vehicle_type?: string | null
     license_plate?: string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     deliveries?: DeliveryUncheckedCreateNestedManyWithoutTruckInput
+    stockTransfers?: StockTransferUncheckedCreateNestedManyWithoutTruckInput
   }
 
   export type TruckUpdateInput = {
@@ -108740,11 +110415,13 @@ export namespace Prisma {
     registration?: StringFieldUpdateOperationsInput | string
     model?: StringFieldUpdateOperationsInput | string
     capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
     license_plate?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deliveries?: DeliveryUpdateManyWithoutTruckNestedInput
+    stockTransfers?: StockTransferUpdateManyWithoutTruckNestedInput
   }
 
   export type TruckUncheckedUpdateInput = {
@@ -108752,11 +110429,13 @@ export namespace Prisma {
     registration?: StringFieldUpdateOperationsInput | string
     model?: StringFieldUpdateOperationsInput | string
     capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
     license_plate?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deliveries?: DeliveryUncheckedUpdateManyWithoutTruckNestedInput
+    stockTransfers?: StockTransferUncheckedUpdateManyWithoutTruckNestedInput
   }
 
   export type TruckCreateManyInput = {
@@ -108764,6 +110443,7 @@ export namespace Prisma {
     registration: string
     model: string
     capacity: number
+    vehicle_type?: string | null
     license_plate?: string | null
     isActive?: boolean
     createdAt?: Date | string
@@ -108775,6 +110455,7 @@ export namespace Prisma {
     registration?: StringFieldUpdateOperationsInput | string
     model?: StringFieldUpdateOperationsInput | string
     capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
     license_plate?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -108786,6 +110467,7 @@ export namespace Prisma {
     registration?: StringFieldUpdateOperationsInput | string
     model?: StringFieldUpdateOperationsInput | string
     capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
     license_plate?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -108794,84 +110476,103 @@ export namespace Prisma {
 
   export type DeliveryCreateInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     driver: UserCreateNestedOneWithoutDeliveriesInput
     truck: TruckCreateNestedOneWithoutDeliveriesInput
+    dispatchNotes?: DeliveryDispatchNoteCreateNestedManyWithoutDeliveryInput
   }
 
   export type DeliveryUncheckedCreateInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
     driverId: string
     truckId: string
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    dispatchNotes?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDeliveryInput
   }
 
   export type DeliveryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     driver?: UserUpdateOneRequiredWithoutDeliveriesNestedInput
     truck?: TruckUpdateOneRequiredWithoutDeliveriesNestedInput
+    dispatchNotes?: DeliveryDispatchNoteUpdateManyWithoutDeliveryNestedInput
   }
 
   export type DeliveryUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     driverId?: StringFieldUpdateOperationsInput | string
     truckId?: StringFieldUpdateOperationsInput | string
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dispatchNotes?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryNestedInput
   }
 
   export type DeliveryCreateManyInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
     driverId: string
     truckId: string
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -108879,14 +110580,17 @@ export namespace Prisma {
 
   export type DeliveryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -108894,19 +110598,62 @@ export namespace Prisma {
 
   export type DeliveryUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     driverId?: StringFieldUpdateOperationsInput | string
     truckId?: StringFieldUpdateOperationsInput | string
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryDispatchNoteCreateInput = {
+    id?: string
+    delivery: DeliveryCreateNestedOneWithoutDispatchNotesInput
+    dispatchNote: DispatchNoteCreateNestedOneWithoutDeliveryItemsInput
+  }
+
+  export type DeliveryDispatchNoteUncheckedCreateInput = {
+    id?: string
+    deliveryId: string
+    dispatchNoteId: string
+  }
+
+  export type DeliveryDispatchNoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delivery?: DeliveryUpdateOneRequiredWithoutDispatchNotesNestedInput
+    dispatchNote?: DispatchNoteUpdateOneRequiredWithoutDeliveryItemsNestedInput
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryId?: StringFieldUpdateOperationsInput | string
+    dispatchNoteId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeliveryDispatchNoteCreateManyInput = {
+    id?: string
+    deliveryId: string
+    dispatchNoteId: string
+  }
+
+  export type DeliveryDispatchNoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryId?: StringFieldUpdateOperationsInput | string
+    dispatchNoteId?: StringFieldUpdateOperationsInput | string
   }
 
   export type FinanceTransactionCreateInput = {
@@ -114246,16 +115993,21 @@ export namespace Prisma {
     isNot?: UserWhereInput | null
   }
 
+  export type TruckNullableScalarRelationFilter = {
+    is?: TruckWhereInput | null
+    isNot?: TruckWhereInput | null
+  }
+
   export type StockTransferCountOrderByAggregateInput = {
     id?: SortOrder
-    transferNo?: SortOrder
+    documentId?: SortOrder
     status?: SortOrder
-    sourceId?: SortOrder
-    targetId?: SortOrder
+    sourceWarehouseId?: SortOrder
+    destinationWarehouseId?: SortOrder
     notes?: SortOrder
-    truckRegNo?: SortOrder
-    driverName?: SortOrder
-    attendantName?: SortOrder
+    truckId?: SortOrder
+    driverId?: SortOrder
+    dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
     createdById?: SortOrder
@@ -114265,14 +116017,14 @@ export namespace Prisma {
 
   export type StockTransferMaxOrderByAggregateInput = {
     id?: SortOrder
-    transferNo?: SortOrder
+    documentId?: SortOrder
     status?: SortOrder
-    sourceId?: SortOrder
-    targetId?: SortOrder
+    sourceWarehouseId?: SortOrder
+    destinationWarehouseId?: SortOrder
     notes?: SortOrder
-    truckRegNo?: SortOrder
-    driverName?: SortOrder
-    attendantName?: SortOrder
+    truckId?: SortOrder
+    driverId?: SortOrder
+    dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
     createdById?: SortOrder
@@ -114282,14 +116034,14 @@ export namespace Prisma {
 
   export type StockTransferMinOrderByAggregateInput = {
     id?: SortOrder
-    transferNo?: SortOrder
+    documentId?: SortOrder
     status?: SortOrder
-    sourceId?: SortOrder
-    targetId?: SortOrder
+    sourceWarehouseId?: SortOrder
+    destinationWarehouseId?: SortOrder
     notes?: SortOrder
-    truckRegNo?: SortOrder
-    driverName?: SortOrder
-    attendantName?: SortOrder
+    truckId?: SortOrder
+    driverId?: SortOrder
+    dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
     createdById?: SortOrder
@@ -114307,6 +116059,17 @@ export namespace Prisma {
     _max?: NestedEnumTransferStatusFilter<$PrismaModel>
   }
 
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type StockTransferScalarRelationFilter = {
     is?: StockTransferWhereInput
     isNot?: StockTransferWhereInput
@@ -114314,31 +116077,70 @@ export namespace Prisma {
 
   export type TransferItemCountOrderByAggregateInput = {
     id?: SortOrder
-    quantity?: SortOrder
-    productId?: SortOrder
     transferId?: SortOrder
+    productId?: SortOrder
+    batchId?: SortOrder
+    unitCost?: SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrder
+    received_qty?: SortOrder
+    damaged_qty?: SortOrder
   }
 
   export type TransferItemAvgOrderByAggregateInput = {
-    quantity?: SortOrder
+    unitCost?: SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrder
+    received_qty?: SortOrder
+    damaged_qty?: SortOrder
   }
 
   export type TransferItemMaxOrderByAggregateInput = {
     id?: SortOrder
-    quantity?: SortOrder
-    productId?: SortOrder
     transferId?: SortOrder
+    productId?: SortOrder
+    batchId?: SortOrder
+    unitCost?: SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrder
+    received_qty?: SortOrder
+    damaged_qty?: SortOrder
   }
 
   export type TransferItemMinOrderByAggregateInput = {
     id?: SortOrder
-    quantity?: SortOrder
-    productId?: SortOrder
     transferId?: SortOrder
+    productId?: SortOrder
+    batchId?: SortOrder
+    unitCost?: SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrder
+    received_qty?: SortOrder
+    damaged_qty?: SortOrder
   }
 
   export type TransferItemSumOrderByAggregateInput = {
-    quantity?: SortOrder
+    unitCost?: SortOrder
+    requested_qty?: SortOrder
+    dispatched_qty?: SortOrder
+    received_qty?: SortOrder
+    damaged_qty?: SortOrder
+  }
+
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type CustomerCountOrderByAggregateInput = {
@@ -114865,6 +116667,16 @@ export namespace Prisma {
     qtyRequested?: SortOrder
     qtyDispatched?: SortOrder
     unitPrice?: SortOrder
+  }
+
+  export type DeliveryDispatchNoteListRelationFilter = {
+    every?: DeliveryDispatchNoteWhereInput
+    some?: DeliveryDispatchNoteWhereInput
+    none?: DeliveryDispatchNoteWhereInput
+  }
+
+  export type DeliveryDispatchNoteOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type DispatchNoteCountOrderByAggregateInput = {
@@ -115524,6 +117336,7 @@ export namespace Prisma {
     registration?: SortOrder
     model?: SortOrder
     capacity?: SortOrder
+    vehicle_type?: SortOrder
     license_plate?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -115539,6 +117352,7 @@ export namespace Prisma {
     registration?: SortOrder
     model?: SortOrder
     capacity?: SortOrder
+    vehicle_type?: SortOrder
     license_plate?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -115550,6 +117364,7 @@ export namespace Prisma {
     registration?: SortOrder
     model?: SortOrder
     capacity?: SortOrder
+    vehicle_type?: SortOrder
     license_plate?: SortOrder
     isActive?: SortOrder
     createdAt?: SortOrder
@@ -115574,38 +117389,44 @@ export namespace Prisma {
 
   export type DeliveryCountOrderByAggregateInput = {
     id?: SortOrder
-    delivery_no?: SortOrder
+    deliveryNo?: SortOrder
     status?: SortOrder
     driverId?: SortOrder
     truckId?: SortOrder
     destination?: SortOrder
-    estimated_km?: SortOrder
-    actual_km?: SortOrder
-    scheduled_date?: SortOrder
-    picked_up_at?: SortOrder
-    delivered_at?: SortOrder
+    estimatedKm?: SortOrder
+    actualKm?: SortOrder
+    scheduledDate?: SortOrder
+    pickedUpAt?: SortOrder
+    deliveredAt?: SortOrder
+    podSignatureUrl?: SortOrder
+    podPhotoUrl?: SortOrder
+    deliveryOtp?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type DeliveryAvgOrderByAggregateInput = {
-    estimated_km?: SortOrder
-    actual_km?: SortOrder
+    estimatedKm?: SortOrder
+    actualKm?: SortOrder
   }
 
   export type DeliveryMaxOrderByAggregateInput = {
     id?: SortOrder
-    delivery_no?: SortOrder
+    deliveryNo?: SortOrder
     status?: SortOrder
     driverId?: SortOrder
     truckId?: SortOrder
     destination?: SortOrder
-    estimated_km?: SortOrder
-    actual_km?: SortOrder
-    scheduled_date?: SortOrder
-    picked_up_at?: SortOrder
-    delivered_at?: SortOrder
+    estimatedKm?: SortOrder
+    actualKm?: SortOrder
+    scheduledDate?: SortOrder
+    pickedUpAt?: SortOrder
+    deliveredAt?: SortOrder
+    podSignatureUrl?: SortOrder
+    podPhotoUrl?: SortOrder
+    deliveryOtp?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -115613,24 +117434,27 @@ export namespace Prisma {
 
   export type DeliveryMinOrderByAggregateInput = {
     id?: SortOrder
-    delivery_no?: SortOrder
+    deliveryNo?: SortOrder
     status?: SortOrder
     driverId?: SortOrder
     truckId?: SortOrder
     destination?: SortOrder
-    estimated_km?: SortOrder
-    actual_km?: SortOrder
-    scheduled_date?: SortOrder
-    picked_up_at?: SortOrder
-    delivered_at?: SortOrder
+    estimatedKm?: SortOrder
+    actualKm?: SortOrder
+    scheduledDate?: SortOrder
+    pickedUpAt?: SortOrder
+    deliveredAt?: SortOrder
+    podSignatureUrl?: SortOrder
+    podPhotoUrl?: SortOrder
+    deliveryOtp?: SortOrder
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type DeliverySumOrderByAggregateInput = {
-    estimated_km?: SortOrder
-    actual_km?: SortOrder
+    estimatedKm?: SortOrder
+    actualKm?: SortOrder
   }
 
   export type EnumDeliveryStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -115641,6 +117465,34 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDeliveryStatusFilter<$PrismaModel>
     _max?: NestedEnumDeliveryStatusFilter<$PrismaModel>
+  }
+
+  export type DeliveryScalarRelationFilter = {
+    is?: DeliveryWhereInput
+    isNot?: DeliveryWhereInput
+  }
+
+  export type DeliveryDispatchNoteDeliveryIdDispatchNoteIdCompoundUniqueInput = {
+    deliveryId: string
+    dispatchNoteId: string
+  }
+
+  export type DeliveryDispatchNoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    deliveryId?: SortOrder
+    dispatchNoteId?: SortOrder
+  }
+
+  export type DeliveryDispatchNoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    deliveryId?: SortOrder
+    dispatchNoteId?: SortOrder
+  }
+
+  export type DeliveryDispatchNoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    deliveryId?: SortOrder
+    dispatchNoteId?: SortOrder
   }
 
   export type EnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -118488,6 +120340,13 @@ export namespace Prisma {
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
+  export type StockTransferCreateNestedManyWithoutDriverInput = {
+    create?: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput> | StockTransferCreateWithoutDriverInput[] | StockTransferUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDriverInput | StockTransferCreateOrConnectWithoutDriverInput[]
+    createMany?: StockTransferCreateManyDriverInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
   export type RoleAssignmentCreateNestedManyWithoutUserInput = {
     create?: XOR<RoleAssignmentCreateWithoutUserInput, RoleAssignmentUncheckedCreateWithoutUserInput> | RoleAssignmentCreateWithoutUserInput[] | RoleAssignmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RoleAssignmentCreateOrConnectWithoutUserInput | RoleAssignmentCreateOrConnectWithoutUserInput[]
@@ -118680,6 +120539,13 @@ export namespace Prisma {
     create?: XOR<StockTransferCreateWithoutReceivedByInput, StockTransferUncheckedCreateWithoutReceivedByInput> | StockTransferCreateWithoutReceivedByInput[] | StockTransferUncheckedCreateWithoutReceivedByInput[]
     connectOrCreate?: StockTransferCreateOrConnectWithoutReceivedByInput | StockTransferCreateOrConnectWithoutReceivedByInput[]
     createMany?: StockTransferCreateManyReceivedByInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type StockTransferUncheckedCreateNestedManyWithoutDriverInput = {
+    create?: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput> | StockTransferCreateWithoutDriverInput[] | StockTransferUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDriverInput | StockTransferCreateOrConnectWithoutDriverInput[]
+    createMany?: StockTransferCreateManyDriverInputEnvelope
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
@@ -119078,6 +120944,20 @@ export namespace Prisma {
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
+  export type StockTransferUpdateManyWithoutDriverNestedInput = {
+    create?: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput> | StockTransferCreateWithoutDriverInput[] | StockTransferUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDriverInput | StockTransferCreateOrConnectWithoutDriverInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutDriverInput | StockTransferUpsertWithWhereUniqueWithoutDriverInput[]
+    createMany?: StockTransferCreateManyDriverInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutDriverInput | StockTransferUpdateWithWhereUniqueWithoutDriverInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutDriverInput | StockTransferUpdateManyWithWhereWithoutDriverInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
   export type RoleAssignmentUpdateManyWithoutUserNestedInput = {
     create?: XOR<RoleAssignmentCreateWithoutUserInput, RoleAssignmentUncheckedCreateWithoutUserInput> | RoleAssignmentCreateWithoutUserInput[] | RoleAssignmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RoleAssignmentCreateOrConnectWithoutUserInput | RoleAssignmentCreateOrConnectWithoutUserInput[]
@@ -119463,6 +121343,20 @@ export namespace Prisma {
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     update?: StockTransferUpdateWithWhereUniqueWithoutReceivedByInput | StockTransferUpdateWithWhereUniqueWithoutReceivedByInput[]
     updateMany?: StockTransferUpdateManyWithWhereWithoutReceivedByInput | StockTransferUpdateManyWithWhereWithoutReceivedByInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutDriverNestedInput = {
+    create?: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput> | StockTransferCreateWithoutDriverInput[] | StockTransferUncheckedCreateWithoutDriverInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDriverInput | StockTransferCreateOrConnectWithoutDriverInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutDriverInput | StockTransferUpsertWithWhereUniqueWithoutDriverInput[]
+    createMany?: StockTransferCreateManyDriverInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutDriverInput | StockTransferUpdateWithWhereUniqueWithoutDriverInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutDriverInput | StockTransferUpdateManyWithWhereWithoutDriverInput[]
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
@@ -120067,10 +121961,10 @@ export namespace Prisma {
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
-  export type StockTransferCreateNestedManyWithoutTargetWarehouseInput = {
-    create?: XOR<StockTransferCreateWithoutTargetWarehouseInput, StockTransferUncheckedCreateWithoutTargetWarehouseInput> | StockTransferCreateWithoutTargetWarehouseInput[] | StockTransferUncheckedCreateWithoutTargetWarehouseInput[]
-    connectOrCreate?: StockTransferCreateOrConnectWithoutTargetWarehouseInput | StockTransferCreateOrConnectWithoutTargetWarehouseInput[]
-    createMany?: StockTransferCreateManyTargetWarehouseInputEnvelope
+  export type StockTransferCreateNestedManyWithoutDestinationWarehouseInput = {
+    create?: XOR<StockTransferCreateWithoutDestinationWarehouseInput, StockTransferUncheckedCreateWithoutDestinationWarehouseInput> | StockTransferCreateWithoutDestinationWarehouseInput[] | StockTransferUncheckedCreateWithoutDestinationWarehouseInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDestinationWarehouseInput | StockTransferCreateOrConnectWithoutDestinationWarehouseInput[]
+    createMany?: StockTransferCreateManyDestinationWarehouseInputEnvelope
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
@@ -120115,10 +122009,10 @@ export namespace Prisma {
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
-  export type StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput = {
-    create?: XOR<StockTransferCreateWithoutTargetWarehouseInput, StockTransferUncheckedCreateWithoutTargetWarehouseInput> | StockTransferCreateWithoutTargetWarehouseInput[] | StockTransferUncheckedCreateWithoutTargetWarehouseInput[]
-    connectOrCreate?: StockTransferCreateOrConnectWithoutTargetWarehouseInput | StockTransferCreateOrConnectWithoutTargetWarehouseInput[]
-    createMany?: StockTransferCreateManyTargetWarehouseInputEnvelope
+  export type StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput = {
+    create?: XOR<StockTransferCreateWithoutDestinationWarehouseInput, StockTransferUncheckedCreateWithoutDestinationWarehouseInput> | StockTransferCreateWithoutDestinationWarehouseInput[] | StockTransferUncheckedCreateWithoutDestinationWarehouseInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDestinationWarehouseInput | StockTransferCreateOrConnectWithoutDestinationWarehouseInput[]
+    createMany?: StockTransferCreateManyDestinationWarehouseInputEnvelope
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
@@ -120192,17 +122086,17 @@ export namespace Prisma {
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
-  export type StockTransferUpdateManyWithoutTargetWarehouseNestedInput = {
-    create?: XOR<StockTransferCreateWithoutTargetWarehouseInput, StockTransferUncheckedCreateWithoutTargetWarehouseInput> | StockTransferCreateWithoutTargetWarehouseInput[] | StockTransferUncheckedCreateWithoutTargetWarehouseInput[]
-    connectOrCreate?: StockTransferCreateOrConnectWithoutTargetWarehouseInput | StockTransferCreateOrConnectWithoutTargetWarehouseInput[]
-    upsert?: StockTransferUpsertWithWhereUniqueWithoutTargetWarehouseInput | StockTransferUpsertWithWhereUniqueWithoutTargetWarehouseInput[]
-    createMany?: StockTransferCreateManyTargetWarehouseInputEnvelope
+  export type StockTransferUpdateManyWithoutDestinationWarehouseNestedInput = {
+    create?: XOR<StockTransferCreateWithoutDestinationWarehouseInput, StockTransferUncheckedCreateWithoutDestinationWarehouseInput> | StockTransferCreateWithoutDestinationWarehouseInput[] | StockTransferUncheckedCreateWithoutDestinationWarehouseInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDestinationWarehouseInput | StockTransferCreateOrConnectWithoutDestinationWarehouseInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutDestinationWarehouseInput | StockTransferUpsertWithWhereUniqueWithoutDestinationWarehouseInput[]
+    createMany?: StockTransferCreateManyDestinationWarehouseInputEnvelope
     set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
-    update?: StockTransferUpdateWithWhereUniqueWithoutTargetWarehouseInput | StockTransferUpdateWithWhereUniqueWithoutTargetWarehouseInput[]
-    updateMany?: StockTransferUpdateManyWithWhereWithoutTargetWarehouseInput | StockTransferUpdateManyWithWhereWithoutTargetWarehouseInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutDestinationWarehouseInput | StockTransferUpdateWithWhereUniqueWithoutDestinationWarehouseInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutDestinationWarehouseInput | StockTransferUpdateManyWithWhereWithoutDestinationWarehouseInput[]
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
@@ -120284,17 +122178,17 @@ export namespace Prisma {
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
-  export type StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput = {
-    create?: XOR<StockTransferCreateWithoutTargetWarehouseInput, StockTransferUncheckedCreateWithoutTargetWarehouseInput> | StockTransferCreateWithoutTargetWarehouseInput[] | StockTransferUncheckedCreateWithoutTargetWarehouseInput[]
-    connectOrCreate?: StockTransferCreateOrConnectWithoutTargetWarehouseInput | StockTransferCreateOrConnectWithoutTargetWarehouseInput[]
-    upsert?: StockTransferUpsertWithWhereUniqueWithoutTargetWarehouseInput | StockTransferUpsertWithWhereUniqueWithoutTargetWarehouseInput[]
-    createMany?: StockTransferCreateManyTargetWarehouseInputEnvelope
+  export type StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput = {
+    create?: XOR<StockTransferCreateWithoutDestinationWarehouseInput, StockTransferUncheckedCreateWithoutDestinationWarehouseInput> | StockTransferCreateWithoutDestinationWarehouseInput[] | StockTransferUncheckedCreateWithoutDestinationWarehouseInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutDestinationWarehouseInput | StockTransferCreateOrConnectWithoutDestinationWarehouseInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutDestinationWarehouseInput | StockTransferUpsertWithWhereUniqueWithoutDestinationWarehouseInput[]
+    createMany?: StockTransferCreateManyDestinationWarehouseInputEnvelope
     set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
-    update?: StockTransferUpdateWithWhereUniqueWithoutTargetWarehouseInput | StockTransferUpdateWithWhereUniqueWithoutTargetWarehouseInput[]
-    updateMany?: StockTransferUpdateManyWithWhereWithoutTargetWarehouseInput | StockTransferUpdateManyWithWhereWithoutTargetWarehouseInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutDestinationWarehouseInput | StockTransferUpdateWithWhereUniqueWithoutDestinationWarehouseInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutDestinationWarehouseInput | StockTransferUpdateManyWithWhereWithoutDestinationWarehouseInput[]
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
@@ -121029,6 +122923,18 @@ export namespace Prisma {
     connect?: WarehouseWhereUniqueInput
   }
 
+  export type TruckCreateNestedOneWithoutStockTransfersInput = {
+    create?: XOR<TruckCreateWithoutStockTransfersInput, TruckUncheckedCreateWithoutStockTransfersInput>
+    connectOrCreate?: TruckCreateOrConnectWithoutStockTransfersInput
+    connect?: TruckWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutDriverTransfersInput = {
+    create?: XOR<UserCreateWithoutDriverTransfersInput, UserUncheckedCreateWithoutDriverTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDriverTransfersInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type TransferItemCreateNestedManyWithoutTransferInput = {
     create?: XOR<TransferItemCreateWithoutTransferInput, TransferItemUncheckedCreateWithoutTransferInput> | TransferItemCreateWithoutTransferInput[] | TransferItemUncheckedCreateWithoutTransferInput[]
     connectOrCreate?: TransferItemCreateOrConnectWithoutTransferInput | TransferItemCreateOrConnectWithoutTransferInput[]
@@ -121102,6 +123008,26 @@ export namespace Prisma {
     update?: XOR<XOR<WarehouseUpdateToOneWithWhereWithoutTargetTransfersInput, WarehouseUpdateWithoutTargetTransfersInput>, WarehouseUncheckedUpdateWithoutTargetTransfersInput>
   }
 
+  export type TruckUpdateOneWithoutStockTransfersNestedInput = {
+    create?: XOR<TruckCreateWithoutStockTransfersInput, TruckUncheckedCreateWithoutStockTransfersInput>
+    connectOrCreate?: TruckCreateOrConnectWithoutStockTransfersInput
+    upsert?: TruckUpsertWithoutStockTransfersInput
+    disconnect?: TruckWhereInput | boolean
+    delete?: TruckWhereInput | boolean
+    connect?: TruckWhereUniqueInput
+    update?: XOR<XOR<TruckUpdateToOneWithWhereWithoutStockTransfersInput, TruckUpdateWithoutStockTransfersInput>, TruckUncheckedUpdateWithoutStockTransfersInput>
+  }
+
+  export type UserUpdateOneWithoutDriverTransfersNestedInput = {
+    create?: XOR<UserCreateWithoutDriverTransfersInput, UserUncheckedCreateWithoutDriverTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDriverTransfersInput
+    upsert?: UserUpsertWithoutDriverTransfersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDriverTransfersInput, UserUpdateWithoutDriverTransfersInput>, UserUncheckedUpdateWithoutDriverTransfersInput>
+  }
+
   export type TransferItemUpdateManyWithoutTransferNestedInput = {
     create?: XOR<TransferItemCreateWithoutTransferInput, TransferItemUncheckedCreateWithoutTransferInput> | TransferItemCreateWithoutTransferInput[] | TransferItemUncheckedCreateWithoutTransferInput[]
     connectOrCreate?: TransferItemCreateOrConnectWithoutTransferInput | TransferItemCreateOrConnectWithoutTransferInput[]
@@ -121154,6 +123080,14 @@ export namespace Prisma {
     create?: XOR<StockTransferCreateWithoutItemsInput, StockTransferUncheckedCreateWithoutItemsInput>
     connectOrCreate?: StockTransferCreateOrConnectWithoutItemsInput
     connect?: StockTransferWhereUniqueInput
+  }
+
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type ProductUpdateOneRequiredWithoutTransferItemsNestedInput = {
@@ -121879,11 +123813,25 @@ export namespace Prisma {
     connect?: SalesOrderWhereUniqueInput
   }
 
+  export type DeliveryDispatchNoteCreateNestedManyWithoutDispatchNoteInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput> | DeliveryDispatchNoteCreateWithoutDispatchNoteInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput | DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDispatchNoteInputEnvelope
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+  }
+
   export type DispatchItemUncheckedCreateNestedManyWithoutDispatchNoteInput = {
     create?: XOR<DispatchItemCreateWithoutDispatchNoteInput, DispatchItemUncheckedCreateWithoutDispatchNoteInput> | DispatchItemCreateWithoutDispatchNoteInput[] | DispatchItemUncheckedCreateWithoutDispatchNoteInput[]
     connectOrCreate?: DispatchItemCreateOrConnectWithoutDispatchNoteInput | DispatchItemCreateOrConnectWithoutDispatchNoteInput[]
     createMany?: DispatchItemCreateManyDispatchNoteInputEnvelope
     connect?: DispatchItemWhereUniqueInput | DispatchItemWhereUniqueInput[]
+  }
+
+  export type DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDispatchNoteInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput> | DeliveryDispatchNoteCreateWithoutDispatchNoteInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput | DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDispatchNoteInputEnvelope
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
   }
 
   export type DispatchItemUpdateManyWithoutDispatchNoteNestedInput = {
@@ -121916,6 +123864,20 @@ export namespace Prisma {
     update?: XOR<XOR<SalesOrderUpdateToOneWithWhereWithoutDispatchNotesInput, SalesOrderUpdateWithoutDispatchNotesInput>, SalesOrderUncheckedUpdateWithoutDispatchNotesInput>
   }
 
+  export type DeliveryDispatchNoteUpdateManyWithoutDispatchNoteNestedInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput> | DeliveryDispatchNoteCreateWithoutDispatchNoteInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput | DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput[]
+    upsert?: DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDispatchNoteInput | DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDispatchNoteInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDispatchNoteInputEnvelope
+    set?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    disconnect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    delete?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    update?: DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDispatchNoteInput | DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDispatchNoteInput[]
+    updateMany?: DeliveryDispatchNoteUpdateManyWithWhereWithoutDispatchNoteInput | DeliveryDispatchNoteUpdateManyWithWhereWithoutDispatchNoteInput[]
+    deleteMany?: DeliveryDispatchNoteScalarWhereInput | DeliveryDispatchNoteScalarWhereInput[]
+  }
+
   export type DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput = {
     create?: XOR<DispatchItemCreateWithoutDispatchNoteInput, DispatchItemUncheckedCreateWithoutDispatchNoteInput> | DispatchItemCreateWithoutDispatchNoteInput[] | DispatchItemUncheckedCreateWithoutDispatchNoteInput[]
     connectOrCreate?: DispatchItemCreateOrConnectWithoutDispatchNoteInput | DispatchItemCreateOrConnectWithoutDispatchNoteInput[]
@@ -121928,6 +123890,20 @@ export namespace Prisma {
     update?: DispatchItemUpdateWithWhereUniqueWithoutDispatchNoteInput | DispatchItemUpdateWithWhereUniqueWithoutDispatchNoteInput[]
     updateMany?: DispatchItemUpdateManyWithWhereWithoutDispatchNoteInput | DispatchItemUpdateManyWithWhereWithoutDispatchNoteInput[]
     deleteMany?: DispatchItemScalarWhereInput | DispatchItemScalarWhereInput[]
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteNestedInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput> | DeliveryDispatchNoteCreateWithoutDispatchNoteInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput | DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput[]
+    upsert?: DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDispatchNoteInput | DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDispatchNoteInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDispatchNoteInputEnvelope
+    set?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    disconnect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    delete?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    update?: DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDispatchNoteInput | DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDispatchNoteInput[]
+    updateMany?: DeliveryDispatchNoteUpdateManyWithWhereWithoutDispatchNoteInput | DeliveryDispatchNoteUpdateManyWithWhereWithoutDispatchNoteInput[]
+    deleteMany?: DeliveryDispatchNoteScalarWhereInput | DeliveryDispatchNoteScalarWhereInput[]
   }
 
   export type DispatchNoteCreateNestedOneWithoutItemsInput = {
@@ -122565,11 +124541,25 @@ export namespace Prisma {
     connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
   }
 
+  export type StockTransferCreateNestedManyWithoutTruckInput = {
+    create?: XOR<StockTransferCreateWithoutTruckInput, StockTransferUncheckedCreateWithoutTruckInput> | StockTransferCreateWithoutTruckInput[] | StockTransferUncheckedCreateWithoutTruckInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutTruckInput | StockTransferCreateOrConnectWithoutTruckInput[]
+    createMany?: StockTransferCreateManyTruckInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
   export type DeliveryUncheckedCreateNestedManyWithoutTruckInput = {
     create?: XOR<DeliveryCreateWithoutTruckInput, DeliveryUncheckedCreateWithoutTruckInput> | DeliveryCreateWithoutTruckInput[] | DeliveryUncheckedCreateWithoutTruckInput[]
     connectOrCreate?: DeliveryCreateOrConnectWithoutTruckInput | DeliveryCreateOrConnectWithoutTruckInput[]
     createMany?: DeliveryCreateManyTruckInputEnvelope
     connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+  }
+
+  export type StockTransferUncheckedCreateNestedManyWithoutTruckInput = {
+    create?: XOR<StockTransferCreateWithoutTruckInput, StockTransferUncheckedCreateWithoutTruckInput> | StockTransferCreateWithoutTruckInput[] | StockTransferUncheckedCreateWithoutTruckInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutTruckInput | StockTransferCreateOrConnectWithoutTruckInput[]
+    createMany?: StockTransferCreateManyTruckInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
   export type DeliveryUpdateManyWithoutTruckNestedInput = {
@@ -122586,6 +124576,20 @@ export namespace Prisma {
     deleteMany?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
   }
 
+  export type StockTransferUpdateManyWithoutTruckNestedInput = {
+    create?: XOR<StockTransferCreateWithoutTruckInput, StockTransferUncheckedCreateWithoutTruckInput> | StockTransferCreateWithoutTruckInput[] | StockTransferUncheckedCreateWithoutTruckInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutTruckInput | StockTransferCreateOrConnectWithoutTruckInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutTruckInput | StockTransferUpsertWithWhereUniqueWithoutTruckInput[]
+    createMany?: StockTransferCreateManyTruckInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutTruckInput | StockTransferUpdateWithWhereUniqueWithoutTruckInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutTruckInput | StockTransferUpdateManyWithWhereWithoutTruckInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
   export type DeliveryUncheckedUpdateManyWithoutTruckNestedInput = {
     create?: XOR<DeliveryCreateWithoutTruckInput, DeliveryUncheckedCreateWithoutTruckInput> | DeliveryCreateWithoutTruckInput[] | DeliveryUncheckedCreateWithoutTruckInput[]
     connectOrCreate?: DeliveryCreateOrConnectWithoutTruckInput | DeliveryCreateOrConnectWithoutTruckInput[]
@@ -122600,6 +124604,20 @@ export namespace Prisma {
     deleteMany?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
   }
 
+  export type StockTransferUncheckedUpdateManyWithoutTruckNestedInput = {
+    create?: XOR<StockTransferCreateWithoutTruckInput, StockTransferUncheckedCreateWithoutTruckInput> | StockTransferCreateWithoutTruckInput[] | StockTransferUncheckedCreateWithoutTruckInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutTruckInput | StockTransferCreateOrConnectWithoutTruckInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutTruckInput | StockTransferUpsertWithWhereUniqueWithoutTruckInput[]
+    createMany?: StockTransferCreateManyTruckInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutTruckInput | StockTransferUpdateWithWhereUniqueWithoutTruckInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutTruckInput | StockTransferUpdateManyWithWhereWithoutTruckInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutDeliveriesInput = {
     create?: XOR<UserCreateWithoutDeliveriesInput, UserUncheckedCreateWithoutDeliveriesInput>
     connectOrCreate?: UserCreateOrConnectWithoutDeliveriesInput
@@ -122610,6 +124628,20 @@ export namespace Prisma {
     create?: XOR<TruckCreateWithoutDeliveriesInput, TruckUncheckedCreateWithoutDeliveriesInput>
     connectOrCreate?: TruckCreateOrConnectWithoutDeliveriesInput
     connect?: TruckWhereUniqueInput
+  }
+
+  export type DeliveryDispatchNoteCreateNestedManyWithoutDeliveryInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput> | DeliveryDispatchNoteCreateWithoutDeliveryInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput | DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDeliveryInputEnvelope
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+  }
+
+  export type DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDeliveryInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput> | DeliveryDispatchNoteCreateWithoutDeliveryInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput | DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDeliveryInputEnvelope
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
   }
 
   export type EnumDeliveryStatusFieldUpdateOperationsInput = {
@@ -122630,6 +124662,62 @@ export namespace Prisma {
     upsert?: TruckUpsertWithoutDeliveriesInput
     connect?: TruckWhereUniqueInput
     update?: XOR<XOR<TruckUpdateToOneWithWhereWithoutDeliveriesInput, TruckUpdateWithoutDeliveriesInput>, TruckUncheckedUpdateWithoutDeliveriesInput>
+  }
+
+  export type DeliveryDispatchNoteUpdateManyWithoutDeliveryNestedInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput> | DeliveryDispatchNoteCreateWithoutDeliveryInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput | DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput[]
+    upsert?: DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDeliveryInput | DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDeliveryInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDeliveryInputEnvelope
+    set?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    disconnect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    delete?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    update?: DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDeliveryInput | DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDeliveryInput[]
+    updateMany?: DeliveryDispatchNoteUpdateManyWithWhereWithoutDeliveryInput | DeliveryDispatchNoteUpdateManyWithWhereWithoutDeliveryInput[]
+    deleteMany?: DeliveryDispatchNoteScalarWhereInput | DeliveryDispatchNoteScalarWhereInput[]
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryNestedInput = {
+    create?: XOR<DeliveryDispatchNoteCreateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput> | DeliveryDispatchNoteCreateWithoutDeliveryInput[] | DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput[]
+    connectOrCreate?: DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput | DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput[]
+    upsert?: DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDeliveryInput | DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDeliveryInput[]
+    createMany?: DeliveryDispatchNoteCreateManyDeliveryInputEnvelope
+    set?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    disconnect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    delete?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    connect?: DeliveryDispatchNoteWhereUniqueInput | DeliveryDispatchNoteWhereUniqueInput[]
+    update?: DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDeliveryInput | DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDeliveryInput[]
+    updateMany?: DeliveryDispatchNoteUpdateManyWithWhereWithoutDeliveryInput | DeliveryDispatchNoteUpdateManyWithWhereWithoutDeliveryInput[]
+    deleteMany?: DeliveryDispatchNoteScalarWhereInput | DeliveryDispatchNoteScalarWhereInput[]
+  }
+
+  export type DeliveryCreateNestedOneWithoutDispatchNotesInput = {
+    create?: XOR<DeliveryCreateWithoutDispatchNotesInput, DeliveryUncheckedCreateWithoutDispatchNotesInput>
+    connectOrCreate?: DeliveryCreateOrConnectWithoutDispatchNotesInput
+    connect?: DeliveryWhereUniqueInput
+  }
+
+  export type DispatchNoteCreateNestedOneWithoutDeliveryItemsInput = {
+    create?: XOR<DispatchNoteCreateWithoutDeliveryItemsInput, DispatchNoteUncheckedCreateWithoutDeliveryItemsInput>
+    connectOrCreate?: DispatchNoteCreateOrConnectWithoutDeliveryItemsInput
+    connect?: DispatchNoteWhereUniqueInput
+  }
+
+  export type DeliveryUpdateOneRequiredWithoutDispatchNotesNestedInput = {
+    create?: XOR<DeliveryCreateWithoutDispatchNotesInput, DeliveryUncheckedCreateWithoutDispatchNotesInput>
+    connectOrCreate?: DeliveryCreateOrConnectWithoutDispatchNotesInput
+    upsert?: DeliveryUpsertWithoutDispatchNotesInput
+    connect?: DeliveryWhereUniqueInput
+    update?: XOR<XOR<DeliveryUpdateToOneWithWhereWithoutDispatchNotesInput, DeliveryUpdateWithoutDispatchNotesInput>, DeliveryUncheckedUpdateWithoutDispatchNotesInput>
+  }
+
+  export type DispatchNoteUpdateOneRequiredWithoutDeliveryItemsNestedInput = {
+    create?: XOR<DispatchNoteCreateWithoutDeliveryItemsInput, DispatchNoteUncheckedCreateWithoutDeliveryItemsInput>
+    connectOrCreate?: DispatchNoteCreateOrConnectWithoutDeliveryItemsInput
+    upsert?: DispatchNoteUpsertWithoutDeliveryItemsInput
+    connect?: DispatchNoteWhereUniqueInput
+    update?: XOR<XOR<DispatchNoteUpdateToOneWithWhereWithoutDeliveryItemsInput, DispatchNoteUpdateWithoutDeliveryItemsInput>, DispatchNoteUncheckedUpdateWithoutDeliveryItemsInput>
   }
 
   export type PayrollCreateNestedOneWithoutTransactionsInput = {
@@ -124737,6 +126825,33 @@ export namespace Prisma {
     _max?: NestedEnumTransferStatusFilter<$PrismaModel>
   }
 
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumSalesDocumentTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.SalesDocumentType | EnumSalesDocumentTypeFieldRefInput<$PrismaModel>
     in?: $Enums.SalesDocumentType[] | ListEnumSalesDocumentTypeFieldRefInput<$PrismaModel>
@@ -125583,34 +127698,42 @@ export namespace Prisma {
 
   export type DeliveryCreateWithoutDriverInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     truck: TruckCreateNestedOneWithoutDeliveriesInput
+    dispatchNotes?: DeliveryDispatchNoteCreateNestedManyWithoutDeliveryInput
   }
 
   export type DeliveryUncheckedCreateWithoutDriverInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
     truckId: string
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    dispatchNotes?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDeliveryInput
   }
 
   export type DeliveryCreateOrConnectWithoutDriverInput = {
@@ -125659,6 +127782,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     items?: DispatchItemCreateNestedManyWithoutDispatchNoteInput
     salesOrder: SalesOrderCreateNestedOneWithoutDispatchNotesInput
+    deliveryItems?: DeliveryDispatchNoteCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteUncheckedCreateWithoutDispatchedByInput = {
@@ -125669,6 +127793,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: DispatchItemUncheckedCreateNestedManyWithoutDispatchNoteInput
+    deliveryItems?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteCreateOrConnectWithoutDispatchedByInput = {
@@ -126365,32 +128490,32 @@ export namespace Prisma {
 
   export type StockTransferCreateWithoutCreatedByInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
-    targetWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutCreatedByInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdAt?: Date | string
@@ -126411,32 +128536,32 @@ export namespace Prisma {
 
   export type StockTransferCreateWithoutReceivedByInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
-    targetWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutReceivedByInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdById: string
     createdAt?: Date | string
@@ -126452,6 +128577,52 @@ export namespace Prisma {
 
   export type StockTransferCreateManyReceivedByInputEnvelope = {
     data: StockTransferCreateManyReceivedByInput | StockTransferCreateManyReceivedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockTransferCreateWithoutDriverInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    notes?: string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
+    sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    items?: TransferItemCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferUncheckedCreateWithoutDriverInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferCreateOrConnectWithoutDriverInput = {
+    where: StockTransferWhereUniqueInput
+    create: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput>
+  }
+
+  export type StockTransferCreateManyDriverInputEnvelope = {
+    data: StockTransferCreateManyDriverInput | StockTransferCreateManyDriverInput[]
     skipDuplicates?: boolean
   }
 
@@ -126696,16 +128867,19 @@ export namespace Prisma {
     OR?: DeliveryScalarWhereInput[]
     NOT?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
     id?: StringFilter<"Delivery"> | string
-    delivery_no?: StringFilter<"Delivery"> | string
+    deliveryNo?: StringFilter<"Delivery"> | string
     status?: EnumDeliveryStatusFilter<"Delivery"> | $Enums.DeliveryStatus
     driverId?: StringFilter<"Delivery"> | string
     truckId?: StringFilter<"Delivery"> | string
-    destination?: StringFilter<"Delivery"> | string
-    estimated_km?: IntNullableFilter<"Delivery"> | number | null
-    actual_km?: IntNullableFilter<"Delivery"> | number | null
-    scheduled_date?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    picked_up_at?: DateTimeNullableFilter<"Delivery"> | Date | string | null
-    delivered_at?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    destination?: StringNullableFilter<"Delivery"> | string | null
+    estimatedKm?: IntNullableFilter<"Delivery"> | number | null
+    actualKm?: IntNullableFilter<"Delivery"> | number | null
+    scheduledDate?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    pickedUpAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    deliveredAt?: DateTimeNullableFilter<"Delivery"> | Date | string | null
+    podSignatureUrl?: StringNullableFilter<"Delivery"> | string | null
+    podPhotoUrl?: StringNullableFilter<"Delivery"> | string | null
+    deliveryOtp?: StringNullableFilter<"Delivery"> | string | null
     notes?: StringNullableFilter<"Delivery"> | string | null
     createdAt?: DateTimeFilter<"Delivery"> | Date | string
     updatedAt?: DateTimeFilter<"Delivery"> | Date | string
@@ -127284,14 +129458,14 @@ export namespace Prisma {
     OR?: StockTransferScalarWhereInput[]
     NOT?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
     id?: StringFilter<"StockTransfer"> | string
-    transferNo?: StringFilter<"StockTransfer"> | string
+    documentId?: StringFilter<"StockTransfer"> | string
     status?: EnumTransferStatusFilter<"StockTransfer"> | $Enums.TransferStatus
-    sourceId?: StringFilter<"StockTransfer"> | string
-    targetId?: StringFilter<"StockTransfer"> | string
+    sourceWarehouseId?: StringFilter<"StockTransfer"> | string
+    destinationWarehouseId?: StringFilter<"StockTransfer"> | string
     notes?: StringNullableFilter<"StockTransfer"> | string | null
-    truckRegNo?: StringNullableFilter<"StockTransfer"> | string | null
-    driverName?: StringNullableFilter<"StockTransfer"> | string | null
-    attendantName?: StringNullableFilter<"StockTransfer"> | string | null
+    truckId?: StringNullableFilter<"StockTransfer"> | string | null
+    driverId?: StringNullableFilter<"StockTransfer"> | string | null
+    dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
     createdById?: StringFilter<"StockTransfer"> | string
@@ -127313,6 +129487,22 @@ export namespace Prisma {
   export type StockTransferUpdateManyWithWhereWithoutReceivedByInput = {
     where: StockTransferScalarWhereInput
     data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutReceivedByInput>
+  }
+
+  export type StockTransferUpsertWithWhereUniqueWithoutDriverInput = {
+    where: StockTransferWhereUniqueInput
+    update: XOR<StockTransferUpdateWithoutDriverInput, StockTransferUncheckedUpdateWithoutDriverInput>
+    create: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput>
+  }
+
+  export type StockTransferUpdateWithWhereUniqueWithoutDriverInput = {
+    where: StockTransferWhereUniqueInput
+    data: XOR<StockTransferUpdateWithoutDriverInput, StockTransferUncheckedUpdateWithoutDriverInput>
+  }
+
+  export type StockTransferUpdateManyWithWhereWithoutDriverInput = {
+    where: StockTransferScalarWhereInput
+    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutDriverInput>
   }
 
   export type RoleAssignmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -127811,6 +130001,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
   }
 
@@ -127853,6 +130044,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -127880,7 +130072,7 @@ export namespace Prisma {
     stockBatches?: StockBatchCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseUncheckedCreateWithoutBranchInput = {
@@ -127897,7 +130089,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferUncheckedCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseCreateOrConnectWithoutBranchInput = {
@@ -128451,6 +130643,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -128494,6 +130687,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -128665,6 +130859,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -128708,6 +130903,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -128871,31 +131067,31 @@ export namespace Prisma {
 
   export type StockTransferCreateWithoutSourceWarehouseInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
-    targetWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutSourceWarehouseInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    targetId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -128915,14 +131111,12 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type StockTransferCreateWithoutTargetWarehouseInput = {
+  export type StockTransferCreateWithoutDestinationWarehouseInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -128930,18 +131124,20 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
   }
 
-  export type StockTransferUncheckedCreateWithoutTargetWarehouseInput = {
+  export type StockTransferUncheckedCreateWithoutDestinationWarehouseInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
+    sourceWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -128951,13 +131147,13 @@ export namespace Prisma {
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
   }
 
-  export type StockTransferCreateOrConnectWithoutTargetWarehouseInput = {
+  export type StockTransferCreateOrConnectWithoutDestinationWarehouseInput = {
     where: StockTransferWhereUniqueInput
-    create: XOR<StockTransferCreateWithoutTargetWarehouseInput, StockTransferUncheckedCreateWithoutTargetWarehouseInput>
+    create: XOR<StockTransferCreateWithoutDestinationWarehouseInput, StockTransferUncheckedCreateWithoutDestinationWarehouseInput>
   }
 
-  export type StockTransferCreateManyTargetWarehouseInputEnvelope = {
-    data: StockTransferCreateManyTargetWarehouseInput | StockTransferCreateManyTargetWarehouseInput[]
+  export type StockTransferCreateManyDestinationWarehouseInputEnvelope = {
+    data: StockTransferCreateManyDestinationWarehouseInput | StockTransferCreateManyDestinationWarehouseInput[]
     skipDuplicates?: boolean
   }
 
@@ -129141,20 +131337,20 @@ export namespace Prisma {
     data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutSourceWarehouseInput>
   }
 
-  export type StockTransferUpsertWithWhereUniqueWithoutTargetWarehouseInput = {
+  export type StockTransferUpsertWithWhereUniqueWithoutDestinationWarehouseInput = {
     where: StockTransferWhereUniqueInput
-    update: XOR<StockTransferUpdateWithoutTargetWarehouseInput, StockTransferUncheckedUpdateWithoutTargetWarehouseInput>
-    create: XOR<StockTransferCreateWithoutTargetWarehouseInput, StockTransferUncheckedCreateWithoutTargetWarehouseInput>
+    update: XOR<StockTransferUpdateWithoutDestinationWarehouseInput, StockTransferUncheckedUpdateWithoutDestinationWarehouseInput>
+    create: XOR<StockTransferCreateWithoutDestinationWarehouseInput, StockTransferUncheckedCreateWithoutDestinationWarehouseInput>
   }
 
-  export type StockTransferUpdateWithWhereUniqueWithoutTargetWarehouseInput = {
+  export type StockTransferUpdateWithWhereUniqueWithoutDestinationWarehouseInput = {
     where: StockTransferWhereUniqueInput
-    data: XOR<StockTransferUpdateWithoutTargetWarehouseInput, StockTransferUncheckedUpdateWithoutTargetWarehouseInput>
+    data: XOR<StockTransferUpdateWithoutDestinationWarehouseInput, StockTransferUncheckedUpdateWithoutDestinationWarehouseInput>
   }
 
-  export type StockTransferUpdateManyWithWhereWithoutTargetWarehouseInput = {
+  export type StockTransferUpdateManyWithWhereWithoutDestinationWarehouseInput = {
     where: StockTransferScalarWhereInput
-    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutTargetWarehouseInput>
+    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutDestinationWarehouseInput>
   }
 
   export type BranchUpsertWithoutWarehousesInput = {
@@ -129567,14 +131763,24 @@ export namespace Prisma {
 
   export type TransferItemCreateWithoutProductInput = {
     id?: string
-    quantity: number
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
     transfer: StockTransferCreateNestedOneWithoutItemsInput
   }
 
   export type TransferItemUncheckedCreateWithoutProductInput = {
     id?: string
-    quantity: number
     transferId: string
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
   }
 
   export type TransferItemCreateOrConnectWithoutProductInput = {
@@ -129872,9 +132078,14 @@ export namespace Prisma {
     OR?: TransferItemScalarWhereInput[]
     NOT?: TransferItemScalarWhereInput | TransferItemScalarWhereInput[]
     id?: StringFilter<"TransferItem"> | string
-    quantity?: IntFilter<"TransferItem"> | number
-    productId?: StringFilter<"TransferItem"> | string
     transferId?: StringFilter<"TransferItem"> | string
+    productId?: StringFilter<"TransferItem"> | string
+    batchId?: StringNullableFilter<"TransferItem"> | string | null
+    unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFilter<"TransferItem"> | number
+    dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
+    received_qty?: IntNullableFilter<"TransferItem"> | number | null
+    damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
   }
 
   export type SubcategoryCreateWithoutCategoryInput = {
@@ -130348,7 +132559,7 @@ export namespace Prisma {
     stockBatches?: StockBatchCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
     branch: BranchCreateNestedOneWithoutWarehousesInput
   }
 
@@ -130366,7 +132577,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferUncheckedCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseCreateOrConnectWithoutInventoryInput = {
@@ -130487,7 +132698,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
     branch?: BranchUpdateOneRequiredWithoutWarehousesNestedInput
   }
 
@@ -130505,7 +132716,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type GRNItemCreateWithoutStockBatchesInput = {
@@ -130629,7 +132840,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutDestinationWarehouseInput
     stockMovements?: StockMovementCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
     branch: BranchCreateNestedOneWithoutWarehousesInput
   }
 
@@ -130647,7 +132858,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutDestinationWarehouseInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferUncheckedCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseCreateOrConnectWithoutStockBatchesInput = {
@@ -130799,7 +133010,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUpdateManyWithoutDestinationWarehouseNestedInput
     stockMovements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
     branch?: BranchUpdateOneRequiredWithoutWarehousesNestedInput
   }
 
@@ -130817,7 +133028,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type ProductCreateWithoutStockMovementsInput = {
@@ -130970,32 +133181,32 @@ export namespace Prisma {
 
   export type StockTransferCreateWithoutStockMovementsInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
-    targetWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutStockMovementsInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -131022,7 +133233,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutDestinationWarehouseInput
     stockBatches?: StockBatchCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
     branch: BranchCreateNestedOneWithoutWarehousesInput
   }
 
@@ -131040,7 +133251,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutDestinationWarehouseInput
     stockBatches?: StockBatchUncheckedCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferUncheckedCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseCreateOrConnectWithoutStockMovementsInput = {
@@ -131221,32 +133432,32 @@ export namespace Prisma {
 
   export type StockTransferUpdateWithoutStockMovementsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
-    targetWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutStockMovementsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -131279,7 +133490,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUpdateManyWithoutDestinationWarehouseNestedInput
     stockBatches?: StockBatchUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
     branch?: BranchUpdateOneRequiredWithoutWarehousesNestedInput
   }
 
@@ -131297,7 +133508,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type StockMovementCreateWithoutTransferInput = {
@@ -131372,6 +133583,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -131415,6 +133627,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -131461,6 +133674,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -131504,6 +133718,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -131525,7 +133740,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutDestinationWarehouseInput
     stockBatches?: StockBatchCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementCreateNestedManyWithoutWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
     branch: BranchCreateNestedOneWithoutWarehousesInput
   }
 
@@ -131543,7 +133758,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutDestinationWarehouseInput
     stockBatches?: StockBatchUncheckedCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseCreateOrConnectWithoutSourceTransfersInput = {
@@ -131590,16 +133805,148 @@ export namespace Prisma {
     create: XOR<WarehouseCreateWithoutTargetTransfersInput, WarehouseUncheckedCreateWithoutTargetTransfersInput>
   }
 
+  export type TruckCreateWithoutStockTransfersInput = {
+    id?: string
+    registration: string
+    model: string
+    capacity: number
+    vehicle_type?: string | null
+    license_plate?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deliveries?: DeliveryCreateNestedManyWithoutTruckInput
+  }
+
+  export type TruckUncheckedCreateWithoutStockTransfersInput = {
+    id?: string
+    registration: string
+    model: string
+    capacity: number
+    vehicle_type?: string | null
+    license_plate?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutTruckInput
+  }
+
+  export type TruckCreateOrConnectWithoutStockTransfersInput = {
+    where: TruckWhereUniqueInput
+    create: XOR<TruckCreateWithoutStockTransfersInput, TruckUncheckedCreateWithoutStockTransfersInput>
+  }
+
+  export type UserCreateWithoutDriverTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutDriverTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDriverTransfersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDriverTransfersInput, UserUncheckedCreateWithoutDriverTransfersInput>
+  }
+
   export type TransferItemCreateWithoutTransferInput = {
     id?: string
-    quantity: number
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
     product: ProductCreateNestedOneWithoutTransferItemsInput
   }
 
   export type TransferItemUncheckedCreateWithoutTransferInput = {
     id?: string
-    quantity: number
     productId: string
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
   }
 
   export type TransferItemCreateOrConnectWithoutTransferInput = {
@@ -131677,6 +134024,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -131720,6 +134068,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -131772,6 +134121,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -131815,6 +134165,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -131842,7 +134193,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUpdateManyWithoutDestinationWarehouseNestedInput
     stockBatches?: StockBatchUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUpdateManyWithoutWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
     branch?: BranchUpdateOneRequiredWithoutWarehousesNestedInput
   }
 
@@ -131860,7 +134211,7 @@ export namespace Prisma {
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type WarehouseUpsertWithoutTargetTransfersInput = {
@@ -131906,6 +134257,140 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
+  }
+
+  export type TruckUpsertWithoutStockTransfersInput = {
+    update: XOR<TruckUpdateWithoutStockTransfersInput, TruckUncheckedUpdateWithoutStockTransfersInput>
+    create: XOR<TruckCreateWithoutStockTransfersInput, TruckUncheckedCreateWithoutStockTransfersInput>
+    where?: TruckWhereInput
+  }
+
+  export type TruckUpdateToOneWithWhereWithoutStockTransfersInput = {
+    where?: TruckWhereInput
+    data: XOR<TruckUpdateWithoutStockTransfersInput, TruckUncheckedUpdateWithoutStockTransfersInput>
+  }
+
+  export type TruckUpdateWithoutStockTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    registration?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
+    license_plate?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deliveries?: DeliveryUpdateManyWithoutTruckNestedInput
+  }
+
+  export type TruckUncheckedUpdateWithoutStockTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    registration?: StringFieldUpdateOperationsInput | string
+    model?: StringFieldUpdateOperationsInput | string
+    capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
+    license_plate?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deliveries?: DeliveryUncheckedUpdateManyWithoutTruckNestedInput
+  }
+
+  export type UserUpsertWithoutDriverTransfersInput = {
+    update: XOR<UserUpdateWithoutDriverTransfersInput, UserUncheckedUpdateWithoutDriverTransfersInput>
+    create: XOR<UserCreateWithoutDriverTransfersInput, UserUncheckedCreateWithoutDriverTransfersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDriverTransfersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDriverTransfersInput, UserUncheckedUpdateWithoutDriverTransfersInput>
+  }
+
+  export type UserUpdateWithoutDriverTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDriverTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TransferItemUpsertWithWhereUniqueWithoutTransferInput = {
@@ -132009,12 +134494,10 @@ export namespace Prisma {
 
   export type StockTransferCreateWithoutItemsInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -132022,19 +134505,21 @@ export namespace Prisma {
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
-    targetWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
   }
 
   export type StockTransferUncheckedCreateWithoutItemsInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -132150,12 +134635,10 @@ export namespace Prisma {
 
   export type StockTransferUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -132163,19 +134646,21 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
-    targetWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -132494,6 +134979,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -132537,6 +135023,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -132634,6 +135121,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -132677,6 +135165,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -133029,6 +135518,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -133072,6 +135562,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -133181,6 +135672,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -133224,6 +135716,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -133782,6 +136275,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -133825,6 +136319,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -133986,6 +136481,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134029,6 +136525,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -134264,6 +136761,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     items?: DispatchItemCreateNestedManyWithoutDispatchNoteInput
     dispatchedBy: UserCreateNestedOneWithoutDispatchNotesInput
+    deliveryItems?: DeliveryDispatchNoteCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteUncheckedCreateWithoutSalesOrderInput = {
@@ -134274,6 +136772,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: DispatchItemUncheckedCreateNestedManyWithoutDispatchNoteInput
+    deliveryItems?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteCreateOrConnectWithoutSalesOrderInput = {
@@ -134375,6 +136874,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -134418,6 +136918,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -134619,6 +137120,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134662,6 +137164,7 @@ export namespace Prisma {
     createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -135092,6 +137595,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -135135,6 +137639,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -135178,6 +137683,26 @@ export namespace Prisma {
   export type SalesOrderCreateOrConnectWithoutDispatchNotesInput = {
     where: SalesOrderWhereUniqueInput
     create: XOR<SalesOrderCreateWithoutDispatchNotesInput, SalesOrderUncheckedCreateWithoutDispatchNotesInput>
+  }
+
+  export type DeliveryDispatchNoteCreateWithoutDispatchNoteInput = {
+    id?: string
+    delivery: DeliveryCreateNestedOneWithoutDispatchNotesInput
+  }
+
+  export type DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput = {
+    id?: string
+    deliveryId: string
+  }
+
+  export type DeliveryDispatchNoteCreateOrConnectWithoutDispatchNoteInput = {
+    where: DeliveryDispatchNoteWhereUniqueInput
+    create: XOR<DeliveryDispatchNoteCreateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput>
+  }
+
+  export type DeliveryDispatchNoteCreateManyDispatchNoteInputEnvelope = {
+    data: DeliveryDispatchNoteCreateManyDispatchNoteInput | DeliveryDispatchNoteCreateManyDispatchNoteInput[]
+    skipDuplicates?: boolean
   }
 
   export type DispatchItemUpsertWithWhereUniqueWithoutDispatchNoteInput = {
@@ -135245,6 +137770,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -135288,6 +137814,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -135334,6 +137861,31 @@ export namespace Prisma {
     items?: SOItemUncheckedUpdateManyWithoutSalesOrderNestedInput
   }
 
+  export type DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDispatchNoteInput = {
+    where: DeliveryDispatchNoteWhereUniqueInput
+    update: XOR<DeliveryDispatchNoteUpdateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedUpdateWithoutDispatchNoteInput>
+    create: XOR<DeliveryDispatchNoteCreateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedCreateWithoutDispatchNoteInput>
+  }
+
+  export type DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDispatchNoteInput = {
+    where: DeliveryDispatchNoteWhereUniqueInput
+    data: XOR<DeliveryDispatchNoteUpdateWithoutDispatchNoteInput, DeliveryDispatchNoteUncheckedUpdateWithoutDispatchNoteInput>
+  }
+
+  export type DeliveryDispatchNoteUpdateManyWithWhereWithoutDispatchNoteInput = {
+    where: DeliveryDispatchNoteScalarWhereInput
+    data: XOR<DeliveryDispatchNoteUpdateManyMutationInput, DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteInput>
+  }
+
+  export type DeliveryDispatchNoteScalarWhereInput = {
+    AND?: DeliveryDispatchNoteScalarWhereInput | DeliveryDispatchNoteScalarWhereInput[]
+    OR?: DeliveryDispatchNoteScalarWhereInput[]
+    NOT?: DeliveryDispatchNoteScalarWhereInput | DeliveryDispatchNoteScalarWhereInput[]
+    id?: StringFilter<"DeliveryDispatchNote"> | string
+    deliveryId?: StringFilter<"DeliveryDispatchNote"> | string
+    dispatchNoteId?: StringFilter<"DeliveryDispatchNote"> | string
+  }
+
   export type DispatchNoteCreateWithoutItemsInput = {
     id?: string
     dnNumber: string
@@ -135342,6 +137894,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     dispatchedBy: UserCreateNestedOneWithoutDispatchNotesInput
     salesOrder: SalesOrderCreateNestedOneWithoutDispatchNotesInput
+    deliveryItems?: DeliveryDispatchNoteCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteUncheckedCreateWithoutItemsInput = {
@@ -135352,6 +137905,7 @@ export namespace Prisma {
     dispatchedAt?: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
+    deliveryItems?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDispatchNoteInput
   }
 
   export type DispatchNoteCreateOrConnectWithoutItemsInput = {
@@ -135488,6 +138042,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     dispatchedBy?: UserUpdateOneRequiredWithoutDispatchNotesNestedInput
     salesOrder?: SalesOrderUpdateOneRequiredWithoutDispatchNotesNestedInput
+    deliveryItems?: DeliveryDispatchNoteUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteUncheckedUpdateWithoutItemsInput = {
@@ -135498,6 +138053,7 @@ export namespace Prisma {
     dispatchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deliveryItems?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type ProductUpsertWithoutDispatchItemsInput = {
@@ -135711,6 +138267,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -135754,6 +138311,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -135938,6 +138496,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -135981,6 +138540,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136313,6 +138873,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -136356,6 +138917,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -136428,7 +138990,7 @@ export namespace Prisma {
     stockBatches?: StockBatchCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferCreateNestedManyWithoutDestinationWarehouseInput
     branch: BranchCreateNestedOneWithoutWarehousesInput
   }
 
@@ -136446,7 +139008,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedCreateNestedManyWithoutWarehouseInput
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutWarehouseInput
     sourceTransfers?: StockTransferUncheckedCreateNestedManyWithoutSourceWarehouseInput
-    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutTargetWarehouseInput
+    targetTransfers?: StockTransferUncheckedCreateNestedManyWithoutDestinationWarehouseInput
   }
 
   export type WarehouseCreateOrConnectWithoutPurchaseOrdersInput = {
@@ -136492,6 +139054,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -136535,6 +139098,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -136663,6 +139227,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -136706,6 +139271,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136790,7 +139356,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
     branch?: BranchUpdateOneRequiredWithoutWarehousesNestedInput
   }
 
@@ -136808,7 +139374,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type UserUpsertWithoutRequestedPurchaseOrdersInput = {
@@ -136860,6 +139426,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -136903,6 +139470,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136989,6 +139557,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -137032,6 +139601,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137078,6 +139648,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -137121,6 +139692,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137178,6 +139750,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137221,6 +139794,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -137273,6 +139847,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137316,6 +139891,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -137728,6 +140304,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -137771,6 +140348,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137913,6 +140491,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137956,6 +140535,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -138329,34 +140909,42 @@ export namespace Prisma {
 
   export type DeliveryCreateWithoutTruckInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     driver: UserCreateNestedOneWithoutDeliveriesInput
+    dispatchNotes?: DeliveryDispatchNoteCreateNestedManyWithoutDeliveryInput
   }
 
   export type DeliveryUncheckedCreateWithoutTruckInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
     driverId: string
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    dispatchNotes?: DeliveryDispatchNoteUncheckedCreateNestedManyWithoutDeliveryInput
   }
 
   export type DeliveryCreateOrConnectWithoutTruckInput = {
@@ -138366,6 +140954,52 @@ export namespace Prisma {
 
   export type DeliveryCreateManyTruckInputEnvelope = {
     data: DeliveryCreateManyTruckInput | DeliveryCreateManyTruckInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockTransferCreateWithoutTruckInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    notes?: string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
+    sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
+    items?: TransferItemCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferUncheckedCreateWithoutTruckInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferCreateOrConnectWithoutTruckInput = {
+    where: StockTransferWhereUniqueInput
+    create: XOR<StockTransferCreateWithoutTruckInput, StockTransferUncheckedCreateWithoutTruckInput>
+  }
+
+  export type StockTransferCreateManyTruckInputEnvelope = {
+    data: StockTransferCreateManyTruckInput | StockTransferCreateManyTruckInput[]
     skipDuplicates?: boolean
   }
 
@@ -138383,6 +141017,22 @@ export namespace Prisma {
   export type DeliveryUpdateManyWithWhereWithoutTruckInput = {
     where: DeliveryScalarWhereInput
     data: XOR<DeliveryUpdateManyMutationInput, DeliveryUncheckedUpdateManyWithoutTruckInput>
+  }
+
+  export type StockTransferUpsertWithWhereUniqueWithoutTruckInput = {
+    where: StockTransferWhereUniqueInput
+    update: XOR<StockTransferUpdateWithoutTruckInput, StockTransferUncheckedUpdateWithoutTruckInput>
+    create: XOR<StockTransferCreateWithoutTruckInput, StockTransferUncheckedCreateWithoutTruckInput>
+  }
+
+  export type StockTransferUpdateWithWhereUniqueWithoutTruckInput = {
+    where: StockTransferWhereUniqueInput
+    data: XOR<StockTransferUpdateWithoutTruckInput, StockTransferUncheckedUpdateWithoutTruckInput>
+  }
+
+  export type StockTransferUpdateManyWithWhereWithoutTruckInput = {
+    where: StockTransferScalarWhereInput
+    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutTruckInput>
   }
 
   export type UserCreateWithoutDeliveriesInput = {
@@ -138423,6 +141073,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -138466,6 +141117,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -138479,10 +141131,12 @@ export namespace Prisma {
     registration: string
     model: string
     capacity: number
+    vehicle_type?: string | null
     license_plate?: string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    stockTransfers?: StockTransferCreateNestedManyWithoutTruckInput
   }
 
   export type TruckUncheckedCreateWithoutDeliveriesInput = {
@@ -138490,15 +141144,37 @@ export namespace Prisma {
     registration: string
     model: string
     capacity: number
+    vehicle_type?: string | null
     license_plate?: string | null
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    stockTransfers?: StockTransferUncheckedCreateNestedManyWithoutTruckInput
   }
 
   export type TruckCreateOrConnectWithoutDeliveriesInput = {
     where: TruckWhereUniqueInput
     create: XOR<TruckCreateWithoutDeliveriesInput, TruckUncheckedCreateWithoutDeliveriesInput>
+  }
+
+  export type DeliveryDispatchNoteCreateWithoutDeliveryInput = {
+    id?: string
+    dispatchNote: DispatchNoteCreateNestedOneWithoutDeliveryItemsInput
+  }
+
+  export type DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput = {
+    id?: string
+    dispatchNoteId: string
+  }
+
+  export type DeliveryDispatchNoteCreateOrConnectWithoutDeliveryInput = {
+    where: DeliveryDispatchNoteWhereUniqueInput
+    create: XOR<DeliveryDispatchNoteCreateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput>
+  }
+
+  export type DeliveryDispatchNoteCreateManyDeliveryInputEnvelope = {
+    data: DeliveryDispatchNoteCreateManyDeliveryInput | DeliveryDispatchNoteCreateManyDeliveryInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserUpsertWithoutDeliveriesInput = {
@@ -138550,6 +141226,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -138593,6 +141270,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -138612,10 +141290,12 @@ export namespace Prisma {
     registration?: StringFieldUpdateOperationsInput | string
     model?: StringFieldUpdateOperationsInput | string
     capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
     license_plate?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockTransfers?: StockTransferUpdateManyWithoutTruckNestedInput
   }
 
   export type TruckUncheckedUpdateWithoutDeliveriesInput = {
@@ -138623,10 +141303,184 @@ export namespace Prisma {
     registration?: StringFieldUpdateOperationsInput | string
     model?: StringFieldUpdateOperationsInput | string
     capacity?: IntFieldUpdateOperationsInput | number
+    vehicle_type?: NullableStringFieldUpdateOperationsInput | string | null
     license_plate?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockTransfers?: StockTransferUncheckedUpdateManyWithoutTruckNestedInput
+  }
+
+  export type DeliveryDispatchNoteUpsertWithWhereUniqueWithoutDeliveryInput = {
+    where: DeliveryDispatchNoteWhereUniqueInput
+    update: XOR<DeliveryDispatchNoteUpdateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedUpdateWithoutDeliveryInput>
+    create: XOR<DeliveryDispatchNoteCreateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedCreateWithoutDeliveryInput>
+  }
+
+  export type DeliveryDispatchNoteUpdateWithWhereUniqueWithoutDeliveryInput = {
+    where: DeliveryDispatchNoteWhereUniqueInput
+    data: XOR<DeliveryDispatchNoteUpdateWithoutDeliveryInput, DeliveryDispatchNoteUncheckedUpdateWithoutDeliveryInput>
+  }
+
+  export type DeliveryDispatchNoteUpdateManyWithWhereWithoutDeliveryInput = {
+    where: DeliveryDispatchNoteScalarWhereInput
+    data: XOR<DeliveryDispatchNoteUpdateManyMutationInput, DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryInput>
+  }
+
+  export type DeliveryCreateWithoutDispatchNotesInput = {
+    id?: string
+    deliveryNo: string
+    status?: $Enums.DeliveryStatus
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    driver: UserCreateNestedOneWithoutDeliveriesInput
+    truck: TruckCreateNestedOneWithoutDeliveriesInput
+  }
+
+  export type DeliveryUncheckedCreateWithoutDispatchNotesInput = {
+    id?: string
+    deliveryNo: string
+    status?: $Enums.DeliveryStatus
+    driverId: string
+    truckId: string
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DeliveryCreateOrConnectWithoutDispatchNotesInput = {
+    where: DeliveryWhereUniqueInput
+    create: XOR<DeliveryCreateWithoutDispatchNotesInput, DeliveryUncheckedCreateWithoutDispatchNotesInput>
+  }
+
+  export type DispatchNoteCreateWithoutDeliveryItemsInput = {
+    id?: string
+    dnNumber: string
+    dispatchedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: DispatchItemCreateNestedManyWithoutDispatchNoteInput
+    dispatchedBy: UserCreateNestedOneWithoutDispatchNotesInput
+    salesOrder: SalesOrderCreateNestedOneWithoutDispatchNotesInput
+  }
+
+  export type DispatchNoteUncheckedCreateWithoutDeliveryItemsInput = {
+    id?: string
+    dnNumber: string
+    salesOrderId: string
+    dispatchedById: string
+    dispatchedAt?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: DispatchItemUncheckedCreateNestedManyWithoutDispatchNoteInput
+  }
+
+  export type DispatchNoteCreateOrConnectWithoutDeliveryItemsInput = {
+    where: DispatchNoteWhereUniqueInput
+    create: XOR<DispatchNoteCreateWithoutDeliveryItemsInput, DispatchNoteUncheckedCreateWithoutDeliveryItemsInput>
+  }
+
+  export type DeliveryUpsertWithoutDispatchNotesInput = {
+    update: XOR<DeliveryUpdateWithoutDispatchNotesInput, DeliveryUncheckedUpdateWithoutDispatchNotesInput>
+    create: XOR<DeliveryCreateWithoutDispatchNotesInput, DeliveryUncheckedCreateWithoutDispatchNotesInput>
+    where?: DeliveryWhereInput
+  }
+
+  export type DeliveryUpdateToOneWithWhereWithoutDispatchNotesInput = {
+    where?: DeliveryWhereInput
+    data: XOR<DeliveryUpdateWithoutDispatchNotesInput, DeliveryUncheckedUpdateWithoutDispatchNotesInput>
+  }
+
+  export type DeliveryUpdateWithoutDispatchNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    driver?: UserUpdateOneRequiredWithoutDeliveriesNestedInput
+    truck?: TruckUpdateOneRequiredWithoutDeliveriesNestedInput
+  }
+
+  export type DeliveryUncheckedUpdateWithoutDispatchNotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+    driverId?: StringFieldUpdateOperationsInput | string
+    truckId?: StringFieldUpdateOperationsInput | string
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DispatchNoteUpsertWithoutDeliveryItemsInput = {
+    update: XOR<DispatchNoteUpdateWithoutDeliveryItemsInput, DispatchNoteUncheckedUpdateWithoutDeliveryItemsInput>
+    create: XOR<DispatchNoteCreateWithoutDeliveryItemsInput, DispatchNoteUncheckedCreateWithoutDeliveryItemsInput>
+    where?: DispatchNoteWhereInput
+  }
+
+  export type DispatchNoteUpdateToOneWithWhereWithoutDeliveryItemsInput = {
+    where?: DispatchNoteWhereInput
+    data: XOR<DispatchNoteUpdateWithoutDeliveryItemsInput, DispatchNoteUncheckedUpdateWithoutDeliveryItemsInput>
+  }
+
+  export type DispatchNoteUpdateWithoutDeliveryItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dnNumber?: StringFieldUpdateOperationsInput | string
+    dispatchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: DispatchItemUpdateManyWithoutDispatchNoteNestedInput
+    dispatchedBy?: UserUpdateOneRequiredWithoutDispatchNotesNestedInput
+    salesOrder?: SalesOrderUpdateOneRequiredWithoutDispatchNotesNestedInput
+  }
+
+  export type DispatchNoteUncheckedUpdateWithoutDeliveryItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dnNumber?: StringFieldUpdateOperationsInput | string
+    salesOrderId?: StringFieldUpdateOperationsInput | string
+    dispatchedById?: StringFieldUpdateOperationsInput | string
+    dispatchedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type PayrollCreateWithoutTransactionsInput = {
@@ -138791,6 +141645,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -138834,6 +141689,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -138926,6 +141782,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -138969,6 +141826,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -139715,6 +142573,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139758,6 +142617,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139944,6 +142804,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139987,6 +142848,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -141414,6 +144276,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -141457,6 +144320,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -141547,6 +144411,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -141590,6 +144455,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -141658,6 +144524,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -141701,6 +144568,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -141791,6 +144659,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -141834,6 +144703,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142086,6 +144956,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142129,6 +145000,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142223,6 +145095,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142266,6 +145139,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142307,6 +145181,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142350,6 +145225,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142407,6 +145283,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142450,6 +145327,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142491,6 +145369,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142534,6 +145413,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142580,6 +145460,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142623,6 +145504,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142680,6 +145562,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142723,6 +145606,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142775,6 +145659,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142818,6 +145703,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142859,6 +145745,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142902,6 +145789,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142959,6 +145847,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -143002,6 +145891,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -143112,6 +146002,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -143155,6 +146046,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -143243,6 +146135,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -143286,6 +146179,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -143686,6 +146580,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
 
@@ -143729,6 +146624,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
   }
 
   export type UserCreateOrConnectWithoutRolesInput = {
@@ -143819,6 +146715,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
 
@@ -143862,6 +146759,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
   }
 
   export type UserCreateWithoutAuditLogsInput = {
@@ -143902,6 +146800,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -143945,6 +146844,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -144002,6 +146902,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -144045,6 +146946,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -144689,15 +147591,18 @@ export namespace Prisma {
 
   export type DeliveryCreateManyDriverInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
     truckId: string
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -144966,14 +147871,14 @@ export namespace Prisma {
 
   export type StockTransferCreateManyCreatedByInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdAt?: Date | string
@@ -144982,15 +147887,31 @@ export namespace Prisma {
 
   export type StockTransferCreateManyReceivedByInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
-    targetId: string
+    sourceWarehouseId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockTransferCreateManyDriverInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -145205,47 +148126,58 @@ export namespace Prisma {
 
   export type DeliveryUpdateWithoutDriverInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     truck?: TruckUpdateOneRequiredWithoutDeliveriesNestedInput
+    dispatchNotes?: DeliveryDispatchNoteUpdateManyWithoutDeliveryNestedInput
   }
 
   export type DeliveryUncheckedUpdateWithoutDriverInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     truckId?: StringFieldUpdateOperationsInput | string
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dispatchNotes?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryNestedInput
   }
 
   export type DeliveryUncheckedUpdateManyWithoutDriverInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     truckId?: StringFieldUpdateOperationsInput | string
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -145286,6 +148218,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: DispatchItemUpdateManyWithoutDispatchNoteNestedInput
     salesOrder?: SalesOrderUpdateOneRequiredWithoutDispatchNotesNestedInput
+    deliveryItems?: DeliveryDispatchNoteUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteUncheckedUpdateWithoutDispatchedByInput = {
@@ -145296,6 +148229,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput
+    deliveryItems?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteUncheckedUpdateManyWithoutDispatchedByInput = {
@@ -146074,32 +149008,32 @@ export namespace Prisma {
 
   export type StockTransferUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
-    targetWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -146110,14 +149044,14 @@ export namespace Prisma {
 
   export type StockTransferUncheckedUpdateManyWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -146126,32 +149060,32 @@ export namespace Prisma {
 
   export type StockTransferUpdateWithoutReceivedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
-    targetWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutReceivedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -146162,15 +149096,67 @@ export namespace Prisma {
 
   export type StockTransferUncheckedUpdateManyWithoutReceivedByInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
-    targetId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockTransferUpdateWithoutDriverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
+    sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    items?: TransferItemUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateWithoutDriverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutDriverInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -146865,6 +149851,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
   }
 
@@ -146907,6 +149894,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146939,7 +149927,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type WarehouseUncheckedUpdateWithoutBranchInput = {
@@ -146956,7 +149944,7 @@ export namespace Prisma {
     stockBatches?: StockBatchUncheckedUpdateManyWithoutWarehouseNestedInput
     stockMovements?: StockMovementUncheckedUpdateManyWithoutWarehouseNestedInput
     sourceTransfers?: StockTransferUncheckedUpdateManyWithoutSourceWarehouseNestedInput
-    targetTransfers?: StockTransferUncheckedUpdateManyWithoutTargetWarehouseNestedInput
+    targetTransfers?: StockTransferUncheckedUpdateManyWithoutDestinationWarehouseNestedInput
   }
 
   export type WarehouseUncheckedUpdateManyWithoutBranchInput = {
@@ -147145,13 +150133,13 @@ export namespace Prisma {
 
   export type StockTransferCreateManySourceWarehouseInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    targetId: string
+    destinationWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -147159,15 +150147,15 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type StockTransferCreateManyTargetWarehouseInput = {
+  export type StockTransferCreateManyDestinationWarehouseInput = {
     id?: string
-    transferNo: string
+    documentId: string
     status?: $Enums.TransferStatus
-    sourceId: string
+    sourceWarehouseId: string
     notes?: string | null
-    truckRegNo?: string | null
-    driverName?: string | null
-    attendantName?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
@@ -147352,31 +150340,31 @@ export namespace Prisma {
 
   export type StockTransferUpdateWithoutSourceWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
-    targetWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutSourceWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    targetId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -147388,13 +150376,13 @@ export namespace Prisma {
 
   export type StockTransferUncheckedUpdateManyWithoutSourceWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    targetId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -147402,14 +150390,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type StockTransferUpdateWithoutTargetWarehouseInput = {
+  export type StockTransferUpdateWithoutDestinationWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -147417,18 +150403,20 @@ export namespace Prisma {
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
   }
 
-  export type StockTransferUncheckedUpdateWithoutTargetWarehouseInput = {
+  export type StockTransferUncheckedUpdateWithoutDestinationWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -147438,15 +150426,15 @@ export namespace Prisma {
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
   }
 
-  export type StockTransferUncheckedUpdateManyWithoutTargetWarehouseInput = {
+  export type StockTransferUncheckedUpdateManyWithoutDestinationWarehouseInput = {
     id?: StringFieldUpdateOperationsInput | string
-    transferNo?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
-    sourceId?: StringFieldUpdateOperationsInput | string
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    truckRegNo?: NullableStringFieldUpdateOperationsInput | string | null
-    driverName?: NullableStringFieldUpdateOperationsInput | string | null
-    attendantName?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -147564,8 +150552,13 @@ export namespace Prisma {
 
   export type TransferItemCreateManyProductInput = {
     id?: string
-    quantity: number
     transferId: string
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
   }
 
   export type BranchInventoryUpdateWithoutProductInput = {
@@ -147900,20 +150893,35 @@ export namespace Prisma {
 
   export type TransferItemUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     transfer?: StockTransferUpdateOneRequiredWithoutItemsNestedInput
   }
 
   export type TransferItemUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
     transferId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TransferItemUncheckedUpdateManyWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
     transferId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type SubcategoryCreateManyCategoryInput = {
@@ -147958,8 +150966,13 @@ export namespace Prisma {
 
   export type TransferItemCreateManyTransferInput = {
     id?: string
-    quantity: number
     productId: string
+    batchId?: string | null
+    unitCost?: Decimal | DecimalJsLike | number | string | null
+    requested_qty: number
+    dispatched_qty?: number | null
+    received_qty?: number | null
+    damaged_qty?: number | null
   }
 
   export type StockMovementUpdateWithoutTransferInput = {
@@ -148000,20 +151013,35 @@ export namespace Prisma {
 
   export type TransferItemUpdateWithoutTransferInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     product?: ProductUpdateOneRequiredWithoutTransferItemsNestedInput
   }
 
   export type TransferItemUncheckedUpdateWithoutTransferInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
     productId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TransferItemUncheckedUpdateManyWithoutTransferInput = {
     id?: StringFieldUpdateOperationsInput | string
-    quantity?: IntFieldUpdateOperationsInput | number
     productId?: StringFieldUpdateOperationsInput | string
+    batchId?: NullableStringFieldUpdateOperationsInput | string | null
+    unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    requested_qty?: IntFieldUpdateOperationsInput | number
+    dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    received_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type PaymentCreateManyCustomerInput = {
@@ -148539,6 +151567,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: DispatchItemUpdateManyWithoutDispatchNoteNestedInput
     dispatchedBy?: UserUpdateOneRequiredWithoutDispatchNotesNestedInput
+    deliveryItems?: DeliveryDispatchNoteUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteUncheckedUpdateWithoutSalesOrderInput = {
@@ -148549,6 +151578,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput
+    deliveryItems?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
   export type DispatchNoteUncheckedUpdateManyWithoutSalesOrderInput = {
@@ -148642,6 +151672,11 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type DeliveryDispatchNoteCreateManyDispatchNoteInput = {
+    id?: string
+    deliveryId: string
+  }
+
   export type DispatchItemUpdateWithoutDispatchNoteInput = {
     id?: StringFieldUpdateOperationsInput | string
     qtyDispatched?: IntFieldUpdateOperationsInput | number
@@ -148670,6 +151705,21 @@ export namespace Prisma {
     totalCogs?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryDispatchNoteUpdateWithoutDispatchNoteInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    delivery?: DeliveryUpdateOneRequiredWithoutDispatchNotesNestedInput
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateWithoutDispatchNoteInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateManyWithoutDispatchNoteInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type SalesDocumentCreateManySessionInput = {
@@ -149226,66 +152276,168 @@ export namespace Prisma {
 
   export type DeliveryCreateManyTruckInput = {
     id?: string
-    delivery_no: string
+    deliveryNo: string
     status?: $Enums.DeliveryStatus
     driverId: string
-    destination: string
-    estimated_km?: number | null
-    actual_km?: number | null
-    scheduled_date?: Date | string | null
-    picked_up_at?: Date | string | null
-    delivered_at?: Date | string | null
+    destination?: string | null
+    estimatedKm?: number | null
+    actualKm?: number | null
+    scheduledDate?: Date | string | null
+    pickedUpAt?: Date | string | null
+    deliveredAt?: Date | string | null
+    podSignatureUrl?: string | null
+    podPhotoUrl?: string | null
+    deliveryOtp?: string | null
     notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockTransferCreateManyTruckInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    driverId?: string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type DeliveryUpdateWithoutTruckInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     driver?: UserUpdateOneRequiredWithoutDeliveriesNestedInput
+    dispatchNotes?: DeliveryDispatchNoteUpdateManyWithoutDeliveryNestedInput
   }
 
   export type DeliveryUncheckedUpdateWithoutTruckInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
     status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
     driverId?: StringFieldUpdateOperationsInput | string
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dispatchNotes?: DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryNestedInput
+  }
+
+  export type DeliveryUncheckedUpdateManyWithoutTruckInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deliveryNo?: StringFieldUpdateOperationsInput | string
+    status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+    driverId?: StringFieldUpdateOperationsInput | string
+    destination?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedKm?: NullableIntFieldUpdateOperationsInput | number | null
+    actualKm?: NullableIntFieldUpdateOperationsInput | number | null
+    scheduledDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedUpAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    podSignatureUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    podPhotoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveryOtp?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type DeliveryUncheckedUpdateManyWithoutTruckInput = {
+  export type StockTransferUpdateWithoutTruckInput = {
     id?: StringFieldUpdateOperationsInput | string
-    delivery_no?: StringFieldUpdateOperationsInput | string
-    status?: EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
-    driverId?: StringFieldUpdateOperationsInput | string
-    destination?: StringFieldUpdateOperationsInput | string
-    estimated_km?: NullableIntFieldUpdateOperationsInput | number | null
-    actual_km?: NullableIntFieldUpdateOperationsInput | number | null
-    scheduled_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    picked_up_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    delivered_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
+    sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
+    items?: TransferItemUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateWithoutTruckInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutTruckInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeliveryDispatchNoteCreateManyDeliveryInput = {
+    id?: string
+    dispatchNoteId: string
+  }
+
+  export type DeliveryDispatchNoteUpdateWithoutDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dispatchNote?: DispatchNoteUpdateOneRequiredWithoutDeliveryItemsNestedInput
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateWithoutDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dispatchNoteId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dispatchNoteId?: StringFieldUpdateOperationsInput | string
   }
 
   export type FinanceTransactionCreateManyPayrollInput = {

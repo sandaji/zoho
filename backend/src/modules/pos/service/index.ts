@@ -3,6 +3,8 @@ import { logger } from "../../../lib/logger";
 import { verifyPassword } from "../../../lib/password";
 import { UserPrefixSequencer } from "../../../lib/sequencer";
 import { SalesDocumentType, Prisma } from "../../../generated";
+import { calculateSubtotal, calculateTax } from "../../../lib/sales-calculator";
+import { InventoryService } from "../../inventory/service/inventory.service";
 import {
   CreateSalesDTO,
   UpdateSalesDTO,
@@ -167,7 +169,7 @@ export class PosService {
       discount: i.discount,
     }));
 
-    const subtotal = this.calculateSubtotal(mappedItemsForHelpers);
+    const subtotal = calculateSubtotal(mappedItemsForHelpers);
     const discountPercent = subtotal > 0 ? (discount / subtotal) * 100 : 0;
 
     if (discountPercent > 10 && !discount_approved_by) {
@@ -184,7 +186,7 @@ export class PosService {
       SalesDocumentType.INVOICE,
     );
     const invoice_no = seq.documentId;
-    const total_tax = this.calculateTax(mappedItemsForHelpers);
+    const total_tax = calculateTax(mappedItemsForHelpers);
     const grand_total = subtotal - discount + total_tax;
     const paid = amount_paid ?? grand_total;
     const change = paid - grand_total;
@@ -209,6 +211,15 @@ export class PosService {
           notes,
         },
       });
+
+      // Resolve the branch's default warehouse once — used for FIFO depletion
+      const warehouse = await tx.warehouse.findFirst({
+        where: { branchId, isActive: true },
+        select: { id: true },
+      });
+      if (!warehouse) {
+        throw new AppError(ErrorCode.NOT_FOUND, 404, `No active warehouse found for branch ${branchId}`);
+      }
 
       // Create items + update inventory/products
       const createdItems: any[] = [];
@@ -248,95 +259,16 @@ export class PosService {
         });
         createdItems.push(salesItem);
 
-        // Deplete stock using FIFO across stock batches within the branch
-        const batches = await tx.stockBatch.findMany({
-          where: {
-            productId: item.productId,
-            isDepleted: false,
-            warehouse: { branchId, isActive: true },
-          },
-          orderBy: { receivedAt: "asc" },
+        // Deplete stock using canonical InventoryService (FIFO cost lots,
+        // Inventory ledger, StockMovement audit trail, BranchInventory sync).
+        await InventoryService.depleteStockFIFO(tx, {
+          productId: item.productId,
+          warehouseId: warehouse.id,
+          quantity: item.quantity,
+          userId,
+          salesId: sale.id,
+          reference: invoice_no,
         });
-
-        let remainingQty = item.quantity;
-        let itemCogs = new Prisma.Decimal(0);
-
-        for (const batch of batches as any) {
-          if (remainingQty <= 0) break;
-          const take = Math.min(remainingQty, batch.currentQuantity);
-
-          // Update the batch
-          await tx.stockBatch.update({
-            where: { id: batch.id },
-            data: {
-              currentQuantity: batch.currentQuantity - take,
-              isDepleted: batch.currentQuantity - take === 0,
-            },
-          });
-
-          // Update warehouse inventory record if present
-          const invRec = await tx.inventory.findUnique({
-            where: {
-              productId_warehouseId: {
-                productId: item.productId,
-                warehouseId: batch.warehouseId,
-              },
-            },
-            select: { id: true, quantity: true, available: true },
-          });
-          if (invRec) {
-            await tx.inventory.update({
-              where: { id: invRec.id },
-              data: {
-                quantity: invRec.quantity - take,
-                available: invRec.available - take,
-              },
-            });
-          }
-
-          // Update branch inventory aggregate
-          const brInv = await tx.branchInventory.findUnique({
-            where: {
-              productId_branchId: { productId: item.productId, branchId },
-            },
-            select: { id: true, quantity: true, available: true },
-          });
-          if (brInv) {
-            await tx.branchInventory.update({
-              where: { id: brInv.id },
-              data: {
-                quantity: brInv.quantity - take,
-                available: brInv.available - take,
-              },
-            });
-          }
-
-          // Record stock movement
-          await tx.stockMovement.create({
-            data: {
-              type: "OUTBOUND",
-              quantity: take,
-              productId: item.productId,
-              warehouseId: batch.warehouseId,
-              salesId: sale.id,
-              reference: invoice_no,
-              createdById: userId,
-            },
-          });
-
-          itemCogs = itemCogs.add(
-            new Prisma.Decimal(take.toString()).mul(batch.unitCost),
-          );
-          remainingQty -= take;
-        }
-
-        if (remainingQty > 0) {
-          throw new AppError(
-            ErrorCode.INVALID_OPERATION,
-            422,
-            `Insufficient stock for product ${product.name}: requested ${item.quantity}, available ${item.quantity - remainingQty}`,
-          );
-        }
       }
 
       // Create finance transaction
@@ -583,41 +515,11 @@ export class PosService {
 
   /**
    * Generate receipt
+   * @deprecated Use DocumentService.generateReceipt (lib/document.service.ts).
    */
   async generateReceipt(saleId: string): Promise<ReceiptDTO> {
-    const sale = await this.prisma.salesDocument.findUnique({
-      where: { id: saleId },
-      include: {
-        items: { include: { product: true } },
-        branch: true,
-        createdBy: true,
-      },
-    });
-
-    if (!sale) throw new AppError(ErrorCode.NOT_FOUND, 404, "Sale not found");
-
-    const company = {
-      name: process.env.COMPANY_NAME || "LUNATECH SYSTEMS LTD",
-      address: process.env.COMPANY_ADDRESS || "123 Tech Plaza, Westlands",
-      phone: process.env.COMPANY_PHONE || "+254 722 123 456",
-      email: process.env.COMPANY_EMAIL || "info@lunatech.co.ke",
-      kra_pin: process.env.COMPANY_KRA_PIN || "P051472913Q",
-    };
-
-    return {
-      sale: this.formatSalesResponse(sale, sale.items),
-      branch: {
-        name: (sale as any).branch.name,
-        address: (sale as any).branch.address || undefined,
-        phone: (sale as any).branch.phone || undefined,
-        code: (sale as any).branch.code,
-      },
-      cashier: {
-        name: (sale as any).createdBy.name,
-        email: (sale as any).createdBy.email,
-      },
-      company,
-    };
+    const { DocumentService } = await import("../../../lib/document.service");
+    return DocumentService.generateReceipt(saleId) as Promise<ReceiptDTO>;
   }
 
   /**
@@ -684,7 +586,8 @@ export class PosService {
   private calculateSubtotal(
     items: Array<{ quantity: number; unitPrice: number }>,
   ): number {
-    return items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0);
+    // @deprecated — use calculateSubtotal from lib/sales-calculator
+    return calculateSubtotal(items);
   }
 
   private calculateTax(
@@ -695,13 +598,8 @@ export class PosService {
       discount?: number;
     }>,
   ): number {
-    return items.reduce((sum, i) => {
-      const sub = i.quantity * i.unitPrice;
-      const disc = i.discount ?? 0;
-      const taxable = sub - disc;
-      const rate = i.taxRate ?? 0.16;
-      return sum + taxable * rate;
-    }, 0);
+    // @deprecated — use calculateTax from lib/sales-calculator
+    return calculateTax(items);
   }
 
   private formatSalesResponse(sale: any, items: any[]): SalesResponseDTO {

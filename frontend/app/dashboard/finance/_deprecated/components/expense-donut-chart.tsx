@@ -2,8 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import type { ExpenseCategory } from "../../app/dashboard/finance/types";
-import { formatCurrency, formatCurrencyCompact } from "../../app/dashboard/finance/lib/api";
+import type { ExpenseCategory } from "../../types";
+import { formatCurrency, formatCurrencyCompact } from "../../lib/api";
 
 interface ExpenseDonutChartProps {
   data: ExpenseCategory[];
