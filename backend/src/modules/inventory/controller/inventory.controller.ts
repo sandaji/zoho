@@ -111,7 +111,8 @@ export class InventoryController {
         "POST /inventory/adjust",
       );
 
-      const result = await this.service.adjustInventory(dto);
+      const { userId } = req.user;
+      const result = await this.service.adjustInventory(dto, userId);
 
       res.status(200).json({
         success: true,
@@ -169,7 +170,8 @@ export class InventoryController {
         "POST /inventory/transfer",
       );
 
-      const result = await this.service.transferInventory(dto);
+      const { userId } = req.user;
+      const result = await this.service.transferInventory(dto, userId);
 
       res.status(200).json({
         success: true,
@@ -258,7 +260,7 @@ export class InventoryController {
   ): Promise<void> {
     try {
       const dto: RequestTransferDTO = req.body;
-      const { id: userId } = req.user;
+      const { userId } = req.user;
 
       // Validation
       if (!dto.sourceWarehouseId || !dto.destinationWarehouseId || !dto.items) {
@@ -281,7 +283,7 @@ export class InventoryController {
   ): Promise<void> {
     try {
       const { id: transferId } = req.params;
-      const { id: userId } = req.user;
+      const { userId } = req.user;
       const dto: ApproveTransferDTO = req.body;
 
       const result = await this.service.approveTransfer(userId, transferId, dto);
@@ -298,7 +300,7 @@ export class InventoryController {
   ): Promise<void> {
     try {
       const { id: transferId } = req.params;
-      const { id: userId } = req.user;
+      const { userId } = req.user;
       const dto: DispatchTransferDTO = req.body;
 
       const result = await this.service.dispatchTransfer(userId, transferId, dto);
@@ -315,7 +317,7 @@ export class InventoryController {
   ): Promise<void> {
     try {
       const { id: transferId } = req.params;
-      const { id: userId } = req.user;
+      const { userId } = req.user;
       const dto: ReceiveTransferDTO = req.body;
 
       const result = await this.service.receiveTransfer(userId, transferId, dto);

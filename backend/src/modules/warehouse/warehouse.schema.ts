@@ -61,7 +61,18 @@ export const getStockMovementsSchema = z.object({
  * Schema for querying transfers
  */
 export const getTransfersSchema = z.object({
-  status: z.enum(["PENDING", "IN_TRANSIT", "COMPLETED", "CANCELLED"]).optional(),
+  status: z
+    .enum([
+      "DRAFT",
+      "PENDING_APPROVAL",
+      "APPROVED",
+      "DISPATCHED",
+      "PARTIALLY_RECEIVED",
+      "RECEIVED",
+      "CANCELLED",
+      "DISCREPANCY",
+    ])
+    .optional(),
   sourceId: z.string().optional(),
   targetId: z.string().optional(),
   page: z.number().int().positive().optional().default(1),
@@ -69,10 +80,15 @@ export const getTransfersSchema = z.object({
 });
 
 /**
- * Schema for updating transfer status
+ * Schema for updating transfer status.
+ * Only CANCELLED is settable directly — every other status transition
+ * (APPROVED, DISPATCHED, RECEIVED, ...) happens as a side effect of the
+ * approve/dispatch/receive workflow in InventoryService, not via a raw
+ * status PATCH. "IN_TRANSIT" was removed: it was never a valid
+ * TransferStatus value on the actual schema.
  */
 export const updateTransferStatusSchema = z.object({
-  status: z.enum(["IN_TRANSIT", "CANCELLED"]),
+  status: z.enum(["CANCELLED"]),
   notes: z.string().optional(),
 });
 

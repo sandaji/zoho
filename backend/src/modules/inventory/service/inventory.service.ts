@@ -23,6 +23,7 @@ import { Prisma } from "../../../generated";
 import { logger } from "../../../lib/logger";
 import { notFoundError, AppError, ErrorCode } from "../../../lib/errors";
 import { synchronizeBranchInventoryForWarehouse } from "../../../lib/inventory-sync";
+import { getRequestContext } from "../../../lib/async-context";
 import {
   AdjustInventoryDTO,
   AdjustmentResponseDTO,
@@ -74,12 +75,15 @@ export class InventoryService {
       quantity: number;
       unitCost: number | Prisma.Decimal;
       grnItemId?: string;
-      userId: string;
+      userId?: string;
       reference?: string;
     },
   ): Promise<any> {
-    const { productId, warehouseId, grnItemId, quantity, userId, reference } =
-      data;
+    const { productId, warehouseId, grnItemId, quantity, reference } = data;
+    // Fall back to the request-scoped userId (set by auth middleware) so
+    // callers that can't easily thread a userId through still get a real
+    // audit trail instead of a fabricated/foreign-key-violating value.
+    const userId = data.userId || getRequestContext().userId;
 
     if (!Number.isInteger(quantity) || quantity <= 0) {
       throw new AppError(
@@ -139,17 +143,25 @@ export class InventoryService {
       },
     });
 
-    await tx.stockMovement.create({
-      data: {
-        type: "INBOUND",
-        quantity,
-        productId,
-        warehouseId,
-        reference:
-          reference || (grnItemId ? `GRN item ${grnItemId}` : "Stock receipt"),
-        createdById: userId,
-      },
-    });
+    if (userId) {
+      await tx.stockMovement.create({
+        data: {
+          type: "INBOUND",
+          quantity,
+          productId,
+          warehouseId,
+          reference:
+            reference ||
+            (grnItemId ? `GRN item ${grnItemId}` : "Stock receipt"),
+          createdById: userId,
+        },
+      });
+    } else {
+      logger.warn(
+        { productId, warehouseId, quantity },
+        "receiveStock called without a resolvable userId — skipping StockMovement audit row",
+      );
+    }
 
     await synchronizeBranchInventoryForWarehouse(tx, productId, warehouseId);
 
@@ -187,10 +199,10 @@ export class InventoryService {
       productId,
       warehouseId,
       quantity: requestedQty,
-      userId,
       reference,
       salesId,
     } = data;
+    const userId = data.userId || getRequestContext().userId;
 
     if (!Number.isInteger(requestedQty) || requestedQty <= 0) {
       throw new AppError(

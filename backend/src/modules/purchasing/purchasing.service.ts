@@ -1,7 +1,7 @@
 import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
 import { PurchaseOrderStatus, Prisma } from "../../../src/generated";
-import { synchronizeBranchInventoryForWarehouse } from "../../lib/inventory-sync";
+import { InventoryService } from "../inventory/service/inventory.service";
 import PDFDocument from "pdfkit";
 
 // ============================================================================
@@ -763,42 +763,26 @@ export class PurchasingService {
 
         grnItems.push(grnItem);
 
-        // 3. Update/Create Inventory
-        // NOTE: `available` must be kept in sync with `quantity` here — it is
-        // NOT auto-derived, and POS stock checks (`available < requested`)
-        // were silently failing because this upsert previously only touched
-        // `quantity`, leaving `available` stuck at its default of 0.
-        await tx.inventory.upsert({
-          where: {
-            productId_warehouseId: {
-              productId: receivedItem.productId,
-              warehouseId: data.warehouseId,
-            },
-          },
-          create: {
-            productId: receivedItem.productId,
-            warehouseId: data.warehouseId,
-            quantity: receivedItem.quantity,
-            available: receivedItem.quantity,
-          },
-          update: {
-            quantity: {
-              increment: receivedItem.quantity,
-            },
-            available: {
-              increment: receivedItem.quantity,
-            },
-            updatedAt: new Date(),
-          },
+        // 3. Create a FIFO cost-lot batch + update the Inventory ledger, in
+        // one canonical call. Cost basis is the price actually paid on the
+        // PO line (poItem.unitPrice), not the product's reference
+        // cost_price — this is the real transaction cost the batch should
+        // carry for accurate COGS later.
+        //
+        // NOTE: previously this was a raw `tx.inventory.upsert` that never
+        // created a StockBatch at all, meaning nothing purchased through the
+        // normal PO → GRN flow had a FIFO cost lot to deplete from — any
+        // FIFO-based COGS calculation for that stock would have found zero
+        // available batches.
+        await InventoryService.receiveStock(tx, {
+          productId: receivedItem.productId,
+          warehouseId: data.warehouseId,
+          quantity: receivedItem.quantity,
+          unitCost: poItem.unitPrice,
+          grnItemId: grnItem.id,
+          userId,
+          reference: `GRN ${grnNumber}`,
         });
-
-        // Keep the branch-level read model (Products/Inventory pages) in sync
-        // with the warehouse-level source of truth (used by POS).
-        await synchronizeBranchInventoryForWarehouse(
-          tx,
-          receivedItem.productId,
-          data.warehouseId,
-        );
 
         totalReceivedQty += newReceivedQty;
         totalOrderedQty += poItem.quantity;

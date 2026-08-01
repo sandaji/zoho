@@ -1,6 +1,6 @@
 import { Prisma, type PrismaClient } from "../../generated";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { ValuationService } from "../../lib/services/valuation.service";
+import { InventoryService } from "../inventory/service/inventory.service";
 import { getRequestContext, setBusinessAction } from "../../lib/async-context";
 import { eventBus } from "../../lib/events";
 import { SALES_EVENTS } from "../../lib/domain-events";
@@ -382,13 +382,18 @@ export class SalesService {
             );
           }
 
-          // Use FIFO to deplete stock and get COGS
-          const fifoResult = await ValuationService.depleteStockFIFO(
-            tx,
-            soItem.productId,
+          // Use FIFO to deplete stock and get COGS. This also decrements
+          // the operational Inventory.quantity/available ledger and writes
+          // a StockMovement audit row — the old ValuationService wrapper
+          // this replaced only touched StockBatch, so SO dispatch never
+          // actually moved the Inventory numbers POS/other flows read.
+          const fifoResult = await InventoryService.depleteStockFIFO(tx, {
+            productId: soItem.productId,
             warehouseId,
-            dispatchItem.qtyToDispatch,
-          );
+            quantity: dispatchItem.qtyToDispatch,
+            userId: dispatchedById,
+            reference: `SO Dispatch ${soId}`,
+          });
 
           totalCogsSum = totalCogsSum.add(fifoResult.totalCost);
 

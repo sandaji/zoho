@@ -5,13 +5,11 @@ import {
   SalesDocumentStatus,
   PaymentStatus,
   PaymentMethod,
-  MovementType,
 } from "../../../generated";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { StockValidationService } from "./stock-validation.service";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { synchronizeBranchInventory } from "../../../lib/inventory-sync";
 import { logger } from "../../../lib/logger";
 import { InventoryService } from "../../inventory/service/inventory.service";
 import {
@@ -519,8 +517,9 @@ export class SalesService {
 
         // Update inventory using canonical FIFO — correct COGS, StockBatch
         // depletion, audit trail, and BranchInventory sync all in one call.
+        let totalCogs = 0;
         for (const item of preparedItems) {
-          await InventoryService.depleteStockFIFO(tx, {
+          const depletion = await InventoryService.depleteStockFIFO(tx, {
             productId: item.productId,
             warehouseId: warehouse.id,
             quantity: item.quantity,
@@ -528,6 +527,7 @@ export class SalesService {
             salesId: invoice.id,
             reference: `POS Sale - ${invoice.documentId}`,
           });
+          totalCogs += depletion.totalCost.toNumber();
         }
 
         // Record financial transaction
@@ -541,6 +541,7 @@ export class SalesService {
           total: totals.total,
           userId: userId,
           branchId: branchId,
+          cogs: totalCogs,
         });
 
         return invoice;
@@ -652,32 +653,27 @@ export class SalesService {
 
         if (warehouse) {
           for (const item of document.items) {
-            // Restore warehouse-level inventory
-            await tx.inventory.updateMany({
-              where: { productId: item.productId, warehouseId: warehouse.id },
-              data: {
-                quantity: { increment: item.quantity },
-                available: { increment: item.quantity },
-              },
+            // Restore stock with a real cost-basis StockBatch (not just a
+            // bare quantity bump) so FIFO valuation stays consistent after
+            // a void. We don't record which exact batch(es) were originally
+            // depleted for this line item, so this uses the product's
+            // current reference cost_price as the restored batch's cost —
+            // an approximation, not the exact original COGS. Tracking the
+            // real originating batch cost per sale line would need a
+            // schema change (e.g. a cost field on SalesDocumentItem) that's
+            // out of scope here.
+            const product = await tx.product.findUnique({
+              where: { id: item.productId },
+              select: { cost_price: true },
             });
-
-            // Create INBOUND movement for audit trail
-            await tx.stockMovement.create({
-              data: {
-                type: MovementType.INBOUND,
-                quantity: item.quantity,
-                productId: item.productId,
-                warehouseId: warehouse.id,
-                salesId: document.id,
-                reference: `Void of ${document.documentId}`,
-                createdById: document.createdById,
-              },
+            await InventoryService.receiveStock(tx, {
+              productId: item.productId,
+              warehouseId: warehouse.id,
+              quantity: item.quantity,
+              unitCost: product?.cost_price ?? 0,
+              userId: document.createdById,
+              reference: `Void of ${document.documentId}`,
             });
-          }
-
-          // Re-sync BranchInventory for every affected product
-          for (const productId of new Set(document.items.map((i) => i.productId))) {
-            await synchronizeBranchInventory(tx, productId, document.branchId);
           }
         }
       }
@@ -1346,30 +1342,21 @@ export class SalesService {
         for (const item of document.items) {
           const returnQty = Math.abs(item.quantity); // credit note quantities are stored negative
 
-          await tx.inventory.updateMany({
-            where: { productId: item.productId, warehouseId: warehouse.id },
-            data: {
-              quantity: { increment: returnQty },
-              available: { increment: returnQty },
-            },
+          // Same cost-basis note as voidDocument above: restores at the
+          // product's current reference cost_price rather than the exact
+          // original COGS, which isn't tracked per sale line today.
+          const product = await tx.product.findUnique({
+            where: { id: item.productId },
+            select: { cost_price: true },
           });
-
-          await tx.stockMovement.create({
-            data: {
-              type: MovementType.INBOUND,
-              quantity: returnQty,
-              productId: item.productId,
-              warehouseId: warehouse.id,
-              salesId: document.id,
-              reference: `Credit Note ${document.documentId} approved`,
-              createdById: userId,
-            },
+          await InventoryService.receiveStock(tx, {
+            productId: item.productId,
+            warehouseId: warehouse.id,
+            quantity: returnQty,
+            unitCost: product?.cost_price ?? 0,
+            userId,
+            reference: `Credit Note ${document.documentId} approved`,
           });
-        }
-
-        // Sync BranchInventory for all returned products
-        for (const productId of new Set(document.items.map((i) => i.productId))) {
-          await synchronizeBranchInventory(tx, productId, document.branchId);
         }
       }
 

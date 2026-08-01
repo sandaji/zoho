@@ -1,214 +1,118 @@
 /**
  * Warehouse Inventory Service
- * Business logic for stock transfers, adjustments, and movements.
  *
- * Uses InventoryService.depleteStockFIFO / receiveStock for transfer
- * fulfillment so FIFO cost lots, audit trail and BranchInventory are
- * all kept in sync rather than bypassing them with raw inventory.update.
+ * This previously reimplemented stock-transfer/adjustment logic against
+ * field names that don't exist on the real schema (`transferNo`,
+ * `sourceId`/`targetId`, a `quantity` field on TransferItem — the real
+ * field is `requested_qty` — and TransferStatus values like "PENDING"
+ * that were never valid enum members). Every one of these routes
+ * (`/warehouse/transfer`, `/warehouse/adjust`, ...) would have thrown at
+ * runtime on first use.
+ *
+ * Rather than maintain a second, independently-broken implementation of
+ * stock transfers/adjustments, this now delegates entirely to the
+ * canonical `InventoryService` (modules/inventory/service/inventory.service.ts).
+ *
+ * NOTE ON THE CREATE -> FULFILL CONTRACT: the routes here expose a
+ * two-call shape (create a transfer, then fulfill it) that predates
+ * InventoryService's four-stage request -> approve -> dispatch -> receive
+ * workflow (which reserves stock at approval time and can dispatch/receive
+ * partial quantities). To preserve the existing two-call contract without
+ * reintroducing a second stock-moving code path, `fulfillTransfer` here
+ * runs approve -> dispatch -> receive back-to-back for the full requested
+ * quantity. If partial fulfillment or an approval gate is ever needed,
+ * call InventoryService's four stages directly instead of this wrapper.
  */
 
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { MovementType, TransferStatus } from "../../../generated";
 import { InventoryService } from "../../inventory/service/inventory.service";
 import type {
+  CreateTransferInput,
   AdjustStockInput,
   GetStockMovementsInput,
   GetTransfersInput,
   UpdateTransferStatusInput,
 } from "../warehouse.schema";
 
-// The warehouse-level transfer schema uses sourceWarehouseId /
-// destinationWarehouseId and TransferItem.requested_qty.
-// "CreateTransferInput" from warehouse.schema maps to these.
-import type { CreateTransferInput } from "../warehouse.schema";
-
 export class WarehouseInventoryService {
+  private inventoryService = new InventoryService();
+
   /**
-   * Create a new stock transfer — verifies availability at source warehouse.
+   * Create a new stock transfer (request stage only — no stock moves yet).
    */
   async createTransfer(data: CreateTransferInput, createdById: string): Promise<any> {
-    const { sourceId, targetId, items, notes } = data;
-
-    const [sourceWarehouse, targetWarehouse] = await Promise.all([
-      prisma.warehouse.findUnique({ where: { id: sourceId } }),
-      prisma.warehouse.findUnique({ where: { id: targetId } }),
-    ]);
-
-    if (!sourceWarehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Source warehouse not found");
-    if (!targetWarehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Target warehouse not found");
-
-    for (const item of items) {
-      const inventory = await prisma.inventory.findUnique({
-        where: { productId_warehouseId: { productId: item.productId, warehouseId: sourceId } },
-        include: { product: { select: { name: true, sku: true } } },
-      });
-
-      if (!inventory) {
-        throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Product ${item.productId} not found in source warehouse`);
-      }
-      if (inventory.available < item.quantity) {
-        throw new AppError(
-          ErrorCode.INSUFFICIENT_INVENTORY,
-          400,
-          `Insufficient stock for product ${inventory.product.name} (SKU: ${inventory.product.sku}). Available: ${inventory.available}, Requested: ${item.quantity}`
-        );
-      }
-    }
-
-    // Generate document ID (e.g. TRF-20260801-ABCD)
-    const documentId = `TRF-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-
-    return prisma.stockTransfer.create({
-      data: {
-        documentId,
-        sourceWarehouseId: sourceId,
-        destinationWarehouseId: targetId,
-        notes,
-        createdById,
-        status: TransferStatus.PENDING_APPROVAL,
-        items: {
-          create: items.map((item) => ({
-            productId: item.productId,
-            requested_qty: item.quantity,
-          })),
-        },
-      },
-      include: {
-        items: { include: { product: { select: { id: true, name: true, sku: true } } } },
-        sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-        destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-      },
+    return this.inventoryService.requestTransfer(createdById, {
+      sourceWarehouseId: data.sourceId,
+      destinationWarehouseId: data.targetId,
+      items: data.items.map((item) => ({
+        productId: item.productId,
+        requested_qty: item.quantity,
+      })),
+      notes: data.notes,
     });
   }
 
   /**
-   * Fulfill/receive a stock transfer.
-   * Uses InventoryService.depleteStockFIFO (source) and receiveStock (destination)
-   * so cost lots, Inventory ledger, StockMovement audit trail, and BranchInventory
-   * are all updated atomically and correctly.
+   * Fulfill/receive a stock transfer in one call — runs approve, dispatch,
+   * and receive for the full requested quantity of every line item. See
+   * the module-level note above for why this collapses three stages into
+   * one instead of exposing them individually here.
    */
   async fulfillTransfer(transferId: string, userId: string): Promise<any> {
-    return await prisma.$transaction(async (tx) => {
-      const transfer = await tx.stockTransfer.findUnique({
-        where: { id: transferId },
-        include: {
-          items: { include: { product: true } },
-          sourceWarehouse: true,
-          destinationWarehouse: true,
-        },
-      });
+    const transfer = await prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+      include: { items: true },
+    });
+    if (!transfer) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+    }
+    if (transfer.status !== "PENDING_APPROVAL") {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        `Cannot fulfill transfer with status: ${transfer.status}. Only PENDING_APPROVAL transfers can be fulfilled.`,
+      );
+    }
 
-      if (!transfer) throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
-      if (
-        transfer.status !== TransferStatus.APPROVED &&
-        transfer.status !== TransferStatus.DISPATCHED
-      ) {
-        throw new AppError(
-          ErrorCode.VALIDATION_ERROR,
-          400,
-          `Cannot fulfill transfer with status: ${transfer.status}`
-        );
-      }
-
-      for (const item of transfer.items) {
-        const qty = item.dispatched_qty ?? item.requested_qty;
-
-        // Deplete source using FIFO cost lots
-        const fifoResult = await InventoryService.depleteStockFIFO(tx, {
-          productId: item.productId,
-          warehouseId: transfer.sourceWarehouseId,
-          quantity: qty,
-          userId,
-          reference: `Transfer to ${transfer.destinationWarehouse.name} - ${transfer.documentId}`,
-        });
-
-        // Receive at destination with weighted FIFO cost from source
-        const weightedCost = fifoResult.totalCost.div(fifoResult.totalQuantity);
-        await InventoryService.receiveStock(tx, {
-          productId: item.productId,
-          warehouseId: transfer.destinationWarehouseId,
-          quantity: qty,
-          unitCost: weightedCost,
-          userId,
-          reference: `Transfer from ${transfer.sourceWarehouse.name} - ${transfer.documentId}`,
-        });
-      }
-
-      return await tx.stockTransfer.update({
-        where: { id: transferId },
-        data: { status: TransferStatus.RECEIVED },
-        include: {
-          items: { include: { product: { select: { id: true, name: true, sku: true } } } },
-          sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-          destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-        },
-      });
+    await this.inventoryService.approveTransfer(userId, transferId, {});
+    await this.inventoryService.dispatchTransfer(userId, transferId, {
+      items: transfer.items.map((item) => ({
+        productId: item.productId,
+        dispatched_qty: item.requested_qty,
+      })),
+    });
+    return this.inventoryService.receiveTransfer(userId, transferId, {
+      items: transfer.items.map((item) => ({
+        productId: item.productId,
+        received_qty: item.requested_qty,
+        damaged_qty: 0,
+      })),
     });
   }
 
   /**
-   * Adjust stock (positive = add, negative = remove)
+   * Adjust stock (add or remove inventory). Delegates to
+   * InventoryService.adjustInventory — the canonical ledger + audit-trail
+   * path — instead of upserting `inventory` directly.
    */
   async adjustStock(data: AdjustStockInput, userId: string): Promise<any> {
-    const { warehouseId, productId, quantity, reason } = data;
-
-    return await prisma.$transaction(async (tx) => {
-      const [warehouse, product] = await Promise.all([
-        tx.warehouse.findUnique({ where: { id: warehouseId } }),
-        tx.product.findUnique({ where: { id: productId } }),
-      ]);
-
-      if (!warehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
-      if (!product) throw new AppError(ErrorCode.NOT_FOUND, 404, "Product not found");
-
-      const inventory = await tx.inventory.findUnique({
-        where: { productId_warehouseId: { productId, warehouseId } },
-      });
-
-      if (quantity < 0 && (inventory?.available ?? 0) < Math.abs(quantity)) {
-        throw new AppError(
-          ErrorCode.INSUFFICIENT_INVENTORY,
-          400,
-          `Insufficient stock for adjustment. Available: ${inventory?.available ?? 0}, Requested: ${Math.abs(quantity)}`
-        );
-      }
-
-      const updatedInventory = await tx.inventory.upsert({
-        where: { productId_warehouseId: { productId, warehouseId } },
-        create: {
-          productId, warehouseId,
-          quantity: Math.max(0, quantity), available: Math.max(0, quantity), reserved: 0,
-        },
-        update: { quantity: { increment: quantity }, available: { increment: quantity } },
-      });
-
-      const movement = await tx.stockMovement.create({
-        data: {
-          type: MovementType.ADJUSTMENT,
-          quantity: Math.abs(quantity),
-          productId,
-          warehouseId,
-          reference: reason,
-          createdById: userId,
-        },
-        include: {
-          product: { select: { id: true, name: true, sku: true } },
-          warehouse: { select: { id: true, name: true, code: true } },
-        },
-      });
-
-      // BranchInventory sync is handled by InventoryService internals; call
-      // it directly here since adjustStock doesn't go through that path.
-      const { synchronizeBranchInventoryForWarehouse } = await import("../../../lib/inventory-sync");
-      await synchronizeBranchInventoryForWarehouse(tx, productId, warehouseId);
-
-      return { movement, inventory: updatedInventory, adjustmentType: quantity > 0 ? "increase" : "decrease" };
-    });
+    return this.inventoryService.adjustInventory(
+      {
+        productId: data.productId,
+        warehouseId: data.warehouseId,
+        adjustmentType: data.quantity > 0 ? "increase" : "decrease",
+        quantity: Math.abs(data.quantity),
+        reason: "other",
+        reference: data.reason,
+      },
+      userId,
+    );
   }
 
   /**
-   * Get stock movements with filtering
+   * Get stock movements with filtering. Reads `stockMovement` directly —
+   * this table's fields were already correct in the old implementation.
    */
   async getStockMovements(params: GetStockMovementsInput): Promise<any> {
     const { warehouseId, productId, type, startDate, endDate, page = 1, limit = 50 } = params;
@@ -237,11 +141,14 @@ export class WarehouseInventoryService {
       prisma.stockMovement.count({ where }),
     ]);
 
-    return { movements, pagination: { total, page, limit, totalPages: Math.ceil(total / limit) } };
+    return {
+      movements,
+      pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   /**
-   * Get stock transfers with filtering
+   * Get stock transfers with filtering.
    */
   async getTransfers(params: GetTransfersInput): Promise<any> {
     const { status, sourceId, targetId, page = 1, limit = 50 } = params;
@@ -255,7 +162,7 @@ export class WarehouseInventoryService {
       prisma.stockTransfer.findMany({
         where,
         include: {
-          items: { include: { product: { select: { id: true, name: true, sku: true } } } },
+          items: { include: { product: { select: { id: true, name: true, sku: true, unit_price: true } } } },
           sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
           destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
         },
@@ -266,11 +173,14 @@ export class WarehouseInventoryService {
       prisma.stockTransfer.count({ where }),
     ]);
 
-    return { transfers, pagination: { total, page, limit, totalPages: Math.ceil(total / limit) } };
+    return {
+      transfers,
+      pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   /**
-   * Get a single transfer by ID
+   * Get a single transfer by ID.
    */
   async getTransferById(id: string): Promise<any> {
     const transfer = await prisma.stockTransfer.findUnique({
@@ -278,40 +188,51 @@ export class WarehouseInventoryService {
       include: {
         items: {
           include: {
-            product: { select: { id: true, name: true, sku: true } },
+            product: { select: { id: true, name: true, sku: true, unit_price: true, image_url: true } },
           },
         },
         sourceWarehouse: {
-          select: { id: true, name: true, code: true, branch: { select: { name: true } } },
+          select: { id: true, name: true, code: true, location: true, branch: { select: { name: true, city: true } } },
         },
         destinationWarehouse: {
-          select: { id: true, name: true, code: true, branch: { select: { name: true } } },
+          select: { id: true, name: true, code: true, location: true, branch: { select: { name: true, city: true } } },
         },
       },
     });
 
-    if (!transfer) throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+    if (!transfer) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+    }
+
     return transfer;
   }
 
   /**
-   * Update transfer status
+   * Update transfer status. The only status this can validly set directly
+   * (outside the approve/dispatch/receive workflow) is CANCELLED — every
+   * other status transition happens as a side effect of
+   * InventoryService.approveTransfer/dispatchTransfer/receiveTransfer.
    */
   async updateTransferStatus(
     transferId: string,
     data: UpdateTransferStatusInput,
-    _userId: string
+    _userId: string,
   ): Promise<any> {
     const transfer = await prisma.stockTransfer.findUnique({ where: { id: transferId } });
-    if (!transfer) throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
-
-    if (transfer.status === TransferStatus.RECEIVED || transfer.status === TransferStatus.CANCELLED) {
-      throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Cannot update transfer with status: ${transfer.status}`);
+    if (!transfer) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+    }
+    if (["RECEIVED", "PARTIALLY_RECEIVED", "CANCELLED"].includes(transfer.status)) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        `Cannot update transfer with status: ${transfer.status}`,
+      );
     }
 
     return prisma.stockTransfer.update({
       where: { id: transferId },
-      data: { status: data.status as TransferStatus, notes: data.notes || transfer.notes },
+      data: { status: data.status, notes: data.notes ?? transfer.notes },
       include: {
         items: { include: { product: { select: { id: true, name: true, sku: true } } } },
         sourceWarehouse: { select: { id: true, name: true, code: true } },
@@ -321,7 +242,7 @@ export class WarehouseInventoryService {
   }
 
   /**
-   * Get warehouse statistics
+   * Get warehouse statistics.
    */
   async getWarehouseStats(warehouseId?: string): Promise<any> {
     const where = warehouseId ? { warehouseId } : {};

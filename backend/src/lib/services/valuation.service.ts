@@ -25,7 +25,14 @@ export interface BatchCreateData {
 export type { FIFODepletionResult };
 
 export class ValuationService {
-  /** @deprecated use InventoryService.receiveStock (requires userId) */
+  /**
+   * @deprecated use InventoryService.receiveStock directly and pass a real
+   * userId when you have one. This wrapper has no userId in its legacy
+   * signature, so it relies on InventoryService.receiveStock's fallback to
+   * the request-scoped userId (set by auth middleware); if neither is
+   * available, the StockMovement audit row is skipped rather than written
+   * with a fabricated user reference.
+   */
   static async createBatch(tx: Prisma.TransactionClient, data: BatchCreateData): Promise<any> {
     return InventoryService.receiveStock(tx, {
       productId: data.productId,
@@ -33,11 +40,6 @@ export class ValuationService {
       quantity: data.quantity,
       unitCost: data.unitCost,
       grnItemId: data.grnItemId,
-      // No userId in the legacy signature — StockMovement audit trail is
-      // still written by receiveStock using a best-effort system marker
-      // only when a real userId is available. Callers that care about the
-      // audit trail should migrate to InventoryService.receiveStock directly.
-      userId: 'SYSTEM',
     });
   }
 
