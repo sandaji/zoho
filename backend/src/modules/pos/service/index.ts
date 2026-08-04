@@ -1,10 +1,7 @@
 import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 import { verifyPassword } from "../../../lib/password";
-import { UserPrefixSequencer } from "../../../lib/sequencer";
-import { SalesDocumentType, Prisma } from "../../../generated";
 import { calculateSubtotal, calculateTax } from "../../../lib/sales-calculator";
-import { InventoryService } from "../../inventory/service/inventory.service";
 import {
   CreateSalesDTO,
   UpdateSalesDTO,
@@ -130,7 +127,28 @@ export class PosService {
   }
 
   /**
-   * Create new sales order with inventory transaction
+   * Create new sales order with inventory transaction.
+   *
+   * NOTE ON CONSOLIDATION: this used to be a fully separate implementation
+   * of "create a paid POS invoice" — its own item-totals math, its own
+   * stock-deduction loop (which never went through FIFO/StockBatch), and
+   * its own ad-hoc FinanceTransaction row instead of a real GL posting.
+   * It's reachable at `POST /pos/sales` (top-level), a genuinely different
+   * live route from `POST /sales-documents/pos/sales` (backed by the
+   * canonical `SalesService.createPOSSale`). Rather than maintain two
+   * independently-implemented "create a POS sale" code paths, this now
+   * delegates the actual sale creation to `SalesService.createPOSSale` and
+   * only keeps the one piece of business logic that method doesn't have:
+   * the flat document-level discount + manager-approval-over-10% gate.
+   *
+   * BEHAVIOR CHANGE TO VERIFY: document numbering here previously used
+   * `UserPrefixSequencer` (salesman-prefixed invoice numbers, e.g.
+   * INV-VIN-0042). `SalesService.createPOSSale` uses the plain
+   * `SequenceService` instead (no salesman prefix) — the same scheme used
+   * by the canonical `/sales-documents/pos/sales` route. If anything
+   * downstream (receipts, reports) depends on this endpoint specifically
+   * producing prefixed numbers, flag it and prefix support can be added to
+   * the canonical service instead of reintroducing a second numbering path.
    */
   async createSales(dto: CreateSalesDTO): Promise<SalesResponseDTO> {
     const {
@@ -161,7 +179,9 @@ export class PosService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
 
-    // Map DTO items to internal structure for helpers
+    // Document-level discount approval gate. SalesService.createPOSSale only
+    // supports per-item discounts, not a flat document-level one, so this
+    // stays here rather than being duplicated into the canonical service.
     const mappedItemsForHelpers = items.map((i) => ({
       quantity: i.quantity,
       unitPrice: i.unit_price,
@@ -180,123 +200,66 @@ export class PosService {
       );
     }
 
-    const seq = await UserPrefixSequencer.getNext(
-      userId,
+    const totalTax = calculateTax(mappedItemsForHelpers);
+    const grandTotal = subtotal - discount + totalTax;
+    const amountPaid = amount_paid ?? grandTotal;
+
+    // Delegate the actual sale creation — document numbering, item totals,
+    // FIFO stock deduction (StockBatch + Inventory ledger + audit trail),
+    // and GL posting — to the canonical SalesService.
+    const { SalesService } = await import("./sales.service");
+    const invoice = await SalesService.createPOSSale({
       branchId,
-      SalesDocumentType.INVOICE,
-    );
-    const invoice_no = seq.documentId;
-    const total_tax = calculateTax(mappedItemsForHelpers);
-    const grand_total = subtotal - discount + total_tax;
-    const paid = amount_paid ?? grand_total;
-    const change = paid - grand_total;
-
-    return await this.prisma.$transaction(async (tx) => {
-      // Create sale
-      const sale = await tx.salesDocument.create({
-        data: {
-          documentId: invoice_no,
-          type: "INVOICE",
-          status: "PAID",
-          balance: 0,
-          // payment_method, // Field does not exist on SalesDocument
-          branchId,
-          createdById: userId,
-          subtotal,
-          discount,
-          // discount_approved_by, // Field missing in schema
-          tax: total_tax,
-          total: grand_total,
-          paidAmount: paid,
-          notes,
-        },
-      });
-
-      // Resolve the branch's default warehouse once — used for FIFO depletion
-      const warehouse = await tx.warehouse.findFirst({
-        where: { branchId, isActive: true },
-        select: { id: true },
-      });
-      if (!warehouse) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, `No active warehouse found for branch ${branchId}`);
-      }
-
-      // Create items + update inventory/products
-      const createdItems: any[] = [];
-      for (const item of items) {
-        const product = await tx.product.findUnique({
-          where: { id: item.productId },
-        });
-        if (!product) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            `Product not found: ${item.productId}`,
-          );
-        }
-
-        const item_subtotal = item.quantity * item.unit_price;
-        const item_discount = item.discount ?? 0;
-        const tax_rate = item.tax_rate ?? product.tax_rate ?? 0.16;
-        const tax_amount = (item_subtotal - item_discount) * tax_rate;
-        const amount = item_subtotal - item_discount + tax_amount;
-
-        const salesItem = await tx.salesDocumentItem.create({
-          data: {
-            salesDocumentId: sale.id,
-            productId: item.productId,
-            description: product.name || item.productId,
-            quantity: item.quantity,
-            unitPrice: item.unit_price,
-            taxRate: tax_rate,
-            discount: item_discount,
-            // discount_percent: item.discount_percent ?? 0, // Field missing
-            subtotal: item_subtotal,
-            taxAmount: tax_amount,
-            total: amount,
-          },
-          include: { product: true },
-        });
-        createdItems.push(salesItem);
-
-        // Deplete stock using canonical InventoryService (FIFO cost lots,
-        // Inventory ledger, StockMovement audit trail, BranchInventory sync).
-        await InventoryService.depleteStockFIFO(tx, {
-          productId: item.productId,
-          warehouseId: warehouse.id,
-          quantity: item.quantity,
-          userId,
-          salesId: sale.id,
-          reference: invoice_no,
-        });
-      }
-
-      // Create finance transaction
-      await tx.financeTransaction.create({
-        data: {
-          type: "income",
-          reference_no: `FIN-${invoice_no}`,
-          description: `Sales transaction ${invoice_no}`,
-          amount: grand_total,
-          // salesId: sale.id, // Relation removed
-          payment_method,
-          reference_doc: invoice_no,
-        },
-      });
-
-      logger.info(
-        {
-          saleId: sale.id,
-          invoice_no,
-          branchId,
-          userId,
-          grand_total,
-        },
-        "Sale created successfully",
-      );
-
-      return this.formatSalesResponse(sale, createdItems);
+      userId,
+      items: items.map((i) => ({
+        productId: i.productId,
+        quantity: i.quantity,
+        unitPrice: i.unit_price,
+        taxRate: i.tax_rate,
+        discount: i.discount,
+      })),
+      paymentMethod: payment_method,
+      amountPaid,
+      notes,
     });
+
+    // Fold the flat document-level discount into the created invoice
+    // (per-item discounts are already reflected in SalesService's totals).
+    const finalInvoice = discount > 0
+      ? await this.prisma.salesDocument.update({
+          where: { id: invoice.id },
+          data: {
+            discount: { increment: discount },
+            total: { decrement: discount },
+            balance: { decrement: discount },
+          },
+          include: {
+            items: { include: { product: true } },
+            branch: true,
+            createdBy: true,
+          },
+        })
+      : await this.prisma.salesDocument.findUniqueOrThrow({
+          where: { id: invoice.id },
+          include: {
+            items: { include: { product: true } },
+            branch: true,
+            createdBy: true,
+          },
+        });
+
+    logger.info(
+      {
+        saleId: finalInvoice.id,
+        invoice_no: finalInvoice.documentId,
+        branchId,
+        userId,
+        grand_total: finalInvoice.total,
+      },
+      "Sale created successfully (via canonical SalesService)",
+    );
+
+    return this.formatSalesResponse(finalInvoice, finalInvoice.items);
   }
 
   /**

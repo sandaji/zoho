@@ -30,14 +30,14 @@ interface InventoryItem {
   category: string;
   currentStock: number;
   inTransit: number;
-  minStock: number;
-  maxStock: number;
-  unit: string;
-  costPrice: number;
-  sellingPrice: number;
-  lastRestocked: string;
-  status: "in_stock" | "low_stock" | "out_of_stock";
-  branch: string;
+  minStock?: number;
+  maxStock?: number;
+  unit?: string;
+  costPrice?: number;
+  sellingPrice?: number;
+  lastRestocked?: string;
+  status?: "in_stock" | "low_stock" | "out_of_stock";
+  branch?: string;
 }
 
 interface EnhancedInventoryTableProps {

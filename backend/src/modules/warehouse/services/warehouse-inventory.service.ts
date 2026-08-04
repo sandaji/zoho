@@ -33,6 +33,7 @@ import type {
   GetStockMovementsInput,
   GetTransfersInput,
   UpdateTransferStatusInput,
+  FulfillTransferInput,
 } from "../warehouse.schema";
 
 export class WarehouseInventoryService {
@@ -59,7 +60,11 @@ export class WarehouseInventoryService {
    * the module-level note above for why this collapses three stages into
    * one instead of exposing them individually here.
    */
-  async fulfillTransfer(transferId: string, userId: string): Promise<any> {
+  async fulfillTransfer(
+    transferId: string,
+    userId: string,
+    dispatchInfo: FulfillTransferInput,
+  ): Promise<any> {
     const transfer = await prisma.stockTransfer.findUnique({
       where: { id: transferId },
       include: { items: true },
@@ -81,6 +86,10 @@ export class WarehouseInventoryService {
         productId: item.productId,
         dispatched_qty: item.requested_qty,
       })),
+      dispatchMode: dispatchInfo.dispatchMode,
+      driverId: dispatchInfo.driverId,
+      truckId: dispatchInfo.truckId,
+      vehicleRegistration: dispatchInfo.vehicleRegistration,
     });
     return this.inventoryService.receiveTransfer(userId, transferId, {
       items: transfer.items.map((item) => ({
@@ -95,6 +104,7 @@ export class WarehouseInventoryService {
    * Adjust stock (add or remove inventory). Delegates to
    * InventoryService.adjustInventory — the canonical ledger + audit-trail
    * path — instead of upserting `inventory` directly.
+   * @deprecated This method will be removed in a future version. Use `InventoryService.adjustInventory` directly.
    */
   async adjustStock(data: AdjustStockInput, userId: string): Promise<any> {
     return this.inventoryService.adjustInventory(

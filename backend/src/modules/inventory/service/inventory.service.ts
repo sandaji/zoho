@@ -34,6 +34,9 @@ import {
   InventoryItemDTO,
   RequestTransferDTO,
   ApproveTransferDTO,
+  StartPickingDTO,
+  CompletePickingDTO,
+  VerifyTransferDTO,
   DispatchTransferDTO,
   ReceiveTransferDTO,
 } from "../dto";
@@ -184,34 +187,19 @@ export class InventoryService {
    *   `ValuationService` wrapper that predates this audit trail; new code
    *   should always pass it.
    */
-  static async depleteStockFIFO(
+  /**
+   * Core FIFO batch-relief logic, shared by depleteStockFIFO (sales/SO
+   * dispatch — which also moves the Inventory ledger) and dispatchTransfer
+   * (warehouse transfers — which moves `reserved`→`quantity` instead of
+   * `available`→`quantity`, so it needs the batch relief without
+   * depleteStockFIFO's own Inventory update).
+   */
+  private static async depleteBatchesOnly(
     tx: Prisma.TransactionClient,
-    data: {
-      productId: string;
-      warehouseId: string;
-      quantity: number;
-      userId?: string;
-      reference?: string;
-      salesId?: string;
-    },
-  ): Promise<FIFODepletionResult> {
-    const {
-      productId,
-      warehouseId,
-      quantity: requestedQty,
-      reference,
-      salesId,
-    } = data;
-    const userId = data.userId || getRequestContext().userId;
-
-    if (!Number.isInteger(requestedQty) || requestedQty <= 0) {
-      throw new AppError(
-        ErrorCode.INVALID_INPUT,
-        400,
-        "Requested quantity must be a positive integer",
-      );
-    }
-
+    productId: string,
+    warehouseId: string,
+    requestedQty: number,
+  ): Promise<{ totalCost: Prisma.Decimal; batchesUsed: FIFOBatchUsed[] }> {
     const availableBatches = await tx.stockBatch.findMany({
       where: { productId, warehouseId, isDepleted: false },
       orderBy: { receivedAt: "asc" }, // FIFO: oldest first
@@ -259,6 +247,44 @@ export class InventoryService {
 
       remainingQty -= quantityToTake;
     }
+
+    return { totalCost, batchesUsed };
+  }
+
+  static async depleteStockFIFO(
+    tx: Prisma.TransactionClient,
+    data: {
+      productId: string;
+      warehouseId: string;
+      quantity: number;
+      userId?: string;
+      reference?: string;
+      salesId?: string;
+    },
+  ): Promise<FIFODepletionResult> {
+    const {
+      productId,
+      warehouseId,
+      quantity: requestedQty,
+      reference,
+      salesId,
+    } = data;
+    const userId = data.userId || getRequestContext().userId;
+
+    if (!Number.isInteger(requestedQty) || requestedQty <= 0) {
+      throw new AppError(
+        ErrorCode.INVALID_INPUT,
+        400,
+        "Requested quantity must be a positive integer",
+      );
+    }
+
+    const { totalCost, batchesUsed } = await InventoryService.depleteBatchesOnly(
+      tx,
+      productId,
+      warehouseId,
+      requestedQty,
+    );
 
     const inventoryUpdate = await tx.inventory.updateMany({
       where: { productId, warehouseId, available: { gte: requestedQty } },
@@ -755,11 +781,43 @@ export class InventoryService {
         sourceWarehouse: true,
         destinationWarehouse: true,
         items: { include: { product: true } },
-        createdBy: true,
-        receivedBy: true,
+        createdBy: { select: { id: true, name: true, email: true } },
+        approvedBy: { select: { id: true, name: true, email: true } },
+        pickedBy: { select: { id: true, name: true, email: true } },
+        verifiedBy: { select: { id: true, name: true, email: true } },
+        driver: { select: { id: true, name: true, phone: true } },
+        truck: true,
+        receivedBy: { select: { id: true, name: true, email: true } },
       },
       orderBy: { createdAt: "desc" },
     });
+  }
+
+  /**
+   * Get a single transfer with full line-item detail. Previously referenced
+   * by InventoryController's GET /inventory/transfers/:id route but never
+   * implemented — that route was throwing at runtime.
+   */
+  async getTransferById(id: string): Promise<any> {
+    const transfer = await this.prisma.stockTransfer.findUnique({
+      where: { id },
+      include: {
+        sourceWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
+        destinationWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
+        items: { include: { product: { select: { id: true, name: true, sku: true } } } },
+        createdBy: { select: { id: true, name: true, email: true } },
+        approvedBy: { select: { id: true, name: true, email: true } },
+        pickedBy: { select: { id: true, name: true, email: true } },
+        verifiedBy: { select: { id: true, name: true, email: true } },
+        driver: { select: { id: true, name: true, phone: true } },
+        truck: true,
+        receivedBy: { select: { id: true, name: true, email: true } },
+      },
+    });
+
+    if (!transfer) throw notFoundError("Stock transfer", id);
+
+    return transfer;
   }
 
   async requestTransfer(userId: string, dto: RequestTransferDTO): Promise<any> {
@@ -780,7 +838,22 @@ export class InventoryService {
     }
 
     return await this.prisma.$transaction(async (tx) => {
-      const documentId = await SequenceService.getNextNumber("TRANSFER", "HQ"); // Assuming a default branch for transfers
+      // Resolve the real branch behind the source warehouse — previously this
+      // passed the literal placeholder string "HQ" as branchId, which isn't
+      // a real Branch.id, so document_sequences (FK-linked to branches)
+      // failed with a foreign key violation on every transfer request.
+      const sourceWarehouseForSeq = await tx.warehouse.findUnique({
+        where: { id: dto.sourceWarehouseId },
+        select: { branchId: true },
+      });
+      if (!sourceWarehouseForSeq) {
+        throw notFoundError("Warehouse", dto.sourceWarehouseId);
+      }
+
+      const documentId = await SequenceService.getNextNumber(
+        "TRANSFER",
+        sourceWarehouseForSeq.branchId,
+      );
 
       const transfer = await tx.stockTransfer.create({
         data: {
@@ -873,32 +946,220 @@ export class InventoryService {
 
       const updatedTransfer = await tx.stockTransfer.update({
         where: { id: transferId },
-        data: { status: "APPROVED", notes: dto.notes },
+        data: {
+          status: "APPROVED",
+          notes: dto.notes,
+          approvedById: userId,
+          approvedAt: new Date(),
+        },
       });
 
       logger.info(
         { transferId: updatedTransfer.id },
         "Stock transfer approved and stock reserved",
       );
-      return updatedTransfer;
+
+      // Soft segregation-of-duties check: the same person requesting and
+      // approving a transfer isn't blocked (some teams are too small for
+      // strict separation), but it's surfaced as a warning so whoever's
+      // looking at the response/UI knows to double-check.
+      const warning =
+        transfer.createdById === userId
+          ? "This transfer was approved by the same person who requested it."
+          : undefined;
+
+      return { ...updatedTransfer, warning };
     });
   }
 
   /**
-   * NOTE ON COSTING: this dispatch step currently prices dispatched units
-   * at flat `product.cost_price` (a master-data reference price) rather
-   * than depleting real FIFO cost lots the way POS/SO-dispatch now do via
-   * `InventoryService.depleteStockFIFO`. Carrying true FIFO cost across a
-   * warehouse transfer means relieving batches at the source AND creating
-   * a new batch at the destination once goods are received — a bigger
-   * design change than this pass covers, so it's called out here rather
-   * than silently left inconsistent. Flagging for a follow-up pass.
+   * Stage: Start Picking (APPROVED -> PICKING). Claims the pick task.
+   */
+  async startPicking(
+    userId: string,
+    transferId: string,
+    dto: StartPickingDTO,
+  ): Promise<any> {
+    const transfer = await this.prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+    });
+    if (!transfer) throw notFoundError("Stock transfer", transferId);
+    if (transfer.status !== "APPROVED") {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Transfer must be in APPROVED status to start picking",
+      );
+    }
+
+    const updated = await this.prisma.stockTransfer.update({
+      where: { id: transferId },
+      data: {
+        status: "PICKING",
+        pickedById: userId,
+        pickedAt: new Date(),
+        notes: dto.notes ?? transfer.notes,
+      },
+    });
+
+    logger.info({ transferId: updated.id, userId }, "Stock transfer picking started");
+    return updated;
+  }
+
+  /**
+   * Stage: Complete Picking (stays in PICKING, sets pickingCompletedAt).
+   * Does not move stock — picking is a staging/labor step; nothing
+   * physically leaves the warehouse until dispatch. Records picked_qty per
+   * item purely as a data point for the verifier to check against
+   * requested_qty.
+   */
+  async completePicking(
+    userId: string,
+    transferId: string,
+    dto: CompletePickingDTO,
+  ): Promise<any> {
+    const transfer = await this.prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+      include: { items: true },
+    });
+    if (!transfer) throw notFoundError("Stock transfer", transferId);
+    if (transfer.status !== "PICKING") {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Transfer must be in PICKING status to record picked quantities",
+      );
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      for (const item of dto.items) {
+        const originalItem = transfer.items.find((i) => i.productId === item.productId);
+        if (!originalItem) continue;
+        if (item.picked_qty < 0 || item.picked_qty > originalItem.requested_qty) {
+          throw new AppError(
+            ErrorCode.VALIDATION_ERROR,
+            400,
+            `picked_qty for product ${item.productId} must be between 0 and the requested quantity (${originalItem.requested_qty})`,
+          );
+        }
+        await tx.transferItem.update({
+          where: { id: originalItem.id },
+          data: { picked_qty: item.picked_qty },
+        });
+      }
+
+      const updated = await tx.stockTransfer.update({
+        where: { id: transferId },
+        data: {
+          pickingCompletedAt: new Date(),
+          notes: dto.notes ?? transfer.notes,
+        },
+      });
+
+      logger.info({ transferId: updated.id, userId }, "Stock transfer picking completed, awaiting verification");
+      return updated;
+    });
+  }
+
+  /**
+   * Stage: Verify (PICKING -> VERIFIED). Requires pickingCompletedAt to
+   * already be set. Deliberately gated on a different permission from
+   * picking (inventory.transfer.verify vs .pick) so the same person
+   * doesn't have to fill both roles — that's enforced by RBAC, not here,
+   * but this method still requires the picking step to have actually run.
+   */
+  async verifyTransfer(
+    userId: string,
+    transferId: string,
+    dto: VerifyTransferDTO,
+  ): Promise<any> {
+    const transfer = await this.prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+    });
+    if (!transfer) throw notFoundError("Stock transfer", transferId);
+    if (transfer.status !== "PICKING") {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Transfer must be in PICKING status to verify",
+      );
+    }
+    if (!transfer.pickingCompletedAt) {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Picking must be completed (picked quantities recorded) before this transfer can be verified",
+      );
+    }
+
+    const updated = await this.prisma.stockTransfer.update({
+      where: { id: transferId },
+      data: {
+        status: "VERIFIED",
+        verifiedById: userId,
+        verifiedAt: new Date(),
+        notes: dto.notes ?? transfer.notes,
+      },
+    });
+
+    logger.info({ transferId: updated.id, userId }, "Stock transfer verified");
+
+    // Same soft segregation-of-duties check as approveTransfer, but for
+    // picker vs. verifier — allowed, but flagged.
+    const warning =
+      transfer.pickedById === userId
+        ? "This transfer was verified by the same person who picked it."
+        : undefined;
+
+    return { ...updated, warning };
+  }
+
+  /**
+   * Dispatches reserved stock from the source warehouse. Prices the
+   * dispatched units at the real weighted FIFO cost (via
+   * depleteBatchesOnly) rather than the flat product.cost_price reference
+   * price this used to fall back to, and stores that cost on the
+   * TransferItem so receiveTransfer can create a destination StockBatch
+   * carrying the correct cost basis.
+   *
+   * Also records dispatch mode (RIDER or TRUCK), the driver, and a vehicle
+   * registration — required so every transfer has an accountable trail of
+   * who moved it and how.
    */
   async dispatchTransfer(
     userId: string,
     transferId: string,
     dto: DispatchTransferDTO,
   ): Promise<any> {
+    if (!dto.dispatchMode || !["RIDER", "TRUCK"].includes(dto.dispatchMode)) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "dispatchMode must be 'RIDER' or 'TRUCK'",
+      );
+    }
+    if (!dto.driverId) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "driverId is required to dispatch a transfer",
+      );
+    }
+    if (dto.dispatchMode === "RIDER" && !dto.truckId && !dto.vehicleRegistration) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "vehicleRegistration is required for rider dispatch (e.g. a motorbike plate number)",
+      );
+    }
+    if (dto.dispatchMode === "TRUCK" && !dto.truckId && !dto.vehicleRegistration) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "Either truckId (fleet-tracked truck) or vehicleRegistration is required for truck dispatch",
+      );
+    }
+
     return await this.prisma.$transaction(async (tx) => {
       const transfer = await tx.stockTransfer.findUnique({
         where: { id: transferId },
@@ -906,12 +1167,39 @@ export class InventoryService {
       });
 
       if (!transfer) throw notFoundError("Stock transfer");
-      if (transfer.status !== "APPROVED") {
+      if (transfer.status !== "VERIFIED") {
         throw new AppError(
           ErrorCode.INVALID_STATUS,
           400,
-          "Transfer must be in APPROVED status to dispatch",
+          "Transfer must be in VERIFIED status to dispatch",
         );
+      }
+
+      const driver = await tx.user.findUnique({
+        where: { id: dto.driverId },
+        select: { id: true },
+      });
+      if (!driver) throw notFoundError("User (driver)", dto.driverId);
+
+      // Resolve the vehicle registration to store: prefer an explicit value,
+      // otherwise fall back to the linked Truck's registration so every
+      // dispatch has a human-readable plate/reg number even when only
+      // truckId was supplied.
+      let vehicleRegistration = dto.vehicleRegistration;
+      if (dto.truckId) {
+        const truck = await tx.truck.findUnique({
+          where: { id: dto.truckId },
+          select: { id: true, registration: true, isActive: true },
+        });
+        if (!truck) throw notFoundError("Truck", dto.truckId);
+        if (!truck.isActive) {
+          throw new AppError(
+            ErrorCode.VALIDATION_ERROR,
+            400,
+            "Selected truck is not active",
+          );
+        }
+        vehicleRegistration = vehicleRegistration || truck.registration;
       }
 
       for (const item of dto.items) {
@@ -935,10 +1223,23 @@ export class InventoryService {
           );
         }
 
-        // TODO(follow-up): see method-level note — replace with FIFO batch cost.
+        // Relieve real FIFO cost lots at the source to get the true
+        // weighted unit cost for what's being dispatched — replaces the
+        // flat product.cost_price reference price this used to fall back
+        // to. This does NOT touch the Inventory ledger (unlike
+        // depleteStockFIFO) because dispatch here moves `reserved`→physical
+        // exit, not `available`→physical exit; the ledger update below
+        // handles that explicitly.
+        const { totalCost } = await InventoryService.depleteBatchesOnly(
+          tx,
+          item.productId,
+          transfer.sourceWarehouseId,
+          item.dispatched_qty,
+        );
         const unitCost =
-          (await tx.product.findUnique({ where: { id: item.productId } }))
-            ?.cost_price || 0;
+          item.dispatched_qty > 0
+            ? totalCost.div(item.dispatched_qty)
+            : new Prisma.Decimal(0);
 
         await tx.inventory.update({
           where: { id: inventory.id },
@@ -1002,6 +1303,8 @@ export class InventoryService {
           status: "DISPATCHED",
           driverId: dto.driverId,
           truckId: dto.truckId,
+          dispatchMode: dto.dispatchMode,
+          vehicleRegistration,
           dispatchedAt: new Date(),
         },
       });
@@ -1048,37 +1351,33 @@ export class InventoryService {
         if (variance !== 0) hasDiscrepancy = true;
         if (item.received_qty < originalItem.dispatched_qty) isPartial = true;
 
-        await tx.inventory.upsert({
+        // Release the in-transit `reserved` hold that dispatchTransfer put
+        // on the destination warehouse (previously this was never released
+        // — every completed transfer left `reserved` permanently inflated
+        // at the destination by the dispatched quantity).
+        await tx.inventory.update({
           where: {
             productId_warehouseId: {
               productId: item.productId,
               warehouseId: transfer.destinationWarehouseId,
             },
           },
-          update: {
-            quantity: { increment: item.received_qty },
-            available: { increment: item.received_qty },
-          },
-          create: {
-            productId: item.productId,
-            warehouseId: transfer.destinationWarehouseId,
-            quantity: item.received_qty,
-            available: item.received_qty,
-            reserved: 0,
-          },
+          data: { reserved: { decrement: originalItem.dispatched_qty } },
         });
 
-        await tx.stockMovement.create({
-          data: {
-            type: "TRANSFER_IN",
-            quantity: item.received_qty,
+        if (item.received_qty > 0) {
+          // Create a real StockBatch at the destination carrying the FIFO
+          // cost captured at dispatch time (previously this was a raw
+          // Inventory upsert with no cost basis at all).
+          await InventoryService.receiveStock(tx, {
             productId: item.productId,
             warehouseId: transfer.destinationWarehouseId,
-            transferId: transfer.id,
-            createdById: userId,
+            quantity: item.received_qty,
+            unitCost: originalItem.unitCost ?? 0,
+            userId,
             reference: `Receipt for Transfer ${transfer.documentId}`,
-          },
-        });
+          });
+        }
 
         if (item.damaged_qty > 0) {
           logger.warn(
@@ -1101,11 +1400,6 @@ export class InventoryService {
           tx,
           item.productId,
           transfer.destinationWarehouseId,
-        );
-        await synchronizeBranchInventoryForWarehouse(
-          tx,
-          item.productId,
-          transfer.sourceWarehouseId,
         );
       }
 

@@ -49,6 +49,7 @@ model User {
   createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
   receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
   driverTransfers         StockTransfer[]         @relation("DriverTransfers")
+  approvedTransfers       StockTransfer[]         @relation("ApprovedTransfers")
   roles                   RoleAssignment[]
   branch                  Branch?                 @relation(fields: [branchId], references: [id])
 
@@ -323,6 +324,10 @@ model StockTransfer {
   notes                  String?
   truckId                String?
   driverId               String?
+  dispatchMode           DispatchMode?
+  vehicleRegistration    String?
+  approvedById           String?
+  approvedAt             DateTime?
   dispatchedAt           DateTime?
   receivedAt             DateTime?
   receivedById           String?
@@ -331,6 +336,7 @@ model StockTransfer {
   updatedAt              DateTime        @updatedAt
   stockMovements         StockMovement[]
   createdBy              User            @relation("CreatedTransfers", fields: [createdById], references: [id])
+  approvedBy             User?           @relation("ApprovedTransfers", fields: [approvedById], references: [id])
   receivedBy             User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
   sourceWarehouse        Warehouse       @relation("SourceTransfers", fields: [sourceWarehouseId], references: [id])
   destinationWarehouse   Warehouse       @relation("TargetTransfers", fields: [destinationWarehouseId], references: [id])
@@ -342,6 +348,7 @@ model StockTransfer {
   @@index([sourceWarehouseId])
   @@index([destinationWarehouseId])
   @@index([createdAt])
+  @@index([approvedById])
   @@map("stock_transfers")
 }
 
@@ -1711,6 +1718,13 @@ enum TransferStatus {
   DISCREPANCY
 
   @@map("transfer_status")
+}
+
+enum DispatchMode {
+  RIDER
+  TRUCK
+
+  @@map("dispatch_mode")
 }
 
 enum JournalType {

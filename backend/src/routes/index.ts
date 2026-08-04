@@ -13,6 +13,7 @@ import { PayrollController } from "../modules/finance/controller/payroll.control
 import { BranchController } from "../modules/finance/controller/branch.controller";
 import { authMiddleware } from "../lib/auth";
 import { requirePermission } from "../middleware/rbac.middleware";
+import { hasAnyPermission } from "../middleware/rbac.middleware";
 import productRoutes from "../modules/products/routes/product.routes";
 import branchRoutes from "./branches.routes";
 import employeeRoutes from "./employees.routes";
@@ -332,6 +333,7 @@ router.post(
 router.get(
   "/inventory/transfers",
   authMiddleware,
+  requirePermission("inventory.stock.view"),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.listTransfers(req, res, next),
 );
@@ -340,6 +342,7 @@ router.get(
 router.get(
   "/inventory/transfers/:id",
   authMiddleware,
+  requirePermission("inventory.stock.view"),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.getTransfer(req, res, next),
 );
@@ -348,7 +351,7 @@ router.get(
 router.post(
   "/inventory/transfers/request",
   authMiddleware,
-  requirePermission("inventory.stock.adjust"),
+  hasAnyPermission(["inventory.transfer.request", "inventory.stock.adjust"]),
   validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.requestTransfer(req, res, next),
@@ -358,27 +361,57 @@ router.post(
 router.post(
   "/inventory/transfers/:id/approve",
   authMiddleware,
-  requirePermission("inventory.stock.adjust"),
+  hasAnyPermission(["inventory.transfer.approve", "inventory.stock.adjust"]),
   validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.approveTransfer(req, res, next),
 );
 
-// POST /inventory/transfers/:id/dispatch - Stage 3: Dispatch a transfer
+// POST /inventory/transfers/:id/start-picking - Stage 3: Claim the pick task
+router.post(
+  "/inventory/transfers/:id/start-picking",
+  authMiddleware,
+  hasAnyPermission(["inventory.transfer.pick", "inventory.stock.adjust"]),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.startPicking(req, res, next),
+);
+
+// POST /inventory/transfers/:id/complete-picking - Stage 4: Record picked quantities
+router.post(
+  "/inventory/transfers/:id/complete-picking",
+  authMiddleware,
+  hasAnyPermission(["inventory.transfer.pick", "inventory.stock.adjust"]),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.completePicking(req, res, next),
+);
+
+// POST /inventory/transfers/:id/verify - Stage 5: Verify picked items
+router.post(
+  "/inventory/transfers/:id/verify",
+  authMiddleware,
+  hasAnyPermission(["inventory.transfer.verify", "inventory.stock.adjust"]),
+  validateFiscalPeriod(),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.verifyTransfer(req, res, next),
+);
+
+// POST /inventory/transfers/:id/dispatch - Stage 6: Dispatch a transfer
 router.post(
   "/inventory/transfers/:id/dispatch",
   authMiddleware,
-  requirePermission("inventory.stock.adjust"),
+  hasAnyPermission(["inventory.transfer.dispatch", "inventory.stock.adjust"]),
   validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.dispatchTransfer(req, res, next),
 );
 
-// POST /inventory/transfers/:id/receive - Stage 4: Receive a transfer
+// POST /inventory/transfers/:id/receive - Stage 7: Receive a transfer
 router.post(
   "/inventory/transfers/:id/receive",
   authMiddleware,
-  requirePermission("inventory.stock.adjust"),
+  hasAnyPermission(["inventory.transfer.receive", "inventory.stock.adjust"]),
   validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.receiveTransfer(req, res, next),

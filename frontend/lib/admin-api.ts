@@ -155,6 +155,8 @@ export interface StockTransfer {
     | "DRAFT"
     | "PENDING_APPROVAL"
     | "APPROVED"
+    | "PICKING"
+    | "VERIFIED"
     | "DISPATCHED"
     | "PARTIALLY_RECEIVED"
     | "RECEIVED"
@@ -167,14 +169,29 @@ export interface StockTransfer {
   items: StockTransferItem[];
   notes: string | null;
   truckId: string | null;
+  truck: { id: string; registration: string; model: string } | null;
   driverId: string | null;
+  driver: { id: string; name: string; phone: string | null } | null;
+  dispatchMode: "RIDER" | "TRUCK" | null;
+  vehicleRegistration: string | null;
   dispatchedAt: string | null;
+  approvedById: string | null;
+  approvedBy: { id: string; name: string } | null;
+  approvedAt: string | null;
+  pickedById: string | null;
+  pickedBy: { id: string; name: string } | null;
+  pickedAt: string | null;
+  pickingCompletedAt: string | null;
+  verifiedById: string | null;
+  verifiedBy: { id: string; name: string } | null;
+  verifiedAt: string | null;
   receivedAt: string | null;
   createdById: string;
-  issuedBy: { name: string };
+  createdBy: { id: string; name: string };
   receivedBy: { name: string } | null;
   createdAt: string;
   updatedAt: string;
+  availableActions?: Array<{ action: string; label: string }>;
 }
 
 export interface StockTransferItem {
@@ -186,6 +203,7 @@ export interface StockTransferItem {
     sku: string;
   };
   requested_qty: number;
+  picked_qty: number | null;
   dispatched_qty: number | null;
   received_qty: number | null;
   damaged_qty: number | null;
@@ -206,13 +224,31 @@ export interface ApproveStockTransferPayload {
   notes?: string;
 }
 
+export interface StartPickingPayload {
+  notes?: string;
+}
+
+export interface CompletePickingPayload {
+  items: {
+    productId: string;
+    picked_qty: number;
+  }[];
+  notes?: string;
+}
+
+export interface VerifyTransferPayload {
+  notes?: string;
+}
+
 export interface DispatchStockTransferPayload {
   items: {
     productId: string;
     dispatched_qty: number;
   }[];
-  driverId?: string;
+  dispatchMode: "RIDER" | "TRUCK";
+  driverId: string;
   truckId?: string;
+  vehicleRegistration?: string;
 }
 
 export interface ReceiveStockTransferPayload {
@@ -469,6 +505,60 @@ export const approveStockTransfer = async (
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to approve stock transfer");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const startPickingStockTransfer = async (
+  token: string,
+  transferId: string,
+  payload: StartPickingPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/start-picking`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to start picking");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const completePickingStockTransfer = async (
+  token: string,
+  transferId: string,
+  payload: CompletePickingPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/complete-picking`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to complete picking");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const verifyStockTransfer = async (
+  token: string,
+  transferId: string,
+  payload: VerifyTransferPayload
+): Promise<StockTransfer> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/verify`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to verify stock transfer");
   }
   const { data } = await response.json();
   return data;

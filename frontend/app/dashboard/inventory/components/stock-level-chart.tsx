@@ -8,7 +8,7 @@ interface InventoryItem {
   name: string;
   category: string;
   currentStock: number;
-  minStock: number;
+  minStock?: number;
   maxStock: number;
   unit: string;
   costPrice: number;

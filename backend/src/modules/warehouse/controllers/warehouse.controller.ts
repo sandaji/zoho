@@ -8,6 +8,7 @@ import { WarehouseInventoryService } from "../services/warehouse-inventory.servi
 import { WarehouseCrudService } from "../services/warehouse-crud.service";
 import {
   createTransferSchema,
+  fulfillTransferSchema,
   adjustStockSchema,
   getStockMovementsSchema,
   getTransfersSchema,
@@ -220,9 +221,11 @@ export class WarehouseController {
       if (!id) {
         throw new AppError(ErrorCode.NOT_FOUND, 400, "Transfer ID is required");
       }
+      const validated = fulfillTransferSchema.parse(req.body);
       const transfer = await this.inventoryService.fulfillTransfer(
         id as string,
         userId,
+        validated,
       );
 
       res.json({
@@ -238,6 +241,7 @@ export class WarehouseController {
   /**
    * Adjust stock (increase or decrease)
    * POST /warehouse/adjust
+   * @deprecated This endpoint is deprecated and will be removed in a future version. Use `POST /inventory/adjust` instead.
    */
   async adjustStock(
     req: Request,

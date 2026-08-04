@@ -542,6 +542,14 @@ export const TransferStatus: {
 export type TransferStatus = (typeof TransferStatus)[keyof typeof TransferStatus]
 
 
+export const DispatchMode: {
+  RIDER: 'RIDER',
+  TRUCK: 'TRUCK'
+};
+
+export type DispatchMode = (typeof DispatchMode)[keyof typeof DispatchMode]
+
+
 export const JournalType: {
   sale: 'sale',
   purchase: 'purchase',
@@ -885,6 +893,10 @@ export type TransferStatus = $Enums.TransferStatus
 
 export const TransferStatus: typeof $Enums.TransferStatus
 
+export type DispatchMode = $Enums.DispatchMode
+
+export const DispatchMode: typeof $Enums.DispatchMode
+
 export type JournalType = $Enums.JournalType
 
 export const JournalType: typeof $Enums.JournalType
@@ -1037,7 +1049,7 @@ export class PrismaClient<
    * Read more in our [docs](https://pris.ly/d/client).
    */
 
-  constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
+  constructor(optionsArg ?: Prisma.PrismaClientConstructorArgs<ClientOptions>);
   $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): PrismaClient;
 
   /**
@@ -1897,8 +1909,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.8.0
-   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
+   * Prisma Client JS version: 7.9.1
+   * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
    */
   export type PrismaVersion = {
     client: string
@@ -2033,6 +2045,19 @@ export namespace Prisma {
   };
 
   /**
+   * Resolved type of the argument passed to the `PrismaClient` constructor.
+   *
+   * When called without a narrower options type (the common case), this resolves
+   * to `PrismaClientOptions` directly, which produces a clear TypeScript error
+   * message (`not assignable to parameter of type 'PrismaClientOptions'`) when
+   * the argument is missing or incomplete. When the user supplies a narrower
+   * options type (e.g. via a literal), it falls back to `Subset` to keep
+   * filtering out unknown properties.
+   */
+  export type PrismaClientConstructorArgs<Options extends PrismaClientOptions> =
+    [PrismaClientOptions] extends [Options] ? PrismaClientOptions : Subset<Options, PrismaClientOptions>;
+
+  /**
    * SelectSubset
    * @desc From `T` pick properties that exist in `U`. Simple version of Intersection.
    * Additionally, it validates, if both select and include are present. If the case, it errors.
@@ -2064,7 +2089,7 @@ export namespace Prisma {
   type XOR<T, U> =
     T extends object ?
     U extends object ?
-      (Without<T, U> & U) | (Without<U, T> & T)
+      ((Without<T, U> & U) | (Without<U, T> & T)) & object
     : U : T
 
 
@@ -7843,11 +7868,26 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
-     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     * A driver adapter that PrismaClient uses to connect to your database, such as the ones provided by `@prisma/adapter-pg`, `@prisma/adapter-libsql`, `@prisma/adapter-planetscale`, etc.
+     * 
+     * A driver adapter is **required** unless you connect to your database through Prisma Accelerate (in which case use `accelerateUrl` instead).
+     * 
+     * Learn more: https://pris.ly/d/driver-adapters
+     * 
+     * @example
+     * ```ts
+     * import { PrismaPg } from '@prisma/adapter-pg'
+     * import { PrismaClient } from './generated/prisma/client'
+     * 
+     * const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+     * const prisma = new PrismaClient({ adapter })
+     * ```
      */
     adapter?: runtime.SqlDriverAdapterFactory
     /**
-     * Prisma Accelerate URL allowing the client to connect through Accelerate instead of a direct database.
+     * The Prisma Accelerate connection URL. Use this option to connect to your database through Prisma Accelerate instead of using a driver adapter to connect directly.
+     * 
+     * Learn more: https://pris.ly/d/accelerate
      */
     accelerateUrl?: string
     /**
@@ -8063,6 +8103,7 @@ export namespace Prisma {
     createdTransfers: number
     receivedTransfers: number
     driverTransfers: number
+    approvedTransfers: number
     roles: number
   }
 
@@ -8094,6 +8135,7 @@ export namespace Prisma {
     createdTransfers?: boolean | UserCountOutputTypeCountCreatedTransfersArgs
     receivedTransfers?: boolean | UserCountOutputTypeCountReceivedTransfersArgs
     driverTransfers?: boolean | UserCountOutputTypeCountDriverTransfersArgs
+    approvedTransfers?: boolean | UserCountOutputTypeCountApprovedTransfersArgs
     roles?: boolean | UserCountOutputTypeCountRolesArgs
   }
 
@@ -8294,6 +8336,13 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountDriverTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockTransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountApprovedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockTransferWhereInput
   }
 
@@ -10079,6 +10128,7 @@ export namespace Prisma {
     createdTransfers?: boolean | User$createdTransfersArgs<ExtArgs>
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
     driverTransfers?: boolean | User$driverTransfersArgs<ExtArgs>
+    approvedTransfers?: boolean | User$approvedTransfersArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -10163,6 +10213,7 @@ export namespace Prisma {
     createdTransfers?: boolean | User$createdTransfersArgs<ExtArgs>
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
     driverTransfers?: boolean | User$driverTransfersArgs<ExtArgs>
+    approvedTransfers?: boolean | User$approvedTransfersArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -10204,6 +10255,7 @@ export namespace Prisma {
       createdTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       receivedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       driverTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
+      approvedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       roles: Prisma.$RoleAssignmentPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
     }
@@ -10642,6 +10694,7 @@ export namespace Prisma {
     createdTransfers<T extends User$createdTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$createdTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     receivedTransfers<T extends User$receivedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     driverTransfers<T extends User$driverTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$driverTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    approvedTransfers<T extends User$approvedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branch<T extends User$branchArgs<ExtArgs> = {}>(args?: Subset<T, User$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -11714,6 +11767,30 @@ export namespace Prisma {
    * User.driverTransfers
    */
   export type User$driverTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockTransfer
+     */
+    select?: StockTransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockTransfer
+     */
+    omit?: StockTransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockTransferInclude<ExtArgs> | null
+    where?: StockTransferWhereInput
+    orderBy?: StockTransferOrderByWithRelationInput | StockTransferOrderByWithRelationInput[]
+    cursor?: StockTransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockTransferScalarFieldEnum | StockTransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.approvedTransfers
+   */
+  export type User$approvedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the StockTransfer
      */
@@ -24483,6 +24560,10 @@ export namespace Prisma {
     notes: string | null
     truckId: string | null
     driverId: string | null
+    dispatchMode: $Enums.DispatchMode | null
+    vehicleRegistration: string | null
+    approvedById: string | null
+    approvedAt: Date | null
     dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
@@ -24500,6 +24581,10 @@ export namespace Prisma {
     notes: string | null
     truckId: string | null
     driverId: string | null
+    dispatchMode: $Enums.DispatchMode | null
+    vehicleRegistration: string | null
+    approvedById: string | null
+    approvedAt: Date | null
     dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
@@ -24517,6 +24602,10 @@ export namespace Prisma {
     notes: number
     truckId: number
     driverId: number
+    dispatchMode: number
+    vehicleRegistration: number
+    approvedById: number
+    approvedAt: number
     dispatchedAt: number
     receivedAt: number
     receivedById: number
@@ -24536,6 +24625,10 @@ export namespace Prisma {
     notes?: true
     truckId?: true
     driverId?: true
+    dispatchMode?: true
+    vehicleRegistration?: true
+    approvedById?: true
+    approvedAt?: true
     dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
@@ -24553,6 +24646,10 @@ export namespace Prisma {
     notes?: true
     truckId?: true
     driverId?: true
+    dispatchMode?: true
+    vehicleRegistration?: true
+    approvedById?: true
+    approvedAt?: true
     dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
@@ -24570,6 +24667,10 @@ export namespace Prisma {
     notes?: true
     truckId?: true
     driverId?: true
+    dispatchMode?: true
+    vehicleRegistration?: true
+    approvedById?: true
+    approvedAt?: true
     dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
@@ -24660,6 +24761,10 @@ export namespace Prisma {
     notes: string | null
     truckId: string | null
     driverId: string | null
+    dispatchMode: $Enums.DispatchMode | null
+    vehicleRegistration: string | null
+    approvedById: string | null
+    approvedAt: Date | null
     dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
@@ -24694,6 +24799,10 @@ export namespace Prisma {
     notes?: boolean
     truckId?: boolean
     driverId?: boolean
+    dispatchMode?: boolean
+    vehicleRegistration?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24702,6 +24811,7 @@ export namespace Prisma {
     updatedAt?: boolean
     stockMovements?: boolean | StockTransfer$stockMovementsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24720,6 +24830,10 @@ export namespace Prisma {
     notes?: boolean
     truckId?: boolean
     driverId?: boolean
+    dispatchMode?: boolean
+    vehicleRegistration?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24727,6 +24841,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24743,6 +24858,10 @@ export namespace Prisma {
     notes?: boolean
     truckId?: boolean
     driverId?: boolean
+    dispatchMode?: boolean
+    vehicleRegistration?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24750,6 +24869,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24766,6 +24886,10 @@ export namespace Prisma {
     notes?: boolean
     truckId?: boolean
     driverId?: boolean
+    dispatchMode?: boolean
+    vehicleRegistration?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24774,10 +24898,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StockTransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "status" | "sourceWarehouseId" | "destinationWarehouseId" | "notes" | "truckId" | "driverId" | "dispatchedAt" | "receivedAt" | "receivedById" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["stockTransfer"]>
+  export type StockTransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "status" | "sourceWarehouseId" | "destinationWarehouseId" | "notes" | "truckId" | "driverId" | "dispatchMode" | "vehicleRegistration" | "approvedById" | "approvedAt" | "dispatchedAt" | "receivedAt" | "receivedById" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["stockTransfer"]>
   export type StockTransferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockMovements?: boolean | StockTransfer$stockMovementsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24788,6 +24913,7 @@ export namespace Prisma {
   }
   export type StockTransferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24796,6 +24922,7 @@ export namespace Prisma {
   }
   export type StockTransferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24808,6 +24935,7 @@ export namespace Prisma {
     objects: {
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs>
+      approvedBy: Prisma.$UserPayload<ExtArgs> | null
       receivedBy: Prisma.$UserPayload<ExtArgs> | null
       sourceWarehouse: Prisma.$WarehousePayload<ExtArgs>
       destinationWarehouse: Prisma.$WarehousePayload<ExtArgs>
@@ -24824,6 +24952,10 @@ export namespace Prisma {
       notes: string | null
       truckId: string | null
       driverId: string | null
+      dispatchMode: $Enums.DispatchMode | null
+      vehicleRegistration: string | null
+      approvedById: string | null
+      approvedAt: Date | null
       dispatchedAt: Date | null
       receivedAt: Date | null
       receivedById: string | null
@@ -25226,6 +25358,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     stockMovements<T extends StockTransfer$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    approvedBy<T extends StockTransfer$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     receivedBy<T extends StockTransfer$receivedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$receivedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     sourceWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     destinationWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -25269,6 +25402,10 @@ export namespace Prisma {
     readonly notes: FieldRef<"StockTransfer", 'String'>
     readonly truckId: FieldRef<"StockTransfer", 'String'>
     readonly driverId: FieldRef<"StockTransfer", 'String'>
+    readonly dispatchMode: FieldRef<"StockTransfer", 'DispatchMode'>
+    readonly vehicleRegistration: FieldRef<"StockTransfer", 'String'>
+    readonly approvedById: FieldRef<"StockTransfer", 'String'>
+    readonly approvedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly dispatchedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly receivedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly receivedById: FieldRef<"StockTransfer", 'String'>
@@ -25697,6 +25834,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StockMovementScalarFieldEnum | StockMovementScalarFieldEnum[]
+  }
+
+  /**
+   * StockTransfer.approvedBy
+   */
+  export type StockTransfer$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -98665,6 +98821,10 @@ export namespace Prisma {
     notes: 'notes',
     truckId: 'truckId',
     driverId: 'driverId',
+    dispatchMode: 'dispatchMode',
+    vehicleRegistration: 'vehicleRegistration',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
     dispatchedAt: 'dispatchedAt',
     receivedAt: 'receivedAt',
     receivedById: 'receivedById',
@@ -99905,6 +100065,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DispatchMode'
+   */
+  export type EnumDispatchModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DispatchMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'DispatchMode[]'
+   */
+  export type ListEnumDispatchModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DispatchMode[]'>
+    
+
+
+  /**
    * Reference to a field of type 'SalesDocumentType'
    */
   export type EnumSalesDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SalesDocumentType'>
@@ -100469,6 +100643,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferListRelationFilter
     receivedTransfers?: StockTransferListRelationFilter
     driverTransfers?: StockTransferListRelationFilter
+    approvedTransfers?: StockTransferListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }
@@ -100514,6 +100689,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferOrderByRelationAggregateInput
     receivedTransfers?: StockTransferOrderByRelationAggregateInput
     driverTransfers?: StockTransferOrderByRelationAggregateInput
+    approvedTransfers?: StockTransferOrderByRelationAggregateInput
     roles?: RoleAssignmentOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
   }
@@ -100562,6 +100738,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferListRelationFilter
     receivedTransfers?: StockTransferListRelationFilter
     driverTransfers?: StockTransferListRelationFilter
+    approvedTransfers?: StockTransferListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }, "id" | "email" | "salesPrefix">
@@ -101606,6 +101783,10 @@ export namespace Prisma {
     notes?: StringNullableFilter<"StockTransfer"> | string | null
     truckId?: StringNullableFilter<"StockTransfer"> | string | null
     driverId?: StringNullableFilter<"StockTransfer"> | string | null
+    dispatchMode?: EnumDispatchModeNullableFilter<"StockTransfer"> | $Enums.DispatchMode | null
+    vehicleRegistration?: StringNullableFilter<"StockTransfer"> | string | null
+    approvedById?: StringNullableFilter<"StockTransfer"> | string | null
+    approvedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
@@ -101614,6 +101795,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StockTransfer"> | Date | string
     stockMovements?: StockMovementListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     receivedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     sourceWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     destinationWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
@@ -101631,6 +101813,10 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     truckId?: SortOrderInput | SortOrder
     driverId?: SortOrderInput | SortOrder
+    dispatchMode?: SortOrderInput | SortOrder
+    vehicleRegistration?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
     dispatchedAt?: SortOrderInput | SortOrder
     receivedAt?: SortOrderInput | SortOrder
     receivedById?: SortOrderInput | SortOrder
@@ -101639,6 +101825,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     stockMovements?: StockMovementOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
+    approvedBy?: UserOrderByWithRelationInput
     receivedBy?: UserOrderByWithRelationInput
     sourceWarehouse?: WarehouseOrderByWithRelationInput
     destinationWarehouse?: WarehouseOrderByWithRelationInput
@@ -101659,6 +101846,10 @@ export namespace Prisma {
     notes?: StringNullableFilter<"StockTransfer"> | string | null
     truckId?: StringNullableFilter<"StockTransfer"> | string | null
     driverId?: StringNullableFilter<"StockTransfer"> | string | null
+    dispatchMode?: EnumDispatchModeNullableFilter<"StockTransfer"> | $Enums.DispatchMode | null
+    vehicleRegistration?: StringNullableFilter<"StockTransfer"> | string | null
+    approvedById?: StringNullableFilter<"StockTransfer"> | string | null
+    approvedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
@@ -101667,6 +101858,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"StockTransfer"> | Date | string
     stockMovements?: StockMovementListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     receivedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     sourceWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     destinationWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
@@ -101684,6 +101876,10 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     truckId?: SortOrderInput | SortOrder
     driverId?: SortOrderInput | SortOrder
+    dispatchMode?: SortOrderInput | SortOrder
+    vehicleRegistration?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
     dispatchedAt?: SortOrderInput | SortOrder
     receivedAt?: SortOrderInput | SortOrder
     receivedById?: SortOrderInput | SortOrder
@@ -101707,6 +101903,10 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
     truckId?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
     driverId?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    dispatchMode?: EnumDispatchModeNullableWithAggregatesFilter<"StockTransfer"> | $Enums.DispatchMode | null
+    vehicleRegistration?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    approvedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
@@ -107202,6 +107402,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -107247,6 +107448,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -107290,6 +107492,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -107335,6 +107538,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -108490,12 +108694,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
@@ -108513,6 +108721,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -108528,12 +108740,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
@@ -108551,6 +108767,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -108570,6 +108790,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -108583,6 +108807,9 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -108598,6 +108825,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -115988,6 +116219,13 @@ export namespace Prisma {
     not?: NestedEnumTransferStatusFilter<$PrismaModel> | $Enums.TransferStatus
   }
 
+  export type EnumDispatchModeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DispatchMode | EnumDispatchModeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDispatchModeNullableFilter<$PrismaModel> | $Enums.DispatchMode | null
+  }
+
   export type UserNullableScalarRelationFilter = {
     is?: UserWhereInput | null
     isNot?: UserWhereInput | null
@@ -116007,6 +116245,10 @@ export namespace Prisma {
     notes?: SortOrder
     truckId?: SortOrder
     driverId?: SortOrder
+    dispatchMode?: SortOrder
+    vehicleRegistration?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
     dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
@@ -116024,6 +116266,10 @@ export namespace Prisma {
     notes?: SortOrder
     truckId?: SortOrder
     driverId?: SortOrder
+    dispatchMode?: SortOrder
+    vehicleRegistration?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
     dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
@@ -116041,6 +116287,10 @@ export namespace Prisma {
     notes?: SortOrder
     truckId?: SortOrder
     driverId?: SortOrder
+    dispatchMode?: SortOrder
+    vehicleRegistration?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
     dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
@@ -116057,6 +116307,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransferStatusFilter<$PrismaModel>
     _max?: NestedEnumTransferStatusFilter<$PrismaModel>
+  }
+
+  export type EnumDispatchModeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DispatchMode | EnumDispatchModeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDispatchModeNullableWithAggregatesFilter<$PrismaModel> | $Enums.DispatchMode | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
+    _max?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
   }
 
   export type DecimalNullableFilter<$PrismaModel = never> = {
@@ -120347,6 +120607,13 @@ export namespace Prisma {
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
+  export type StockTransferCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<StockTransferCreateWithoutApprovedByInput, StockTransferUncheckedCreateWithoutApprovedByInput> | StockTransferCreateWithoutApprovedByInput[] | StockTransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutApprovedByInput | StockTransferCreateOrConnectWithoutApprovedByInput[]
+    createMany?: StockTransferCreateManyApprovedByInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
   export type RoleAssignmentCreateNestedManyWithoutUserInput = {
     create?: XOR<RoleAssignmentCreateWithoutUserInput, RoleAssignmentUncheckedCreateWithoutUserInput> | RoleAssignmentCreateWithoutUserInput[] | RoleAssignmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RoleAssignmentCreateOrConnectWithoutUserInput | RoleAssignmentCreateOrConnectWithoutUserInput[]
@@ -120546,6 +120813,13 @@ export namespace Prisma {
     create?: XOR<StockTransferCreateWithoutDriverInput, StockTransferUncheckedCreateWithoutDriverInput> | StockTransferCreateWithoutDriverInput[] | StockTransferUncheckedCreateWithoutDriverInput[]
     connectOrCreate?: StockTransferCreateOrConnectWithoutDriverInput | StockTransferCreateOrConnectWithoutDriverInput[]
     createMany?: StockTransferCreateManyDriverInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type StockTransferUncheckedCreateNestedManyWithoutApprovedByInput = {
+    create?: XOR<StockTransferCreateWithoutApprovedByInput, StockTransferUncheckedCreateWithoutApprovedByInput> | StockTransferCreateWithoutApprovedByInput[] | StockTransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutApprovedByInput | StockTransferCreateOrConnectWithoutApprovedByInput[]
+    createMany?: StockTransferCreateManyApprovedByInputEnvelope
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
   }
 
@@ -120958,6 +121232,20 @@ export namespace Prisma {
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
+  export type StockTransferUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<StockTransferCreateWithoutApprovedByInput, StockTransferUncheckedCreateWithoutApprovedByInput> | StockTransferCreateWithoutApprovedByInput[] | StockTransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutApprovedByInput | StockTransferCreateOrConnectWithoutApprovedByInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutApprovedByInput | StockTransferUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: StockTransferCreateManyApprovedByInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutApprovedByInput | StockTransferUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutApprovedByInput | StockTransferUpdateManyWithWhereWithoutApprovedByInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
   export type RoleAssignmentUpdateManyWithoutUserNestedInput = {
     create?: XOR<RoleAssignmentCreateWithoutUserInput, RoleAssignmentUncheckedCreateWithoutUserInput> | RoleAssignmentCreateWithoutUserInput[] | RoleAssignmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RoleAssignmentCreateOrConnectWithoutUserInput | RoleAssignmentCreateOrConnectWithoutUserInput[]
@@ -121357,6 +121645,20 @@ export namespace Prisma {
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
     update?: StockTransferUpdateWithWhereUniqueWithoutDriverInput | StockTransferUpdateWithWhereUniqueWithoutDriverInput[]
     updateMany?: StockTransferUpdateManyWithWhereWithoutDriverInput | StockTransferUpdateManyWithWhereWithoutDriverInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput = {
+    create?: XOR<StockTransferCreateWithoutApprovedByInput, StockTransferUncheckedCreateWithoutApprovedByInput> | StockTransferCreateWithoutApprovedByInput[] | StockTransferUncheckedCreateWithoutApprovedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutApprovedByInput | StockTransferCreateOrConnectWithoutApprovedByInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutApprovedByInput | StockTransferUpsertWithWhereUniqueWithoutApprovedByInput[]
+    createMany?: StockTransferCreateManyApprovedByInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutApprovedByInput | StockTransferUpdateWithWhereUniqueWithoutApprovedByInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutApprovedByInput | StockTransferUpdateManyWithWhereWithoutApprovedByInput[]
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
@@ -122905,6 +123207,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutApprovedTransfersInput = {
+    create?: XOR<UserCreateWithoutApprovedTransfersInput, UserUncheckedCreateWithoutApprovedTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedTransfersInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutReceivedTransfersInput = {
     create?: XOR<UserCreateWithoutReceivedTransfersInput, UserUncheckedCreateWithoutReceivedTransfersInput>
     connectOrCreate?: UserCreateOrConnectWithoutReceivedTransfersInput
@@ -122960,6 +123268,10 @@ export namespace Prisma {
     set?: $Enums.TransferStatus
   }
 
+  export type NullableEnumDispatchModeFieldUpdateOperationsInput = {
+    set?: $Enums.DispatchMode | null
+  }
+
   export type StockMovementUpdateManyWithoutTransferNestedInput = {
     create?: XOR<StockMovementCreateWithoutTransferInput, StockMovementUncheckedCreateWithoutTransferInput> | StockMovementCreateWithoutTransferInput[] | StockMovementUncheckedCreateWithoutTransferInput[]
     connectOrCreate?: StockMovementCreateOrConnectWithoutTransferInput | StockMovementCreateOrConnectWithoutTransferInput[]
@@ -122980,6 +123292,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCreatedTransfersInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCreatedTransfersInput, UserUpdateWithoutCreatedTransfersInput>, UserUncheckedUpdateWithoutCreatedTransfersInput>
+  }
+
+  export type UserUpdateOneWithoutApprovedTransfersNestedInput = {
+    create?: XOR<UserCreateWithoutApprovedTransfersInput, UserUncheckedCreateWithoutApprovedTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutApprovedTransfersInput
+    upsert?: UserUpsertWithoutApprovedTransfersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovedTransfersInput, UserUpdateWithoutApprovedTransfersInput>, UserUncheckedUpdateWithoutApprovedTransfersInput>
   }
 
   export type UserUpdateOneWithoutReceivedTransfersNestedInput = {
@@ -126815,6 +127137,13 @@ export namespace Prisma {
     not?: NestedEnumTransferStatusFilter<$PrismaModel> | $Enums.TransferStatus
   }
 
+  export type NestedEnumDispatchModeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DispatchMode | EnumDispatchModeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDispatchModeNullableFilter<$PrismaModel> | $Enums.DispatchMode | null
+  }
+
   export type NestedEnumTransferStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TransferStatus | EnumTransferStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TransferStatus[] | ListEnumTransferStatusFieldRefInput<$PrismaModel>
@@ -126823,6 +127152,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTransferStatusFilter<$PrismaModel>
     _max?: NestedEnumTransferStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDispatchModeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DispatchMode | EnumDispatchModeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DispatchMode[] | ListEnumDispatchModeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDispatchModeNullableWithAggregatesFilter<$PrismaModel> | $Enums.DispatchMode | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
+    _max?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
   }
 
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
@@ -128493,11 +128832,15 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
@@ -128515,6 +128858,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -128539,12 +128886,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
@@ -128561,6 +128912,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdById: string
@@ -128585,12 +128940,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
@@ -128606,6 +128965,10 @@ export namespace Prisma {
     destinationWarehouseId: string
     notes?: string | null
     truckId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -128623,6 +128986,60 @@ export namespace Prisma {
 
   export type StockTransferCreateManyDriverInputEnvelope = {
     data: StockTransferCreateManyDriverInput | StockTransferCreateManyDriverInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockTransferCreateWithoutApprovedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
+    sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
+    items?: TransferItemCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferUncheckedCreateWithoutApprovedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferCreateOrConnectWithoutApprovedByInput = {
+    where: StockTransferWhereUniqueInput
+    create: XOR<StockTransferCreateWithoutApprovedByInput, StockTransferUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type StockTransferCreateManyApprovedByInputEnvelope = {
+    data: StockTransferCreateManyApprovedByInput | StockTransferCreateManyApprovedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -129465,6 +129882,10 @@ export namespace Prisma {
     notes?: StringNullableFilter<"StockTransfer"> | string | null
     truckId?: StringNullableFilter<"StockTransfer"> | string | null
     driverId?: StringNullableFilter<"StockTransfer"> | string | null
+    dispatchMode?: EnumDispatchModeNullableFilter<"StockTransfer"> | $Enums.DispatchMode | null
+    vehicleRegistration?: StringNullableFilter<"StockTransfer"> | string | null
+    approvedById?: StringNullableFilter<"StockTransfer"> | string | null
+    approvedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
@@ -129503,6 +129924,22 @@ export namespace Prisma {
   export type StockTransferUpdateManyWithWhereWithoutDriverInput = {
     where: StockTransferScalarWhereInput
     data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutDriverInput>
+  }
+
+  export type StockTransferUpsertWithWhereUniqueWithoutApprovedByInput = {
+    where: StockTransferWhereUniqueInput
+    update: XOR<StockTransferUpdateWithoutApprovedByInput, StockTransferUncheckedUpdateWithoutApprovedByInput>
+    create: XOR<StockTransferCreateWithoutApprovedByInput, StockTransferUncheckedCreateWithoutApprovedByInput>
+  }
+
+  export type StockTransferUpdateWithWhereUniqueWithoutApprovedByInput = {
+    where: StockTransferWhereUniqueInput
+    data: XOR<StockTransferUpdateWithoutApprovedByInput, StockTransferUncheckedUpdateWithoutApprovedByInput>
+  }
+
+  export type StockTransferUpdateManyWithWhereWithoutApprovedByInput = {
+    where: StockTransferScalarWhereInput
+    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutApprovedByInput>
   }
 
   export type RoleAssignmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -130002,6 +130439,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
   }
 
@@ -130045,6 +130483,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -130644,6 +131083,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -130688,6 +131128,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -130860,6 +131301,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -130904,6 +131346,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -131070,12 +131513,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
@@ -131091,6 +131538,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -131116,12 +131567,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
@@ -131137,6 +131592,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -133184,11 +133643,15 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
@@ -133206,6 +133669,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -133435,11 +133902,15 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
@@ -133457,6 +133928,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133584,6 +134059,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -133628,12 +134104,106 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCreatedTransfersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCreatedTransfersInput, UserUncheckedCreateWithoutCreatedTransfersInput>
+  }
+
+  export type UserCreateWithoutApprovedTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutApprovedTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutApprovedTransfersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutApprovedTransfersInput, UserUncheckedCreateWithoutApprovedTransfersInput>
   }
 
   export type UserCreateWithoutReceivedTransfersInput = {
@@ -133675,6 +134245,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -133719,6 +134290,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -133875,6 +134447,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -133919,6 +134492,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -134025,6 +134599,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134067,6 +134642,106 @@ export namespace Prisma {
     approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
     createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutApprovedTransfersInput = {
+    update: XOR<UserUpdateWithoutApprovedTransfersInput, UserUncheckedUpdateWithoutApprovedTransfersInput>
+    create: XOR<UserCreateWithoutApprovedTransfersInput, UserUncheckedCreateWithoutApprovedTransfersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutApprovedTransfersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutApprovedTransfersInput, UserUncheckedUpdateWithoutApprovedTransfersInput>
+  }
+
+  export type UserUpdateWithoutApprovedTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutApprovedTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
@@ -134122,6 +134797,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134166,6 +134842,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -134346,6 +135023,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134390,6 +135068,7 @@ export namespace Prisma {
     createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -134497,12 +135176,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
@@ -134519,6 +135202,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -134638,12 +135325,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
@@ -134660,6 +135351,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -134980,6 +135675,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -135024,6 +135720,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -135122,6 +135819,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -135166,6 +135864,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -135519,6 +136218,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -135563,6 +136263,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -135673,6 +136374,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -135717,6 +136419,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136276,6 +136979,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -136320,6 +137024,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -136482,6 +137187,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -136526,6 +137232,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136875,6 +137582,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -136919,6 +137627,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137121,6 +137830,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137165,6 +137875,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -137596,6 +138307,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -137640,6 +138352,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137771,6 +138484,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137815,6 +138529,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -138268,6 +138983,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -138312,6 +139028,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -138497,6 +139214,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -138541,6 +139259,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -138874,6 +139593,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -138918,6 +139638,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139055,6 +139776,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139099,6 +139821,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139228,6 +139951,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139272,6 +139996,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -139427,6 +140152,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139471,6 +140197,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -139558,6 +140285,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139602,6 +140330,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139649,6 +140378,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139693,6 +140423,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139751,6 +140482,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139795,6 +140527,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -139848,6 +140581,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139892,6 +140626,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -140305,6 +141040,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -140349,6 +141085,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -140492,6 +141229,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -140536,6 +141274,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -140962,12 +141701,16 @@ export namespace Prisma {
     documentId: string
     status?: $Enums.TransferStatus
     notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
@@ -140983,6 +141726,10 @@ export namespace Prisma {
     destinationWarehouseId: string
     notes?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -141074,6 +141821,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -141118,6 +141866,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -141227,6 +141976,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -141271,6 +142021,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -141646,6 +142397,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -141690,6 +142442,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -141783,6 +142536,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -141827,6 +142581,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142574,6 +143329,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142618,6 +143374,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142805,6 +143562,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142849,6 +143607,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -144277,6 +145036,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -144321,6 +145081,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -144412,6 +145173,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -144456,6 +145218,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -144525,6 +145288,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -144569,6 +145333,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -144660,6 +145425,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -144704,6 +145470,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -144957,6 +145724,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145001,6 +145769,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145096,6 +145865,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145140,6 +145910,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145182,6 +145953,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145226,6 +145998,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145284,6 +146057,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145328,6 +146102,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145370,6 +146145,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145414,6 +146190,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145461,6 +146238,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145505,6 +146283,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145563,6 +146342,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145607,6 +146387,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145660,6 +146441,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145704,6 +146486,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145746,6 +146529,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145790,6 +146574,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145848,6 +146633,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145892,6 +146678,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146003,6 +146790,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -146047,6 +146835,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146136,6 +146925,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146180,6 +146970,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146581,6 +147372,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
 
@@ -146625,6 +147417,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
   }
 
   export type UserCreateOrConnectWithoutRolesInput = {
@@ -146716,6 +147509,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
 
@@ -146760,6 +147554,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
   }
 
   export type UserCreateWithoutAuditLogsInput = {
@@ -146801,6 +147596,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -146845,6 +147641,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146903,6 +147700,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146947,6 +147745,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -147878,6 +148677,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -147894,6 +148697,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdById: string
@@ -147909,6 +148716,30 @@ export namespace Prisma {
     destinationWarehouseId: string
     notes?: string | null
     truckId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockTransferCreateManyApprovedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -149011,11 +149842,15 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
@@ -149033,6 +149868,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149051,6 +149890,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149063,12 +149906,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
@@ -149085,6 +149932,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -149103,6 +149954,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -149115,12 +149970,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
@@ -149136,6 +149995,10 @@ export namespace Prisma {
     destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149154,6 +150017,74 @@ export namespace Prisma {
     destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockTransferUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
+    sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
+    items?: TransferItemUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutApprovedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149852,6 +150783,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
   }
 
@@ -149895,6 +150827,7 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -150139,6 +151072,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -150155,6 +151092,10 @@ export namespace Prisma {
     notes?: string | null
     truckId?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -150343,12 +151284,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
@@ -150364,6 +151309,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150382,6 +151331,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150395,12 +151348,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
@@ -150416,6 +151373,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150434,6 +151395,10 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     truckId?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -152301,6 +153266,10 @@ export namespace Prisma {
     destinationWarehouseId: string
     notes?: string | null
     driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -152373,12 +153342,16 @@ export namespace Prisma {
     documentId?: StringFieldUpdateOperationsInput | string
     status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
@@ -152394,6 +153367,10 @@ export namespace Prisma {
     destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -152412,6 +153389,10 @@ export namespace Prisma {
     destinationWarehouseId?: StringFieldUpdateOperationsInput | string
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null

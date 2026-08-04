@@ -8,12 +8,17 @@
 
 import { Request, Response, NextFunction } from "express";
 import { InventoryService } from "../service/inventory.service";
+import { PermissionService } from "../../auth/service/permission.service";
+import { getAvailableTransferActions } from "../transfer-actions";
 import {
   GetInventoryQueryDTO,
   AdjustInventoryDTO,
   TransferInventoryDTO,
   RequestTransferDTO,
   ApproveTransferDTO,
+  StartPickingDTO,
+  CompletePickingDTO,
+  VerifyTransferDTO,
   DispatchTransferDTO,
   ReceiveTransferDTO,
 } from "../dto";
@@ -22,6 +27,35 @@ import { logger } from "../../../lib/logger";
 
 export class InventoryController {
   private service = new InventoryService();
+
+  /**
+   * Attaches `availableActions` to a single transfer, computed from its
+   * current status + the requesting user's resolved permissions. See
+   * modules/inventory/transfer-actions.ts for the source of truth this
+   * derives from — frontend should render exactly what comes back here,
+   * not re-derive it from status.
+   */
+  private async withAvailableActions(transfer: any, userId: string): Promise<any> {
+    const userPermissions = await PermissionService.getUserPermissions(userId);
+    return {
+      ...transfer,
+      availableActions: getAvailableTransferActions(
+        { status: transfer.status, pickingCompletedAt: transfer.pickingCompletedAt },
+        userPermissions,
+      ),
+    };
+  }
+
+  private async withAvailableActionsList(transfers: any[], userId: string): Promise<any[]> {
+    const userPermissions = await PermissionService.getUserPermissions(userId);
+    return transfers.map((t) => ({
+      ...t,
+      availableActions: getAvailableTransferActions(
+        { status: t.status, pickingCompletedAt: t.pickingCompletedAt },
+        userPermissions,
+      ),
+    }));
+  }
 
   /**
    * GET /inventory
@@ -111,7 +145,10 @@ export class InventoryController {
         "POST /inventory/adjust",
       );
 
-      const { userId } = req.user;
+      const userId = req.user?.userId;
+      if (!userId) {
+        throw validationError("Authentication context is missing");
+      }
       const result = await this.service.adjustInventory(dto, userId);
 
       res.status(200).json({
@@ -170,7 +207,10 @@ export class InventoryController {
         "POST /inventory/transfer",
       );
 
-      const { userId } = req.user;
+      const userId = req.user?.userId;
+      if (!userId) {
+        throw validationError("Authentication context is missing");
+      }
       const result = await this.service.transferInventory(dto, userId);
 
       res.status(200).json({
@@ -260,7 +300,10 @@ export class InventoryController {
   ): Promise<void> {
     try {
       const dto: RequestTransferDTO = req.body;
-      const { userId } = req.user;
+      const userId = req.user?.userId;
+      if (!userId) {
+        throw validationError("Authentication context is missing");
+      }
 
       // Validation
       if (!dto.sourceWarehouseId || !dto.destinationWarehouseId || !dto.items) {
@@ -270,7 +313,8 @@ export class InventoryController {
       }
 
       const result = await this.service.requestTransfer(userId, dto);
-      res.status(201).json({ success: true, data: result });
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(201).json({ success: true, data: withActions });
     } catch (error) {
       next(error);
     }
@@ -282,12 +326,116 @@ export class InventoryController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { id: transferId } = req.params;
-      const { userId } = req.user;
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      const userId = req.user?.userId;
+      if (!userId || !transferId) {
+        throw validationError(
+          "Authentication context or transfer id is missing",
+        );
+      }
       const dto: ApproveTransferDTO = req.body;
 
-      const result = await this.service.approveTransfer(userId, transferId, dto);
-      res.status(200).json({ success: true, data: result });
+      const result = await this.service.approveTransfer(
+        userId,
+        transferId,
+        dto,
+      );
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(200).json({ success: true, data: withActions });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Stage: Start Picking (APPROVED -> PICKING). No line-item data
+   * required — just claims the pick task.
+   */
+  async startPicking(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      const userId = req.user?.userId;
+      if (!userId || !transferId) {
+        throw validationError(
+          "Authentication context or transfer id is missing",
+        );
+      }
+      const dto: StartPickingDTO = req.body;
+
+      const result = await this.service.startPicking(userId, transferId, dto);
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(200).json({ success: true, data: withActions });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Stage: Complete Picking (stays in PICKING, sets pickingCompletedAt so
+   * the "verify" action becomes available to whoever holds that
+   * permission).
+   */
+  async completePicking(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      const userId = req.user?.userId;
+      if (!userId || !transferId) {
+        throw validationError(
+          "Authentication context or transfer id is missing",
+        );
+      }
+      const dto: CompletePickingDTO = req.body;
+      if (!dto.items || dto.items.length === 0) {
+        throw validationError("items is required");
+      }
+
+      const result = await this.service.completePicking(userId, transferId, dto);
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(200).json({ success: true, data: withActions });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Stage: Verify (PICKING -> VERIFIED). Deliberately gated on a different
+   * permission (inventory.transfer.verify) than picking, so the same
+   * person doesn't have to be both picker and verifier.
+   */
+  async verifyTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      const userId = req.user?.userId;
+      if (!userId || !transferId) {
+        throw validationError(
+          "Authentication context or transfer id is missing",
+        );
+      }
+      const dto: VerifyTransferDTO = req.body;
+
+      const result = await this.service.verifyTransfer(userId, transferId, dto);
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(200).json({ success: true, data: withActions });
     } catch (error) {
       next(error);
     }
@@ -299,12 +447,31 @@ export class InventoryController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { id: transferId } = req.params;
-      const { userId } = req.user;
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      const userId = req.user?.userId;
+      if (!userId || !transferId) {
+        throw validationError(
+          "Authentication context or transfer id is missing",
+        );
+      }
       const dto: DispatchTransferDTO = req.body;
 
-      const result = await this.service.dispatchTransfer(userId, transferId, dto);
-      res.status(200).json({ success: true, data: result });
+      if (!dto.dispatchMode || !["RIDER", "TRUCK"].includes(dto.dispatchMode)) {
+        throw validationError("dispatchMode must be 'RIDER' or 'TRUCK'");
+      }
+      if (!dto.driverId) {
+        throw validationError("driverId is required");
+      }
+
+      const result = await this.service.dispatchTransfer(
+        userId,
+        transferId,
+        dto,
+      );
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(200).json({ success: true, data: withActions });
     } catch (error) {
       next(error);
     }
@@ -316,12 +483,78 @@ export class InventoryController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { id: transferId } = req.params;
-      const { userId } = req.user;
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      const userId = req.user?.userId;
+      if (!userId || !transferId) {
+        throw validationError(
+          "Authentication context or transfer id is missing",
+        );
+      }
       const dto: ReceiveTransferDTO = req.body;
 
-      const result = await this.service.receiveTransfer(userId, transferId, dto);
-      res.status(200).json({ success: true, data: result });
+      const result = await this.service.receiveTransfer(
+        userId,
+        transferId,
+        dto,
+      );
+      const withActions = await this.withAvailableActions(result, userId);
+      res.status(200).json({ success: true, data: withActions });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers
+   * Previously referenced by routes/index.ts but not implemented on this
+   * controller (only the service had listTransfers) — this route was
+   * throwing "inventoryController.listTransfers is not a function" at
+   * runtime.
+   */
+  async listTransfers(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const status = req.query.status as string | undefined;
+      const warehouseId = req.query.warehouseId as string | undefined;
+      const userId = req.user?.userId;
+      const result = await this.service.listTransfers({ status, warehouseId });
+      const withActions = userId
+        ? await this.withAvailableActionsList(result, userId)
+        : result;
+      res.json({ success: true, data: withActions });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers/:id
+   * Same gap as listTransfers above — previously unimplemented on both the
+   * controller and the service.
+   */
+  async getTransfer(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      if (!transferId) {
+        throw validationError("Transfer id is required");
+      }
+      const userId = req.user?.userId;
+      const result = await this.service.getTransferById(transferId);
+      const withActions = userId
+        ? await this.withAvailableActions(result, userId)
+        : result;
+      res.json({ success: true, data: withActions });
     } catch (error) {
       next(error);
     }

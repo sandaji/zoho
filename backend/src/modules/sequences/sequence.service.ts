@@ -1,23 +1,24 @@
 // backend/src/modules/sequences/sequence.service.ts
-import { prisma } from '../../lib/db';
-import { SalesDocumentType } from '../../generated/enums.js';
-import { Prisma } from '../../generated/index.js';
+import { prisma } from "../../lib/db";
+import { SalesDocumentType } from "../../generated/enums.js";
+import { Prisma } from "../../generated/index.js";
 
 const DOCUMENT_PREFIX_MAP: Record<SalesDocumentType, string> = {
-  DRAFT: 'DRF',
-  QUOTE: 'QTN',
-  INVOICE: 'INV',
-  CREDIT_NOTE: 'CRN',
+  DRAFT: "DRF",
+  QUOTE: "QTN",
+  INVOICE: "INV",
+  CREDIT_NOTE: "CRN",
 };
 
 const PADDING_LENGTH = 4;
 
 export class SequenceService {
   static async getNextNumber(
-    type: SalesDocumentType,
-    branchId: string
+    type: SalesDocumentType | "TRANSFER",
+    branchId: string,
   ): Promise<string> {
-    const prefix = DOCUMENT_PREFIX_MAP[type];
+    const normalizedType = type === "TRANSFER" ? "DRAFT" : type;
+    const prefix = DOCUMENT_PREFIX_MAP[normalizedType];
     if (!prefix) {
       throw new Error(`Invalid document type: ${type}`);
     }
@@ -29,8 +30,12 @@ export class SequenceService {
     const sequence = await prisma.$transaction(
       async (tx) => {
         // 1. Find the sequence record for the given branch and type, and lock it.
+        // Must use normalizedType here too — DocumentSequence.type is a
+        // SalesDocumentType enum column with no "TRANSFER" value, so
+        // passing the raw `type` ("TRANSFER") failed Prisma validation even
+        // though the create() call below already normalized it correctly.
         const currentSequence = await tx.documentSequence.findUnique({
-          where: { branchId_type: { branchId, type } },
+          where: { branchId_type: { branchId, type: normalizedType } },
         });
 
         let nextNumber: number;
@@ -48,7 +53,7 @@ export class SequenceService {
           await tx.documentSequence.create({
             data: {
               branchId,
-              type,
+              type: normalizedType,
               prefix,
               nextNumber: 2, // The next one to be generated will be 2
             },
@@ -59,11 +64,14 @@ export class SequenceService {
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-      }
+      },
     );
 
     // 3. Format the number with prefix and zero-padding.
-    const paddedNumber = String(sequence.nextNumber).padStart(PADDING_LENGTH, '0');
+    const paddedNumber = String(sequence.nextNumber).padStart(
+      PADDING_LENGTH,
+      "0",
+    );
     return `${prefix}-${paddedNumber}`;
   }
 }

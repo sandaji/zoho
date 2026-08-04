@@ -1,10 +1,16 @@
 import {
   requestStockTransfer,
   approveStockTransfer,
+  startPickingStockTransfer,
+  completePickingStockTransfer,
+  verifyStockTransfer,
   dispatchStockTransfer,
   receiveStockTransfer,
   RequestStockTransferPayload,
   ApproveStockTransferPayload,
+  StartPickingPayload,
+  CompletePickingPayload,
+  VerifyTransferPayload,
   DispatchStockTransferPayload,
   ReceiveStockTransferPayload,
 } from "./admin-api";
@@ -30,7 +36,7 @@ export interface StockMovementParams {
 }
 
 export interface TransferParams {
-  status?: "DRAFT" | "PENDING_APPROVAL" | "APPROVED" | "DISPATCHED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELLED" | "DISCREPANCY";
+  status?: "DRAFT" | "PENDING_APPROVAL" | "APPROVED" | "PICKING" | "VERIFIED" | "DISPATCHED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELLED" | "DISCREPANCY";
   sourceId?: string;
   targetId?: string;
   page?: number;
@@ -53,14 +59,35 @@ export const warehouseService = {
   },
 
   /**
-   * Stage 3: Dispatch a stock transfer
+   * Stage 3: Start picking (claims the pick task)
+   */
+  async startPicking(id: string, data: StartPickingPayload, token: string) {
+    return startPickingStockTransfer(token, id, data);
+  },
+
+  /**
+   * Stage 4: Complete picking (records picked quantities)
+   */
+  async completePicking(id: string, data: CompletePickingPayload, token: string) {
+    return completePickingStockTransfer(token, id, data);
+  },
+
+  /**
+   * Stage 5: Verify picked items
+   */
+  async verifyTransfer(id: string, data: VerifyTransferPayload, token: string) {
+    return verifyStockTransfer(token, id, data);
+  },
+
+  /**
+   * Stage 6: Dispatch a stock transfer
    */
   async dispatchTransfer(id: string, data: DispatchStockTransferPayload, token: string) {
     return dispatchStockTransfer(token, id, data);
   },
 
   /**
-   * Stage 4: Receive a stock transfer
+   * Stage 7: Receive a stock transfer
    */
   async receiveTransfer(id: string, data: ReceiveStockTransferPayload, token: string) {
     return receiveStockTransfer(token, id, data);

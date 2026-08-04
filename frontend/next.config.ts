@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   typescript: {
     tsconfigPath: "./tsconfig.json",
   },
+  experimental: {
+    useTypeScriptCli: true,
+  },
 
   // API proxy configuration
   rewrites: async () => {

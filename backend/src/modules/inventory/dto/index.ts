@@ -208,13 +208,47 @@ export interface ApproveTransferDTO {
   notes?: string;
 }
 
+/**
+ * Stage: Start Picking (APPROVED -> PICKING). Claims the pick task; no
+ * item data required yet.
+ */
+export interface StartPickingDTO {
+  notes?: string;
+}
+
+/**
+ * Stage: Complete Picking (stays in PICKING, sets pickingCompletedAt).
+ * Records what was actually pulled off the shelf per line item —
+ * separate from dispatched_qty, which is set later at dispatch and may
+ * differ if the verifier catches a discrepancy.
+ */
+export interface CompletePickingDTO {
+  items: {
+    productId: string;
+    picked_qty: number;
+  }[];
+  notes?: string;
+}
+
+/**
+ * Stage: Verify (PICKING -> VERIFIED). Requires pickingCompletedAt to
+ * already be set — i.e. someone must have recorded picked quantities
+ * before this can run. Deliberately a different action/permission from
+ * picking itself, so picker and verifier can be different people.
+ */
+export interface VerifyTransferDTO {
+  notes?: string;
+}
+
 export interface DispatchTransferDTO {
   items: {
     productId: string;
     dispatched_qty: number;
   }[];
-  driverId?: string;
-  truckId?: string;
+  dispatchMode: "RIDER" | "TRUCK";
+  driverId: string;
+  truckId?: string; // required when dispatchMode is TRUCK and the truck is fleet-tracked
+  vehicleRegistration?: string; // required for RIDER; for TRUCK, auto-filled from the selected Truck's registration if omitted
 }
 
 export interface ReceiveTransferDTO {
@@ -224,4 +258,22 @@ export interface ReceiveTransferDTO {
     damaged_qty: number;
   }[];
   notes?: string;
+}
+
+/**
+ * Raise a dispute/discrepancy against a transfer. Available on
+ * DISCREPANCY, PARTIALLY_RECEIVED, and RECEIVED (issues can surface
+ * after the fact too, not only at the moment DISCREPANCY is set).
+ */
+export interface RaiseTransferIssueDTO {
+  category: "quantity_variance" | "damage" | "lost_in_transit" | "wrong_item" | "other";
+  description: string;
+}
+
+/**
+ * Resolve or dismiss an open issue.
+ */
+export interface ResolveTransferIssueDTO {
+  status: "RESOLVED" | "DISMISSED";
+  resolution: string;
 }

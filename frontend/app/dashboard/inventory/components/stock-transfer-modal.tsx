@@ -29,7 +29,8 @@ interface StockTransferModalProps {
   onOpenChange: (open: boolean) => void;
   itemId?: string;
   availableStock?: number;
-  branches: Array<{ id: string; name: string }>;
+  warehouses: Array<{ id: string; name: string; code?: string; location?: string }>;
+  inventoryAvailability?: Record<string, number>;
   items: Array<{ id: string; name: string; sku: string }>;
   onSubmit?: (data: {
     itemId: string;
@@ -45,7 +46,8 @@ export function StockTransferModal({
   onOpenChange,
   itemId,
   availableStock = 0,
-  branches,
+  warehouses,
+  inventoryAvailability = {},
   items,
   onSubmit,
 }: StockTransferModalProps) {
@@ -74,8 +76,9 @@ export function StockTransferModal({
     const newErrors: Record<string, string> = {};
 
     if (!formData.itemId) newErrors.itemId = "Item is required";
-    if (!formData.sourceBranchId) newErrors.sourceBranchId = "Source branch is required";
-    if (!formData.destinationBranchId) newErrors.destinationBranchId = "Destination branch is required";
+    if (!formData.sourceBranchId) newErrors.sourceBranchId = "Source warehouse is required";
+    if (!formData.destinationBranchId)
+      newErrors.destinationBranchId = "Destination warehouse is required";
     if (!formData.quantity) newErrors.quantity = "Quantity is required";
     if (formData.sourceBranchId === formData.destinationBranchId) {
       newErrors.destinationBranchId = "Source and destination must be different";
@@ -85,8 +88,13 @@ export function StockTransferModal({
     if (isNaN(qty) || qty <= 0) {
       newErrors.quantity = "Quantity must be a positive number";
     }
-    if (qty > availableStock) {
-      newErrors.quantity = `Quantity cannot exceed available stock (${availableStock})`;
+
+    if (formData.itemId && formData.sourceBranchId) {
+      const warehouseKey = `${formData.itemId}:${formData.sourceBranchId}`;
+      const availableFromWarehouse = inventoryAvailability[warehouseKey] ?? availableStock;
+      if (qty > availableFromWarehouse) {
+        newErrors.quantity = `Quantity cannot exceed available stock at the source warehouse (${availableFromWarehouse})`;
+      }
     }
 
     setErrors(newErrors);
@@ -130,7 +138,8 @@ export function StockTransferModal({
             Initiate Stock Transfer
           </DialogTitle>
           <DialogDescription>
-            Transfer inventory between branches. The transfer will be tracked as in-transit until received.
+            Transfer inventory between branches. The transfer will be tracked as in-transit until
+            received.
           </DialogDescription>
         </DialogHeader>
 
@@ -140,7 +149,10 @@ export function StockTransferModal({
             <Label htmlFor="item" className="font-semibold">
               Item <span className="text-red-600">*</span>
             </Label>
-            <Select value={formData.itemId} onValueChange={(val) => handleInputChange("itemId", val)}>
+            <Select
+              value={formData.itemId}
+              onValueChange={(val) => handleInputChange("itemId", val)}
+            >
               <SelectTrigger id="item" className={errors.itemId ? "border-red-600" : ""}>
                 <SelectValue placeholder="Select an item..." />
               </SelectTrigger>
@@ -167,12 +179,12 @@ export function StockTransferModal({
               onValueChange={(val) => handleInputChange("sourceBranchId", val)}
             >
               <SelectTrigger id="source" className={errors.sourceBranchId ? "border-red-600" : ""}>
-                <SelectValue placeholder="Select source branch..." />
+                <SelectValue placeholder="Select source warehouse..." />
               </SelectTrigger>
               <SelectContent>
-                {branches.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name}
+                {warehouses.map((warehouse) => (
+                  <SelectItem key={warehouse.id} value={warehouse.id}>
+                    {warehouse.code || warehouse.name} - {warehouse.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -191,13 +203,16 @@ export function StockTransferModal({
               value={formData.destinationBranchId}
               onValueChange={(val) => handleInputChange("destinationBranchId", val)}
             >
-              <SelectTrigger id="destination" className={errors.destinationBranchId ? "border-red-600" : ""}>
-                <SelectValue placeholder="Select destination branch..." />
+              <SelectTrigger
+                id="destination"
+                className={errors.destinationBranchId ? "border-red-600" : ""}
+              >
+                <SelectValue placeholder="Select destination warehouse..." />
               </SelectTrigger>
               <SelectContent>
-                {branches.map((branch) => (
-                  <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name}
+                {warehouses.map((warehouse) => (
+                  <SelectItem key={warehouse.id} value={warehouse.id}>
+                    {warehouse.code || warehouse.name} - {warehouse.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -217,7 +232,11 @@ export function StockTransferModal({
                       Available Stock:
                     </span>
                     <span className="font-bold text-lg text-blue-600 dark:text-blue-400">
-                      {availableStock.toLocaleString()}
+                      {(
+                        (formData.itemId && formData.sourceBranchId
+                          ? inventoryAvailability[`${formData.itemId}:${formData.sourceBranchId}`]
+                          : undefined) ?? availableStock
+                      ).toLocaleString()}
                     </span>
                   </div>
                   {quantityNum > 0 && (
@@ -226,7 +245,9 @@ export function StockTransferModal({
                         <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                           Transfer Quantity:
                         </span>
-                        <span className="font-bold text-blue-600 dark:text-blue-400">{quantityNum.toLocaleString()}</span>
+                        <span className="font-bold text-blue-600 dark:text-blue-400">
+                          {quantityNum.toLocaleString()}
+                        </span>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-blue-200 dark:border-blue-800">
                         <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -287,7 +308,8 @@ export function StockTransferModal({
           <Alert className="bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800">
             <Truck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             <AlertDescription className="text-emerald-800 dark:text-emerald-300">
-              This stock will be marked as "In-Transit" and tracked until received at the destination branch.
+              This stock will be marked as "In-Transit" and tracked until received at the
+              destination branch.
             </AlertDescription>
           </Alert>
         </div>

@@ -1,7 +1,7 @@
 // app/dashboard/inventory/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,8 @@ import { EnhancedInventoryTable } from "./components/enhanced-inventory-table";
 import { StockTransferModal } from "./components/stock-transfer-modal";
 import { AdjustStockModal } from "./components/adjust-stock-modal";
 import { useInventory } from "@/hooks/use-inventory";
+import { useAuth } from "@/lib/auth-context";
+import { warehouseService } from "@/lib/warehouse.service";
 import { toast } from "sonner";
 
 interface SelectedItemForTransfer {
@@ -56,16 +58,27 @@ export default function InventoryDashboard() {
     setSort,
   } = useInventory();
 
+  const { token } = useAuth();
   const [selectedBranch, setSelectedBranch] = useState<string>("all");
   const [transferModalOpen, setTransferModalOpen] = useState(false);
-  const [selectedItemForTransfer, setSelectedItemForTransfer] = useState<SelectedItemForTransfer | null>(null);
+  const [selectedItemForTransfer, setSelectedItemForTransfer] =
+    useState<SelectedItemForTransfer | null>(null);
   const [adjustStockModalOpen, setAdjustStockModalOpen] = useState(false);
-  const [selectedItemForAdjustment, setSelectedItemForAdjustment] = useState<SelectedItemForAdjustment | null>(null);
+  const [selectedItemForAdjustment, setSelectedItemForAdjustment] =
+    useState<SelectedItemForAdjustment | null>(null);
+  const [warehouses, setWarehouses] = useState<
+    Array<{ id: string; name: string; code?: string; location?: string }>
+  >([]);
+  const [inventoryRows, setInventoryRows] = useState<
+    Array<{ productId: string; warehouseId: string; available: number }>
+  >([]);
 
   // Transform products for components that expect the enhanced interface
   const transformedProducts = products.map((product) => {
     const quantity = product.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
-    const reorderLevel = product.branchInventory?.reduce((acc, b) => acc + (b.reorder_level || 0), 0) || 0;
+    const reorderLevel =
+      product.branchInventory?.reduce((acc, b) => acc + (b.reorder_level || 0), 0) || 0;
+    const inTransit = product.branchInventory?.reduce((acc, b) => acc + (b.reserved || 0), 0) || 0;
 
     return {
       id: product.id,
@@ -73,8 +86,7 @@ export default function InventoryDashboard() {
       name: product.name,
       category: product.category || "Uncategorized",
       currentStock: quantity,
-      inTransit: Math.floor(Math.random() * 5), // Mock in-transit data - replace with real data
-      minStock: reorderLevel,
+      inTransit,
       maxStock: reorderLevel * 10,
       unit: product.unit_of_measurement,
       costPrice: product.cost_price,
@@ -97,8 +109,52 @@ export default function InventoryDashboard() {
     }
   }, [error]);
 
+  const loadTransferContext = useCallback(async () => {
+    if (!token) return;
+
+    let warehouseData: Array<{ id: string; name: string; code?: string; location?: string }> = [];
+
+    try {
+      const warehouseResponse = await warehouseService.getWarehouses(token);
+      warehouseData = Array.isArray(warehouseResponse?.data)
+        ? warehouseResponse.data
+        : Array.isArray((warehouseResponse as any)?.data?.warehouses)
+          ? (warehouseResponse as any).data.warehouses
+          : [];
+    } catch (err) {
+      console.warn("Falling back to branch list for transfer warehouses", err);
+      warehouseData = (branches || []).map((branch) => ({
+        id: branch.id,
+        name: branch.name,
+        code: branch.code,
+        location: "",
+      }));
+    }
+
+    setWarehouses(warehouseData);
+
+    const inventoryData = (products || []).flatMap((product) => {
+      if (!Array.isArray(product.branchInventory) || product.branchInventory.length === 0) {
+        return [];
+      }
+
+      return product.branchInventory.map((entry) => ({
+        productId: product.id,
+        warehouseId: entry.branchId || entry.branch?.id || "",
+        available: Number(entry.available ?? entry.quantity ?? 0),
+      }));
+    });
+
+    setInventoryRows(inventoryData);
+  }, [branches, products, token]);
+
+  useEffect(() => {
+    void loadTransferContext();
+  }, [loadTransferContext]);
+
   const handleRefresh = async () => {
     await refresh();
+    await loadTransferContext();
     toast.success("Inventory refreshed successfully");
   };
 
@@ -107,8 +163,10 @@ export default function InventoryDashboard() {
   };
 
   const handleInitiateTransfer = (itemId: string, itemName: string) => {
-    const item = products.find((p) => p.id === itemId);
-    const quantity = item?.branchInventory?.reduce((acc, b) => acc + (b.quantity || 0), 0) || 0;
+    const quantity = inventoryRows
+      .filter((row) => row.productId === itemId)
+      .reduce((sum, row) => sum + row.available, 0);
+
     setSelectedItemForTransfer({
       id: itemId,
       name: itemName,
@@ -128,6 +186,12 @@ export default function InventoryDashboard() {
     setAdjustStockModalOpen(true);
   };
 
+  const inventoryAvailabilityMap = inventoryRows.reduce<Record<string, number>>((acc, row) => {
+    const key = `${row.productId}:${row.warehouseId}`;
+    acc[key] = (acc[key] || 0) + row.available;
+    return acc;
+  }, {});
+
   const handleTransferSubmit = async (data: {
     itemId: string;
     sourceBranchId: string;
@@ -135,10 +199,29 @@ export default function InventoryDashboard() {
     quantity: number;
     notes: string;
   }) => {
-    // TODO: Call API to create transfer
-    console.log("Transfer data:", data);
-    toast.success("Stock transfer initiated successfully");
-    setTransferModalOpen(false);
+    if (!token) {
+      toast.error("You need to be signed in to create a transfer");
+      return;
+    }
+
+    try {
+      await warehouseService.requestTransfer(
+        {
+          sourceWarehouseId: data.sourceBranchId,
+          destinationWarehouseId: data.destinationBranchId,
+          items: [{ productId: data.itemId, requested_qty: data.quantity }],
+          notes: data.notes || undefined,
+        },
+        token
+      );
+
+      toast.success("Stock transfer request created successfully");
+      setTransferModalOpen(false);
+      await refresh();
+      await loadTransferContext();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to create stock transfer");
+    }
   };
 
   return (
@@ -188,9 +271,7 @@ export default function InventoryDashboard() {
             disabled={isLoading}
             className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900"
           >
-            <RefreshCw
-              className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
-            />
+            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
         </div>
@@ -241,9 +322,7 @@ export default function InventoryDashboard() {
         <div className="flex items-center justify-center py-12">
           <div className="text-center space-y-3">
             <RefreshCw className="h-8 w-8 animate-spin mx-auto text-slate-400" />
-            <p className="text-slate-600 dark:text-slate-400">
-              Loading inventory data...
-            </p>
+            <p className="text-slate-600 dark:text-slate-400">Loading inventory data...</p>
           </div>
         </div>
       ) : (
@@ -327,7 +406,8 @@ export default function InventoryDashboard() {
         onOpenChange={setTransferModalOpen}
         itemId={selectedItemForTransfer?.id}
         availableStock={selectedItemForTransfer?.availableStock}
-        branches={branches || []}
+        warehouses={warehouses}
+        inventoryAvailability={inventoryAvailabilityMap}
         items={products.map((p) => ({ id: p.id, name: p.name, sku: p.sku }))}
         onSubmit={handleTransferSubmit}
       />

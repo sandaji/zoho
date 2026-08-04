@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { warehouseService } from "@/lib/warehouse.service";
-import { RequestStockTransferPayload, ApproveStockTransferPayload, DispatchStockTransferPayload, ReceiveStockTransferPayload } from "@/lib/admin-api";
+import { RequestStockTransferPayload, ApproveStockTransferPayload, DispatchStockTransferPayload, ReceiveStockTransferPayload, fetchUsers, fetchTrucks, User, Truck } from "@/lib/admin-api";
 
 interface TransferItem {
   id?: string;
@@ -38,6 +38,8 @@ export default function TransfersPage() {
   const [transfers, setTransfers] = useState<any[]>([]);
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [trucks, setTrucks] = useState<Truck[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewTransfer, setShowNewTransfer] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -48,6 +50,9 @@ export default function TransfersPage() {
   // State for modals
   const [activeTransfer, setActiveTransfer] = useState<any | null>(null);
   const [showApproveModal, setShowApproveModal] = useState(false);
+  const [showStartPickingModal, setShowStartPickingModal] = useState(false);
+  const [showCompletePickingModal, setShowCompletePickingModal] = useState(false);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showDispatchModal, setShowDispatchModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -74,15 +79,19 @@ export default function TransfersPage() {
       const params: any = { page: 1, limit: 50 };
       if (statusFilter !== "all") params.status = statusFilter;
 
-      const [transfersRes, warehousesRes, productsRes] = await Promise.all([
+      const [transfersRes, warehousesRes, productsRes, usersRes, trucksRes] = await Promise.all([
         warehouseService.getTransfers(params, token!),
         warehouseService.getWarehouses(token!),
         warehouseService.getProducts(token!),
+        fetchUsers(token!).catch(() => []),
+        fetchTrucks(token!).catch(() => []),
       ]);
 
       setTransfers(transfersRes.data || []);
       setWarehouses(warehousesRes.data || []);
       setProducts(productsRes.data?.products || productsRes.data || []);
+      setUsers(usersRes || []);
+      setTrucks(trucksRes || []);
 
     } catch (error) {
       toast.error("Failed to load transfers. The backend might be unavailable.");
@@ -116,9 +125,12 @@ export default function TransfersPage() {
     }
   };
   
-  const openModal = (transfer: any, modal: 'approve' | 'dispatch' | 'receive') => {
+  const openModal = (transfer: any, modal: 'approve' | 'start_picking' | 'complete_picking' | 'verify' | 'dispatch' | 'receive') => {
       setActiveTransfer(transfer);
       if (modal === 'approve') setShowApproveModal(true);
+      if (modal === 'start_picking') setShowStartPickingModal(true);
+      if (modal === 'complete_picking') setShowCompletePickingModal(true);
+      if (modal === 'verify') setShowVerifyModal(true);
       if (modal === 'dispatch') setShowDispatchModal(true);
       if (modal === 'receive') setShowReceiveModal(true);
   }
@@ -157,6 +169,8 @@ export default function TransfersPage() {
       DRAFT: { classes: "bg-slate-100 text-slate-800", icon: <Loader2 size={14} className="mr-1 inline" /> },
       PENDING_APPROVAL: { classes: "bg-yellow-100 text-yellow-800", icon: <Loader2 size={14} className="mr-1 inline" /> },
       APPROVED: { classes: "bg-blue-100 text-blue-800", icon: <ThumbsUp size={14} className="mr-1 inline" /> },
+      PICKING: { classes: "bg-indigo-100 text-indigo-800 border border-indigo-200", icon: <Package size={14} className="mr-1 inline" /> },
+      VERIFIED: { classes: "bg-teal-100 text-teal-800 border border-teal-200", icon: <FileCheck size={14} className="mr-1 inline" /> },
       DISPATCHED: { classes: "bg-cyan-100 text-cyan-800 border border-cyan-200", icon: <Truck size={14} className="mr-1 inline" /> },
       PARTIALLY_RECEIVED: { classes: "bg-purple-100 text-purple-800", icon: <Package size={14} className="mr-1 inline" /> },
       RECEIVED: { classes: "bg-emerald-100 text-emerald-800 border border-emerald-200", icon: <CheckCircle size={14} className="mr-1 inline" /> },
@@ -171,6 +185,19 @@ export default function TransfersPage() {
         {status.replace("_", " ")}
       </span>
     );
+  };
+
+  // Maps an action code (from the backend's availableActions, computed in
+  // modules/inventory/transfer-actions.ts from status + the user's actual
+  // permissions) to the modal it opens. The frontend never decides *whether*
+  // an action is legal — only what UI to show once the backend says it is.
+  const ACTION_TO_MODAL: Record<string, 'approve' | 'start_picking' | 'complete_picking' | 'verify' | 'dispatch' | 'receive'> = {
+    approve: 'approve',
+    start_picking: 'start_picking',
+    complete_picking: 'complete_picking',
+    verify: 'verify',
+    dispatch: 'dispatch',
+    receive: 'receive',
   };
 
   const filteredProducts = products.filter(p =>
@@ -209,6 +236,8 @@ export default function TransfersPage() {
               { label: "All", value: "all" },
               { label: "Pending Approval", value: "PENDING_APPROVAL" },
               { label: "Approved", value: "APPROVED" },
+              { label: "Picking", value: "PICKING" },
+              { label: "Verified", value: "VERIFIED" },
               { label: "Dispatched", value: "DISPATCHED" },
               { label: "Received", value: "RECEIVED" },
               { label: "Discrepancy", value: "DISCREPANCY" }
@@ -240,13 +269,22 @@ export default function TransfersPage() {
                 <p className="text-sm mt-1">Adjust your filters or create a new order.</p>
               </div>
             ) : (
-              transfers.map((transfer) => (
+              transfers.map((transfer) => {
+                const isExpanded = expandedRow === transfer.id;
+                const actions: Array<{ action: string; label: string }> = transfer.availableActions || [];
+                return (
                 <div key={transfer.id} className="hover:bg-emerald-50/50 transition-colors">
                   <div className="p-5 flex items-center justify-between">
                     <div className="flex-1 grid grid-cols-12 gap-4 items-center">
                         <div className="col-span-3">
-                            <h3 className="font-bold text-slate-900">{transfer.documentId}</h3>
-                            <p className="text-xs text-slate-500 mt-1 font-mono">
+                            <button
+                              onClick={() => setExpandedRow(isExpanded ? null : transfer.id)}
+                              className="flex items-center gap-1.5 font-bold text-slate-900 hover:text-emerald-700 transition-colors"
+                            >
+                              {isExpanded ? <ChevronUp size={16} className="shrink-0" /> : <ChevronDown size={16} className="shrink-0" />}
+                              {transfer.documentId}
+                            </button>
+                            <p className="text-xs text-slate-500 mt-1 font-mono pl-[22px]">
                             {new Date(transfer.createdAt).toLocaleString()}
                             </p>
                         </div>
@@ -261,14 +299,18 @@ export default function TransfersPage() {
                         </div>
                         <div className="col-span-2">{getStatusBadge(transfer.status)}</div>
                         <div className="col-span-3 flex justify-end gap-2">
-                            {transfer.status === 'PENDING_APPROVAL' && <Button size="sm" onClick={() => openModal(transfer, 'approve')}>Approve</Button>}
-                            {transfer.status === 'APPROVED' && <Button size="sm" onClick={() => openModal(transfer, 'dispatch')}>Dispatch</Button>}
-                            {transfer.status === 'DISPATCHED' && <Button size="sm" onClick={() => openModal(transfer, 'receive')}>Receive</Button>}
+                            {actions.map((a) => (
+                              <Button key={a.action} size="sm" onClick={() => openModal(transfer, ACTION_TO_MODAL[a.action] || 'approve')}>
+                                {a.label}
+                              </Button>
+                            ))}
                         </div>
                     </div>
                   </div>
+                  {isExpanded && <TransferTimeline transfer={transfer} />}
                 </div>
-              ))
+                );
+              })
             )}
           </div>
         </CardContent>
@@ -278,7 +320,10 @@ export default function TransfersPage() {
       {activeTransfer && (
           <>
             <ApproveModal isOpen={showApproveModal} onClose={() => setShowApproveModal(false)} transfer={activeTransfer} onSuccess={loadData} />
-            <DispatchModal isOpen={showDispatchModal} onClose={() => setShowDispatchModal(false)} transfer={activeTransfer} onSuccess={loadData} />
+            <StartPickingModal isOpen={showStartPickingModal} onClose={() => setShowStartPickingModal(false)} transfer={activeTransfer} onSuccess={loadData} />
+            <CompletePickingModal isOpen={showCompletePickingModal} onClose={() => setShowCompletePickingModal(false)} transfer={activeTransfer} onSuccess={loadData} />
+            <VerifyModal isOpen={showVerifyModal} onClose={() => setShowVerifyModal(false)} transfer={activeTransfer} onSuccess={loadData} />
+            <DispatchModal isOpen={showDispatchModal} onClose={() => setShowDispatchModal(false)} transfer={activeTransfer} onSuccess={loadData} users={users} trucks={trucks} />
             <ReceiveModal isOpen={showReceiveModal} onClose={() => setShowReceiveModal(false)} transfer={activeTransfer} onSuccess={loadData} />
           </>
       )}
@@ -435,7 +480,10 @@ function ApproveModal({isOpen, onClose, transfer, onSuccess}: any) {
     const handleSubmit = async () => {
         try {
             setSubmitting(true);
-            await warehouseService.approveTransfer(transfer.id, { notes }, token!);
+            const result = await warehouseService.approveTransfer(transfer.id, { notes }, token!);
+            if (result?.warning) {
+                toast.warning(result.warning);
+            }
             toast.success("Transfer approved");
             onSuccess();
             onClose();
@@ -466,25 +514,279 @@ function ApproveModal({isOpen, onClose, transfer, onSuccess}: any) {
     )
 }
 
-function DispatchModal({isOpen, onClose, transfer, onSuccess}: any) {
+function StartPickingModal({isOpen, onClose, transfer, onSuccess}: any) {
     const { token } = useAuth();
     const [submitting, setSubmitting] = useState(false);
-    const [form, setForm] = useState<any>({ items: [], driverId: '', truckId: '' });
+    const [notes, setNotes] = useState('');
+
+    const handleSubmit = async () => {
+        try {
+            setSubmitting(true);
+            await warehouseService.startPicking(transfer.id, { notes }, token!);
+            toast.success("Picking started");
+            onSuccess();
+            onClose();
+        } catch (error: any) {
+            toast.error(error.message || "Failed to start picking");
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent>
+                <DialogHeader><DialogTitle>Start Picking {transfer.documentId}</DialogTitle></DialogHeader>
+                <div className="py-4">
+                    <p className="text-sm text-slate-600">This claims the pick task for this transfer. Nothing leaves the warehouse yet — you'll record what was actually pulled once picking is done.</p>
+                    <Input className="mt-4" placeholder="Optional notes..." value={notes} onChange={e => setNotes(e.target.value)} />
+                </div>
+                <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button onClick={handleSubmit} disabled={submitting}>
+                        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Start Picking
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+function CompletePickingModal({isOpen, onClose, transfer, onSuccess}: any) {
+    const { token } = useAuth();
+    const [submitting, setSubmitting] = useState(false);
+    const [form, setForm] = useState<any>({ items: [], notes: '' });
 
     useEffect(() => {
         if (transfer) {
             setForm({
-                items: transfer.items.map((i: any) => ({ productId: i.productId, dispatched_qty: i.requested_qty })),
-                driverId: '',
-                truckId: '',
+                items: transfer.items.map((i: any) => ({
+                  productId: i.productId,
+                  productName: i.product?.name || i.productId,
+                  requested_qty: i.requested_qty,
+                  picked_qty: i.picked_qty ?? i.requested_qty,
+                })),
+                notes: '',
             })
         }
     }, [transfer]);
-    
+
+    const handleQtyChange = (productId: string, value: number) => {
+        setForm((prev: any) => ({
+            ...prev,
+            items: prev.items.map((i: any) =>
+                i.productId === productId
+                    ? { ...i, picked_qty: Math.max(0, Math.min(value, i.requested_qty)) }
+                    : i
+            ),
+        }));
+    };
+
+    const hasShortPick = form.items.some((i: any) => i.picked_qty < i.requested_qty);
+
     const handleSubmit = async () => {
         try {
             setSubmitting(true);
-            await warehouseService.dispatchTransfer(transfer.id, form, token!);
+            await warehouseService.completePicking(transfer.id, {
+                items: form.items.map((i: any) => ({ productId: i.productId, picked_qty: i.picked_qty })),
+                notes: form.notes,
+            }, token!);
+            toast.success("Picking completed — ready for verification");
+            onSuccess();
+            onClose();
+        } catch (error: any) {
+            toast.error(error.message || "Failed to complete picking");
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader><DialogTitle>Complete Picking — {transfer.documentId}</DialogTitle></DialogHeader>
+                <div className="space-y-4 py-2">
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                            Picked Quantities {hasShortPick && <span className="text-amber-600 font-normal">(short pick — verifier will see this)</span>}
+                        </label>
+                        <div className="border border-slate-200 rounded-lg overflow-hidden">
+                            <table className="w-full text-sm">
+                                <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
+                                    <tr>
+                                        <th className="px-4 py-2 font-medium">Product</th>
+                                        <th className="px-4 py-2 font-medium text-right">Requested</th>
+                                        <th className="px-4 py-2 font-medium text-right w-28">Picked</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {form.items.map((item: any) => (
+                                        <tr key={item.productId} className="bg-white">
+                                            <td className="px-4 py-2">{item.productName}</td>
+                                            <td className="px-4 py-2 text-right text-slate-500">{item.requested_qty}</td>
+                                            <td className="px-4 py-2 text-right">
+                                                <Input
+                                                    type="number"
+                                                    min={0}
+                                                    max={item.requested_qty}
+                                                    value={item.picked_qty}
+                                                    onChange={(e) => handleQtyChange(item.productId, parseInt(e.target.value) || 0)}
+                                                    className="h-8 text-right"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <Input placeholder="Optional notes..." value={form.notes} onChange={e => setForm((p: any) => ({ ...p, notes: e.target.value }))} />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button onClick={handleSubmit} disabled={submitting}>
+                        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Mark Ready for Verification
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+function VerifyModal({isOpen, onClose, transfer, onSuccess}: any) {
+    const { token } = useAuth();
+    const [submitting, setSubmitting] = useState(false);
+    const [notes, setNotes] = useState('');
+
+    const handleSubmit = async () => {
+        try {
+            setSubmitting(true);
+            const result = await warehouseService.verifyTransfer(transfer.id, { notes }, token!);
+            if (result?.warning) {
+                toast.warning(result.warning);
+            }
+            toast.success("Transfer verified — ready to dispatch");
+            onSuccess();
+            onClose();
+        } catch (error: any) {
+            toast.error(error.message || "Failed to verify transfer");
+        } finally {
+            setSubmitting(false);
+        }
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="max-w-2xl">
+                <DialogHeader><DialogTitle>Verify Picked Items — {transfer.documentId}</DialogTitle></DialogHeader>
+                <div className="py-2">
+                    <p className="text-sm text-slate-600 mb-3">Confirm the picked quantities below match what's physically staged before this moves on to dispatch.</p>
+                    <div className="border border-slate-200 rounded-lg overflow-hidden">
+                        <table className="w-full text-sm">
+                            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
+                                <tr>
+                                    <th className="px-4 py-2 font-medium">Product</th>
+                                    <th className="px-4 py-2 font-medium text-right">Requested</th>
+                                    <th className="px-4 py-2 font-medium text-right">Picked</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {(transfer.items || []).map((item: any) => {
+                                    const short = (item.picked_qty ?? 0) < item.requested_qty;
+                                    return (
+                                        <tr key={item.productId} className="bg-white">
+                                            <td className="px-4 py-2">{item.product?.name || item.productId}</td>
+                                            <td className="px-4 py-2 text-right text-slate-500">{item.requested_qty}</td>
+                                            <td className={`px-4 py-2 text-right font-medium ${short ? "text-amber-600" : "text-slate-700"}`}>{item.picked_qty ?? 0}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                    <Input className="mt-4" placeholder="Optional notes..." value={notes} onChange={e => setNotes(e.target.value)} />
+                </div>
+                <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button onClick={handleSubmit} disabled={submitting}>
+                        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Verify
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
+
+function DispatchModal({isOpen, onClose, transfer, onSuccess, users, trucks}: any) {
+    const { token } = useAuth();
+    const [submitting, setSubmitting] = useState(false);
+    const [form, setForm] = useState<any>({ items: [], dispatchMode: 'TRUCK', driverId: '', truckId: '', vehicleRegistration: '' });
+
+    useEffect(() => {
+        if (transfer) {
+            setForm({
+                items: transfer.items.map((i: any) => ({
+                  productId: i.productId,
+                  productName: i.product?.name || i.productId,
+                  requested_qty: i.requested_qty,
+                  dispatched_qty: i.requested_qty,
+                })),
+                dispatchMode: 'TRUCK',
+                driverId: '',
+                truckId: '',
+                vehicleRegistration: '',
+            })
+        }
+    }, [transfer]);
+
+    const handleItemQtyChange = (productId: string, value: number) => {
+        setForm((prev: any) => ({
+            ...prev,
+            items: prev.items.map((i: any) =>
+                i.productId === productId
+                    ? { ...i, dispatched_qty: Math.max(0, Math.min(value, i.requested_qty)) }
+                    : i
+            ),
+        }));
+    };
+
+    const handleTruckSelect = (truckId: string) => {
+        const truck = (trucks || []).find((t: any) => t.id === truckId);
+        setForm((prev: any) => ({
+            ...prev,
+            truckId,
+            vehicleRegistration: truck ? truck.registration : prev.vehicleRegistration,
+        }));
+    };
+
+    const handleSubmit = async () => {
+        if (!form.driverId) {
+            toast.error("Please select a driver");
+            return;
+        }
+        if (!form.truckId && !form.vehicleRegistration) {
+            toast.error(form.dispatchMode === 'RIDER' ? "Please enter the rider's vehicle registration" : "Please select a truck or enter a vehicle registration");
+            return;
+        }
+        if (form.items.every((i: any) => i.dispatched_qty <= 0)) {
+            toast.error("At least one item must have a dispatched quantity greater than zero");
+            return;
+        }
+        try {
+            setSubmitting(true);
+            const payload: DispatchStockTransferPayload = {
+                items: form.items
+                  .filter((i: any) => i.dispatched_qty > 0)
+                  .map((i: any) => ({ productId: i.productId, dispatched_qty: i.dispatched_qty })),
+                dispatchMode: form.dispatchMode,
+                driverId: form.driverId,
+                truckId: form.dispatchMode === 'TRUCK' ? (form.truckId || undefined) : undefined,
+                vehicleRegistration: form.vehicleRegistration || undefined,
+            };
+            await warehouseService.dispatchTransfer(transfer.id, payload, token!);
             toast.success("Transfer dispatched");
             onSuccess();
             onClose();
@@ -494,14 +796,118 @@ function DispatchModal({isOpen, onClose, transfer, onSuccess}: any) {
             setSubmitting(false);
         }
     }
-    
+
+    const isPartial = form.items.some((i: any) => i.dispatched_qty < i.requested_qty);
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader><DialogTitle>Dispatch Transfer {transfer.documentId}</DialogTitle></DialogHeader>
-                {/* Simplified for now, a real UI would list items and allow quantity changes */}
-                <p>Dispatching {transfer.items.length} item(s). You can add driver and truck info.</p>
-                 <div className="flex justify-end gap-2">
+
+                <div className="space-y-5 py-2">
+                    {/* Dispatch mode toggle */}
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Dispatch Mode</label>
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setForm((p: any) => ({ ...p, dispatchMode: 'TRUCK', truckId: '' }))}
+                                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${form.dispatchMode === 'TRUCK' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                            >
+                                <Truck size={16} /> Truck
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setForm((p: any) => ({ ...p, dispatchMode: 'RIDER', truckId: '', vehicleRegistration: '' }))}
+                                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${form.dispatchMode === 'RIDER' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+                            >
+                                <Package size={16} /> Rider
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Driver select */}
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">Driver</label>
+                        <select
+                            value={form.driverId}
+                            onChange={(e) => setForm((p: any) => ({ ...p, driverId: e.target.value }))}
+                            className="w-full px-3 py-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                        >
+                            <option value="">Select driver...</option>
+                            {(users || []).filter((u: any) => u.isActive !== false).map((u: any) => (
+                                <option key={u.id} value={u.id}>{u.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Truck select (TRUCK mode only) */}
+                    {form.dispatchMode === 'TRUCK' && (
+                        <div>
+                            <label className="block text-sm font-semibold text-slate-700 mb-2">Truck</label>
+                            <select
+                                value={form.truckId}
+                                onChange={(e) => handleTruckSelect(e.target.value)}
+                                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none"
+                            >
+                                <option value="">Select truck (or enter registration below)...</option>
+                                {(trucks || []).filter((t: any) => t.isActive !== false).map((t: any) => (
+                                    <option key={t.id} value={t.id}>{t.registration} — {t.model}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+
+                    {/* Vehicle registration */}
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                            Vehicle Registration {form.dispatchMode === 'RIDER' && <span className="text-red-500">*</span>}
+                        </label>
+                        <Input
+                            placeholder={form.dispatchMode === 'RIDER' ? "e.g. KMEA 123B (motorbike plate)" : "Auto-filled from selected truck, or enter manually"}
+                            value={form.vehicleRegistration}
+                            onChange={(e) => setForm((p: any) => ({ ...p, vehicleRegistration: e.target.value }))}
+                        />
+                    </div>
+
+                    {/* Items with editable dispatched quantity */}
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                            Items to Dispatch {isPartial && <span className="text-amber-600 font-normal">(partial dispatch)</span>}
+                        </label>
+                        <div className="border border-slate-200 rounded-lg overflow-hidden">
+                            <table className="w-full text-sm">
+                                <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
+                                    <tr>
+                                        <th className="px-4 py-2 font-medium">Product</th>
+                                        <th className="px-4 py-2 font-medium text-right">Requested</th>
+                                        <th className="px-4 py-2 font-medium text-right w-28">Dispatching</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {form.items.map((item: any) => (
+                                        <tr key={item.productId} className="bg-white">
+                                            <td className="px-4 py-2">{item.productName}</td>
+                                            <td className="px-4 py-2 text-right text-slate-500">{item.requested_qty}</td>
+                                            <td className="px-4 py-2 text-right">
+                                                <Input
+                                                    type="number"
+                                                    min={0}
+                                                    max={item.requested_qty}
+                                                    value={item.dispatched_qty}
+                                                    onChange={(e) => handleItemQtyChange(item.productId, parseInt(e.target.value) || 0)}
+                                                    className="h-8 text-right"
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
                     <Button variant="outline" onClick={onClose}>Cancel</Button>
                     <Button onClick={handleSubmit} disabled={submitting}>
                         {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
@@ -571,4 +977,120 @@ function ReceiveModal({isOpen, onClose, transfer, onSuccess}: any) {
             </DialogContent>
         </Dialog>
     )
+}
+
+// Roadmap/timeline view for a single transfer — who requested it, who
+// approved it, how/by whom it was dispatched, and who received it. All of
+// this data already exists on the transfer object returned by the backend
+// (createdBy, approvedBy, driver/truck/dispatchMode/vehicleRegistration,
+// receivedBy) — this just renders it instead of leaving it invisible.
+function TransferTimeline({ transfer }: { transfer: any }) {
+  const steps = [
+    {
+      key: "requested",
+      label: "Requested",
+      done: true,
+      actor: transfer.createdBy?.name,
+      at: transfer.createdAt,
+      detail: null as string | null,
+    },
+    {
+      key: "approved",
+      label: "Approved",
+      done: !!transfer.approvedAt,
+      actor: transfer.approvedBy?.name,
+      at: transfer.approvedAt,
+      detail: null as string | null,
+    },
+    {
+      key: "picking",
+      label: transfer.pickingCompletedAt ? "Picked" : "Picking",
+      done: !!transfer.pickingCompletedAt,
+      actor: transfer.pickedBy?.name,
+      at: transfer.pickingCompletedAt,
+      detail: null as string | null,
+    },
+    {
+      key: "verified",
+      label: "Verified",
+      done: !!transfer.verifiedAt,
+      actor: transfer.verifiedBy?.name,
+      at: transfer.verifiedAt,
+      detail: null as string | null,
+    },
+    {
+      key: "dispatched",
+      label: "Dispatched",
+      done: !!transfer.dispatchedAt,
+      actor: transfer.driver?.name,
+      at: transfer.dispatchedAt,
+      detail: transfer.dispatchedAt
+        ? `${transfer.dispatchMode === "RIDER" ? "Rider" : "Truck"}${transfer.vehicleRegistration ? ` • ${transfer.vehicleRegistration}` : ""}${transfer.truck?.model ? ` (${transfer.truck.model})` : ""}`
+        : null,
+    },
+    {
+      key: "received",
+      label: transfer.status === "PARTIALLY_RECEIVED" ? "Partially Received" : "Received",
+      done: !!transfer.receivedAt,
+      actor: transfer.receivedBy?.name,
+      at: transfer.receivedAt,
+      detail: transfer.status === "DISCREPANCY" ? "Discrepancy flagged — dispatched vs. received quantities didn't match" : null,
+    },
+  ];
+
+  return (
+    <div className="px-5 pb-5 pt-1 bg-slate-50/70 border-t border-slate-100">
+      <div className="grid grid-cols-6 gap-4 mb-5 mt-4">
+        {steps.map((step, idx) => (
+          <div key={step.key} className="relative">
+            <div className="flex items-center gap-2 mb-1">
+              <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${step.done ? "bg-emerald-500" : "bg-slate-300"}`} />
+              <p className={`text-xs font-semibold ${step.done ? "text-slate-800" : "text-slate-400"}`}>{step.label}</p>
+            </div>
+            {step.done ? (
+              <div className="pl-[18px]">
+                {step.actor && <p className="text-sm text-slate-700">{step.actor}</p>}
+                {step.at && <p className="text-xs text-slate-500 font-mono">{new Date(step.at).toLocaleString()}</p>}
+                {step.detail && <p className="text-xs text-slate-500 mt-0.5">{step.detail}</p>}
+              </div>
+            ) : (
+              <p className="pl-[18px] text-xs text-slate-400">Pending</p>
+            )}
+            {idx < steps.length - 1 && (
+              <div className="hidden md:block absolute top-1 left-full w-4 h-px bg-slate-200 -translate-x-2" />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
+            <tr>
+              <th className="px-4 py-2 font-medium">Product</th>
+              <th className="px-4 py-2 font-medium text-right">Requested</th>
+              <th className="px-4 py-2 font-medium text-right">Dispatched</th>
+              <th className="px-4 py-2 font-medium text-right">Received</th>
+              <th className="px-4 py-2 font-medium text-right">Damaged</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {(transfer.items || []).map((item: any) => (
+              <tr key={item.id || item.productId} className="bg-white">
+                <td className="px-4 py-2">{item.product?.name || item.productId}</td>
+                <td className="px-4 py-2 text-right">{item.requested_qty}</td>
+                <td className="px-4 py-2 text-right text-slate-500">{item.dispatched_qty ?? "—"}</td>
+                <td className="px-4 py-2 text-right text-slate-500">{item.received_qty ?? "—"}</td>
+                <td className="px-4 py-2 text-right text-slate-500">{item.damaged_qty ?? "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {transfer.notes && (
+        <p className="text-xs text-slate-500 mt-3"><span className="font-semibold">Notes:</span> {transfer.notes}</p>
+      )}
+    </div>
+  );
 }

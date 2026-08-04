@@ -379,17 +379,27 @@ export class AdminController {
   }
 
   /**
-   * Inter-Branch Transfer monitor — IN_TRANSIT and PENDING_RECEIPT transfers
+   * Inter-Branch Transfer monitor — transfers still in flight or needing
+   * attention (not yet RECEIVED/CANCELLED/DRAFT).
+   *
+   * Previously filtered on TransferStatus values ('PENDING', 'IN_TRANSIT',
+   * 'PENDING_RECEIPT') that don't exist in the real TransferStatus enum
+   * (DRAFT/PENDING_APPROVAL/APPROVED/DISPATCHED/PARTIALLY_RECEIVED/
+   * RECEIVED/CANCELLED/DISCREPANCY), and included a `targetWarehouse`
+   * relation that doesn't exist on StockTransfer (the real relation is
+   * `destinationWarehouse`) — this endpoint would throw on every call.
    */
   async getIBTMonitor(req: Request, res: Response, next: NextFunction) {
     try {
       const transfers = await prisma.stockTransfer.findMany({
         where: {
-          status: { in: ['PENDING', 'IN_TRANSIT', 'PENDING_RECEIPT', 'DISCREPANCY'] },
+          status: {
+            in: ['PENDING_APPROVAL', 'APPROVED', 'DISPATCHED', 'PARTIALLY_RECEIVED', 'DISCREPANCY'],
+          },
         },
         include: {
           sourceWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
-          targetWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
+          destinationWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
           items: { include: { product: { select: { id: true, name: true, sku: true } } } },
           createdBy: { select: { id: true, name: true } },
         },
@@ -398,10 +408,11 @@ export class AdminController {
       });
 
       const summary = {
-        pending:         transfers.filter(t => t.status === 'PENDING').length,
-        in_transit:      transfers.filter(t => t.status === 'IN_TRANSIT').length,
-        pending_receipt: transfers.filter(t => t.status === 'PENDING_RECEIPT').length,
-        discrepancy:     transfers.filter(t => t.status === 'DISCREPANCY').length,
+        pending_approval:   transfers.filter(t => t.status === 'PENDING_APPROVAL').length,
+        approved:           transfers.filter(t => t.status === 'APPROVED').length,
+        in_transit:         transfers.filter(t => t.status === 'DISPATCHED').length,
+        partially_received: transfers.filter(t => t.status === 'PARTIALLY_RECEIVED').length,
+        discrepancy:        transfers.filter(t => t.status === 'DISCREPANCY').length,
       };
 
       res.json({ success: true, data: { summary, transfers } });

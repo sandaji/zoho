@@ -26,10 +26,19 @@ export const createTransferSchema = z.object({
 });
 
 /**
- * Schema for fulfilling/receiving a transfer
+ * Schema for fulfilling/receiving a transfer. Dispatch info is required
+ * here now too, since fulfillTransfer runs the dispatch stage internally
+ * (see WarehouseInventoryService.fulfillTransfer) and InventoryService's
+ * canonical dispatchTransfer requires dispatchMode + driverId.
  */
 export const fulfillTransferSchema = z.object({
-  transferId: z.string().min(1, "Transfer ID is required"),
+  dispatchMode: z.enum(["RIDER", "TRUCK"]),
+  driverId: z.string().min(1, "Driver is required"),
+  truckId: z.string().optional(),
+  vehicleRegistration: z.string().optional(),
+}).refine((data) => data.truckId || data.vehicleRegistration, {
+  message: "Either truckId or vehicleRegistration is required",
+  path: ["vehicleRegistration"],
 });
 
 /**
