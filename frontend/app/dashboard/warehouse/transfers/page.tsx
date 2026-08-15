@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Plus, Package, ArrowRight, Loader2, Search, X, Truck, CheckCircle, AlertTriangle, ChevronDown, ChevronUp, FileCheck, ThumbsUp } from "lucide-react";
+import { Plus, Package, ArrowRight, Loader2, Search, X, Truck as TruckIcon, CheckCircle, AlertTriangle, ChevronDown, ChevronUp, FileCheck, ThumbsUp, Clock } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { warehouseService } from "@/lib/warehouse.service";
-import { RequestStockTransferPayload, ApproveStockTransferPayload, DispatchStockTransferPayload, ReceiveStockTransferPayload, fetchUsers, fetchTrucks, User, Truck } from "@/lib/admin-api";
+import { RequestStockTransferPayload, ApproveStockTransferPayload, DispatchStockTransferPayload, ReceiveStockTransferPayload, fetchUsers, fetchTrucks, User, Truck as TruckType } from "@/lib/admin-api";
 
 interface TransferItem {
   id?: string;
@@ -39,22 +39,26 @@ export default function TransfersPage() {
   const [warehouses, setWarehouses] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [trucks, setTrucks] = useState<Truck[]>([]);
+  const [trucks, setTrucks] = useState<TruckType[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewTransfer, setShowNewTransfer] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [analytics, setAnalytics] = useState<any | null>(null);
 
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   
   // State for modals
   const [activeTransfer, setActiveTransfer] = useState<any | null>(null);
+  const [activeIssue, setActiveIssue] = useState<any | null>(null);
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showStartPickingModal, setShowStartPickingModal] = useState(false);
   const [showCompletePickingModal, setShowCompletePickingModal] = useState(false);
   const [showVerifyModal, setShowVerifyModal] = useState(false);
   const [showDispatchModal, setShowDispatchModal] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showRaiseIssueModal, setShowRaiseIssueModal] = useState(false);
+  const [showResolveIssueModal, setShowResolveIssueModal] = useState(false);
 
   const [transferForm, setTransferForm] = useState<TransferForm>({
     sourceWarehouseId: "",
@@ -79,12 +83,13 @@ export default function TransfersPage() {
       const params: any = { page: 1, limit: 50 };
       if (statusFilter !== "all") params.status = statusFilter;
 
-      const [transfersRes, warehousesRes, productsRes, usersRes, trucksRes] = await Promise.all([
+      const [transfersRes, warehousesRes, productsRes, usersRes, trucksRes, analyticsRes] = await Promise.all([
         warehouseService.getTransfers(params, token!),
         warehouseService.getWarehouses(token!),
         warehouseService.getProducts(token!),
         fetchUsers(token!).catch(() => []),
         fetchTrucks(token!).catch(() => []),
+        warehouseService.getTransferAnalytics(token!).catch(() => null),
       ]);
 
       setTransfers(transfersRes.data || []);
@@ -92,6 +97,7 @@ export default function TransfersPage() {
       setProducts(productsRes.data?.products || productsRes.data || []);
       setUsers(usersRes || []);
       setTrucks(trucksRes || []);
+      setAnalytics(analyticsRes?.data || null);
 
     } catch (error) {
       toast.error("Failed to load transfers. The backend might be unavailable.");
@@ -125,14 +131,17 @@ export default function TransfersPage() {
     }
   };
   
-  const openModal = (transfer: any, modal: 'approve' | 'start_picking' | 'complete_picking' | 'verify' | 'dispatch' | 'receive') => {
+  const openModal = (transfer: any, modal: 'approve' | 'start_picking' | 'complete_picking' | 'verify' | 'dispatch' | 'receive' | 'raise_issue' | 'resolve_issue', issue?: any) => {
       setActiveTransfer(transfer);
+      if (issue) setActiveIssue(issue);
       if (modal === 'approve') setShowApproveModal(true);
       if (modal === 'start_picking') setShowStartPickingModal(true);
       if (modal === 'complete_picking') setShowCompletePickingModal(true);
       if (modal === 'verify') setShowVerifyModal(true);
       if (modal === 'dispatch') setShowDispatchModal(true);
       if (modal === 'receive') setShowReceiveModal(true);
+      if (modal === 'raise_issue') setShowRaiseIssueModal(true);
+      if (modal === 'resolve_issue') setShowResolveIssueModal(true);
   }
 
   const addItemToTransfer = () => {
@@ -171,7 +180,7 @@ export default function TransfersPage() {
       APPROVED: { classes: "bg-blue-100 text-blue-800", icon: <ThumbsUp size={14} className="mr-1 inline" /> },
       PICKING: { classes: "bg-indigo-100 text-indigo-800 border border-indigo-200", icon: <Package size={14} className="mr-1 inline" /> },
       VERIFIED: { classes: "bg-teal-100 text-teal-800 border border-teal-200", icon: <FileCheck size={14} className="mr-1 inline" /> },
-      DISPATCHED: { classes: "bg-cyan-100 text-cyan-800 border border-cyan-200", icon: <Truck size={14} className="mr-1 inline" /> },
+      DISPATCHED: { classes: "bg-cyan-100 text-cyan-800 border border-cyan-200", icon: <TruckIcon size={14} className="mr-1 inline" /> },
       PARTIALLY_RECEIVED: { classes: "bg-purple-100 text-purple-800", icon: <Package size={14} className="mr-1 inline" /> },
       RECEIVED: { classes: "bg-emerald-100 text-emerald-800 border border-emerald-200", icon: <CheckCircle size={14} className="mr-1 inline" /> },
       CANCELLED: { classes: "bg-red-100 text-red-800", icon: <X size={14} className="mr-1 inline" /> },
@@ -191,13 +200,15 @@ export default function TransfersPage() {
   // modules/inventory/transfer-actions.ts from status + the user's actual
   // permissions) to the modal it opens. The frontend never decides *whether*
   // an action is legal — only what UI to show once the backend says it is.
-  const ACTION_TO_MODAL: Record<string, 'approve' | 'start_picking' | 'complete_picking' | 'verify' | 'dispatch' | 'receive'> = {
+  const ACTION_TO_MODAL: Record<string, 'approve' | 'start_picking' | 'complete_picking' | 'verify' | 'dispatch' | 'receive' | 'raise_issue' | 'resolve_issue'> = {
     approve: 'approve',
     start_picking: 'start_picking',
     complete_picking: 'complete_picking',
     verify: 'verify',
     dispatch: 'dispatch',
     receive: 'receive',
+    raise_issue: 'raise_issue',
+    resolve_issue: 'resolve_issue',
   };
 
   const filteredProducts = products.filter(p =>
@@ -227,6 +238,72 @@ export default function TransfersPage() {
           New Transfer Request
         </Button>
       </div>
+
+      {/* Transfer Analytics & KPI Dashboard Cards */}
+      {analytics && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card className="bg-white border-none shadow-sm ring-1 ring-emerald-100 p-4 flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Avg. Cycle Time</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{analytics.avgCycleTimeHours} <span className="text-xs font-medium text-slate-500">hrs</span></p>
+              </div>
+              <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+                <Clock size={20} />
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-2">Request → Received speed</p>
+          </Card>
+
+          <Card className="bg-white border-none shadow-sm ring-1 ring-emerald-100 p-4 flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Discrepancy Rate</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">{analytics.discrepancyRatePercent}%</p>
+              </div>
+              <div className="p-2 bg-amber-50 rounded-lg text-amber-600">
+                <AlertTriangle size={20} />
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-2">{analytics.discrepancyTransfersCount} transfers flagged</p>
+          </Card>
+
+          <Card className="bg-white border-none shadow-sm ring-1 ring-emerald-100 p-4 flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dispatch Split</p>
+                <p className="text-lg font-bold text-slate-900 mt-1">
+                  🚛 {analytics.dispatchModeSplit?.truck || 0} <span className="text-slate-400 font-normal">|</span> 🛵 {analytics.dispatchModeSplit?.rider || 0}
+                </p>
+              </div>
+              <div className="p-2 bg-cyan-50 rounded-lg text-cyan-600">
+                <TruckIcon size={20} />
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-2">Truck vs. Rider dispatches</p>
+          </Card>
+
+          <Card className={`border-none shadow-sm ring-1 p-4 flex flex-col justify-between ${
+            analytics.pendingApprovals?.agingCount > 0 ? "bg-amber-50/80 ring-amber-200" : "bg-white ring-emerald-100"
+          }`}>
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending Approvals</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">
+                  {analytics.pendingApprovals?.total || 0}
+                  {analytics.pendingApprovals?.agingCount > 0 && (
+                    <span className="text-xs text-amber-700 ml-2 font-semibold">({analytics.pendingApprovals.agingCount} &gt; 24h)</span>
+                  )}
+                </p>
+              </div>
+              <div className="p-2 bg-purple-50 rounded-lg text-purple-600">
+                <FileCheck size={20} />
+              </div>
+            </div>
+            <p className="text-[11px] text-slate-500 mt-2">Awaiting branch manager sign-off</p>
+          </Card>
+        </div>
+      )}
 
       {/* Filters */}
       <Card className="bg-white border-none shadow-sm ring-1 ring-emerald-100">
@@ -264,7 +341,7 @@ export default function TransfersPage() {
           <div className="divide-y divide-slate-100">
             {transfers.length === 0 ? (
               <div className="text-center py-16 text-slate-500">
-                <Truck size={48} className="mx-auto mb-4 opacity-20 text-emerald-600" />
+                <TruckIcon size={48} className="mx-auto mb-4 opacity-20 text-emerald-600" />
                 <p className="font-medium text-slate-600">No transfer orders found</p>
                 <p className="text-sm mt-1">Adjust your filters or create a new order.</p>
               </div>
@@ -325,6 +402,8 @@ export default function TransfersPage() {
             <VerifyModal isOpen={showVerifyModal} onClose={() => setShowVerifyModal(false)} transfer={activeTransfer} onSuccess={loadData} />
             <DispatchModal isOpen={showDispatchModal} onClose={() => setShowDispatchModal(false)} transfer={activeTransfer} onSuccess={loadData} users={users} trucks={trucks} />
             <ReceiveModal isOpen={showReceiveModal} onClose={() => setShowReceiveModal(false)} transfer={activeTransfer} onSuccess={loadData} />
+            <RaiseIssueModal isOpen={showRaiseIssueModal} onClose={() => setShowRaiseIssueModal(false)} transfer={activeTransfer} onSuccess={loadData} />
+            <ResolveIssueModal isOpen={showResolveIssueModal} onClose={() => setShowResolveIssueModal(false)} transfer={activeTransfer} issue={activeIssue} onSuccess={loadData} />
           </>
       )}
 
@@ -333,7 +412,7 @@ export default function TransfersPage() {
         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-slate-50">
           <DialogHeader className="bg-white -mx-6 -mt-6 p-6 border-b border-slate-200">
             <DialogTitle className="text-xl flex items-center gap-2">
-              <Truck className="text-emerald-600" /> Request New Stock Transfer
+              <TruckIcon className="text-emerald-600" /> Request New Stock Transfer
             </DialogTitle>
           </DialogHeader>
 
@@ -481,8 +560,8 @@ function ApproveModal({isOpen, onClose, transfer, onSuccess}: any) {
         try {
             setSubmitting(true);
             const result = await warehouseService.approveTransfer(transfer.id, { notes }, token!);
-            if (result?.warning) {
-                toast.warning(result.warning);
+            if ((result as any)?.warning) {
+                toast.warning((result as any).warning);
             }
             toast.success("Transfer approved");
             onSuccess();
@@ -664,8 +743,8 @@ function VerifyModal({isOpen, onClose, transfer, onSuccess}: any) {
         try {
             setSubmitting(true);
             const result = await warehouseService.verifyTransfer(transfer.id, { notes }, token!);
-            if (result?.warning) {
-                toast.warning(result.warning);
+            if ((result as any)?.warning) {
+                toast.warning((result as any).warning);
             }
             toast.success("Transfer verified — ready to dispatch");
             onSuccess();
@@ -814,7 +893,7 @@ function DispatchModal({isOpen, onClose, transfer, onSuccess, users, trucks}: an
                                 onClick={() => setForm((p: any) => ({ ...p, dispatchMode: 'TRUCK', truckId: '' }))}
                                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border text-sm font-medium transition-colors ${form.dispatchMode === 'TRUCK' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
                             >
-                                <Truck size={16} /> Truck
+                                <TruckIcon size={16} /> Truck
                             </button>
                             <button
                                 type="button"
@@ -985,6 +1064,25 @@ function ReceiveModal({isOpen, onClose, transfer, onSuccess}: any) {
 // (createdBy, approvedBy, driver/truck/dispatchMode/vehicleRegistration,
 // receivedBy) — this just renders it instead of leaving it invisible.
 function TransferTimeline({ transfer }: { transfer: any }) {
+  const { token } = useAuth();
+  const [showAuditLogs, setShowAuditLogs] = useState(false);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+
+  const loadAuditLogs = async () => {
+    if (!showAuditLogs && auditLogs.length === 0) {
+      try {
+        setLoadingLogs(true);
+        const data = await warehouseService.getTransferAuditLogs(transfer.id, token!);
+        setAuditLogs(data || []);
+      } catch (error) {
+        toast.error("Failed to load audit logs");
+      } finally {
+        setLoadingLogs(false);
+      }
+    }
+    setShowAuditLogs(!showAuditLogs);
+  };
   const steps = [
     {
       key: "requested",
@@ -1088,9 +1186,240 @@ function TransferTimeline({ transfer }: { transfer: any }) {
         </table>
       </div>
 
-      {transfer.notes && (
-        <p className="text-xs text-slate-500 mt-3"><span className="font-semibold">Notes:</span> {transfer.notes}</p>
+      <div className="flex justify-between items-center mt-3">
+        {transfer.notes ? (
+          <p className="text-xs text-slate-500"><span className="font-semibold">Notes:</span> {transfer.notes}</p>
+        ) : <div />}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={loadAuditLogs}
+          className="text-xs text-slate-600 hover:text-emerald-700 hover:bg-emerald-50"
+        >
+          {showAuditLogs ? "Hide Compliance Audit Trail" : "View Compliance Audit Trail"}
+        </Button>
+      </div>
+
+      {showAuditLogs && (
+        <div className="mt-3 bg-slate-900 text-slate-100 rounded-lg p-4 font-mono text-xs space-y-2">
+          <p className="font-bold text-emerald-400 uppercase tracking-wider mb-2">📜 System Audit Log Records</p>
+          {loadingLogs ? (
+            <div className="flex items-center gap-2 text-slate-400"><Loader2 className="animate-spin" size={14} /> Loading audit trail...</div>
+          ) : auditLogs.length === 0 ? (
+            <p className="text-slate-400">No audit log entries recorded for this transfer yet.</p>
+          ) : (
+            auditLogs.map((log: any) => (
+              <div key={log.id} className="border-b border-slate-800 pb-2 last:border-0 last:pb-0">
+                <div className="flex justify-between text-slate-400">
+                  <span className="text-emerald-400 font-semibold">{log.changes?.event || log.action}</span>
+                  <span>{new Date(log.timestamp).toLocaleString()}</span>
+                </div>
+                <p className="text-slate-300 mt-0.5">User: {log.user?.name || log.userId || "System"}</p>
+                {log.changes && (
+                  <pre className="text-[11px] text-slate-400 bg-slate-950 p-2 rounded mt-1 overflow-x-auto">
+                    {JSON.stringify(log.changes, null, 2)}
+                  </pre>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Transfer Issues section */}
+      {transfer.issues && transfer.issues.length > 0 && (
+        <div className="mt-4 bg-amber-50/60 border border-amber-200 rounded-lg p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+              <AlertTriangle size={14} className="text-amber-600" />
+              Transfer Issues & Disputes ({transfer.issues.length})
+            </h4>
+          </div>
+          <div className="divide-y divide-amber-200/60">
+            {transfer.issues.map((issue: any) => (
+              <div key={issue.id} className="pt-2.5 pb-2.5 first:pt-0 last:pb-0 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-2 py-0.5 rounded text-[11px] font-semibold uppercase ${
+                      issue.status === "OPEN" ? "bg-red-100 text-red-800 border border-red-200" :
+                      issue.status === "RESOLVED" ? "bg-emerald-100 text-emerald-800 border border-emerald-200" :
+                      "bg-slate-100 text-slate-700"
+                    }`}>
+                      {issue.status}
+                    </span>
+                    <span className="font-semibold text-xs text-slate-800 capitalize">
+                      {issue.category.replace("_", " ")}
+                    </span>
+                    {issue.raisedBy?.name && (
+                      <span className="text-xs text-slate-500">• Raised by {issue.raisedBy.name}</span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-700 mt-1">{issue.description}</p>
+                  {issue.resolution && (
+                    <div className="mt-1.5 pl-2 border-l-2 border-emerald-400 text-xs text-slate-600">
+                      <span className="font-semibold text-emerald-800">Resolution:</span> {issue.resolution}
+                      {issue.resolvedBy?.name && <span className="text-slate-500"> (by {issue.resolvedBy.name})</span>}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
+}
+
+function RaiseIssueModal({ isOpen, onClose, transfer, onSuccess }: any) {
+    const { token } = useAuth();
+    const [submitting, setSubmitting] = useState(false);
+    const [category, setCategory] = useState<"quantity_variance" | "damage" | "lost_in_transit" | "wrong_item" | "other">("quantity_variance");
+    const [description, setDescription] = useState("");
+
+    const handleSubmit = async () => {
+        if (!description.trim()) {
+            toast.error("Please provide a description of the issue");
+            return;
+        }
+        try {
+            setSubmitting(true);
+            await warehouseService.raiseIssue(transfer.id, { category, description }, token!);
+            toast.success("Transfer issue raised successfully");
+            onSuccess();
+            onClose();
+            setDescription("");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to raise issue");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="max-w-lg">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-amber-700">
+                        <AlertTriangle size={20} /> Raise Transfer Dispute / Issue — {transfer?.documentId}
+                    </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-3">
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Issue Category</label>
+                        <select
+                            value={category}
+                            onChange={(e: any) => setCategory(e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                        >
+                            <option value="quantity_variance">Quantity Variance (Missing Units)</option>
+                            <option value="damage">Damaged Stock</option>
+                            <option value="lost_in_transit">Lost in Transit</option>
+                            <option value="wrong_item">Wrong Item Delivered</option>
+                            <option value="other">Other Issue</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Detailed Description</label>
+                        <textarea
+                            rows={4}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Explain the discrepancy or physical damage found..."
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                        />
+                    </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button onClick={handleSubmit} disabled={submitting} className="bg-amber-600 hover:bg-amber-700 text-white">
+                        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Submit Issue
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+function ResolveIssueModal({ isOpen, onClose, transfer, issue, onSuccess }: any) {
+    const { token } = useAuth();
+    const [submitting, setSubmitting] = useState(false);
+    const [status, setStatus] = useState<"RESOLVED" | "DISMISSED">("RESOLVED");
+    const [resolution, setResolution] = useState("");
+
+    const handleSubmit = async () => {
+        const targetIssueId = issue?.id || transfer?.issues?.[0]?.id;
+        if (!targetIssueId) {
+            toast.error("No issue selected for resolution");
+            return;
+        }
+        if (!resolution.trim()) {
+            toast.error("Please provide resolution notes");
+            return;
+        }
+        try {
+            setSubmitting(true);
+            await warehouseService.resolveIssue(targetIssueId, { status, resolution }, token!);
+            toast.success(`Issue marked as ${status.toLowerCase()}`);
+            onSuccess();
+            onClose();
+            setResolution("");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to resolve issue");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const targetIssue = issue || transfer?.issues?.[0];
+
+    return (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+            <DialogContent className="max-w-lg">
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-emerald-700">
+                        <CheckCircle size={20} /> Resolve Transfer Issue — {transfer?.documentId}
+                    </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-3">
+                    {targetIssue && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-900 space-y-1">
+                            <p className="font-semibold">Issue ({targetIssue.category.replace("_", " ")})</p>
+                            <p>{targetIssue.description}</p>
+                            {targetIssue.raisedBy && <p className="text-amber-700">Raised by: {targetIssue.raisedBy.name}</p>}
+                        </div>
+                    )}
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Action</label>
+                        <select
+                            value={status}
+                            onChange={(e: any) => setStatus(e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                        >
+                            <option value="RESOLVED">Resolve (Restock/Adjustment Accepted)</option>
+                            <option value="DISMISSED">Dismiss (False Alarm / Dispute Rejected)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Resolution Notes</label>
+                        <textarea
+                            rows={3}
+                            value={resolution}
+                            onChange={(e) => setResolution(e.target.value)}
+                            placeholder="Detail how this issue was resolved or investigated..."
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                        />
+                    </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                    <Button variant="outline" onClick={onClose}>Cancel</Button>
+                    <Button onClick={handleSubmit} disabled={submitting} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                        {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Confirm Resolution
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
 }

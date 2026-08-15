@@ -39,8 +39,11 @@ import {
   VerifyTransferDTO,
   DispatchTransferDTO,
   ReceiveTransferDTO,
+  RaiseTransferIssueDTO,
+  ResolveTransferIssueDTO,
 } from "../dto";
 import { SequenceService } from "../../sequences/sequence.service";
+import notificationService from "../../notifications/notification.service";
 
 export interface FIFOBatchUsed {
   batchId: string;
@@ -57,6 +60,28 @@ export interface FIFODepletionResult {
 
 export class InventoryService {
   private prisma = prisma;
+
+  static async logTransferAudit(
+    tx: Prisma.TransactionClient,
+    transferId: string,
+    action: "CREATE" | "UPDATE" | "DELETE",
+    userId: string | null | undefined,
+    changes: Record<string, any>,
+  ) {
+    try {
+      await tx.auditLog.create({
+        data: {
+          entityType: "StockTransfer",
+          entityId: transferId,
+          action,
+          userId: userId || null,
+          changes,
+        },
+      });
+    } catch (err) {
+      logger.error({ err, transferId, action }, "Failed to write transfer audit log entry");
+    }
+  }
 
   // =================================================================
   // CANONICAL FIFO VALUATION
@@ -788,6 +813,13 @@ export class InventoryService {
         driver: { select: { id: true, name: true, phone: true } },
         truck: true,
         receivedBy: { select: { id: true, name: true, email: true } },
+        issues: {
+          include: {
+            raisedBy: { select: { id: true, name: true, email: true } },
+            resolvedBy: { select: { id: true, name: true, email: true } },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
       orderBy: { createdAt: "desc" },
     });
@@ -812,6 +844,13 @@ export class InventoryService {
         driver: { select: { id: true, name: true, phone: true } },
         truck: true,
         receivedBy: { select: { id: true, name: true, email: true } },
+        issues: {
+          include: {
+            raisedBy: { select: { id: true, name: true, email: true } },
+            resolvedBy: { select: { id: true, name: true, email: true } },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 
@@ -877,6 +916,24 @@ export class InventoryService {
         { transferId: transfer.id, documentId },
         "Stock transfer request created",
       );
+
+      await InventoryService.logTransferAudit(tx, transfer.id, "CREATE", userId, {
+        event: "TRANSFER_REQUESTED",
+        documentId: transfer.documentId,
+        sourceWarehouseId: dto.sourceWarehouseId,
+        destinationWarehouseId: dto.destinationWarehouseId,
+        itemCount: dto.items.length,
+        notes: dto.notes,
+      });
+
+      notificationService.notifyRoleOrPermission({
+        roleCode: "branch_manager",
+        title: "New Transfer Request",
+        message: `Stock Transfer ${documentId} requested and requires approval.`,
+        type: "TRANSFER_APPROVAL_REQUIRED",
+        link: "/dashboard/warehouse/transfers",
+      }).catch(() => {});
+
       return transfer;
     });
   }
@@ -938,11 +995,17 @@ export class InventoryService {
         });
       }
 
-      await synchronizeBranchInventoryForWarehouse(
-        tx,
-        transfer.items[0]?.productId ?? "",
-        transfer.sourceWarehouseId,
-      );
+      // Re-sync BranchInventory for every product on the transfer —
+      // previously this only synced transfer.items[0], leaving every other
+      // product's branch-level reserved/available figures stale after
+      // approving a multi-item transfer.
+      for (const productId of new Set(transfer.items.map((i) => i.productId))) {
+        await synchronizeBranchInventoryForWarehouse(
+          tx,
+          productId,
+          transfer.sourceWarehouseId,
+        );
+      }
 
       const updatedTransfer = await tx.stockTransfer.update({
         where: { id: transferId },
@@ -958,6 +1021,13 @@ export class InventoryService {
         { transferId: updatedTransfer.id },
         "Stock transfer approved and stock reserved",
       );
+
+      await InventoryService.logTransferAudit(tx, transferId, "UPDATE", userId, {
+        event: "TRANSFER_APPROVED",
+        previousStatus: transfer.status,
+        newStatus: "APPROVED",
+        notes: dto.notes,
+      });
 
       // Soft segregation-of-duties check: the same person requesting and
       // approving a transfer isn't blocked (some teams are too small for
@@ -1003,6 +1073,22 @@ export class InventoryService {
     });
 
     logger.info({ transferId: updated.id, userId }, "Stock transfer picking started");
+
+    await this.prisma.auditLog.create({
+      data: {
+        entityType: "StockTransfer",
+        entityId: transferId,
+        action: "UPDATE",
+        userId,
+        changes: {
+          event: "PICKING_STARTED",
+          previousStatus: transfer.status,
+          newStatus: "PICKING",
+          notes: dto.notes,
+        },
+      },
+    }).catch(() => {});
+
     return updated;
   }
 
@@ -1057,6 +1143,16 @@ export class InventoryService {
       });
 
       logger.info({ transferId: updated.id, userId }, "Stock transfer picking completed, awaiting verification");
+
+      await InventoryService.logTransferAudit(tx, transferId, "UPDATE", userId, {
+        event: "PICKING_COMPLETED",
+        previousStatus: transfer.status,
+        newStatus: "PICKING",
+        pickingCompletedAt: updated.pickingCompletedAt,
+        pickedItems: dto.items,
+        notes: dto.notes,
+      });
+
       return updated;
     });
   }
@@ -1103,6 +1199,22 @@ export class InventoryService {
     });
 
     logger.info({ transferId: updated.id, userId }, "Stock transfer verified");
+
+    await this.prisma.auditLog.create({
+      data: {
+        entityType: "StockTransfer",
+        entityId: transferId,
+        action: "UPDATE",
+        userId,
+        changes: {
+          event: "PICKING_VERIFIED",
+          previousStatus: transfer.status,
+          newStatus: "VERIFIED",
+          verifiedAt: updated.verifiedAt,
+          notes: dto.notes,
+        },
+      },
+    }).catch(() => {});
 
     // Same soft segregation-of-duties check as approveTransfer, but for
     // picker vs. verifier — allowed, but flagged.
@@ -1313,6 +1425,26 @@ export class InventoryService {
         { transferId: updatedTransfer.id },
         "Stock transfer dispatched",
       );
+
+      await InventoryService.logTransferAudit(tx, transferId, "UPDATE", userId, {
+        event: "TRANSFER_DISPATCHED",
+        previousStatus: transfer.status,
+        newStatus: "DISPATCHED",
+        dispatchedAt: updatedTransfer.dispatchedAt,
+        dispatchMode: dto.dispatchMode,
+        driverId: dto.driverId,
+        truckId: dto.truckId,
+        vehicleRegistration,
+        dispatchedItems: dto.items,
+      });
+
+      notificationService.notifyRoleOrPermission({
+        title: "Stock Transfer Dispatched",
+        message: `Stock Transfer ${updatedTransfer.documentId} has been dispatched via ${dto.dispatchMode}.`,
+        type: "TRANSFER_DISPATCHED",
+        link: "/dashboard/warehouse/transfers",
+      }).catch(() => {});
+
       return updatedTransfer;
     });
   }
@@ -1403,6 +1535,41 @@ export class InventoryService {
         );
       }
 
+      if (hasDiscrepancy) {
+        for (const item of dto.items) {
+          const originalItem = transfer.items.find(
+            (i) => i.productId === item.productId,
+          );
+          if (!originalItem || originalItem.dispatched_qty === null) continue;
+
+          const variance =
+            originalItem.dispatched_qty - (item.received_qty + item.damaged_qty);
+
+          if (item.damaged_qty > 0) {
+            await tx.transferIssue.create({
+              data: {
+                transferId,
+                category: "damage",
+                description: `Received ${item.damaged_qty} damaged unit(s) for product ${item.productId}.`,
+                status: "OPEN",
+                raisedById: userId,
+              },
+            });
+          }
+          if (variance > 0) {
+            await tx.transferIssue.create({
+              data: {
+                transferId,
+                category: "quantity_variance",
+                description: `Quantity variance: expected ${originalItem.dispatched_qty}, received ${item.received_qty} (${variance} unit(s) missing).`,
+                status: "OPEN",
+                raisedById: userId,
+              },
+            });
+          }
+        }
+      }
+
       const finalStatus = hasDiscrepancy
         ? "DISCREPANCY"
         : isPartial
@@ -1423,8 +1590,324 @@ export class InventoryService {
         { transferId: updatedTransfer.id, status: finalStatus },
         "Stock transfer received",
       );
+
+      await InventoryService.logTransferAudit(tx, transferId, "UPDATE", userId, {
+        event: "TRANSFER_RECEIVED",
+        previousStatus: transfer.status,
+        newStatus: finalStatus,
+        receivedAt: updatedTransfer.receivedAt,
+        hasDiscrepancy,
+        receivedItems: dto.items,
+        notes: dto.notes,
+      });
+
+      if (hasDiscrepancy) {
+        notificationService.notifyRoleOrPermission({
+          roleCode: "branch_manager",
+          title: "Transfer Discrepancy Flagged",
+          message: `Stock Transfer ${updatedTransfer.documentId} was received with inventory discrepancies.`,
+          type: "TRANSFER_DISCREPANCY",
+          link: "/dashboard/warehouse/transfers",
+        }).catch(() => {});
+      }
+
       return updatedTransfer;
     });
+  }
+
+  /**
+   * Raise a dispute/discrepancy against a stock transfer.
+   */
+  async raiseTransferIssue(
+    userId: string,
+    transferId: string,
+    dto: RaiseTransferIssueDTO,
+  ): Promise<any> {
+    const transfer = await this.prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+    });
+    if (!transfer) throw notFoundError("Stock transfer", transferId);
+
+    // Guard against raising an issue on a transfer that's still mid-flow
+    // (e.g. APPROVED or PICKING) — doing so would force it into
+    // DISCREPANCY, which only has raise_issue/resolve_issue actions
+    // available, effectively bricking an in-progress transfer with no way
+    // back into the normal approve→pick→verify→dispatch→receive flow.
+    if (
+      !["DISCREPANCY", "PARTIALLY_RECEIVED", "RECEIVED"].includes(
+        transfer.status,
+      )
+    ) {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        `Cannot raise an issue on a transfer in ${transfer.status} status — only on DISCREPANCY, PARTIALLY_RECEIVED, or RECEIVED transfers.`,
+      );
+    }
+    if (!dto.category || !dto.description?.trim()) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "category and description are required",
+      );
+    }
+
+    return await this.prisma.$transaction(async (tx) => {
+      const issue = await tx.transferIssue.create({
+        data: {
+          transferId,
+          category: dto.category,
+          description: dto.description,
+          status: "OPEN",
+          raisedById: userId,
+        },
+        include: {
+          raisedBy: { select: { id: true, name: true, email: true } },
+        },
+      });
+
+      if (transfer.status !== "DISCREPANCY") {
+        await tx.stockTransfer.update({
+          where: { id: transferId },
+          data: { status: "DISCREPANCY" },
+        });
+      }
+
+      logger.info(
+        { issueId: issue.id, transferId, category: dto.category },
+        "Transfer issue raised",
+      );
+
+      await InventoryService.logTransferAudit(tx, transferId, "UPDATE", userId, {
+        event: "ISSUE_RAISED",
+        issueId: issue.id,
+        category: dto.category,
+        description: dto.description,
+      });
+
+      notificationService.notifyRoleOrPermission({
+        roleCode: "branch_manager",
+        title: "Transfer Issue Raised",
+        message: `A dispute (${dto.category.replace("_", " ")}) was filed against transfer ${transfer.documentId}.`,
+        type: "ISSUE_RAISED",
+        link: "/dashboard/warehouse/transfers",
+      }).catch(() => {});
+
+      return issue;
+    });
+  }
+
+  /**
+   * Resolve or dismiss a transfer issue.
+   * Restores transfer status to RECEIVED if all active issues are resolved/dismissed.
+   */
+  async resolveTransferIssue(
+    userId: string,
+    issueId: string,
+    dto: ResolveTransferIssueDTO,
+  ): Promise<any> {
+    const issue = await this.prisma.transferIssue.findUnique({
+      where: { id: issueId },
+    });
+    if (!issue) throw notFoundError("Transfer issue", issueId);
+
+    return await this.prisma.$transaction(async (tx) => {
+      const updatedIssue = await tx.transferIssue.update({
+        where: { id: issueId },
+        data: {
+          status: dto.status,
+          resolution: dto.resolution,
+          resolvedById: userId,
+          resolvedAt: new Date(),
+        },
+        include: {
+          raisedBy: { select: { id: true, name: true, email: true } },
+          resolvedBy: { select: { id: true, name: true, email: true } },
+        },
+      });
+
+      const remainingOpenIssues = await tx.transferIssue.count({
+        where: {
+          transferId: issue.transferId,
+          status: { in: ["OPEN", "INVESTIGATING"] },
+        },
+      });
+
+      if (remainingOpenIssues === 0) {
+        // Restore the status the transfer would actually be in based on
+        // its item quantities, rather than hardcoding RECEIVED —
+        // otherwise resolving an issue on a transfer that was only
+        // PARTIALLY_RECEIVED would silently promote it to fully RECEIVED,
+        // implying the missing quantity showed up when it didn't.
+        const transferWithItems = await tx.stockTransfer.findUnique({
+          where: { id: issue.transferId },
+          include: { items: true },
+        });
+        const isPartial = (transferWithItems?.items || []).some(
+          (i) =>
+            i.dispatched_qty !== null &&
+            (i.received_qty ?? 0) < i.dispatched_qty,
+        );
+        const restoredStatus = isPartial ? "PARTIALLY_RECEIVED" : "RECEIVED";
+
+        await tx.stockTransfer.update({
+          where: { id: issue.transferId },
+          data: { status: restoredStatus },
+        });
+        logger.info(
+          { transferId: issue.transferId, restoredStatus },
+          "All transfer issues resolved; transfer status restored",
+        );
+      }
+
+      await InventoryService.logTransferAudit(tx, issue.transferId, "UPDATE", userId, {
+        event: "ISSUE_RESOLVED",
+        issueId: updatedIssue.id,
+        status: dto.status,
+        resolution: dto.resolution,
+      });
+
+      notificationService.createNotification({
+        userId: issue.raisedById,
+        title: "Transfer Issue Resolved",
+        message: `The issue raised on transfer ${issue.transferId} was marked as ${dto.status.toLowerCase()}.`,
+        type: "ISSUE_RESOLVED",
+        link: "/dashboard/warehouse/transfers",
+      }).catch(() => {});
+
+      return updatedIssue;
+    });
+  }
+
+  /**
+   * Get all issues for a stock transfer.
+   */
+  async getTransferIssues(transferId: string): Promise<any> {
+    return this.prisma.transferIssue.findMany({
+      where: { transferId },
+      include: {
+        raisedBy: { select: { id: true, name: true, email: true } },
+        resolvedBy: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  /**
+   * Get audit logs for a stock transfer.
+   */
+  async getTransferAuditLogs(transferId: string): Promise<any> {
+    return this.prisma.auditLog.findMany({
+      where: {
+        entityType: "StockTransfer",
+        entityId: transferId,
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: { timestamp: "desc" },
+    });
+  }
+
+  /**
+   * Get inventory record by product and warehouse IDs (legacy helper)
+   */
+  async getInventoryByProductAndWarehouse(
+    productId: string,
+    warehouseId: string,
+  ): Promise<any> {
+    const inv = await this.prisma.inventory.findUnique({
+      where: {
+        productId_warehouseId: { productId, warehouseId },
+      },
+      include: {
+        product: true,
+        warehouse: true,
+      },
+    });
+    if (!inv) throw notFoundError("Inventory", `${productId}/${warehouseId}`);
+    return inv;
+  }
+
+  /**
+   * Calculate Transfer Analytics & KPI metrics
+   */
+  async getTransferAnalytics(): Promise<any> {
+    const transfers = await this.prisma.stockTransfer.findMany({
+      include: {
+        sourceWarehouse: { select: { name: true } },
+        destinationWarehouse: { select: { name: true } },
+        createdBy: { select: { name: true } },
+        issues: { select: { id: true, status: true } },
+      },
+    });
+
+    const totalTransfers = transfers.length;
+
+    const completedTransfers = transfers.filter((t) => t.receivedAt && t.createdAt);
+
+    let totalCycleTimeMs = 0;
+    for (const t of completedTransfers) {
+      if (t.receivedAt && t.createdAt) {
+        totalCycleTimeMs += new Date(t.receivedAt).getTime() - new Date(t.createdAt).getTime();
+      }
+    }
+
+    const avgCycleTimeHours = completedTransfers.length > 0
+      ? Number((totalCycleTimeMs / (completedTransfers.length * 1000 * 60 * 60)).toFixed(1))
+      : 0;
+
+    const discrepancyTransfersCount = transfers.filter(
+      (t) => t.status === "DISCREPANCY" || (t.issues && t.issues.length > 0),
+    ).length;
+
+    const discrepancyRatePercent = totalTransfers > 0
+      ? Number(((discrepancyTransfersCount / totalTransfers) * 100).toFixed(1))
+      : 0;
+
+    const truckCount = transfers.filter((t) => t.dispatchMode === "TRUCK").length;
+    const riderCount = transfers.filter((t) => t.dispatchMode === "RIDER").length;
+    const unassignedDispatchCount = transfers.filter(
+      (t) => t.dispatchedAt && !t.dispatchMode,
+    ).length;
+
+    const now = new Date();
+    const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+    const pendingApprovals = transfers.filter((t) => t.status === "PENDING_APPROVAL");
+    const agingPendingCount = pendingApprovals.filter(
+      (t) => new Date(t.createdAt) < twentyFourHoursAgo,
+    ).length;
+
+    const oldestPendingApprovals = pendingApprovals
+      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+      .slice(0, 5)
+      .map((t) => ({
+        id: t.id,
+        documentId: t.documentId,
+        sourceWarehouse: t.sourceWarehouse?.name,
+        destinationWarehouse: t.destinationWarehouse?.name,
+        createdBy: t.createdBy?.name,
+        createdAt: t.createdAt,
+        ageHours: Number(((now.getTime() - new Date(t.createdAt).getTime()) / (1000 * 60 * 60)).toFixed(1)),
+      }));
+
+    return {
+      totalTransfers,
+      avgCycleTimeHours,
+      discrepancyRatePercent,
+      discrepancyTransfersCount,
+      dispatchModeSplit: {
+        truck: truckCount,
+        rider: riderCount,
+        unassigned: unassignedDispatchCount,
+      },
+      pendingApprovals: {
+        total: pendingApprovals.length,
+        agingCount: agingPendingCount,
+        oldest: oldestPendingApprovals,
+      },
+    };
   }
 }
 

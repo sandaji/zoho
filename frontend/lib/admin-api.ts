@@ -600,6 +600,52 @@ export const receiveStockTransfer = async (
   return data;
 };
 
+export interface RaiseTransferIssuePayload {
+  category: "quantity_variance" | "damage" | "lost_in_transit" | "wrong_item" | "other";
+  description: string;
+}
+
+export interface ResolveTransferIssuePayload {
+  status: "RESOLVED" | "DISMISSED";
+  resolution: string;
+}
+
+export const raiseTransferIssue = async (
+  token: string,
+  transferId: string,
+  payload: RaiseTransferIssuePayload
+): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/issues`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to raise transfer issue");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const resolveTransferIssue = async (
+  token: string,
+  issueId: string,
+  payload: ResolveTransferIssuePayload
+): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/issues/${issueId}/resolve`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to resolve transfer issue");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
 export const fetchStockTransferDetail = async (
   token: string,
   transferId: string
@@ -612,6 +658,73 @@ export const fetchStockTransferDetail = async (
   }
   const { data } = await response.json();
   return data;
+};
+
+export const fetchTransferAuditLogs = async (
+  token: string,
+  transferId: string
+): Promise<any[]> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/audit-logs`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch transfer audit logs");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const fetchTransferAnalytics = async (
+  token: string
+): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/analytics`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch transfer analytics");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const fetchNotifications = async (
+  token: string,
+): Promise<{ notifications: any[]; unreadCount: number }> => {
+  const response = await fetch(`${API_BASE_URL}/v1/notifications`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch notifications");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const markNotificationRead = async (
+  token: string,
+  notificationId: string,
+): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/notifications/${notificationId}/read`, {
+    method: "PATCH",
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to mark notification as read");
+  }
+  return response.json();
+};
+
+export const markAllNotificationsRead = async (
+  token: string,
+): Promise<any> => {
+  const response = await fetch(`${API_BASE_URL}/v1/notifications/read-all`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to mark all notifications as read");
+  }
+  return response.json();
 };
 
 export const fetchFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {

@@ -75,6 +75,12 @@ export type StockMovement = $Result.DefaultSelection<Prisma.$StockMovementPayloa
  */
 export type StockTransfer = $Result.DefaultSelection<Prisma.$StockTransferPayload>
 /**
+ * Model TransferIssue
+ * Transfer Issues - Disputes/discrepancies raised against a stock transfer
+ * (short pick, damage, quantity variance, lost in transit, wrong item, etc.)
+ */
+export type TransferIssue = $Result.DefaultSelection<Prisma.$TransferIssuePayload>
+/**
  * Model TransferItem
  * Transfer Items - Line items within a stock transfer
  */
@@ -379,6 +385,11 @@ export type JournalLine = $Result.DefaultSelection<Prisma.$JournalLinePayload>
  * 
  */
 export type VATTransaction = $Result.DefaultSelection<Prisma.$VATTransactionPayload>
+/**
+ * Model Notification
+ * System Notifications for user alerts and transfer events
+ */
+export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 
 /**
  * Enums
@@ -532,6 +543,8 @@ export const TransferStatus: {
   DRAFT: 'DRAFT',
   PENDING_APPROVAL: 'PENDING_APPROVAL',
   APPROVED: 'APPROVED',
+  PICKING: 'PICKING',
+  VERIFIED: 'VERIFIED',
   DISPATCHED: 'DISPATCHED',
   PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
   RECEIVED: 'RECEIVED',
@@ -548,6 +561,16 @@ export const DispatchMode: {
 };
 
 export type DispatchMode = (typeof DispatchMode)[keyof typeof DispatchMode]
+
+
+export const IssueStatus: {
+  OPEN: 'OPEN',
+  INVESTIGATING: 'INVESTIGATING',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
+};
+
+export type IssueStatus = (typeof IssueStatus)[keyof typeof IssueStatus]
 
 
 export const JournalType: {
@@ -896,6 +919,10 @@ export const TransferStatus: typeof $Enums.TransferStatus
 export type DispatchMode = $Enums.DispatchMode
 
 export const DispatchMode: typeof $Enums.DispatchMode
+
+export type IssueStatus = $Enums.IssueStatus
+
+export const IssueStatus: typeof $Enums.IssueStatus
 
 export type JournalType = $Enums.JournalType
 
@@ -1249,6 +1276,16 @@ export class PrismaClient<
     * ```
     */
   get stockTransfer(): Prisma.StockTransferDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transferIssue`: Exposes CRUD operations for the **TransferIssue** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TransferIssues
+    * const transferIssues = await prisma.transferIssue.findMany()
+    * ```
+    */
+  get transferIssue(): Prisma.TransferIssueDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.transferItem`: Exposes CRUD operations for the **TransferItem** model.
@@ -1859,6 +1896,16 @@ export class PrismaClient<
     * ```
     */
   get vATTransaction(): Prisma.VATTransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notifications
+    * const notifications = await prisma.notification.findMany()
+    * ```
+    */
+  get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -2318,6 +2365,7 @@ export namespace Prisma {
     StockBatch: 'StockBatch',
     StockMovement: 'StockMovement',
     StockTransfer: 'StockTransfer',
+    TransferIssue: 'TransferIssue',
     TransferItem: 'TransferItem',
     Customer: 'Customer',
     SalesDocument: 'SalesDocument',
@@ -2378,7 +2426,8 @@ export namespace Prisma {
     AuditLog: 'AuditLog',
     JournalHeader: 'JournalHeader',
     JournalLine: 'JournalLine',
-    VATTransaction: 'VATTransaction'
+    VATTransaction: 'VATTransaction',
+    Notification: 'Notification'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -2394,7 +2443,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3283,6 +3332,80 @@ export namespace Prisma {
           count: {
             args: Prisma.StockTransferCountArgs<ExtArgs>
             result: $Utils.Optional<StockTransferCountAggregateOutputType> | number
+          }
+        }
+      }
+      TransferIssue: {
+        payload: Prisma.$TransferIssuePayload<ExtArgs>
+        fields: Prisma.TransferIssueFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransferIssueFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransferIssueFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>
+          }
+          findFirst: {
+            args: Prisma.TransferIssueFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransferIssueFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>
+          }
+          findMany: {
+            args: Prisma.TransferIssueFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>[]
+          }
+          create: {
+            args: Prisma.TransferIssueCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>
+          }
+          createMany: {
+            args: Prisma.TransferIssueCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransferIssueCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>[]
+          }
+          delete: {
+            args: Prisma.TransferIssueDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>
+          }
+          update: {
+            args: Prisma.TransferIssueUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>
+          }
+          deleteMany: {
+            args: Prisma.TransferIssueDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransferIssueUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransferIssueUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>[]
+          }
+          upsert: {
+            args: Prisma.TransferIssueUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransferIssuePayload>
+          }
+          aggregate: {
+            args: Prisma.TransferIssueAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransferIssue>
+          }
+          groupBy: {
+            args: Prisma.TransferIssueGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransferIssueGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransferIssueCountArgs<ExtArgs>
+            result: $Utils.Optional<TransferIssueCountAggregateOutputType> | number
           }
         }
       }
@@ -7800,6 +7923,80 @@ export namespace Prisma {
           }
         }
       }
+      Notification: {
+        payload: Prisma.$NotificationPayload<ExtArgs>
+        fields: Prisma.NotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          update: {
+            args: Prisma.NotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.NotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotification>
+          }
+          groupBy: {
+            args: Prisma.NotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -7935,6 +8132,7 @@ export namespace Prisma {
     stockBatch?: StockBatchOmit
     stockMovement?: StockMovementOmit
     stockTransfer?: StockTransferOmit
+    transferIssue?: TransferIssueOmit
     transferItem?: TransferItemOmit
     customer?: CustomerOmit
     salesDocument?: SalesDocumentOmit
@@ -7996,6 +8194,7 @@ export namespace Prisma {
     journalHeader?: JournalHeaderOmit
     journalLine?: JournalLineOmit
     vATTransaction?: VATTransactionOmit
+    notification?: NotificationOmit
   }
 
   /* Types for Logging */
@@ -8104,6 +8303,11 @@ export namespace Prisma {
     receivedTransfers: number
     driverTransfers: number
     approvedTransfers: number
+    pickedTransfers: number
+    verifiedTransfers: number
+    raisedTransferIssues: number
+    resolvedTransferIssues: number
+    notifications: number
     roles: number
   }
 
@@ -8136,6 +8340,11 @@ export namespace Prisma {
     receivedTransfers?: boolean | UserCountOutputTypeCountReceivedTransfersArgs
     driverTransfers?: boolean | UserCountOutputTypeCountDriverTransfersArgs
     approvedTransfers?: boolean | UserCountOutputTypeCountApprovedTransfersArgs
+    pickedTransfers?: boolean | UserCountOutputTypeCountPickedTransfersArgs
+    verifiedTransfers?: boolean | UserCountOutputTypeCountVerifiedTransfersArgs
+    raisedTransferIssues?: boolean | UserCountOutputTypeCountRaisedTransferIssuesArgs
+    resolvedTransferIssues?: boolean | UserCountOutputTypeCountResolvedTransferIssuesArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
     roles?: boolean | UserCountOutputTypeCountRolesArgs
   }
 
@@ -8344,6 +8553,41 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountApprovedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockTransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPickedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockTransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountVerifiedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockTransferWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRaisedTransferIssuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferIssueWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountResolvedTransferIssuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferIssueWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
   }
 
   /**
@@ -8710,11 +8954,13 @@ export namespace Prisma {
   export type StockTransferCountOutputType = {
     stockMovements: number
     items: number
+    issues: number
   }
 
   export type StockTransferCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockMovements?: boolean | StockTransferCountOutputTypeCountStockMovementsArgs
     items?: boolean | StockTransferCountOutputTypeCountItemsArgs
+    issues?: boolean | StockTransferCountOutputTypeCountIssuesArgs
   }
 
   // Custom InputTypes
@@ -8740,6 +8986,13 @@ export namespace Prisma {
    */
   export type StockTransferCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransferItemWhereInput
+  }
+
+  /**
+   * StockTransferCountOutputType without action
+   */
+  export type StockTransferCountOutputTypeCountIssuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferIssueWhereInput
   }
 
 
@@ -10129,6 +10382,11 @@ export namespace Prisma {
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
     driverTransfers?: boolean | User$driverTransfersArgs<ExtArgs>
     approvedTransfers?: boolean | User$approvedTransfersArgs<ExtArgs>
+    pickedTransfers?: boolean | User$pickedTransfersArgs<ExtArgs>
+    verifiedTransfers?: boolean | User$verifiedTransfersArgs<ExtArgs>
+    raisedTransferIssues?: boolean | User$raisedTransferIssuesArgs<ExtArgs>
+    resolvedTransferIssues?: boolean | User$resolvedTransferIssuesArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -10214,6 +10472,11 @@ export namespace Prisma {
     receivedTransfers?: boolean | User$receivedTransfersArgs<ExtArgs>
     driverTransfers?: boolean | User$driverTransfersArgs<ExtArgs>
     approvedTransfers?: boolean | User$approvedTransfersArgs<ExtArgs>
+    pickedTransfers?: boolean | User$pickedTransfersArgs<ExtArgs>
+    verifiedTransfers?: boolean | User$verifiedTransfersArgs<ExtArgs>
+    raisedTransferIssues?: boolean | User$raisedTransferIssuesArgs<ExtArgs>
+    resolvedTransferIssues?: boolean | User$resolvedTransferIssuesArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -10256,6 +10519,11 @@ export namespace Prisma {
       receivedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       driverTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
       approvedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
+      pickedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
+      verifiedTransfers: Prisma.$StockTransferPayload<ExtArgs>[]
+      raisedTransferIssues: Prisma.$TransferIssuePayload<ExtArgs>[]
+      resolvedTransferIssues: Prisma.$TransferIssuePayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
       roles: Prisma.$RoleAssignmentPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
     }
@@ -10695,6 +10963,11 @@ export namespace Prisma {
     receivedTransfers<T extends User$receivedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$receivedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     driverTransfers<T extends User$driverTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$driverTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvedTransfers<T extends User$approvedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pickedTransfers<T extends User$pickedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$pickedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    verifiedTransfers<T extends User$verifiedTransfersArgs<ExtArgs> = {}>(args?: Subset<T, User$verifiedTransfersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    raisedTransferIssues<T extends User$raisedTransferIssuesArgs<ExtArgs> = {}>(args?: Subset<T, User$raisedTransferIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    resolvedTransferIssues<T extends User$resolvedTransferIssuesArgs<ExtArgs> = {}>(args?: Subset<T, User$resolvedTransferIssuesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branch<T extends User$branchArgs<ExtArgs> = {}>(args?: Subset<T, User$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -11809,6 +12082,126 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: StockTransferScalarFieldEnum | StockTransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.pickedTransfers
+   */
+  export type User$pickedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockTransfer
+     */
+    select?: StockTransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockTransfer
+     */
+    omit?: StockTransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockTransferInclude<ExtArgs> | null
+    where?: StockTransferWhereInput
+    orderBy?: StockTransferOrderByWithRelationInput | StockTransferOrderByWithRelationInput[]
+    cursor?: StockTransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockTransferScalarFieldEnum | StockTransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.verifiedTransfers
+   */
+  export type User$verifiedTransfersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockTransfer
+     */
+    select?: StockTransferSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockTransfer
+     */
+    omit?: StockTransferOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StockTransferInclude<ExtArgs> | null
+    where?: StockTransferWhereInput
+    orderBy?: StockTransferOrderByWithRelationInput | StockTransferOrderByWithRelationInput[]
+    cursor?: StockTransferWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StockTransferScalarFieldEnum | StockTransferScalarFieldEnum[]
+  }
+
+  /**
+   * User.raisedTransferIssues
+   */
+  export type User$raisedTransferIssuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    where?: TransferIssueWhereInput
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    cursor?: TransferIssueWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferIssueScalarFieldEnum | TransferIssueScalarFieldEnum[]
+  }
+
+  /**
+   * User.resolvedTransferIssues
+   */
+  export type User$resolvedTransferIssuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    where?: TransferIssueWhereInput
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    cursor?: TransferIssueWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferIssueScalarFieldEnum | TransferIssueScalarFieldEnum[]
+  }
+
+  /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
   }
 
   /**
@@ -24564,6 +24957,11 @@ export namespace Prisma {
     vehicleRegistration: string | null
     approvedById: string | null
     approvedAt: Date | null
+    pickedById: string | null
+    pickedAt: Date | null
+    pickingCompletedAt: Date | null
+    verifiedById: string | null
+    verifiedAt: Date | null
     dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
@@ -24585,6 +24983,11 @@ export namespace Prisma {
     vehicleRegistration: string | null
     approvedById: string | null
     approvedAt: Date | null
+    pickedById: string | null
+    pickedAt: Date | null
+    pickingCompletedAt: Date | null
+    verifiedById: string | null
+    verifiedAt: Date | null
     dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
@@ -24606,6 +25009,11 @@ export namespace Prisma {
     vehicleRegistration: number
     approvedById: number
     approvedAt: number
+    pickedById: number
+    pickedAt: number
+    pickingCompletedAt: number
+    verifiedById: number
+    verifiedAt: number
     dispatchedAt: number
     receivedAt: number
     receivedById: number
@@ -24629,6 +25037,11 @@ export namespace Prisma {
     vehicleRegistration?: true
     approvedById?: true
     approvedAt?: true
+    pickedById?: true
+    pickedAt?: true
+    pickingCompletedAt?: true
+    verifiedById?: true
+    verifiedAt?: true
     dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
@@ -24650,6 +25063,11 @@ export namespace Prisma {
     vehicleRegistration?: true
     approvedById?: true
     approvedAt?: true
+    pickedById?: true
+    pickedAt?: true
+    pickingCompletedAt?: true
+    verifiedById?: true
+    verifiedAt?: true
     dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
@@ -24671,6 +25089,11 @@ export namespace Prisma {
     vehicleRegistration?: true
     approvedById?: true
     approvedAt?: true
+    pickedById?: true
+    pickedAt?: true
+    pickingCompletedAt?: true
+    verifiedById?: true
+    verifiedAt?: true
     dispatchedAt?: true
     receivedAt?: true
     receivedById?: true
@@ -24765,6 +25188,11 @@ export namespace Prisma {
     vehicleRegistration: string | null
     approvedById: string | null
     approvedAt: Date | null
+    pickedById: string | null
+    pickedAt: Date | null
+    pickingCompletedAt: Date | null
+    verifiedById: string | null
+    verifiedAt: Date | null
     dispatchedAt: Date | null
     receivedAt: Date | null
     receivedById: string | null
@@ -24803,6 +25231,11 @@ export namespace Prisma {
     vehicleRegistration?: boolean
     approvedById?: boolean
     approvedAt?: boolean
+    pickedById?: boolean
+    pickedAt?: boolean
+    pickingCompletedAt?: boolean
+    verifiedById?: boolean
+    verifiedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24812,12 +25245,15 @@ export namespace Prisma {
     stockMovements?: boolean | StockTransfer$stockMovementsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
+    pickedBy?: boolean | StockTransfer$pickedByArgs<ExtArgs>
+    verifiedBy?: boolean | StockTransfer$verifiedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     truck?: boolean | StockTransfer$truckArgs<ExtArgs>
     driver?: boolean | StockTransfer$driverArgs<ExtArgs>
     items?: boolean | StockTransfer$itemsArgs<ExtArgs>
+    issues?: boolean | StockTransfer$issuesArgs<ExtArgs>
     _count?: boolean | StockTransferCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["stockTransfer"]>
 
@@ -24834,6 +25270,11 @@ export namespace Prisma {
     vehicleRegistration?: boolean
     approvedById?: boolean
     approvedAt?: boolean
+    pickedById?: boolean
+    pickedAt?: boolean
+    pickingCompletedAt?: boolean
+    verifiedById?: boolean
+    verifiedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24842,6 +25283,8 @@ export namespace Prisma {
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
+    pickedBy?: boolean | StockTransfer$pickedByArgs<ExtArgs>
+    verifiedBy?: boolean | StockTransfer$verifiedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24862,6 +25305,11 @@ export namespace Prisma {
     vehicleRegistration?: boolean
     approvedById?: boolean
     approvedAt?: boolean
+    pickedById?: boolean
+    pickedAt?: boolean
+    pickingCompletedAt?: boolean
+    verifiedById?: boolean
+    verifiedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24870,6 +25318,8 @@ export namespace Prisma {
     updatedAt?: boolean
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
+    pickedBy?: boolean | StockTransfer$pickedByArgs<ExtArgs>
+    verifiedBy?: boolean | StockTransfer$verifiedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24890,6 +25340,11 @@ export namespace Prisma {
     vehicleRegistration?: boolean
     approvedById?: boolean
     approvedAt?: boolean
+    pickedById?: boolean
+    pickedAt?: boolean
+    pickingCompletedAt?: boolean
+    verifiedById?: boolean
+    verifiedAt?: boolean
     dispatchedAt?: boolean
     receivedAt?: boolean
     receivedById?: boolean
@@ -24898,22 +25353,27 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type StockTransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "status" | "sourceWarehouseId" | "destinationWarehouseId" | "notes" | "truckId" | "driverId" | "dispatchMode" | "vehicleRegistration" | "approvedById" | "approvedAt" | "dispatchedAt" | "receivedAt" | "receivedById" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["stockTransfer"]>
+  export type StockTransferOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "documentId" | "status" | "sourceWarehouseId" | "destinationWarehouseId" | "notes" | "truckId" | "driverId" | "dispatchMode" | "vehicleRegistration" | "approvedById" | "approvedAt" | "pickedById" | "pickedAt" | "pickingCompletedAt" | "verifiedById" | "verifiedAt" | "dispatchedAt" | "receivedAt" | "receivedById" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["stockTransfer"]>
   export type StockTransferInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     stockMovements?: boolean | StockTransfer$stockMovementsArgs<ExtArgs>
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
+    pickedBy?: boolean | StockTransfer$pickedByArgs<ExtArgs>
+    verifiedBy?: boolean | StockTransfer$verifiedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     truck?: boolean | StockTransfer$truckArgs<ExtArgs>
     driver?: boolean | StockTransfer$driverArgs<ExtArgs>
     items?: boolean | StockTransfer$itemsArgs<ExtArgs>
+    issues?: boolean | StockTransfer$issuesArgs<ExtArgs>
     _count?: boolean | StockTransferCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StockTransferIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
+    pickedBy?: boolean | StockTransfer$pickedByArgs<ExtArgs>
+    verifiedBy?: boolean | StockTransfer$verifiedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24923,6 +25383,8 @@ export namespace Prisma {
   export type StockTransferIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | UserDefaultArgs<ExtArgs>
     approvedBy?: boolean | StockTransfer$approvedByArgs<ExtArgs>
+    pickedBy?: boolean | StockTransfer$pickedByArgs<ExtArgs>
+    verifiedBy?: boolean | StockTransfer$verifiedByArgs<ExtArgs>
     receivedBy?: boolean | StockTransfer$receivedByArgs<ExtArgs>
     sourceWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | WarehouseDefaultArgs<ExtArgs>
@@ -24936,12 +25398,15 @@ export namespace Prisma {
       stockMovements: Prisma.$StockMovementPayload<ExtArgs>[]
       createdBy: Prisma.$UserPayload<ExtArgs>
       approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      pickedBy: Prisma.$UserPayload<ExtArgs> | null
+      verifiedBy: Prisma.$UserPayload<ExtArgs> | null
       receivedBy: Prisma.$UserPayload<ExtArgs> | null
       sourceWarehouse: Prisma.$WarehousePayload<ExtArgs>
       destinationWarehouse: Prisma.$WarehousePayload<ExtArgs>
       truck: Prisma.$TruckPayload<ExtArgs> | null
       driver: Prisma.$UserPayload<ExtArgs> | null
       items: Prisma.$TransferItemPayload<ExtArgs>[]
+      issues: Prisma.$TransferIssuePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -24956,6 +25421,11 @@ export namespace Prisma {
       vehicleRegistration: string | null
       approvedById: string | null
       approvedAt: Date | null
+      pickedById: string | null
+      pickedAt: Date | null
+      pickingCompletedAt: Date | null
+      verifiedById: string | null
+      verifiedAt: Date | null
       dispatchedAt: Date | null
       receivedAt: Date | null
       receivedById: string | null
@@ -25359,12 +25829,15 @@ export namespace Prisma {
     stockMovements<T extends StockTransfer$stockMovementsArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$stockMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     approvedBy<T extends StockTransfer$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    pickedBy<T extends StockTransfer$pickedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$pickedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    verifiedBy<T extends StockTransfer$verifiedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$verifiedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     receivedBy<T extends StockTransfer$receivedByArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$receivedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     sourceWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     destinationWarehouse<T extends WarehouseDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WarehouseDefaultArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     truck<T extends StockTransfer$truckArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$truckArgs<ExtArgs>>): Prisma__TruckClient<$Result.GetResult<Prisma.$TruckPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     driver<T extends StockTransfer$driverArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$driverArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends StockTransfer$itemsArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    issues<T extends StockTransfer$issuesArgs<ExtArgs> = {}>(args?: Subset<T, StockTransfer$issuesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25406,6 +25879,11 @@ export namespace Prisma {
     readonly vehicleRegistration: FieldRef<"StockTransfer", 'String'>
     readonly approvedById: FieldRef<"StockTransfer", 'String'>
     readonly approvedAt: FieldRef<"StockTransfer", 'DateTime'>
+    readonly pickedById: FieldRef<"StockTransfer", 'String'>
+    readonly pickedAt: FieldRef<"StockTransfer", 'DateTime'>
+    readonly pickingCompletedAt: FieldRef<"StockTransfer", 'DateTime'>
+    readonly verifiedById: FieldRef<"StockTransfer", 'String'>
+    readonly verifiedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly dispatchedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly receivedAt: FieldRef<"StockTransfer", 'DateTime'>
     readonly receivedById: FieldRef<"StockTransfer", 'String'>
@@ -25856,6 +26334,44 @@ export namespace Prisma {
   }
 
   /**
+   * StockTransfer.pickedBy
+   */
+  export type StockTransfer$pickedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * StockTransfer.verifiedBy
+   */
+  export type StockTransfer$verifiedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * StockTransfer.receivedBy
    */
   export type StockTransfer$receivedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25937,6 +26453,30 @@ export namespace Prisma {
   }
 
   /**
+   * StockTransfer.issues
+   */
+  export type StockTransfer$issuesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    where?: TransferIssueWhereInput
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    cursor?: TransferIssueWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransferIssueScalarFieldEnum | TransferIssueScalarFieldEnum[]
+  }
+
+  /**
    * StockTransfer without action
    */
   export type StockTransferDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25956,6 +26496,1182 @@ export namespace Prisma {
 
 
   /**
+   * Model TransferIssue
+   */
+
+  export type AggregateTransferIssue = {
+    _count: TransferIssueCountAggregateOutputType | null
+    _min: TransferIssueMinAggregateOutputType | null
+    _max: TransferIssueMaxAggregateOutputType | null
+  }
+
+  export type TransferIssueMinAggregateOutputType = {
+    id: string | null
+    transferId: string | null
+    category: string | null
+    description: string | null
+    status: $Enums.IssueStatus | null
+    raisedById: string | null
+    resolution: string | null
+    resolvedById: string | null
+    resolvedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransferIssueMaxAggregateOutputType = {
+    id: string | null
+    transferId: string | null
+    category: string | null
+    description: string | null
+    status: $Enums.IssueStatus | null
+    raisedById: string | null
+    resolution: string | null
+    resolvedById: string | null
+    resolvedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransferIssueCountAggregateOutputType = {
+    id: number
+    transferId: number
+    category: number
+    description: number
+    status: number
+    raisedById: number
+    resolution: number
+    resolvedById: number
+    resolvedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TransferIssueMinAggregateInputType = {
+    id?: true
+    transferId?: true
+    category?: true
+    description?: true
+    status?: true
+    raisedById?: true
+    resolution?: true
+    resolvedById?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransferIssueMaxAggregateInputType = {
+    id?: true
+    transferId?: true
+    category?: true
+    description?: true
+    status?: true
+    raisedById?: true
+    resolution?: true
+    resolvedById?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransferIssueCountAggregateInputType = {
+    id?: true
+    transferId?: true
+    category?: true
+    description?: true
+    status?: true
+    raisedById?: true
+    resolution?: true
+    resolvedById?: true
+    resolvedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TransferIssueAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransferIssue to aggregate.
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferIssues to fetch.
+     */
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransferIssueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferIssues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferIssues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TransferIssues
+    **/
+    _count?: true | TransferIssueCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransferIssueMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransferIssueMaxAggregateInputType
+  }
+
+  export type GetTransferIssueAggregateType<T extends TransferIssueAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransferIssue]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransferIssue[P]>
+      : GetScalarType<T[P], AggregateTransferIssue[P]>
+  }
+
+
+
+
+  export type TransferIssueGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransferIssueWhereInput
+    orderBy?: TransferIssueOrderByWithAggregationInput | TransferIssueOrderByWithAggregationInput[]
+    by: TransferIssueScalarFieldEnum[] | TransferIssueScalarFieldEnum
+    having?: TransferIssueScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransferIssueCountAggregateInputType | true
+    _min?: TransferIssueMinAggregateInputType
+    _max?: TransferIssueMaxAggregateInputType
+  }
+
+  export type TransferIssueGroupByOutputType = {
+    id: string
+    transferId: string
+    category: string
+    description: string
+    status: $Enums.IssueStatus
+    raisedById: string
+    resolution: string | null
+    resolvedById: string | null
+    resolvedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TransferIssueCountAggregateOutputType | null
+    _min: TransferIssueMinAggregateOutputType | null
+    _max: TransferIssueMaxAggregateOutputType | null
+  }
+
+  type GetTransferIssueGroupByPayload<T extends TransferIssueGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransferIssueGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransferIssueGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransferIssueGroupByOutputType[P]>
+            : GetScalarType<T[P], TransferIssueGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransferIssueSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transferId?: boolean
+    category?: boolean
+    description?: boolean
+    status?: boolean
+    raisedById?: boolean
+    resolution?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
+    raisedBy?: boolean | UserDefaultArgs<ExtArgs>
+    resolvedBy?: boolean | TransferIssue$resolvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["transferIssue"]>
+
+  export type TransferIssueSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transferId?: boolean
+    category?: boolean
+    description?: boolean
+    status?: boolean
+    raisedById?: boolean
+    resolution?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
+    raisedBy?: boolean | UserDefaultArgs<ExtArgs>
+    resolvedBy?: boolean | TransferIssue$resolvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["transferIssue"]>
+
+  export type TransferIssueSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    transferId?: boolean
+    category?: boolean
+    description?: boolean
+    status?: boolean
+    raisedById?: boolean
+    resolution?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
+    raisedBy?: boolean | UserDefaultArgs<ExtArgs>
+    resolvedBy?: boolean | TransferIssue$resolvedByArgs<ExtArgs>
+  }, ExtArgs["result"]["transferIssue"]>
+
+  export type TransferIssueSelectScalar = {
+    id?: boolean
+    transferId?: boolean
+    category?: boolean
+    description?: boolean
+    status?: boolean
+    raisedById?: boolean
+    resolution?: boolean
+    resolvedById?: boolean
+    resolvedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TransferIssueOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transferId" | "category" | "description" | "status" | "raisedById" | "resolution" | "resolvedById" | "resolvedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["transferIssue"]>
+  export type TransferIssueInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
+    raisedBy?: boolean | UserDefaultArgs<ExtArgs>
+    resolvedBy?: boolean | TransferIssue$resolvedByArgs<ExtArgs>
+  }
+  export type TransferIssueIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
+    raisedBy?: boolean | UserDefaultArgs<ExtArgs>
+    resolvedBy?: boolean | TransferIssue$resolvedByArgs<ExtArgs>
+  }
+  export type TransferIssueIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
+    raisedBy?: boolean | UserDefaultArgs<ExtArgs>
+    resolvedBy?: boolean | TransferIssue$resolvedByArgs<ExtArgs>
+  }
+
+  export type $TransferIssuePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TransferIssue"
+    objects: {
+      transfer: Prisma.$StockTransferPayload<ExtArgs>
+      raisedBy: Prisma.$UserPayload<ExtArgs>
+      resolvedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      transferId: string
+      category: string
+      description: string
+      status: $Enums.IssueStatus
+      raisedById: string
+      resolution: string | null
+      resolvedById: string | null
+      resolvedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["transferIssue"]>
+    composites: {}
+  }
+
+  type TransferIssueGetPayload<S extends boolean | null | undefined | TransferIssueDefaultArgs> = $Result.GetResult<Prisma.$TransferIssuePayload, S>
+
+  type TransferIssueCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransferIssueFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransferIssueCountAggregateInputType | true
+    }
+
+  export interface TransferIssueDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TransferIssue'], meta: { name: 'TransferIssue' } }
+    /**
+     * Find zero or one TransferIssue that matches the filter.
+     * @param {TransferIssueFindUniqueArgs} args - Arguments to find a TransferIssue
+     * @example
+     * // Get one TransferIssue
+     * const transferIssue = await prisma.transferIssue.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransferIssueFindUniqueArgs>(args: SelectSubset<T, TransferIssueFindUniqueArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TransferIssue that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransferIssueFindUniqueOrThrowArgs} args - Arguments to find a TransferIssue
+     * @example
+     * // Get one TransferIssue
+     * const transferIssue = await prisma.transferIssue.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransferIssueFindUniqueOrThrowArgs>(args: SelectSubset<T, TransferIssueFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransferIssue that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueFindFirstArgs} args - Arguments to find a TransferIssue
+     * @example
+     * // Get one TransferIssue
+     * const transferIssue = await prisma.transferIssue.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransferIssueFindFirstArgs>(args?: SelectSubset<T, TransferIssueFindFirstArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransferIssue that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueFindFirstOrThrowArgs} args - Arguments to find a TransferIssue
+     * @example
+     * // Get one TransferIssue
+     * const transferIssue = await prisma.transferIssue.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransferIssueFindFirstOrThrowArgs>(args?: SelectSubset<T, TransferIssueFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TransferIssues that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TransferIssues
+     * const transferIssues = await prisma.transferIssue.findMany()
+     * 
+     * // Get first 10 TransferIssues
+     * const transferIssues = await prisma.transferIssue.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transferIssueWithIdOnly = await prisma.transferIssue.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransferIssueFindManyArgs>(args?: SelectSubset<T, TransferIssueFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TransferIssue.
+     * @param {TransferIssueCreateArgs} args - Arguments to create a TransferIssue.
+     * @example
+     * // Create one TransferIssue
+     * const TransferIssue = await prisma.transferIssue.create({
+     *   data: {
+     *     // ... data to create a TransferIssue
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransferIssueCreateArgs>(args: SelectSubset<T, TransferIssueCreateArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TransferIssues.
+     * @param {TransferIssueCreateManyArgs} args - Arguments to create many TransferIssues.
+     * @example
+     * // Create many TransferIssues
+     * const transferIssue = await prisma.transferIssue.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransferIssueCreateManyArgs>(args?: SelectSubset<T, TransferIssueCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TransferIssues and returns the data saved in the database.
+     * @param {TransferIssueCreateManyAndReturnArgs} args - Arguments to create many TransferIssues.
+     * @example
+     * // Create many TransferIssues
+     * const transferIssue = await prisma.transferIssue.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TransferIssues and only return the `id`
+     * const transferIssueWithIdOnly = await prisma.transferIssue.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransferIssueCreateManyAndReturnArgs>(args?: SelectSubset<T, TransferIssueCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TransferIssue.
+     * @param {TransferIssueDeleteArgs} args - Arguments to delete one TransferIssue.
+     * @example
+     * // Delete one TransferIssue
+     * const TransferIssue = await prisma.transferIssue.delete({
+     *   where: {
+     *     // ... filter to delete one TransferIssue
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransferIssueDeleteArgs>(args: SelectSubset<T, TransferIssueDeleteArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TransferIssue.
+     * @param {TransferIssueUpdateArgs} args - Arguments to update one TransferIssue.
+     * @example
+     * // Update one TransferIssue
+     * const transferIssue = await prisma.transferIssue.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransferIssueUpdateArgs>(args: SelectSubset<T, TransferIssueUpdateArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TransferIssues.
+     * @param {TransferIssueDeleteManyArgs} args - Arguments to filter TransferIssues to delete.
+     * @example
+     * // Delete a few TransferIssues
+     * const { count } = await prisma.transferIssue.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransferIssueDeleteManyArgs>(args?: SelectSubset<T, TransferIssueDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransferIssues.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TransferIssues
+     * const transferIssue = await prisma.transferIssue.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransferIssueUpdateManyArgs>(args: SelectSubset<T, TransferIssueUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransferIssues and returns the data updated in the database.
+     * @param {TransferIssueUpdateManyAndReturnArgs} args - Arguments to update many TransferIssues.
+     * @example
+     * // Update many TransferIssues
+     * const transferIssue = await prisma.transferIssue.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TransferIssues and only return the `id`
+     * const transferIssueWithIdOnly = await prisma.transferIssue.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransferIssueUpdateManyAndReturnArgs>(args: SelectSubset<T, TransferIssueUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TransferIssue.
+     * @param {TransferIssueUpsertArgs} args - Arguments to update or create a TransferIssue.
+     * @example
+     * // Update or create a TransferIssue
+     * const transferIssue = await prisma.transferIssue.upsert({
+     *   create: {
+     *     // ... data to create a TransferIssue
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TransferIssue we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransferIssueUpsertArgs>(args: SelectSubset<T, TransferIssueUpsertArgs<ExtArgs>>): Prisma__TransferIssueClient<$Result.GetResult<Prisma.$TransferIssuePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TransferIssues.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueCountArgs} args - Arguments to filter TransferIssues to count.
+     * @example
+     * // Count the number of TransferIssues
+     * const count = await prisma.transferIssue.count({
+     *   where: {
+     *     // ... the filter for the TransferIssues we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransferIssueCountArgs>(
+      args?: Subset<T, TransferIssueCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransferIssueCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TransferIssue.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransferIssueAggregateArgs>(args: Subset<T, TransferIssueAggregateArgs>): Prisma.PrismaPromise<GetTransferIssueAggregateType<T>>
+
+    /**
+     * Group by TransferIssue.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransferIssueGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransferIssueGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransferIssueGroupByArgs['orderBy'] }
+        : { orderBy?: TransferIssueGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransferIssueGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransferIssueGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TransferIssue model
+   */
+  readonly fields: TransferIssueFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TransferIssue.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransferIssueClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    transfer<T extends StockTransferDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StockTransferDefaultArgs<ExtArgs>>): Prisma__StockTransferClient<$Result.GetResult<Prisma.$StockTransferPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    raisedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    resolvedBy<T extends TransferIssue$resolvedByArgs<ExtArgs> = {}>(args?: Subset<T, TransferIssue$resolvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TransferIssue model
+   */
+  interface TransferIssueFieldRefs {
+    readonly id: FieldRef<"TransferIssue", 'String'>
+    readonly transferId: FieldRef<"TransferIssue", 'String'>
+    readonly category: FieldRef<"TransferIssue", 'String'>
+    readonly description: FieldRef<"TransferIssue", 'String'>
+    readonly status: FieldRef<"TransferIssue", 'IssueStatus'>
+    readonly raisedById: FieldRef<"TransferIssue", 'String'>
+    readonly resolution: FieldRef<"TransferIssue", 'String'>
+    readonly resolvedById: FieldRef<"TransferIssue", 'String'>
+    readonly resolvedAt: FieldRef<"TransferIssue", 'DateTime'>
+    readonly createdAt: FieldRef<"TransferIssue", 'DateTime'>
+    readonly updatedAt: FieldRef<"TransferIssue", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TransferIssue findUnique
+   */
+  export type TransferIssueFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferIssue to fetch.
+     */
+    where: TransferIssueWhereUniqueInput
+  }
+
+  /**
+   * TransferIssue findUniqueOrThrow
+   */
+  export type TransferIssueFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferIssue to fetch.
+     */
+    where: TransferIssueWhereUniqueInput
+  }
+
+  /**
+   * TransferIssue findFirst
+   */
+  export type TransferIssueFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferIssue to fetch.
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferIssues to fetch.
+     */
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransferIssues.
+     */
+    cursor?: TransferIssueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferIssues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferIssues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferIssues.
+     */
+    distinct?: TransferIssueScalarFieldEnum | TransferIssueScalarFieldEnum[]
+  }
+
+  /**
+   * TransferIssue findFirstOrThrow
+   */
+  export type TransferIssueFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferIssue to fetch.
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferIssues to fetch.
+     */
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransferIssues.
+     */
+    cursor?: TransferIssueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferIssues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferIssues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferIssues.
+     */
+    distinct?: TransferIssueScalarFieldEnum | TransferIssueScalarFieldEnum[]
+  }
+
+  /**
+   * TransferIssue findMany
+   */
+  export type TransferIssueFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * Filter, which TransferIssues to fetch.
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransferIssues to fetch.
+     */
+    orderBy?: TransferIssueOrderByWithRelationInput | TransferIssueOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TransferIssues.
+     */
+    cursor?: TransferIssueWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransferIssues from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransferIssues.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransferIssues.
+     */
+    distinct?: TransferIssueScalarFieldEnum | TransferIssueScalarFieldEnum[]
+  }
+
+  /**
+   * TransferIssue create
+   */
+  export type TransferIssueCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TransferIssue.
+     */
+    data: XOR<TransferIssueCreateInput, TransferIssueUncheckedCreateInput>
+  }
+
+  /**
+   * TransferIssue createMany
+   */
+  export type TransferIssueCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TransferIssues.
+     */
+    data: TransferIssueCreateManyInput | TransferIssueCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TransferIssue createManyAndReturn
+   */
+  export type TransferIssueCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * The data used to create many TransferIssues.
+     */
+    data: TransferIssueCreateManyInput | TransferIssueCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TransferIssue update
+   */
+  export type TransferIssueUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TransferIssue.
+     */
+    data: XOR<TransferIssueUpdateInput, TransferIssueUncheckedUpdateInput>
+    /**
+     * Choose, which TransferIssue to update.
+     */
+    where: TransferIssueWhereUniqueInput
+  }
+
+  /**
+   * TransferIssue updateMany
+   */
+  export type TransferIssueUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TransferIssues.
+     */
+    data: XOR<TransferIssueUpdateManyMutationInput, TransferIssueUncheckedUpdateManyInput>
+    /**
+     * Filter which TransferIssues to update
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * Limit how many TransferIssues to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransferIssue updateManyAndReturn
+   */
+  export type TransferIssueUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * The data used to update TransferIssues.
+     */
+    data: XOR<TransferIssueUpdateManyMutationInput, TransferIssueUncheckedUpdateManyInput>
+    /**
+     * Filter which TransferIssues to update
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * Limit how many TransferIssues to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TransferIssue upsert
+   */
+  export type TransferIssueUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TransferIssue to update in case it exists.
+     */
+    where: TransferIssueWhereUniqueInput
+    /**
+     * In case the TransferIssue found by the `where` argument doesn't exist, create a new TransferIssue with this data.
+     */
+    create: XOR<TransferIssueCreateInput, TransferIssueUncheckedCreateInput>
+    /**
+     * In case the TransferIssue was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransferIssueUpdateInput, TransferIssueUncheckedUpdateInput>
+  }
+
+  /**
+   * TransferIssue delete
+   */
+  export type TransferIssueDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+    /**
+     * Filter which TransferIssue to delete.
+     */
+    where: TransferIssueWhereUniqueInput
+  }
+
+  /**
+   * TransferIssue deleteMany
+   */
+  export type TransferIssueDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransferIssues to delete
+     */
+    where?: TransferIssueWhereInput
+    /**
+     * Limit how many TransferIssues to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransferIssue.resolvedBy
+   */
+  export type TransferIssue$resolvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * TransferIssue without action
+   */
+  export type TransferIssueDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransferIssue
+     */
+    select?: TransferIssueSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransferIssue
+     */
+    omit?: TransferIssueOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransferIssueInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model TransferItem
    */
 
@@ -25970,6 +27686,7 @@ export namespace Prisma {
   export type TransferItemAvgAggregateOutputType = {
     unitCost: Decimal | null
     requested_qty: number | null
+    picked_qty: number | null
     dispatched_qty: number | null
     received_qty: number | null
     damaged_qty: number | null
@@ -25978,6 +27695,7 @@ export namespace Prisma {
   export type TransferItemSumAggregateOutputType = {
     unitCost: Decimal | null
     requested_qty: number | null
+    picked_qty: number | null
     dispatched_qty: number | null
     received_qty: number | null
     damaged_qty: number | null
@@ -25990,6 +27708,7 @@ export namespace Prisma {
     batchId: string | null
     unitCost: Decimal | null
     requested_qty: number | null
+    picked_qty: number | null
     dispatched_qty: number | null
     received_qty: number | null
     damaged_qty: number | null
@@ -26002,6 +27721,7 @@ export namespace Prisma {
     batchId: string | null
     unitCost: Decimal | null
     requested_qty: number | null
+    picked_qty: number | null
     dispatched_qty: number | null
     received_qty: number | null
     damaged_qty: number | null
@@ -26014,6 +27734,7 @@ export namespace Prisma {
     batchId: number
     unitCost: number
     requested_qty: number
+    picked_qty: number
     dispatched_qty: number
     received_qty: number
     damaged_qty: number
@@ -26024,6 +27745,7 @@ export namespace Prisma {
   export type TransferItemAvgAggregateInputType = {
     unitCost?: true
     requested_qty?: true
+    picked_qty?: true
     dispatched_qty?: true
     received_qty?: true
     damaged_qty?: true
@@ -26032,6 +27754,7 @@ export namespace Prisma {
   export type TransferItemSumAggregateInputType = {
     unitCost?: true
     requested_qty?: true
+    picked_qty?: true
     dispatched_qty?: true
     received_qty?: true
     damaged_qty?: true
@@ -26044,6 +27767,7 @@ export namespace Prisma {
     batchId?: true
     unitCost?: true
     requested_qty?: true
+    picked_qty?: true
     dispatched_qty?: true
     received_qty?: true
     damaged_qty?: true
@@ -26056,6 +27780,7 @@ export namespace Prisma {
     batchId?: true
     unitCost?: true
     requested_qty?: true
+    picked_qty?: true
     dispatched_qty?: true
     received_qty?: true
     damaged_qty?: true
@@ -26068,6 +27793,7 @@ export namespace Prisma {
     batchId?: true
     unitCost?: true
     requested_qty?: true
+    picked_qty?: true
     dispatched_qty?: true
     received_qty?: true
     damaged_qty?: true
@@ -26167,6 +27893,7 @@ export namespace Prisma {
     batchId: string | null
     unitCost: Decimal | null
     requested_qty: number
+    picked_qty: number | null
     dispatched_qty: number | null
     received_qty: number | null
     damaged_qty: number | null
@@ -26198,6 +27925,7 @@ export namespace Prisma {
     batchId?: boolean
     unitCost?: boolean
     requested_qty?: boolean
+    picked_qty?: boolean
     dispatched_qty?: boolean
     received_qty?: boolean
     damaged_qty?: boolean
@@ -26212,6 +27940,7 @@ export namespace Prisma {
     batchId?: boolean
     unitCost?: boolean
     requested_qty?: boolean
+    picked_qty?: boolean
     dispatched_qty?: boolean
     received_qty?: boolean
     damaged_qty?: boolean
@@ -26226,6 +27955,7 @@ export namespace Prisma {
     batchId?: boolean
     unitCost?: boolean
     requested_qty?: boolean
+    picked_qty?: boolean
     dispatched_qty?: boolean
     received_qty?: boolean
     damaged_qty?: boolean
@@ -26240,12 +27970,13 @@ export namespace Prisma {
     batchId?: boolean
     unitCost?: boolean
     requested_qty?: boolean
+    picked_qty?: boolean
     dispatched_qty?: boolean
     received_qty?: boolean
     damaged_qty?: boolean
   }
 
-  export type TransferItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transferId" | "productId" | "batchId" | "unitCost" | "requested_qty" | "dispatched_qty" | "received_qty" | "damaged_qty", ExtArgs["result"]["transferItem"]>
+  export type TransferItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transferId" | "productId" | "batchId" | "unitCost" | "requested_qty" | "picked_qty" | "dispatched_qty" | "received_qty" | "damaged_qty", ExtArgs["result"]["transferItem"]>
   export type TransferItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
@@ -26272,6 +28003,7 @@ export namespace Prisma {
       batchId: string | null
       unitCost: Prisma.Decimal | null
       requested_qty: number
+      picked_qty: number | null
       dispatched_qty: number | null
       received_qty: number | null
       damaged_qty: number | null
@@ -26706,6 +28438,7 @@ export namespace Prisma {
     readonly batchId: FieldRef<"TransferItem", 'String'>
     readonly unitCost: FieldRef<"TransferItem", 'Decimal'>
     readonly requested_qty: FieldRef<"TransferItem", 'Int'>
+    readonly picked_qty: FieldRef<"TransferItem", 'Int'>
     readonly dispatched_qty: FieldRef<"TransferItem", 'Int'>
     readonly received_qty: FieldRef<"TransferItem", 'Int'>
     readonly damaged_qty: FieldRef<"TransferItem", 'Int'>
@@ -98607,6 +100340,1108 @@ export namespace Prisma {
 
 
   /**
+   * Model Notification
+   */
+
+  export type AggregateNotification = {
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  export type NotificationMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    title: string | null
+    message: string | null
+    type: string | null
+    link: string | null
+    isRead: boolean | null
+    createdAt: Date | null
+  }
+
+  export type NotificationMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    title: string | null
+    message: string | null
+    type: string | null
+    link: string | null
+    isRead: boolean | null
+    createdAt: Date | null
+  }
+
+  export type NotificationCountAggregateOutputType = {
+    id: number
+    userId: number
+    title: number
+    message: number
+    type: number
+    link: number
+    isRead: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type NotificationMinAggregateInputType = {
+    id?: true
+    userId?: true
+    title?: true
+    message?: true
+    type?: true
+    link?: true
+    isRead?: true
+    createdAt?: true
+  }
+
+  export type NotificationMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    title?: true
+    message?: true
+    type?: true
+    link?: true
+    isRead?: true
+    createdAt?: true
+  }
+
+  export type NotificationCountAggregateInputType = {
+    id?: true
+    userId?: true
+    title?: true
+    message?: true
+    type?: true
+    link?: true
+    isRead?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type NotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notification to aggregate.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Notifications
+    **/
+    _count?: true | NotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type GetNotificationAggregateType<T extends NotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotification[P]>
+      : GetScalarType<T[P], AggregateNotification[P]>
+  }
+
+
+
+
+  export type NotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithAggregationInput | NotificationOrderByWithAggregationInput[]
+    by: NotificationScalarFieldEnum[] | NotificationScalarFieldEnum
+    having?: NotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationCountAggregateInputType | true
+    _min?: NotificationMinAggregateInputType
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type NotificationGroupByOutputType = {
+    id: string
+    userId: string
+    title: string
+    message: string
+    type: string
+    link: string | null
+    isRead: boolean
+    createdAt: Date
+    _count: NotificationCountAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  type GetNotificationGroupByPayload<T extends NotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    link?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    link?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    link?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    link?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+  }
+
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "message" | "type" | "link" | "isRead" | "createdAt", ExtArgs["result"]["notification"]>
+  export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Notification"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      title: string
+      message: string
+      type: string
+      link: string | null
+      isRead: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["notification"]>
+    composites: {}
+  }
+
+  type NotificationGetPayload<S extends boolean | null | undefined | NotificationDefaultArgs> = $Result.GetResult<Prisma.$NotificationPayload, S>
+
+  type NotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NotificationCountAggregateInputType | true
+    }
+
+  export interface NotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Notification'], meta: { name: 'Notification' } }
+    /**
+     * Find zero or one Notification that matches the filter.
+     * @param {NotificationFindUniqueArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationFindUniqueArgs>(args: SelectSubset<T, NotificationFindUniqueArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Notification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NotificationFindUniqueOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationFindFirstArgs>(args?: SelectSubset<T, NotificationFindFirstArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notifications
+     * const notifications = await prisma.notification.findMany()
+     * 
+     * // Get first 10 Notifications
+     * const notifications = await prisma.notification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const notificationWithIdOnly = await prisma.notification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NotificationFindManyArgs>(args?: SelectSubset<T, NotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Notification.
+     * @param {NotificationCreateArgs} args - Arguments to create a Notification.
+     * @example
+     * // Create one Notification
+     * const Notification = await prisma.notification.create({
+     *   data: {
+     *     // ... data to create a Notification
+     *   }
+     * })
+     * 
+     */
+    create<T extends NotificationCreateArgs>(args: SelectSubset<T, NotificationCreateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notifications.
+     * @param {NotificationCreateManyArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NotificationCreateManyArgs>(args?: SelectSubset<T, NotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Notifications and returns the data saved in the database.
+     * @param {NotificationCreateManyAndReturnArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends NotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Notification.
+     * @param {NotificationDeleteArgs} args - Arguments to delete one Notification.
+     * @example
+     * // Delete one Notification
+     * const Notification = await prisma.notification.delete({
+     *   where: {
+     *     // ... filter to delete one Notification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NotificationDeleteArgs>(args: SelectSubset<T, NotificationDeleteArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Notification.
+     * @param {NotificationUpdateArgs} args - Arguments to update one Notification.
+     * @example
+     * // Update one Notification
+     * const notification = await prisma.notification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NotificationUpdateArgs>(args: SelectSubset<T, NotificationUpdateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notifications.
+     * @param {NotificationDeleteManyArgs} args - Arguments to filter Notifications to delete.
+     * @example
+     * // Delete a few Notifications
+     * const { count } = await prisma.notification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NotificationDeleteManyArgs>(args?: SelectSubset<T, NotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NotificationUpdateManyArgs>(args: SelectSubset<T, NotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications and returns the data updated in the database.
+     * @param {NotificationUpdateManyAndReturnArgs} args - Arguments to update many Notifications.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends NotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, NotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Notification.
+     * @param {NotificationUpsertArgs} args - Arguments to update or create a Notification.
+     * @example
+     * // Update or create a Notification
+     * const notification = await prisma.notification.upsert({
+     *   create: {
+     *     // ... data to create a Notification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationUpsertArgs>(args: SelectSubset<T, NotificationUpsertArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationCountArgs} args - Arguments to filter Notifications to count.
+     * @example
+     * // Count the number of Notifications
+     * const count = await prisma.notification.count({
+     *   where: {
+     *     // ... the filter for the Notifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationCountArgs>(
+      args?: Subset<T, NotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationAggregateArgs>(args: Subset<T, NotificationAggregateArgs>): Prisma.PrismaPromise<GetNotificationAggregateType<T>>
+
+    /**
+     * Group by Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Notification model
+   */
+  readonly fields: NotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Notification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Notification model
+   */
+  interface NotificationFieldRefs {
+    readonly id: FieldRef<"Notification", 'String'>
+    readonly userId: FieldRef<"Notification", 'String'>
+    readonly title: FieldRef<"Notification", 'String'>
+    readonly message: FieldRef<"Notification", 'String'>
+    readonly type: FieldRef<"Notification", 'String'>
+    readonly link: FieldRef<"Notification", 'String'>
+    readonly isRead: FieldRef<"Notification", 'Boolean'>
+    readonly createdAt: FieldRef<"Notification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Notification findUnique
+   */
+  export type NotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findUniqueOrThrow
+   */
+  export type NotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findFirst
+   */
+  export type NotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findFirstOrThrow
+   */
+  export type NotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findMany
+   */
+  export type NotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notifications to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification create
+   */
+  export type NotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Notification.
+     */
+    data: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+  }
+
+  /**
+   * Notification createMany
+   */
+  export type NotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Notification createManyAndReturn
+   */
+  export type NotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification update
+   */
+  export type NotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Notification.
+     */
+    data: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+    /**
+     * Choose, which Notification to update.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification updateMany
+   */
+  export type NotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification updateManyAndReturn
+   */
+  export type NotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification upsert
+   */
+  export type NotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Notification to update in case it exists.
+     */
+    where: NotificationWhereUniqueInput
+    /**
+     * In case the Notification found by the `where` argument doesn't exist, create a new Notification with this data.
+     */
+    create: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+    /**
+     * In case the Notification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * Notification delete
+   */
+  export type NotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter which Notification to delete.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification deleteMany
+   */
+  export type NotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notifications to delete
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification without action
+   */
+  export type NotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -98825,6 +101660,11 @@ export namespace Prisma {
     vehicleRegistration: 'vehicleRegistration',
     approvedById: 'approvedById',
     approvedAt: 'approvedAt',
+    pickedById: 'pickedById',
+    pickedAt: 'pickedAt',
+    pickingCompletedAt: 'pickingCompletedAt',
+    verifiedById: 'verifiedById',
+    verifiedAt: 'verifiedAt',
     dispatchedAt: 'dispatchedAt',
     receivedAt: 'receivedAt',
     receivedById: 'receivedById',
@@ -98836,6 +101676,23 @@ export namespace Prisma {
   export type StockTransferScalarFieldEnum = (typeof StockTransferScalarFieldEnum)[keyof typeof StockTransferScalarFieldEnum]
 
 
+  export const TransferIssueScalarFieldEnum: {
+    id: 'id',
+    transferId: 'transferId',
+    category: 'category',
+    description: 'description',
+    status: 'status',
+    raisedById: 'raisedById',
+    resolution: 'resolution',
+    resolvedById: 'resolvedById',
+    resolvedAt: 'resolvedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TransferIssueScalarFieldEnum = (typeof TransferIssueScalarFieldEnum)[keyof typeof TransferIssueScalarFieldEnum]
+
+
   export const TransferItemScalarFieldEnum: {
     id: 'id',
     transferId: 'transferId',
@@ -98843,6 +101700,7 @@ export namespace Prisma {
     batchId: 'batchId',
     unitCost: 'unitCost',
     requested_qty: 'requested_qty',
+    picked_qty: 'picked_qty',
     dispatched_qty: 'dispatched_qty',
     received_qty: 'received_qty',
     damaged_qty: 'damaged_qty'
@@ -99864,6 +102722,20 @@ export namespace Prisma {
   export type VATTransactionScalarFieldEnum = (typeof VATTransactionScalarFieldEnum)[keyof typeof VATTransactionScalarFieldEnum]
 
 
+  export const NotificationScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    title: 'title',
+    message: 'message',
+    type: 'type',
+    link: 'link',
+    isRead: 'isRead',
+    createdAt: 'createdAt'
+  };
+
+  export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -100075,6 +102947,20 @@ export namespace Prisma {
    * Reference to a field of type 'DispatchMode[]'
    */
   export type ListEnumDispatchModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DispatchMode[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'IssueStatus'
+   */
+  export type EnumIssueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'IssueStatus[]'
+   */
+  export type ListEnumIssueStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IssueStatus[]'>
     
 
 
@@ -100644,6 +103530,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferListRelationFilter
     driverTransfers?: StockTransferListRelationFilter
     approvedTransfers?: StockTransferListRelationFilter
+    pickedTransfers?: StockTransferListRelationFilter
+    verifiedTransfers?: StockTransferListRelationFilter
+    raisedTransferIssues?: TransferIssueListRelationFilter
+    resolvedTransferIssues?: TransferIssueListRelationFilter
+    notifications?: NotificationListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }
@@ -100690,6 +103581,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferOrderByRelationAggregateInput
     driverTransfers?: StockTransferOrderByRelationAggregateInput
     approvedTransfers?: StockTransferOrderByRelationAggregateInput
+    pickedTransfers?: StockTransferOrderByRelationAggregateInput
+    verifiedTransfers?: StockTransferOrderByRelationAggregateInput
+    raisedTransferIssues?: TransferIssueOrderByRelationAggregateInput
+    resolvedTransferIssues?: TransferIssueOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
     roles?: RoleAssignmentOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
   }
@@ -100739,6 +103635,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferListRelationFilter
     driverTransfers?: StockTransferListRelationFilter
     approvedTransfers?: StockTransferListRelationFilter
+    pickedTransfers?: StockTransferListRelationFilter
+    verifiedTransfers?: StockTransferListRelationFilter
+    raisedTransferIssues?: TransferIssueListRelationFilter
+    resolvedTransferIssues?: TransferIssueListRelationFilter
+    notifications?: NotificationListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }, "id" | "email" | "salesPrefix">
@@ -101787,6 +104688,11 @@ export namespace Prisma {
     vehicleRegistration?: StringNullableFilter<"StockTransfer"> | string | null
     approvedById?: StringNullableFilter<"StockTransfer"> | string | null
     approvedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    pickedById?: StringNullableFilter<"StockTransfer"> | string | null
+    pickedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    pickingCompletedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    verifiedById?: StringNullableFilter<"StockTransfer"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
@@ -101796,12 +104702,15 @@ export namespace Prisma {
     stockMovements?: StockMovementListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    pickedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    verifiedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     receivedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     sourceWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     destinationWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     truck?: XOR<TruckNullableScalarRelationFilter, TruckWhereInput> | null
     driver?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: TransferItemListRelationFilter
+    issues?: TransferIssueListRelationFilter
   }
 
   export type StockTransferOrderByWithRelationInput = {
@@ -101817,6 +104726,11 @@ export namespace Prisma {
     vehicleRegistration?: SortOrderInput | SortOrder
     approvedById?: SortOrderInput | SortOrder
     approvedAt?: SortOrderInput | SortOrder
+    pickedById?: SortOrderInput | SortOrder
+    pickedAt?: SortOrderInput | SortOrder
+    pickingCompletedAt?: SortOrderInput | SortOrder
+    verifiedById?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
     dispatchedAt?: SortOrderInput | SortOrder
     receivedAt?: SortOrderInput | SortOrder
     receivedById?: SortOrderInput | SortOrder
@@ -101826,12 +104740,15 @@ export namespace Prisma {
     stockMovements?: StockMovementOrderByRelationAggregateInput
     createdBy?: UserOrderByWithRelationInput
     approvedBy?: UserOrderByWithRelationInput
+    pickedBy?: UserOrderByWithRelationInput
+    verifiedBy?: UserOrderByWithRelationInput
     receivedBy?: UserOrderByWithRelationInput
     sourceWarehouse?: WarehouseOrderByWithRelationInput
     destinationWarehouse?: WarehouseOrderByWithRelationInput
     truck?: TruckOrderByWithRelationInput
     driver?: UserOrderByWithRelationInput
     items?: TransferItemOrderByRelationAggregateInput
+    issues?: TransferIssueOrderByRelationAggregateInput
   }
 
   export type StockTransferWhereUniqueInput = Prisma.AtLeast<{
@@ -101850,6 +104767,11 @@ export namespace Prisma {
     vehicleRegistration?: StringNullableFilter<"StockTransfer"> | string | null
     approvedById?: StringNullableFilter<"StockTransfer"> | string | null
     approvedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    pickedById?: StringNullableFilter<"StockTransfer"> | string | null
+    pickedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    pickingCompletedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    verifiedById?: StringNullableFilter<"StockTransfer"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
@@ -101859,12 +104781,15 @@ export namespace Prisma {
     stockMovements?: StockMovementListRelationFilter
     createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    pickedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    verifiedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     receivedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     sourceWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     destinationWarehouse?: XOR<WarehouseScalarRelationFilter, WarehouseWhereInput>
     truck?: XOR<TruckNullableScalarRelationFilter, TruckWhereInput> | null
     driver?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     items?: TransferItemListRelationFilter
+    issues?: TransferIssueListRelationFilter
   }, "id" | "documentId">
 
   export type StockTransferOrderByWithAggregationInput = {
@@ -101880,6 +104805,11 @@ export namespace Prisma {
     vehicleRegistration?: SortOrderInput | SortOrder
     approvedById?: SortOrderInput | SortOrder
     approvedAt?: SortOrderInput | SortOrder
+    pickedById?: SortOrderInput | SortOrder
+    pickedAt?: SortOrderInput | SortOrder
+    pickingCompletedAt?: SortOrderInput | SortOrder
+    verifiedById?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
     dispatchedAt?: SortOrderInput | SortOrder
     receivedAt?: SortOrderInput | SortOrder
     receivedById?: SortOrderInput | SortOrder
@@ -101907,12 +104837,108 @@ export namespace Prisma {
     vehicleRegistration?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
     approvedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
     approvedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
+    pickedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    pickedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
+    pickingCompletedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
+    verifiedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableWithAggregatesFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableWithAggregatesFilter<"StockTransfer"> | string | null
     createdById?: StringWithAggregatesFilter<"StockTransfer"> | string
     createdAt?: DateTimeWithAggregatesFilter<"StockTransfer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"StockTransfer"> | Date | string
+  }
+
+  export type TransferIssueWhereInput = {
+    AND?: TransferIssueWhereInput | TransferIssueWhereInput[]
+    OR?: TransferIssueWhereInput[]
+    NOT?: TransferIssueWhereInput | TransferIssueWhereInput[]
+    id?: StringFilter<"TransferIssue"> | string
+    transferId?: StringFilter<"TransferIssue"> | string
+    category?: StringFilter<"TransferIssue"> | string
+    description?: StringFilter<"TransferIssue"> | string
+    status?: EnumIssueStatusFilter<"TransferIssue"> | $Enums.IssueStatus
+    raisedById?: StringFilter<"TransferIssue"> | string
+    resolution?: StringNullableFilter<"TransferIssue"> | string | null
+    resolvedById?: StringNullableFilter<"TransferIssue"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"TransferIssue"> | Date | string | null
+    createdAt?: DateTimeFilter<"TransferIssue"> | Date | string
+    updatedAt?: DateTimeFilter<"TransferIssue"> | Date | string
+    transfer?: XOR<StockTransferScalarRelationFilter, StockTransferWhereInput>
+    raisedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    resolvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type TransferIssueOrderByWithRelationInput = {
+    id?: SortOrder
+    transferId?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    raisedById?: SortOrder
+    resolution?: SortOrderInput | SortOrder
+    resolvedById?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    transfer?: StockTransferOrderByWithRelationInput
+    raisedBy?: UserOrderByWithRelationInput
+    resolvedBy?: UserOrderByWithRelationInput
+  }
+
+  export type TransferIssueWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TransferIssueWhereInput | TransferIssueWhereInput[]
+    OR?: TransferIssueWhereInput[]
+    NOT?: TransferIssueWhereInput | TransferIssueWhereInput[]
+    transferId?: StringFilter<"TransferIssue"> | string
+    category?: StringFilter<"TransferIssue"> | string
+    description?: StringFilter<"TransferIssue"> | string
+    status?: EnumIssueStatusFilter<"TransferIssue"> | $Enums.IssueStatus
+    raisedById?: StringFilter<"TransferIssue"> | string
+    resolution?: StringNullableFilter<"TransferIssue"> | string | null
+    resolvedById?: StringNullableFilter<"TransferIssue"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"TransferIssue"> | Date | string | null
+    createdAt?: DateTimeFilter<"TransferIssue"> | Date | string
+    updatedAt?: DateTimeFilter<"TransferIssue"> | Date | string
+    transfer?: XOR<StockTransferScalarRelationFilter, StockTransferWhereInput>
+    raisedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    resolvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type TransferIssueOrderByWithAggregationInput = {
+    id?: SortOrder
+    transferId?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    raisedById?: SortOrder
+    resolution?: SortOrderInput | SortOrder
+    resolvedById?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TransferIssueCountOrderByAggregateInput
+    _max?: TransferIssueMaxOrderByAggregateInput
+    _min?: TransferIssueMinOrderByAggregateInput
+  }
+
+  export type TransferIssueScalarWhereWithAggregatesInput = {
+    AND?: TransferIssueScalarWhereWithAggregatesInput | TransferIssueScalarWhereWithAggregatesInput[]
+    OR?: TransferIssueScalarWhereWithAggregatesInput[]
+    NOT?: TransferIssueScalarWhereWithAggregatesInput | TransferIssueScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TransferIssue"> | string
+    transferId?: StringWithAggregatesFilter<"TransferIssue"> | string
+    category?: StringWithAggregatesFilter<"TransferIssue"> | string
+    description?: StringWithAggregatesFilter<"TransferIssue"> | string
+    status?: EnumIssueStatusWithAggregatesFilter<"TransferIssue"> | $Enums.IssueStatus
+    raisedById?: StringWithAggregatesFilter<"TransferIssue"> | string
+    resolution?: StringNullableWithAggregatesFilter<"TransferIssue"> | string | null
+    resolvedById?: StringNullableWithAggregatesFilter<"TransferIssue"> | string | null
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"TransferIssue"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"TransferIssue"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TransferIssue"> | Date | string
   }
 
   export type TransferItemWhereInput = {
@@ -101925,6 +104951,7 @@ export namespace Prisma {
     batchId?: StringNullableFilter<"TransferItem"> | string | null
     unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFilter<"TransferItem"> | number
+    picked_qty?: IntNullableFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
     received_qty?: IntNullableFilter<"TransferItem"> | number | null
     damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
@@ -101939,6 +104966,7 @@ export namespace Prisma {
     batchId?: SortOrderInput | SortOrder
     unitCost?: SortOrderInput | SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrderInput | SortOrder
     dispatched_qty?: SortOrderInput | SortOrder
     received_qty?: SortOrderInput | SortOrder
     damaged_qty?: SortOrderInput | SortOrder
@@ -101956,6 +104984,7 @@ export namespace Prisma {
     batchId?: StringNullableFilter<"TransferItem"> | string | null
     unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFilter<"TransferItem"> | number
+    picked_qty?: IntNullableFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
     received_qty?: IntNullableFilter<"TransferItem"> | number | null
     damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
@@ -101970,6 +104999,7 @@ export namespace Prisma {
     batchId?: SortOrderInput | SortOrder
     unitCost?: SortOrderInput | SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrderInput | SortOrder
     dispatched_qty?: SortOrderInput | SortOrder
     received_qty?: SortOrderInput | SortOrder
     damaged_qty?: SortOrderInput | SortOrder
@@ -101990,6 +105020,7 @@ export namespace Prisma {
     batchId?: StringNullableWithAggregatesFilter<"TransferItem"> | string | null
     unitCost?: DecimalNullableWithAggregatesFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntWithAggregatesFilter<"TransferItem"> | number
+    picked_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
     received_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
     damaged_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
@@ -107362,6 +110393,76 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"VATTransaction"> | Date | string
   }
 
+  export type NotificationWhereInput = {
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    userId?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
+    isRead?: BoolFilter<"Notification"> | boolean
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type NotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    link?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type NotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    userId?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
+    isRead?: BoolFilter<"Notification"> | boolean
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type NotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    link?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+    _count?: NotificationCountOrderByAggregateInput
+    _max?: NotificationMaxOrderByAggregateInput
+    _min?: NotificationMinOrderByAggregateInput
+  }
+
+  export type NotificationScalarWhereWithAggregatesInput = {
+    AND?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    OR?: NotificationScalarWhereWithAggregatesInput[]
+    NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Notification"> | string
+    userId?: StringWithAggregatesFilter<"Notification"> | string
+    title?: StringWithAggregatesFilter<"Notification"> | string
+    message?: StringWithAggregatesFilter<"Notification"> | string
+    type?: StringWithAggregatesFilter<"Notification"> | string
+    link?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    isRead?: BoolWithAggregatesFilter<"Notification"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -107403,6 +110504,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -107449,6 +110555,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -107493,6 +110604,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -107539,6 +110655,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -108697,6 +111818,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -108704,12 +111828,15 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateInput = {
@@ -108725,6 +111852,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -108733,6 +111865,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUpdateInput = {
@@ -108743,6 +111876,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -108750,12 +111886,15 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateInput = {
@@ -108771,6 +111910,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -108779,6 +111923,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferCreateManyInput = {
@@ -108794,6 +111939,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -108810,6 +111960,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -108829,10 +111982,110 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueCreateInput = {
+    id?: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transfer: StockTransferCreateNestedOneWithoutIssuesInput
+    raisedBy: UserCreateNestedOneWithoutRaisedTransferIssuesInput
+    resolvedBy?: UserCreateNestedOneWithoutResolvedTransferIssuesInput
+  }
+
+  export type TransferIssueUncheckedCreateInput = {
+    id?: string
+    transferId: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    raisedById: string
+    resolution?: string | null
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transfer?: StockTransferUpdateOneRequiredWithoutIssuesNestedInput
+    raisedBy?: UserUpdateOneRequiredWithoutRaisedTransferIssuesNestedInput
+    resolvedBy?: UserUpdateOneWithoutResolvedTransferIssuesNestedInput
+  }
+
+  export type TransferIssueUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transferId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    raisedById?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueCreateManyInput = {
+    id?: string
+    transferId: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    raisedById: string
+    resolution?: string | null
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transferId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    raisedById?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -108842,6 +112095,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -108856,6 +112110,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -108866,6 +112121,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -108880,6 +112136,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -108892,6 +112149,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -108902,6 +112160,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -108914,6 +112173,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -114865,6 +118125,82 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationCreateInput = {
+    id?: string
+    title: string
+    message: string
+    type: string
+    link?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateInput = {
+    id?: string
+    userId: string
+    title: string
+    message: string
+    type: string
+    link?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type NotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationCreateManyInput = {
+    id?: string
+    userId: string
+    title: string
+    message: string
+    type: string
+    link?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type NotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -115048,6 +118384,18 @@ export namespace Prisma {
     none?: StockTransferWhereInput
   }
 
+  export type TransferIssueListRelationFilter = {
+    every?: TransferIssueWhereInput
+    some?: TransferIssueWhereInput
+    none?: TransferIssueWhereInput
+  }
+
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
+  }
+
   export type RoleAssignmentListRelationFilter = {
     every?: RoleAssignmentWhereInput
     some?: RoleAssignmentWhereInput
@@ -115145,6 +118493,14 @@ export namespace Prisma {
   }
 
   export type StockTransferOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TransferIssueOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -116249,6 +119605,11 @@ export namespace Prisma {
     vehicleRegistration?: SortOrder
     approvedById?: SortOrder
     approvedAt?: SortOrder
+    pickedById?: SortOrder
+    pickedAt?: SortOrder
+    pickingCompletedAt?: SortOrder
+    verifiedById?: SortOrder
+    verifiedAt?: SortOrder
     dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
@@ -116270,6 +119631,11 @@ export namespace Prisma {
     vehicleRegistration?: SortOrder
     approvedById?: SortOrder
     approvedAt?: SortOrder
+    pickedById?: SortOrder
+    pickedAt?: SortOrder
+    pickingCompletedAt?: SortOrder
+    verifiedById?: SortOrder
+    verifiedAt?: SortOrder
     dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
@@ -116291,6 +119657,11 @@ export namespace Prisma {
     vehicleRegistration?: SortOrder
     approvedById?: SortOrder
     approvedAt?: SortOrder
+    pickedById?: SortOrder
+    pickedAt?: SortOrder
+    pickingCompletedAt?: SortOrder
+    verifiedById?: SortOrder
+    verifiedAt?: SortOrder
     dispatchedAt?: SortOrder
     receivedAt?: SortOrder
     receivedById?: SortOrder
@@ -116319,6 +119690,70 @@ export namespace Prisma {
     _max?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
   }
 
+  export type EnumIssueStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueStatus | EnumIssueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIssueStatusFilter<$PrismaModel> | $Enums.IssueStatus
+  }
+
+  export type StockTransferScalarRelationFilter = {
+    is?: StockTransferWhereInput
+    isNot?: StockTransferWhereInput
+  }
+
+  export type TransferIssueCountOrderByAggregateInput = {
+    id?: SortOrder
+    transferId?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    raisedById?: SortOrder
+    resolution?: SortOrder
+    resolvedById?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransferIssueMaxOrderByAggregateInput = {
+    id?: SortOrder
+    transferId?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    raisedById?: SortOrder
+    resolution?: SortOrder
+    resolvedById?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransferIssueMinOrderByAggregateInput = {
+    id?: SortOrder
+    transferId?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    status?: SortOrder
+    raisedById?: SortOrder
+    resolution?: SortOrder
+    resolvedById?: SortOrder
+    resolvedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumIssueStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueStatus | EnumIssueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIssueStatusWithAggregatesFilter<$PrismaModel> | $Enums.IssueStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumIssueStatusFilter<$PrismaModel>
+    _max?: NestedEnumIssueStatusFilter<$PrismaModel>
+  }
+
   export type DecimalNullableFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
@@ -116330,11 +119765,6 @@ export namespace Prisma {
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
   }
 
-  export type StockTransferScalarRelationFilter = {
-    is?: StockTransferWhereInput
-    isNot?: StockTransferWhereInput
-  }
-
   export type TransferItemCountOrderByAggregateInput = {
     id?: SortOrder
     transferId?: SortOrder
@@ -116342,6 +119772,7 @@ export namespace Prisma {
     batchId?: SortOrder
     unitCost?: SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrder
     dispatched_qty?: SortOrder
     received_qty?: SortOrder
     damaged_qty?: SortOrder
@@ -116350,6 +119781,7 @@ export namespace Prisma {
   export type TransferItemAvgOrderByAggregateInput = {
     unitCost?: SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrder
     dispatched_qty?: SortOrder
     received_qty?: SortOrder
     damaged_qty?: SortOrder
@@ -116362,6 +119794,7 @@ export namespace Prisma {
     batchId?: SortOrder
     unitCost?: SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrder
     dispatched_qty?: SortOrder
     received_qty?: SortOrder
     damaged_qty?: SortOrder
@@ -116374,6 +119807,7 @@ export namespace Prisma {
     batchId?: SortOrder
     unitCost?: SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrder
     dispatched_qty?: SortOrder
     received_qty?: SortOrder
     damaged_qty?: SortOrder
@@ -116382,6 +119816,7 @@ export namespace Prisma {
   export type TransferItemSumOrderByAggregateInput = {
     unitCost?: SortOrder
     requested_qty?: SortOrder
+    picked_qty?: SortOrder
     dispatched_qty?: SortOrder
     received_qty?: SortOrder
     damaged_qty?: SortOrder
@@ -120418,6 +123853,39 @@ export namespace Prisma {
     _max?: NestedEnumVATTypeFilter<$PrismaModel>
   }
 
+  export type NotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    link?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    link?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type NotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    link?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type ApprovalRequestCreateNestedManyWithoutApprovedByInput = {
     create?: XOR<ApprovalRequestCreateWithoutApprovedByInput, ApprovalRequestUncheckedCreateWithoutApprovedByInput> | ApprovalRequestCreateWithoutApprovedByInput[] | ApprovalRequestUncheckedCreateWithoutApprovedByInput[]
     connectOrCreate?: ApprovalRequestCreateOrConnectWithoutApprovedByInput | ApprovalRequestCreateOrConnectWithoutApprovedByInput[]
@@ -120612,6 +124080,41 @@ export namespace Prisma {
     connectOrCreate?: StockTransferCreateOrConnectWithoutApprovedByInput | StockTransferCreateOrConnectWithoutApprovedByInput[]
     createMany?: StockTransferCreateManyApprovedByInputEnvelope
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type StockTransferCreateNestedManyWithoutPickedByInput = {
+    create?: XOR<StockTransferCreateWithoutPickedByInput, StockTransferUncheckedCreateWithoutPickedByInput> | StockTransferCreateWithoutPickedByInput[] | StockTransferUncheckedCreateWithoutPickedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutPickedByInput | StockTransferCreateOrConnectWithoutPickedByInput[]
+    createMany?: StockTransferCreateManyPickedByInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type StockTransferCreateNestedManyWithoutVerifiedByInput = {
+    create?: XOR<StockTransferCreateWithoutVerifiedByInput, StockTransferUncheckedCreateWithoutVerifiedByInput> | StockTransferCreateWithoutVerifiedByInput[] | StockTransferUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutVerifiedByInput | StockTransferCreateOrConnectWithoutVerifiedByInput[]
+    createMany?: StockTransferCreateManyVerifiedByInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type TransferIssueCreateNestedManyWithoutRaisedByInput = {
+    create?: XOR<TransferIssueCreateWithoutRaisedByInput, TransferIssueUncheckedCreateWithoutRaisedByInput> | TransferIssueCreateWithoutRaisedByInput[] | TransferIssueUncheckedCreateWithoutRaisedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutRaisedByInput | TransferIssueCreateOrConnectWithoutRaisedByInput[]
+    createMany?: TransferIssueCreateManyRaisedByInputEnvelope
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+  }
+
+  export type TransferIssueCreateNestedManyWithoutResolvedByInput = {
+    create?: XOR<TransferIssueCreateWithoutResolvedByInput, TransferIssueUncheckedCreateWithoutResolvedByInput> | TransferIssueCreateWithoutResolvedByInput[] | TransferIssueUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutResolvedByInput | TransferIssueCreateOrConnectWithoutResolvedByInput[]
+    createMany?: TransferIssueCreateManyResolvedByInputEnvelope
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+  }
+
+  export type NotificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type RoleAssignmentCreateNestedManyWithoutUserInput = {
@@ -120821,6 +124324,41 @@ export namespace Prisma {
     connectOrCreate?: StockTransferCreateOrConnectWithoutApprovedByInput | StockTransferCreateOrConnectWithoutApprovedByInput[]
     createMany?: StockTransferCreateManyApprovedByInputEnvelope
     connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type StockTransferUncheckedCreateNestedManyWithoutPickedByInput = {
+    create?: XOR<StockTransferCreateWithoutPickedByInput, StockTransferUncheckedCreateWithoutPickedByInput> | StockTransferCreateWithoutPickedByInput[] | StockTransferUncheckedCreateWithoutPickedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutPickedByInput | StockTransferCreateOrConnectWithoutPickedByInput[]
+    createMany?: StockTransferCreateManyPickedByInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput = {
+    create?: XOR<StockTransferCreateWithoutVerifiedByInput, StockTransferUncheckedCreateWithoutVerifiedByInput> | StockTransferCreateWithoutVerifiedByInput[] | StockTransferUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutVerifiedByInput | StockTransferCreateOrConnectWithoutVerifiedByInput[]
+    createMany?: StockTransferCreateManyVerifiedByInputEnvelope
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+  }
+
+  export type TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput = {
+    create?: XOR<TransferIssueCreateWithoutRaisedByInput, TransferIssueUncheckedCreateWithoutRaisedByInput> | TransferIssueCreateWithoutRaisedByInput[] | TransferIssueUncheckedCreateWithoutRaisedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutRaisedByInput | TransferIssueCreateOrConnectWithoutRaisedByInput[]
+    createMany?: TransferIssueCreateManyRaisedByInputEnvelope
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+  }
+
+  export type TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput = {
+    create?: XOR<TransferIssueCreateWithoutResolvedByInput, TransferIssueUncheckedCreateWithoutResolvedByInput> | TransferIssueCreateWithoutResolvedByInput[] | TransferIssueUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutResolvedByInput | TransferIssueCreateOrConnectWithoutResolvedByInput[]
+    createMany?: TransferIssueCreateManyResolvedByInputEnvelope
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type RoleAssignmentUncheckedCreateNestedManyWithoutUserInput = {
@@ -121246,6 +124784,76 @@ export namespace Prisma {
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
   }
 
+  export type StockTransferUpdateManyWithoutPickedByNestedInput = {
+    create?: XOR<StockTransferCreateWithoutPickedByInput, StockTransferUncheckedCreateWithoutPickedByInput> | StockTransferCreateWithoutPickedByInput[] | StockTransferUncheckedCreateWithoutPickedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutPickedByInput | StockTransferCreateOrConnectWithoutPickedByInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutPickedByInput | StockTransferUpsertWithWhereUniqueWithoutPickedByInput[]
+    createMany?: StockTransferCreateManyPickedByInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutPickedByInput | StockTransferUpdateWithWhereUniqueWithoutPickedByInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutPickedByInput | StockTransferUpdateManyWithWhereWithoutPickedByInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type StockTransferUpdateManyWithoutVerifiedByNestedInput = {
+    create?: XOR<StockTransferCreateWithoutVerifiedByInput, StockTransferUncheckedCreateWithoutVerifiedByInput> | StockTransferCreateWithoutVerifiedByInput[] | StockTransferUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutVerifiedByInput | StockTransferCreateOrConnectWithoutVerifiedByInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutVerifiedByInput | StockTransferUpsertWithWhereUniqueWithoutVerifiedByInput[]
+    createMany?: StockTransferCreateManyVerifiedByInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutVerifiedByInput | StockTransferUpdateWithWhereUniqueWithoutVerifiedByInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutVerifiedByInput | StockTransferUpdateManyWithWhereWithoutVerifiedByInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type TransferIssueUpdateManyWithoutRaisedByNestedInput = {
+    create?: XOR<TransferIssueCreateWithoutRaisedByInput, TransferIssueUncheckedCreateWithoutRaisedByInput> | TransferIssueCreateWithoutRaisedByInput[] | TransferIssueUncheckedCreateWithoutRaisedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutRaisedByInput | TransferIssueCreateOrConnectWithoutRaisedByInput[]
+    upsert?: TransferIssueUpsertWithWhereUniqueWithoutRaisedByInput | TransferIssueUpsertWithWhereUniqueWithoutRaisedByInput[]
+    createMany?: TransferIssueCreateManyRaisedByInputEnvelope
+    set?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    disconnect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    delete?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    update?: TransferIssueUpdateWithWhereUniqueWithoutRaisedByInput | TransferIssueUpdateWithWhereUniqueWithoutRaisedByInput[]
+    updateMany?: TransferIssueUpdateManyWithWhereWithoutRaisedByInput | TransferIssueUpdateManyWithWhereWithoutRaisedByInput[]
+    deleteMany?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+  }
+
+  export type TransferIssueUpdateManyWithoutResolvedByNestedInput = {
+    create?: XOR<TransferIssueCreateWithoutResolvedByInput, TransferIssueUncheckedCreateWithoutResolvedByInput> | TransferIssueCreateWithoutResolvedByInput[] | TransferIssueUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutResolvedByInput | TransferIssueCreateOrConnectWithoutResolvedByInput[]
+    upsert?: TransferIssueUpsertWithWhereUniqueWithoutResolvedByInput | TransferIssueUpsertWithWhereUniqueWithoutResolvedByInput[]
+    createMany?: TransferIssueCreateManyResolvedByInputEnvelope
+    set?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    disconnect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    delete?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    update?: TransferIssueUpdateWithWhereUniqueWithoutResolvedByInput | TransferIssueUpdateWithWhereUniqueWithoutResolvedByInput[]
+    updateMany?: TransferIssueUpdateManyWithWhereWithoutResolvedByInput | TransferIssueUpdateManyWithWhereWithoutResolvedByInput[]
+    deleteMany?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+  }
+
+  export type NotificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
   export type RoleAssignmentUpdateManyWithoutUserNestedInput = {
     create?: XOR<RoleAssignmentCreateWithoutUserInput, RoleAssignmentUncheckedCreateWithoutUserInput> | RoleAssignmentCreateWithoutUserInput[] | RoleAssignmentUncheckedCreateWithoutUserInput[]
     connectOrCreate?: RoleAssignmentCreateOrConnectWithoutUserInput | RoleAssignmentCreateOrConnectWithoutUserInput[]
@@ -121660,6 +125268,76 @@ export namespace Prisma {
     update?: StockTransferUpdateWithWhereUniqueWithoutApprovedByInput | StockTransferUpdateWithWhereUniqueWithoutApprovedByInput[]
     updateMany?: StockTransferUpdateManyWithWhereWithoutApprovedByInput | StockTransferUpdateManyWithWhereWithoutApprovedByInput[]
     deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutPickedByNestedInput = {
+    create?: XOR<StockTransferCreateWithoutPickedByInput, StockTransferUncheckedCreateWithoutPickedByInput> | StockTransferCreateWithoutPickedByInput[] | StockTransferUncheckedCreateWithoutPickedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutPickedByInput | StockTransferCreateOrConnectWithoutPickedByInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutPickedByInput | StockTransferUpsertWithWhereUniqueWithoutPickedByInput[]
+    createMany?: StockTransferCreateManyPickedByInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutPickedByInput | StockTransferUpdateWithWhereUniqueWithoutPickedByInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutPickedByInput | StockTransferUpdateManyWithWhereWithoutPickedByInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput = {
+    create?: XOR<StockTransferCreateWithoutVerifiedByInput, StockTransferUncheckedCreateWithoutVerifiedByInput> | StockTransferCreateWithoutVerifiedByInput[] | StockTransferUncheckedCreateWithoutVerifiedByInput[]
+    connectOrCreate?: StockTransferCreateOrConnectWithoutVerifiedByInput | StockTransferCreateOrConnectWithoutVerifiedByInput[]
+    upsert?: StockTransferUpsertWithWhereUniqueWithoutVerifiedByInput | StockTransferUpsertWithWhereUniqueWithoutVerifiedByInput[]
+    createMany?: StockTransferCreateManyVerifiedByInputEnvelope
+    set?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    disconnect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    delete?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    connect?: StockTransferWhereUniqueInput | StockTransferWhereUniqueInput[]
+    update?: StockTransferUpdateWithWhereUniqueWithoutVerifiedByInput | StockTransferUpdateWithWhereUniqueWithoutVerifiedByInput[]
+    updateMany?: StockTransferUpdateManyWithWhereWithoutVerifiedByInput | StockTransferUpdateManyWithWhereWithoutVerifiedByInput[]
+    deleteMany?: StockTransferScalarWhereInput | StockTransferScalarWhereInput[]
+  }
+
+  export type TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput = {
+    create?: XOR<TransferIssueCreateWithoutRaisedByInput, TransferIssueUncheckedCreateWithoutRaisedByInput> | TransferIssueCreateWithoutRaisedByInput[] | TransferIssueUncheckedCreateWithoutRaisedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutRaisedByInput | TransferIssueCreateOrConnectWithoutRaisedByInput[]
+    upsert?: TransferIssueUpsertWithWhereUniqueWithoutRaisedByInput | TransferIssueUpsertWithWhereUniqueWithoutRaisedByInput[]
+    createMany?: TransferIssueCreateManyRaisedByInputEnvelope
+    set?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    disconnect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    delete?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    update?: TransferIssueUpdateWithWhereUniqueWithoutRaisedByInput | TransferIssueUpdateWithWhereUniqueWithoutRaisedByInput[]
+    updateMany?: TransferIssueUpdateManyWithWhereWithoutRaisedByInput | TransferIssueUpdateManyWithWhereWithoutRaisedByInput[]
+    deleteMany?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+  }
+
+  export type TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput = {
+    create?: XOR<TransferIssueCreateWithoutResolvedByInput, TransferIssueUncheckedCreateWithoutResolvedByInput> | TransferIssueCreateWithoutResolvedByInput[] | TransferIssueUncheckedCreateWithoutResolvedByInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutResolvedByInput | TransferIssueCreateOrConnectWithoutResolvedByInput[]
+    upsert?: TransferIssueUpsertWithWhereUniqueWithoutResolvedByInput | TransferIssueUpsertWithWhereUniqueWithoutResolvedByInput[]
+    createMany?: TransferIssueCreateManyResolvedByInputEnvelope
+    set?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    disconnect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    delete?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    update?: TransferIssueUpdateWithWhereUniqueWithoutResolvedByInput | TransferIssueUpdateWithWhereUniqueWithoutResolvedByInput[]
+    updateMany?: TransferIssueUpdateManyWithWhereWithoutResolvedByInput | TransferIssueUpdateManyWithWhereWithoutResolvedByInput[]
+    deleteMany?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput = {
@@ -123213,6 +126891,18 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutPickedTransfersInput = {
+    create?: XOR<UserCreateWithoutPickedTransfersInput, UserUncheckedCreateWithoutPickedTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPickedTransfersInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutVerifiedTransfersInput = {
+    create?: XOR<UserCreateWithoutVerifiedTransfersInput, UserUncheckedCreateWithoutVerifiedTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVerifiedTransfersInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutReceivedTransfersInput = {
     create?: XOR<UserCreateWithoutReceivedTransfersInput, UserUncheckedCreateWithoutReceivedTransfersInput>
     connectOrCreate?: UserCreateOrConnectWithoutReceivedTransfersInput
@@ -123250,6 +126940,13 @@ export namespace Prisma {
     connect?: TransferItemWhereUniqueInput | TransferItemWhereUniqueInput[]
   }
 
+  export type TransferIssueCreateNestedManyWithoutTransferInput = {
+    create?: XOR<TransferIssueCreateWithoutTransferInput, TransferIssueUncheckedCreateWithoutTransferInput> | TransferIssueCreateWithoutTransferInput[] | TransferIssueUncheckedCreateWithoutTransferInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutTransferInput | TransferIssueCreateOrConnectWithoutTransferInput[]
+    createMany?: TransferIssueCreateManyTransferInputEnvelope
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+  }
+
   export type StockMovementUncheckedCreateNestedManyWithoutTransferInput = {
     create?: XOR<StockMovementCreateWithoutTransferInput, StockMovementUncheckedCreateWithoutTransferInput> | StockMovementCreateWithoutTransferInput[] | StockMovementUncheckedCreateWithoutTransferInput[]
     connectOrCreate?: StockMovementCreateOrConnectWithoutTransferInput | StockMovementCreateOrConnectWithoutTransferInput[]
@@ -123262,6 +126959,13 @@ export namespace Prisma {
     connectOrCreate?: TransferItemCreateOrConnectWithoutTransferInput | TransferItemCreateOrConnectWithoutTransferInput[]
     createMany?: TransferItemCreateManyTransferInputEnvelope
     connect?: TransferItemWhereUniqueInput | TransferItemWhereUniqueInput[]
+  }
+
+  export type TransferIssueUncheckedCreateNestedManyWithoutTransferInput = {
+    create?: XOR<TransferIssueCreateWithoutTransferInput, TransferIssueUncheckedCreateWithoutTransferInput> | TransferIssueCreateWithoutTransferInput[] | TransferIssueUncheckedCreateWithoutTransferInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutTransferInput | TransferIssueCreateOrConnectWithoutTransferInput[]
+    createMany?: TransferIssueCreateManyTransferInputEnvelope
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
   }
 
   export type EnumTransferStatusFieldUpdateOperationsInput = {
@@ -123302,6 +127006,26 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovedTransfersInput, UserUpdateWithoutApprovedTransfersInput>, UserUncheckedUpdateWithoutApprovedTransfersInput>
+  }
+
+  export type UserUpdateOneWithoutPickedTransfersNestedInput = {
+    create?: XOR<UserCreateWithoutPickedTransfersInput, UserUncheckedCreateWithoutPickedTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPickedTransfersInput
+    upsert?: UserUpsertWithoutPickedTransfersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPickedTransfersInput, UserUpdateWithoutPickedTransfersInput>, UserUncheckedUpdateWithoutPickedTransfersInput>
+  }
+
+  export type UserUpdateOneWithoutVerifiedTransfersNestedInput = {
+    create?: XOR<UserCreateWithoutVerifiedTransfersInput, UserUncheckedCreateWithoutVerifiedTransfersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutVerifiedTransfersInput
+    upsert?: UserUpsertWithoutVerifiedTransfersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVerifiedTransfersInput, UserUpdateWithoutVerifiedTransfersInput>, UserUncheckedUpdateWithoutVerifiedTransfersInput>
   }
 
   export type UserUpdateOneWithoutReceivedTransfersNestedInput = {
@@ -123364,6 +127088,20 @@ export namespace Prisma {
     deleteMany?: TransferItemScalarWhereInput | TransferItemScalarWhereInput[]
   }
 
+  export type TransferIssueUpdateManyWithoutTransferNestedInput = {
+    create?: XOR<TransferIssueCreateWithoutTransferInput, TransferIssueUncheckedCreateWithoutTransferInput> | TransferIssueCreateWithoutTransferInput[] | TransferIssueUncheckedCreateWithoutTransferInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutTransferInput | TransferIssueCreateOrConnectWithoutTransferInput[]
+    upsert?: TransferIssueUpsertWithWhereUniqueWithoutTransferInput | TransferIssueUpsertWithWhereUniqueWithoutTransferInput[]
+    createMany?: TransferIssueCreateManyTransferInputEnvelope
+    set?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    disconnect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    delete?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    update?: TransferIssueUpdateWithWhereUniqueWithoutTransferInput | TransferIssueUpdateWithWhereUniqueWithoutTransferInput[]
+    updateMany?: TransferIssueUpdateManyWithWhereWithoutTransferInput | TransferIssueUpdateManyWithWhereWithoutTransferInput[]
+    deleteMany?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+  }
+
   export type StockMovementUncheckedUpdateManyWithoutTransferNestedInput = {
     create?: XOR<StockMovementCreateWithoutTransferInput, StockMovementUncheckedCreateWithoutTransferInput> | StockMovementCreateWithoutTransferInput[] | StockMovementUncheckedCreateWithoutTransferInput[]
     connectOrCreate?: StockMovementCreateOrConnectWithoutTransferInput | StockMovementCreateOrConnectWithoutTransferInput[]
@@ -123390,6 +127128,68 @@ export namespace Prisma {
     update?: TransferItemUpdateWithWhereUniqueWithoutTransferInput | TransferItemUpdateWithWhereUniqueWithoutTransferInput[]
     updateMany?: TransferItemUpdateManyWithWhereWithoutTransferInput | TransferItemUpdateManyWithWhereWithoutTransferInput[]
     deleteMany?: TransferItemScalarWhereInput | TransferItemScalarWhereInput[]
+  }
+
+  export type TransferIssueUncheckedUpdateManyWithoutTransferNestedInput = {
+    create?: XOR<TransferIssueCreateWithoutTransferInput, TransferIssueUncheckedCreateWithoutTransferInput> | TransferIssueCreateWithoutTransferInput[] | TransferIssueUncheckedCreateWithoutTransferInput[]
+    connectOrCreate?: TransferIssueCreateOrConnectWithoutTransferInput | TransferIssueCreateOrConnectWithoutTransferInput[]
+    upsert?: TransferIssueUpsertWithWhereUniqueWithoutTransferInput | TransferIssueUpsertWithWhereUniqueWithoutTransferInput[]
+    createMany?: TransferIssueCreateManyTransferInputEnvelope
+    set?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    disconnect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    delete?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    connect?: TransferIssueWhereUniqueInput | TransferIssueWhereUniqueInput[]
+    update?: TransferIssueUpdateWithWhereUniqueWithoutTransferInput | TransferIssueUpdateWithWhereUniqueWithoutTransferInput[]
+    updateMany?: TransferIssueUpdateManyWithWhereWithoutTransferInput | TransferIssueUpdateManyWithWhereWithoutTransferInput[]
+    deleteMany?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+  }
+
+  export type StockTransferCreateNestedOneWithoutIssuesInput = {
+    create?: XOR<StockTransferCreateWithoutIssuesInput, StockTransferUncheckedCreateWithoutIssuesInput>
+    connectOrCreate?: StockTransferCreateOrConnectWithoutIssuesInput
+    connect?: StockTransferWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutRaisedTransferIssuesInput = {
+    create?: XOR<UserCreateWithoutRaisedTransferIssuesInput, UserUncheckedCreateWithoutRaisedTransferIssuesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRaisedTransferIssuesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutResolvedTransferIssuesInput = {
+    create?: XOR<UserCreateWithoutResolvedTransferIssuesInput, UserUncheckedCreateWithoutResolvedTransferIssuesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutResolvedTransferIssuesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumIssueStatusFieldUpdateOperationsInput = {
+    set?: $Enums.IssueStatus
+  }
+
+  export type StockTransferUpdateOneRequiredWithoutIssuesNestedInput = {
+    create?: XOR<StockTransferCreateWithoutIssuesInput, StockTransferUncheckedCreateWithoutIssuesInput>
+    connectOrCreate?: StockTransferCreateOrConnectWithoutIssuesInput
+    upsert?: StockTransferUpsertWithoutIssuesInput
+    connect?: StockTransferWhereUniqueInput
+    update?: XOR<XOR<StockTransferUpdateToOneWithWhereWithoutIssuesInput, StockTransferUpdateWithoutIssuesInput>, StockTransferUncheckedUpdateWithoutIssuesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutRaisedTransferIssuesNestedInput = {
+    create?: XOR<UserCreateWithoutRaisedTransferIssuesInput, UserUncheckedCreateWithoutRaisedTransferIssuesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRaisedTransferIssuesInput
+    upsert?: UserUpsertWithoutRaisedTransferIssuesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRaisedTransferIssuesInput, UserUpdateWithoutRaisedTransferIssuesInput>, UserUncheckedUpdateWithoutRaisedTransferIssuesInput>
+  }
+
+  export type UserUpdateOneWithoutResolvedTransferIssuesNestedInput = {
+    create?: XOR<UserCreateWithoutResolvedTransferIssuesInput, UserUncheckedCreateWithoutResolvedTransferIssuesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutResolvedTransferIssuesInput
+    upsert?: UserUpsertWithoutResolvedTransferIssuesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutResolvedTransferIssuesInput, UserUpdateWithoutResolvedTransferIssuesInput>, UserUncheckedUpdateWithoutResolvedTransferIssuesInput>
   }
 
   export type ProductCreateNestedOneWithoutTransferItemsInput = {
@@ -126802,6 +130602,20 @@ export namespace Prisma {
     update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutVat_transactionsInput, BranchUpdateWithoutVat_transactionsInput>, BranchUncheckedUpdateWithoutVat_transactionsInput>
   }
 
+  export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -127162,6 +130976,23 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
     _max?: NestedEnumDispatchModeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumIssueStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueStatus | EnumIssueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIssueStatusFilter<$PrismaModel> | $Enums.IssueStatus
+  }
+
+  export type NestedEnumIssueStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.IssueStatus | EnumIssueStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.IssueStatus[] | ListEnumIssueStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumIssueStatusWithAggregatesFilter<$PrismaModel> | $Enums.IssueStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumIssueStatusFilter<$PrismaModel>
+    _max?: NestedEnumIssueStatusFilter<$PrismaModel>
   }
 
   export type NestedDecimalNullableFilter<$PrismaModel = never> = {
@@ -128835,18 +132666,24 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutCreatedByInput = {
@@ -128862,6 +132699,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -128869,6 +132711,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutCreatedByInput = {
@@ -128889,6 +132732,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -128896,11 +132742,14 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutReceivedByInput = {
@@ -128916,6 +132765,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdById: string
@@ -128923,6 +132777,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutReceivedByInput = {
@@ -128943,6 +132798,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -128950,11 +132808,14 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutDriverInput = {
@@ -128969,6 +132830,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -128977,6 +132843,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutDriverInput = {
@@ -128997,18 +132864,24 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutApprovedByInput = {
@@ -129023,6 +132896,11 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -129031,6 +132909,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutApprovedByInput = {
@@ -129040,6 +132919,240 @@ export namespace Prisma {
 
   export type StockTransferCreateManyApprovedByInputEnvelope = {
     data: StockTransferCreateManyApprovedByInput | StockTransferCreateManyApprovedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockTransferCreateWithoutPickedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
+    receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
+    sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
+    items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferUncheckedCreateWithoutPickedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferCreateOrConnectWithoutPickedByInput = {
+    where: StockTransferWhereUniqueInput
+    create: XOR<StockTransferCreateWithoutPickedByInput, StockTransferUncheckedCreateWithoutPickedByInput>
+  }
+
+  export type StockTransferCreateManyPickedByInputEnvelope = {
+    data: StockTransferCreateManyPickedByInput | StockTransferCreateManyPickedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type StockTransferCreateWithoutVerifiedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
+    sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
+    items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferUncheckedCreateWithoutVerifiedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferCreateOrConnectWithoutVerifiedByInput = {
+    where: StockTransferWhereUniqueInput
+    create: XOR<StockTransferCreateWithoutVerifiedByInput, StockTransferUncheckedCreateWithoutVerifiedByInput>
+  }
+
+  export type StockTransferCreateManyVerifiedByInputEnvelope = {
+    data: StockTransferCreateManyVerifiedByInput | StockTransferCreateManyVerifiedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferIssueCreateWithoutRaisedByInput = {
+    id?: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transfer: StockTransferCreateNestedOneWithoutIssuesInput
+    resolvedBy?: UserCreateNestedOneWithoutResolvedTransferIssuesInput
+  }
+
+  export type TransferIssueUncheckedCreateWithoutRaisedByInput = {
+    id?: string
+    transferId: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    resolution?: string | null
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueCreateOrConnectWithoutRaisedByInput = {
+    where: TransferIssueWhereUniqueInput
+    create: XOR<TransferIssueCreateWithoutRaisedByInput, TransferIssueUncheckedCreateWithoutRaisedByInput>
+  }
+
+  export type TransferIssueCreateManyRaisedByInputEnvelope = {
+    data: TransferIssueCreateManyRaisedByInput | TransferIssueCreateManyRaisedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferIssueCreateWithoutResolvedByInput = {
+    id?: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transfer: StockTransferCreateNestedOneWithoutIssuesInput
+    raisedBy: UserCreateNestedOneWithoutRaisedTransferIssuesInput
+  }
+
+  export type TransferIssueUncheckedCreateWithoutResolvedByInput = {
+    id?: string
+    transferId: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    raisedById: string
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueCreateOrConnectWithoutResolvedByInput = {
+    where: TransferIssueWhereUniqueInput
+    create: XOR<TransferIssueCreateWithoutResolvedByInput, TransferIssueUncheckedCreateWithoutResolvedByInput>
+  }
+
+  export type TransferIssueCreateManyResolvedByInputEnvelope = {
+    data: TransferIssueCreateManyResolvedByInput | TransferIssueCreateManyResolvedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type NotificationCreateWithoutUserInput = {
+    id?: string
+    title: string
+    message: string
+    type: string
+    link?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type NotificationUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    message: string
+    type: string
+    link?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type NotificationCreateOrConnectWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationCreateManyUserInputEnvelope = {
+    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -129886,6 +133999,11 @@ export namespace Prisma {
     vehicleRegistration?: StringNullableFilter<"StockTransfer"> | string | null
     approvedById?: StringNullableFilter<"StockTransfer"> | string | null
     approvedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    pickedById?: StringNullableFilter<"StockTransfer"> | string | null
+    pickedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    pickingCompletedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
+    verifiedById?: StringNullableFilter<"StockTransfer"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     dispatchedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedAt?: DateTimeNullableFilter<"StockTransfer"> | Date | string | null
     receivedById?: StringNullableFilter<"StockTransfer"> | string | null
@@ -129940,6 +134058,117 @@ export namespace Prisma {
   export type StockTransferUpdateManyWithWhereWithoutApprovedByInput = {
     where: StockTransferScalarWhereInput
     data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutApprovedByInput>
+  }
+
+  export type StockTransferUpsertWithWhereUniqueWithoutPickedByInput = {
+    where: StockTransferWhereUniqueInput
+    update: XOR<StockTransferUpdateWithoutPickedByInput, StockTransferUncheckedUpdateWithoutPickedByInput>
+    create: XOR<StockTransferCreateWithoutPickedByInput, StockTransferUncheckedCreateWithoutPickedByInput>
+  }
+
+  export type StockTransferUpdateWithWhereUniqueWithoutPickedByInput = {
+    where: StockTransferWhereUniqueInput
+    data: XOR<StockTransferUpdateWithoutPickedByInput, StockTransferUncheckedUpdateWithoutPickedByInput>
+  }
+
+  export type StockTransferUpdateManyWithWhereWithoutPickedByInput = {
+    where: StockTransferScalarWhereInput
+    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutPickedByInput>
+  }
+
+  export type StockTransferUpsertWithWhereUniqueWithoutVerifiedByInput = {
+    where: StockTransferWhereUniqueInput
+    update: XOR<StockTransferUpdateWithoutVerifiedByInput, StockTransferUncheckedUpdateWithoutVerifiedByInput>
+    create: XOR<StockTransferCreateWithoutVerifiedByInput, StockTransferUncheckedCreateWithoutVerifiedByInput>
+  }
+
+  export type StockTransferUpdateWithWhereUniqueWithoutVerifiedByInput = {
+    where: StockTransferWhereUniqueInput
+    data: XOR<StockTransferUpdateWithoutVerifiedByInput, StockTransferUncheckedUpdateWithoutVerifiedByInput>
+  }
+
+  export type StockTransferUpdateManyWithWhereWithoutVerifiedByInput = {
+    where: StockTransferScalarWhereInput
+    data: XOR<StockTransferUpdateManyMutationInput, StockTransferUncheckedUpdateManyWithoutVerifiedByInput>
+  }
+
+  export type TransferIssueUpsertWithWhereUniqueWithoutRaisedByInput = {
+    where: TransferIssueWhereUniqueInput
+    update: XOR<TransferIssueUpdateWithoutRaisedByInput, TransferIssueUncheckedUpdateWithoutRaisedByInput>
+    create: XOR<TransferIssueCreateWithoutRaisedByInput, TransferIssueUncheckedCreateWithoutRaisedByInput>
+  }
+
+  export type TransferIssueUpdateWithWhereUniqueWithoutRaisedByInput = {
+    where: TransferIssueWhereUniqueInput
+    data: XOR<TransferIssueUpdateWithoutRaisedByInput, TransferIssueUncheckedUpdateWithoutRaisedByInput>
+  }
+
+  export type TransferIssueUpdateManyWithWhereWithoutRaisedByInput = {
+    where: TransferIssueScalarWhereInput
+    data: XOR<TransferIssueUpdateManyMutationInput, TransferIssueUncheckedUpdateManyWithoutRaisedByInput>
+  }
+
+  export type TransferIssueScalarWhereInput = {
+    AND?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+    OR?: TransferIssueScalarWhereInput[]
+    NOT?: TransferIssueScalarWhereInput | TransferIssueScalarWhereInput[]
+    id?: StringFilter<"TransferIssue"> | string
+    transferId?: StringFilter<"TransferIssue"> | string
+    category?: StringFilter<"TransferIssue"> | string
+    description?: StringFilter<"TransferIssue"> | string
+    status?: EnumIssueStatusFilter<"TransferIssue"> | $Enums.IssueStatus
+    raisedById?: StringFilter<"TransferIssue"> | string
+    resolution?: StringNullableFilter<"TransferIssue"> | string | null
+    resolvedById?: StringNullableFilter<"TransferIssue"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"TransferIssue"> | Date | string | null
+    createdAt?: DateTimeFilter<"TransferIssue"> | Date | string
+    updatedAt?: DateTimeFilter<"TransferIssue"> | Date | string
+  }
+
+  export type TransferIssueUpsertWithWhereUniqueWithoutResolvedByInput = {
+    where: TransferIssueWhereUniqueInput
+    update: XOR<TransferIssueUpdateWithoutResolvedByInput, TransferIssueUncheckedUpdateWithoutResolvedByInput>
+    create: XOR<TransferIssueCreateWithoutResolvedByInput, TransferIssueUncheckedCreateWithoutResolvedByInput>
+  }
+
+  export type TransferIssueUpdateWithWhereUniqueWithoutResolvedByInput = {
+    where: TransferIssueWhereUniqueInput
+    data: XOR<TransferIssueUpdateWithoutResolvedByInput, TransferIssueUncheckedUpdateWithoutResolvedByInput>
+  }
+
+  export type TransferIssueUpdateManyWithWhereWithoutResolvedByInput = {
+    where: TransferIssueScalarWhereInput
+    data: XOR<TransferIssueUpdateManyMutationInput, TransferIssueUncheckedUpdateManyWithoutResolvedByInput>
+  }
+
+  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: StringFilter<"Notification"> | string
+    userId?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    message?: StringFilter<"Notification"> | string
+    type?: StringFilter<"Notification"> | string
+    link?: StringNullableFilter<"Notification"> | string | null
+    isRead?: BoolFilter<"Notification"> | boolean
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
   }
 
   export type RoleAssignmentUpsertWithWhereUniqueWithoutUserInput = {
@@ -130440,6 +134669,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
   }
 
@@ -130484,6 +134718,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -131084,6 +135323,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -131129,6 +135373,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -131302,6 +135551,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -131347,6 +135601,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -131516,6 +135775,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -131523,11 +135785,14 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutSourceWarehouseInput = {
@@ -131542,6 +135807,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -131550,6 +135820,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutSourceWarehouseInput = {
@@ -131570,6 +135841,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -131577,11 +135851,14 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutDestinationWarehouseInput = {
@@ -131596,6 +135873,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -131604,6 +135886,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutDestinationWarehouseInput = {
@@ -132225,6 +136508,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -132237,6 +136521,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -132542,6 +136827,7 @@ export namespace Prisma {
     batchId?: StringNullableFilter<"TransferItem"> | string | null
     unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFilter<"TransferItem"> | number
+    picked_qty?: IntNullableFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
     received_qty?: IntNullableFilter<"TransferItem"> | number | null
     damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
@@ -133646,18 +137932,24 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutStockMovementsInput = {
@@ -133673,6 +137965,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -133680,6 +137977,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutStockMovementsInput = {
@@ -133905,18 +138203,24 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutStockMovementsInput = {
@@ -133932,6 +138236,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -133939,6 +138248,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type WarehouseUpsertWithoutStockMovementsInput = {
@@ -134060,6 +138370,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -134105,6 +138420,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -134153,6 +138473,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -134198,12 +138523,223 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutApprovedTransfersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutApprovedTransfersInput, UserUncheckedCreateWithoutApprovedTransfersInput>
+  }
+
+  export type UserCreateWithoutPickedTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutPickedTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPickedTransfersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPickedTransfersInput, UserUncheckedCreateWithoutPickedTransfersInput>
+  }
+
+  export type UserCreateWithoutVerifiedTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutVerifiedTransfersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutVerifiedTransfersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutVerifiedTransfersInput, UserUncheckedCreateWithoutVerifiedTransfersInput>
   }
 
   export type UserCreateWithoutReceivedTransfersInput = {
@@ -134246,6 +138782,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -134291,6 +138832,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -134448,6 +138994,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -134493,6 +139044,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -134506,6 +139062,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -134518,6 +139075,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -134530,6 +139088,42 @@ export namespace Prisma {
 
   export type TransferItemCreateManyTransferInputEnvelope = {
     data: TransferItemCreateManyTransferInput | TransferItemCreateManyTransferInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TransferIssueCreateWithoutTransferInput = {
+    id?: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    raisedBy: UserCreateNestedOneWithoutRaisedTransferIssuesInput
+    resolvedBy?: UserCreateNestedOneWithoutResolvedTransferIssuesInput
+  }
+
+  export type TransferIssueUncheckedCreateWithoutTransferInput = {
+    id?: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    raisedById: string
+    resolution?: string | null
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueCreateOrConnectWithoutTransferInput = {
+    where: TransferIssueWhereUniqueInput
+    create: XOR<TransferIssueCreateWithoutTransferInput, TransferIssueUncheckedCreateWithoutTransferInput>
+  }
+
+  export type TransferIssueCreateManyTransferInputEnvelope = {
+    data: TransferIssueCreateManyTransferInput | TransferIssueCreateManyTransferInput[]
     skipDuplicates?: boolean
   }
 
@@ -134600,6 +139194,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134645,6 +139244,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -134699,6 +139303,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134744,6 +139353,229 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutPickedTransfersInput = {
+    update: XOR<UserUpdateWithoutPickedTransfersInput, UserUncheckedUpdateWithoutPickedTransfersInput>
+    create: XOR<UserCreateWithoutPickedTransfersInput, UserUncheckedCreateWithoutPickedTransfersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPickedTransfersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPickedTransfersInput, UserUncheckedUpdateWithoutPickedTransfersInput>
+  }
+
+  export type UserUpdateWithoutPickedTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPickedTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutVerifiedTransfersInput = {
+    update: XOR<UserUpdateWithoutVerifiedTransfersInput, UserUncheckedUpdateWithoutVerifiedTransfersInput>
+    create: XOR<UserCreateWithoutVerifiedTransfersInput, UserUncheckedCreateWithoutVerifiedTransfersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutVerifiedTransfersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutVerifiedTransfersInput, UserUncheckedUpdateWithoutVerifiedTransfersInput>
+  }
+
+  export type UserUpdateWithoutVerifiedTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutVerifiedTransfersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -134798,6 +139630,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -134843,6 +139680,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -135024,6 +139866,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -135069,6 +139916,11 @@ export namespace Prisma {
     createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -135086,6 +139938,574 @@ export namespace Prisma {
   export type TransferItemUpdateManyWithWhereWithoutTransferInput = {
     where: TransferItemScalarWhereInput
     data: XOR<TransferItemUpdateManyMutationInput, TransferItemUncheckedUpdateManyWithoutTransferInput>
+  }
+
+  export type TransferIssueUpsertWithWhereUniqueWithoutTransferInput = {
+    where: TransferIssueWhereUniqueInput
+    update: XOR<TransferIssueUpdateWithoutTransferInput, TransferIssueUncheckedUpdateWithoutTransferInput>
+    create: XOR<TransferIssueCreateWithoutTransferInput, TransferIssueUncheckedCreateWithoutTransferInput>
+  }
+
+  export type TransferIssueUpdateWithWhereUniqueWithoutTransferInput = {
+    where: TransferIssueWhereUniqueInput
+    data: XOR<TransferIssueUpdateWithoutTransferInput, TransferIssueUncheckedUpdateWithoutTransferInput>
+  }
+
+  export type TransferIssueUpdateManyWithWhereWithoutTransferInput = {
+    where: TransferIssueScalarWhereInput
+    data: XOR<TransferIssueUpdateManyMutationInput, TransferIssueUncheckedUpdateManyWithoutTransferInput>
+  }
+
+  export type StockTransferCreateWithoutIssuesInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    notes?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
+    createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
+    receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
+    sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
+    destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
+    truck?: TruckCreateNestedOneWithoutStockTransfersInput
+    driver?: UserCreateNestedOneWithoutDriverTransfersInput
+    items?: TransferItemCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferUncheckedCreateWithoutIssuesInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+  }
+
+  export type StockTransferCreateOrConnectWithoutIssuesInput = {
+    where: StockTransferWhereUniqueInput
+    create: XOR<StockTransferCreateWithoutIssuesInput, StockTransferUncheckedCreateWithoutIssuesInput>
+  }
+
+  export type UserCreateWithoutRaisedTransferIssuesInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutRaisedTransferIssuesInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutRaisedTransferIssuesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRaisedTransferIssuesInput, UserUncheckedCreateWithoutRaisedTransferIssuesInput>
+  }
+
+  export type UserCreateWithoutResolvedTransferIssuesInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutResolvedTransferIssuesInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutResolvedTransferIssuesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutResolvedTransferIssuesInput, UserUncheckedCreateWithoutResolvedTransferIssuesInput>
+  }
+
+  export type StockTransferUpsertWithoutIssuesInput = {
+    update: XOR<StockTransferUpdateWithoutIssuesInput, StockTransferUncheckedUpdateWithoutIssuesInput>
+    create: XOR<StockTransferCreateWithoutIssuesInput, StockTransferUncheckedCreateWithoutIssuesInput>
+    where?: StockTransferWhereInput
+  }
+
+  export type StockTransferUpdateToOneWithWhereWithoutIssuesInput = {
+    where?: StockTransferWhereInput
+    data: XOR<StockTransferUpdateWithoutIssuesInput, StockTransferUncheckedUpdateWithoutIssuesInput>
+  }
+
+  export type StockTransferUpdateWithoutIssuesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
+    receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
+    sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
+    items?: TransferItemUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateWithoutIssuesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+  }
+
+  export type UserUpsertWithoutRaisedTransferIssuesInput = {
+    update: XOR<UserUpdateWithoutRaisedTransferIssuesInput, UserUncheckedUpdateWithoutRaisedTransferIssuesInput>
+    create: XOR<UserCreateWithoutRaisedTransferIssuesInput, UserUncheckedCreateWithoutRaisedTransferIssuesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRaisedTransferIssuesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRaisedTransferIssuesInput, UserUncheckedUpdateWithoutRaisedTransferIssuesInput>
+  }
+
+  export type UserUpdateWithoutRaisedTransferIssuesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRaisedTransferIssuesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutResolvedTransferIssuesInput = {
+    update: XOR<UserUpdateWithoutResolvedTransferIssuesInput, UserUncheckedUpdateWithoutResolvedTransferIssuesInput>
+    create: XOR<UserCreateWithoutResolvedTransferIssuesInput, UserUncheckedCreateWithoutResolvedTransferIssuesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutResolvedTransferIssuesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutResolvedTransferIssuesInput, UserUncheckedUpdateWithoutResolvedTransferIssuesInput>
+  }
+
+  export type UserUpdateWithoutResolvedTransferIssuesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutResolvedTransferIssuesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ProductCreateWithoutTransferItemsInput = {
@@ -135179,6 +140599,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -135186,11 +140609,14 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     truck?: TruckCreateNestedOneWithoutStockTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutItemsInput = {
@@ -135206,6 +140632,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -135213,6 +140644,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutItemsInput = {
@@ -135328,6 +140760,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -135335,11 +140770,14 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutItemsInput = {
@@ -135355,6 +140793,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -135362,6 +140805,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type PaymentCreateWithoutCustomerInput = {
@@ -135676,6 +141120,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -135721,6 +141170,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -135820,6 +141274,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -135865,6 +141324,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -136219,6 +141683,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -136264,6 +141733,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136375,6 +141849,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -136420,6 +141899,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -136980,6 +142464,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -137025,6 +142514,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137188,6 +142682,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137233,6 +142732,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -137583,6 +143087,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -137628,6 +143137,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -137831,6 +143345,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -137876,6 +143395,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -138308,6 +143832,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -138353,6 +143882,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -138485,6 +144019,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -138530,6 +144069,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -138984,6 +144528,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139029,6 +144578,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139215,6 +144769,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139260,6 +144819,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -139594,6 +145158,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139639,6 +145208,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139777,6 +145351,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -139822,6 +145401,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -139952,6 +145536,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -139997,6 +145586,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -140153,6 +145747,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -140198,6 +145797,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -140286,6 +145890,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -140331,6 +145940,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -140379,6 +145993,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -140424,6 +146043,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -140483,6 +146107,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -140528,6 +146157,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -140582,6 +146216,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -140627,6 +146266,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -141041,6 +146685,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -141086,6 +146735,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -141230,6 +146884,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -141275,6 +146934,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -141704,6 +147368,9 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdAt?: Date | string
@@ -141711,11 +147378,14 @@ export namespace Prisma {
     stockMovements?: StockMovementCreateNestedManyWithoutTransferInput
     createdBy: UserCreateNestedOneWithoutCreatedTransfersInput
     approvedBy?: UserCreateNestedOneWithoutApprovedTransfersInput
+    pickedBy?: UserCreateNestedOneWithoutPickedTransfersInput
+    verifiedBy?: UserCreateNestedOneWithoutVerifiedTransfersInput
     receivedBy?: UserCreateNestedOneWithoutReceivedTransfersInput
     sourceWarehouse: WarehouseCreateNestedOneWithoutSourceTransfersInput
     destinationWarehouse: WarehouseCreateNestedOneWithoutTargetTransfersInput
     driver?: UserCreateNestedOneWithoutDriverTransfersInput
     items?: TransferItemCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferUncheckedCreateWithoutTruckInput = {
@@ -141730,6 +147400,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -141738,6 +147413,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     stockMovements?: StockMovementUncheckedCreateNestedManyWithoutTransferInput
     items?: TransferItemUncheckedCreateNestedManyWithoutTransferInput
+    issues?: TransferIssueUncheckedCreateNestedManyWithoutTransferInput
   }
 
   export type StockTransferCreateOrConnectWithoutTruckInput = {
@@ -141822,6 +147498,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -141867,6 +147548,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -141977,6 +147663,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142022,6 +147713,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -142398,6 +148094,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -142443,6 +148144,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -142537,6 +148243,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -142582,6 +148293,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -143330,6 +149046,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -143375,6 +149096,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -143563,6 +149289,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -143608,6 +149339,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145037,6 +150773,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145082,6 +150823,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145174,6 +150920,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145219,6 +150970,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145289,6 +151045,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145334,6 +151095,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145426,6 +151192,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145471,6 +151242,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145725,6 +151501,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145770,6 +151551,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -145866,6 +151652,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -145911,6 +151702,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -145954,6 +151750,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -145999,6 +151800,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146058,6 +151864,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146103,6 +151914,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146146,6 +151962,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -146191,6 +152012,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146239,6 +152065,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -146284,6 +152115,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146343,6 +152179,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146388,6 +152229,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146442,6 +152288,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146487,6 +152338,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146530,6 +152386,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -146575,6 +152436,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146634,6 +152500,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146679,6 +152550,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -146791,6 +152667,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -146836,6 +152717,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -146926,6 +152812,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -146971,6 +152862,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -147373,6 +153269,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
 
@@ -147418,6 +153319,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRolesInput = {
@@ -147510,6 +153416,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
 
@@ -147555,6 +153466,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAuditLogsInput = {
@@ -147597,6 +153513,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
   }
@@ -147642,6 +153563,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
     driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
     approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -147701,6 +153627,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
   }
@@ -147746,6 +153677,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -148321,6 +154257,218 @@ export namespace Prisma {
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
   }
 
+  export type UserCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    role?: string
+    salesPrefix?: string | null
+    lastSequence?: number
+    branchId?: string | null
+    isActive?: boolean
+    hasSystemAccess?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type ApprovalRequestCreateManyApprovedByInput = {
     id?: string
     type: $Enums.ApprovalType
@@ -148681,6 +154829,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -148701,6 +154854,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     createdById: string
@@ -148720,6 +154878,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -148740,12 +154903,103 @@ export namespace Prisma {
     dispatchMode?: $Enums.DispatchMode | null
     vehicleRegistration?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
     createdById: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type StockTransferCreateManyPickedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockTransferCreateManyVerifiedByInput = {
+    id?: string
+    documentId: string
+    status?: $Enums.TransferStatus
+    sourceWarehouseId: string
+    destinationWarehouseId: string
+    notes?: string | null
+    truckId?: string | null
+    driverId?: string | null
+    dispatchMode?: $Enums.DispatchMode | null
+    vehicleRegistration?: string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedAt?: Date | string | null
+    dispatchedAt?: Date | string | null
+    receivedAt?: Date | string | null
+    receivedById?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueCreateManyRaisedByInput = {
+    id?: string
+    transferId: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    resolution?: string | null
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransferIssueCreateManyResolvedByInput = {
+    id?: string
+    transferId: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    raisedById: string
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NotificationCreateManyUserInput = {
+    id?: string
+    title: string
+    message: string
+    type: string
+    link?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
   }
 
   export type RoleAssignmentCreateManyUserInput = {
@@ -149845,18 +156099,24 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutCreatedByInput = {
@@ -149872,6 +156132,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149879,6 +156144,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutCreatedByInput = {
@@ -149894,6 +156160,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -149909,6 +156180,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -149916,11 +156190,14 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutReceivedByInput = {
@@ -149936,6 +156213,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -149943,6 +156225,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutReceivedByInput = {
@@ -149958,6 +156241,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdById?: StringFieldUpdateOperationsInput | string
@@ -149973,6 +156261,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -149980,11 +156271,14 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutDriverInput = {
@@ -149999,6 +156293,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150007,6 +156306,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutDriverInput = {
@@ -150021,6 +156321,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150037,18 +156342,24 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutApprovedByInput = {
@@ -150063,6 +156374,11 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -150071,6 +156387,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutApprovedByInput = {
@@ -150085,12 +156402,287 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockTransferUpdateWithoutPickedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
+    receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
+    sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
+    items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateWithoutPickedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutPickedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockTransferUpdateWithoutVerifiedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
+    createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
+    sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
+    truck?: TruckUpdateOneWithoutStockTransfersNestedInput
+    driver?: UserUpdateOneWithoutDriverTransfersNestedInput
+    items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateWithoutVerifiedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
+    items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
+  }
+
+  export type StockTransferUncheckedUpdateManyWithoutVerifiedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    status?: EnumTransferStatusFieldUpdateOperationsInput | $Enums.TransferStatus
+    sourceWarehouseId?: StringFieldUpdateOperationsInput | string
+    destinationWarehouseId?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    truckId?: NullableStringFieldUpdateOperationsInput | string | null
+    driverId?: NullableStringFieldUpdateOperationsInput | string | null
+    dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
+    vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    receivedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueUpdateWithoutRaisedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transfer?: StockTransferUpdateOneRequiredWithoutIssuesNestedInput
+    resolvedBy?: UserUpdateOneWithoutResolvedTransferIssuesNestedInput
+  }
+
+  export type TransferIssueUncheckedUpdateWithoutRaisedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transferId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueUncheckedUpdateManyWithoutRaisedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transferId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueUpdateWithoutResolvedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transfer?: StockTransferUpdateOneRequiredWithoutIssuesNestedInput
+    raisedBy?: UserUpdateOneRequiredWithoutRaisedTransferIssuesNestedInput
+  }
+
+  export type TransferIssueUncheckedUpdateWithoutResolvedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transferId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    raisedById?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueUncheckedUpdateManyWithoutResolvedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    transferId?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    raisedById?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    link?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RoleAssignmentUpdateWithoutUserInput = {
@@ -150784,6 +157376,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
   }
 
@@ -150828,6 +157425,11 @@ export namespace Prisma {
     receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
     driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
     approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -151076,6 +157678,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -151096,6 +157703,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -151287,6 +157899,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -151294,11 +157909,14 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutSourceWarehouseInput = {
@@ -151313,6 +157931,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151321,6 +157944,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutSourceWarehouseInput = {
@@ -151335,6 +157959,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151351,6 +157980,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -151358,11 +157990,14 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     truck?: TruckUpdateOneWithoutStockTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutDestinationWarehouseInput = {
@@ -151377,6 +158012,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151385,6 +158025,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutDestinationWarehouseInput = {
@@ -151399,6 +158040,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -151521,6 +158167,7 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
@@ -151861,6 +158508,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -151873,6 +158521,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -151884,6 +158533,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -151935,9 +158585,23 @@ export namespace Prisma {
     batchId?: string | null
     unitCost?: Decimal | DecimalJsLike | number | string | null
     requested_qty: number
+    picked_qty?: number | null
     dispatched_qty?: number | null
     received_qty?: number | null
     damaged_qty?: number | null
+  }
+
+  export type TransferIssueCreateManyTransferInput = {
+    id?: string
+    category: string
+    description: string
+    status?: $Enums.IssueStatus
+    raisedById: string
+    resolution?: string | null
+    resolvedById?: string | null
+    resolvedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type StockMovementUpdateWithoutTransferInput = {
@@ -151981,6 +158645,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -151993,6 +158658,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
@@ -152004,9 +158670,49 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     requested_qty?: IntFieldUpdateOperationsInput | number
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type TransferIssueUpdateWithoutTransferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    raisedBy?: UserUpdateOneRequiredWithoutRaisedTransferIssuesNestedInput
+    resolvedBy?: UserUpdateOneWithoutResolvedTransferIssuesNestedInput
+  }
+
+  export type TransferIssueUncheckedUpdateWithoutTransferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    raisedById?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransferIssueUncheckedUpdateManyWithoutTransferInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    status?: EnumIssueStatusFieldUpdateOperationsInput | $Enums.IssueStatus
+    raisedById?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PaymentCreateManyCustomerInput = {
@@ -153270,6 +159976,11 @@ export namespace Prisma {
     vehicleRegistration?: string | null
     approvedById?: string | null
     approvedAt?: Date | string | null
+    pickedById?: string | null
+    pickedAt?: Date | string | null
+    pickingCompletedAt?: Date | string | null
+    verifiedById?: string | null
+    verifiedAt?: Date | string | null
     dispatchedAt?: Date | string | null
     receivedAt?: Date | string | null
     receivedById?: string | null
@@ -153345,6 +160056,9 @@ export namespace Prisma {
     dispatchMode?: NullableEnumDispatchModeFieldUpdateOperationsInput | $Enums.DispatchMode | null
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -153352,11 +160066,14 @@ export namespace Prisma {
     stockMovements?: StockMovementUpdateManyWithoutTransferNestedInput
     createdBy?: UserUpdateOneRequiredWithoutCreatedTransfersNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedTransfersNestedInput
+    pickedBy?: UserUpdateOneWithoutPickedTransfersNestedInput
+    verifiedBy?: UserUpdateOneWithoutVerifiedTransfersNestedInput
     receivedBy?: UserUpdateOneWithoutReceivedTransfersNestedInput
     sourceWarehouse?: WarehouseUpdateOneRequiredWithoutSourceTransfersNestedInput
     destinationWarehouse?: WarehouseUpdateOneRequiredWithoutTargetTransfersNestedInput
     driver?: UserUpdateOneWithoutDriverTransfersNestedInput
     items?: TransferItemUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateWithoutTruckInput = {
@@ -153371,6 +160088,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null
@@ -153379,6 +160101,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     stockMovements?: StockMovementUncheckedUpdateManyWithoutTransferNestedInput
     items?: TransferItemUncheckedUpdateManyWithoutTransferNestedInput
+    issues?: TransferIssueUncheckedUpdateManyWithoutTransferNestedInput
   }
 
   export type StockTransferUncheckedUpdateManyWithoutTruckInput = {
@@ -153393,6 +160116,11 @@ export namespace Prisma {
     vehicleRegistration?: NullableStringFieldUpdateOperationsInput | string | null
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickedById?: NullableStringFieldUpdateOperationsInput | string | null
+    pickedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    pickingCompletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedById?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dispatchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     receivedById?: NullableStringFieldUpdateOperationsInput | string | null

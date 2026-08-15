@@ -292,10 +292,29 @@ exports.Prisma.StockTransferScalarFieldEnum = {
   vehicleRegistration: 'vehicleRegistration',
   approvedById: 'approvedById',
   approvedAt: 'approvedAt',
+  pickedById: 'pickedById',
+  pickedAt: 'pickedAt',
+  pickingCompletedAt: 'pickingCompletedAt',
+  verifiedById: 'verifiedById',
+  verifiedAt: 'verifiedAt',
   dispatchedAt: 'dispatchedAt',
   receivedAt: 'receivedAt',
   receivedById: 'receivedById',
   createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TransferIssueScalarFieldEnum = {
+  id: 'id',
+  transferId: 'transferId',
+  category: 'category',
+  description: 'description',
+  status: 'status',
+  raisedById: 'raisedById',
+  resolution: 'resolution',
+  resolvedById: 'resolvedById',
+  resolvedAt: 'resolvedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -307,6 +326,7 @@ exports.Prisma.TransferItemScalarFieldEnum = {
   batchId: 'batchId',
   unitCost: 'unitCost',
   requested_qty: 'requested_qty',
+  picked_qty: 'picked_qty',
   dispatched_qty: 'dispatched_qty',
   received_qty: 'received_qty',
   damaged_qty: 'damaged_qty'
@@ -1145,6 +1165,17 @@ exports.Prisma.VATTransactionScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  link: 'link',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1205,6 +1236,8 @@ exports.TransferStatus = exports.$Enums.TransferStatus = {
   DRAFT: 'DRAFT',
   PENDING_APPROVAL: 'PENDING_APPROVAL',
   APPROVED: 'APPROVED',
+  PICKING: 'PICKING',
+  VERIFIED: 'VERIFIED',
   DISPATCHED: 'DISPATCHED',
   PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
   RECEIVED: 'RECEIVED',
@@ -1215,6 +1248,13 @@ exports.TransferStatus = exports.$Enums.TransferStatus = {
 exports.DispatchMode = exports.$Enums.DispatchMode = {
   RIDER: 'RIDER',
   TRUCK: 'TRUCK'
+};
+
+exports.IssueStatus = exports.$Enums.IssueStatus = {
+  OPEN: 'OPEN',
+  INVESTIGATING: 'INVESTIGATING',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
 };
 
 exports.SalesDocumentType = exports.$Enums.SalesDocumentType = {
@@ -1500,6 +1540,7 @@ exports.Prisma.ModelName = {
   StockBatch: 'StockBatch',
   StockMovement: 'StockMovement',
   StockTransfer: 'StockTransfer',
+  TransferIssue: 'TransferIssue',
   TransferItem: 'TransferItem',
   Customer: 'Customer',
   SalesDocument: 'SalesDocument',
@@ -1560,7 +1601,8 @@ exports.Prisma.ModelName = {
   AuditLog: 'AuditLog',
   JournalHeader: 'JournalHeader',
   JournalLine: 'JournalLine',
-  VATTransaction: 'VATTransaction'
+  VATTransaction: 'VATTransaction',
+  Notification: 'Notification'
 };
 
 /**

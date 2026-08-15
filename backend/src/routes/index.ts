@@ -28,6 +28,7 @@ import auditRoutes from "../modules/admin/audit.routes";
 import purchasingRoutes from "../modules/purchasing/purchasing.routes";
 import cashierRoutes from "../modules/cashier/routes/session.routes";
 import { PDFController } from "../modules/pos/controller";
+import notificationController from "../modules/notifications/notification.controller";
 
 const router = Router();
 
@@ -338,6 +339,15 @@ router.get(
     inventoryController.listTransfers(req, res, next),
 );
 
+// GET /inventory/transfers/analytics - Transfer KPI Analytics
+router.get(
+  "/inventory/transfers/analytics",
+  authMiddleware,
+  requirePermission("inventory.stock.view"),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.getTransferAnalytics(req, res, next),
+);
+
 // GET /inventory/transfers/:id - Get a single transfer with line-item detail
 router.get(
   "/inventory/transfers/:id",
@@ -417,6 +427,55 @@ router.post(
     inventoryController.receiveTransfer(req, res, next),
 );
 
+// POST /inventory/transfers/:id/issues - Raise a dispute/discrepancy against a transfer
+router.post(
+  "/inventory/transfers/:id/issues",
+  authMiddleware,
+  hasAnyPermission(["inventory.transfer.issue", "inventory.stock.adjust"]),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.raiseIssue(req, res, next),
+);
+
+// POST /inventory/transfers/issues/:issueId/resolve - Resolve or dismiss a transfer issue
+router.post(
+  "/inventory/transfers/issues/:issueId/resolve",
+  authMiddleware,
+  hasAnyPermission(["inventory.transfer.resolve_issue", "inventory.stock.adjust"]),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.resolveIssue(req, res, next),
+);
+
+// GET /inventory/transfers/:id/issues - Get all issues for a transfer
+router.get(
+  "/inventory/transfers/:id/issues",
+  authMiddleware,
+  requirePermission("inventory.stock.view"),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.getTransferIssues(req, res, next),
+);
+
+// GET /inventory/transfers/:id/audit-logs - Get compliance audit logs for a transfer
+router.get(
+  "/inventory/transfers/:id/audit-logs",
+  authMiddleware,
+  requirePermission("inventory.stock.view"),
+  (req: Request, res: Response, next: NextFunction) =>
+    inventoryController.getTransferAuditLogs(req, res, next),
+);
+
+// ============================================================================
+// NOTIFICATIONS ROUTES
+// ============================================================================
+router.get("/notifications", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
+  notificationController.getNotifications(req, res, next),
+);
+router.patch("/notifications/:id/read", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
+  notificationController.markAsRead(req, res, next),
+);
+router.post("/notifications/read-all", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
+  notificationController.markAllAsRead(req, res, next),
+);
+
 // Legacy endpoints for backwards compatibility
 router.patch(
   "/inventory/:productId/:warehouseId",
@@ -428,7 +487,7 @@ router.get(
   "/inventory/:productId/:warehouseId",
   authMiddleware,
   (req: Request, res: Response, next: NextFunction) =>
-    inventoryController.getInventory(req, res, next),
+    inventoryController.getInventoryByProductWarehouseParams(req, res, next),
 );
 
 // ============================================================================

@@ -29,6 +29,8 @@ async function main() {
     { code: "inventory.transfer.verify", name: "Verify Picked Stock Transfer" },
     { code: "inventory.transfer.dispatch", name: "Dispatch Stock Transfer" },
     { code: "inventory.transfer.receive", name: "Receive Stock Transfer" },
+    { code: "inventory.transfer.issue", name: "Raise Transfer Issue" },
+    { code: "inventory.transfer.resolve_issue", name: "Resolve Transfer Issue" },
   ];
 
   const permissionIds: string[] = [];

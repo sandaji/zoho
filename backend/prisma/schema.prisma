@@ -54,6 +54,7 @@ model User {
   verifiedTransfers       StockTransfer[]         @relation("VerifiedTransfers")
   raisedTransferIssues    TransferIssue[]         @relation("RaisedTransferIssues")
   resolvedTransferIssues  TransferIssue[]         @relation("ResolvedTransferIssues")
+  notifications           Notification[]
   roles                   RoleAssignment[]
   branch                  Branch?                 @relation(fields: [branchId], references: [id])
 
@@ -2110,4 +2111,22 @@ model VATTransaction {
   @@index([branch_id])
   @@index([created_at])
   @@map("vat_transactions")
+}
+
+/// System Notifications for user alerts and transfer events
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+  @@map("notifications")
 }

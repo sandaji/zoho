@@ -559,4 +559,172 @@ export class InventoryController {
       next(error);
     }
   }
+
+  /**
+   * POST /inventory/transfers/:id/issues
+   * Raise a dispute/discrepancy against a transfer.
+   */
+  async raiseIssue(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      if (!transferId) throw validationError("Transfer id is required");
+      const userId = req.user?.userId;
+      if (!userId) throw validationError("User context is required");
+
+      const result = await this.service.raiseTransferIssue(
+        userId,
+        transferId,
+        req.body,
+      );
+      res.status(201).json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * POST /inventory/transfers/issues/:issueId/resolve
+   * Resolve or dismiss a transfer issue.
+   */
+  async resolveIssue(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const issueId = Array.isArray(req.params.issueId)
+        ? req.params.issueId[0]
+        : req.params.issueId;
+      if (!issueId) throw validationError("Issue id is required");
+      const userId = req.user?.userId;
+      if (!userId) throw validationError("User context is required");
+
+      const result = await this.service.resolveTransferIssue(
+        userId,
+        issueId,
+        req.body,
+      );
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers/:id/issues
+   * List all issues raised against a transfer.
+   */
+  async getTransferIssues(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      if (!transferId) throw validationError("Transfer id is required");
+
+      const result = await this.service.getTransferIssues(transferId);
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers/:id/audit-logs
+   * List all compliance audit logs recorded for a transfer.
+   */
+  async getTransferAuditLogs(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const transferId = Array.isArray(req.params.id)
+        ? req.params.id[0]
+        : req.params.id;
+      if (!transferId) throw validationError("Transfer id is required");
+
+      const result = await this.service.getTransferAuditLogs(transferId);
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /inventory/transfers/analytics
+   * Get Transfer Analytics & KPI metrics (cycle time, discrepancy rate, dispatch mode split, pending approval aging).
+   */
+  async getTransferAnalytics(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const result = await this.service.getTransferAnalytics();
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Alias for legacy PATCH /inventory/:productId/:warehouseId
+   */
+  async updateInventory(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const productId = req.params.productId as string;
+      const warehouseId = req.params.warehouseId as string;
+      const quantity = Number(req.body.quantity);
+      const reason = req.body.reason || "Stock update";
+      const userId = req.user?.userId;
+      const result = await this.service.adjustInventory(
+        { productId, warehouseId, quantity, reason },
+        userId,
+      );
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Alias for legacy GET /inventory/:productId/:warehouseId
+   *
+   * NOTE: this used to be named `getInventory`, identical to the primary
+   * paginated-listing method above — a duplicate method name in the same
+   * class, which silently shadowed the real `GET /inventory` handler (the
+   * last definition wins in a JS/TS class). That broke the main Inventory
+   * page app-wide. Renamed here, and the route wired to it below.
+   */
+  async getInventoryByProductWarehouseParams(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const productId = req.params.productId as string;
+      const warehouseId = req.params.warehouseId as string;
+      const result = await this.service.getInventoryByProductAndWarehouse(
+        productId,
+        warehouseId,
+      );
+      res.json({ success: true, data: result });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

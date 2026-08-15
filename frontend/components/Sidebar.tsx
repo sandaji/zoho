@@ -24,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import { NotificationBell } from "@/components/notification-bell";
 import { useStoredStringList } from "@/hooks/use-sidebar-preferences";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { useAuth } from "@/lib/auth-context";
@@ -379,7 +380,10 @@ export function Sidebar() {
         </nav>
 
         <footer className="border-t border-slate-800 p-3">
-          <div className="relative mb-2"><button onClick={() => setNotificationsOpen((open) => !open)} className={cn("flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-400 hover:bg-slate-800 hover:text-white", isCollapsed && "justify-center px-2")} aria-label="Open notification center"><Bell className="h-4 w-4" />{!isCollapsed && <span className="flex-1 text-left">Notifications</span>}{notifications.length > 0 && <span className="rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-slate-900">{notifications.length}</span>}</button>{notificationsOpen && <div className="absolute bottom-full left-0 z-50 mb-2 w-72 rounded-xl border border-slate-700 bg-slate-800 p-3 shadow-xl"><p className="mb-2 text-sm font-semibold text-white">Notification center</p>{notifications.length ? notifications.map((notification) => <div key={notification.label} className="mb-1 rounded-lg bg-slate-700/60 p-2"><p className="text-xs font-medium text-white">{notification.label}</p><p className="text-[11px] text-slate-400">{notification.detail}</p></div>) : <p className="text-xs text-slate-400">No live alerts are available.</p>}</div>}</div>
+          <div className="flex items-center justify-between px-1 mb-2">
+            {!isCollapsed && <span className="text-xs font-semibold text-slate-400">Notifications</span>}
+            <NotificationBell />
+          </div>
           {!isCollapsed && <div className="mb-2 flex items-center gap-1 px-3 text-[10px] text-slate-500">{isOnline ? <Wifi className="h-3 w-3 text-emerald-400" /> : <WifiOff className="h-3 w-3 text-red-400" />}<span>{isOnline ? "Connected" : "Offline"}</span><span>•</span><span>{frontendEnv.NEXT_PUBLIC_APP_NAME} v{APP_VERSION}</span></div>}
           <button onClick={() => { logout(); router.push("/auth/login"); }} className={cn("flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-400 hover:bg-red-500/15 hover:text-white", isCollapsed && "justify-center px-2")}><LogOut className="h-4 w-4" />{!isCollapsed && "Logout"}</button>
         </footer>

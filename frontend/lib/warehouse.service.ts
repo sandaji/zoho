@@ -6,6 +6,10 @@ import {
   verifyStockTransfer,
   dispatchStockTransfer,
   receiveStockTransfer,
+  raiseTransferIssue,
+  resolveTransferIssue,
+  fetchTransferAuditLogs,
+  fetchTransferAnalytics,
   RequestStockTransferPayload,
   ApproveStockTransferPayload,
   StartPickingPayload,
@@ -13,6 +17,8 @@ import {
   VerifyTransferPayload,
   DispatchStockTransferPayload,
   ReceiveStockTransferPayload,
+  RaiseTransferIssuePayload,
+  ResolveTransferIssuePayload,
 } from "./admin-api";
 import { frontendEnv } from "./env";
 
@@ -91,6 +97,34 @@ export const warehouseService = {
    */
   async receiveTransfer(id: string, data: ReceiveStockTransferPayload, token: string) {
     return receiveStockTransfer(token, id, data);
+  },
+
+  /**
+   * Raise a transfer dispute / issue
+   */
+  async raiseIssue(id: string, data: RaiseTransferIssuePayload, token: string) {
+    return raiseTransferIssue(token, id, data);
+  },
+
+  /**
+   * Resolve a transfer dispute / issue
+   */
+  async resolveIssue(issueId: string, data: ResolveTransferIssuePayload, token: string) {
+    return resolveTransferIssue(token, issueId, data);
+  },
+
+  /**
+   * Get compliance audit logs for a transfer
+   */
+  async getTransferAuditLogs(id: string, token: string) {
+    return fetchTransferAuditLogs(token, id);
+  },
+
+  /**
+   * Get Transfer Analytics & KPI metrics
+   */
+  async getTransferAnalytics(token: string) {
+    return fetchTransferAnalytics(token);
   },
 
   /**

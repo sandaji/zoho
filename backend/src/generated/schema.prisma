@@ -50,6 +50,11 @@ model User {
   receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
   driverTransfers         StockTransfer[]         @relation("DriverTransfers")
   approvedTransfers       StockTransfer[]         @relation("ApprovedTransfers")
+  pickedTransfers         StockTransfer[]         @relation("PickedTransfers")
+  verifiedTransfers       StockTransfer[]         @relation("VerifiedTransfers")
+  raisedTransferIssues    TransferIssue[]         @relation("RaisedTransferIssues")
+  resolvedTransferIssues  TransferIssue[]         @relation("ResolvedTransferIssues")
+  notifications           Notification[]
   roles                   RoleAssignment[]
   branch                  Branch?                 @relation(fields: [branchId], references: [id])
 
@@ -328,6 +333,11 @@ model StockTransfer {
   vehicleRegistration    String?
   approvedById           String?
   approvedAt             DateTime?
+  pickedById             String?
+  pickedAt               DateTime?
+  pickingCompletedAt     DateTime?
+  verifiedById           String?
+  verifiedAt             DateTime?
   dispatchedAt           DateTime?
   receivedAt             DateTime?
   receivedById           String?
@@ -337,12 +347,15 @@ model StockTransfer {
   stockMovements         StockMovement[]
   createdBy              User            @relation("CreatedTransfers", fields: [createdById], references: [id])
   approvedBy             User?           @relation("ApprovedTransfers", fields: [approvedById], references: [id])
+  pickedBy               User?           @relation("PickedTransfers", fields: [pickedById], references: [id])
+  verifiedBy             User?           @relation("VerifiedTransfers", fields: [verifiedById], references: [id])
   receivedBy             User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
   sourceWarehouse        Warehouse       @relation("SourceTransfers", fields: [sourceWarehouseId], references: [id])
   destinationWarehouse   Warehouse       @relation("TargetTransfers", fields: [destinationWarehouseId], references: [id])
   truck                  Truck?          @relation(fields: [truckId], references: [id])
   driver                 User?           @relation("DriverTransfers", fields: [driverId], references: [id])
   items                  TransferItem[]
+  issues                 TransferIssue[]
 
   @@index([status])
   @@index([sourceWarehouseId])
@@ -350,6 +363,30 @@ model StockTransfer {
   @@index([createdAt])
   @@index([approvedById])
   @@map("stock_transfers")
+}
+
+/// Transfer Issues - Disputes/discrepancies raised against a stock transfer
+/// (short pick, damage, quantity variance, lost in transit, wrong item, etc.)
+model TransferIssue {
+  id           String      @id @default(cuid())
+  transferId   String
+  category     String // quantity_variance | damage | lost_in_transit | wrong_item | other
+  description  String
+  status       IssueStatus @default(OPEN)
+  raisedById   String
+  resolution   String?
+  resolvedById String?
+  resolvedAt   DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  transfer   StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  raisedBy   User          @relation("RaisedTransferIssues", fields: [raisedById], references: [id])
+  resolvedBy User?         @relation("ResolvedTransferIssues", fields: [resolvedById], references: [id])
+
+  @@index([transferId])
+  @@index([status])
+  @@map("transfer_issues")
 }
 
 /// Transfer Items - Line items within a stock transfer
@@ -360,6 +397,7 @@ model TransferItem {
   batchId        String?
   unitCost       Decimal?      @db.Decimal(19, 2)
   requested_qty  Int
+  picked_qty     Int?
   dispatched_qty Int?
   received_qty   Int?
   damaged_qty    Int?
@@ -1711,6 +1749,8 @@ enum TransferStatus {
   DRAFT
   PENDING_APPROVAL
   APPROVED
+  PICKING
+  VERIFIED
   DISPATCHED
   PARTIALLY_RECEIVED
   RECEIVED
@@ -1725,6 +1765,15 @@ enum DispatchMode {
   TRUCK
 
   @@map("dispatch_mode")
+}
+
+enum IssueStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  DISMISSED
+
+  @@map("issue_status")
 }
 
 enum JournalType {
@@ -2061,4 +2110,22 @@ model VATTransaction {
   @@index([branch_id])
   @@index([created_at])
   @@map("vat_transactions")
+}
+
+/// System Notifications for user alerts and transfer events
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@index([createdAt])
+  @@map("notifications")
 }

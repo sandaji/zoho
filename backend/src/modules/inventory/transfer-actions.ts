@@ -75,10 +75,31 @@ const TRANSFER_ACTIONS: Partial<Record<TransferStatus, TransferActionDef[]>> = {
       label: "Receive Remainder",
       permission: "inventory.transfer.receive",
     },
+    {
+      action: "raise_issue",
+      label: "Raise Issue / Dispute",
+      permission: "inventory.transfer.issue",
+    },
   ],
-  // DRAFT, RECEIVED, CANCELLED, DISCREPANCY: no further stock-moving
-  // action exists yet. A "raise dispute" action on DISCREPANCY belongs
-  // here once TransferIssue (Phase 4) exists.
+  RECEIVED: [
+    {
+      action: "raise_issue",
+      label: "Raise Issue / Dispute",
+      permission: "inventory.transfer.issue",
+    },
+  ],
+  DISCREPANCY: [
+    {
+      action: "raise_issue",
+      label: "Raise Issue / Dispute",
+      permission: "inventory.transfer.issue",
+    },
+    {
+      action: "resolve_issue",
+      label: "Resolve Issue",
+      permission: "inventory.transfer.resolve_issue",
+    },
+  ],
 };
 
 const PICKING_ACTIONS_BEFORE_COMPLETE: TransferActionDef[] = [
