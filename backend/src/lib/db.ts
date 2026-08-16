@@ -1,3 +1,4 @@
+//backend/src/lib/db.ts
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { logger } from "./logger";
@@ -93,20 +94,22 @@ function createPrismaClient(): CustomPrismaClient {
     throw new Error("DATABASE_URL is missing from environment variables.");
   }
 
-  // Configure Pool with optimized settings
+  // Strip sslmode from URL — we handle SSL explicitly via the ssl object below
+  const parsedUrl = new URL(connectionString);
+  parsedUrl.searchParams.delete('sslmode');
+  const cleanConnectionString = parsedUrl.toString();
+
   const pool = new Pool({
-    connectionString,
+    connectionString: cleanConnectionString,
     ssl: { rejectUnauthorized: false },
-    // Connection pool configuration
-    max: 50, // Max connections in pool (default is 10)
-    min: 5, // Min connections to maintain
-    idleTimeoutMillis: 30000, // Close idle connections after 30s
-    connectionTimeoutMillis: 10000, // Timeout for acquiring a connection
-    statement_timeout: 30000, // Query timeout: 30 seconds
-    query_timeout: 30000, // Additional query timeout
+    max: 50,
+    min: 5,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+    statement_timeout: 30000,
+    query_timeout: 30000,
   });
 
-  // Create Adapter
   const adapter = new PrismaPg(pool);
 
   // FIX 2: Initialize standard Client without generics

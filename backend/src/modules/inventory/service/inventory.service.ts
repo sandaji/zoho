@@ -633,7 +633,7 @@ export class InventoryService {
         afterReserved: after.reserved,
         timestamp: new Date().toISOString(),
       };
-    });
+    }, { timeout: 15000 });
   }
 
   /**
@@ -778,7 +778,7 @@ export class InventoryService {
         },
         timestamp: new Date().toISOString(),
       };
-    });
+    }, { timeout: 15000 });
   }
 
   // =================================================================
@@ -935,7 +935,7 @@ export class InventoryService {
       }).catch(() => {});
 
       return transfer;
-    });
+    }, { timeout: 15000 });
   }
 
   async approveTransfer(
@@ -1039,7 +1039,7 @@ export class InventoryService {
           : undefined;
 
       return { ...updatedTransfer, warning };
-    });
+    }, { timeout: 15000 });
   }
 
   /**
@@ -1154,7 +1154,7 @@ export class InventoryService {
       });
 
       return updated;
-    });
+    }, { timeout: 15000 });
   }
 
   /**
@@ -1446,7 +1446,7 @@ export class InventoryService {
       }).catch(() => {});
 
       return updatedTransfer;
-    });
+    }, { timeout: 20000 });
   }
 
   async receiveTransfer(
@@ -1612,7 +1612,7 @@ export class InventoryService {
       }
 
       return updatedTransfer;
-    });
+    }, { timeout: 20000 });
   }
 
   /**
@@ -1694,7 +1694,7 @@ export class InventoryService {
       }).catch(() => {});
 
       return issue;
-    });
+    }, { timeout: 15000 });
   }
 
   /**
@@ -1776,7 +1776,7 @@ export class InventoryService {
       }).catch(() => {});
 
       return updatedIssue;
-    });
+    }, { timeout: 15000 });
   }
 
   /**

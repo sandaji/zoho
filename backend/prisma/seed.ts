@@ -1,10 +1,18 @@
 // backend/prisma/seed.ts
 
 import "dotenv/config";
-import { prisma } from "../src/lib/db";
+import { PrismaClient } from "../src/generated";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 import bcrypt from "bcrypt";
-import { RbacManagementService } from "../src/modules/admin/service/rbac-management.service";
+
+// Use standard PrismaClient with adapter for seeding
+// Use DIRECT_URL for seeding to bypass connection pooler issues
+const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log("🌱 Starting seed...");
@@ -426,12 +434,29 @@ async function main() {
     });
   }
 
-  // Branch Manager (Refactored to use Scalable Templates)
-  await RbacManagementService.syncRoleWithBlueprint(
-    "branch_manager",
-    "BRANCH_MANAGER",
-    "BRANCH",
-  );
+  // Branch Manager - manually assign permissions (bypassing blueprint sync due to Prisma Cloud transaction issues)
+  const branchManagerPerms = [
+    "hr.employee.view",
+    "hr.payroll.view",
+    "sales.order.create",
+    "sales.order.view",
+    "sales.customer.view",
+    "finance.invoice.view",
+    "finance.payment.view",
+    "inventory.product.view",
+    "inventory.stock.view",
+    "inventory.warehouse.view",
+    "procurement.vendor.view",
+    "procurement.order.view",
+    "admin.system.view",
+  ];
+  for (const code of branchManagerPerms) {
+    const id = permissionMap.get(code);
+    if (id)
+      await prisma.rolePermission.create({
+        data: { roleId: branchManagerRole.id, permissionId: id, scope: "BRANCH" },
+      });
+  }
 
   // Cashier
   const cashierPerms = ["sales.order.create"];
@@ -498,7 +523,7 @@ async function main() {
   const cashier = await prisma.user.create({
     data: {
       email: "cashier@zoho.co.ke",
-      name: "Alice Johnson",
+      name: "Alice Mideva",
       role: "cashier",
       passwordHash: hashedPassword,
       branchId: westlandsBranch.id,
@@ -599,7 +624,7 @@ async function main() {
       unit_price: 3100,
       cost_price: 1400,
       tax_rate: 0.16,
-      quantity: 30,
+      quantity: 309,
       reorder_level: 5,
     },
     {
@@ -608,10 +633,58 @@ async function main() {
       name: "TRONIC 13A FRIDGE GUARD",
       description: "13A Fridge Guard",
       category: "GUARDS",
-      unit_price: 850,
-      cost_price: 2200,
+      unit_price: 2200,
+      cost_price: 1070,
       tax_rate: 0.16,
       quantity: 2580,
+      reorder_level: 500,
+    },
+    {
+      sku: "VP TG13-BS",
+      barcode: "123489789002",
+      name: "TRONIC 13A TV GUARD",
+      description: "13A TV Guard",
+      category: "GUARDS",
+      unit_price: 2200,
+      cost_price: 1070,
+      tax_rate: 0.16,
+      quantity: 580,
+      reorder_level: 500,
+    },
+    {
+      sku: "LE T818-GL-DL",
+      barcode: "190473789002",
+      name: "LED 4FT 6500K TUBE",
+      description: "180V-260V 4FT SLIM LED TUBE LIGHT TRONIC",
+      category: "LIGHTING",
+      unit_price: 300,
+      cost_price: 191,
+      tax_rate: 0.16,
+      quantity: 58000,
+      reorder_level: 500,
+    },
+    {
+      sku: "LE T809-GL-DL",
+      barcode: "1234875789002",
+      name: "LED 2FT 6500K TUBE",
+      description: "180V-260V 2FT SLIM LED TUBE LIGHT TRONIC",
+      category: "LIGHTING",
+      unit_price: 250,
+      cost_price: 144,
+      tax_rate: 0.16,
+      quantity: 5000,
+      reorder_level: 500,
+    },
+    {
+      sku: "TRK 0619",
+      barcode: "1234125789002",
+      name: "CEILING ROSE",
+      description: "Ceiling Rose TRONIC",
+      category: "ACCESSORIES",
+      unit_price: 250,
+      cost_price: 195,
+      tax_rate: 0.16,
+      quantity: 58000,
       reorder_level: 500,
     },
   ];
@@ -655,8 +728,8 @@ async function main() {
 
     const prod = await prisma.product.create({
       data: {
-        ...safeProductData,
-        vendorId: vendor1.id,
+        ...(safeProductData as any),
+        vendorId: p.name.includes("TRONIC") ? vendor1.id : vendor2.id,
       },
     });
     createdProducts.push(prod);

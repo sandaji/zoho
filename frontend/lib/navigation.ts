@@ -90,6 +90,22 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     pages: [
       { id: "inventory-overview", label: "Inventory Overview", href: "/dashboard/inventory", icon: Package },
       { id: "products", label: "Products", href: "/dashboard/products", icon: Package, permissions: ["inventory.product.view", "inventory.product.manage"] },
+      {
+        id: "stock-transfers",
+        label: "Stock Transfers",
+        href: "/dashboard/warehouse/transfers",
+        icon: RefreshCw,
+        permissions: [
+          "inventory.stock.view",
+          "inventory.stock.adjust",
+          "inventory.transfer.request",
+          "inventory.transfer.approve",
+          "inventory.transfer.pick",
+          "inventory.transfer.verify",
+          "inventory.transfer.dispatch",
+          "inventory.transfer.receive",
+        ],
+      },
     ],
   },
   {

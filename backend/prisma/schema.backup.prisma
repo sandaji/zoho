@@ -50,11 +50,6 @@ model User {
   createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
   driverTransfers         StockTransfer[]         @relation("DriverTransfers")
   receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
-  pickedTransfers         StockTransfer[]         @relation("PickedTransfers")
-  verifiedTransfers       StockTransfer[]         @relation("VerifiedTransfers")
-  raisedTransferIssues    TransferIssue[]         @relation("RaisedTransferIssues")
-  resolvedTransferIssues  TransferIssue[]         @relation("ResolvedTransferIssues")
-  notifications           Notification[]
   roles                   RoleAssignment[]
   branch                  Branch?                 @relation(fields: [branchId], references: [id])
 
@@ -339,23 +334,15 @@ model StockTransfer {
   approvedById           String?
   dispatchMode           DispatchMode?
   vehicleRegistration    String?
-  pickedById             String?
-  pickedAt               DateTime?
-  pickingCompletedAt     DateTime?
-  verifiedById           String?
-  verifiedAt             DateTime?
   stockMovements         StockMovement[]
   approvedBy             User?           @relation("ApprovedTransfers", fields: [approvedById], references: [id])
   createdBy              User            @relation("CreatedTransfers", fields: [createdById], references: [id])
   destinationWarehouse   Warehouse       @relation("TargetTransfers", fields: [destinationWarehouseId], references: [id])
   driver                 User?           @relation("DriverTransfers", fields: [driverId], references: [id])
   receivedBy             User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
-  pickedBy               User?           @relation("PickedTransfers", fields: [pickedById], references: [id])
-  verifiedBy             User?           @relation("VerifiedTransfers", fields: [verifiedById], references: [id])
   sourceWarehouse        Warehouse       @relation("SourceTransfers", fields: [sourceWarehouseId], references: [id])
   truck                  Truck?          @relation(fields: [truckId], references: [id])
   items                  TransferItem[]
-  issues                 TransferIssue[]
 
   @@index([status])
   @@index([sourceWarehouseId])
@@ -363,30 +350,6 @@ model StockTransfer {
   @@index([createdAt])
   @@index([approvedById])
   @@map("stock_transfers")
-}
-
-/// Transfer Issues - Disputes/discrepancies raised against a stock transfer
-/// (short pick, damage, quantity variance, lost in transit, wrong item, etc.)
-model TransferIssue {
-  id           String      @id @default(cuid())
-  transferId   String
-  category     String
-  description  String
-  status       IssueStatus @default(OPEN)
-  raisedById   String
-  resolution   String?
-  resolvedById String?
-  resolvedAt   DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-
-  transfer   StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
-  raisedBy   User          @relation("RaisedTransferIssues", fields: [raisedById], references: [id])
-  resolvedBy User?         @relation("ResolvedTransferIssues", fields: [resolvedById], references: [id])
-
-  @@index([transferId])
-  @@index([status])
-  @@map("transfer_issues")
 }
 
 /// Transfer Items - Line items within a stock transfer
@@ -1824,8 +1787,6 @@ enum TransferStatus {
   DRAFT
   PENDING_APPROVAL
   APPROVED
-  PICKING
-  VERIFIED
   DISPATCHED
   PARTIALLY_RECEIVED
   RECEIVED
@@ -1840,15 +1801,6 @@ enum DispatchMode {
   TRUCK
 
   @@map("dispatch_mode")
-}
-
-enum IssueStatus {
-  OPEN
-  INVESTIGATING
-  RESOLVED
-  DISMISSED
-
-  @@map("issue_status")
 }
 
 enum JournalType {
@@ -2091,22 +2043,4 @@ enum AccessScope {
 enum VATType {
   INPUT
   OUTPUT
-}
-
-/// System Notifications for user alerts and transfer events
-model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  title     String
-  message   String
-  type      String
-  link      String?
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, isRead])
-  @@index([createdAt])
-  @@map("notifications")
 }

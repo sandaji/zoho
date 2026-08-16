@@ -14,14 +14,14 @@ model User {
   passwordHash            String                  @map("password")
   name                    String
   phone                   String?
-  role                    String                  @default("warehouse_staff")
-  salesPrefix             String?                 @unique @map("salesPrefix")
-  lastSequence            Int                     @default(0) @map("lastSequence")
   branchId                String?
   isActive                Boolean                 @default(true)
-  hasSystemAccess         Boolean                 @default(false)
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
+  salesPrefix             String?                 @unique @map("salesPrefix")
+  lastSequence            Int                     @default(0) @map("lastSequence")
+  hasSystemAccess         Boolean                 @default(false)
+  role                    String                  @default("warehouse_staff")
   approvedApprovals       ApprovalRequest[]       @relation("ApprovedApprovals")
   requestedApprovals      ApprovalRequest[]       @relation("RequestedApprovals")
   auditLogs               AuditLog[]
@@ -46,10 +46,10 @@ model User {
   approvedSalesDocuments  SalesDocument[]         @relation("ApprovedBySD")
   createdSalesDocuments   SalesDocument[]
   createdSalesOrders      SalesOrder[]
-  createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
-  receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
-  driverTransfers         StockTransfer[]         @relation("DriverTransfers")
   approvedTransfers       StockTransfer[]         @relation("ApprovedTransfers")
+  createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
+  driverTransfers         StockTransfer[]         @relation("DriverTransfers")
+  receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
   pickedTransfers         StockTransfer[]         @relation("PickedTransfers")
   verifiedTransfers       StockTransfer[]         @relation("VerifiedTransfers")
   raisedTransferIssues    TransferIssue[]         @relation("RaisedTransferIssues")
@@ -81,13 +81,13 @@ model Branch {
   documentSequences DocumentSequence[]
   transfersFrom     EmployeeTransfer[] @relation("TransfersFrom")
   transfersTo       EmployeeTransfer[] @relation("TransfersTo")
+  journal_headers   JournalHeader[]
   purchaseOrders    PurchaseOrder[]
   salesDocuments    SalesDocument[]
   salesOrders       SalesOrder[]
   users             User[]
-  warehouses        Warehouse[]
-  journal_headers   JournalHeader[]
   vat_transactions  VATTransaction[]
+  warehouses        Warehouse[]
 
   @@index([code])
   @@index([isActive])
@@ -100,8 +100,6 @@ model EmployeeTransfer {
   userId        String
   fromBranchId  String?
   toBranchId    String
-  fromRole      String?
-  toRole        String
   transferDate  DateTime  @default(now())
   effectiveDate DateTime
   reason        String?
@@ -110,6 +108,8 @@ model EmployeeTransfer {
   notes         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  fromRole      String?
+  toRole        String
   fromBranch    Branch?   @relation("TransfersFrom", fields: [fromBranchId], references: [id])
   toBranch      Branch    @relation("TransfersTo", fields: [toBranchId], references: [id])
   user          User      @relation(fields: [userId], references: [id])
@@ -136,8 +136,8 @@ model Warehouse {
   purchaseOrders  PurchaseOrder[] @relation("WarehouseToPO")
   stockBatches    StockBatch[]    @relation("StockBatchToWarehouse")
   stockMovements  StockMovement[]
-  sourceTransfers StockTransfer[] @relation("SourceTransfers")
   targetTransfers StockTransfer[] @relation("TargetTransfers")
+  sourceTransfers StockTransfer[] @relation("SourceTransfers")
   branch          Branch          @relation(fields: [branchId], references: [id], onDelete: Cascade)
 
   @@index([branchId])
@@ -150,31 +150,31 @@ model Warehouse {
 model Product {
   id                   String              @id @default(cuid())
   sku                  String              @unique
-  upc                  String?             @unique
   barcode              String?
   name                 String
   description          String?
   category             String?
-  subcategory          String?
-  product_type         ProductType         @default(physical)
-  cost_price           Float
   unit_price           Float
+  cost_price           Float
   tax_rate             Float               @default(0.16)
-  unit_of_measurement  String              @default("pcs")
-  weight               Float?
-  weight_unit          String?             @default("kg")
-  length               Float?
-  width                Float?
-  height               Float?
-  dimension_unit       String?             @default("cm")
-  image_url            String?
-  vendorId             String?
-  supplier_part_number String?
-  lead_time_days       Int?
-  status               ProductStatus       @default(active)
   isActive             Boolean             @default(true)
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
+  dimension_unit       String?             @default("cm")
+  height               Float?
+  image_url            String?
+  lead_time_days       Int?
+  length               Float?
+  product_type         ProductType         @default(physical)
+  status               ProductStatus       @default(active)
+  subcategory          String?
+  supplier_part_number String?
+  unit_of_measurement  String              @default("pcs")
+  upc                  String?             @unique
+  weight               Float?
+  weight_unit          String?             @default("kg")
+  width                Float?
+  vendorId             String?
   branchInventory      BranchInventory[]
   dispatchItems        DispatchItem[]      @relation("DispatchItemToProduct")
   grnItems             GRNItem[]           @relation("GRNItemToProduct")
@@ -321,41 +321,41 @@ model StockMovement {
 
 /// Stock Transfers - Transfer stock between warehouses
 model StockTransfer {
-  id                      String          @id @default(cuid())
-  documentId              String          @unique @map("document_id")
-  status                  TransferStatus  @default(DRAFT)
-  sourceWarehouseId       String
-  destinationWarehouseId  String
-  notes                   String?
-  truckId                 String?
-  driverId                String?
-  dispatchMode            DispatchMode?
-  vehicleRegistration     String?
-  approvedById            String?
-  approvedAt              DateTime?
-  pickedById              String?
-  pickedAt                DateTime?
-  pickingCompletedAt      DateTime?
-  verifiedById            String?
-  verifiedAt              DateTime?
-  dispatchedAt            DateTime?
-  receivedAt              DateTime?
-  receivedById            String?
-  createdById             String
-  createdAt               DateTime        @default(now())
-  updatedAt               DateTime        @updatedAt
-  stockMovements          StockMovement[]
-  createdBy               User            @relation("CreatedTransfers", fields: [createdById], references: [id])
-  approvedBy              User?           @relation("ApprovedTransfers", fields: [approvedById], references: [id])
-  pickedBy                User?           @relation("PickedTransfers", fields: [pickedById], references: [id])
-  verifiedBy              User?           @relation("VerifiedTransfers", fields: [verifiedById], references: [id])
-  receivedBy              User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
-  sourceWarehouse         Warehouse       @relation("SourceTransfers", fields: [sourceWarehouseId], references: [id])
-  destinationWarehouse    Warehouse       @relation("TargetTransfers", fields: [destinationWarehouseId], references: [id])
-  truck                   Truck?          @relation(fields: [truckId], references: [id])
-  driver                  User?           @relation("DriverTransfers", fields: [driverId], references: [id])
-  items                   TransferItem[]
-  issues                  TransferIssue[]
+  id                     String          @id @default(cuid())
+  status                 TransferStatus  @default(DRAFT)
+  notes                  String?
+  createdById            String
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  receivedAt             DateTime?
+  receivedById           String?
+  destinationWarehouseId String
+  dispatchedAt           DateTime?
+  documentId             String          @unique @map("document_id")
+  driverId               String?
+  sourceWarehouseId      String
+  truckId                String?
+  approvedAt             DateTime?
+  approvedById           String?
+  dispatchMode           DispatchMode?
+  vehicleRegistration    String?
+  pickedById             String?
+  pickedAt               DateTime?
+  pickingCompletedAt     DateTime?
+  verifiedById           String?
+  verifiedAt             DateTime?
+  stockMovements         StockMovement[]
+  approvedBy             User?           @relation("ApprovedTransfers", fields: [approvedById], references: [id])
+  createdBy              User            @relation("CreatedTransfers", fields: [createdById], references: [id])
+  destinationWarehouse   Warehouse       @relation("TargetTransfers", fields: [destinationWarehouseId], references: [id])
+  driver                 User?           @relation("DriverTransfers", fields: [driverId], references: [id])
+  receivedBy             User?           @relation("ReceivedTransfers", fields: [receivedById], references: [id])
+  pickedBy               User?           @relation("PickedTransfers", fields: [pickedById], references: [id])
+  verifiedBy             User?           @relation("VerifiedTransfers", fields: [verifiedById], references: [id])
+  sourceWarehouse        Warehouse       @relation("SourceTransfers", fields: [sourceWarehouseId], references: [id])
+  truck                  Truck?          @relation(fields: [truckId], references: [id])
+  items                  TransferItem[]
+  issues                 TransferIssue[]
 
   @@index([status])
   @@index([sourceWarehouseId])
@@ -370,7 +370,7 @@ model StockTransfer {
 model TransferIssue {
   id           String       @id @default(cuid())
   transferId   String
-  category     String // quantity_variance | damage | lost_in_transit | wrong_item | other
+  category     String
   description  String
   status       IssueStatus  @default(OPEN)
   raisedById   String
@@ -391,18 +391,17 @@ model TransferIssue {
 
 /// Transfer Items - Line items within a stock transfer
 model TransferItem {
-  id              String        @id @default(cuid())
-  transferId      String
-  productId       String
-  batchId         String?
-  unitCost        Decimal?      @db.Decimal(19, 2)
-  requested_qty   Int
-  picked_qty      Int?
-  dispatched_qty  Int?
-  received_qty    Int?
-  damaged_qty     Int?
-  product         Product       @relation(fields: [productId], references: [id])
-  transfer        StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  id             String        @id @default(cuid())
+  productId      String
+  transferId     String
+  batchId        String?
+  damaged_qty    Int?
+  dispatched_qty Int?
+  received_qty   Int?
+  requested_qty  Int
+  unitCost       Decimal?      @db.Decimal(19, 2)
+  product        Product       @relation(fields: [productId], references: [id])
+  transfer       StockTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
 
   @@index([transferId])
   @@index([productId])
@@ -417,12 +416,12 @@ model Customer {
   phone          String?
   address        String?
   taxId          String?         @map("tax_id")
-  customerType   String          @default("RETAIL")
-  creditLimit    Decimal         @default(0.00)
-  currentBalance Decimal         @default(0.00)
-  isActive       Boolean         @default(true)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  creditLimit    Decimal         @default(0.00)
+  currentBalance Decimal         @default(0.00)
+  customerType   String          @default("RETAIL")
+  isActive       Boolean         @default(true)
   payments       Payment[]
   salesDocuments SalesDocument[]
   salesOrders    SalesOrder[]
@@ -443,9 +442,6 @@ model SalesDocument {
   branchId         String
   customerId       String?
   createdById      String
-  approvedById     String?
-  sessionId        String?
-  idempotencyKey   String?             @unique @map("idempotency_key")
   subtotal         Float
   discount         Float               @default(0)
   tax              Float
@@ -459,6 +455,9 @@ model SalesDocument {
   dueDate          DateTime?           @map("due_date")
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
+  sessionId        String?
+  approvedById     String?
+  idempotencyKey   String?             @unique @map("idempotency_key")
   payments         Payment[]
   items            SalesDocumentItem[]
   approvedBy       User?               @relation("ApprovedBySD", fields: [approvedById], references: [id])
@@ -591,17 +590,17 @@ model SOItem {
 
 /// Dispatch Notes - Documents for fulfilling sales orders
 model DispatchNote {
-  id             String         @id @default(cuid())
-  dnNumber       String         @unique @map("dn_number")
+  id             String                 @id @default(cuid())
+  dnNumber       String                 @unique @map("dn_number")
   salesOrderId   String
   dispatchedById String
-  dispatchedAt   DateTime       @default(now()) @map("dispatched_at")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-  items          DispatchItem[]
-  dispatchedBy   User           @relation("DispatchNoteCreatedBy", fields: [dispatchedById], references: [id])
-  salesOrder     SalesOrder     @relation(fields: [salesOrderId], references: [id])
+  dispatchedAt   DateTime               @default(now()) @map("dispatched_at")
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
   deliveryItems  DeliveryDispatchNote[]
+  items          DispatchItem[]
+  dispatchedBy   User                   @relation("DispatchNoteCreatedBy", fields: [dispatchedById], references: [id])
+  salesOrder     SalesOrder             @relation(fields: [salesOrderId], references: [id])
 
   @@index([dnNumber])
   @@index([salesOrderId])
@@ -636,7 +635,6 @@ model CashierSession {
   sessionNo          String               @unique
   userId             String
   branchId           String
-  status             CashierSessionStatus @default(OPEN)
   openingBalance     Float                @default(0) @map("opening_balance")
   closingBalance     Float?               @map("closing_balance")
   expectedCash       Float?               @map("expected_cash")
@@ -654,6 +652,7 @@ model CashierSession {
   notes              String?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
+  status             CashierSessionStatus @default(OPEN)
   branch             Branch               @relation(fields: [branchId], references: [id])
   user               User                 @relation(fields: [userId], references: [id])
   sales              SalesDocument[]
@@ -809,16 +808,16 @@ model GRNItem {
 
 /// Trucks/Vehicles
 model Truck {
-  id            String     @id @default(cuid())
-  registration  String     @unique
-  model         String
-  capacity      Int
-  vehicle_type  String?
-  license_plate String?    @unique
-  isActive      Boolean    @default(true)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  deliveries    Delivery[]
+  id             String          @id @default(cuid())
+  registration   String          @unique
+  model          String
+  capacity       Int
+  license_plate  String?         @unique
+  isActive       Boolean         @default(true)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  vehicle_type   String?
+  deliveries     Delivery[]
   stockTransfers StockTransfer[]
 
   @@index([registration])
@@ -828,25 +827,25 @@ model Truck {
 
 /// Deliveries
 model Delivery {
-  id              String        @id @default(cuid())
-  deliveryNo      String        @unique @map("delivery_no")
-  status          DeliveryStatus @default(pending)
+  id              String                 @id @default(cuid())
+  deliveryNo      String                 @unique @map("delivery_no")
+  status          DeliveryStatus         @default(pending)
   driverId        String
   truckId         String
   destination     String?
-  estimatedKm     Int?          @map("estimated_km")
-  actualKm        Int?          @map("actual_km")
-  scheduledDate   DateTime?     @map("scheduled_date")
-  pickedUpAt      DateTime?     @map("picked_up_at")
-  deliveredAt     DateTime?     @map("delivered_at")
-  podSignatureUrl String?
-  podPhotoUrl     String?
-  deliveryOtp     String?
+  estimatedKm     Int?                   @map("estimated_km")
+  actualKm        Int?                   @map("actual_km")
+  scheduledDate   DateTime?              @map("scheduled_date")
+  pickedUpAt      DateTime?              @map("picked_up_at")
+  deliveredAt     DateTime?              @map("delivered_at")
   notes           String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  driver          User          @relation("DriverDeliveries", fields: [driverId], references: [id])
-  truck           Truck         @relation(fields: [truckId], references: [id])
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  deliveryOtp     String?
+  podPhotoUrl     String?
+  podSignatureUrl String?
+  driver          User                   @relation("DriverDeliveries", fields: [driverId], references: [id])
+  truck           Truck                  @relation(fields: [truckId], references: [id])
   dispatchNotes   DeliveryDispatchNote[]
 
   @@index([deliveryNo])
@@ -856,7 +855,6 @@ model Delivery {
   @@map("deliveries")
 }
 
-// Joins Delivery and DispatchNote
 model DeliveryDispatchNote {
   id             String       @id @default(cuid())
   deliveryId     String
@@ -877,14 +875,14 @@ model FinanceTransaction {
   reference_no    String          @unique
   description     String
   amount          Float
-  category        String?
-  transactionDate DateTime        @default(now())
   payrollId       String?
   payment_method  String?
   reference_doc   String?
   notes           String?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+  category        String?
+  transactionDate DateTime        @default(now())
   payroll         Payroll?        @relation(fields: [payrollId], references: [id])
 
   @@index([type])
@@ -1009,19 +1007,19 @@ model FiscalYear {
 
 /// Fiscal Period - Monthly/Quarterly divisions
 model FiscalPeriod {
-  id           String         @id @default(cuid())
-  fiscalYearId String         @map("fiscal_year_id")
+  id           String          @id @default(cuid())
+  fiscalYearId String          @map("fiscal_year_id")
   name         String
-  startDate    DateTime       @map("start_date")
-  endDate      DateTime       @map("end_date")
-  status       FiscalStatus   @default(open)
-  isLocked     Boolean        @default(false)
+  startDate    DateTime        @map("start_date")
+  endDate      DateTime        @map("end_date")
+  status       FiscalStatus    @default(open)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  isLocked     Boolean         @default(false)
   lockedAt     DateTime?
   lockedById   String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  fiscalYear   FiscalYear     @relation(fields: [fiscalYearId], references: [id])
-  lockedBy     User?          @relation("LockedPeriods", fields: [lockedById], references: [id])
+  fiscalYear   FiscalYear      @relation(fields: [fiscalYearId], references: [id])
+  lockedBy     User?           @relation("LockedPeriods", fields: [lockedById], references: [id])
   entries      JournalEntry[]
   headers      JournalHeader[]
 
@@ -1040,8 +1038,6 @@ model JournalEntry {
   reference_type  String?
   reference_id    String?
   batch_id        String?
-  journal_id      String?
-  period_id       String?
   description     String
   notes           String?
   is_reconciled   Boolean            @default(false)
@@ -1051,6 +1047,8 @@ model JournalEntry {
   approved_date   DateTime?
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
+  journal_id      String?
+  period_id       String?
   statement_line  BankStatementLine?
   account         ChartOfAccount     @relation(fields: [account_id], references: [id])
   journal         Journal?           @relation(fields: [journal_id], references: [id])
@@ -1430,10 +1428,10 @@ model Applicant {
   phone        String?
   resumeUrl    String?
   status       ApplicantStatus @default(NEW)
-  notes        String?
   jobPostingId String
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
+  notes        String?
   jobPosting   JobPosting      @relation(fields: [jobPostingId], references: [id], onDelete: Cascade)
   interviews   Interview[]
 
@@ -1614,6 +1612,83 @@ model AuditLog {
   @@map("audit_logs")
 }
 
+model JournalHeader {
+  id           String        @id @default(cuid())
+  entry_no     String        @unique
+  entry_date   DateTime
+  period_id    String
+  journal_id   String?
+  branch_id    String?
+  description  String
+  total_debit  Decimal       @db.Decimal(19, 2)
+  total_credit Decimal       @db.Decimal(19, 2)
+  source_type  String?
+  source_id    String?
+  created_by   String
+  created_at   DateTime      @default(now())
+  branch       Branch?       @relation(fields: [branch_id], references: [id])
+  journal      Journal?      @relation(fields: [journal_id], references: [id])
+  period       FiscalPeriod  @relation(fields: [period_id], references: [id])
+  lines        JournalLine[]
+
+  @@index([entry_no])
+  @@index([entry_date])
+  @@index([period_id])
+  @@index([branch_id])
+  @@index([source_type, source_id])
+  @@map("journal_headers")
+}
+
+model JournalLine {
+  id          String         @id @default(cuid())
+  header_id   String
+  account_id  String
+  line_no     Int
+  description String?
+  debit       Decimal        @db.Decimal(19, 2)
+  credit      Decimal        @db.Decimal(19, 2)
+  account     ChartOfAccount @relation(fields: [account_id], references: [id])
+  header      JournalHeader  @relation(fields: [header_id], references: [id], onDelete: Cascade)
+
+  @@index([header_id])
+  @@index([account_id])
+  @@map("journal_lines")
+}
+
+model VATTransaction {
+  id              String    @id @default(cuid())
+  transaction_no  String    @unique
+  vat_type        VATType
+  source_type     String
+  source_id       String
+  source_line_id  String?
+  taxable_amount  Decimal   @db.Decimal(19, 2)
+  vat_rate        Decimal   @db.Decimal(5, 2)
+  vat_amount      Decimal   @db.Decimal(19, 2)
+  is_claimable    Boolean   @default(true)
+  claimed_date    DateTime?
+  claim_period    String?
+  etims_synced    Boolean   @default(false)
+  etims_synced_at DateTime?
+  etims_cuin      String?
+  etims_cusn      String?
+  etims_qr_code   String?
+  etims_error     String?
+  branch_id       String
+  created_by      String
+  created_at      DateTime  @default(now())
+  branch          Branch    @relation(fields: [branch_id], references: [id])
+
+  @@index([transaction_no])
+  @@index([vat_type])
+  @@index([source_type, source_id])
+  @@index([claim_period])
+  @@index([etims_synced])
+  @@index([branch_id])
+  @@index([created_at])
+  @@map("vat_transactions")
+}
+
 enum InventoryStatus {
   in_stock
   low_stock
@@ -1663,14 +1738,14 @@ enum SalesDocumentType {
 enum SalesDocumentStatus {
   DRAFT
   SENT
-  PARKED
-  HELD
   PARTIALLY_PAID
   PAID
   VOID
   CONVERTED
   CREDITED
   PARTIALLY_CREDITED
+  PARKED
+  HELD
   CLOSED
 
   @@map("sales_document_status")
@@ -1756,7 +1831,6 @@ enum TransferStatus {
   RECEIVED
   CANCELLED
   DISCREPANCY
-
 
   @@map("transfer_status")
 }
@@ -2014,103 +2088,9 @@ enum AccessScope {
   OWN
 }
 
-// ============================================
-// ARCHITECTURAL FIX #1: Proper Double-Entry
-// JournalHeader + JournalLine pattern
-// ============================================
-
-model JournalHeader {
-  id           String   @id @default(cuid())
-  entry_no     String   @unique
-  entry_date   DateTime
-  period_id    String
-  journal_id   String?
-  branch_id    String?
-  description  String
-  total_debit  Decimal  @db.Decimal(19, 2)
-  total_credit Decimal  @db.Decimal(19, 2)
-  source_type  String?
-  source_id    String?
-  created_by   String
-  created_at   DateTime @default(now())
-  
-  period       FiscalPeriod  @relation(fields: [period_id], references: [id])
-  journal      Journal?      @relation(fields: [journal_id], references: [id])
-  branch       Branch?       @relation(fields: [branch_id], references: [id])
-  lines        JournalLine[]
-  
-  @@index([entry_no])
-  @@index([entry_date])
-  @@index([period_id])
-  @@index([branch_id])
-  @@index([source_type, source_id])
-  @@map("journal_headers")
-}
-
-model JournalLine {
-  id          String  @id @default(cuid())
-  header_id   String
-  account_id  String
-  line_no     Int
-  description String?
-  debit       Decimal @db.Decimal(19, 2)
-  credit      Decimal @db.Decimal(19, 2)
-  
-  header  JournalHeader  @relation(fields: [header_id], references: [id], onDelete: Cascade)
-  account ChartOfAccount @relation(fields: [account_id], references: [id])
-  
-  @@index([header_id])
-  @@index([account_id])
-  @@map("journal_lines")
-}
-
-// ============================================
-// ARCHITECTURAL FIX #2: Kenya VAT Compliance
-// Input/Output VAT Tracking with eTIMS
-// ============================================
-
 enum VATType {
   INPUT
   OUTPUT
-}
-
-model VATTransaction {
-  id                  String    @id @default(cuid())
-  transaction_no      String    @unique
-  vat_type            VATType
-  source_type         String
-  source_id           String
-  source_line_id      String?
-  taxable_amount      Decimal   @db.Decimal(19, 2)
-  vat_rate            Decimal   @db.Decimal(5, 2)
-  vat_amount          Decimal   @db.Decimal(19, 2)
-  is_claimable        Boolean   @default(true)
-  claimed_date        DateTime?
-  claim_period        String?
-  
-  // eTIMS Integration
-  etims_synced        Boolean   @default(false)
-  etims_synced_at     DateTime?
-  etims_cuin          String?
-  etims_cusn          String?
-  etims_qr_code       String?
-  etims_error         String?
-  
-  // Audit
-  branch_id           String
-  created_by          String
-  created_at          DateTime  @default(now())
-  
-  branch              Branch    @relation(fields: [branch_id], references: [id])
-  
-  @@index([transaction_no])
-  @@index([vat_type])
-  @@index([source_type, source_id])
-  @@index([claim_period])
-  @@index([etims_synced])
-  @@index([branch_id])
-  @@index([created_at])
-  @@map("vat_transactions")
 }
 
 /// System Notifications for user alerts and transfer events

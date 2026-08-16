@@ -13,9 +13,9 @@ node_modules
 # Misc
 .DS_Store
 *.pem
-.env
-.env.local
-.env.*.local
+# .env
+# .env.local
+# .env.*.local
 
 # Logs
 logs

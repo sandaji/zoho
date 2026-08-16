@@ -126,14 +126,14 @@ exports.Prisma.UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   name: 'name',
   phone: 'phone',
-  role: 'role',
-  salesPrefix: 'salesPrefix',
-  lastSequence: 'lastSequence',
   branchId: 'branchId',
   isActive: 'isActive',
-  hasSystemAccess: 'hasSystemAccess',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  salesPrefix: 'salesPrefix',
+  lastSequence: 'lastSequence',
+  hasSystemAccess: 'hasSystemAccess',
+  role: 'role'
 };
 
 exports.Prisma.BranchScalarFieldEnum = {
@@ -153,8 +153,6 @@ exports.Prisma.EmployeeTransferScalarFieldEnum = {
   userId: 'userId',
   fromBranchId: 'fromBranchId',
   toBranchId: 'toBranchId',
-  fromRole: 'fromRole',
-  toRole: 'toRole',
   transferDate: 'transferDate',
   effectiveDate: 'effectiveDate',
   reason: 'reason',
@@ -162,7 +160,9 @@ exports.Prisma.EmployeeTransferScalarFieldEnum = {
   approvedAt: 'approvedAt',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  fromRole: 'fromRole',
+  toRole: 'toRole'
 };
 
 exports.Prisma.WarehouseScalarFieldEnum = {
@@ -180,31 +180,31 @@ exports.Prisma.WarehouseScalarFieldEnum = {
 exports.Prisma.ProductScalarFieldEnum = {
   id: 'id',
   sku: 'sku',
-  upc: 'upc',
   barcode: 'barcode',
   name: 'name',
   description: 'description',
   category: 'category',
-  subcategory: 'subcategory',
-  product_type: 'product_type',
-  cost_price: 'cost_price',
   unit_price: 'unit_price',
+  cost_price: 'cost_price',
   tax_rate: 'tax_rate',
-  unit_of_measurement: 'unit_of_measurement',
-  weight: 'weight',
-  weight_unit: 'weight_unit',
-  length: 'length',
-  width: 'width',
-  height: 'height',
-  dimension_unit: 'dimension_unit',
-  image_url: 'image_url',
-  vendorId: 'vendorId',
-  supplier_part_number: 'supplier_part_number',
-  lead_time_days: 'lead_time_days',
-  status: 'status',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  dimension_unit: 'dimension_unit',
+  height: 'height',
+  image_url: 'image_url',
+  lead_time_days: 'lead_time_days',
+  length: 'length',
+  product_type: 'product_type',
+  status: 'status',
+  subcategory: 'subcategory',
+  supplier_part_number: 'supplier_part_number',
+  unit_of_measurement: 'unit_of_measurement',
+  upc: 'upc',
+  weight: 'weight',
+  weight_unit: 'weight_unit',
+  width: 'width',
+  vendorId: 'vendorId'
 };
 
 exports.Prisma.CategoryScalarFieldEnum = {
@@ -281,28 +281,28 @@ exports.Prisma.StockMovementScalarFieldEnum = {
 
 exports.Prisma.StockTransferScalarFieldEnum = {
   id: 'id',
-  documentId: 'documentId',
   status: 'status',
-  sourceWarehouseId: 'sourceWarehouseId',
-  destinationWarehouseId: 'destinationWarehouseId',
   notes: 'notes',
-  truckId: 'truckId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  receivedAt: 'receivedAt',
+  receivedById: 'receivedById',
+  destinationWarehouseId: 'destinationWarehouseId',
+  dispatchedAt: 'dispatchedAt',
+  documentId: 'documentId',
   driverId: 'driverId',
+  sourceWarehouseId: 'sourceWarehouseId',
+  truckId: 'truckId',
+  approvedAt: 'approvedAt',
+  approvedById: 'approvedById',
   dispatchMode: 'dispatchMode',
   vehicleRegistration: 'vehicleRegistration',
-  approvedById: 'approvedById',
-  approvedAt: 'approvedAt',
   pickedById: 'pickedById',
   pickedAt: 'pickedAt',
   pickingCompletedAt: 'pickingCompletedAt',
   verifiedById: 'verifiedById',
-  verifiedAt: 'verifiedAt',
-  dispatchedAt: 'dispatchedAt',
-  receivedAt: 'receivedAt',
-  receivedById: 'receivedById',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  verifiedAt: 'verifiedAt'
 };
 
 exports.Prisma.TransferIssueScalarFieldEnum = {
@@ -321,15 +321,14 @@ exports.Prisma.TransferIssueScalarFieldEnum = {
 
 exports.Prisma.TransferItemScalarFieldEnum = {
   id: 'id',
-  transferId: 'transferId',
   productId: 'productId',
+  transferId: 'transferId',
   batchId: 'batchId',
-  unitCost: 'unitCost',
-  requested_qty: 'requested_qty',
-  picked_qty: 'picked_qty',
+  damaged_qty: 'damaged_qty',
   dispatched_qty: 'dispatched_qty',
   received_qty: 'received_qty',
-  damaged_qty: 'damaged_qty'
+  requested_qty: 'requested_qty',
+  unitCost: 'unitCost'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -339,12 +338,12 @@ exports.Prisma.CustomerScalarFieldEnum = {
   phone: 'phone',
   address: 'address',
   taxId: 'taxId',
-  customerType: 'customerType',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   creditLimit: 'creditLimit',
   currentBalance: 'currentBalance',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  customerType: 'customerType',
+  isActive: 'isActive'
 };
 
 exports.Prisma.SalesDocumentScalarFieldEnum = {
@@ -356,9 +355,6 @@ exports.Prisma.SalesDocumentScalarFieldEnum = {
   branchId: 'branchId',
   customerId: 'customerId',
   createdById: 'createdById',
-  approvedById: 'approvedById',
-  sessionId: 'sessionId',
-  idempotencyKey: 'idempotencyKey',
   subtotal: 'subtotal',
   discount: 'discount',
   tax: 'tax',
@@ -371,7 +367,10 @@ exports.Prisma.SalesDocumentScalarFieldEnum = {
   issueDate: 'issueDate',
   dueDate: 'dueDate',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  sessionId: 'sessionId',
+  approvedById: 'approvedById',
+  idempotencyKey: 'idempotencyKey'
 };
 
 exports.Prisma.SalesDocumentItemScalarFieldEnum = {
@@ -464,7 +463,6 @@ exports.Prisma.CashierSessionScalarFieldEnum = {
   sessionNo: 'sessionNo',
   userId: 'userId',
   branchId: 'branchId',
-  status: 'status',
   openingBalance: 'openingBalance',
   closingBalance: 'closingBalance',
   expectedCash: 'expectedCash',
@@ -481,7 +479,8 @@ exports.Prisma.CashierSessionScalarFieldEnum = {
   reconciledAt: 'reconciledAt',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  status: 'status'
 };
 
 exports.Prisma.VendorScalarFieldEnum = {
@@ -573,11 +572,11 @@ exports.Prisma.TruckScalarFieldEnum = {
   registration: 'registration',
   model: 'model',
   capacity: 'capacity',
-  vehicle_type: 'vehicle_type',
   license_plate: 'license_plate',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  vehicle_type: 'vehicle_type'
 };
 
 exports.Prisma.DeliveryScalarFieldEnum = {
@@ -592,12 +591,12 @@ exports.Prisma.DeliveryScalarFieldEnum = {
   scheduledDate: 'scheduledDate',
   pickedUpAt: 'pickedUpAt',
   deliveredAt: 'deliveredAt',
-  podSignatureUrl: 'podSignatureUrl',
-  podPhotoUrl: 'podPhotoUrl',
-  deliveryOtp: 'deliveryOtp',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deliveryOtp: 'deliveryOtp',
+  podPhotoUrl: 'podPhotoUrl',
+  podSignatureUrl: 'podSignatureUrl'
 };
 
 exports.Prisma.DeliveryDispatchNoteScalarFieldEnum = {
@@ -612,14 +611,14 @@ exports.Prisma.FinanceTransactionScalarFieldEnum = {
   reference_no: 'reference_no',
   description: 'description',
   amount: 'amount',
-  category: 'category',
-  transactionDate: 'transactionDate',
   payrollId: 'payrollId',
   payment_method: 'payment_method',
   reference_doc: 'reference_doc',
   notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  category: 'category',
+  transactionDate: 'transactionDate'
 };
 
 exports.Prisma.SavingsGoalScalarFieldEnum = {
@@ -703,11 +702,11 @@ exports.Prisma.FiscalPeriodScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   isLocked: 'isLocked',
   lockedAt: 'lockedAt',
-  lockedById: 'lockedById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  lockedById: 'lockedById'
 };
 
 exports.Prisma.JournalEntryScalarFieldEnum = {
@@ -720,8 +719,6 @@ exports.Prisma.JournalEntryScalarFieldEnum = {
   reference_type: 'reference_type',
   reference_id: 'reference_id',
   batch_id: 'batch_id',
-  journal_id: 'journal_id',
-  period_id: 'period_id',
   description: 'description',
   notes: 'notes',
   is_reconciled: 'is_reconciled',
@@ -730,7 +727,9 @@ exports.Prisma.JournalEntryScalarFieldEnum = {
   approved_by: 'approved_by',
   approved_date: 'approved_date',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  journal_id: 'journal_id',
+  period_id: 'period_id'
 };
 
 exports.Prisma.BudgetScalarFieldEnum = {
@@ -994,10 +993,10 @@ exports.Prisma.ApplicantScalarFieldEnum = {
   phone: 'phone',
   resumeUrl: 'resumeUrl',
   status: 'status',
-  notes: 'notes',
   jobPostingId: 'jobPostingId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  notes: 'notes'
 };
 
 exports.Prisma.InterviewScalarFieldEnum = {
@@ -1267,14 +1266,14 @@ exports.SalesDocumentType = exports.$Enums.SalesDocumentType = {
 exports.SalesDocumentStatus = exports.$Enums.SalesDocumentStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
-  PARKED: 'PARKED',
-  HELD: 'HELD',
   PARTIALLY_PAID: 'PARTIALLY_PAID',
   PAID: 'PAID',
   VOID: 'VOID',
   CONVERTED: 'CONVERTED',
   CREDITED: 'CREDITED',
   PARTIALLY_CREDITED: 'PARTIALLY_CREDITED',
+  PARKED: 'PARKED',
+  HELD: 'HELD',
   CLOSED: 'CLOSED'
 };
 

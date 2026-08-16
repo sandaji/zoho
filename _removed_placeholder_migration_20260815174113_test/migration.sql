@@ -1,0 +1,11 @@
+-- Placeholder migration.
+--
+-- This folder was recreated locally because the "20260815174113_test"
+-- migration was applied directly to the shared database (via a manual
+-- `prisma migrate dev` run) but its local migration folder was lost
+-- afterward, leaving Prisma's local migration history out of sync with
+-- what the database's _prisma_migrations table recorded.
+--
+-- This file is intentionally a no-op (pure SQL comment) — it exists only
+-- so `prisma migrate resolve --applied 20260815174113_test` has a folder
+-- to reconcile against. No schema changes are made by this file.
