@@ -85,21 +85,21 @@ const FinanceDashboardPage = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#f8f9fa]">
+      <div className="flex h-screen items-center justify-center bg-background">
         <div className="text-center">
-          <div className="mx-auto h-32 w-32 animate-spin rounded-full border-b-4 border-[#104f38]"></div>
-          <p className="mt-4 text-sm text-gray-600">Loading dashboard...</p>
+          <div className="mx-auto h-32 w-32 animate-spin rounded-full border-b-4 border-primary"></div>
+          <p className="mt-4 text-sm text-muted-foreground">Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9fa] p-6">
+    <div className="min-h-screen bg-background p-6">
       {/* Header with Navigation Dropdown */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-900">Finance</h1>
+          <h1 className="text-3xl font-bold text-foreground">Finance</h1>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -151,7 +151,7 @@ const FinanceDashboardPage = () => {
               <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
               <span className="hidden sm:inline">Refresh</span>
             </Button>
-            <Button className="gap-2 bg-[#104f38] hover:bg-[#0d3f2d]">
+            <Button className="gap-2 bg-primary hover:bg-primary/90">
               <Download className="h-4 w-4" />
               <span className="hidden sm:inline">Export</span>
             </Button>

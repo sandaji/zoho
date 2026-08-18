@@ -8,7 +8,10 @@ dotenv.config({ path: '.env.test' });
 process.env.NODE_ENV = 'test';
 process.env.JWT_SECRET = 'test-jwt-secret-key-minimum-32-characters-long';
 process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-key-minimum-32-characters-long';
-process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || 'postgresql://username:password@localhost:5432/zoho_erp_test';
+
+// For Prisma Cloud, use TEST_DATABASE_URL if available, otherwise use DATABASE_URL
+// Tests should use transactions to isolate data instead of separate databases
+process.env.DATABASE_URL = process.env.TEST_DATABASE_URL || process.env.DATABASE_URL;
 
 // Mock console methods to reduce noise in tests
 global.console = {

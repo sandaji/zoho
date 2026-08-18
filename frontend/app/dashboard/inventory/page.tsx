@@ -225,16 +225,16 @@ export default function InventoryDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 p-6 space-y-6">
+    <div className="min-h-screen bg-background p-6 space-y-6">
       {/* Header Section */}
       <div className="space-y-6">
         {/* Title + Branch Selector Row */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-foreground">
               Inventory Dashboard
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-muted-foreground">
               Manage and monitor your inventory across all branches
             </p>
           </div>
@@ -252,7 +252,7 @@ export default function InventoryDashboard() {
         <div className="flex flex-wrap gap-3">
           <Button
             onClick={() => setTransferModalOpen(true)}
-            className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-700 dark:hover:bg-emerald-800 text-white"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             <Truck className="h-4 w-4 mr-2" />
             New Transfer
@@ -260,7 +260,6 @@ export default function InventoryDashboard() {
           <Button
             onClick={handleExport}
             variant="outline"
-            className="border-slate-300 dark:border-slate-600"
             disabled={isLoading || products.length === 0}
           >
             <Download className="h-4 w-4 mr-2" />
@@ -269,7 +268,7 @@ export default function InventoryDashboard() {
           <Button
             onClick={handleRefresh}
             disabled={isLoading}
-            className="bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900"
+            variant="secondary"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
             Refresh
@@ -286,23 +285,23 @@ export default function InventoryDashboard() {
       )}
 
       {/* Search and Filters */}
-      <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700">
+      <Card className="bg-card border-border">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-500" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search items by name or SKU..."
                 value={filters.search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 border-slate-300 dark:border-slate-600"
+                className="pl-10"
               />
             </div>
             <div className="flex gap-2">
               <select
                 value={filters.category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-white"
+                className="px-3 py-2 border border-input rounded-md bg-background text-foreground"
                 disabled={isLoading}
               >
                 <option value="all">All Categories</option>
@@ -321,8 +320,8 @@ export default function InventoryDashboard() {
       {isLoading && products.length === 0 ? (
         <div className="flex items-center justify-center py-12">
           <div className="text-center space-y-3">
-            <RefreshCw className="h-8 w-8 animate-spin mx-auto text-slate-400" />
-            <p className="text-slate-600 dark:text-slate-400">Loading inventory data...</p>
+            <RefreshCw className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground">Loading inventory data...</p>
           </div>
         </div>
       ) : (
@@ -365,13 +364,13 @@ export default function InventoryDashboard() {
           {/* Empty State */}
           {!isLoading && products.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                <AlertCircle className="h-8 w-8 text-slate-400" />
+              <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+                <AlertCircle className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
                 No products found
               </h3>
-              <p className="text-slate-600 dark:text-slate-400 mb-4">
+              <p className="text-muted-foreground mb-4">
                 {filters.search || filters.category !== "all"
                   ? "Try adjusting your filters"
                   : "Get started by adding your first product"}

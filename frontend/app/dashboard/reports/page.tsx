@@ -188,7 +188,7 @@ export default function FinancialDashboardPage() {
   ];
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="min-h-screen bg-background space-y-6 p-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">

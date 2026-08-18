@@ -459,6 +459,9 @@ export const fetchTrucks = async (token: string): Promise<Truck[]> => {
   return data;
 };
 
+// Used by DeliveriesSection.tsx to populate the stock-transfer picker when
+// creating a delivery of type "transfer" — kept even after the old two-stage
+// admin transfer view was removed, since this consumer is unrelated to it.
 export const fetchStockTransfers = async (token: string): Promise<StockTransfer[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers`, {
     headers: getAuthHeadersWithToken(token),
@@ -641,20 +644,6 @@ export const resolveTransferIssue = async (
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to resolve transfer issue");
-  }
-  const { data } = await response.json();
-  return data;
-};
-
-export const fetchStockTransferDetail = async (
-  token: string,
-  transferId: string
-): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}`, {
-    headers: getAuthHeadersWithToken(token),
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch details for transfer ${transferId}`);
   }
   const { data } = await response.json();
   return data;

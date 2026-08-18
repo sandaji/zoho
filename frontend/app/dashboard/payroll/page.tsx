@@ -163,18 +163,29 @@ export default function PayrollDashboard() {
     { label: "Dec", value: 87500 },
   ];
 
+  // Maps each status to a fixed set of Tailwind classes. Building these as
+  // template strings (e.g. `bg-${stat.color}-50`) is a common Tailwind trap:
+  // the JIT compiler can't see dynamically-built class names at build time,
+  // so they get purged and the status boxes render unstyled in production.
+  const STATUS_STYLES: Record<string, { box: string; count: string }> = {
+    gray: { box: "bg-muted border-border", count: "text-foreground" },
+    blue: { box: "bg-blue-50 border-blue-200", count: "text-blue-600" },
+    green: { box: "bg-emerald-50 border-emerald-200", count: "text-emerald-600" },
+    red: { box: "bg-red-50 border-red-200", count: "text-red-600" },
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <h1 className="text-3xl font-bold text-gray-900">Payroll Management</h1>
-        <p className="text-gray-600 text-sm mt-1">
+      <div className="bg-card border-b border-border px-6 py-4">
+        <h1 className="text-3xl font-bold text-foreground">Payroll Management</h1>
+        <p className="text-muted-foreground text-sm mt-1">
           Track and manage employee payroll, salaries, and compensation
         </p>
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-6 flex gap-8">
           {[
             { id: "overview", label: "Overview", icon: BarChart3 },
@@ -188,8 +199,8 @@ export default function PayrollDashboard() {
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`py-4 px-2 border-b-2 font-medium text-sm flex items-center gap-2 transition ${
                   activeTab === tab.id
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-600 hover:text-gray-900"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <IconComponent size={18} />
@@ -234,8 +245,8 @@ export default function PayrollDashboard() {
             </div>
 
             {/* Current Month Status */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <div className="bg-card p-6 rounded-lg border border-border mb-6">
+              <h2 className="text-xl font-semibold text-foreground mb-4">
                 Current Month Payroll Status
               </h2>
 
@@ -264,10 +275,10 @@ export default function PayrollDashboard() {
                 ].map((stat) => (
                   <div
                     key={stat.label}
-                    className={`bg-${stat.color}-50 p-4 rounded border border-${stat.color}-200`}
+                    className={`p-4 rounded border ${STATUS_STYLES[stat.color]!.box}`}
                   >
-                    <p className="text-sm text-gray-600">{stat.label}</p>
-                    <p className={`text-2xl font-bold text-${stat.color}-600`}>{stat.count}</p>
+                    <p className="text-sm text-muted-foreground">{stat.label}</p>
+                    <p className={`text-2xl font-bold ${STATUS_STYLES[stat.color]!.count}`}>{stat.count}</p>
                   </div>
                 ))}
               </div>
@@ -275,7 +286,7 @@ export default function PayrollDashboard() {
 
             {/* Department Breakdown Chart */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <div className="bg-card p-6 rounded-lg border border-border">
                 <BarChart
                   data={departmentCost}
                   title="Payroll Cost by Department"
@@ -283,17 +294,17 @@ export default function PayrollDashboard() {
                 />
               </div>
 
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Salary Range Analysis</h3>
+              <div className="bg-card p-6 rounded-lg border border-border">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Salary Range Analysis</h3>
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span className="text-gray-600">Minimum</span>
+                      <span className="text-muted-foreground">Minimum</span>
                       <span className="font-semibold">
                         ${analytics.salary_range.min.toLocaleString()}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-muted rounded-full h-2">
                       <div
                         className="bg-blue-500 h-2 rounded-full"
                         style={{
@@ -305,14 +316,14 @@ export default function PayrollDashboard() {
 
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span className="text-gray-600">Median</span>
+                      <span className="text-muted-foreground">Median</span>
                       <span className="font-semibold">
                         ${analytics.salary_range.median.toLocaleString()}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-muted rounded-full h-2">
                       <div
-                        className="bg-green-500 h-2 rounded-full"
+                        className="bg-emerald-500 h-2 rounded-full"
                         style={{
                           width: `${(analytics.salary_range.median / analytics.salary_range.max) * 100}%`,
                         }}
@@ -322,13 +333,13 @@ export default function PayrollDashboard() {
 
                   <div>
                     <div className="flex justify-between text-sm mb-2">
-                      <span className="text-gray-600">Maximum</span>
+                      <span className="text-muted-foreground">Maximum</span>
                       <span className="font-semibold">
                         ${analytics.salary_range.max.toLocaleString()}
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-purple-500 h-2 rounded-full" style={{ width: "100%" }} />
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div className="bg-violet-500 h-2 rounded-full" style={{ width: "100%" }} />
                     </div>
                   </div>
                 </div>
@@ -341,8 +352,8 @@ export default function PayrollDashboard() {
         {activeTab === "payslips" && (
           <div>
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Employee Payslips</h2>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <h2 className="text-xl font-semibold text-foreground">Employee Payslips</h2>
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                 <RotateCw className="mr-2" />
                 Export All
               </Button>
@@ -372,11 +383,11 @@ export default function PayrollDashboard() {
         {activeTab === "analytics" && (
           <div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <div className="bg-card p-6 rounded-lg border border-border">
                 <LineChart data={monthlyTrend} title="Monthly Payroll Cost Trend" color="#10b981" />
               </div>
 
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
+              <div className="bg-card p-6 rounded-lg border border-border">
                 <BarChart
                   data={salaryDistribution}
                   title="Salary Distribution"
@@ -386,24 +397,24 @@ export default function PayrollDashboard() {
             </div>
 
             {/* Department Breakdown Table */}
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Department Analysis</h2>
+            <div className="bg-card p-6 rounded-lg border border-border">
+              <h2 className="text-xl font-semibold text-foreground mb-4">Department Analysis</h2>
 
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="border-b border-gray-200">
+                  <thead className="border-b border-border">
                     <tr>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-foreground">
                         Department
                       </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Employees</th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-foreground">Employees</th>
+                      <th className="text-left py-3 px-4 font-semibold text-foreground">
                         Total Cost
                       </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-foreground">
                         Average Salary
                       </th>
-                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                      <th className="text-left py-3 px-4 font-semibold text-foreground">
                         % of Total
                       </th>
                     </tr>
@@ -412,17 +423,17 @@ export default function PayrollDashboard() {
                     {analytics.department_breakdown.map((dept) => (
                       <tr
                         key={dept.department}
-                        className="border-b border-gray-100 hover:bg-gray-50"
+                        className="border-b border-border hover:bg-muted/50"
                       >
-                        <td className="py-3 px-4 font-medium text-gray-900">{dept.department}</td>
-                        <td className="py-3 px-4 text-gray-600">{dept.employee_count} employees</td>
-                        <td className="py-3 px-4 font-semibold text-gray-900">
+                        <td className="py-3 px-4 font-medium text-foreground">{dept.department}</td>
+                        <td className="py-3 px-4 text-muted-foreground">{dept.employee_count} employees</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">
                           ${dept.total_cost.toLocaleString()}
                         </td>
-                        <td className="py-3 px-4 text-gray-600">
+                        <td className="py-3 px-4 text-muted-foreground">
                           ${dept.average_salary.toLocaleString()}
                         </td>
-                        <td className="py-3 px-4 text-gray-600">
+                        <td className="py-3 px-4 text-muted-foreground">
                           {((dept.total_cost / analytics.total_cost) * 100).toFixed(1)}%
                         </td>
                       </tr>

@@ -204,7 +204,6 @@ export const ADMIN_NAVIGATION_GROUPS: AdminNavigationGroup[] = [
     { id: "products", label: "Products", href: "/dashboard/admin?section=products", icon: Package },
     { id: "sales", label: "Sales", href: "/dashboard/admin?section=sales", icon: ShoppingCart },
     { id: "deliveries", label: "Deliveries", href: "/dashboard/admin?section=deliveries", icon: Truck },
-    { id: "transfers", label: "Stock Transfers", href: "/dashboard/admin?section=transfers", icon: RefreshCw },
   ] },
   { label: "Finance", pages: [
     { id: "finance", label: "Finance", href: "/dashboard/admin?section=finance", icon: DollarSign },

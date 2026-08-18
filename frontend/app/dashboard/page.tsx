@@ -36,10 +36,10 @@ export default function DashboardPage() {
     const roleDashboard = getRoleDashboardRoute(user.role);
     if (roleDashboard !== "/dashboard") {
       return (
-        <div className="flex min-h-screen items-center justify-center bg-emerald-50/30">
+        <div className="flex min-h-screen items-center justify-center bg-background">
           <div className="text-center">
-            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-600" />
-            <p className="font-medium text-emerald-700">Redirecting to your dashboard…</p>
+            <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+            <p className="font-medium text-primary">Redirecting to your dashboard…</p>
           </div>
         </div>
       );
@@ -102,7 +102,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-emerald-50/30 p-6">
+    <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-screen-xl space-y-6">
         {/* Header */}
         <div className="rounded-xl border border-emerald-100 bg-white px-6 py-5 shadow-sm">

@@ -51,10 +51,16 @@ const SENSITIVE_FIELDS = [
 
 /**
  * Strips sensitive fields from data before logging
+ * Also converts Prisma Decimal objects to strings for JSON serialization
  */
 function redact(data: any): any {
   if (!data) return data;
   if (typeof data !== "object") return data;
+
+  // Handle Prisma Decimal objects
+  if (data.constructor?.name === "Decimal" || (typeof data.s === "number" && typeof data.e === "number" && Array.isArray(data.d))) {
+    return data.toString();
+  }
 
   const clean = Array.isArray(data) ? [...data] : { ...data };
 
@@ -88,10 +94,12 @@ declare global {
 }
 
 function createPrismaClient(): CustomPrismaClient {
-  const connectionString = process.env.DATABASE_URL;
+  // Use DIRECT_URL for application runtime when using custom adapter
+  // The custom PrismaPg adapter has issues with Prisma Cloud's connection pooler
+  const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
   if (!connectionString) {
-    throw new Error("DATABASE_URL is missing from environment variables.");
+    throw new Error("DIRECT_URL or DATABASE_URL is missing from environment variables.");
   }
 
   // Strip sslmode from URL — we handle SSL explicitly via the ssl object below

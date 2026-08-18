@@ -1,7 +1,7 @@
 // backend/prisma/seed.ts
 
 import "dotenv/config";
-import { PrismaClient } from "../src/generated";
+import { PrismaClient, Prisma } from "../src/generated";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
@@ -738,6 +738,7 @@ async function main() {
     const qty1 = Math.floor(p.quantity * 0.6);
     const qty2 = Math.floor(p.quantity * 0.4);
 
+    // Create Inventory and StockBatch for warehouse 1
     await prisma.inventory.create({
       data: {
         quantity: qty1,
@@ -748,6 +749,18 @@ async function main() {
         warehouseId: warehouse1.id,
       },
     });
+    await prisma.stockBatch.create({
+      data: {
+        productId: prod.id,
+        warehouseId: warehouse1.id,
+        initialQuantity: qty1,
+        currentQuantity: qty1,
+        unitCost: new Prisma.Decimal(p.cost_price),
+        receivedAt: new Date(),
+      },
+    });
+
+    // Create Inventory and StockBatch for warehouse 2
     await prisma.inventory.create({
       data: {
         quantity: qty2,
@@ -756,6 +769,16 @@ async function main() {
         status: "in_stock",
         productId: prod.id,
         warehouseId: warehouse2.id,
+      },
+    });
+    await prisma.stockBatch.create({
+      data: {
+        productId: prod.id,
+        warehouseId: warehouse2.id,
+        initialQuantity: qty2,
+        currentQuantity: qty2,
+        unitCost: new Prisma.Decimal(p.cost_price),
+        receivedAt: new Date(),
       },
     });
   }

@@ -14,7 +14,6 @@ import UsersSection from "@/components/admin/UsersSection";
 import ProductsSection from "@/components/admin/ProductsSection";
 import SalesSection from "@/components/admin/SalesSection";
 import DeliveriesSection from "@/components/admin/DeliveriesSection";
-import StockTransfersSection from "@/components/admin/StockTransfersSection";
 import FinanceSection from "@/components/admin/FinanceSection";
 import PayrollSection from "@/components/admin/PayrollSection";
 import RolesSection from "@/components/admin/RolesSection";
@@ -50,11 +49,6 @@ const SECTION_META: Record<string, { title: string; subtitle: string; icon: Reac
   deliveries: {
     title: "Delivery Management",
     subtitle: "Fleet dispatch and delivery tracking",
-    icon: Shield,
-  },
-  transfers: {
-    title: "Stock Transfers",
-    subtitle: "Track inter-warehouse transfers from dispatch to receipt",
     icon: Shield,
   },
   finance: {
@@ -118,8 +112,6 @@ export default function AdminDashboardPage() {
         return <SalesSection />;
       case "deliveries":
         return <DeliveriesSection />;
-      case "transfers":
-        return <StockTransfersSection />;
       case "finance":
         return <FinanceSection />;
       case "payroll":

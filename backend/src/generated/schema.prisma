@@ -397,6 +397,7 @@ model TransferItem {
   batchId        String?
   damaged_qty    Int?
   dispatched_qty Int?
+  picked_qty     Int?
   received_qty   Int?
   requested_qty  Int
   unitCost       Decimal?      @db.Decimal(19, 2)

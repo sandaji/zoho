@@ -675,7 +675,7 @@ export function AddProductDialog({ open, onOpenChange, onProductAdded, editProdu
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="cm">Millimeters (mm)</SelectItem>
+                      <SelectItem value="mm">Millimeters (mm)</SelectItem>
                       <SelectItem value="cm">Centimeters (cm)</SelectItem>
                       <SelectItem value="inches">Inches (in)</SelectItem>
                       <SelectItem value="m">Meters (m)</SelectItem>

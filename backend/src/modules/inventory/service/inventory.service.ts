@@ -877,6 +877,15 @@ export class InventoryService {
     }
 
     return await this.prisma.$transaction(async (tx) => {
+      // Verify the user exists before creating the transfer
+      const user = await tx.user.findUnique({
+        where: { id: userId },
+        select: { id: true },
+      });
+      if (!user) {
+        throw notFoundError("User", userId);
+      }
+
       // Resolve the real branch behind the source warehouse — previously this
       // passed the literal placeholder string "HQ" as branchId, which isn't
       // a real Branch.id, so document_sequences (FK-linked to branches)

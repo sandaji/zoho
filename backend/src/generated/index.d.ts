@@ -27686,6 +27686,7 @@ export namespace Prisma {
   export type TransferItemAvgAggregateOutputType = {
     damaged_qty: number | null
     dispatched_qty: number | null
+    picked_qty: number | null
     received_qty: number | null
     requested_qty: number | null
     unitCost: Decimal | null
@@ -27694,6 +27695,7 @@ export namespace Prisma {
   export type TransferItemSumAggregateOutputType = {
     damaged_qty: number | null
     dispatched_qty: number | null
+    picked_qty: number | null
     received_qty: number | null
     requested_qty: number | null
     unitCost: Decimal | null
@@ -27706,6 +27708,7 @@ export namespace Prisma {
     batchId: string | null
     damaged_qty: number | null
     dispatched_qty: number | null
+    picked_qty: number | null
     received_qty: number | null
     requested_qty: number | null
     unitCost: Decimal | null
@@ -27718,6 +27721,7 @@ export namespace Prisma {
     batchId: string | null
     damaged_qty: number | null
     dispatched_qty: number | null
+    picked_qty: number | null
     received_qty: number | null
     requested_qty: number | null
     unitCost: Decimal | null
@@ -27730,6 +27734,7 @@ export namespace Prisma {
     batchId: number
     damaged_qty: number
     dispatched_qty: number
+    picked_qty: number
     received_qty: number
     requested_qty: number
     unitCost: number
@@ -27740,6 +27745,7 @@ export namespace Prisma {
   export type TransferItemAvgAggregateInputType = {
     damaged_qty?: true
     dispatched_qty?: true
+    picked_qty?: true
     received_qty?: true
     requested_qty?: true
     unitCost?: true
@@ -27748,6 +27754,7 @@ export namespace Prisma {
   export type TransferItemSumAggregateInputType = {
     damaged_qty?: true
     dispatched_qty?: true
+    picked_qty?: true
     received_qty?: true
     requested_qty?: true
     unitCost?: true
@@ -27760,6 +27767,7 @@ export namespace Prisma {
     batchId?: true
     damaged_qty?: true
     dispatched_qty?: true
+    picked_qty?: true
     received_qty?: true
     requested_qty?: true
     unitCost?: true
@@ -27772,6 +27780,7 @@ export namespace Prisma {
     batchId?: true
     damaged_qty?: true
     dispatched_qty?: true
+    picked_qty?: true
     received_qty?: true
     requested_qty?: true
     unitCost?: true
@@ -27784,6 +27793,7 @@ export namespace Prisma {
     batchId?: true
     damaged_qty?: true
     dispatched_qty?: true
+    picked_qty?: true
     received_qty?: true
     requested_qty?: true
     unitCost?: true
@@ -27883,6 +27893,7 @@ export namespace Prisma {
     batchId: string | null
     damaged_qty: number | null
     dispatched_qty: number | null
+    picked_qty: number | null
     received_qty: number | null
     requested_qty: number
     unitCost: Decimal | null
@@ -27914,6 +27925,7 @@ export namespace Prisma {
     batchId?: boolean
     damaged_qty?: boolean
     dispatched_qty?: boolean
+    picked_qty?: boolean
     received_qty?: boolean
     requested_qty?: boolean
     unitCost?: boolean
@@ -27928,6 +27940,7 @@ export namespace Prisma {
     batchId?: boolean
     damaged_qty?: boolean
     dispatched_qty?: boolean
+    picked_qty?: boolean
     received_qty?: boolean
     requested_qty?: boolean
     unitCost?: boolean
@@ -27942,6 +27955,7 @@ export namespace Prisma {
     batchId?: boolean
     damaged_qty?: boolean
     dispatched_qty?: boolean
+    picked_qty?: boolean
     received_qty?: boolean
     requested_qty?: boolean
     unitCost?: boolean
@@ -27956,12 +27970,13 @@ export namespace Prisma {
     batchId?: boolean
     damaged_qty?: boolean
     dispatched_qty?: boolean
+    picked_qty?: boolean
     received_qty?: boolean
     requested_qty?: boolean
     unitCost?: boolean
   }
 
-  export type TransferItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "transferId" | "batchId" | "damaged_qty" | "dispatched_qty" | "received_qty" | "requested_qty" | "unitCost", ExtArgs["result"]["transferItem"]>
+  export type TransferItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "productId" | "transferId" | "batchId" | "damaged_qty" | "dispatched_qty" | "picked_qty" | "received_qty" | "requested_qty" | "unitCost", ExtArgs["result"]["transferItem"]>
   export type TransferItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     transfer?: boolean | StockTransferDefaultArgs<ExtArgs>
@@ -27988,6 +28003,7 @@ export namespace Prisma {
       batchId: string | null
       damaged_qty: number | null
       dispatched_qty: number | null
+      picked_qty: number | null
       received_qty: number | null
       requested_qty: number
       unitCost: Prisma.Decimal | null
@@ -28422,6 +28438,7 @@ export namespace Prisma {
     readonly batchId: FieldRef<"TransferItem", 'String'>
     readonly damaged_qty: FieldRef<"TransferItem", 'Int'>
     readonly dispatched_qty: FieldRef<"TransferItem", 'Int'>
+    readonly picked_qty: FieldRef<"TransferItem", 'Int'>
     readonly received_qty: FieldRef<"TransferItem", 'Int'>
     readonly requested_qty: FieldRef<"TransferItem", 'Int'>
     readonly unitCost: FieldRef<"TransferItem", 'Decimal'>
@@ -101683,6 +101700,7 @@ export namespace Prisma {
     batchId: 'batchId',
     damaged_qty: 'damaged_qty',
     dispatched_qty: 'dispatched_qty',
+    picked_qty: 'picked_qty',
     received_qty: 'received_qty',
     requested_qty: 'requested_qty',
     unitCost: 'unitCost'
@@ -104933,6 +104951,7 @@ export namespace Prisma {
     batchId?: StringNullableFilter<"TransferItem"> | string | null
     damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
+    picked_qty?: IntNullableFilter<"TransferItem"> | number | null
     received_qty?: IntNullableFilter<"TransferItem"> | number | null
     requested_qty?: IntFilter<"TransferItem"> | number
     unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
@@ -104947,6 +104966,7 @@ export namespace Prisma {
     batchId?: SortOrderInput | SortOrder
     damaged_qty?: SortOrderInput | SortOrder
     dispatched_qty?: SortOrderInput | SortOrder
+    picked_qty?: SortOrderInput | SortOrder
     received_qty?: SortOrderInput | SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrderInput | SortOrder
@@ -104964,6 +104984,7 @@ export namespace Prisma {
     batchId?: StringNullableFilter<"TransferItem"> | string | null
     damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
+    picked_qty?: IntNullableFilter<"TransferItem"> | number | null
     received_qty?: IntNullableFilter<"TransferItem"> | number | null
     requested_qty?: IntFilter<"TransferItem"> | number
     unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
@@ -104978,6 +104999,7 @@ export namespace Prisma {
     batchId?: SortOrderInput | SortOrder
     damaged_qty?: SortOrderInput | SortOrder
     dispatched_qty?: SortOrderInput | SortOrder
+    picked_qty?: SortOrderInput | SortOrder
     received_qty?: SortOrderInput | SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrderInput | SortOrder
@@ -104998,6 +105020,7 @@ export namespace Prisma {
     batchId?: StringNullableWithAggregatesFilter<"TransferItem"> | string | null
     damaged_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
+    picked_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
     received_qty?: IntNullableWithAggregatesFilter<"TransferItem"> | number | null
     requested_qty?: IntWithAggregatesFilter<"TransferItem"> | number
     unitCost?: DecimalNullableWithAggregatesFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
@@ -112072,6 +112095,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -112086,6 +112110,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -112096,6 +112121,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -112110,6 +112136,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -112122,6 +112149,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -112132,6 +112160,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -112144,6 +112173,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -119742,6 +119772,7 @@ export namespace Prisma {
     batchId?: SortOrder
     damaged_qty?: SortOrder
     dispatched_qty?: SortOrder
+    picked_qty?: SortOrder
     received_qty?: SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrder
@@ -119750,6 +119781,7 @@ export namespace Prisma {
   export type TransferItemAvgOrderByAggregateInput = {
     damaged_qty?: SortOrder
     dispatched_qty?: SortOrder
+    picked_qty?: SortOrder
     received_qty?: SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrder
@@ -119762,6 +119794,7 @@ export namespace Prisma {
     batchId?: SortOrder
     damaged_qty?: SortOrder
     dispatched_qty?: SortOrder
+    picked_qty?: SortOrder
     received_qty?: SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrder
@@ -119774,6 +119807,7 @@ export namespace Prisma {
     batchId?: SortOrder
     damaged_qty?: SortOrder
     dispatched_qty?: SortOrder
+    picked_qty?: SortOrder
     received_qty?: SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrder
@@ -119782,6 +119816,7 @@ export namespace Prisma {
   export type TransferItemSumOrderByAggregateInput = {
     damaged_qty?: SortOrder
     dispatched_qty?: SortOrder
+    picked_qty?: SortOrder
     received_qty?: SortOrder
     requested_qty?: SortOrder
     unitCost?: SortOrder
@@ -136473,6 +136508,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -136485,6 +136521,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -136790,6 +136827,7 @@ export namespace Prisma {
     batchId?: StringNullableFilter<"TransferItem"> | string | null
     damaged_qty?: IntNullableFilter<"TransferItem"> | number | null
     dispatched_qty?: IntNullableFilter<"TransferItem"> | number | null
+    picked_qty?: IntNullableFilter<"TransferItem"> | number | null
     received_qty?: IntNullableFilter<"TransferItem"> | number | null
     requested_qty?: IntFilter<"TransferItem"> | number
     unitCost?: DecimalNullableFilter<"TransferItem"> | Decimal | DecimalJsLike | number | string | null
@@ -139024,6 +139062,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -139036,6 +139075,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -158127,6 +158167,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -158467,6 +158508,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -158479,6 +158521,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -158490,6 +158533,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -158541,6 +158585,7 @@ export namespace Prisma {
     batchId?: string | null
     damaged_qty?: number | null
     dispatched_qty?: number | null
+    picked_qty?: number | null
     received_qty?: number | null
     requested_qty: number
     unitCost?: Decimal | DecimalJsLike | number | string | null
@@ -158600,6 +158645,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -158612,6 +158658,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
@@ -158623,6 +158670,7 @@ export namespace Prisma {
     batchId?: NullableStringFieldUpdateOperationsInput | string | null
     damaged_qty?: NullableIntFieldUpdateOperationsInput | number | null
     dispatched_qty?: NullableIntFieldUpdateOperationsInput | number | null
+    picked_qty?: NullableIntFieldUpdateOperationsInput | number | null
     received_qty?: NullableIntFieldUpdateOperationsInput | number | null
     requested_qty?: IntFieldUpdateOperationsInput | number
     unitCost?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null

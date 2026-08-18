@@ -125,6 +125,13 @@ const PICKING_ACTIONS_AFTER_COMPLETE: TransferActionDef[] = [
  * completed yet) — handled as a sub-state flag rather than a 9th status,
  * per the "statuses are business state, not UI state" principle.
  */
+// Legacy blanket permission — every /inventory/transfers/:id/* route accepts
+// this as an alternative to the granular permission (see routes/index.ts,
+// hasAnyPermission([<granular>, "inventory.stock.adjust"])). The action list
+// below must recognize the same fallback, or a user who is authorized to
+// call an endpoint won't see the button that calls it.
+const LEGACY_FALLBACK_PERMISSION = "inventory.stock.adjust";
+
 export function getAvailableTransferActions(
   transfer: TransferActionContext,
   userPermissions: string[],
@@ -140,6 +147,10 @@ export function getAvailableTransferActions(
   }
 
   return candidates
-    .filter((c) => userPermissions.includes(c.permission))
+    .filter(
+      (c) =>
+        userPermissions.includes(c.permission) ||
+        userPermissions.includes(LEGACY_FALLBACK_PERMISSION),
+    )
     .map(({ action, label }) => ({ action, label }));
 }

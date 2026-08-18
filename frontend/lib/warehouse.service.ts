@@ -43,8 +43,12 @@ export interface StockMovementParams {
 
 export interface TransferParams {
   status?: "DRAFT" | "PENDING_APPROVAL" | "APPROVED" | "PICKING" | "VERIFIED" | "DISPATCHED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CANCELLED" | "DISCREPANCY";
-  sourceId?: string;
-  targetId?: string;
+  // Matches the backend's `warehouseId` filter (inventory.service.ts
+  // listTransfers), which OR-matches a transfer whose source OR
+  // destination is this warehouse. There is no separate source/target
+  // filter on the backend — sourceId/targetId here previously sent query
+  // params the backend never read, so they silently did nothing.
+  warehouseId?: string;
   page?: number;
   limit?: number;
 }
@@ -133,8 +137,7 @@ export const warehouseService = {
   async getTransfers(params: TransferParams, token: string) {
     const queryParams = new URLSearchParams();
     if (params.status) queryParams.append("status", params.status);
-    if (params.sourceId) queryParams.append("sourceId", params.sourceId);
-    if (params.targetId) queryParams.append("targetId", params.targetId);
+    if (params.warehouseId) queryParams.append("warehouseId", params.warehouseId);
     if (params.page) queryParams.append("page", params.page.toString());
     if (params.limit) queryParams.append("limit", params.limit.toString());
 

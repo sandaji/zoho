@@ -432,7 +432,7 @@ export default function POSPage() {
 
   // ------------------ UI ------------------
   return (
-    <div className="min-h-screen bg-slate-100 ml-3">
+    <div className="min-h-screen bg-background ml-3">
       <div className="mx-auto max-w-[1700px] px-1 py-1 space-y-4">
         {/* ================= MENU BAR ================= */}
         <POSMenuBar

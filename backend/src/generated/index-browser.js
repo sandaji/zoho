@@ -326,6 +326,7 @@ exports.Prisma.TransferItemScalarFieldEnum = {
   batchId: 'batchId',
   damaged_qty: 'damaged_qty',
   dispatched_qty: 'dispatched_qty',
+  picked_qty: 'picked_qty',
   received_qty: 'received_qty',
   requested_qty: 'requested_qty',
   unitCost: 'unitCost'

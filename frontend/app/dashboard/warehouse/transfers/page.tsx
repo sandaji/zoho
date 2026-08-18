@@ -218,16 +218,16 @@ export default function TransfersPage() {
 
   if (loading) {
     return (
-      <div className="p-6 bg-emerald-50/30 min-h-screen">
+      <div className="p-6 bg-background min-h-screen">
         <div className="animate-pulse flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6 bg-emerald-50/30 min-h-screen">
+    <div className="p-6 space-y-6 bg-background min-h-screen">
       <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-emerald-100">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Stock Transfers</h1>

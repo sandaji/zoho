@@ -89,7 +89,7 @@ export default function HRDashboard() {
   ];
 
   return (
-    <div className="p-8 space-y-8 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">HR Management</h1>
@@ -162,7 +162,7 @@ export default function HRDashboard() {
                 <CardDescription>{module.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-sm font-medium text-blue-600 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full inline-block">
+                <div className="text-sm font-medium text-primary bg-accent px-3 py-1 rounded-full inline-block">
                   {module.stats}
                 </div>
               </CardContent>
