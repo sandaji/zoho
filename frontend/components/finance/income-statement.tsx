@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -59,7 +60,7 @@ const IncomeStatement = () => {
           <CardTitle>Income Statement</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64 animate-pulse bg-gray-200 dark:bg-gray-800 rounded-md" />
+          <Skeleton className="h-64 w-full" />
         </CardContent>
       </Card>
     );
@@ -72,8 +73,8 @@ const IncomeStatement = () => {
           <CardTitle>Income Statement</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-red-500 flex items-center gap-2">
-            <AlertCircle className="h-5 w-5" />
+          <div className="text-destructive flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 shrink-0" />
             <span>{error}</span>
           </div>
         </CardContent>
@@ -109,25 +110,25 @@ const IncomeStatement = () => {
             </TableRow>
             <TableRow>
               <TableCell>Cost of Goods Sold (COGS)</TableCell>
-              <TableCell className="text-right text-red-500">({formatCurrency(data.cogs)})</TableCell>
+              <TableCell className="text-right text-destructive">({formatCurrency(data.cogs)})</TableCell>
             </TableRow>
-            <TableRow className="font-semibold bg-gray-50 dark:bg-gray-800">
+            <TableRow className="font-semibold bg-muted">
               <TableCell>Gross Profit</TableCell>
               <TableCell className="text-right">{formatCurrency(grossProfit)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Operating Expenses</TableCell>
-              <TableCell className="text-right text-red-500">({formatCurrency(data.operatingExpenses)})</TableCell>
+              <TableCell className="text-right text-destructive">({formatCurrency(data.operatingExpenses)})</TableCell>
             </TableRow>
-            <TableRow className="font-semibold bg-gray-50 dark:bg-gray-800">
+            <TableRow className="font-semibold bg-muted">
               <TableCell>Operating Income</TableCell>
               <TableCell className="text-right">{formatCurrency(operatingIncome)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Taxes</TableCell>
-              <TableCell className="text-right text-red-500">({formatCurrency(data.taxes)})</TableCell>
+              <TableCell className="text-right text-destructive">({formatCurrency(data.taxes)})</TableCell>
             </TableRow>
-            <TableRow className="font-bold text-lg bg-gray-100 dark:bg-gray-700">
+            <TableRow className="font-bold text-lg bg-accent">
               <TableCell>Net Income</TableCell>
               <TableCell className="text-right">{formatCurrency(netIncome)}</TableCell>
             </TableRow>

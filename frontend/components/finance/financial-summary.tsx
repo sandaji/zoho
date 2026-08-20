@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { DollarSign, TrendingUp, TrendingDown, Scale, AlertCircle } from 'lucide-react';
 import { apiClient } from '@/lib/api-client';
 import { formatCurrency } from "@/lib/utils";
@@ -47,7 +48,11 @@ const FinancialSummary = () => {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {[...Array(4)].map((_, i) => (
-          <Card key={i} className="h-32 animate-pulse bg-gray-200 dark:bg-gray-800" />
+          <Card key={i}>
+            <CardContent className="pt-6">
+              <Skeleton className="h-20 w-full" />
+            </CardContent>
+          </Card>
         ))}
       </div>
     );
@@ -55,8 +60,8 @@ const FinancialSummary = () => {
 
   if (error) {
     return (
-      <div className="text-red-500 flex items-center gap-2">
-        <AlertCircle className="h-5 w-5" />
+      <div className="text-destructive flex items-center gap-2">
+        <AlertCircle className="h-5 w-5 shrink-0" />
         <span>{error}</span>
       </div>
     );

@@ -587,7 +587,11 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
           </span>
         </div>
 
-        <div className="flex-1 flex-end">
+        <div className="flex flex-1 justify-end gap-2">
+          <Button variant="outline" size="sm" onClick={() => router.push("/dashboard/pos?view=document")}>
+            <FilePlus2 className="mr-1.5 h-3.5 w-3.5" />
+            New document
+          </Button>
           {/* 6 — New Sales Invoice */}
           <Button
             size="sm"

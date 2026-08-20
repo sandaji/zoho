@@ -1,4 +1,4 @@
-import { PrismaClient, Prisma } from "../generated";
+import { PrismaClient, Prisma, TransactionType } from "../generated";
 import { prisma as defaultPrisma } from "../lib/db";
 import { sum } from "../utils/money";
 
@@ -22,11 +22,11 @@ export class FinanceRepository {
   async getExpenses(filters?: FinanceFilterOptions): Promise<number> {
     const { startDate, endDate, branchId } = filters || {};
 
-    // 1. Finance transactions (type = 'EXPENSE')
+    // 1. Finance transactions (type = 'expense')
     const transactions = await this.db.financeTransaction.groupBy({
       by: ["type"],
       where: {
-        type: "EXPENSE",
+        type: TransactionType.expense,
         ...(branchId ? { branchId } : {}),
         ...(startDate || endDate
           ? {
@@ -114,8 +114,8 @@ export class FinanceRepository {
 
     grouped.forEach((g) => {
       const amt = sum(g._sum.amount);
-      if (g.type === "INCOME") totalIncome = amt;
-      if (g.type === "EXPENSE") totalExpense = amt;
+      if (g.type === TransactionType.income) totalIncome = amt;
+      if (g.type === TransactionType.expense) totalExpense = amt;
     });
 
     return { totalIncome, totalExpense };

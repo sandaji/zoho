@@ -11,21 +11,21 @@ import { fetchFinancialAlerts } from "@/app/dashboard/finance/lib/api";
 import type { FinancialAlert, AlertSeverity } from "@/app/dashboard/finance/types";
 
 const AlertIconMap: Record<AlertSeverity, React.ReactNode> = {
-  critical: <AlertCircle className="h-5 w-5 text-red-600" />,
-  warning: <AlertTriangle className="h-5 w-5 text-amber-600" />,
-  info: <Info className="h-5 w-5 text-blue-600" />,
+  critical: <AlertCircle className="h-5 w-5 text-destructive" />,
+  warning:  <AlertTriangle className="h-5 w-5 text-warning" />,
+  info:     <Info className="h-5 w-5 text-info" />,
 };
 
 const AlertColorMap: Record<AlertSeverity, string> = {
-  critical: "bg-red-50 border-red-200",
-  warning: "bg-amber-50 border-amber-200",
-  info: "bg-blue-50 border-blue-200",
+  critical: "bg-destructive/10 border-destructive/30",
+  warning:  "bg-warning-muted border-warning-border",
+  info:     "bg-info-muted border-info-border",
 };
 
-const AlertBadgeMap: Record<AlertSeverity, "destructive" | "secondary" | "default"> = {
+const AlertBadgeMap: Record<AlertSeverity, "destructive" | "warning" | "info"> = {
   critical: "destructive",
-  warning: "secondary",
-  info: "default",
+  warning:  "warning",
+  info:     "info",
 };
 
 interface FinancialAlertsProps {
@@ -68,9 +68,9 @@ export const FinancialAlerts = ({ maxAlerts = 4, onViewAll }: FinancialAlertsPro
 
   if (loading) {
     return (
-      <Card className="border-gray-200 bg-white shadow-sm">
+      <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-semibold">Alerts & Notifications</CardTitle>
+          <CardTitle>Alerts &amp; Notifications</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {[...Array(3)].map((_, i) => (
@@ -82,31 +82,30 @@ export const FinancialAlerts = ({ maxAlerts = 4, onViewAll }: FinancialAlertsPro
   }
 
   return (
-    <Card className="border-gray-200 bg-white shadow-sm">
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle className="text-lg font-semibold">Alerts & Notifications</CardTitle>
+        <CardTitle>Alerts &amp; Notifications</CardTitle>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon-sm"
           onClick={handleRefresh}
           disabled={refreshing}
-          className="h-8 w-8 p-0"
         >
           <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
         </Button>
       </CardHeader>
       <CardContent className="space-y-3">
         {error && (
-          <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
+          <div className="rounded-lg bg-destructive/10 border border-destructive/30 p-3 text-sm text-destructive">
             {error}
           </div>
         )}
 
         {alerts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <AlertCircle className="h-12 w-12 text-gray-300 mb-2" />
-            <p className="text-sm text-gray-500">No alerts at this moment</p>
-            <p className="text-xs text-gray-400 mt-1">Your finances look good!</p>
+            <AlertCircle className="h-12 w-12 text-muted-foreground/30 mb-2" />
+            <p className="text-sm text-muted-foreground">No alerts at this moment</p>
+            <p className="text-xs text-muted-foreground/60 mt-1">Your finances look good!</p>
           </div>
         ) : (
           <>
@@ -119,14 +118,14 @@ export const FinancialAlerts = ({ maxAlerts = 4, onViewAll }: FinancialAlertsPro
                 )}
               >
                 <div className="flex gap-3">
-                  <div className="flex-shrink-0 mt-1">{AlertIconMap[alert.severity]}</div>
+                  <div className="shrink-0 mt-0.5">{AlertIconMap[alert.severity]}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1">
-                        <p className="font-semibold text-sm text-gray-900">{alert.title}</p>
-                        <p className="text-xs text-gray-700 mt-1">{alert.message}</p>
+                        <p className="font-semibold text-sm text-foreground">{alert.title}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{alert.message}</p>
                       </div>
-                      <Badge variant={AlertBadgeMap[alert.severity]} className="flex-shrink-0">
+                      <Badge variant={AlertBadgeMap[alert.severity]} className="shrink-0">
                         {alert.severity}
                       </Badge>
                     </div>

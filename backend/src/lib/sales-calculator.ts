@@ -47,19 +47,22 @@ export interface DocumentTotals {
  * Tax is applied to the pre-discount subtotal — the same convention used
  * throughout the original helpers.  If your jurisdiction requires tax on
  * the after-discount base, adjust taxAmount to `(subtotal - discount) * taxRate`.
+ * 
+ * All amounts are rounded to the nearest whole number to avoid floating-point precision issues.
  */
 export function calculateItemTotals(item: LineItemInput): LineItemTotals {
-  const subtotal = item.quantity * item.unitPrice;
+  const subtotal = Math.round(item.quantity * item.unitPrice);
   const taxRate = item.taxRate ?? 0;
-  const taxAmount = subtotal * taxRate;
-  const discount = item.discount ?? 0;
-  const total = subtotal + taxAmount - discount;
+  const taxAmount = Math.round(subtotal * taxRate);
+  const discount = Math.round(item.discount ?? 0);
+  const total = Math.round(subtotal + taxAmount - discount);
 
   return { subtotal, taxAmount, discount, total, taxRate };
 }
 
 /**
  * Sum up line-item results into document-level totals.
+ * All amounts are rounded to the nearest whole number to avoid floating-point precision issues.
  */
 export function calculateDocumentTotals(
   lines: Pick<LineItemTotals, "subtotal" | "taxAmount" | "discount">[],
@@ -74,22 +77,25 @@ export function calculateDocumentTotals(
     discount += line.discount;
   }
 
-  return { subtotal, tax, discount, total: subtotal + tax - discount };
+  const total = Math.round(subtotal + tax - discount);
+  return { subtotal, tax, discount, total };
 }
 
 /**
  * Convenience: compute subtotal (no tax, no discount) from a list of items.
  * Mirrors the old PosService.calculateSubtotal instance method.
+ * Amount is rounded to the nearest whole number to avoid floating-point precision issues.
  */
 export function calculateSubtotal(
   items: Array<{ quantity: number; unitPrice: number }>,
 ): number {
-  return items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0);
+  return Math.round(items.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0));
 }
 
 /**
  * Convenience: compute total tax across all items.
  * Mirrors the old PosService.calculateTax instance method.
+ * Amount is rounded to the nearest whole number to avoid floating-point precision issues.
  */
 export function calculateTax(
   items: Array<{
@@ -99,11 +105,11 @@ export function calculateTax(
     discount?: number;
   }>,
 ): number {
-  return items.reduce((sum, i) => {
+  return Math.round(items.reduce((sum, i) => {
     const sub = i.quantity * i.unitPrice;
     const disc = i.discount ?? 0;
     const taxable = sub - disc;
     const rate = i.taxRate ?? 0.16;
     return sum + taxable * rate;
-  }, 0);
+  }, 0));
 }

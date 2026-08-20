@@ -77,13 +77,13 @@ export class AccountingService {
 
     const assetAccount = await this.getEnsureAccount(assetAccountDef, tx);
 
-    const netRevenue = data.total - data.tax;
+    const netRevenue = Math.round(data.total - data.tax);
     const lines: JournalLineInput[] = [];
 
     // 1. Debit Cash/Bank for Total Received
     lines.push({
       accountId: assetAccount.id,
-      debit: new Prisma.Decimal(data.total),
+      debit: new Prisma.Decimal(Math.round(data.total)),
       credit: new Prisma.Decimal(0),
       description: `POS Collection (${data.paymentMethod})`,
     });
@@ -101,7 +101,7 @@ export class AccountingService {
       lines.push({
         accountId: taxAccount.id,
         debit: new Prisma.Decimal(0),
-        credit: new Prisma.Decimal(data.tax),
+        credit: new Prisma.Decimal(Math.round(data.tax)),
         description: `Sales Tax / VAT`,
       });
     }
@@ -111,32 +111,50 @@ export class AccountingService {
       const cogsAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.COST_OF_GOODS, tx);
       const inventoryAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.INVENTORY_ASSET, tx);
 
+      const roundedCogs = Math.round(data.cogs);
       lines.push({
         accountId: cogsAccount.id,
-        debit: new Prisma.Decimal(data.cogs),
+        debit: new Prisma.Decimal(roundedCogs),
         credit: new Prisma.Decimal(0),
         description: `Cost of Goods Sold`,
       });
       lines.push({
         accountId: inventoryAccount.id,
         debit: new Prisma.Decimal(0),
-        credit: new Prisma.Decimal(data.cogs),
+        credit: new Prisma.Decimal(roundedCogs),
         description: `Inventory Relief`,
       });
     }
 
-    return await JournalEntryService.createJournalEntry(
-      {
-        entryDate: data.date,
-        branchId: data.branchId,
-        description: `POS Sale #${data.saleId}`,
-        lines,
-        sourceType: "SALES_DOCUMENT",
-        sourceId: data.saleId,
-        createdBy: data.userId,
-      },
-      tx
-    );
+    try {
+      return await JournalEntryService.createJournalEntry(
+        {
+          entryDate: data.date,
+          branchId: data.branchId,
+          description: `POS Sale #${data.saleId}`,
+          lines,
+          sourceType: "SALES_DOCUMENT",
+          sourceId: data.saleId,
+          createdBy: data.userId,
+        },
+        tx
+      );
+    } catch (err: any) {
+      // A missing fiscal period must never block a POS sale from completing.
+      // Log the failure so finance staff can reconcile, but let the sale proceed.
+      if (
+        err?.message?.includes("No open fiscal period") ||
+        err?.message?.includes("Fiscal period is closed")
+      ) {
+        const { logger } = await import("../../../lib/logger");
+        logger.warn(
+          { saleId: data.saleId, err: err.message },
+          "POS journal entry skipped — no open fiscal period. Sale completed successfully. Reconcile manually."
+        );
+        return null;
+      }
+      throw err;
+    }
   }
 
   // ============================================

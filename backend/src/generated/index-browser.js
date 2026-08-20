@@ -352,10 +352,16 @@ exports.Prisma.SalesDocumentScalarFieldEnum = {
   documentId: 'documentId',
   type: 'type',
   status: 'status',
+  draftNumber: 'draftNumber',
+  quoteNumber: 'quoteNumber',
+  invoiceNumber: 'invoiceNumber',
   sourceDocumentId: 'sourceDocumentId',
   branchId: 'branchId',
   customerId: 'customerId',
   createdById: 'createdById',
+  invoicedById: 'invoicedById',
+  closedById: 'closedById',
+  closedAt: 'closedAt',
   subtotal: 'subtotal',
   discount: 'discount',
   tax: 'tax',
@@ -1261,6 +1267,8 @@ exports.SalesDocumentType = exports.$Enums.SalesDocumentType = {
   DRAFT: 'DRAFT',
   QUOTE: 'QUOTE',
   INVOICE: 'INVOICE',
+  OPEN_INVOICE: 'OPEN_INVOICE',
+  CLOSED_INVOICE: 'CLOSED_INVOICE',
   CREDIT_NOTE: 'CREDIT_NOTE'
 };
 

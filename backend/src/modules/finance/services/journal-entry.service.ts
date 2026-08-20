@@ -58,11 +58,15 @@ export class JournalEntryService {
       new Prisma.Decimal(0)
     );
 
-    if (!totalDebits.equals(totalCredits)) {
+    // Round to whole numbers to avoid floating-point precision issues
+    const roundedDebits = totalDebits.toDecimalPlaces(0);
+    const roundedCredits = totalCredits.toDecimalPlaces(0);
+
+    if (!roundedDebits.equals(roundedCredits)) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR as any,
         400,
-        `Journal entry is not balanced. Debits: ${totalDebits}, Credits: ${totalCredits}`
+        `Journal entry is not balanced. Debits: ${roundedDebits}, Credits: ${roundedCredits}`
       );
     }
 
@@ -86,8 +90,8 @@ export class JournalEntryService {
         journal_id: input.journalId,
         branch_id: input.branchId,
         description: input.description,
-        total_debit: totalDebits,
-        total_credit: totalCredits,
+        total_debit: roundedDebits,
+        total_credit: roundedCredits,
         source_type: input.sourceType,
         source_id: input.sourceId,
         created_by: input.createdBy,
@@ -122,8 +126,8 @@ export class JournalEntryService {
           account_id: line.accountId,
           line_no: index + 1,
           description: line.description || input.description,
-          debit: line.debit,
-          credit: line.credit,
+          debit: line.debit.toDecimalPlaces(0),
+          credit: line.credit.toDecimalPlaces(0),
         },
       });
     });
@@ -173,7 +177,7 @@ export class JournalEntryService {
         where: { id: line.accountId },
         data: {
           current_balance: {
-            increment: netAmount.toNumber(),
+            increment: netAmount.toDecimalPlaces(0).toNumber(),
           },
         },
       });
@@ -331,8 +335,8 @@ export class JournalEntryService {
       const reversalLines: JournalLineInput[] = original.lines.map(
         (line) => ({
           accountId: line.account_id,
-          debit: line.credit,
-          credit: line.debit,
+          debit: line.credit.toDecimalPlaces(0),
+          credit: line.debit.toDecimalPlaces(0),
           description: `Reversal of ${original.entry_no}: ${line.description}`,
         })
       );
@@ -392,14 +396,14 @@ export class JournalEntryService {
     const accountBalances = accounts
       .map((acc) => {
         const lineSummary = lines.find((l) => l.account_id === acc.id);
-        const debit = Number(lineSummary?._sum.debit || 0);
-        const credit = Number(lineSummary?._sum.credit || 0);
+        const debit = Math.round(Number(lineSummary?._sum.debit || 0));
+        const credit = Math.round(Number(lineSummary?._sum.credit || 0));
 
         let balance = 0;
         if (acc.account_type === AccountType.asset) {
-          balance = debit - credit;
+          balance = Math.round(debit - credit);
         } else {
-          balance = credit - debit;
+          balance = Math.round(credit - debit);
         }
 
         return {
@@ -456,14 +460,14 @@ export class JournalEntryService {
     const accountMovements = accounts
       .map((acc) => {
         const lineSummary = lines.find((l) => l.account_id === acc.id);
-        const debit = Number(lineSummary?._sum.debit || 0);
-        const credit = Number(lineSummary?._sum.credit || 0);
+        const debit = Math.round(Number(lineSummary?._sum.debit || 0));
+        const credit = Math.round(Number(lineSummary?._sum.credit || 0));
 
         let amount = 0;
         if (acc.account_type === AccountType.revenue) {
-          amount = credit - debit;
+          amount = Math.round(credit - debit);
         } else {
-          amount = debit - credit;
+          amount = Math.round(debit - credit);
         }
 
         return {
@@ -528,21 +532,21 @@ export class JournalEntryService {
     let totalOut = 0;
 
     for (const line of lines) {
-      totalIn += Number(line.debit);
-      totalOut += Number(line.credit);
+      totalIn += Math.round(Number(line.debit));
+      totalOut += Math.round(Number(line.credit));
     }
 
     return {
       summary: {
         cashIn: totalIn,
         cashOut: totalOut,
-        netChange: totalIn - totalOut,
+        netChange: Math.round(totalIn - totalOut),
       },
       details: lines.map((l) => ({
         id: l.id,
         date: l.header.entry_date,
         description: l.description || l.header.description,
-        amount: Number(l.debit) - Number(l.credit),
+        amount: Math.round(Number(l.debit) - Number(l.credit)),
         account: l.account.account_name,
       })),
     };
@@ -578,8 +582,8 @@ export class JournalEntryService {
     const rows = accounts
       .map((acc) => {
         const sum = lineSums.find((l) => l.account_id === acc.id);
-        const debit = Number(sum?._sum.debit || 0);
-        const credit = Number(sum?._sum.credit || 0);
+        const debit = Math.round(Number(sum?._sum.debit || 0));
+        const credit = Math.round(Number(sum?._sum.credit || 0));
 
         totalDebitSum += debit;
         totalCreditSum += credit;
@@ -592,7 +596,7 @@ export class JournalEntryService {
           category: acc.category,
           debit,
           credit,
-          netBalance: debit - credit,
+          netBalance: Math.round(debit - credit),
         };
       })
       .filter((row) => row.debit !== 0 || row.credit !== 0);
@@ -601,10 +605,10 @@ export class JournalEntryService {
 
     return {
       rows,
-      totalDebit: totalDebitSum,
-      totalCredit: totalCreditSum,
+      totalDebit: Math.round(totalDebitSum),
+      totalCredit: Math.round(totalCreditSum),
       isBalanced,
-      difference: totalDebitSum - totalCreditSum,
+      difference: Math.round(totalDebitSum - totalCreditSum),
     };
   }
 }

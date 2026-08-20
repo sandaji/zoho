@@ -11,7 +11,7 @@ echo "=================================="
 echo -e "\n1️⃣ Logging in with test credentials..."
 LOGIN_RESPONSE=$(curl -s -X POST "$API_BASE/v1/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@example.com","password":"password123"}')
+  -d '{"email":"admin@zoho.com","password":"password123"}')
 
 echo "Response: $LOGIN_RESPONSE"
 

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, AlertTriangle, Truck, DollarSign } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { clsx } from "clsx";
+import { cn } from "@/lib/utils";
 
 interface KPICardsProps {
   totalItems: number;
@@ -16,56 +16,35 @@ interface KPICardProps {
   title: string;
   value: string | number;
   icon: React.ReactNode;
-  trend?: {
-    value: number;
-    direction: "up" | "down";
-  };
+  trend?: { value: number; direction: "up" | "down" };
   variant?: "default" | "warning" | "alert";
 }
 
-function KPICard({
-  title,
-  value,
-  icon,
-  trend,
-  variant = "default",
-}: KPICardProps) {
-  const variantStyles = {
-    default: "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800",
-    warning: "border-yellow-200 dark:border-yellow-900 bg-yellow-50 dark:bg-yellow-950",
-    alert: "border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950",
-  };
+function KPICard({ title, value, icon, trend, variant = "default" }: KPICardProps) {
+  const cardClass = {
+    default: "",
+    warning: "border-warning-border bg-warning-muted",
+    alert:   "border-destructive/30 bg-destructive/10",
+  }[variant];
+
+  const iconWrapClass = {
+    default: "bg-primary/10",
+    warning: "bg-warning/10",
+    alert:   "bg-destructive/10",
+  }[variant];
 
   return (
-    <Card className={clsx("overflow-hidden", variantStyles[variant])}>
+    <Card className={cn("overflow-hidden card-hover", cardClass)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
-          {title}
-        </CardTitle>
-        <div
-          className={clsx(
-            "h-8 w-8 rounded-lg flex items-center justify-center",
-            variant === "default" && "bg-emerald-100 dark:bg-emerald-950",
-            variant === "warning" && "bg-yellow-100 dark:bg-yellow-950",
-            variant === "alert" && "bg-red-100 dark:bg-red-950"
-          )}
-        >
+        <CardTitle className="text-muted-foreground">{title}</CardTitle>
+        <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center", iconWrapClass)}>
           {icon}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold text-slate-900 dark:text-white">
-          {value}
-        </div>
+        <div className="text-2xl font-bold text-foreground">{value}</div>
         {trend && (
-          <p
-            className={clsx(
-              "text-xs mt-1",
-              trend.direction === "up"
-                ? "text-emerald-600 dark:text-emerald-400"
-                : "text-red-600 dark:text-red-400"
-            )}
-          >
+          <p className={cn("text-xs mt-1", trend.direction === "up" ? "text-success" : "text-destructive")}>
             {trend.direction === "up" ? "↑" : "↓"} {trend.value}% from last month
           </p>
         )}
@@ -85,23 +64,23 @@ export function KPICards({
       <KPICard
         title="Total Items"
         value={totalItems.toLocaleString()}
-        icon={<Package className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
+        icon={<Package className="h-5 w-5 text-primary" />}
       />
       <KPICard
         title="Low Stock Alerts"
         value={lowStockAlerts}
-        icon={<AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />}
+        icon={<AlertTriangle className="h-5 w-5 text-warning" />}
         variant={lowStockAlerts > 0 ? "warning" : "default"}
       />
       <KPICard
         title="Pending Transfers"
         value={pendingTransfers}
-        icon={<Truck className="h-5 w-5 text-blue-600 dark:text-blue-400" />}
+        icon={<Truck className="h-5 w-5 text-info" />}
       />
       <KPICard
         title="Total Inventory Value"
         value={formatCurrency(totalInventoryValue)}
-        icon={<DollarSign className="h-5 w-5 text-slate-600 dark:text-slate-400" />}
+        icon={<DollarSign className="h-5 w-5 text-muted-foreground" />}
       />
     </div>
   );

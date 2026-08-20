@@ -209,13 +209,13 @@ export const showProgressToast = (
   return toast(
     <div className="flex flex-col gap-2">
       <div className="text-sm font-medium">{message}</div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-border rounded-full h-2">
         <div
-          className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+          className="bg-primary h-2 rounded-full transition-all duration-300"
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="text-xs text-gray-500">{progressText}</div>
+      <div className="text-xs text-muted-foreground">{progressText}</div>
     </div>,
     {
       duration: Infinity, // Keep visible until dismissed

@@ -20,10 +20,14 @@ export const BankAccountsSummary = () => {
         setError(null);
         const response = await fetchBankAccounts();
         if (response.success && response.data) {
-          // Backend returns accounts array directly in data
-          const accountsArray = Array.isArray(response.data) ? response.data : response.data.accounts || [];
+          const accountsArray = Array.isArray(response.data)
+            ? response.data
+            : response.data.accounts || [];
           setAccounts(accountsArray);
-          setTotalBalance(response.data.totalBalance || accountsArray.reduce((sum: number, acc: any) => sum + (acc.balance || 0), 0));
+          setTotalBalance(
+            response.data.totalBalance ||
+              accountsArray.reduce((sum: number, acc: any) => sum + (acc.balance || 0), 0)
+          );
         } else {
           setError(response.error?.message || "Failed to load bank accounts");
         }
@@ -40,9 +44,9 @@ export const BankAccountsSummary = () => {
 
   if (loading) {
     return (
-      <Card className="border-gray-200 bg-white shadow-sm">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Bank Accounts</CardTitle>
+          <CardTitle>Bank Accounts</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {[...Array(3)].map((_, i) => (
@@ -55,9 +59,9 @@ export const BankAccountsSummary = () => {
 
   if (error) {
     return (
-      <Card className="border-red-200 bg-red-50">
-        <CardContent className="pt-6 flex items-center gap-2 text-red-800">
-          <AlertCircle className="h-5 w-5" />
+      <Card className="border-destructive/30 bg-destructive/10">
+        <CardContent className="pt-6 flex items-center gap-2 text-destructive">
+          <AlertCircle className="h-5 w-5 shrink-0" />
           <span className="text-sm">{error}</span>
         </CardContent>
       </Card>
@@ -65,12 +69,12 @@ export const BankAccountsSummary = () => {
   }
 
   return (
-    <Card className="border-gray-200 bg-white shadow-sm">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">Bank Accounts</CardTitle>
-          <div className="flex items-center gap-1 bg-green-100 px-2 py-1 rounded text-sm text-green-700 font-medium">
-            <TrendingUp className="h-4 w-4" />
+          <CardTitle>Bank Accounts</CardTitle>
+          <div className="flex items-center gap-1 bg-success/10 border border-success/20 px-2 py-1 rounded text-xs text-success font-medium">
+            <TrendingUp className="h-3.5 w-3.5" />
             {formatCurrency(totalBalance)}
           </div>
         </div>
@@ -78,56 +82,56 @@ export const BankAccountsSummary = () => {
       <CardContent className="space-y-3">
         {accounts.length === 0 ? (
           <div className="py-8 text-center">
-            <Landmark className="h-12 w-12 text-gray-300 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">No bank accounts configured</p>
+            <Landmark className="h-12 w-12 text-muted-foreground/30 mx-auto mb-2" />
+            <p className="text-sm text-muted-foreground">No bank accounts configured</p>
           </div>
         ) : (
-          <>
-            {accounts.map((account) => {
-              const hasUnreconciled = account.unreconciliedTransactions > 0;
+          accounts.map((account) => {
+            const hasUnreconciled = account.unreconciliedTransactions > 0;
 
-              return (
-                <div
-                  key={account.id}
-                  className={cn(
-                    "rounded-lg border p-3 transition-colors",
-                    hasUnreconciled ? "bg-amber-50 border-amber-200" : "bg-gray-50 border-gray-200"
-                  )}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Landmark className="h-4 w-4 text-gray-600" />
-                        <div>
-                          <p className="text-sm font-semibold text-gray-900">
-                            {account.accountName}
-                          </p>
-                          <p className="text-xs text-gray-500">{account.accountNumber}</p>
-                        </div>
-                      </div>
-                      {hasUnreconciled && (
-                        <div className="mt-2 text-xs text-amber-700 bg-amber-100 px-2 py-1 rounded inline-block">
-                          {account.unreconciliedTransactions} transactions pending reconciliation
-                        </div>
-                      )}
-                      {account.lastReconciliationDate && (
-                        <p className="text-xs text-gray-500 mt-2">
-                          Last reconciled:{" "}
-                          {new Date(account.lastReconciliationDate).toLocaleDateString()}
+            return (
+              <div
+                key={account.id}
+                className={cn(
+                  "rounded-lg border p-3 transition-colors",
+                  hasUnreconciled
+                    ? "bg-warning-muted border-warning-border"
+                    : "bg-muted border-border"
+                )}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <Landmark className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">
+                          {account.accountName}
                         </p>
-                      )}
+                        <p className="text-xs text-muted-foreground">{account.accountNumber}</p>
+                      </div>
                     </div>
-                    <div className="text-right ml-4">
-                      <p className="text-sm font-semibold text-gray-900">
-                        {formatCurrency(account.balance)}
+                    {hasUnreconciled && (
+                      <div className="mt-2 text-xs text-warning bg-warning/10 px-2 py-1 rounded inline-block">
+                        {account.unreconciliedTransactions} transactions pending reconciliation
+                      </div>
+                    )}
+                    {account.lastReconciliationDate && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Last reconciled:{" "}
+                        {new Date(account.lastReconciliationDate).toLocaleDateString()}
                       </p>
-                      <p className="text-xs text-gray-500">{account.currency || "USD"}</p>
-                    </div>
+                    )}
+                  </div>
+                  <div className="text-right ml-4">
+                    <p className="text-sm font-semibold text-foreground">
+                      {formatCurrency(account.balance)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{account.currency || "USD"}</p>
                   </div>
                 </div>
-              );
-            })}
-          </>
+              </div>
+            );
+          })
         )}
       </CardContent>
     </Card>

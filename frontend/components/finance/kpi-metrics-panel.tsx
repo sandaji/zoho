@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, TrendingDown, BarChart3, PieChart, Percent, DollarSign } from "lucide-react";
+import { TrendingUp, TrendingDown, BarChart3, PieChart, DollarSign } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { fetchFinancialKPIs } from "@/app/dashboard/finance/lib/api";
 import type { FinancialKPIs } from "@/app/dashboard/finance/types";
@@ -14,7 +14,8 @@ interface KPIMetric {
   icon: React.ReactNode;
   format?: "currency" | "percent" | "number";
   trend?: "up" | "down" | "neutral";
-  color: string;
+  valueClass: string;
+  iconClass: string;
 }
 
 export const KPIMetricsPanel = () => {
@@ -28,7 +29,6 @@ export const KPIMetricsPanel = () => {
         setError(null);
         const response = await fetchFinancialKPIs();
         if (response.success && response.data) {
-          // Backend returns KPIs object directly in data
           const kpisData = response.data.kpis || response.data;
           setKpis(kpisData);
         } else {
@@ -64,9 +64,9 @@ export const KPIMetricsPanel = () => {
 
   if (error) {
     return (
-      <Card className="bg-red-50 border-red-200">
+      <Card className="border-destructive/30 bg-destructive/10">
         <CardContent className="pt-6">
-          <p className="text-sm text-red-800">{error}</p>
+          <p className="text-sm text-destructive">{error}</p>
         </CardContent>
       </Card>
     );
@@ -81,7 +81,8 @@ export const KPIMetricsPanel = () => {
       format: "percent",
       icon: <TrendingUp className="h-5 w-5" />,
       trend: kpis.netProfitMargin >= 10 ? "up" : "down",
-      color: kpis.netProfitMargin >= 10 ? "text-green-600" : "text-orange-600",
+      valueClass: kpis.netProfitMargin >= 10 ? "text-success" : "text-warning",
+      iconClass: kpis.netProfitMargin >= 10 ? "text-success bg-success/10" : "text-warning bg-warning/10",
     },
     {
       label: "Gross Profit Margin",
@@ -89,7 +90,8 @@ export const KPIMetricsPanel = () => {
       format: "percent",
       icon: <BarChart3 className="h-5 w-5" />,
       trend: kpis.grossProfitMargin >= 30 ? "up" : "neutral",
-      color: kpis.grossProfitMargin >= 30 ? "text-blue-600" : "text-slate-600",
+      valueClass: kpis.grossProfitMargin >= 30 ? "text-info" : "text-muted-foreground",
+      iconClass: kpis.grossProfitMargin >= 30 ? "text-info bg-info/10" : "text-muted-foreground bg-muted",
     },
     {
       label: "Expense Ratio",
@@ -97,32 +99,31 @@ export const KPIMetricsPanel = () => {
       format: "percent",
       icon: <PieChart className="h-5 w-5" />,
       trend: kpis.expenseRatio <= 50 ? "up" : "down",
-      color: kpis.expenseRatio <= 50 ? "text-green-600" : "text-red-600",
+      valueClass: kpis.expenseRatio <= 50 ? "text-success" : "text-destructive",
+      iconClass: kpis.expenseRatio <= 50 ? "text-success bg-success/10" : "text-destructive bg-destructive/10",
     },
     {
       label: "Cash Position",
       value: kpis.cashPosition,
       format: "currency",
       icon: <DollarSign className="h-5 w-5" />,
-      color: kpis.cashPosition > 0 ? "text-green-600" : "text-red-600",
+      valueClass: kpis.cashPosition > 0 ? "text-success" : "text-destructive",
+      iconClass: kpis.cashPosition > 0 ? "text-success bg-success/10" : "text-destructive bg-destructive/10",
     },
   ];
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {metrics.map((metric, idx) => (
-        <Card
-          key={idx}
-          className="border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow"
-        >
+        <Card key={idx} className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">{metric.label}</CardTitle>
-            <div className={cn("rounded-full bg-gray-100 p-2", `${metric.color}`)}>
+            <CardTitle className="text-muted-foreground">{metric.label}</CardTitle>
+            <div className={cn("rounded-full p-2", metric.iconClass)}>
               {metric.icon}
             </div>
           </CardHeader>
           <CardContent>
-            <div className={cn("text-2xl font-bold", metric.color)}>
+            <div className={cn("text-2xl font-bold", metric.valueClass)}>
               {metric.format === "currency"
                 ? formatCurrency(metric.value)
                 : metric.format === "percent"
@@ -133,13 +134,13 @@ export const KPIMetricsPanel = () => {
               <div className="mt-2 flex items-center gap-1 text-xs">
                 {metric.trend === "up" ? (
                   <>
-                    <TrendingUp className="h-3 w-3 text-green-600" />
-                    <span className="text-green-600">Healthy</span>
+                    <TrendingUp className="h-3 w-3 text-success" />
+                    <span className="text-success">Healthy</span>
                   </>
                 ) : metric.trend === "down" ? (
                   <>
-                    <TrendingDown className="h-3 w-3 text-red-600" />
-                    <span className="text-red-600">Needs attention</span>
+                    <TrendingDown className="h-3 w-3 text-destructive" />
+                    <span className="text-destructive">Needs attention</span>
                   </>
                 ) : null}
               </div>

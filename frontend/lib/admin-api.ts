@@ -459,6 +459,27 @@ export const fetchTrucks = async (token: string): Promise<Truck[]> => {
   return data;
 };
 
+export interface DeliveryTimelineEvent {
+  id: string;
+  status: string;
+  timestamp: string;
+  notes?: string;
+}
+
+export const fetchDeliveryTimeline = async (
+  token: string,
+  deliveryId: string
+): Promise<{ deliveryId: string; delivery_no: string; status: string; events: DeliveryTimelineEvent[] }> => {
+  const response = await fetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/timeline`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch delivery timeline");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
 // Used by DeliveriesSection.tsx to populate the stock-transfer picker when
 // creating a delivery of type "transfer" — kept even after the old two-stage
 // admin transfer view was removed, since this consumer is unrelated to it.

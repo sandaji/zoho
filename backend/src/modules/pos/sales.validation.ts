@@ -21,7 +21,7 @@ const salesDocumentItemSchema = z.object({
 export const createSalesDocumentSchema = z.object({
   type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]),
   status: z
-    .enum(["DRAFT", "SENT", "CONVERTED", "PAID", "UNPAID", "VOID"])
+    .enum(["DRAFT", "SENT", "PARTIALLY_PAID", "PAID", "CONVERTED", "VOID", "CLOSED"])
     .optional(),
   customerId: z.string().optional(),
   issueDate: z.string().or(z.date()),
@@ -43,7 +43,7 @@ export const listDocumentsQuerySchema = z.object({
   branchId: z.string().optional(),
   type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]).optional(),
   status: z
-    .enum(["DRAFT", "SENT", "CONVERTED", "PAID", "UNPAID", "VOID"])
+    .enum(["DRAFT", "SENT", "PARTIALLY_PAID", "PAID", "CONVERTED", "VOID", "CLOSED"])
     .optional(),
   customerId: z.string().optional(),
   startDate: z.string().optional(),

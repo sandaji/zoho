@@ -45,6 +45,8 @@ model User {
   requestedPurchaseOrders PurchaseOrder[]         @relation("RequestedByPO")
   approvedSalesDocuments  SalesDocument[]         @relation("ApprovedBySD")
   createdSalesDocuments   SalesDocument[]
+  invoicedSalesDocuments  SalesDocument[]         @relation("InvoicedBySD")
+  closedSalesDocuments    SalesDocument[]         @relation("ClosedBySD")
   createdSalesOrders      SalesOrder[]
   approvedTransfers       StockTransfer[]         @relation("ApprovedTransfers")
   createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
@@ -439,10 +441,16 @@ model SalesDocument {
   documentId       String
   type             SalesDocumentType
   status           SalesDocumentStatus
+  draftNumber      String?             @map("draft_number")
+  quoteNumber      String?             @map("quote_number")
+  invoiceNumber    String?             @map("invoice_number")
   sourceDocumentId String?             @map("source_document_id")
   branchId         String
   customerId       String?
   createdById      String
+  invoicedById     String?             @map("invoiced_by_id")
+  closedById       String?             @map("closed_by_id")
+  closedAt         DateTime?           @map("closed_at")
   subtotal         Float
   discount         Float               @default(0)
   tax              Float
@@ -462,6 +470,8 @@ model SalesDocument {
   payments         Payment[]
   items            SalesDocumentItem[]
   approvedBy       User?               @relation("ApprovedBySD", fields: [approvedById], references: [id])
+  invoicedBy       User?               @relation("InvoicedBySD", fields: [invoicedById], references: [id])
+  closedBy         User?               @relation("ClosedBySD", fields: [closedById], references: [id])
   branch           Branch              @relation(fields: [branchId], references: [id])
   createdBy        User                @relation(fields: [createdById], references: [id])
   customer         Customer?           @relation(fields: [customerId], references: [id])
@@ -479,6 +489,8 @@ model SalesDocument {
   @@index([sessionId])
   @@index([issueDate])
   @@index([idempotencyKey])
+  @@index([invoicedById])
+  @@index([closedById])
   @@map("sales_documents")
 }
 
@@ -1731,6 +1743,8 @@ enum SalesDocumentType {
   DRAFT
   QUOTE
   INVOICE
+  OPEN_INVOICE
+  CLOSED_INVOICE
   CREDIT_NOTE
 
   @@map("sales_document_type")

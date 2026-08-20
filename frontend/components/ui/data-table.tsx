@@ -40,27 +40,17 @@ export function DataTable<T extends Record<string, any>>({
   const [sortColumn, setSortColumn] = React.useState<keyof T | null>(null);
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
 
-  // Sort data
   const sortedData = React.useMemo(() => {
     if (!sortColumn) return data;
-
     return [...data].sort((a, b) => {
       const aVal = a[sortColumn];
       const bVal = b[sortColumn];
-
-      if (typeof aVal === "string") {
-        return sortOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-      }
-
-      if (typeof aVal === "number") {
-        return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
-      }
-
+      if (typeof aVal === "string") return sortOrder === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+      if (typeof aVal === "number")  return sortOrder === "asc" ? aVal - bVal : bVal - aVal;
       return 0;
     });
   }, [data, sortColumn, sortOrder]);
 
-  // Paginate data
   const totalPages = Math.ceil(sortedData.length / pageSize);
   const paginatedData = sortedData.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
 
@@ -74,29 +64,32 @@ export function DataTable<T extends Record<string, any>>({
     setCurrentPage(0);
   };
 
+  const paginationBtnClass =
+    "h-8 w-8 p-0 rounded-md border border-border bg-card hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-muted-foreground";
+
   return (
     <div className="space-y-4">
       {/* Table */}
-      <div className="rounded-lg border border-slate-200 overflow-hidden">
+      <div className="rounded-lg border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50">
+              <tr className="border-b border-border bg-muted">
                 {columns.map((column) => (
                   <th
                     key={String(column.key)}
                     className={cn(
-                      "h-12 px-4 text-left align-middle font-medium text-slate-700",
+                      "h-10 px-4 text-left align-middle font-semibold text-muted-foreground text-[10px] uppercase tracking-wide",
                       column.width && `w-[${column.width}]`
                     )}
                   >
                     {column.sortable ? (
                       <button
                         onClick={() => handleSort(column.key)}
-                        className="flex items-center gap-2 cursor-pointer select-none hover:text-slate-900"
+                        className="flex items-center gap-1 cursor-pointer select-none hover:text-foreground transition-colors"
                       >
                         {column.label}
-                        <MdUnfoldMore className="h-4 w-4 text-slate-400" />
+                        <MdUnfoldMore className="h-3.5 w-3.5" />
                       </button>
                     ) : (
                       column.label
@@ -108,7 +101,7 @@ export function DataTable<T extends Record<string, any>>({
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={columns.length} className="h-24 text-center text-slate-500">
+                  <td colSpan={columns.length} className="h-24 text-center text-muted-foreground text-sm">
                     Loading...
                   </td>
                 </tr>
@@ -116,14 +109,14 @@ export function DataTable<T extends Record<string, any>>({
                 paginatedData.map((row: any, idx) => (
                   <tr
                     key={idx}
-                    className="border-b border-slate-200 transition-colors hover:bg-slate-50 cursor-pointer"
+                    className="border-b border-border transition-colors hover:bg-accent/50 cursor-pointer"
                     onClick={() => onRowClick && onRowClick(row)}
                   >
                     {columns.map((column) => (
                       <td
                         key={String(column.key)}
                         className={cn(
-                          "p-4 align-middle text-sm text-slate-900",
+                          "px-4 py-2.5 align-middle text-sm text-foreground",
                           column.width && `w-[${column.width}]`
                         )}
                       >
@@ -134,7 +127,7 @@ export function DataTable<T extends Record<string, any>>({
                 ))
               ) : (
                 <tr>
-                  <td colSpan={columns.length} className="h-24 text-center text-slate-500">
+                  <td colSpan={columns.length} className="h-24 text-center text-muted-foreground text-sm">
                     No data available
                   </td>
                 </tr>
@@ -145,49 +138,32 @@ export function DataTable<T extends Record<string, any>>({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-slate-600">
-          Showing <span className="font-medium">{currentPage * pageSize + 1}</span> to{" "}
-          <span className="font-medium">
+      <div className="flex items-center justify-between px-1">
+        <div className="text-xs text-muted-foreground">
+          Showing{" "}
+          <span className="font-medium text-foreground">{currentPage * pageSize + 1}</span>
+          {" "}–{" "}
+          <span className="font-medium text-foreground">
             {Math.min((currentPage + 1) * pageSize, sortedData.length)}
           </span>{" "}
-          of <span className="font-medium">{sortedData.length}</span> results
+          of{" "}
+          <span className="font-medium text-foreground">{sortedData.length}</span>
         </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={() => setCurrentPage(0)}
-            disabled={currentPage === 0}
-            className="h-8 w-8 p-0 rounded-md border border-slate-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            title="First page"
-          >
+        <div className="flex gap-1.5">
+          <button onClick={() => setCurrentPage(0)} disabled={currentPage === 0} className={paginationBtnClass} title="First page">
             <MdFirstPage className="h-4 w-4" />
           </button>
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
-            disabled={currentPage === 0}
-            className="h-8 w-8 p-0 rounded-md border border-slate-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            title="Previous page"
-          >
+          <button onClick={() => setCurrentPage((p) => Math.max(0, p - 1))} disabled={currentPage === 0} className={paginationBtnClass} title="Previous page">
             <MdNavigateBefore className="h-4 w-4" />
           </button>
-          <div className="h-8 px-2 flex items-center text-sm text-slate-600 border border-slate-200 rounded-md">
-            Page {currentPage + 1} of {totalPages || 1}
+          <div className="h-8 px-2.5 flex items-center text-xs text-muted-foreground border border-border rounded-md bg-card">
+            {currentPage + 1} / {totalPages || 1}
           </div>
-          <button
-            onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={currentPage >= totalPages - 1}
-            className="h-8 w-8 p-0 rounded-md border border-slate-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            title="Next page"
-          >
+          <button onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))} disabled={currentPage >= totalPages - 1} className={paginationBtnClass} title="Next page">
             <MdNavigateNext className="h-4 w-4" />
           </button>
-          <button
-            onClick={() => setCurrentPage(totalPages - 1)}
-            disabled={currentPage >= totalPages - 1}
-            className="h-8 w-8 p-0 rounded-md border border-slate-200 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-            title="Last page"
-          >
+          <button onClick={() => setCurrentPage(totalPages - 1)} disabled={currentPage >= totalPages - 1} className={paginationBtnClass} title="Last page">
             <MdLastPage className="h-4 w-4" />
           </button>
         </div>

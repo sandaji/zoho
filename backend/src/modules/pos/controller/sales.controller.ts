@@ -25,6 +25,28 @@ interface AuthenticatedRequest extends Request {
  */
 export class SalesController {
   /**
+   * Get available document types
+   */
+  static async getDocumentTypes(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const documentTypes = [
+        { value: 'DRAFT', label: 'Draft', description: 'Temporary document that can be converted to invoice' },
+        { value: 'QUOTE', label: 'Quote', description: 'Price quotation for customer approval' },
+        { value: 'INVOICE', label: 'Invoice', description: 'Final sales document with payment tracking' },
+        { value: 'CREDIT_NOTE', label: 'Credit Note', description: 'Document for returns/refunds' }
+      ];
+
+      res.status(200).json({ success: true, data: documentTypes });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
    * Create a new sales document (Draft, Quote, Invoice, Credit Note)
    */
   static async createDocument(

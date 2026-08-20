@@ -111,14 +111,14 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
       const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(id)), {
         method: "POST",
         headers: getAuthHeaders(),
-        body: JSON.stringify({ type: "INVOICE" }),
+        body: JSON.stringify({ type: "OPEN_INVOICE" }),
       });
 
       const json = await res.json();
 
       if (json.success) {
         toast("Document converted to invoice", "success");
-        fetchDocuments();
+        router.push(`/dashboard/pos/documents/${json.data.id}`);
       } else {
         toast(json.error || "Conversion failed", "error");
       }

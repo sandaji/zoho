@@ -7,6 +7,8 @@ const DOCUMENT_PREFIX_MAP: Record<SalesDocumentType, string> = {
   DRAFT: "DRF",
   QUOTE: "QTN",
   INVOICE: "INV",
+  OPEN_INVOICE: "INV",
+  CLOSED_INVOICE: "INV",
   CREDIT_NOTE: "CRN",
 };
 

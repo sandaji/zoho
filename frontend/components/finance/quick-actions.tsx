@@ -50,9 +50,9 @@ export const QuickActions = ({ onActionClick }: QuickActionsProps) => {
   ];
 
   return (
-    <Card className="border-gray-200 bg-white shadow-sm">
+    <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
+        <CardTitle>Quick Actions</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -60,15 +60,15 @@ export const QuickActions = ({ onActionClick }: QuickActionsProps) => {
             <Link key={action.id} href={action.href} onClick={() => onActionClick?.(action.id)}>
               <Button
                 variant="outline"
-                className="w-full justify-start h-auto px-3 py-2 text-left hover:bg-gray-50"
+                className="w-full justify-start h-auto px-3 py-2 text-left hover:bg-accent"
               >
                 <div className="flex items-start gap-3">
-                  <div className="text-gray-600 flex-shrink-0 mt-1">{action.icon}</div>
+                  <div className="text-muted-foreground shrink-0 mt-0.5">{action.icon}</div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-gray-900">{action.label}</p>
-                    <p className="text-xs text-gray-500 truncate">{action.description}</p>
+                    <p className="font-medium text-sm text-foreground">{action.label}</p>
+                    <p className="text-xs text-muted-foreground truncate">{action.description}</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
                 </div>
               </Button>
             </Link>

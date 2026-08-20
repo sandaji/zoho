@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, TrendingDown } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import { fetchARAgingSummary } from "@/app/dashboard/finance/lib/api";
 import type { ARAgingBucket } from "@/app/dashboard/finance/types";
@@ -40,9 +40,9 @@ export const ARAgingSummary = () => {
 
   if (loading) {
     return (
-      <Card className="border-gray-200 bg-white shadow-sm">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">AR Aging Summary</CardTitle>
+          <CardTitle>AR Aging Summary</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {[...Array(5)].map((_, i) => (
@@ -55,9 +55,9 @@ export const ARAgingSummary = () => {
 
   if (error) {
     return (
-      <Card className="border-red-200 bg-red-50">
-        <CardContent className="pt-6 flex items-center gap-2 text-red-800">
-          <AlertCircle className="h-5 w-5" />
+      <Card className="border-destructive/30 bg-destructive/10">
+        <CardContent className="pt-6 flex items-center gap-2 text-destructive">
+          <AlertCircle className="h-5 w-5 shrink-0" />
           <span className="text-sm">{error}</span>
         </CardContent>
       </Card>
@@ -65,78 +65,76 @@ export const ARAgingSummary = () => {
   }
 
   return (
-    <Card className="border-gray-200 bg-white shadow-sm">
+    <Card>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold">AR Aging Summary</CardTitle>
+          <CardTitle>AR Aging Summary</CardTitle>
           {criticalOverdue > 0 && (
-            <div className="flex items-center gap-1 bg-red-100 px-2 py-1 rounded text-sm text-red-700 font-medium">
-              <AlertCircle className="h-4 w-4" />
+            <div className="flex items-center gap-1 bg-destructive/10 border border-destructive/30 px-2 py-1 rounded text-xs text-destructive font-medium">
+              <AlertCircle className="h-3.5 w-3.5" />
               {formatCurrency(criticalOverdue)} overdue
             </div>
           )}
         </div>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           Total Outstanding:{" "}
-          <span className="font-semibold text-gray-900">{formatCurrency(totalOutstanding)}</span>
+          <span className="font-semibold text-foreground">{formatCurrency(totalOutstanding)}</span>
         </p>
       </CardHeader>
       <CardContent className="space-y-3">
         {buckets.length === 0 ? (
           <div className="py-8 text-center">
-            <p className="text-sm text-gray-500">No outstanding invoices</p>
+            <p className="text-sm text-muted-foreground">No outstanding invoices</p>
           </div>
         ) : (
-          <>
-            {buckets.map((bucket) => {
-              const isOverdue = bucket.bucket !== "current";
-              const isVeryOverdue = bucket.bucket === "over_90_days";
+          buckets.map((bucket) => {
+            const isOverdue = bucket.bucket !== "current";
+            const isVeryOverdue = bucket.bucket === "over_90_days";
 
-              return (
-                <div
-                  key={bucket.bucket}
-                  className={cn(
-                    "rounded-lg border p-3 transition-colors",
-                    isVeryOverdue
-                      ? "bg-red-50 border-red-200"
-                      : isOverdue
-                        ? "bg-amber-50 border-amber-200"
-                        : "bg-gray-50 border-gray-200"
-                  )}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">{bucket.label}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className={cn(
-                              "h-full rounded-full transition-all",
-                              isVeryOverdue
-                                ? "bg-red-600"
-                                : isOverdue
-                                  ? "bg-amber-600"
-                                  : "bg-green-600"
-                            )}
-                            style={{ width: `${bucket.percentage}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-gray-500">
-                          {bucket.percentage.toFixed(0)}%
-                        </span>
+            return (
+              <div
+                key={bucket.bucket}
+                className={cn(
+                  "rounded-lg border p-3 transition-colors",
+                  isVeryOverdue
+                    ? "bg-destructive/10 border-destructive/30"
+                    : isOverdue
+                      ? "bg-warning-muted border-warning-border"
+                      : "bg-muted border-border"
+                )}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-foreground">{bucket.label}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex-1 h-2 bg-border rounded-full overflow-hidden">
+                        <div
+                          className={cn(
+                            "h-full rounded-full transition-all duration-500",
+                            isVeryOverdue
+                              ? "bg-destructive"
+                              : isOverdue
+                                ? "bg-warning"
+                                : "bg-success"
+                          )}
+                          style={{ width: `${bucket.percentage}%` }}
+                        />
                       </div>
-                    </div>
-                    <div className="text-right ml-4">
-                      <p className="text-sm font-semibold text-gray-900">
-                        {formatCurrency(bucket.amount)}
-                      </p>
-                      <p className="text-xs text-gray-500">{bucket.count} invoices</p>
+                      <span className="text-xs text-muted-foreground">
+                        {bucket.percentage.toFixed(0)}%
+                      </span>
                     </div>
                   </div>
+                  <div className="text-right ml-4">
+                    <p className="text-sm font-semibold text-foreground">
+                      {formatCurrency(bucket.amount)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{bucket.count} invoices</p>
+                  </div>
                 </div>
-              );
-            })}
-          </>
+              </div>
+            );
+          })
         )}
       </CardContent>
     </Card>

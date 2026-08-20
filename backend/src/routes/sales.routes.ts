@@ -15,6 +15,13 @@ const authenticate = authMiddleware;
 const prefixedCtrl = new PrefixedDocumentController();
 const performanceCtrl = new SalesPerformanceController();
 
+// Get available document types
+router.get(
+  "/documents/types",
+  authenticate,
+  SalesController.getDocumentTypes,
+);
+
 router.post(
   "/documents",
   authenticate,

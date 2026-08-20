@@ -161,43 +161,45 @@ const FinanceDashboardPage = () => {
 
       {/* Error Alert */}
       {error && (
-        <div className="mb-6 flex items-center gap-2 rounded-lg bg-red-50 p-4 text-red-800">
-          <AlertCircle className="h-5 w-5" />
+        <div className="mb-6 flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/30 p-4 text-destructive">
+          <AlertCircle className="h-5 w-5 shrink-0" />
           <p className="text-sm">{error}</p>
         </div>
       )}
 
       {/* Executive Summary Strip - real GL data via /v1/finance/summary */}
       <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <Card className="border-gray-200 bg-white shadow-sm">
+        {/* Revenue */}
+        <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium text-gray-600">Revenue</CardTitle>
-            <div className="rounded-full bg-green-100 p-1.5">
-              <TrendingUp className="h-3.5 w-3.5 text-green-600" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Revenue</CardTitle>
+            <div className="rounded-full bg-success/10 p-1.5">
+              <TrendingUp className="h-3.5 w-3.5 text-success" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {summary ? formatCurrencyCompact(summary.revenue) : "—"}
             </div>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               {summary ? `${summary.salesCount} sales` : "Loading..."}
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 bg-white shadow-sm">
+        {/* Expenses */}
+        <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium text-gray-600">Expenses</CardTitle>
-            <div className="rounded-full bg-red-100 p-1.5">
-              <TrendingDown className="h-3.5 w-3.5 text-red-600" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Expenses</CardTitle>
+            <div className="rounded-full bg-destructive/10 p-1.5">
+              <TrendingDown className="h-3.5 w-3.5 text-destructive" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {summary ? formatCurrencyCompact(summary.expenses) : "—"}
             </div>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               {summary && summary.revenue > 0
                 ? `${((summary.expenses / summary.revenue) * 100).toFixed(1)}% of revenue`
                 : "Loading..."}
@@ -205,65 +207,69 @@ const FinanceDashboardPage = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 bg-white shadow-sm">
+        {/* Net Income */}
+        <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium text-gray-600">Net Income</CardTitle>
-            <div className="rounded-full bg-blue-100 p-1.5">
-              <DollarSign className="h-3.5 w-3.5 text-blue-600" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Net Income</CardTitle>
+            <div className="rounded-full bg-info/10 p-1.5">
+              <DollarSign className="h-3.5 w-3.5 text-info" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {summary ? formatCurrencyCompact(summary.profit) : "—"}
             </div>
-            <p className="mt-1 text-xs text-blue-600">
+            <p className="mt-1 text-xs text-info">
               {summary ? `${summary.netMargin.toFixed(1)}% margin` : "Loading..."}
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 bg-white shadow-sm">
+        {/* Cash Position */}
+        <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium text-gray-600">Cash Position</CardTitle>
-            <div className="rounded-full bg-emerald-100 p-1.5">
-              <Landmark className="h-3.5 w-3.5 text-emerald-600" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">Cash Position</CardTitle>
+            <div className="rounded-full bg-primary/10 p-1.5">
+              <Landmark className="h-3.5 w-3.5 text-primary" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {summary ? formatCurrencyCompact(summary.cashBalance) : "—"}
             </div>
-            <p className="mt-1 text-xs text-gray-500">Across bank accounts</p>
+            <p className="mt-1 text-xs text-muted-foreground">Across bank accounts</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 bg-white shadow-sm">
+        {/* AR Outstanding */}
+        <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium text-gray-600">AR Outstanding</CardTitle>
-            <div className="rounded-full bg-amber-100 p-1.5">
-              <Receipt className="h-3.5 w-3.5 text-amber-600" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">AR Outstanding</CardTitle>
+            <div className="rounded-full bg-warning/10 p-1.5">
+              <Receipt className="h-3.5 w-3.5 text-warning" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {summary ? formatCurrencyCompact(summary.accountsReceivable) : "—"}
             </div>
-            <p className="mt-1 text-xs text-gray-500">Owed to you</p>
+            <p className="mt-1 text-xs text-muted-foreground">Owed to you</p>
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200 bg-white shadow-sm">
+        {/* AP Outstanding */}
+        <Card className="card-hover">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium text-gray-600">AP Outstanding</CardTitle>
-            <div className="rounded-full bg-orange-100 p-1.5">
-              <FileText className="h-3.5 w-3.5 text-orange-600" />
+            <CardTitle className="text-xs font-medium text-muted-foreground">AP Outstanding</CardTitle>
+            <div className="rounded-full bg-secondary p-1.5">
+              <FileText className="h-3.5 w-3.5 text-secondary-foreground" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {summary ? formatCurrencyCompact(summary.accountsPayable) : "—"}
             </div>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               {summary ? `Net ${netAR >= 0 ? "+" : ""}${formatCurrencyCompact(netAR)}` : "Loading..."}
             </p>
           </CardContent>

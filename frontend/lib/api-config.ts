@@ -34,6 +34,7 @@ export const API_ENDPOINTS = {
   SALES_DOCUMENT_CONVERT: (id: string) => `/v1/sales-documents/documents/${id}/convert`,
   SALES_DOCUMENT_VOID: (id: string) => `/v1/sales-documents/documents/${id}/void`,
   SALES_DOCUMENT_PAYMENT: (id: string) => `/v1/sales-documents/documents/${id}/payments`,
+  SALES_DOCUMENT_CLOSE: (id: string) => `/v1/sales-documents/documents/${id}/close`,
   SALES_DOCUMENT_CREDIT_NOTE: (invoiceId: string) =>
     `/v1/sales-documents/invoices/${invoiceId}/credit-notes`,
   SALES_DOCUMENT_PDF: (id: string) => `/v1/sales-documents/documents/${id}/pdf`,

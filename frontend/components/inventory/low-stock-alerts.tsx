@@ -68,14 +68,11 @@ export function LowStockAlerts() {
     fetchAlerts();
   }, [showCriticalOnly]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeVariant = (status: string): "destructive" | "warning" | "secondary" => {
     switch (status) {
-      case "critical":
-        return "bg-red-100 text-red-800";
-      case "warning":
-        return "bg-yellow-100 text-yellow-800";
-      default:
-        return "bg-gray-100 text-gray-800";
+      case "critical": return "destructive";
+      case "warning":  return "warning";
+      default:         return "secondary";
     }
   };
 
@@ -88,7 +85,7 @@ export function LowStockAlerts() {
         <div className="flex justify-between items-center">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <AlertTriangle className="h-5 w-5 text-warning" />
               Low Stock Alerts
             </CardTitle>
             <CardDescription>
@@ -106,30 +103,30 @@ export function LowStockAlerts() {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <div className="text-center py-8">Loading alerts...</div>
+          <div className="text-center py-8 text-muted-foreground text-sm">Loading alerts...</div>
         ) : alerts.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <p>No stock alerts</p>
+          <div className="text-center py-8 text-muted-foreground">
+            <Package className="mx-auto h-12 w-12 text-muted-foreground/30 mb-4" />
+            <p className="text-sm">No stock alerts</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {alerts.map((alert) => (
               <div
                 key={`${alert.productId}-${alert.warehouseId}`}
-                className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                className="flex items-center justify-between p-3 border border-border rounded-lg hover:bg-accent transition-colors"
               >
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="font-medium text-sm">{alert.productName}</h4>
-                    <Badge className={getStatusColor(alert.status)}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <h4 className="font-medium text-sm text-foreground">{alert.productName}</h4>
+                    <Badge variant={getStatusBadgeVariant(alert.status)}>
                       {alert.status.toUpperCase()}
                     </Badge>
                   </div>
-                  <div className="text-xs text-gray-600 space-y-1">
+                  <div className="text-xs text-muted-foreground space-y-0.5">
                     <p>
-                      Current Stock: <span className="font-semibold">{alert.currentStock}</span> /
-                      Min: <span className="font-semibold">{alert.minStockLevel}</span>
+                      Stock: <span className="font-semibold text-foreground">{alert.currentStock}</span>{" "}
+                      / Min: <span className="font-semibold text-foreground">{alert.minStockLevel}</span>
                     </p>
                     <p>Warehouse: {alert.warehouseName}</p>
                     <p>Reorder Qty: {alert.reorderQuantity}</p>
@@ -139,7 +136,6 @@ export function LowStockAlerts() {
                   <Button
                     onClick={() => handleCreateReorder(alert.productId, alert.warehouseId)}
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700"
                   >
                     Create Reorder
                   </Button>

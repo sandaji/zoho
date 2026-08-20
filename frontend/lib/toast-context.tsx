@@ -69,31 +69,31 @@ const ToastItem: React.FC<{
     switch (toast.type) {
       case "success":
         return {
-          bg: "bg-green-50",
-          border: "border-green-200",
-          text: "text-green-900",
-          icon: <CheckCircle className="text-green-600" />,
+          bg:     "bg-success/10",
+          border: "border-success/20",
+          text:   "text-foreground",
+          icon:   <CheckCircle className="text-success" />,
         };
       case "error":
         return {
-          bg: "bg-red-50",
-          border: "border-red-200",
-          text: "text-red-900",
-          icon: <AlertCircle className="text-red-600" />,
+          bg:     "bg-destructive/10",
+          border: "border-destructive/30",
+          text:   "text-foreground",
+          icon:   <AlertCircle className="text-destructive" />,
         };
       case "warning":
         return {
-          bg: "bg-yellow-50",
-          border: "border-yellow-200",
-          text: "text-yellow-900",
-          icon: <Info className="text-yellow-600" />,
+          bg:     "bg-warning-muted",
+          border: "border-warning-border",
+          text:   "text-foreground",
+          icon:   <Info className="text-warning" />,
         };
       default:
         return {
-          bg: "bg-blue-50",
-          border: "border-blue-200",
-          text: "text-blue-900",
-          icon: <Info className="text-blue-600" />,
+          bg:     "bg-info-muted",
+          border: "border-info-border",
+          text:   "text-foreground",
+          icon:   <Info className="text-info" />,
         };
     }
   };

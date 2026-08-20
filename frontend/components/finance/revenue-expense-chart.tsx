@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Skeleton } from '@/components/ui/skeleton';
 import { apiClient } from '@/lib/api-client';
 import { AlertCircle } from 'lucide-react';
 
@@ -37,14 +38,14 @@ const RevenueExpenseChart = () => {
   }, []);
 
   if (loading) {
-    return <div className="h-[300px] w-full animate-pulse bg-gray-200 dark:bg-gray-800 rounded-md" />;
+    return <Skeleton className="h-[300px] w-full" />;
   }
 
   if (error) {
     return (
-      <div className="h-[300px] w-full flex items-center justify-center text-red-500">
+      <div className="h-[300px] w-full flex items-center justify-center text-destructive">
         <div className="flex items-center gap-2">
-          <AlertCircle className="h-5 w-5" />
+          <AlertCircle className="h-5 w-5 shrink-0" />
           <span>{error}</span>
         </div>
       </div>
