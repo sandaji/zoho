@@ -705,6 +705,7 @@ export class SalesService {
     type?: string;
     status?: string;
     customerId?: string;
+    sourceDocumentId?: string;
     startDate?: string;
     endDate?: string;
     search?: string;
@@ -717,6 +718,7 @@ export class SalesService {
     if (query.type) where.type = query.type;
     if (query.status) where.status = query.status;
     if (query.customerId) where.customerId = query.customerId;
+    if (query.sourceDocumentId) where.sourceDocumentId = query.sourceDocumentId;
 
     // Full-text search across documentId and customer name
     if (query.search && query.search.length >= 2) {
@@ -928,6 +930,102 @@ export class SalesService {
       where: { id },
       data: updates,
       include: { items: true, branch: true, createdBy: true },
+    });
+  }
+
+  // =============================
+  // Update Draft / Quote line items (full replace + recalculation)
+  // Only DRAFT and QUOTE documents can have their items edited — once a
+  // document becomes an INVOICE (via conversion) or CREDIT_NOTE, its items
+  // are locked. A CONVERTED quote (kept for audit) is also locked.
+  // =============================
+  static async updateDocumentItems(
+    id: string,
+    branchId: string,
+    userId: string,
+    input: {
+      customerId?: string | null;
+      notes?: string;
+      allowStockOverride?: boolean;
+      items: {
+        productId: string;
+        description?: string;
+        quantity: number;
+        unitPrice: number;
+        taxRate?: number;
+        discount?: number;
+      }[];
+    },
+  ) {
+    const existing = await prisma.salesDocument.findUnique({ where: { id } });
+    if (!existing) throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+
+    if (existing.type !== SalesDocumentType.DRAFT && existing.type !== SalesDocumentType.QUOTE) {
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Only Draft or Quote documents can be edited. Invoices and credit notes are locked once created.",
+      );
+    }
+    if (existing.status === SalesDocumentStatus.CONVERTED) {
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "This quote has already been converted to an invoice and can no longer be edited.",
+      );
+    }
+    if (existing.status === SalesDocumentStatus.VOID) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "This document has been voided and can no longer be edited.");
+    }
+
+    if (!input.items || input.items.length === 0) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "At least one item is required");
+    }
+
+    // Re-run the same stock validation createDocument applies for this type.
+    await StockValidationService.validateOrThrow(
+      branchId,
+      input.items,
+      userId,
+      existing.type === SalesDocumentType.QUOTE ? (input.allowStockOverride || false) : false,
+    );
+
+    const preparedItems = input.items.map((item) => {
+      const totals = calculateItemTotals(item);
+      return {
+        productId: item.productId,
+        description: item.description || "Sale item",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        taxRate: item.taxRate || 0,
+        subtotal: totals.subtotal,
+        taxAmount: totals.taxAmount,
+        discount: totals.discount,
+        total: totals.total,
+      };
+    });
+
+    const totals = calculateDocumentTotals(preparedItems);
+
+    return prisma.$transaction(async (tx) => {
+      // Full replace: delete old line items, insert the new set. Simpler and
+      // safer than diffing since drafts/quotes don't affect stock or GL yet.
+      await tx.salesDocumentItem.deleteMany({ where: { salesDocumentId: id } });
+
+      return tx.salesDocument.update({
+        where: { id },
+        data: {
+          customerId: input.customerId ?? existing.customerId,
+          notes: input.notes !== undefined ? input.notes : existing.notes,
+          subtotal: totals.subtotal,
+          tax: totals.tax,
+          discount: totals.discount,
+          total: totals.total,
+          balance: totals.total,
+          items: { create: preparedItems },
+        },
+        include: { items: { include: { product: true } }, customer: true },
+      });
     });
   }
 

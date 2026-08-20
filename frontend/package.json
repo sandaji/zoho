@@ -33,12 +33,9 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.4.0",
-<<<<<<< HEAD
-    "lucide-react": "^1.32.0",
-=======
     "lucide-react": "^1.33.0",
->>>>>>> 5f284168c2b5107ed6b2b39c8a02e0fe046e16cd
     "next": "16.3.1",
+    "next-themes": "^0.4.6",
     "radix-ui": "^1.6.7",
     "react": "19.2.8",
     "react-day-picker": "^10.0.1",

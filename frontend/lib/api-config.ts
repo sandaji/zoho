@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
   // Sales Documents
   SALES_DOCUMENTS: "/v1/sales-documents/documents",
   SALES_DOCUMENT_BY_ID: (id: string) => `/v1/sales-documents/documents/${id}`,
+  SALES_DOCUMENT_UPDATE_ITEMS: (id: string) => `/v1/sales-documents/documents/${id}/items`,
   SALES_DOCUMENT_CONVERT: (id: string) => `/v1/sales-documents/documents/${id}/convert`,
   SALES_DOCUMENT_VOID: (id: string) => `/v1/sales-documents/documents/${id}/void`,
   SALES_DOCUMENT_PAYMENT: (id: string) => `/v1/sales-documents/documents/${id}/payments`,

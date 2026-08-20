@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState, useRef, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
@@ -435,11 +435,13 @@ export default function POSPage() {
     <div className="min-h-screen bg-background ml-3">
       <div className="mx-auto max-w-[1700px] px-1 py-1 space-y-4">
         {/* ================= MENU BAR ================= */}
-        <POSMenuBar
-          token={token || ""}
-          branchId={user.branchId}
-          onCustomerCreated={setSelectedCustomer}
-        />
+        <Suspense fallback={null}>
+          <POSMenuBar
+            token={token || ""}
+            branchId={user.branchId}
+            onCustomerCreated={setSelectedCustomer}
+          />
+        </Suspense>
 
         {/* ================= SESSION WARNING ================= */}
         {!sessionLoading && !session && (

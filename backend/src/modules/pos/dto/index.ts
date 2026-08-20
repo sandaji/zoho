@@ -141,6 +141,11 @@ export interface ReceiptDTO {
 export interface ProductSearchDTO {
   search: string; // SKU or barcode
   branchId?: string;
+  // When true, `available` is summed across every warehouse in every branch
+  // instead of just the warehouses belonging to `branchId`. Used by document
+  // creation (Draft/Quote) flows where stock should be checked company-wide
+  // rather than per-branch.
+  combinedStock?: boolean;
 }
 
 export interface ApproveDiscountDTO {

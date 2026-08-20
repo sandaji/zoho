@@ -12,6 +12,7 @@ interface Product {
   id: string;
   sku: string;
   name: string;
+  description?: string;
   unit_price: number;
   available: number;
   category?: string;
@@ -23,6 +24,14 @@ interface Props {
   onSelect: (product: Product) => void;
   autoFocus?: boolean;
   searchInputRef?: React.RefObject<HTMLInputElement | null>;
+  // When true, `available` reflects stock summed across every branch
+  // instead of just this one. Used by Draft/Quote document creation, where
+  // stock should be checked company-wide rather than per-branch.
+  combinedStock?: boolean;
+  // Show a wider row with a visible description column — used inside the
+  // New Document line-item table where SKU/description/price/amount all
+  // need to be legible at once.
+  showDescription?: boolean;
 }
 
 export function AutocompleteProductSearch({
@@ -31,6 +40,8 @@ export function AutocompleteProductSearch({
   onSelect,
   autoFocus = true,
   searchInputRef,
+  combinedStock = false,
+  showDescription = false,
 }: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Product[]>([]);
@@ -97,7 +108,7 @@ export function AutocompleteProductSearch({
         const res = await fetch(getApiUrl(API_ENDPOINTS.POS_PRODUCTS_SEARCH), {
           method: "POST",
           headers: getAuthHeadersWithToken(token),
-          body: JSON.stringify({ search: trimmedQuery, branchId }),
+          body: JSON.stringify({ search: trimmedQuery, branchId, combinedStock }),
         });
 
         const json = await res.json();
@@ -276,6 +287,9 @@ export function AutocompleteProductSearch({
                         </>
                       )}
                     </div>
+                    {showDescription && product.description && (
+                      <p className="mt-0.5 truncate text-xs opacity-75">{product.description}</p>
+                    )}
                   </div>
                 </div>
 

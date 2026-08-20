@@ -22,7 +22,7 @@ export class PosService {
    * Search product by SKU, barcode, name, or description (100% FIXED - NO MORE NULL QUERIES)
    */
   async searchProduct(dto: ProductSearchDTO) {
-    const { search, branchId } = dto;
+    const { search, branchId, combinedStock } = dto;
 
     if (!search || !search.trim()) {
       throw validationError("Search term is required");
@@ -52,11 +52,20 @@ export class PosService {
       );
     }
 
-    // Step 2: Get warehouse IDs for this branch (if provided)
+    // Step 2: Resolve which warehouses' inventory counts toward `available`.
+    // combinedStock=true (used by document/draft/quote creation) looks at
+    // every active warehouse company-wide. Otherwise, only the requesting
+    // branch's own warehouses count (classic POS-till behavior).
     let warehouses: any[] = [];
     let warehouseIds: string[] = [];
 
-    if (branchId) {
+    if (combinedStock) {
+      warehouses = await this.prisma.warehouse.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+      });
+      warehouseIds = warehouses.map((w) => w.id);
+    } else if (branchId) {
       warehouses = await this.prisma.warehouse.findMany({
         where: {
           branchId,

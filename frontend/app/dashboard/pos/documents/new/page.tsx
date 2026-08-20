@@ -15,7 +15,7 @@ export default function NewDocumentPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/dashboard/pos");
+    router.replace("/dashboard/pos?view=document");
   }, [router]);
 
   return (

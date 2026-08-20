@@ -46,6 +46,7 @@ export const listDocumentsQuerySchema = z.object({
     .enum(["DRAFT", "SENT", "PARTIALLY_PAID", "PAID", "CONVERTED", "VOID", "CLOSED"])
     .optional(),
   customerId: z.string().optional(),
+  sourceDocumentId: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
   search: z.string().optional(),
@@ -56,6 +57,14 @@ export const listDocumentsQuerySchema = z.object({
 // Convert document schema
 export const convertDocumentSchema = z.object({
   type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]),
+});
+
+// Update document items schema (edit a saved Draft/Quote)
+export const updateDocumentItemsSchema = z.object({
+  customerId: z.string().nullable().optional(),
+  notes: z.string().optional(),
+  allowStockOverride: z.boolean().optional(),
+  items: z.array(salesDocumentItemSchema).min(1),
 });
 
 // POS sale item schema

@@ -52,6 +52,15 @@ router.post(
   SalesController.convertDocument,
 );
 
+// Edit a saved Draft/Quote's line items (full replace + recalculation)
+router.patch(
+  "/documents/:id/items",
+  authenticate,
+  requirePermission("sales.order.create"),
+  validateFiscalPeriod(),
+  SalesController.updateDocumentItems,
+);
+
 router.post(
   "/documents/:id/void",
   authenticate,

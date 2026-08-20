@@ -4,6 +4,7 @@ import {
   createSalesDocumentSchema,
   listDocumentsQuerySchema,
   convertDocumentSchema,
+  updateDocumentItemsSchema,
   createPOSSaleSchema,
   parkSaleSchema,
   holdSaleSchema,
@@ -250,6 +251,75 @@ export class SalesController {
         userId,
       );
       res.status(201).json({ success: true, data: convertedDocument });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Update the line items of a saved Draft or Quote (full replace + recalculation).
+   * Invoices and credit notes are immutable once created — they aren't
+   * accepted by this endpoint.
+   */
+  static async updateDocumentItems(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      if (!id) {
+        res
+          .status(400)
+          .json({ success: false, error: "Document ID is required" });
+        return;
+      }
+
+      const input = updateDocumentItemsSchema.parse(req.body);
+      const authReq = req as AuthenticatedRequest;
+      const branchId = authReq.user?.branchId;
+      const userId = authReq.user?.userId;
+
+      if (!branchId || !userId) {
+        res
+          .status(401)
+          .json({ success: false, error: "User context required" });
+        return;
+      }
+
+      // Isolation check
+      const source = await SalesService.getDocumentById(id);
+      if (!source) {
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+      }
+      if (
+        authReq.authorizedBranchIds &&
+        authReq.authorizedBranchIds.length > 0
+      ) {
+        if (!authReq.authorizedBranchIds.includes(source.branchId)) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Cannot edit a document from another branch",
+          );
+        }
+      }
+
+      const updated = await SalesService.updateDocumentItems(id, branchId, userId, {
+        customerId: input.customerId,
+        notes: input.notes,
+        allowStockOverride: input.allowStockOverride,
+        items: input.items.map((item) => ({
+          productId: item.productId,
+          description: item.description,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          taxRate: item.taxRate,
+          discount: item.discount,
+        })),
+      });
+
+      res.status(200).json({ success: true, data: updated });
     } catch (error) {
       next(error);
     }

@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Target, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { SavingsGoal } from "../../app/dashboard/finance/types";
-import { formatCurrencyCompact } from "../../app/dashboard/finance/lib/api";
+import { formatCurrencyCompact } from "../../lib/api";
+import { SavingsGoal } from "../../types";
 
 interface SavingPlansProps {
   plans: SavingsGoal[];

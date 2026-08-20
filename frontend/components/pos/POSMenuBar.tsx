@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,7 +42,11 @@ import {
   SlidersHorizontal,
   Search,
   FilePlus2,
+  FileText,
+  FileEdit,
+  Receipt,
   Eye,
+  Pencil,
   Printer,
   Loader2,
   X,
@@ -153,6 +157,65 @@ const DOC_TYPE_LABELS: Record<DocType, string> = {
   INVOICE: "Sales Invoices",
 };
 
+// Unique colour per document type, for fast visual scanning in the
+// transactions table. A CONVERTED quote (i.e. one already turned into an
+// invoice) gets its own distinct shade so it reads differently from a
+// still-open quotation at a glance.
+const DOC_TYPE_BADGE_CLASS: Record<DocType, string> = {
+  ALL: "bg-slate-100 text-slate-700 border-slate-200",
+  DRAFT: "bg-slate-100 text-slate-700 border-slate-300",
+  QUOTE: "bg-blue-50 text-blue-700 border-blue-200",
+  CREDIT_NOTE: "bg-rose-50 text-rose-700 border-rose-200",
+  INVOICE: "bg-emerald-50 text-emerald-700 border-emerald-200",
+};
+const CONVERTED_QUOTE_BADGE_CLASS = "bg-indigo-50 text-indigo-700 border-indigo-200";
+
+function docTypeBadgeClass(doc: SalesDocument): string {
+  if (doc.type === "QUOTE" && doc.status === "CONVERTED") {
+    return CONVERTED_QUOTE_BADGE_CLASS;
+  }
+  return DOC_TYPE_BADGE_CLASS[doc.type as DocType] ?? DOC_TYPE_BADGE_CLASS.ALL;
+}
+
+function docTypeBadgeLabel(doc: SalesDocument): string {
+  if (doc.type === "QUOTE" && doc.status === "CONVERTED") return "Quote \u2192 Invoice";
+  return doc.type;
+}
+
+// The three document types a user can start from scratch. Invoices are
+// never created directly here — they only come from converting a saved
+// Draft or Quote (see "Convert to Invoice" on the document itself), and
+// Credit Notes only come from an already-closed Invoice.
+const NEW_DOC_CHOICES: Array<{
+  type: "DRAFT" | "QUOTE" | "CREDIT_NOTE";
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  accent: string;
+}> = [
+  {
+    type: "DRAFT",
+    title: "Draft",
+    description: "Save items for later. Converts to an invoice when ready.",
+    icon: FileEdit,
+    accent: "border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700",
+  },
+  {
+    type: "QUOTE",
+    title: "Quote",
+    description: "Send a price quotation to a customer for approval.",
+    icon: FileText,
+    accent: "border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700",
+  },
+  {
+    type: "CREDIT_NOTE",
+    title: "Credit Note",
+    description: "Return items against an already-closed invoice.",
+    icon: Receipt,
+    accent: "border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700",
+  },
+];
+
 const STATUS_VARIANT: Record<
   string,
   "default" | "secondary" | "outline" | "destructive" | "warning"
@@ -174,6 +237,7 @@ const STATUS_VARIANT: Record<
 
 export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
    const [currentTime, setCurrentTime] = React.useState(new Date());
@@ -205,13 +269,31 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  // ── New Invoice dialog ──
-  const [invoiceOpen, setInvoiceOpen] = useState(false);
+  // ── New document: type chooser (Draft / Quote / Credit Note) ──
+  const [docChooserOpen, setDocChooserOpen] = useState(false);
+
+  // ── Document editor dialog (Draft or Quote line-item editor) ──
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editorDocType, setEditorDocType] = useState<"DRAFT" | "QUOTE">("DRAFT");
+  const [editingDocId, setEditingDocId] = useState<string | null>(null);
+  const [editorLoading, setEditorLoading] = useState(false);
   const [invoiceCustomer, setInvoiceCustomer] = useState<Customer | null>(null);
   const [invoiceLines, setInvoiceLines] = useState<InvoiceLine[]>([emptyLine()]);
   const [invoicePaymentMethod, setInvoicePaymentMethod] = useState<PaymentMethod>("cash");
   const [invoiceNotes, setInvoiceNotes] = useState("");
   const [invoiceSubmitting, setInvoiceSubmitting] = useState<"draft" | "invoice" | null>(null);
+
+  // ── Convert-to-invoice (row action) ──
+  const [convertingId, setConvertingId] = useState<string | null>(null);
+
+  // ── Credit note dialog (raised against a closed/paid invoice) ──
+  const [creditNoteOpen, setCreditNoteOpen] = useState(false);
+  const [creditNoteInvoice, setCreditNoteInvoice] = useState<SalesDocument | null>(null);
+  const [creditNoteReturnQty, setCreditNoteReturnQty] = useState<Record<string, number>>({});
+  const [creditNoteAlreadyCredited, setCreditNoteAlreadyCredited] = useState<Record<string, number>>({});
+  const [creditNoteReason, setCreditNoteReason] = useState("");
+  const [creditNoteLoading, setCreditNoteLoading] = useState(false);
+  const [creditNoteSubmitting, setCreditNoteSubmitting] = useState(false);
 
   // ── Invoice customer picker (search + create) ──
   const [customerPickerOpen, setCustomerPickerOpen] = useState(false);
@@ -220,6 +302,18 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
   const [customerSearchResults, setCustomerSearchResults] = useState<Customer[]>([]);
   const [customerSearchLoading, setCustomerSearchLoading] = useState(false);
   const customerSearchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ── Deep link: /dashboard/pos?view=document opens the type chooser ──
+  useEffect(() => {
+    if (searchParams?.get("view") === "document") {
+      setDocChooserOpen(true);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("view");
+      const qs = params.toString();
+      router.replace(qs ? `/dashboard/pos?${qs}` : "/dashboard/pos");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   // ── Close tx panel on Escape ──
   useEffect(() => {
@@ -376,10 +470,192 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
     setInvoicePaymentMethod("cash");
     setInvoiceNotes("");
     setInvoiceSubmitting(null);
+    setEditingDocId(null);
+    setEditorLoading(false);
   }
 
-  // ── Submit new invoice ─────────────────────────────────────────────────────
-  async function submitInvoice(type: "DRAFT" | "INVOICE") {
+  // ── Open an existing saved Draft/Quote for editing ──────────────────────────────
+  async function openDocumentForEdit(doc: SalesDocument) {
+    setTxPanelOpen(false);
+    resetInvoiceForm();
+    setEditorDocType(doc.type as "DRAFT" | "QUOTE");
+    setEditingDocId(doc.id);
+    setEditorOpen(true);
+    setEditorLoading(true);
+    try {
+      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(doc.id)), {
+        headers: getAuthHeadersWithToken(token),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast(json.error?.message || json.message || "Failed to load document", "error");
+        setEditorOpen(false);
+        return;
+      }
+      const full = json.data;
+      setInvoiceCustomer(
+        full.customer
+          ? {
+              id: full.customer.id,
+              name: full.customer.name,
+              phone: full.customer.phone,
+              email: full.customer.email,
+            }
+          : null
+      );
+      setInvoiceNotes(full.notes || "");
+      setInvoiceLines(
+        (full.items || []).map((item: any) => ({
+          _key: crypto.randomUUID(),
+          productId: item.productId,
+          productName: item.product ? `${item.product.sku} — ${item.product.name}` : item.description,
+          description: item.description,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          taxRate: item.taxRate,
+          discount: item.discount,
+        }))
+      );
+    } catch {
+      toast("Failed to load document", "error");
+      setEditorOpen(false);
+    } finally {
+      setEditorLoading(false);
+    }
+  }
+
+  // ── Open the credit note dialog for a closed/paid invoice ──────────────────
+  async function openCreditNoteFor(doc: SalesDocument) {
+    setTxPanelOpen(false);
+    setCreditNoteInvoice(doc);
+    setCreditNoteReturnQty({});
+    setCreditNoteReason("");
+    setCreditNoteAlreadyCredited({});
+    setCreditNoteOpen(true);
+    setCreditNoteLoading(true);
+    try {
+      const params = new URLSearchParams({ type: "CREDIT_NOTE", sourceDocumentId: doc.id });
+      const res = await fetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params}`, {
+        headers: getAuthHeadersWithToken(token),
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        const raw = json.data;
+        const list: SalesDocument[] = Array.isArray(raw) ? raw : (raw.data ?? []);
+        const credited: Record<string, number> = {};
+        for (const cn of list) {
+          for (const item of cn.items || []) {
+            credited[item.productId] = (credited[item.productId] || 0) + Math.abs(item.quantity);
+          }
+        }
+        setCreditNoteAlreadyCredited(credited);
+      }
+    } catch {
+      // Non-fatal — proceed assuming nothing has been credited yet.
+    } finally {
+      setCreditNoteLoading(false);
+    }
+  }
+
+  // ── Submit the credit note ────────────────────────────────────────────
+  async function submitCreditNote() {
+    if (!creditNoteInvoice) return;
+    const items = creditNoteInvoice.items
+      .filter((item) => (creditNoteReturnQty[item.id] || 0) > 0)
+      .map((item) => ({
+        productId: item.productId,
+        description: item.description,
+        quantity: creditNoteReturnQty[item.id],
+        unitPrice: item.unitPrice,
+        taxRate: item.taxRate,
+        discount: 0,
+      }));
+
+    if (!items.length) {
+      toast("Select at least one item to return", "warning");
+      return;
+    }
+    if (creditNoteReason.trim().length < 10) {
+      toast("Reason must be at least 10 characters", "warning");
+      return;
+    }
+
+    setCreditNoteSubmitting(true);
+    try {
+      const res = await fetch(
+        getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CREDIT_NOTE(creditNoteInvoice.id)),
+        {
+          method: "POST",
+          headers: getAuthHeadersWithToken(token),
+          body: JSON.stringify({ items, reason: creditNoteReason.trim() }),
+        }
+      );
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast(json.error?.message || json.message || "Failed to create credit note", "error");
+        return;
+      }
+      toast(`Credit note created: ${json.data?.documentId || ""}`, "success");
+      setCreditNoteOpen(false);
+      setCreditNoteInvoice(null);
+      setCreditNoteReturnQty({});
+      setCreditNoteReason("");
+      fetchDocuments(activeDocType, fromDate, toDate, searchValue);
+    } catch {
+      toast("Failed to create credit note", "error");
+    } finally {
+      setCreditNoteSubmitting(false);
+    }
+  }
+
+  // ── Open the type chooser (Draft / Quote / Credit Note) ────────────────────
+  function openNewDocument() {
+    setDocChooserOpen(true);
+  }
+
+  // ── Pick a type from the chooser ────────────────────────────────────────────
+  function chooseDocType(type: "DRAFT" | "QUOTE" | "CREDIT_NOTE") {
+    setDocChooserOpen(false);
+    if (type === "CREDIT_NOTE") {
+      // Credit notes always originate from an already-closed/paid invoice —
+      // open the transactions panel pre-filtered to invoices so the user can
+      // pick the source invoice. Full item-level credit-note entry (partial
+      // vs. full return) happens from that invoice's detail view.
+      setActiveDocType("INVOICE");
+      setTxPanelOpen(true);
+      toast("Select a closed/paid invoice to raise a credit note against", "info");
+      return;
+    }
+    resetInvoiceForm();
+    setEditorDocType(type);
+    setEditorOpen(true);
+  }
+
+  // ── Convert a saved Draft/Quote to an Invoice ───────────────────────────────
+  async function handleConvertToInvoice(doc: SalesDocument) {
+    setConvertingId(doc.id);
+    try {
+      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(doc.id)), {
+        method: "POST",
+        headers: getAuthHeadersWithToken(token),
+        body: JSON.stringify({}),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast(json.error?.message || json.message || "Failed to convert to invoice", "error");
+        return;
+      }
+      toast(`Invoice created: ${json.data?.documentId || ""}`, "success");
+      fetchDocuments(activeDocType, fromDate, toDate, searchValue);
+    } catch {
+      toast("Failed to convert to invoice", "error");
+    } finally {
+      setConvertingId(null);
+    }
+  }
+
+  // ── Submit the current document as a Draft or Quote (create, or save edits) ──
+  async function submitInvoice(type: "DRAFT" | "QUOTE") {
     const validLines = invoiceLines.filter((l) => l.productId && l.quantity > 0);
     if (!validLines.length) {
       toast("Add at least one product", "warning");
@@ -390,8 +666,40 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
       return;
     }
 
-    setInvoiceSubmitting(type === "DRAFT" ? "draft" : "invoice");
+    setInvoiceSubmitting("draft");
     try {
+      // Editing an existing saved Draft/Quote: replace its items in place.
+      if (editingDocId) {
+        const body = {
+          customerId: invoiceCustomer?.id ?? null,
+          notes: invoiceNotes || undefined,
+          items: validLines.map((l) => ({
+            productId: l.productId,
+            description: l.description || l.productName || "Sale item",
+            quantity: l.quantity,
+            unitPrice: l.unitPrice,
+            taxRate: l.taxRate,
+            discount: l.discount,
+            total: lineTotal(l),
+          })),
+        };
+        const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_UPDATE_ITEMS(editingDocId)), {
+          method: "PATCH",
+          headers: getAuthHeadersWithToken(token),
+          body: JSON.stringify(body),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          toast(json.error?.message || json.message || "Failed to save changes", "error");
+          return;
+        }
+        toast(`Changes saved: ${json.data?.documentId || ""}`, "success");
+        setEditorOpen(false);
+        resetInvoiceForm();
+        fetchDocuments(activeDocType, fromDate, toDate, searchValue);
+        return;
+      }
+
       const body = {
         type,
         customerId: invoiceCustomer?.id || undefined,
@@ -425,9 +733,9 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
         return;
       }
 
-      const label = type === "DRAFT" ? "Draft saved" : "Invoice created";
+      const label = type === "DRAFT" ? "Draft saved" : "Quote saved";
       toast(`${label}: ${json.data?.documentId || ""}`, "success");
-      setInvoiceOpen(false);
+      setEditorOpen(false);
       resetInvoiceForm();
     } catch (e) {
       toast("Unexpected error", "error");
@@ -588,21 +896,14 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
         </div>
 
         <div className="flex flex-1 justify-end gap-2">
-          <Button variant="outline" size="sm" onClick={() => router.push("/dashboard/pos?view=document")}>
-            <FilePlus2 className="mr-1.5 h-3.5 w-3.5" />
-            New document
-          </Button>
-          {/* 6 — New Sales Invoice */}
+          {/* 6 — New document: choose Draft / Quote / Credit Note */}
           <Button
             size="sm"
             className="bg-emerald-600 hover:bg-emerald-700 text-white"
-            onClick={() => {
-              resetInvoiceForm();
-              setInvoiceOpen(true);
-            }}
+            onClick={openNewDocument}
           >
             <FilePlus2 className="mr-1.5 h-3.5 w-3.5" />
-            New Sales Invoice
+            New document
           </Button>
         </div>
       </div>
@@ -671,8 +972,8 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                           )}
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="capitalize text-[10px]">
-                            {doc.type}
+                          <Badge variant="outline" className={cn("capitalize text-[10px]", docTypeBadgeClass(doc))}>
+                            {docTypeBadgeLabel(doc)}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -688,16 +989,63 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center justify-center gap-1">
+                            {(doc.type === "DRAFT" ||
+                              (doc.type === "QUOTE" && doc.status !== "CONVERTED")) &&
+                              doc.status !== "VOID" && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  title="Convert to Invoice"
+                                  disabled={convertingId === doc.id}
+                                  onClick={() => handleConvertToInvoice(doc)}
+                                >
+                                  {convertingId === doc.id ? (
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                  ) : (
+                                    <FilePlus2 className="h-3.5 w-3.5" />
+                                  )}
+                                </Button>
+                              )}
+                            {doc.type === "INVOICE" && doc.status === "PAID" && (
+                              <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                title="Raise Credit Note"
+                                onClick={() => openCreditNoteFor(doc)}
+                              >
+                                <Receipt className="h-3.5 w-3.5" />
+                              </Button>
+                            )}
                             <Button
                               variant="ghost"
                               size="icon-sm"
-                              title="View"
+                              title={
+                                (doc.type === "DRAFT" ||
+                                  (doc.type === "QUOTE" && doc.status !== "CONVERTED")) &&
+                                doc.status !== "VOID"
+                                  ? "Edit"
+                                  : "View"
+                              }
                               onClick={() => {
-                                setTxPanelOpen(false);
-                                router.push(`/dashboard/pos/sales/${doc.id}`);
+                                if (
+                                  (doc.type === "DRAFT" ||
+                                    (doc.type === "QUOTE" && doc.status !== "CONVERTED")) &&
+                                  doc.status !== "VOID"
+                                ) {
+                                  openDocumentForEdit(doc);
+                                } else {
+                                  setTxPanelOpen(false);
+                                  router.push(`/dashboard/pos/sales/${doc.id}`);
+                                }
                               }}
                             >
-                              <Eye className="h-3.5 w-3.5" />
+                              {(doc.type === "DRAFT" ||
+                                (doc.type === "QUOTE" && doc.status !== "CONVERTED")) &&
+                              doc.status !== "VOID" ? (
+                                <Pencil className="h-3.5 w-3.5" />
+                              ) : (
+                                <Eye className="h-3.5 w-3.5" />
+                              )}
                             </Button>
                             <Button
                               variant="ghost"
@@ -730,6 +1078,38 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
         </div>
       )}
 
+      {/* ── DOCUMENT TYPE CHOOSER ── */}
+      <Dialog open={docChooserOpen} onOpenChange={setDocChooserOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>New Document</DialogTitle>
+          </DialogHeader>
+          <p className="text-xs text-slate-500 -mt-2">
+            Choose what you're creating. Invoices are never created directly here — save a
+            Draft or Quote first, then convert it to an Invoice when it's ready.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            {NEW_DOC_CHOICES.map((choice) => {
+              const Icon = choice.icon;
+              return (
+                <button
+                  key={choice.type}
+                  onClick={() => chooseDocType(choice.type)}
+                  className={cn(
+                    "flex flex-col items-start gap-2 rounded-lg border-2 p-4 text-left transition-colors",
+                    choice.accent
+                  )}
+                >
+                  <Icon className="h-6 w-6" />
+                  <span className="text-sm font-semibold">{choice.title}</span>
+                  <span className="text-xs opacity-80">{choice.description}</span>
+                </button>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* ── ADD CUSTOMER DIALOG (Master → New Customer) ── */}
       <AddCustomerDialog
         open={showAddCustomer}
@@ -742,27 +1122,29 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
         }}
       />
 
-      {/* ── NEW SALES INVOICE DIALOG ── */}
+      {/* ── DOCUMENT EDITOR (Draft / Quote) ── */}
       <Dialog
-        open={invoiceOpen}
+        open={editorOpen}
         onOpenChange={(open) => {
           if (!open) resetInvoiceForm();
-          setInvoiceOpen(open);
+          setEditorOpen(open);
         }}
       >
         <DialogContent
-          className="max-w-5xl w-full h-[90vh] flex flex-col gap-0 p-0 overflow-hidden"
+          className="max-w-[95vw] xl:max-w-7xl w-full h-[92vh] flex flex-col gap-0 p-0 overflow-hidden"
           showCloseButton={false}
         >
           {/* Dialog header */}
           <DialogHeader className="flex-none px-6 py-4 border-b bg-slate-50">
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-base font-semibold">New Sales Invoice</DialogTitle>
+              <DialogTitle className="text-base font-semibold">
+                {editingDocId ? "Edit" : "New"} {editorDocType === "DRAFT" ? "Draft" : "Quote"}
+              </DialogTitle>
               <button
                 className="rounded-md p-1.5 text-slate-500 hover:bg-slate-200"
                 onClick={() => {
                   resetInvoiceForm();
-                  setInvoiceOpen(false);
+                  setEditorOpen(false);
                 }}
               >
                 <X className="h-4 w-4" />
@@ -771,6 +1153,11 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
           </DialogHeader>
 
           {/* Dialog scrollable body */}
+          {editorLoading ? (
+            <div className="flex-1 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+            </div>
+          ) : (
           <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
             {/* Customer selector */}
             <div className="flex items-center justify-between rounded-lg border p-3 bg-slate-50">
@@ -821,8 +1208,8 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                 <table className="w-full text-xs">
                   <thead className="bg-slate-50 border-b">
                     <tr>
-                      <th className="text-left px-3 py-2 font-semibold text-slate-600 w-52">
-                        Product
+                      <th className="text-left px-3 py-2 font-semibold text-slate-600 w-80">
+                        Product (SKU)
                       </th>
                       <th className="text-left px-3 py-2 font-semibold text-slate-600">
                         Description
@@ -857,10 +1244,12 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                         {/* Product search cell */}
                         <td className="px-2 py-1.5 align-top">
                           {line.productId ? (
-                            <div className="flex items-center gap-1">
-                              <span className="font-medium truncate max-w-[160px]">
-                                {line.productName}
-                              </span>
+                            <div className="flex items-center gap-2">
+                              <div className="min-w-0">
+                                <p className="font-medium truncate max-w-[220px]">
+                                  {line.productName}
+                                </p>
+                              </div>
                               <button
                                 className="text-slate-400 hover:text-slate-600 shrink-0"
                                 onClick={() =>
@@ -871,16 +1260,18 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                               </button>
                             </div>
                           ) : (
-                            <div className="w-48">
+                            <div className="w-72">
                               <AutocompleteProductSearch
                                 branchId={branchId ?? ""}
                                 token={token}
                                 autoFocus={false}
+                                combinedStock
+                                showDescription
                                 onSelect={(product) =>
                                   updateLine(line._key, {
                                     productId: product.id,
-                                    productName: product.name,
-                                    description: product.name,
+                                    productName: `${product.sku} — ${product.name}`,
+                                    description: product.description || product.name,
                                     unitPrice: product.unit_price,
                                   })
                                 }
@@ -1022,6 +1413,7 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
               </div>
             </div>
           </div>
+          )}
 
           {/* Dialog footer */}
           <DialogFooter className="flex-none border-t px-6 py-4 bg-slate-50">
@@ -1029,36 +1421,161 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
               variant="outline"
               onClick={() => {
                 resetInvoiceForm();
-                setInvoiceOpen(false);
+                setEditorOpen(false);
               }}
               disabled={!!invoiceSubmitting}
             >
               Cancel
             </Button>
             <Button
-              variant="secondary"
-              onClick={() => submitInvoice("DRAFT")}
-              disabled={!!invoiceSubmitting}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={() => submitInvoice(editorDocType)}
+              disabled={!!invoiceSubmitting || editorLoading}
             >
               {invoiceSubmitting === "draft" ? (
                 <>
                   <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Saving…
                 </>
+              ) : editingDocId ? (
+                "Save Changes"
+              ) : editorDocType === "DRAFT" ? (
+                "Save Draft"
               ) : (
-                "Save as Draft"
+                "Save Quote"
               )}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── CREDIT NOTE DIALOG (against a closed/paid invoice) ── */}
+      <Dialog
+        open={creditNoteOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setCreditNoteInvoice(null);
+            setCreditNoteReturnQty({});
+            setCreditNoteReason("");
+          }
+          setCreditNoteOpen(open);
+        }}
+      >
+        <DialogContent
+          className="max-w-3xl w-full max-h-[85vh] flex flex-col gap-0 p-0 overflow-hidden"
+          showCloseButton={false}
+        >
+          <DialogHeader className="flex-none px-6 py-4 border-b bg-slate-50">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-base font-semibold">
+                Credit Note{creditNoteInvoice ? ` \u2014 ${creditNoteInvoice.documentId}` : ""}
+              </DialogTitle>
+              <button
+                className="rounded-md p-1.5 text-slate-500 hover:bg-slate-200"
+                onClick={() => setCreditNoteOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+            {creditNoteLoading ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+              </div>
+            ) : creditNoteInvoice ? (
+              <>
+                <p className="text-xs text-slate-500">
+                  Select which products and quantities are being returned. Returns can be
+                  partial or cover the full invoice.
+                </p>
+                <div className="rounded-lg border overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead className="bg-slate-50 border-b">
+                      <tr>
+                        <th className="text-left px-3 py-2 font-semibold text-slate-600">Product</th>
+                        <th className="text-right px-3 py-2 font-semibold text-slate-600 w-24">
+                          Invoiced
+                        </th>
+                        <th className="text-right px-3 py-2 font-semibold text-slate-600 w-24">
+                          Already Credited
+                        </th>
+                        <th className="text-right px-3 py-2 font-semibold text-slate-600 w-28">
+                          Return Qty
+                        </th>
+                        <th className="text-right px-3 py-2 font-semibold text-slate-600 w-24">
+                          Amount
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {creditNoteInvoice.items.map((item) => {
+                        const alreadyCredited = creditNoteAlreadyCredited[item.productId] || 0;
+                        const remaining = Math.max(0, item.quantity - alreadyCredited);
+                        const returnQty = creditNoteReturnQty[item.id] || 0;
+                        return (
+                          <tr key={item.id} className="border-b last:border-0">
+                            <td className="px-3 py-2">
+                              <p className="font-medium">{item.product?.name || item.description}</p>
+                              {item.product?.sku && (
+                                <p className="text-[11px] text-slate-400 font-mono">
+                                  {item.product.sku}
+                                </p>
+                              )}
+                            </td>
+                            <td className="px-3 py-2 text-right">{item.quantity}</td>
+                            <td className="px-3 py-2 text-right text-slate-500">{alreadyCredited}</td>
+                            <td className="px-3 py-2 text-right">
+                              <Input
+                                type="number"
+                                min={0}
+                                max={remaining}
+                                value={returnQty}
+                                disabled={remaining === 0}
+                                onChange={(e) => {
+                                  const v = Math.max(0, Math.min(remaining, Number(e.target.value)));
+                                  setCreditNoteReturnQty((prev) => ({ ...prev, [item.id]: v }));
+                                }}
+                                className="h-7 w-20 text-xs text-right ml-auto"
+                              />
+                            </td>
+                            <td className="px-3 py-2 text-right font-medium">
+                              {formatCurrency((returnQty || 0) * item.unitPrice)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold">Reason (required)</Label>
+                  <Textarea
+                    value={creditNoteReason}
+                    onChange={(e) => setCreditNoteReason(e.target.value)}
+                    placeholder="Why is this being returned/credited? (min. 10 characters)"
+                    className="min-h-20 text-xs"
+                  />
+                </div>
+              </>
+            ) : null}
+          </div>
+
+          <DialogFooter className="flex-none border-t px-6 py-4 bg-slate-50">
+            <Button variant="outline" onClick={() => setCreditNoteOpen(false)} disabled={creditNoteSubmitting}>
+              Cancel
+            </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              onClick={() => submitInvoice("INVOICE")}
-              disabled={!!invoiceSubmitting}
+              className="bg-rose-600 hover:bg-rose-700 text-white"
+              onClick={submitCreditNote}
+              disabled={creditNoteSubmitting || creditNoteLoading}
             >
-              {invoiceSubmitting === "invoice" ? (
+              {creditNoteSubmitting ? (
                 <>
-                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Creating…
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Submitting…
                 </>
               ) : (
-                "Create Invoice"
+                "Raise Credit Note"
               )}
             </Button>
           </DialogFooter>

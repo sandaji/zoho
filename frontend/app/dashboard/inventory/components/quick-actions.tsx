@@ -81,9 +81,6 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
               </div>
               Quick Actions
             </CardTitle>
-            {/* <CardDescription className="text-slate-600 dark:text-slate-400">
-              Common inventory tasks
-            </CardDescription> */}
           </div>
         </CardHeader>
         <CardContent>
@@ -102,9 +99,7 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
                   </div>
                   <div className="space-y-1 text-center">
                     <span className="text-xs font-medium block">{action.title}</span>
-                    {/* <span className="text-[10px] text-slate-500 dark:text-slate-400 block leading-tight">
-                      {action.description}
-                    </span> */}
+                   
                   </div>
                 </Button>
               );
@@ -112,97 +107,6 @@ export function QuickActions({ onProductAdded }: { onProductAdded?: () => void }
           </div>
         </CardContent>
       </Card>
-
-      {/* Recent Activities Card */}
-      {/* <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
-        <CardHeader className="pb-4">
-          <div className="space-y-1">
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white">
-              Recent Activities
-            </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-400">
-              Latest inventory updates
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {recentActivities.map((activity) => (
-              <div
-                key={activity.id}
-                className="flex items-start space-x-3 p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-700/30 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
-              >
-                <div className="shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                    <Package className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0 space-y-1">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white">
-                    {activity.action}
-                  </p>
-                  <div className="flex items-center space-x-2">
-                    <Badge
-                      variant="outline"
-                      className={`text-xs ${getActivityColor(activity.type)}`}
-                    >
-                      {activity.type}
-                    </Badge>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      by {activity.user}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {activity.time}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* View All Button 
-          <Button
-            variant="ghost"
-            className="w-full mt-4 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300"
-          >
-            View All Activities
-          </Button>
-        </CardContent>
-      </Card> */}
-
-      {/* System Status Card */}
-      {/* <Card className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
-        <CardHeader className="pb-4">
-          <div className="space-y-1">
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                <Settings className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              System Status
-            </CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Inventory Sync</span>
-              <Badge variant="default" className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                Active
-              </Badge>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">API Connection</span>
-              <Badge variant="default" className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                Stable
-              </Badge>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Last Backup</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">2 hours ago</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card> */}
     </div>
     </>
   );

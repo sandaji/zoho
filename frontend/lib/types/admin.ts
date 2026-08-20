@@ -1,3 +1,4 @@
+//frontend/lib/types/admin.ts
 /**
  * Admin Dashboard Type Definitions
  * Maps to backend DTOs from backend/src/modules/pos/dto/index.ts

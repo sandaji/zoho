@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import "./globals.css";
 import "@/styles/print.css"; // Import print styles
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,10 +29,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
         <AuthProvider>
           {children}
           <Toaster richColors position="top-right" />
-        </AuthProvider>
+        </AuthProvider></ThemeProvider>
       </body>
     </html>
   );
