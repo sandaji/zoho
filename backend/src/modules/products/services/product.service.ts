@@ -1,6 +1,7 @@
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { logger } from "../../../lib/logger";
+import { InventoryService } from "../../inventory/service/inventory.service";
 
 interface CreateProductDTO {
   sku: string;
@@ -171,19 +172,40 @@ export class ProductService {
           },
         });
 
-        // 3. Create warehouse-level Inventory record for stock operations
+        // 3. Create warehouse-level stock. Initial stock with quantity > 0
+        // must go through InventoryService.receiveStock — it's the only
+        // path that also creates a StockBatch cost lot, which is what FIFO
+        // depletion (every POS sale) actually reads from. A bare
+        // tx.inventory.create() here made Inventory.quantity look correct
+        // everywhere in the UI while leaving zero StockBatch rows behind,
+        // so the very first sale of a newly-added product failed with
+        // "Insufficient stock: ... available 0" despite the product page
+        // showing full stock. receiveStock also re-syncs BranchInventory
+        // itself, so the row created in step 2 above gets its
+        // quantity/available/status recalculated from the real ledger
+        // while keeping the reorder_level/reorder_quantity just set on it.
         const primaryWarehouse = branch.warehouses[0];
-        await tx.inventory.create({
-          data: {
+        if (initialQuantity > 0) {
+          await InventoryService.receiveStock(tx, {
             productId: product.id,
             warehouseId: primaryWarehouse!.id,
             quantity: initialQuantity,
-            reserved: 0,
-            available: initialQuantity,
-            status: inventoryStatus,
-            last_counted: new Date(),
-          },
-        });
+            unitCost: data.cost_price,
+            reference: "Initial stock on product creation",
+          });
+        } else {
+          await tx.inventory.create({
+            data: {
+              productId: product.id,
+              warehouseId: primaryWarehouse!.id,
+              quantity: 0,
+              reserved: 0,
+              available: 0,
+              status: "out_of_stock",
+              last_counted: new Date(),
+            },
+          });
+        }
 
         return product;
       }, {
@@ -212,6 +234,191 @@ export class ProductService {
         "Failed to create product",
       );
     }
+  }
+
+  /**
+   * Bulk-import products from a parsed spreadsheet (e.g. the Product
+   * Catalogue export re-uploaded, or any file with the same columns:
+   * SKU, Name, Category, Quantity, Cost Price, Selling Price, Status,
+   * Reorder Level).
+   *
+   * The export/import round trip never includes vendorId or branchId
+   * (they aren't columns in the spreadsheet), but both are mandatory on
+   * every product in this system — see createProduct()'s vendorId/branchId
+   * comments. So the caller picks ONE branch and ONE vendor for the whole
+   * batch up front, and every row in the file is created under that
+   * branch/vendor pair.
+   *
+   * Unlike createProduct(), a single bad row must not fail the whole
+   * import — each row gets its own try/catch and its own transaction, so
+   * one duplicate SKU or missing price doesn't block the other 500 rows.
+   * The branch/vendor existence check happens once, up front, since it's
+   * the same for every row.
+   */
+  async bulkImportProducts(input: {
+    branchId: string;
+    vendorId: string;
+    products: Array<{
+      sku: string;
+      name: string;
+      category?: string | null;
+      quantity?: number;
+      cost_price: number;
+      unit_price: number;
+      status?: string;
+      reorder_level?: number;
+    }>;
+  }) {
+    const { branchId, vendorId, products } = input;
+
+    // Validate branch + vendor once for the whole batch
+    const branch = await prisma.branch.findUnique({
+      where: { id: branchId },
+      include: { warehouses: { where: { isActive: true } } },
+    });
+    if (!branch) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Specified branch not found");
+    }
+    if (branch.warehouses.length === 0) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch has no active warehouses");
+    }
+
+    const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
+    if (!vendor) {
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Specified vendor not found");
+    }
+
+    const primaryWarehouse = branch.warehouses[0]!;
+    const validStatuses = ["active", "inactive", "discontinued"];
+
+    const results = {
+      total: products.length,
+      created: 0,
+      failed: 0,
+      errors: [] as Array<{ row: number; sku?: string; message: string }>,
+    };
+
+    for (let i = 0; i < products.length; i++) {
+      const row = products[i]!;
+      // +2 accounts for the header row and 1-based spreadsheet row numbering,
+      // so the row number reported here matches what the user sees in Excel.
+      const rowNum = i + 2;
+
+      try {
+        const sku = row.sku?.toString().trim();
+        const name = row.name?.toString().trim();
+        const costPrice = Number(row.cost_price);
+        const unitPrice = Number(row.unit_price);
+
+        if (!sku) throw new Error("SKU is required");
+        if (!name) throw new Error("Product name is required");
+        if (row.cost_price === undefined || row.cost_price === null || row.cost_price === ("" as any) || isNaN(costPrice) || costPrice < 0) {
+          throw new Error("Valid cost price is required");
+        }
+        if (row.unit_price === undefined || row.unit_price === null || row.unit_price === ("" as any) || isNaN(unitPrice) || unitPrice < 0) {
+          throw new Error("Valid selling price is required");
+        }
+
+        const existingSKU = await prisma.product.findUnique({ where: { sku } });
+        if (existingSKU) {
+          throw new Error(`SKU "${sku}" already exists`);
+        }
+
+        const initialQuantity =
+          row.quantity !== undefined && !isNaN(Number(row.quantity)) && Number(row.quantity) > 0
+            ? Math.floor(Number(row.quantity))
+            : 0;
+        const reorderLevel =
+          row.reorder_level !== undefined && !isNaN(Number(row.reorder_level)) && Number(row.reorder_level) >= 0
+            ? Math.floor(Number(row.reorder_level))
+            : 10;
+        const reorderQuantity = Math.max(reorderLevel * 2, 20);
+
+        const statusValue = row.status?.toString().trim().toLowerCase();
+        const status = validStatuses.includes(statusValue || "")
+          ? (statusValue as "active" | "inactive" | "discontinued")
+          : "active";
+
+        let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" = "in_stock";
+        if (initialQuantity === 0) inventoryStatus = "out_of_stock";
+        else if (initialQuantity < reorderLevel) inventoryStatus = "low_stock";
+
+        await prisma.$transaction(
+          async (tx) => {
+            const product = await tx.product.create({
+              data: {
+                sku,
+                name,
+                category: row.category?.toString().trim() || null,
+                cost_price: costPrice,
+                unit_price: unitPrice,
+                tax_rate: 0.16,
+                unit_of_measurement: "pcs",
+                vendorId,
+                status,
+              },
+            });
+
+            await tx.branchInventory.create({
+              data: {
+                productId: product.id,
+                branchId,
+                quantity: initialQuantity,
+                reorder_level: reorderLevel,
+                reorder_quantity: reorderQuantity,
+                reserved: 0,
+                available: initialQuantity,
+                status: inventoryStatus,
+                last_counted: new Date(),
+              },
+            });
+
+            // See createProduct()'s comment above — quantity > 0 must go
+            // through receiveStock to create a StockBatch, or FIFO sales
+            // depletion later fails with "available 0" despite this row
+            // showing stock in the Products/Inventory UI.
+            if (initialQuantity > 0) {
+              await InventoryService.receiveStock(tx, {
+                productId: product.id,
+                warehouseId: primaryWarehouse.id,
+                quantity: initialQuantity,
+                unitCost: costPrice,
+                reference: "Initial stock via bulk import",
+              });
+            } else {
+              await tx.inventory.create({
+                data: {
+                  productId: product.id,
+                  warehouseId: primaryWarehouse.id,
+                  quantity: 0,
+                  reserved: 0,
+                  available: 0,
+                  status: "out_of_stock",
+                  last_counted: new Date(),
+                },
+              });
+            }
+          },
+          { timeout: 15000 },
+        );
+
+        results.created++;
+      } catch (err) {
+        results.failed++;
+        results.errors.push({
+          row: rowNum,
+          sku: row?.sku?.toString(),
+          message: err instanceof Error ? err.message : "Unknown error",
+        });
+      }
+    }
+
+    logger.info(
+      { branchId, vendorId, total: results.total, created: results.created, failed: results.failed },
+      "Bulk product import completed",
+    );
+
+    return results;
   }
 
   /**

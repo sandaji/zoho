@@ -340,7 +340,9 @@ export const fetchBranches = async (token: string): Promise<Branch[]> => {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
-    throw new Error("Failed to fetch branches");
+    const errorBody = await response.text().catch(() => "");
+    console.error(`fetchBranches failed with status ${response.status}:`, errorBody);
+    throw new Error(`Failed to fetch branches (${response.status}): ${errorBody || response.statusText}`);
   }
   const { data } = await response.json();
   return data.branches || [];
@@ -768,6 +770,51 @@ export const createProduct = async (token: string, payload: ProductPayload): Pro
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to create product");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+// ============================================================================
+// BULK IMPORT PRODUCTS
+// ============================================================================
+
+export interface BulkImportProductRow {
+  sku: string;
+  name: string;
+  category?: string;
+  quantity?: number;
+  cost_price: number;
+  unit_price: number;
+  status?: "active" | "inactive" | "discontinued";
+  reorder_level?: number;
+}
+
+export interface BulkImportPayload {
+  branchId: string;
+  vendorId: string;
+  products: BulkImportProductRow[];
+}
+
+export interface BulkImportResult {
+  total: number;
+  created: number;
+  failed: number;
+  errors: Array<{ row: number; sku?: string; message: string }>;
+}
+
+export const bulkImportProducts = async (
+  token: string,
+  payload: BulkImportPayload
+): Promise<BulkImportResult> => {
+  const response = await fetch(`${API_BASE_URL}/v1/products/bulk-import`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error?.message || "Failed to import products");
   }
   const { data } = await response.json();
   return data;

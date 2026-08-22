@@ -8,7 +8,12 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { fetchPLQuickPreview } from "@/app/dashboard/finance/lib/api";
 import type { PLQuickPreview as PLQuickPreviewData } from "@/app/dashboard/finance/types";
 
-export const PLQuickPreview = () => {
+interface PLQuickPreviewProps {
+  startDate?: string;
+  endDate?: string;
+}
+
+export const PLQuickPreview = ({ startDate, endDate }: PLQuickPreviewProps = {}) => {
   const [current, setCurrent] = useState<PLQuickPreviewData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +22,8 @@ export const PLQuickPreview = () => {
     const loadData = async () => {
       try {
         setError(null);
-        const response = await fetchPLQuickPreview();
+        setLoading(true);
+        const response = await fetchPLQuickPreview(startDate, endDate);
         if (response.success && response.data?.current) {
           setCurrent(response.data.current);
         } else {
@@ -32,7 +38,7 @@ export const PLQuickPreview = () => {
     };
 
     loadData();
-  }, []);
+  }, [startDate, endDate]);
 
   if (loading) {
     return (

@@ -45,6 +45,7 @@ import {
   FileText,
   FileEdit,
   Receipt,
+  Banknote,
   Eye,
   Pencil,
   Printer,
@@ -99,54 +100,24 @@ interface SalesDocumentListResponse {
   data: { data: SalesDocument[]; total: number } | SalesDocument[];
 }
 
-// New invoice line item (client-side only, before submission)
-interface InvoiceLine {
-  _key: string; // ephemeral client key
-  productId: string;
-  productName: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  taxRate: number;
-  discount: number;
-}
-
 interface POSMenuBarProps {
   token: string;
   branchId: string | null;
   onCustomerCreated: (customer: Customer) => void;
+  // The document editor now lives in the main POS cart (unified shopping
+  // cart), so "New document" just tells the page which mode to switch the
+  // cart into instead of opening its own separate editor.
+  onNewDraft: () => void;
+  onNewQuote: () => void;
+  onEditDocument: (id: string) => void;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
+// Returns YYYY-MM-DD for today in local timezone
 function todayISO(): string {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function emptyLine(): InvoiceLine {
-  return {
-    _key: crypto.randomUUID(),
-    productId: "",
-    productName: "",
-    description: "",
-    quantity: 1,
-    unitPrice: 0,
-    taxRate: 0.16,
-    discount: 0,
-  };
-}
-
-function lineSubtotal(l: InvoiceLine): number {
-  return l.quantity * l.unitPrice - l.discount;
-}
-
-function lineTax(l: InvoiceLine): number {
-  return lineSubtotal(l) * l.taxRate;
-}
-
-function lineTotal(l: InvoiceLine): number {
-  return lineSubtotal(l) + lineTax(l);
 }
 
 const DOC_TYPE_LABELS: Record<DocType, string> = {
@@ -235,7 +206,14 @@ const STATUS_VARIANT: Record<
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarProps) {
+export function POSMenuBar({
+  token,
+  branchId,
+  onCustomerCreated,
+  onNewDraft,
+  onNewQuote,
+  onEditDocument,
+}: POSMenuBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -272,17 +250,6 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
   // ── New document: type chooser (Draft / Quote / Credit Note) ──
   const [docChooserOpen, setDocChooserOpen] = useState(false);
 
-  // ── Document editor dialog (Draft or Quote line-item editor) ──
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [editorDocType, setEditorDocType] = useState<"DRAFT" | "QUOTE">("DRAFT");
-  const [editingDocId, setEditingDocId] = useState<string | null>(null);
-  const [editorLoading, setEditorLoading] = useState(false);
-  const [invoiceCustomer, setInvoiceCustomer] = useState<Customer | null>(null);
-  const [invoiceLines, setInvoiceLines] = useState<InvoiceLine[]>([emptyLine()]);
-  const [invoicePaymentMethod, setInvoicePaymentMethod] = useState<PaymentMethod>("cash");
-  const [invoiceNotes, setInvoiceNotes] = useState("");
-  const [invoiceSubmitting, setInvoiceSubmitting] = useState<"draft" | "invoice" | null>(null);
-
   // ── Convert-to-invoice (row action) ──
   const [convertingId, setConvertingId] = useState<string | null>(null);
 
@@ -295,13 +262,15 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
   const [creditNoteLoading, setCreditNoteLoading] = useState(false);
   const [creditNoteSubmitting, setCreditNoteSubmitting] = useState(false);
 
-  // ── Invoice customer picker (search + create) ──
-  const [customerPickerOpen, setCustomerPickerOpen] = useState(false);
-  const [customerPickerMode, setCustomerPickerMode] = useState<"search" | "create">("search");
-  const [customerSearchTerm, setCustomerSearchTerm] = useState("");
-  const [customerSearchResults, setCustomerSearchResults] = useState<Customer[]>([]);
-  const [customerSearchLoading, setCustomerSearchLoading] = useState(false);
-  const customerSearchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // ── Record payment dialog (supports split payments — multiple methods
+  // against one invoice, e.g. part cash + part M-Pesa — and partial
+  // payments left to be cleared later) ──
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [paymentInvoice, setPaymentInvoice] = useState<SalesDocument | null>(null);
+  const [paymentLines, setPaymentLines] = useState<
+    { _key: string; method: PaymentMethod; amount: number; reference: string }[]
+  >([]);
+  const [paymentSubmitting, setPaymentSubmitting] = useState(false);
 
   // ── Deep link: /dashboard/pos?view=document opens the type chooser ──
   useEffect(() => {
@@ -400,128 +369,10 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
     };
   }, [searchValue]);
 
-  // ── Customer picker: search existing customers ───────────────────────────
-  useEffect(() => {
-    if (customerSearchDebounce.current) clearTimeout(customerSearchDebounce.current);
-    if (customerSearchTerm.length < 2) {
-      setCustomerSearchResults([]);
-      return;
-    }
-    setCustomerSearchLoading(true);
-    customerSearchDebounce.current = setTimeout(async () => {
-      try {
-        const res = await fetch(
-          getApiUrl(
-            `${API_ENDPOINTS.CUSTOMERS_SEARCH}?q=${encodeURIComponent(customerSearchTerm)}`
-          ),
-          { headers: getAuthHeadersWithToken(token) }
-        );
-        const json = await res.json();
-        if (json.success && json.data) setCustomerSearchResults(json.data);
-      } catch {
-        // silently ignore
-      } finally {
-        setCustomerSearchLoading(false);
-      }
-    }, 300);
-    return () => {
-      if (customerSearchDebounce.current) clearTimeout(customerSearchDebounce.current);
-    };
-  }, [customerSearchTerm, token]);
-
-  function openCustomerPicker() {
-    setCustomerPickerMode("search");
-    setCustomerSearchTerm("");
-    setCustomerSearchResults([]);
-    setCustomerPickerOpen(true);
-  }
-
-  function selectInvoiceCustomer(c: Customer) {
-    setInvoiceCustomer(c);
-    setCustomerPickerOpen(false);
-    setCustomerSearchTerm("");
-    setCustomerSearchResults([]);
-  }
-
   // ── Open transactions panel for a doc type ────────────────────────────────
   function openTransactions(type: DocType) {
     setActiveDocType(type);
     setTxPanelOpen(true);
-  }
-
-  // ── Invoice totals ────────────────────────────────────────────────────────
-  const invoiceSubtotal = invoiceLines.reduce((s, l) => s + lineSubtotal(l), 0);
-  const invoiceTax = invoiceLines.reduce((s, l) => s + lineTax(l), 0);
-  const invoiceDiscount = invoiceLines.reduce((s, l) => s + l.discount, 0);
-  const invoiceTotal = invoiceLines.reduce((s, l) => s + lineTotal(l), 0);
-
-  // ── Update a line field ───────────────────────────────────────────────────
-  function updateLine(key: string, patch: Partial<InvoiceLine>) {
-    setInvoiceLines((prev) => prev.map((l) => (l._key === key ? { ...l, ...patch } : l)));
-  }
-
-  function removeLine(key: string) {
-    setInvoiceLines((prev) => prev.filter((l) => l._key !== key));
-  }
-
-  function resetInvoiceForm() {
-    setInvoiceCustomer(null);
-    setInvoiceLines([emptyLine()]);
-    setInvoicePaymentMethod("cash");
-    setInvoiceNotes("");
-    setInvoiceSubmitting(null);
-    setEditingDocId(null);
-    setEditorLoading(false);
-  }
-
-  // ── Open an existing saved Draft/Quote for editing ──────────────────────────────
-  async function openDocumentForEdit(doc: SalesDocument) {
-    setTxPanelOpen(false);
-    resetInvoiceForm();
-    setEditorDocType(doc.type as "DRAFT" | "QUOTE");
-    setEditingDocId(doc.id);
-    setEditorOpen(true);
-    setEditorLoading(true);
-    try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(doc.id)), {
-        headers: getAuthHeadersWithToken(token),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        toast(json.error?.message || json.message || "Failed to load document", "error");
-        setEditorOpen(false);
-        return;
-      }
-      const full = json.data;
-      setInvoiceCustomer(
-        full.customer
-          ? {
-              id: full.customer.id,
-              name: full.customer.name,
-              phone: full.customer.phone,
-              email: full.customer.email,
-            }
-          : null
-      );
-      setInvoiceNotes(full.notes || "");
-      setInvoiceLines(
-        (full.items || []).map((item: any) => ({
-          _key: crypto.randomUUID(),
-          productId: item.productId,
-          productName: item.product ? `${item.product.sku} — ${item.product.name}` : item.description,
-          description: item.description,
-          quantity: item.quantity,
-          unitPrice: item.unitPrice,
-          taxRate: item.taxRate,
-          discount: item.discount,
-        }))
-      );
-    } catch {
-      toast("Failed to load document", "error");
-      setEditorOpen(false);
-    } finally {
-      setEditorLoading(false);
-    }
   }
 
   // ── Open the credit note dialog for a closed/paid invoice ──────────────────
@@ -608,6 +459,92 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
     }
   }
 
+  // ── Open the record-payment dialog for an invoice with an outstanding balance ──
+  function openPaymentDialog(doc: SalesDocument) {
+    setTxPanelOpen(false);
+    setPaymentInvoice(doc);
+    setPaymentLines([
+      { _key: crypto.randomUUID(), method: "cash", amount: doc.balance, reference: "" },
+    ]);
+    setPaymentDialogOpen(true);
+  }
+
+  function addPaymentLine() {
+    setPaymentLines((prev) => [
+      ...prev,
+      { _key: crypto.randomUUID(), method: "cash", amount: 0, reference: "" },
+    ]);
+  }
+
+  function updatePaymentLine(
+    key: string,
+    patch: Partial<{ method: PaymentMethod; amount: number; reference: string }>
+  ) {
+    setPaymentLines((prev) => prev.map((l) => (l._key === key ? { ...l, ...patch } : l)));
+  }
+
+  function removePaymentLine(key: string) {
+    setPaymentLines((prev) => prev.filter((l) => l._key !== key));
+  }
+
+  // ── Submit one or more payment lines against the invoice, sequentially.
+  // Each line becomes its own Payment record (its own method/reference),
+  // so "500 cash + 500 M-Pesa" on one invoice records as two payments. A
+  // partial total is fine — the balance simply carries forward for the
+  // customer to clear later. ──
+  async function submitPayments() {
+    if (!paymentInvoice) return;
+    const validLines = paymentLines.filter((l) => l.amount > 0);
+    if (!validLines.length) {
+      toast("Enter at least one payment amount", "warning");
+      return;
+    }
+    const totalEntered = validLines.reduce((s, l) => s + l.amount, 0);
+    if (totalEntered > paymentInvoice.balance + 0.01) {
+      toast(
+        `Total entered (${formatCurrency(totalEntered)}) exceeds the outstanding balance (${formatCurrency(paymentInvoice.balance)})`,
+        "warning"
+      );
+      return;
+    }
+
+    setPaymentSubmitting(true);
+    try {
+      for (const line of validLines) {
+        const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PAYMENT(paymentInvoice.id)), {
+          method: "POST",
+          headers: getAuthHeadersWithToken(token),
+          body: JSON.stringify({
+            amount: line.amount,
+            payment_method: line.method,
+            reference: line.reference || undefined,
+          }),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          toast(json.error?.message || json.message || "Failed to record a payment", "error");
+          fetchDocuments(activeDocType, fromDate, toDate, searchValue);
+          return;
+        }
+      }
+      const fullySettled = totalEntered >= paymentInvoice.balance - 0.01;
+      toast(
+        fullySettled
+          ? `Invoice ${paymentInvoice.documentId} fully paid`
+          : `Payment recorded — balance remaining: ${formatCurrency(paymentInvoice.balance - totalEntered)}`,
+        "success"
+      );
+      setPaymentDialogOpen(false);
+      setPaymentInvoice(null);
+      setPaymentLines([]);
+      fetchDocuments(activeDocType, fromDate, toDate, searchValue);
+    } catch {
+      toast("Failed to record payment", "error");
+    } finally {
+      setPaymentSubmitting(false);
+    }
+  }
+
   // ── Open the type chooser (Draft / Quote / Credit Note) ────────────────────
   function openNewDocument() {
     setDocChooserOpen(true);
@@ -626,9 +563,11 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
       toast("Select a closed/paid invoice to raise a credit note against", "info");
       return;
     }
-    resetInvoiceForm();
-    setEditorDocType(type);
-    setEditorOpen(true);
+    if (type === "DRAFT") {
+      onNewDraft();
+    } else {
+      onNewQuote();
+    }
   }
 
   // ── Convert a saved Draft/Quote to an Invoice ───────────────────────────────
@@ -651,96 +590,6 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
       toast("Failed to convert to invoice", "error");
     } finally {
       setConvertingId(null);
-    }
-  }
-
-  // ── Submit the current document as a Draft or Quote (create, or save edits) ──
-  async function submitInvoice(type: "DRAFT" | "QUOTE") {
-    const validLines = invoiceLines.filter((l) => l.productId && l.quantity > 0);
-    if (!validLines.length) {
-      toast("Add at least one product", "warning");
-      return;
-    }
-    if (!branchId) {
-      toast("No branch selected", "error");
-      return;
-    }
-
-    setInvoiceSubmitting("draft");
-    try {
-      // Editing an existing saved Draft/Quote: replace its items in place.
-      if (editingDocId) {
-        const body = {
-          customerId: invoiceCustomer?.id ?? null,
-          notes: invoiceNotes || undefined,
-          items: validLines.map((l) => ({
-            productId: l.productId,
-            description: l.description || l.productName || "Sale item",
-            quantity: l.quantity,
-            unitPrice: l.unitPrice,
-            taxRate: l.taxRate,
-            discount: l.discount,
-            total: lineTotal(l),
-          })),
-        };
-        const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_UPDATE_ITEMS(editingDocId)), {
-          method: "PATCH",
-          headers: getAuthHeadersWithToken(token),
-          body: JSON.stringify(body),
-        });
-        const json = await res.json();
-        if (!res.ok || !json.success) {
-          toast(json.error?.message || json.message || "Failed to save changes", "error");
-          return;
-        }
-        toast(`Changes saved: ${json.data?.documentId || ""}`, "success");
-        setEditorOpen(false);
-        resetInvoiceForm();
-        fetchDocuments(activeDocType, fromDate, toDate, searchValue);
-        return;
-      }
-
-      const body = {
-        type,
-        customerId: invoiceCustomer?.id || undefined,
-        issueDate: new Date().toISOString(),
-        notes: invoiceNotes || undefined,
-        paymentMethod: invoicePaymentMethod,
-        subtotal: invoiceSubtotal,
-        tax: invoiceTax,
-        discount: invoiceDiscount,
-        total: invoiceTotal,
-        items: validLines.map((l) => ({
-          productId: l.productId,
-          description: l.description || l.productName || "Sale item",
-          quantity: l.quantity,
-          unitPrice: l.unitPrice,
-          taxRate: l.taxRate,
-          discount: l.discount,
-          total: lineTotal(l),
-        })),
-      };
-
-      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS), {
-        method: "POST",
-        headers: getAuthHeadersWithToken(token),
-        body: JSON.stringify(body),
-      });
-
-      const json = await res.json();
-      if (!res.ok || !json.success) {
-        toast(json.error?.message || json.message || "Failed to save document", "error");
-        return;
-      }
-
-      const label = type === "DRAFT" ? "Draft saved" : "Quote saved";
-      toast(`${label}: ${json.data?.documentId || ""}`, "success");
-      setEditorOpen(false);
-      resetInvoiceForm();
-    } catch (e) {
-      toast("Unexpected error", "error");
-    } finally {
-      setInvoiceSubmitting(null);
     }
   }
 
@@ -968,7 +817,7 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                         </TableCell>
                         <TableCell>
                           {doc.customer?.name ?? (
-                            <span className="text-slate-400 italic">Walk-in</span>
+                            <span className="text-slate-400 italic">Counter Customer</span>
                           )}
                         </TableCell>
                         <TableCell>
@@ -1016,6 +865,18 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                                 <Receipt className="h-3.5 w-3.5" />
                               </Button>
                             )}
+                            {doc.type === "INVOICE" &&
+                              (doc.status === "SENT" || doc.status === "PARTIALLY_PAID") &&
+                              doc.balance > 0 && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon-sm"
+                                  title="Record Payment"
+                                  onClick={() => openPaymentDialog(doc)}
+                                >
+                                  <Banknote className="h-3.5 w-3.5" />
+                                </Button>
+                              )}
                             <Button
                               variant="ghost"
                               size="icon-sm"
@@ -1032,7 +893,8 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
                                     (doc.type === "QUOTE" && doc.status !== "CONVERTED")) &&
                                   doc.status !== "VOID"
                                 ) {
-                                  openDocumentForEdit(doc);
+                                  setTxPanelOpen(false);
+                                  onEditDocument(doc.id);
                                 } else {
                                   setTxPanelOpen(false);
                                   router.push(`/dashboard/pos/sales/${doc.id}`);
@@ -1121,332 +983,6 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
           toast(`Customer "${customer.name}" created`, "success");
         }}
       />
-
-      {/* ── DOCUMENT EDITOR (Draft / Quote) ── */}
-      <Dialog
-        open={editorOpen}
-        onOpenChange={(open) => {
-          if (!open) resetInvoiceForm();
-          setEditorOpen(open);
-        }}
-      >
-        <DialogContent
-          className="max-w-[95vw] xl:max-w-7xl w-full h-[92vh] flex flex-col gap-0 p-0 overflow-hidden"
-          showCloseButton={false}
-        >
-          {/* Dialog header */}
-          <DialogHeader className="flex-none px-6 py-4 border-b bg-slate-50">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-base font-semibold">
-                {editingDocId ? "Edit" : "New"} {editorDocType === "DRAFT" ? "Draft" : "Quote"}
-              </DialogTitle>
-              <button
-                className="rounded-md p-1.5 text-slate-500 hover:bg-slate-200"
-                onClick={() => {
-                  resetInvoiceForm();
-                  setEditorOpen(false);
-                }}
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </DialogHeader>
-
-          {/* Dialog scrollable body */}
-          {editorLoading ? (
-            <div className="flex-1 flex items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
-            </div>
-          ) : (
-          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
-            {/* Customer selector */}
-            <div className="flex items-center justify-between rounded-lg border p-3 bg-slate-50">
-              <div>
-                <p className="text-xs font-medium text-slate-600 mb-0.5">Customer</p>
-                {invoiceCustomer ? (
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm text-slate-900">
-                      {invoiceCustomer.name}
-                    </span>
-                    {invoiceCustomer.phone && (
-                      <span className="text-xs text-slate-500">{invoiceCustomer.phone}</span>
-                    )}
-                    <button
-                      className="text-slate-400 hover:text-slate-600"
-                      onClick={() => setInvoiceCustomer(null)}
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-sm text-slate-400 italic">Walk-in / Counter Sale</span>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={openCustomerPicker}>
-                  {invoiceCustomer ? "Change" : "Select Customer"}
-                </Button>
-              </div>
-            </div>
-
-            {/* Line items */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                  Line Items
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setInvoiceLines((prev) => [...prev, emptyLine()])}
-                >
-                  <Plus className="mr-1.5 h-3.5 w-3.5" /> Add Row
-                </Button>
-              </div>
-
-              <div className="rounded-lg border overflow-hidden">
-                <table className="w-full text-xs">
-                  <thead className="bg-slate-50 border-b">
-                    <tr>
-                      <th className="text-left px-3 py-2 font-semibold text-slate-600 w-80">
-                        Product (SKU)
-                      </th>
-                      <th className="text-left px-3 py-2 font-semibold text-slate-600">
-                        Description
-                      </th>
-                      <th className="text-right px-3 py-2 font-semibold text-slate-600 w-16">
-                        Qty
-                      </th>
-                      <th className="text-right px-3 py-2 font-semibold text-slate-600 w-24">
-                        Unit Price
-                      </th>
-                      <th className="text-right px-3 py-2 font-semibold text-slate-600 w-16">
-                        Tax %
-                      </th>
-                      <th className="text-right px-3 py-2 font-semibold text-slate-600 w-20">
-                        Discount
-                      </th>
-                      <th className="text-right px-3 py-2 font-semibold text-slate-600 w-24">
-                        Amount
-                      </th>
-                      <th className="w-8" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {invoiceLines.map((line, idx) => (
-                      <tr
-                        key={line._key}
-                        className={cn(
-                          "border-b last:border-0",
-                          idx % 2 === 0 ? "bg-white" : "bg-slate-50/50"
-                        )}
-                      >
-                        {/* Product search cell */}
-                        <td className="px-2 py-1.5 align-top">
-                          {line.productId ? (
-                            <div className="flex items-center gap-2">
-                              <div className="min-w-0">
-                                <p className="font-medium truncate max-w-[220px]">
-                                  {line.productName}
-                                </p>
-                              </div>
-                              <button
-                                className="text-slate-400 hover:text-slate-600 shrink-0"
-                                onClick={() =>
-                                  updateLine(line._key, { productId: "", productName: "" })
-                                }
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="w-72">
-                              <AutocompleteProductSearch
-                                branchId={branchId ?? ""}
-                                token={token}
-                                autoFocus={false}
-                                combinedStock
-                                showDescription
-                                onSelect={(product) =>
-                                  updateLine(line._key, {
-                                    productId: product.id,
-                                    productName: `${product.sku} — ${product.name}`,
-                                    description: product.description || product.name,
-                                    unitPrice: product.unit_price,
-                                  })
-                                }
-                              />
-                            </div>
-                          )}
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <Input
-                            value={line.description}
-                            onChange={(e) => updateLine(line._key, { description: e.target.value })}
-                            className="h-7 text-xs"
-                            placeholder="Description"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <Input
-                            type="number"
-                            min={1}
-                            value={line.quantity}
-                            onChange={(e) =>
-                              updateLine(line._key, {
-                                quantity: Math.max(1, Number(e.target.value)),
-                              })
-                            }
-                            className="h-7 text-xs text-right"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <Input
-                            type="number"
-                            min={0}
-                            step={0.01}
-                            value={line.unitPrice}
-                            onChange={(e) =>
-                              updateLine(line._key, { unitPrice: Number(e.target.value) })
-                            }
-                            className="h-7 text-xs text-right"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <Input
-                            type="number"
-                            min={0}
-                            max={100}
-                            step={1}
-                            value={Math.round(line.taxRate * 100)}
-                            onChange={(e) =>
-                              updateLine(line._key, { taxRate: Number(e.target.value) / 100 })
-                            }
-                            className="h-7 text-xs text-right"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <Input
-                            type="number"
-                            min={0}
-                            step={0.01}
-                            value={line.discount}
-                            onChange={(e) =>
-                              updateLine(line._key, { discount: Number(e.target.value) })
-                            }
-                            className="h-7 text-xs text-right"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5 text-right font-medium whitespace-nowrap">
-                          {formatCurrency(lineTotal(line))}
-                        </td>
-                        <td className="px-1 py-1.5 text-center">
-                          <button
-                            className="text-slate-400 hover:text-red-500"
-                            onClick={() => removeLine(line._key)}
-                            disabled={invoiceLines.length === 1}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Totals + payment + notes row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Left: payment method + notes */}
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold">Payment Method</Label>
-                  <Select
-                    value={invoicePaymentMethod}
-                    onValueChange={(v) => setInvoicePaymentMethod(v as PaymentMethod)}
-                  >
-                    <SelectTrigger className="h-8">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cash">Cash</SelectItem>
-                      <SelectItem value="card">Card</SelectItem>
-                      <SelectItem value="mpesa">M-Pesa</SelectItem>
-                      <SelectItem value="cheque">Cheque</SelectItem>
-                      <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold">Notes</Label>
-                  <Textarea
-                    value={invoiceNotes}
-                    onChange={(e) => setInvoiceNotes(e.target.value)}
-                    placeholder="Optional notes…"
-                    className="min-h-20 text-xs"
-                  />
-                </div>
-              </div>
-
-              {/* Right: totals */}
-              <div className="rounded-lg border bg-slate-50 p-4 space-y-2">
-                <p className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-3">
-                  Summary
-                </p>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Subtotal</span>
-                  <span>{formatCurrency(invoiceSubtotal)}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">Discount</span>
-                  <span className="text-red-600">− {formatCurrency(invoiceDiscount)}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-500">VAT (16%)</span>
-                  <span>{formatCurrency(invoiceTax)}</span>
-                </div>
-                <div className="border-t pt-2 flex justify-between text-sm font-bold">
-                  <span>Grand Total</span>
-                  <span className="text-emerald-700">{formatCurrency(invoiceTotal)}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          )}
-
-          {/* Dialog footer */}
-          <DialogFooter className="flex-none border-t px-6 py-4 bg-slate-50">
-            <Button
-              variant="outline"
-              onClick={() => {
-                resetInvoiceForm();
-                setEditorOpen(false);
-              }}
-              disabled={!!invoiceSubmitting}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              onClick={() => submitInvoice(editorDocType)}
-              disabled={!!invoiceSubmitting || editorLoading}
-            >
-              {invoiceSubmitting === "draft" ? (
-                <>
-                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Saving…
-                </>
-              ) : editingDocId ? (
-                "Save Changes"
-              ) : editorDocType === "DRAFT" ? (
-                "Save Draft"
-              ) : (
-                "Save Quote"
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
       {/* ── CREDIT NOTE DIALOG (against a closed/paid invoice) ── */}
       <Dialog
@@ -1582,126 +1118,146 @@ export function POSMenuBar({ token, branchId, onCustomerCreated }: POSMenuBarPro
         </DialogContent>
       </Dialog>
 
-      {/* ── INVOICE CUSTOMER PICKER (search existing + create new) ── */}
+      {/* ── RECORD PAYMENT DIALOG (supports split payments across methods, and partial payments) ── */}
       <Dialog
-        open={customerPickerOpen}
+        open={paymentDialogOpen}
         onOpenChange={(open) => {
           if (!open) {
-            setCustomerSearchTerm("");
-            setCustomerSearchResults([]);
-            setCustomerPickerMode("search");
+            setPaymentInvoice(null);
+            setPaymentLines([]);
           }
-          setCustomerPickerOpen(open);
+          setPaymentDialogOpen(open);
         }}
       >
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {customerPickerMode === "create" ? "New Customer" : "Select Customer"}
-            </DialogTitle>
+        <DialogContent className="max-w-lg w-full flex flex-col gap-0 p-0 overflow-hidden" showCloseButton={false}>
+          <DialogHeader className="flex-none px-6 py-4 border-b bg-slate-50">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-base font-semibold">
+                Record Payment{paymentInvoice ? ` — ${paymentInvoice.documentId}` : ""}
+              </DialogTitle>
+              <button
+                className="rounded-md p-1.5 text-slate-500 hover:bg-slate-200"
+                onClick={() => setPaymentDialogOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </DialogHeader>
 
-          {customerPickerMode === "search" ? (
-            <div className="space-y-3">
-              {/* Search input */}
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-                <Input
-                  autoFocus
-                  value={customerSearchTerm}
-                  onChange={(e) => setCustomerSearchTerm(e.target.value)}
-                  placeholder="Search by name or phone…"
-                  className="pl-8"
-                />
-              </div>
-
-              {/* Walk-in option */}
-              <button
-                className="flex w-full items-center gap-3 rounded-lg border-2 border-amber-200 bg-amber-50 p-3 hover:bg-amber-100 transition-colors"
-                onClick={() => {
-                  setInvoiceCustomer(null);
-                  setCustomerPickerOpen(false);
-                }}
-              >
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-amber-200 text-amber-700 shrink-0">
-                  <UserPlus className="h-4 w-4" />
+          {paymentInvoice && (
+            <div className="px-6 pt-4 space-y-4">
+              <div className="flex items-center justify-between rounded-lg border bg-slate-50 px-4 py-3 text-sm">
+                <div>
+                  <p className="text-slate-500 text-xs">Invoice Total</p>
+                  <p className="font-semibold">{formatCurrency(paymentInvoice.total)}</p>
                 </div>
-                <div className="text-left">
-                  <p className="text-xs font-semibold text-amber-900">Walk-in / Counter Sale</p>
-                  <p className="text-[11px] text-amber-700">No customer attached</p>
-                </div>
-              </button>
-
-              {/* Results */}
-              <div className="max-h-56 overflow-y-auto space-y-1">
-                {customerSearchLoading ? (
-                  <div className="flex justify-center py-6">
-                    <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
-                  </div>
-                ) : customerSearchResults.length > 0 ? (
-                  customerSearchResults.map((c) => (
-                    <button
-                      key={c.id}
-                      className="flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 hover:bg-slate-50 transition-colors text-left"
-                      onClick={() => selectInvoiceCustomer(c)}
-                    >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-700 shrink-0 text-xs font-bold">
-                        {c.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-medium text-slate-900 truncate">{c.name}</p>
-                        <p className="text-[11px] text-slate-500">
-                          {c.phone || c.email || "No contact info"}
-                        </p>
-                      </div>
-                    </button>
-                  ))
-                ) : customerSearchTerm.length >= 2 ? (
-                  <p className="text-center text-xs text-slate-400 py-4">No customers found</p>
-                ) : (
-                  <p className="text-center text-xs text-slate-400 py-4">
-                    Type at least 2 characters to search
+                <div>
+                  <p className="text-slate-500 text-xs">Already Paid</p>
+                  <p className="font-semibold text-emerald-700">
+                    {formatCurrency(paymentInvoice.total - paymentInvoice.balance)}
                   </p>
-                )}
+                </div>
+                <div className="text-right">
+                  <p className="text-slate-500 text-xs">Balance Due</p>
+                  <p className="font-bold text-rose-600">{formatCurrency(paymentInvoice.balance)}</p>
+                </div>
               </div>
 
-              {/* Switch to create mode */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full"
-                onClick={() => setCustomerPickerMode("create")}
-              >
-                <UserPlus className="mr-1.5 h-3.5 w-3.5" />
-                Create New Customer
-              </Button>
-            </div>
-          ) : (
-            /* ── Create mode ── */
-            <div className="space-y-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-slate-500 -mt-1 px-0"
-                onClick={() => setCustomerPickerMode("search")}
-              >
-                ← Back to search
-              </Button>
-              <AddCustomerDialog
-                open={customerPickerOpen && customerPickerMode === "create"}
-                onOpenChange={(open) => {
-                  if (!open) setCustomerPickerMode("search");
-                }}
-                token={token}
-                onCustomerCreated={(customer) => {
-                  selectInvoiceCustomer(customer);
-                  toast(`Customer "${customer.name}" created`, "success");
-                }}
-              />
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-semibold">
+                    Payment{paymentLines.length > 1 ? "s" : ""} (split across methods if needed)
+                  </Label>
+                  <Button variant="outline" size="sm" onClick={addPaymentLine}>
+                    <Plus className="mr-1 h-3 w-3" /> Add Method
+                  </Button>
+                </div>
+                {paymentLines.map((line) => (
+                  <div key={line._key} className="flex items-center gap-2">
+                    <Select
+                      value={line.method}
+                      onValueChange={(v) => updatePaymentLine(line._key, { method: v as PaymentMethod })}
+                    >
+                      <SelectTrigger className="h-9 w-32 shrink-0">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cash">Cash</SelectItem>
+                        <SelectItem value="card">Card</SelectItem>
+                        <SelectItem value="mpesa">M-Pesa</SelectItem>
+                        <SelectItem value="cheque">Cheque</SelectItem>
+                        <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="number"
+                      min={0}
+                      step={0.01}
+                      value={line.amount || ""}
+                      onChange={(e) =>
+                        updatePaymentLine(line._key, { amount: Number(e.target.value) })
+                      }
+                      placeholder="Amount"
+                      className="h-9 text-right"
+                    />
+                    <Input
+                      value={line.reference}
+                      onChange={(e) => updatePaymentLine(line._key, { reference: e.target.value })}
+                      placeholder="Ref (optional)"
+                      className="h-9 w-28 shrink-0"
+                    />
+                    {paymentLines.length > 1 && (
+                      <button
+                        className="text-slate-400 hover:text-red-500 shrink-0"
+                        onClick={() => removePaymentLine(line._key)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {(() => {
+                const totalEntered = paymentLines.reduce((s, l) => s + (l.amount || 0), 0);
+                const remaining = paymentInvoice.balance - totalEntered;
+                return (
+                  <div className="flex justify-between text-xs px-1">
+                    <span className="text-slate-500">Total entered: {formatCurrency(totalEntered)}</span>
+                    <span className={remaining < -0.01 ? "text-red-600 font-semibold" : "text-slate-500"}>
+                      {remaining > 0.01
+                        ? `Remaining after this: ${formatCurrency(remaining)}`
+                        : remaining < -0.01
+                          ? "Exceeds balance due"
+                          : "Fully settled"}
+                    </span>
+                  </div>
+                );
+              })()}
             </div>
           )}
+
+          <DialogFooter className="flex-none border-t px-6 py-4 bg-slate-50 mt-4">
+            <Button variant="outline" onClick={() => setPaymentDialogOpen(false)} disabled={paymentSubmitting}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              onClick={submitPayments}
+              disabled={paymentSubmitting}
+            >
+              {paymentSubmitting ? (
+                <>
+                  <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Recording…
+                </>
+              ) : (
+                "Record Payment"
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
+
     </>
   );
 }

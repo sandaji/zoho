@@ -10,6 +10,9 @@ import { financeRepository, FinanceRepository } from "../../repositories/finance
 import { dashboardMetricsService, DashboardMetricsService } from "../../services/dashboard-metrics.service";
 import { getFinancialYear, getMonthRange } from "../../utils/date";
 import { sum, subtract, multiply, percentage, roundCurrency } from "../../utils/money";
+import { ReceivablesService } from "./services/receivables.service";
+import { PayablesService } from "./services/payables.service";
+import { FinanceAnalyticsService } from "./services/finance-analytics.service";
 
 export class FinanceService {
   private salesRepo: SalesRepository;
@@ -36,7 +39,7 @@ export class FinanceService {
     try {
       const fy = getFinancialYear();
 
-      const [salesTotals, totalExpenses, activeProducts, lowStockProducts, cashBalance] =
+      const [salesTotals, totalExpenses, activeProducts, lowStockProducts, cashBalance, arAging, apStatus] =
         await Promise.all([
           this.salesRepo.getSalesTotals({
             startDate: fy.startDate,
@@ -49,6 +52,8 @@ export class FinanceService {
           this.inventoryRepo.getActiveProductsCount(),
           this.inventoryRepo.getLowStockItemsCount(),
           this.financeRepo.getCashBalance(),
+          ReceivablesService.getAgingReport(),
+          PayablesService.getAPStatusSummary(),
         ]);
 
       const revenue = salesTotals.total;
@@ -65,8 +70,11 @@ export class FinanceService {
 
       return {
         cashBalance,
-        accountsReceivable: 0,
-        accountsPayable: 0,
+        // Previously hardcoded to 0 — now backed by the same AR/AP services
+        // the dedicated ARAgingSummary / APStatusSummary dashboard widgets use,
+        // so the executive-strip totals match the detail widgets below them.
+        accountsReceivable: arAging.total,
+        accountsPayable: apStatus.totalPayables,
         revenue,
         profit,
         expenses: totalExpenses,
@@ -133,11 +141,34 @@ export class FinanceService {
   }
 
   /**
-   * Get revenue and expense chart data via DashboardMetricsService
+   * Get revenue and expense chart data for the Revenue vs Expenses dashboard
+   * widget.
+   *
+   * Previously delegated to DashboardMetricsService.getSalesTrend(), which
+   * returns a StandardChartData object ({ labels, datasets, colors, legend })
+   * built for a generic chart-config consumer — not the row-shaped
+   * { name, revenue, expenses }[] this widget's RevenueExpenseChart component
+   * expects. That mismatch reached the frontend un-validated (the API client
+   * only does a TS type assertion, no runtime check) and crashed inside
+   * Recharts with "chartData.slice is not a function" once BarChart tried to
+   * treat the object as an array. getSalesTrend() also only carries revenue,
+   * not expenses, so it couldn't have powered this chart correctly even with
+   * a reshape.
+   *
+   * FinanceAnalyticsService.getMonthlyChartData() is the GL-backed source
+   * (see that file's header comment) and already returns both revenue and
+   * expenses per month, so we map it directly into the shape the frontend
+   * declares (ChartData[] = { name, revenue, expenses }[]).
    */
   async getRevenueExpenseChartData() {
     try {
-      return this.metricsService.getSalesTrend();
+      const analytics = new FinanceAnalyticsService();
+      const monthly = await analytics.getMonthlyChartData(new Date().getFullYear());
+      return monthly.map((m) => ({
+        name: m.monthLabel,
+        revenue: m.revenue,
+        expenses: m.expenses,
+      }));
     } catch (error) {
       logger.error({ error }, "Error fetching chart data");
       throw error;

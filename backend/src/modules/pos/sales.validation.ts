@@ -24,7 +24,7 @@ export const createSalesDocumentSchema = z.object({
     .enum(["DRAFT", "SENT", "PARTIALLY_PAID", "PAID", "CONVERTED", "VOID", "CLOSED"])
     .optional(),
   customerId: z.string().optional(),
-  issueDate: z.string().or(z.date()),
+  issueDate: z.string().or(z.date()).optional(),
   dueDate: z.string().or(z.date()).optional(),
   // Accept client-computed totals for reference; server always recalculates
   subtotal: z.number().nonnegative().optional(),
@@ -54,9 +54,10 @@ export const listDocumentsQuerySchema = z.object({
   offset: z.string().optional(),
 });
 
-// Convert document schema
+// Convert document schema — type is accepted but ignored (convertToInvoice
+// always produces an INVOICE); the frontend calls this with an empty body.
 export const convertDocumentSchema = z.object({
-  type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]),
+  type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]).optional(),
 });
 
 // Update document items schema (edit a saved Draft/Quote)

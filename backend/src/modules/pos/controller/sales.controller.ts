@@ -87,10 +87,11 @@ export class SalesController {
         status: input.status as SalesDocumentStatus | undefined,
         customerId: input.customerId || undefined,
         paymentMethod: input.paymentMethod || undefined,
-        issueDate:
-          typeof input.issueDate === "string"
+        issueDate: input.issueDate
+          ? typeof input.issueDate === "string"
             ? new Date(input.issueDate)
-            : input.issueDate,
+            : input.issueDate
+          : new Date(),
         dueDate: input.dueDate
           ? typeof input.dueDate === "string"
             ? new Date(input.dueDate)

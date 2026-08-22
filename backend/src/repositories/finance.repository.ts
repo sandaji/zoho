@@ -75,14 +75,14 @@ export class FinanceRepository {
   async getCashBalance(filters?: FinanceFilterOptions): Promise<number> {
     const accounts = await this.db.bankAccount.aggregate({
       where: {
-        isActive: true,
+        is_active: true,
       },
       _sum: {
-        balance: true,
+        current_balance: true,
       },
     });
 
-    return sum(accounts._sum.balance);
+    return sum(accounts._sum.current_balance);
   }
 
   /**

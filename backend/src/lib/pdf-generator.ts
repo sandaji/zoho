@@ -403,7 +403,7 @@ export class PDFGenerator {
       <div class="box-title">CUSTOMER</div>
       <div class="detail-row">
         <span class="detail-label">:</span>
-        <span>${document.customer?.name || "WALK-IN CUSTOMER"}</span>
+        <span>${document.customer?.name || "Counter Customer"}</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">ADDRESS:</span>

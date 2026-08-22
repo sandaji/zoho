@@ -32,6 +32,13 @@ interface Props {
   // New Document line-item table where SKU/description/price/amount all
   // need to be legible at once.
   showDescription?: boolean;
+  // Enables the window-level Alt+A shortcut ("add current best match to
+  // cart, keep searching"). Only set this on the single primary instance of
+  // the search box on a page (e.g. the main POS till) — turning it on for
+  // several mounted instances at once (like multiple empty line-item rows
+  // in the document editor) would make Alt+A ambiguous about which row it
+  // targets.
+  enableGlobalShortcuts?: boolean;
 }
 
 export function AutocompleteProductSearch({
@@ -42,6 +49,7 @@ export function AutocompleteProductSearch({
   searchInputRef,
   combinedStock = false,
   showDescription = false,
+  enableGlobalShortcuts = false,
 }: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Product[]>([]);
@@ -61,18 +69,33 @@ export function AutocompleteProductSearch({
     }
   }, [autoFocus]);
 
-  // Global shortcut: "/" to focus search
+  // Global shortcut: "/" to focus search, Alt+A to add the current best
+  // match to the cart while keeping the search box focused/ready for the
+  // next item (only when enableGlobalShortcuts is set on this instance).
   useEffect(() => {
     const handleGlobalShortcut = (e: KeyboardEvent) => {
       if (e.key === "/" && document.activeElement !== inputRef.current) {
         e.preventDefault();
         inputRef.current?.focus();
+        return;
+      }
+      if (
+        enableGlobalShortcuts &&
+        e.altKey &&
+        (e.key === "a" || e.key === "A") &&
+        results.length > 0
+      ) {
+        e.preventDefault();
+        const target = activeIndex >= 0 ? results[activeIndex] : results[0];
+        if (target && target.available > 0) {
+          selectProduct(target);
+        }
       }
     };
 
     window.addEventListener("keydown", handleGlobalShortcut);
     return () => window.removeEventListener("keydown", handleGlobalShortcut);
-  }, []);
+  }, [enableGlobalShortcuts, results, activeIndex]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -119,10 +142,15 @@ export function AutocompleteProductSearch({
 
         // Handle both single object and array responses
         const products = Array.isArray(json.data) ? json.data : [json.data];
+        const filtered = products.filter(Boolean).slice(0, 8); // Limit to 8 results
 
-        setResults(products.filter(Boolean).slice(0, 8)); // Limit to 8 results
-        setIsOpen(products.length > 0);
-        setActiveIndex(-1);
+        setResults(filtered);
+        setIsOpen(filtered.length > 0);
+        // Auto-highlight the best (top) match as the user keeps typing, so
+        // Enter / Alt+A can add it immediately without requiring arrow-key
+        // navigation first — the search box never loses focus while this
+        // happens.
+        setActiveIndex(filtered.length > 0 ? 0 : -1);
       } catch (err) {
         console.error("Search error:", err);
         setError(err instanceof Error ? err.message : "Search failed");

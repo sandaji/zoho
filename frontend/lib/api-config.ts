@@ -88,7 +88,7 @@ export const API_ENDPOINTS = {
   BANK_ACCOUNTS: "/v1/finance/bank/accounts",
   BANK_UPLOAD: "/v1/finance/bank/upload",
   BANK_RECONCILIATION_DATA: (accountId: string) => `/v1/finance/bank/reconciliation/${accountId}`,
-  BANK_RECONCILE_ITEM: (id: string) => `/v1/finance/bank/reconcile/${id}`,
+  BANK_RECONCILE: "/v1/finance/bank/reconcile",
 
   // HR & Leave Management
   LEAVE_TYPES: "/v1/hr/leaves/types",

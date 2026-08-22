@@ -3,6 +3,7 @@ import { prisma } from "../../../lib/db";
 import { ARStatus, PaymentMethod, Prisma } from "../../../generated";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
+import { BankTreasuryService } from "./bank-treasury.service";
 import { JournalEntryService } from "./journal-entry.service";
 
 export class ReceivablesService {
@@ -130,6 +131,18 @@ export class ReceivablesService {
         },
         tx
       );
+
+      // 5. Record the actual cash movement in the treasury model, so
+      // reconciliation has a real system-side transaction to match an
+      // imported bank statement line against.
+      await BankTreasuryService.recordTransaction(tx, {
+        paymentMethod: data.paymentMethod,
+        type: "income",
+        amount: data.amount,
+        description: `AR Payment - Invoice #${ar.invoice_no}`,
+        referenceNo: payment.payment_no,
+        category: "ar_payment",
+      });
 
       return payment;
     });

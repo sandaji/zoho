@@ -328,7 +328,7 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex h-screen flex-col border-r bg-background transition-all duration-300 lg:static",
+          "fixed inset-y-0 left-0 z-40 flex h-screen flex-col border-r border-border/30 bg-background transition-all duration-300 lg:static",
           isCollapsed ? "w-[68px]" : "w-72",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}

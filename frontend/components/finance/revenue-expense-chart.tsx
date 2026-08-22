@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { apiClient } from '@/lib/api-client';
 import { AlertCircle } from 'lucide-react';
@@ -37,34 +38,52 @@ const RevenueExpenseChart = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return <Skeleton className="h-[300px] w-full" />;
-  }
-
-  if (error) {
-    return (
-      <div className="h-[300px] w-full flex items-center justify-center text-destructive">
-        <div className="flex items-center gap-2">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <span>{error}</span>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="revenue" fill="#8884d8" />
-        <Bar dataKey="expenses" fill="#82ca9d" />
-      </BarChart>
-    </ResponsiveContainer>
+    <Card>
+      <CardHeader>
+        <CardTitle>Revenue vs Expenses</CardTitle>
+        <p className="mt-1 text-xs text-muted-foreground">Monthly comparison, current financial year</p>
+      </CardHeader>
+      <CardContent>
+        {loading ? (
+          <Skeleton className="h-[300px] w-full" />
+        ) : error ? (
+          <div className="h-[300px] w-full flex items-center justify-center text-destructive">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 shrink-0" />
+              <span className="text-sm">{error}</span>
+            </div>
+          </div>
+        ) : data.length === 0 ? (
+          <div className="h-[300px] w-full flex items-center justify-center text-sm text-muted-foreground">
+            No sales or expense data yet for this period
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={data} margin={{ top: 8, right: 8, left: 8, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <XAxis dataKey="name" tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+              <YAxis tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} axisLine={{ stroke: "var(--border)" }} tickLine={false} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--card)",
+                  borderColor: "var(--border)",
+                  borderRadius: 8,
+                  fontSize: 12,
+                  color: "var(--card-foreground)",
+                }}
+                labelStyle={{ color: "var(--card-foreground)" }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12, color: "var(--muted-foreground)" }} />
+              <Bar dataKey="revenue" name="Revenue" fill="var(--success)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expenses" name="Expenses" fill="var(--destructive)" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
 export default RevenueExpenseChart;
+

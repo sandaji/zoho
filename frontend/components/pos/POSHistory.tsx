@@ -425,7 +425,7 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
                       {formatDate(sale.created_date)}
                     </TableCell>
                     <TableCell>
-                      {sale.customer_name || <span className="text-slate-400">Walk-in</span>}
+                      {sale.customer_name || <span className="text-slate-400">Counter Customer</span>}
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{sale.items?.length ?? 0} items</Badge>

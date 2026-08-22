@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 // Real GL-backed financial summary
 import { fetchFinancialSummary, formatCurrencyCompact } from "./lib/api";
 import type { FinancialSummary } from "./types";
+import type { FiscalPeriod } from "./types";
 
 // Core dashboard components (all backed by real Chart of Accounts / GL data)
 import { KPIMetricsPanel } from "../../../components/finance/kpi-metrics-panel";
@@ -44,6 +45,7 @@ import { TaxSummary } from "../../../components/finance/tax-summary";
 import { ReconciliationStatus } from "../../../components/finance/reconciliation-status";
 import { PeriodTrends } from "../../../components/finance/period-trends";
 import { TopCustomersVendors } from "../../../components/finance/top-customers-vendors";
+import RevenueExpenseChart from "../../../components/finance/revenue-expense-chart";
 
 const FinanceDashboardPage = () => {
   const [loading, setLoading] = useState(true);
@@ -51,6 +53,7 @@ const FinanceDashboardPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState("Dashboard");
   const [summary, setSummary] = useState<FinancialSummary | null>(null);
+  const [selectedPeriod, setSelectedPeriod] = useState<FiscalPeriod | null>(null);
 
   const loadDashboardData = async () => {
     try {
@@ -139,7 +142,7 @@ const FinanceDashboardPage = () => {
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="w-full sm:w-48">
-            <PeriodSelector />
+            <PeriodSelector onPeriodChange={setSelectedPeriod} />
           </div>
           <div className="flex gap-3">
             <Button
@@ -289,6 +292,11 @@ const FinanceDashboardPage = () => {
         <QuickActions />
       </div>
 
+      {/* Revenue vs Expenses Chart */}
+      <div className="mb-6">
+        <RevenueExpenseChart />
+      </div>
+
       {/* AR / AP Aging Detail Row */}
       <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
         <ARAgingSummary />
@@ -298,7 +306,10 @@ const FinanceDashboardPage = () => {
       {/* Bank Accounts & P&L Row */}
       <div className="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
         <BankAccountsSummary />
-        <PLQuickPreview />
+        <PLQuickPreview
+          startDate={selectedPeriod?.startDate}
+          endDate={selectedPeriod?.endDate}
+        />
       </div>
 
       {/* Tax & Reconciliation Row */}

@@ -1,17 +1,16 @@
 "use client";
-
+// frontend/app/dashboard/pos/page.tsx
 import React, { useEffect, useMemo, useState, useRef, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AutocompleteProductSearch } from "@/components/pos/AutocompleteProductSearch";
 import { POSCart } from "@/components/pos/POSCart";
 import { POSPayment } from "@/components/pos/POSPayment";
-import { POSCashier } from "@/components/pos/POSCashier";
 import { POSSaleSuccess } from "@/components/pos/POSSaleSuccess";
 import { POSQuickActions } from "@/components/pos/POSQuickActions";
 import { POSCustomerSelect, Customer } from "@/components/pos/POSCustomerSelect";
+import type { POSCustomerSelectHandle } from "@/components/pos/POSCustomerSelect";
 import { useCashierSession } from "@/hooks/cashier/useCashierSession";
 import { SessionOpenDialog } from "@/components/cashier/SessionOpenDialog";
 import { SessionStatusCard } from "@/components/cashier/SessionStatusCard";
@@ -82,6 +81,10 @@ export default function POSPage() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Document mode state
+  const [docMode, setDocMode] = useState<"SALE" | "DRAFT" | "QUOTE">("SALE");
+  const [editingDocId, setEditingDocId] = useState<string | null>(null);
+
   // Cashier session dialogs
   const [showOpenDialog, setShowOpenDialog] = useState(false);
   const [showCloseDialog, setShowCloseDialog] = useState(false);
@@ -95,6 +98,7 @@ export default function POSPage() {
 
   // Reference for auto-focus
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const customerSelectRef = useRef<POSCustomerSelectHandle>(null);
 
   // ------------------ Auth Guard ------------------
   useEffect(() => {
@@ -313,6 +317,143 @@ export default function POSPage() {
     }, 100);
   };
 
+  // ------------------ Document Mode Handlers ------------------
+  const onNewDraft = () => {
+    setDocMode("DRAFT");
+    setEditingDocId(null);
+    toast("Draft mode activated", "info");
+  };
+
+  const onNewQuote = () => {
+    setDocMode("QUOTE");
+    setEditingDocId(null);
+    toast("Quote mode activated", "info");
+  };
+
+  const onEditDocument = async (docId: string) => {
+    try {
+      setLoading(true);
+      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(docId)), {
+        headers: getAuthHeadersWithToken(token || ""),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast(json.message || "Failed to load document", "error");
+        return;
+      }
+
+      const doc = json.data;
+      setDocMode(doc.type === "DRAFT" ? "DRAFT" : "QUOTE");
+      setEditingDocId(docId);
+
+      // Populate cart from document items
+      const cartItems: CartItem[] = doc.items.map((item: any) => ({
+        productId: item.productId,
+        sku: item.product?.sku || "",
+        name: item.product?.name || item.description || "Unknown",
+        unit_price: item.unitPrice,
+        quantity: item.quantity,
+        discount: item.discount || 0,
+        discount_percent: 0,
+        available: item.product?.available || 999, // TODO: fetch actual availability
+        tax_rate: item.taxRate || 0.16,
+      }));
+      setCart(cartItems);
+
+      // Set customer
+      if (doc.customer) {
+        setSelectedCustomer({
+          id: doc.customer.id,
+          name: doc.customer.name,
+          phone: doc.customer.phone,
+          email: doc.customer.email,
+        });
+      }
+
+      // Set notes
+      setNotes(doc.notes || "");
+
+      toast(`Loaded ${doc.type.toLowerCase()}: ${doc.documentId}`, "success");
+    } catch (error) {
+      toast("Failed to load document", "error");
+      console.error("Load document error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveDocument = async () => {
+    if (!cart.length) {
+      toast("Cart is empty", "warning");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const items = cart.map((c) => ({
+        productId: c.productId,
+        quantity: c.quantity,
+        unitPrice: c.unit_price,
+        taxRate: c.tax_rate,
+        discount: c.discount,
+      }));
+
+      const endpoint = editingDocId
+        ? API_ENDPOINTS.SALES_DOCUMENT_UPDATE_ITEMS(editingDocId)
+        : API_ENDPOINTS.SALES_DOCUMENTS;
+
+      const method = editingDocId ? "PATCH" : "POST";
+      const body = editingDocId
+        ? {
+            items,
+            customerId: selectedCustomer?.id || undefined,
+            notes: notes || undefined,
+          }
+        : {
+            type: docMode,
+            status: "DRAFT",
+            customerId: selectedCustomer?.id || undefined,
+            notes: notes || undefined,
+            items,
+          };
+
+      const res = await fetch(getApiUrl(endpoint), {
+        method,
+        headers: getAuthHeadersWithToken(token || ""),
+        body: JSON.stringify(body),
+      });
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        toast(json.message || `Failed to ${editingDocId ? "update" : "create"} document`, "error");
+        return;
+      }
+
+      const savedDoc = json.data;
+      setEditingDocId(savedDoc.id);
+      toast(`${docMode === "DRAFT" ? "Draft" : "Quote"} saved successfully`, "success");
+
+      // Exit document mode and return to normal sale mode
+      setDocMode("SALE");
+      setEditingDocId(null);
+      clearCart();
+    } catch (error) {
+      toast(`Failed to ${editingDocId ? "update" : "create"} document`, "error");
+      console.error("Save document error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelDocumentMode = () => {
+    setDocMode("SALE");
+    setEditingDocId(null);
+    clearCart();
+    toast("Cancelled document mode", "info");
+  };
+
   // ------------------ Quick Actions ------------------
   const handleParkSale = async () => {
     if (!cart.length) {
@@ -419,6 +560,17 @@ export default function POSPage() {
         e.preventDefault();
         clearCart();
       }
+      // F3: Focus product search (Alt+A adds the highlighted match — see
+      // AutocompleteProductSearch's own global shortcut handling)
+      if (e.key === "F3") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+      // F2: Open customer search
+      if (e.key === "F2") {
+        e.preventDefault();
+        customerSelectRef.current?.openSearch();
+      }
       // ESC: Focus search
       if (e.key === "Escape" && activeTab === "sale") {
         e.preventDefault();
@@ -440,6 +592,9 @@ export default function POSPage() {
             token={token || ""}
             branchId={user.branchId}
             onCustomerCreated={setSelectedCustomer}
+            onNewDraft={onNewDraft}
+            onNewQuote={onNewQuote}
+            onEditDocument={onEditDocument}
           />
         </Suspense>
 
@@ -458,6 +613,31 @@ export default function POSPage() {
           </div>
         )}
 
+        {/* ================= DOCUMENT MODE BANNER ================= */}
+       {/*  {docMode !== "SALE" && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
+            <div className="text-sm text-blue-800">
+              <span className="font-semibold">Sales {docMode === "DRAFT" ? "Draft" : "Quote"}</span>
+              {editingDocId && ` - Editing: ${editingDocId}`}
+            </div> */}
+            {/* <div className="flex gap-2">
+              <button
+                onClick={handleSaveDocument}
+                disabled={loading}
+                className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {loading ? "Saving..." : `Save ${docMode === "DRAFT" ? "Draft" : "Quote"}`}
+              </button>
+              <button
+                onClick={handleCancelDocumentMode}
+                className="px-4 py-2 rounded-md bg-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-300 transition"
+              >
+                Cancel
+              </button>
+            </div> 
+          </div>
+        )}
+*/}
         {/* ================= MAIN RESPONSIVE GRID LAYOUT ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-10  gap-4 items-start">
           {/* ================= LEFT SIDE (70% - 7 Cols out of 10) ================= */}
@@ -472,6 +652,7 @@ export default function POSPage() {
                   hasItems={cart.length > 0}
                 />
                 <POSCustomerSelect
+                  ref={customerSelectRef}
                   token={token || ""}
                   selectedCustomer={selectedCustomer}
                   onCustomerSelect={setSelectedCustomer}
@@ -482,6 +663,7 @@ export default function POSPage() {
                 token={token || ""}
                 searchInputRef={searchInputRef}
                 onSelect={addToCart}
+                enableGlobalShortcuts
               />
             </div>
 
@@ -493,6 +675,8 @@ export default function POSPage() {
                 onUpdateDiscount={updateDiscount}
                 onRemove={removeFromCart}
                 onClear={clearCart}
+                docMode={docMode}
+                editingDocId={editingDocId}
               />
             </div>
           </div>
@@ -516,6 +700,8 @@ export default function POSPage() {
                 cartCount={cart.length}
                 notes={notes}
                 setNotes={setNotes}
+                docMode={docMode}
+                onSaveDocument={handleSaveDocument}
               />
             </div>
 

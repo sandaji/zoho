@@ -66,6 +66,13 @@ export class SequenceService {
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+        // Audit-logging middleware wraps every query (including those run
+        // inside this tx), and Serializable isolation means concurrent
+        // callers for the same branchId+type contend for one row. The
+        // Prisma defaults (maxWait 2s, timeout 5s) are too tight for that
+        // combination under load, so give this transaction more headroom.
+        maxWait: 10000,
+        timeout: 15000,
       },
     );
 

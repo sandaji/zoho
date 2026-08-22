@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from "react";
 import { Search, User, UserPlus, X, Check, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,12 @@ interface POSCustomerSelectProps {
   onCustomerSelect: (customer: Customer | null) => void;
 }
 
-export function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }: POSCustomerSelectProps) {
+export interface POSCustomerSelectHandle {
+  openSearch: () => void;
+}
+
+export const POSCustomerSelect = forwardRef<POSCustomerSelectHandle, POSCustomerSelectProps>(
+  function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }, ref) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<Customer[]>([]);
@@ -83,6 +88,12 @@ export function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }:
       }
     };
   }, [searchTerm, searchCustomers]);
+
+  // F2 (or any other trigger) can call this to jump straight into the
+  // customer search dialog, focused and ready to type.
+  useImperativeHandle(ref, () => ({
+    openSearch: () => setIsOpen(true),
+  }));
 
   // Focus search input when opened
   useEffect(() => {
@@ -220,7 +231,7 @@ export function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }:
               </div>
               <div className="text-left">
                 <p className="font-medium text-amber-900">Counter Sale</p>
-                <p className="text-sm text-amber-700">Walk-in customer</p>
+                <p className="text-sm text-amber-700">Counter customer</p>
               </div>
             </div>
             {!selectedCustomer && <Check className="h-5 w-5 text-amber-700" />}
@@ -329,4 +340,5 @@ export function POSCustomerSelect({ token, selectedCustomer, onCustomerSelect }:
       </Dialog>
     </>
   );
-}
+  }
+);

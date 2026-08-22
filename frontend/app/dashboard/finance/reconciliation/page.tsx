@@ -18,9 +18,11 @@ import { useToast } from "@/lib/toast-context";
 
 interface BankAccount {
   id: string;
-  account_name: string;
-  account_code: string;
-  current_balance: number;
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  balance: number;
+  currency: string;
 }
 
 export default function ReconciliationDashboard() {
@@ -43,7 +45,7 @@ export default function ReconciliationDashboard() {
       });
       if (!res.ok) throw new Error("Failed to fetch accounts");
       const json = await res.json();
-      setAccounts(json.data);
+      setAccounts(json.data.accounts);
     } catch (error) {
       toast("Error loading bank accounts", "error");
       console.error(error);
@@ -109,7 +111,7 @@ export default function ReconciliationDashboard() {
                   <SelectContent>
                     {accounts.map((acc) => (
                       <SelectItem key={acc.id} value={acc.id}>
-                        {acc.account_name} ({acc.account_code})
+                        {acc.accountName} ({acc.bankName})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -157,14 +159,14 @@ export default function ReconciliationDashboard() {
             accounts.map(acc => (
                 <Card key={acc.id} className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => router.push(`/dashboard/finance/reconciliation/${acc.id}`)}>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-lg">{acc.account_name}</CardTitle>
-                        <CardDescription>{acc.account_code}</CardDescription>
+                        <CardTitle className="text-lg">{acc.accountName}</CardTitle>
+                        <CardDescription>{acc.bankName}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">
-                            {new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(acc.current_balance)}
+                            {new Intl.NumberFormat('en-KE', { style: 'currency', currency: acc.currency || 'KES' }).format(acc.balance)}
                         </div>
-                        <div className="text-xs text-muted-foreground mt-1">Current Book Balance</div>
+                        <div className="text-xs text-muted-foreground mt-1">Current Balance</div>
                     </CardContent>
                 </Card>
             ))

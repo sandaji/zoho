@@ -65,6 +65,10 @@ export interface AdjustInventoryDTO {
     | "other";
   reference?: string; // PO number, RMA number, etc.
   notes?: string;
+  // Cost basis for an "increase" adjustment, so it creates a real StockBatch
+  // cost lot instead of a bare quantity bump. If omitted, falls back to the
+  // product's reference cost_price. Ignored for "decrease".
+  unitCost?: number;
 }
 
 /**

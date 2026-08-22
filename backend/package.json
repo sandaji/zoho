@@ -27,6 +27,8 @@
     "perf:migrate": "prisma migrate deploy",
     "perf:verify": "tsx scripts/verify-performance.ts",
     "assign-role": "tsx scripts/assign-role.ts",
+    "backfill:stock-batches": "tsx scripts/backfill-stock-batches.ts",
+    "backfill:stock-batches:dry-run": "tsx scripts/backfill-stock-batches.ts --dry-run",
     "migrate:sales": "tsx scripts/migrate-sales-to-documents.ts",
     "migrate:sales:dry-run": "tsx scripts/migrate-sales-to-documents.ts --dry-run",
     "verify:sales-migration": "tsx scripts/verify-sales-migration.ts",

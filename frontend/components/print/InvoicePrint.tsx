@@ -47,7 +47,7 @@ export default function InvoicePrint({ doc }: { doc: InvoiceDocument }) {
 
       <section className="mb-4">
         <div className="text-sm text-slate-700">Bill To:</div>
-        <div className="font-semibold text-base">{doc.customerName || "Walk-in Customer"}</div>
+        <div className="font-semibold text-base">{doc.customerName || "Counter Customer"}</div>
       </section>
 
       <section className="mb-6 overflow-x-auto">

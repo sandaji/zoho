@@ -5,6 +5,7 @@ import {
   Plus, 
   Search, 
   Download, 
+  Upload,
   RefreshCw, 
   AlertCircle,
   Package,
@@ -21,6 +22,7 @@ import { InventoryTable } from "../inventory/components/inventory-table";
 import { AddProductDialog } from "../inventory/components/add-product-dialog";
 import { AdjustStockModal } from "../inventory/components/adjust-stock-modal";
 import { CategoryManagementDialog } from "../inventory/components/category-management-dialog";
+import { ImportProductsDialog } from "../inventory/components/import-products-dialog";
 import { useState } from "react";
 
 export default function ProductsPage() {
@@ -45,6 +47,7 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [stockAdjustProduct, setStockAdjustProduct] = useState<any | null>(null);
   const [isCategoryDialogOpen, setIsCategoryDialogOpen] = useState(false);
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
 
   // Get the active branch inventory data
   const getBranchInventoryData = (product: any) => {
@@ -132,6 +135,14 @@ export default function ProductsPage() {
           >
             <Download className="h-4 w-4 mr-2" />
             Export
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsImportDialogOpen(true)}
+            className="border-slate-200 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Import
           </Button>
           <Button
             variant="outline"
@@ -260,6 +271,13 @@ export default function ProductsPage() {
         open={isCategoryDialogOpen}
         onOpenChange={setIsCategoryDialogOpen}
         onCategoryAdded={refresh}
+      />
+
+      {/* Import Products Dialog */}
+      <ImportProductsDialog
+        open={isImportDialogOpen}
+        onOpenChange={setIsImportDialogOpen}
+        onImportComplete={refresh}
       />
     </div>
   );

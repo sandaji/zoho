@@ -116,6 +116,26 @@ function createPrismaClient(): CustomPrismaClient {
     connectionTimeoutMillis: 10000,
     statement_timeout: 30000,
     query_timeout: 30000,
+    // Without TCP keepalive, an idle pooled connection can be silently
+    // dropped by a NAT/firewall or the DB provider's own infra (this is a
+    // managed Postgres at db.prisma.io) without either side sending a
+    // close/FIN. pg only discovers the socket is dead the next time a
+    // query tries to use it, surfacing as "Server has closed the
+    // connection" / "Connection terminated unexpectedly" on whatever
+    // request happened to grab that connection next. keepAlive makes the
+    // OS periodically probe idle connections so dead ones get evicted
+    // and replaced before a real request ever touches them.
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000,
+  });
+
+  // node-postgres requires an error listener directly on the Pool: idle
+  // clients that hit a backend error emit 'error' on the pool, and with no
+  // listener that becomes an unhandled exception. This just logs and lets
+  // the pool evict/replace the dead client on its own, instead of crashing
+  // the process.
+  pool.on("error", (err) => {
+    logger.error({ err }, "Postgres pool error (idle client)");
   });
 
   const adapter = new PrismaPg(pool);
@@ -173,6 +193,17 @@ function createPrismaClient(): CustomPrismaClient {
           // ─── 2. AUDIT LOGGING ─────────────────────────────────────────────
           if (model === "AuditLog") {
             return query(args);
+          }
+
+          // DocumentSequence is a high-frequency internal counter (incremented
+          // on every document create, inside a Serializable transaction).
+          // Auditing it triples the queries that transaction needs to commit
+          // (before-fetch + write + auditLog.create) with no real audit value,
+          // which was causing P2028 "Unable to start a transaction" errors
+          // under concurrent load. Skip audit logging for it.
+          if (model === "DocumentSequence") {
+            const { omit, ...cleanArgs } = args as any;
+            return query(cleanArgs);
           }
 
           // Only log CUD operations on single records for now

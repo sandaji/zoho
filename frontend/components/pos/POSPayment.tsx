@@ -36,6 +36,8 @@ interface POSPaymentProps {
   cartCount: number;
   notes: string;
   setNotes: (notes: string) => void;
+  docMode?: "SALE" | "DRAFT" | "QUOTE";
+  onSaveDocument?: () => void;
 }
 
 export const POSPayment: React.FC<POSPaymentProps> = ({
@@ -53,6 +55,8 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   cartCount,
   notes,
   setNotes,
+  docMode = "SALE",
+  onSaveDocument,
 }) => {
   const paymentMethods = [
     { value: "cash", label: "Cash", icon: Banknote, color: "bg-green-100 text-green-700" },
@@ -206,31 +210,56 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
         />
       </div>
 
-      {/* Checkout Button */}
-      <Button
-        onClick={onCheckout}
-        disabled={
-          loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
-        }
-        className="w-full h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700"
-        size="lg"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            Processing...
-          </>
-        ) : (
-          <>
-            <CheckCircle2 className="mr-2 h-5 w-5" />
-            Complete Sale (F9)
-          </>
-        )}
-      </Button>
+      {/* Checkout Button - changes based on document mode */}
+      {docMode === "SALE" ? (
+        <Button
+          onClick={onCheckout}
+          disabled={
+            loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
+          }
+          className="w-full h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700"
+          size="lg"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <CheckCircle2 className="mr-2 h-5 w-5" />
+              Complete Sale (F9)
+            </>
+          )}
+        </Button>
+      ) : (
+        <Button
+          onClick={onSaveDocument}
+          disabled={loading || cartCount === 0}
+          className="w-full h-14 text-lg font-bold bg-blue-600 hover:bg-blue-700"
+          size="lg"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <FileText className="mr-2 h-5 w-5" />
+              Save {docMode === "DRAFT" ? "Draft" : "Quote"}
+            </>
+          )}
+        </Button>
+      )}
 
       {/* Keyboard Shortcut Hints */}
       <div className="text-xs text-center text-emerald-700 space-y-1">
-        <p>F9: Complete Sale • F4: Clear Cart • ESC: Focus Search</p>
+        {docMode === "SALE" ? (
+          <p>F9: Complete Sale • F4: Clear Cart • ESC: Focus Search</p>
+        ) : (
+          <p>F4: Clear Cart • ESC: Focus Search</p>
+        )}
       </div>
     </div>
   );

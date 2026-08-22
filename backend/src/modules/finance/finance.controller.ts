@@ -334,8 +334,40 @@ class FinanceController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const accounts = await AccountingService.getBankAccounts();
-      res.status(200).json({ status: "success", data: accounts });
+      const rawAccounts = await AccountingService.getBankAccounts();
+
+      const accounts = await Promise.all(
+        rawAccounts.map(async (acc) => {
+          const [unreconciledCount, lastReconciled] = await Promise.all([
+            prisma.bankTransaction.count({
+              where: { bank_account_id: acc.id, is_reconciled: false },
+            }),
+            prisma.bankTransaction.findFirst({
+              where: { bank_account_id: acc.id, is_reconciled: true },
+              orderBy: { reconciled_date: "desc" },
+            }),
+          ]);
+
+          return {
+            id: acc.id,
+            accountName: acc.account_name,
+            accountNumber: acc.account_number,
+            bankName: acc.bank_name,
+            balance: acc.current_balance,
+            availableBalance: acc.available_balance,
+            unreconciliedTransactions: unreconciledCount,
+            lastReconciliationDate: lastReconciled?.reconciled_date?.toISOString(),
+            currency: acc.currency,
+          };
+        }),
+      );
+
+      const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0);
+
+      res.status(200).json({
+        status: "success",
+        data: { accounts, totalBalance },
+      });
     } catch (error) {
       logger.error(error, "Error fetching bank accounts:");
       next(error);
@@ -398,10 +430,10 @@ class FinanceController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { bankLineId, journalEntryId } = req.body;
+      const { bankTransactionId, systemTransactionId } = req.body;
       const result = await this.bankService.reconcileItems(
-        bankLineId,
-        journalEntryId,
+        bankTransactionId,
+        systemTransactionId,
       );
       res.status(200).json({ status: "success", data: result });
     } catch (error) {
@@ -1147,35 +1179,34 @@ class FinanceController {
 
       const items = await Promise.all(
         bankAccounts.map(async (acc) => {
-          const [totalLines, unreconciledLines, lastStatement] =
+          const [totalCount, unreconciledTxns, lastReconciled] =
             await Promise.all([
-              prisma.bankStatementLine.count({
-                where: { statement: { account_id: acc.id } },
+              prisma.bankTransaction.count({
+                where: { bank_account_id: acc.id },
               }),
-              prisma.bankStatementLine.findMany({
-                where: {
-                  statement: { account_id: acc.id },
-                  is_reconciled: false,
-                },
-                orderBy: { date: "asc" },
+              prisma.bankTransaction.findMany({
+                where: { bank_account_id: acc.id, is_reconciled: false },
+                orderBy: { transaction_date: "asc" },
               }),
-              prisma.bankStatement.findFirst({
-                where: { account_id: acc.id },
-                orderBy: { upload_date: "desc" },
+              prisma.bankTransaction.findFirst({
+                where: { bank_account_id: acc.id, is_reconciled: true },
+                orderBy: { reconciled_date: "desc" },
               }),
             ]);
 
-          const unreconciledCount = unreconciledLines.length;
-          const variance = unreconciledLines.reduce(
-            (sum, l) => sum + l.amount,
+          const unreconciledCount = unreconciledTxns.length;
+          const variance = unreconciledTxns.reduce(
+            (sum, t) =>
+              sum + (t.transaction_type === "expense" ? -t.amount : t.amount),
             0,
           );
-          const oldest = unreconciledLines[0];
+          const oldest = unreconciledTxns[0];
           const daysOverdue = oldest
             ? Math.max(
                 0,
                 Math.floor(
-                  (Date.now() - oldest.date.getTime()) / (1000 * 60 * 60 * 24),
+                  (Date.now() - oldest.transaction_date.getTime()) /
+                    (1000 * 60 * 60 * 24),
                 ),
               )
             : 0;
@@ -1190,9 +1221,9 @@ class FinanceController {
             accountName: acc.account_name,
             status,
             lastReconciliationDate: (
-              lastStatement?.upload_date || new Date()
+              lastReconciled?.reconciled_date || new Date()
             ).toISOString(),
-            transactionCount: totalLines,
+            transactionCount: totalCount,
             amount: acc.current_balance,
             variance,
             daysOverdue,

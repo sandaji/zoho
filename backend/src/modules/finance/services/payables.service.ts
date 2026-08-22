@@ -3,6 +3,7 @@ import { prisma } from "../../../lib/db";
 import { APStatus, PaymentMethod, Prisma } from "../../../generated";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
+import { BankTreasuryService } from "./bank-treasury.service";
 import { JournalEntryService } from "./journal-entry.service";
 
 export class PayablesService {
@@ -119,6 +120,18 @@ export class PayablesService {
         },
         tx
       );
+
+      // 4. Record the actual cash outflow in the treasury model, so
+      // reconciliation has a real system-side transaction to match an
+      // imported bank statement line against.
+      await BankTreasuryService.recordTransaction(tx, {
+        paymentMethod: data.paymentMethod,
+        type: "expense",
+        amount: data.amount,
+        description: `AP Payment - Bill #${ap.bill_no}`,
+        referenceNo: payment.payment_no,
+        category: "ap_payment",
+      });
 
       return payment;
     });

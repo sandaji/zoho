@@ -8,6 +8,7 @@ import {
 } from "../../../generated";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
+import { BankTreasuryService } from "../../finance/services/bank-treasury.service";
 import { StockValidationService } from "./stock-validation.service";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { logger } from "../../../lib/logger";
@@ -298,7 +299,12 @@ export class SalesService {
           total: source.total,
           balance: source.total,
           notes: source.notes,
-          sourceDocumentId: source.id,
+          // sourceDocumentId is a self-referencing FK with onDelete: NoAction.
+          // For a QUOTE we keep the source (marked CONVERTED below), so the
+          // reference is valid. For a DRAFT we delete the source right after
+          // this create, so pointing at it would violate the FK constraint
+          // the moment we tried to delete it — leave it unset instead.
+          sourceDocumentId: source.type === SalesDocumentType.QUOTE ? source.id : null,
           createdById: userId,
           items: {
             create: source.items.map((item) => ({
@@ -365,7 +371,7 @@ export class SalesService {
       }
 
       return invoice;
-    });
+    }, { timeout: 30000 });
   }
 
   // =============================
@@ -693,7 +699,7 @@ export class SalesService {
         where: { id },
         data: { status: SalesDocumentStatus.VOID, notes: reason || "VOIDED" },
       });
-    });
+    }, { timeout: 30000 });
   }
 
   // =============================
@@ -1231,8 +1237,19 @@ export class SalesService {
         });
       }
 
+      // Record the cash movement in the treasury model so it's reconcilable
+      // against imported bank statements.
+      await BankTreasuryService.recordTransaction(tx, {
+        paymentMethod,
+        type: "income",
+        amount: Math.round(amount),
+        description: `Invoice Payment - ${document.documentId}`,
+        referenceNo: reference || payment.id,
+        category: "invoice_payment",
+      });
+
       return payment;
-    });
+    }, { timeout: 30000 });
   }
 
   // =============================
@@ -1462,6 +1479,6 @@ export class SalesService {
         where: { id },
         data: { status: SalesDocumentStatus.CLOSED, approvedById: userId },
       });
-    });
+    }, { timeout: 30000 });
   }
 }

@@ -1,7 +1,7 @@
 // frontend/components/pos/POSCart.tsx
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Trash2, ShoppingCart } from "lucide-react";
@@ -15,6 +15,9 @@ interface POSCartProps {
   onUpdateDiscount: (productId: string, discount: number, isPercent?: boolean) => void;
   onRemove: (productId: string) => void;
   onClear: () => void;
+
+  docMode?: "SALE" | "DRAFT" | "QUOTE";
+  editingDocId?: string | null;
 }
 
 export const POSCart: React.FC<POSCartProps> = ({
@@ -23,18 +26,27 @@ export const POSCart: React.FC<POSCartProps> = ({
   onUpdateDiscount,
   onRemove,
   onClear,
+  docMode = "SALE",
+  editingDocId = null,
 }) => {
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-        <div className="flex items-center gap-2">
+        {docMode !== "SALE" && (
+          <div className="text-lg text-blue-800">
+            <span className="font-semibold">Sales {docMode === "DRAFT" ? "Draft" : "Quotation"}</span>
+            {editingDocId && ` - Editing: ${editingDocId}`}
+          </div>
+        )}
+        <div className="flex items-center gap-5">
           <ShoppingCart className="h-5 w-5 text-slate-700" />
           <h3 className="font-semibold text-slate-900">Shopping Cart</h3>
           <Badge variant="secondary" className="ml-2">
             {cart.length} {cart.length === 1 ? "item" : "items"}
           </Badge>
         </div>
+
         {cart.length > 0 && (
           <Button
             variant="ghost"

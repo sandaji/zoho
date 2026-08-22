@@ -2,6 +2,7 @@
 import { prisma } from "../../../lib/db";
 import { AccountType, Prisma } from "../../../generated";
 import { JournalEntryService, JournalLineInput } from "./journal-entry.service";
+import { BankTreasuryService } from "./bank-treasury.service";
 
 export const DEFAULT_ACCOUNTS = {
   CASH_ON_HAND: { code: "1001", name: "Cash on Hand", type: AccountType.asset, category: "Current Assets" },
@@ -126,6 +127,21 @@ export class AccountingService {
       });
     }
 
+    // Record the treasury-side cash movement independent of whether the GL
+    // journal entry below succeeds (a missing fiscal period must never
+    // block a POS sale, but the cash was still actually received and
+    // should still be reconcilable against the bank).
+    if (data.total > 0) {
+      await BankTreasuryService.recordTransaction(tx, {
+        paymentMethod: data.paymentMethod,
+        type: "income",
+        amount: Math.round(data.total),
+        description: `POS Sale #${data.saleId}`,
+        referenceNo: data.saleId,
+        category: "pos_sale",
+      });
+    }
+
     try {
       return await JournalEntryService.createJournalEntry(
         {
@@ -162,21 +178,13 @@ export class AccountingService {
   // ============================================
 
   static async getBankAccounts() {
-    return await prisma.chartOfAccount.findMany({
-      where: {
-        account_type: "asset",
-        OR: [
-          { account_name: { contains: "Bank", mode: "insensitive" } },
-          { account_name: { contains: "Cash", mode: "insensitive" } },
-          { account_code: { in: ["1001", "1002", "1003"] } },
-        ],
-      },
-      select: {
-        id: true,
-        account_name: true,
-        account_code: true,
-        current_balance: true,
-      },
+    // Treasury source of truth: the BankAccount / BankTransaction model,
+    // not ChartOfAccount (which represents GL control accounts used for
+    // double-entry bookkeeping, e.g. "Cash on Hand"). This is what the
+    // dashboard, alerts, and reconciliation features display.
+    return await prisma.bankAccount.findMany({
+      where: { is_active: true },
+      orderBy: { account_name: "asc" },
     });
   }
 

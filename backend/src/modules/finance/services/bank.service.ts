@@ -1,21 +1,25 @@
 import { prisma } from "../../../lib/db";
+import { TransactionType } from "../../../generated";
 
 export class BankService {
-  
+
   /**
-   * Import Bank Statement from CSV Data
-   * @param accountId - The ChartOfAccount ID (must be an Asset/Bank)
+   * Import Bank Statement from CSV Data as BankTransaction rows on a
+   * BankAccount (treasury model). Rows are tagged category: "statement_import"
+   * so getReconciliationData can tell them apart from transactions the
+   * system itself already recorded on this account.
+   * @param bankAccountId - The BankAccount ID
    * @param fileContent - Raw CSV string
    * @param filename - Original filename
-   * @param userId - Uploaded by
+   * @param userId - Uploaded by (currently unused, kept for audit/signature parity)
    */
-  async importStatement(accountId: string, fileContent: string, filename: string, userId: string) {
+  async importStatement(bankAccountId: string, fileContent: string, filename: string, userId: string) {
     // 1. Validate Account
-    const account = await prisma.chartOfAccount.findUnique({
-      where: { id: accountId }
+    const account = await prisma.bankAccount.findUnique({
+      where: { id: bankAccountId }
     });
-    if (!account) throw new Error("Account not found");
-    
+    if (!account) throw new Error("Bank account not found");
+
     // 2. Parse CSV (Simplified: Date, Description, Amount, Reference)
     // Assumption: CSV has header: Date,Description,Amount,Reference
     const lines = fileContent.split(/\r?\n/).filter(line => line.trim() !== '');
@@ -27,91 +31,97 @@ export class BankService {
       throw new Error("CSV header is missing");
     }
     const header = firstLine.toLowerCase().split(',');
-    
+
     // Map columns
     const dateIdx = header.findIndex(h => h.includes('date'));
     const descIdx = header.findIndex(h => h.includes('desc') || h.includes('particulars'));
-    const amtIdx = header.findIndex(h => h.includes('amount') || h.includes('credit') || h.includes('debit')); 
+    const amtIdx = header.findIndex(h => h.includes('amount') || h.includes('credit') || h.includes('debit'));
     // Note: handling separate debit/credit columns is common, simplified here for single amount column (+/-)
-    
+
     if (dateIdx === -1 || descIdx === -1 || amtIdx === -1) {
         throw new Error("Invalid CSV Format. Required: Date, Description, Amount");
     }
 
-    // const transactions = [];
-    
-    // Start transaction to save Statement + Lines
+    // Start transaction to save all imported lines as BankTransaction rows
     return await prisma.$transaction(async (tx) => {
-        // Create Statement Record
-        const statement = await tx.bankStatement.create({
-            data: {
-                account_id: accountId,
-                filename: filename,
-                uploaded_by: userId,
-                upload_date: new Date(),
-                status: 'pending'
-            }
-        });
+        let imported = 0;
+        // Running balance is informational only (CSV rows have no reported
+        // balance column) — it does NOT update BankAccount.current_balance,
+        // which stays driven by whatever process is authoritative for it.
+        let runningBalance = account.current_balance;
 
-        // Parse and Create Lines
         for (let i = 1; i < lines.length; i++) {
             const currentLine = lines[i];
             if (!currentLine) continue;
             const cols = currentLine.split(',');
             if (cols.length < 3) continue;
-            
+
             const dateCol = cols[dateIdx];
             const descCol = cols[descIdx];
             const amtCol = cols[amtIdx];
             if (!dateCol || !descCol || !amtCol) continue;
-            
+
             const dateStr = dateCol.trim();
             const desc = descCol.trim().replace(/['"]/g, '');
             const amountStr = amtCol.trim();
-            
-            const date = new Date(dateStr);
-            if (isNaN(date.getTime())) continue; 
-            
-            const amount = parseFloat(amountStr);
-            if (isNaN(amount)) continue;
 
-            await tx.bankStatementLine.create({
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) continue;
+
+            const rawAmount = parseFloat(amountStr);
+            if (isNaN(rawAmount)) continue;
+
+            const transactionType: TransactionType = rawAmount < 0 ? "expense" : "income";
+            const amount = Math.abs(rawAmount);
+            runningBalance += rawAmount;
+
+            await tx.bankTransaction.create({
                 data: {
-                    statement_id: statement.id,
-                    date: date,
+                    transaction_no: `STMT-${filename.replace(/\.[^/.]+$/, "")}-${i}-${Date.now()}`,
+                    bank_account_id: bankAccountId,
+                    transaction_type: transactionType,
+                    amount,
+                    balance_after: runningBalance,
                     description: desc,
-                    amount: amount,
-                    is_reconciled: false
+                    reference_no: filename,
+                    category: "statement_import",
+                    transaction_date: date,
+                    is_reconciled: false,
                 }
             });
+            imported++;
         }
-        
-        return statement;
-    });
+
+        return { imported, filename, bankAccountId };
+    }, { timeout: 30000 });
   }
 
   /**
    * Get Reconciliation Data
-   * Fetch unmatched Bank Lines and unmatched Journal Entries for the account
+   * Split unreconciled BankTransaction rows for this account into:
+   * - bankLines: rows imported from an uploaded statement (category = "statement_import")
+   * - ledgerEntries: rows the system itself recorded on this account
+   *   (any other category — e.g. AR/AP payments, manual entries)
    */
-  async getReconciliationData(accountId: string) {
-    // 1. Get Unreconciled Bank Lines
-    const bankLines = await prisma.bankStatementLine.findMany({
+  async getReconciliationData(bankAccountId: string) {
+    const [bankLines, ledgerEntries] = await Promise.all([
+      prisma.bankTransaction.findMany({
         where: {
-            statement: { account_id: accountId },
-            is_reconciled: false
+          bank_account_id: bankAccountId,
+          is_reconciled: false,
+          category: "statement_import",
         },
-        orderBy: { date: 'asc' }
-    });
-
-    // 2. Get Unreconciled System Ledger Entries (Journal Entries)
-    const ledgerEntries = await prisma.journalEntry.findMany({
+        orderBy: { transaction_date: "asc" },
+      }),
+      prisma.bankTransaction.findMany({
         where: {
-            account_id: accountId,
-            is_reconciled: false
+          bank_account_id: bankAccountId,
+          is_reconciled: false,
+          NOT: { category: "statement_import" },
         },
-        orderBy: { entry_date: 'asc' }
-    });
+        orderBy: { transaction_date: "asc" },
+      }),
+    ]);
 
     return {
         bankLines,
@@ -121,47 +131,40 @@ export class BankService {
 
   /**
    * Reconcile Item
-   * Match a Bank Line to a Journal Entry
+   * Match an imported statement transaction to a system-recorded transaction
+   * on the same bank account.
    */
-  async reconcileItems(bankLineId: string, journalEntryId: string) {
+  async reconcileItems(bankTransactionId: string, systemTransactionId: string) {
      return await prisma.$transaction(async (tx) => {
-         const bankLine = await tx.bankStatementLine.findUnique({ where: { id: bankLineId } });
-         const journalEntry = await tx.journalEntry.findUnique({ where: { id: journalEntryId } });
-         
-         if (!bankLine || !journalEntry) throw new Error("Record not found");
-         
-         // Validation: Amounts should match (or be roughly close if we allow dust)
-         // Note: Bank Amount +ve = Deposit. Journal Entry Debit = Increase Asset (+ve concept).
-         // JournalEntry uses Debit/Credit columns.
-         // Asset Account: Debit (+), Credit (-).
-         // Bank Line: Deposit (+).
-         // So: Bank Amount == (JE.Debit - JE.Credit).
-         
-         const jeAmount = journalEntry.debit - journalEntry.credit;
-         
-         if (Math.abs(bankLine.amount - jeAmount) > 0.01) {
-             throw new Error(`Amount Mismatch: Bank ${bankLine.amount} vs Ledger ${jeAmount}`);
+         const bankTxn = await tx.bankTransaction.findUnique({ where: { id: bankTransactionId } });
+         const systemTxn = await tx.bankTransaction.findUnique({ where: { id: systemTransactionId } });
+
+         if (!bankTxn || !systemTxn) throw new Error("Record not found");
+
+         // Amounts are stored unsigned with transaction_type indicating
+         // direction; compare signed values so a deposit only matches a
+         // deposit and an expense only matches an expense of equal size.
+         const bankSigned = bankTxn.transaction_type === "expense" ? -bankTxn.amount : bankTxn.amount;
+         const systemSigned = systemTxn.transaction_type === "expense" ? -systemTxn.amount : systemTxn.amount;
+
+         if (Math.abs(bankSigned - systemSigned) > 0.01) {
+             throw new Error(`Amount Mismatch: Statement ${bankSigned} vs System ${systemSigned}`);
          }
-         
-         // Mark both as reconciled
-         await tx.bankStatementLine.update({
-             where: { id: bankLineId },
-             data: {
-                 is_reconciled: true,
-                 reconciled_date: new Date(),
-                 journal_entry_id: journalEntryId
-             }
+
+         const reconciledDate = new Date();
+
+         await tx.bankTransaction.update({
+             where: { id: bankTransactionId },
+             data: { is_reconciled: true, reconciled_date: reconciledDate },
          });
-         
-         await tx.journalEntry.update({
-             where: { id: journalEntryId },
-             data: {
-                 is_reconciled: true,
-                 reconciled_date: new Date()
-             }
+
+         await tx.bankTransaction.update({
+             where: { id: systemTransactionId },
+             data: { is_reconciled: true, reconciled_date: reconciledDate },
          });
-         
+
          return { success: true };
      });
   }
 }
+

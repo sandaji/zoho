@@ -538,12 +538,12 @@ export class InventoryService {
    * Adjust warehouse stock up or down for reasons like damage, theft,
    * count variance, returns, or manual receipt outside the PO flow.
    *
-   * NOTE: this adjusts the Inventory ledger and writes a StockMovement,
-   * but — unlike `receiveStock`/`depleteStockFIFO` — it does not touch
-   * StockBatch/FIFO cost lots. For adjustments that should carry a real
-   * cost basis (e.g. "receipt" outside a PO), prefer calling
-   * `InventoryService.receiveStock` directly so FIFO valuation stays
-   * accurate; this method is for the plain quantity ledger only.
+   * "increase" creates a real StockBatch cost lot (via an optional
+   * `unitCost` on the DTO, falling back to the product's reference
+   * cost_price) so the added stock is visible to FIFO depletion.
+   * "decrease" best-effort relieves matching StockBatch cost lots too,
+   * falling back to a ledger-only decrement if batch coverage is
+   * insufficient (e.g. pre-existing drift from before this fix).
    */
   async adjustInventory(
     dto: AdjustInventoryDTO,
@@ -558,13 +558,12 @@ export class InventoryService {
       reference,
       notes,
     } = dto;
-    const signedQty = adjustmentType === "increase" ? quantity : -quantity;
 
     return this.prisma.$transaction(async (tx) => {
       const [product, warehouse] = await Promise.all([
         tx.product.findUnique({
           where: { id: productId },
-          select: { id: true },
+          select: { id: true, cost_price: true },
         }),
         tx.warehouse.findUnique({
           where: { id: warehouseId },
@@ -580,7 +579,39 @@ export class InventoryService {
       const beforeQuantity = before?.quantity ?? 0;
       const beforeReserved = before?.reserved ?? 0;
 
-      if (adjustmentType === "decrease") {
+      if (adjustmentType === "increase") {
+        // Create the StockBatch cost lot directly (rather than via
+        // receiveStock) so this stock is visible to FIFO depletion, without
+        // receiveStock's own StockMovement write duplicating the single
+        // "ADJUSTMENT" movement row this method already writes below.
+        const unitCost = new Prisma.Decimal(dto.unitCost ?? product.cost_price ?? 0);
+        await tx.stockBatch.create({
+          data: {
+            productId,
+            warehouseId,
+            initialQuantity: quantity,
+            currentQuantity: quantity,
+            unitCost,
+            receivedAt: new Date(),
+            isDepleted: false,
+          },
+        });
+
+        await tx.inventory.upsert({
+          where: { productId_warehouseId: { productId, warehouseId } },
+          create: {
+            productId,
+            warehouseId,
+            quantity,
+            available: quantity,
+            reserved: 0,
+          },
+          update: {
+            quantity: { increment: quantity },
+            available: { increment: quantity },
+          },
+        });
+      } else {
         const currentAvailable = before?.available ?? 0;
         if (currentAvailable < quantity) {
           throw new AppError(
@@ -589,21 +620,33 @@ export class InventoryService {
             `Cannot decrease by ${quantity}. Only ${currentAvailable} available in this warehouse.`,
           );
         }
+
+        // Best-effort: relieve real StockBatch cost lots too, so FIFO
+        // valuation stays in sync going forward. This can legitimately fail
+        // to find enough batch coverage for products that accumulated stock
+        // through the old bare-ledger increase path before this fix — in
+        // that case fall back to the ledger-only decrement rather than
+        // blocking a legitimate write-off on historical data drift.
+        try {
+          await InventoryService.depleteBatchesOnly(tx, productId, warehouseId, quantity);
+        } catch (err) {
+          logger.warn(
+            { productId, warehouseId, quantity, err: err instanceof Error ? err.message : err },
+            "adjustInventory decrease: StockBatch coverage insufficient (likely pre-existing ledger/batch drift) — decrementing Inventory ledger only",
+          );
+        }
+
+        await tx.inventory.update({
+          where: { productId_warehouseId: { productId, warehouseId } },
+          data: {
+            quantity: { decrement: quantity },
+            available: { decrement: quantity },
+          },
+        });
       }
 
-      const after = await tx.inventory.upsert({
+      const after = await tx.inventory.findUniqueOrThrow({
         where: { productId_warehouseId: { productId, warehouseId } },
-        create: {
-          productId,
-          warehouseId,
-          quantity: Math.max(0, signedQty),
-          available: Math.max(0, signedQty),
-          reserved: 0,
-        },
-        update: {
-          quantity: { increment: signedQty },
-          available: { increment: signedQty },
-        },
       });
 
       await tx.stockMovement.create({
@@ -638,6 +681,10 @@ export class InventoryService {
 
   /**
    * Immediate warehouse-to-warehouse transfer (no approval workflow).
+   * Relieves real FIFO cost lots at the source and creates a fresh,
+   * correctly cost-based StockBatch at the destination — same core
+   * mechanics as the multi-stage dispatch/receive flow below, just
+   * collapsed into one step with no reservation window.
    * For the multi-stage request → approve → dispatch → receive workflow
    * (with reservation at approval time), use requestTransfer/
    * approveTransfer/dispatchTransfer/receiveTransfer below instead.
@@ -689,6 +736,23 @@ export class InventoryService {
         },
       });
 
+      // Relieve real FIFO cost lots at the source (same core logic
+      // dispatchTransfer uses in the multi-stage workflow) rather than only
+      // touching the Inventory ledger. Without this, a direct transfer moves
+      // quantity numbers between warehouses with no matching StockBatch
+      // movement: the source's batches silently overstate what's left, and
+      // the destination has zero sellable batch coverage for stock that
+      // Inventory says it has — the same "Insufficient stock: available 0"
+      // failure this whole fix pass has been chasing, just from a third
+      // entry point.
+      const { totalCost } = await InventoryService.depleteBatchesOnly(
+        tx,
+        productId,
+        fromWarehouseId,
+        quantity,
+      );
+      const unitCost = quantity > 0 ? totalCost.div(quantity) : new Prisma.Decimal(0);
+
       const sourceAfter = await tx.inventory.update({
         where: {
           productId_warehouseId: { productId, warehouseId: fromWarehouseId },
@@ -696,23 +760,6 @@ export class InventoryService {
         data: {
           quantity: { decrement: quantity },
           available: { decrement: quantity },
-        },
-      });
-
-      const destAfter = await tx.inventory.upsert({
-        where: {
-          productId_warehouseId: { productId, warehouseId: toWarehouseId },
-        },
-        create: {
-          productId,
-          warehouseId: toWarehouseId,
-          quantity,
-          available: quantity,
-          reserved: 0,
-        },
-        update: {
-          quantity: { increment: quantity },
-          available: { increment: quantity },
         },
       });
 
@@ -728,29 +775,35 @@ export class InventoryService {
           createdById: userId,
         },
       });
-      await tx.stockMovement.create({
-        data: {
-          type: "TRANSFER_IN",
-          quantity,
-          productId,
-          warehouseId: toWarehouseId,
-          reference:
-            reference ||
-            `Direct transfer from ${sourceWarehouse.name}${reason ? ` (${reason})` : ""}`,
-          createdById: userId,
-        },
-      });
 
       await synchronizeBranchInventoryForWarehouse(
         tx,
         productId,
         fromWarehouseId,
       );
-      await synchronizeBranchInventoryForWarehouse(
-        tx,
+
+      // Create a real destination StockBatch carrying the FIFO cost basis
+      // just relieved at the source — this both increments the destination
+      // Inventory ledger and writes its own StockMovement/BranchInventory
+      // sync (same pattern receiveTransfer already uses for the multi-stage
+      // workflow), so we don't also write a separate TRANSFER_IN movement
+      // here.
+      await InventoryService.receiveStock(tx, {
         productId,
-        toWarehouseId,
-      );
+        warehouseId: toWarehouseId,
+        quantity,
+        unitCost,
+        userId,
+        reference:
+          reference ||
+          `Direct transfer from ${sourceWarehouse.name}${reason ? ` (${reason})` : ""}`,
+      });
+
+      const destAfter = await tx.inventory.findUniqueOrThrow({
+        where: {
+          productId_warehouseId: { productId, warehouseId: toWarehouseId },
+        },
+      });
 
       return {
         productId,
@@ -778,7 +831,7 @@ export class InventoryService {
         },
         timestamp: new Date().toISOString(),
       };
-    }, { timeout: 15000 });
+    }, { timeout: 20000 });
   }
 
   // =================================================================

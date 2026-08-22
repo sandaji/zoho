@@ -25,6 +25,34 @@ router.post("/", authenticate, requirePermission('inventory.product.manage'), as
   }
 });
 
+// Bulk-import products from a parsed spreadsheet (Import Products dialog).
+// Body: { branchId, vendorId, products: [{ sku, name, category?, quantity?, cost_price, unit_price, status?, reorder_level? }] }
+// Partial success is expected — a bad row is reported per-row, not a 4xx for the whole batch.
+router.post("/bulk-import", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
+  try {
+    const { branchId, vendorId, products } = req.body;
+
+    if (!branchId || !vendorId) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "branchId and vendorId are required");
+    }
+    if (!Array.isArray(products) || products.length === 0) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "products array is required and must not be empty");
+    }
+    if (products.length > 2000) {
+      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Maximum 2000 products per import — split the file into smaller batches");
+    }
+
+    const result = await productService.bulkImportProducts({ branchId, vendorId, products });
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get all products with pagination and filters
 router.get("/", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
   try {

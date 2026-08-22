@@ -191,15 +191,10 @@ export class AlertsService {
    */
   private static async getLowCashAlert(): Promise<FinancialAlert | null> {
     try {
-      const cashAccounts = await prisma.chartOfAccount.aggregate({
-        where: {
-          account_type: "asset",
-          OR: [
-            { account_name: { contains: "Cash", mode: "insensitive" } },
-            { account_name: { contains: "Bank", mode: "insensitive" } },
-            { account_code: { in: ["1001", "1002", "1003"] } },
-          ],
-        },
+      // Treasury source of truth: BankAccount.current_balance, not the
+      // ChartOfAccount "Cash on Hand"/"Bank" GL control accounts.
+      const cashAccounts = await prisma.bankAccount.aggregate({
+        where: { is_active: true },
         _sum: { current_balance: true },
       });
 
@@ -258,38 +253,38 @@ export class AlertsService {
     FinancialAlert[]
   > {
     try {
-      // Find bank accounts with unreconciled transactions
-      const unreconciled = await prisma.$queryRaw<
-        Array<{
-          account_id: string;
-          account_name: string;
-          unreconciled_count: number;
-        }>
-      >`
-        SELECT 
-          ba.id as account_id,
-          ba.account_name,
-          COUNT(bt.id) as unreconciled_count
-        FROM bank_accounts ba
-        LEFT JOIN bank_transactions bt ON ba.id = bt.bank_account_id AND bt.is_reconciled = false
-        GROUP BY ba.id, ba.account_name
-        HAVING COUNT(bt.id) > 0
-        LIMIT 5
-      `;
-
-      return unreconciled.map((account) => {
-        return {
-          id: `recon-${account.account_id}`,
-          type: "reconciliation_pending" as const,
-          severity: account.unreconciled_count > 20 ? "warning" : "info",
-          title: `Reconciliation Pending - ${account.account_name}`,
-          message: `${account.unreconciled_count} transactions awaiting reconciliation in ${account.account_name}`,
-          actionUrl: `/dashboard/finance/reconciliation/${account.account_id}`,
-          actionLabel: "Reconcile Now",
-          timestamp: new Date().toISOString(),
-          read: false,
-        };
+      // Treasury source of truth: BankAccount / BankTransaction.
+      const unreconciled = await prisma.bankTransaction.groupBy({
+        by: ["bank_account_id"],
+        where: { is_reconciled: false },
+        _count: { id: true },
       });
+
+      if (unreconciled.length === 0) return [];
+
+      const accounts = await prisma.bankAccount.findMany({
+        where: { id: { in: unreconciled.map((u) => u.bank_account_id) } },
+      });
+      const accountNameById = new Map(accounts.map((a) => [a.id, a.account_name]));
+
+      return unreconciled
+        .filter((u) => u._count.id > 0)
+        .slice(0, 5)
+        .map((u) => {
+          const count = u._count.id;
+          const accountName = accountNameById.get(u.bank_account_id) || "Bank Account";
+          return {
+            id: `recon-${u.bank_account_id}`,
+            type: "reconciliation_pending" as const,
+            severity: count > 20 ? "warning" : "info",
+            title: `Reconciliation Pending - ${accountName}`,
+            message: `${count} transactions awaiting reconciliation in ${accountName}`,
+            actionUrl: `/dashboard/finance/reconciliation/${u.bank_account_id}`,
+            actionLabel: "Reconcile Now",
+            timestamp: new Date().toISOString(),
+            read: false,
+          };
+        });
     } catch (error) {
       logger.error({ error }, "Error checking reconciliation status");
       return [];

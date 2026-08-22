@@ -10,19 +10,12 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
-interface BankLine {
+interface BankTransaction {
   id: string;
-  date: string;
+  transaction_date: string;
   description: string;
   amount: number;
-}
-
-interface JournalEntry {
-  id: string;
-  entry_date: string;
-  description: string;
-  debit: number;
-  credit: number;
+  transaction_type: "income" | "expense" | "transfer" | "adjustment";
 }
 
 export default function ReconciliationMatchingPage() {
@@ -30,8 +23,8 @@ export default function ReconciliationMatchingPage() {
   const accountId = params.accountId as string;
 
   const [loading, setLoading] = useState(true);
-  const [bankLines, setBankLines] = useState<BankLine[]>([]);
-  const [ledgerEntries, setLedgerEntries] = useState<JournalEntry[]>([]);
+  const [bankLines, setBankLines] = useState<BankTransaction[]>([]);
+  const [ledgerEntries, setLedgerEntries] = useState<BankTransaction[]>([]);
   
   const [selectedBankLine, setSelectedBankLine] = useState<string | null>(null);
   const [selectedLedgerEntry, setSelectedLedgerEntry] = useState<string | null>(null);
@@ -64,15 +57,15 @@ export default function ReconciliationMatchingPage() {
 
       try {
           setReconciling(true);
-          const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILE_ITEM(selectedBankLine)), {
+          const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILE), {
               method: "POST",
               headers: {
                   ...getAuthHeaders(),
                   "Content-Type": "application/json"
               },
               body: JSON.stringify({
-                  bankLineId: selectedBankLine,
-                  journalEntryId: selectedLedgerEntry
+                  bankTransactionId: selectedBankLine,
+                  systemTransactionId: selectedLedgerEntry
               })
           });
           
@@ -101,9 +94,8 @@ export default function ReconciliationMatchingPage() {
     }).format(amount);
   };
 
-  // Helper to calculate Net Amount for Ledger Entry (Debit - Credit for Asset)
-  // Assuming Asset Account: Debit is Increase (+), Credit is Decrease (-)
-  const getLedgerAmount = (entry: JournalEntry) => entry.debit - entry.credit;
+  // Signed amount: expense transactions are shown/compared as negative.
+  const getSignedAmount = (txn: BankTransaction) => (txn.transaction_type === "expense" ? -txn.amount : txn.amount);
 
   return (
     <div className="p-6 h-[calc(100vh-4rem)] flex flex-col">
@@ -152,11 +144,11 @@ export default function ReconciliationMatchingPage() {
                                     onClick={() => setSelectedBankLine(line.id === selectedBankLine ? null : line.id)}
                                 >
                                     <div className="flex-1">
-                                        <div className="font-medium text-sm">{format(new Date(line.date), "MMM d, yyyy")}</div>
+                                        <div className="font-medium text-sm">{format(new Date(line.transaction_date), "MMM d, yyyy")}</div>
                                         <div className="text-xs text-muted-foreground">{line.description}</div>
                                     </div>
                                     <div className="font-bold">
-                                        {formatCurrency(line.amount)}
+                                        {formatCurrency(getSignedAmount(line))}
                                     </div>
                                     {selectedBankLine === line.id && <CheckCircle2 className="h-4 w-4 text-blue-600 ml-2" />}
                                 </div>
@@ -177,7 +169,7 @@ export default function ReconciliationMatchingPage() {
                     ) : (
                         <div className="divide-y">
                              {ledgerEntries.map(entry => {
-                                 const amount = getLedgerAmount(entry);
+                                 const amount = getSignedAmount(entry);
                                  return (
                                     <div 
                                         key={entry.id} 
@@ -188,7 +180,7 @@ export default function ReconciliationMatchingPage() {
                                         onClick={() => setSelectedLedgerEntry(entry.id === selectedLedgerEntry ? null : entry.id)}
                                     >
                                         <div className="flex-1">
-                                            <div className="font-medium text-sm">{format(new Date(entry.entry_date), "MMM d, yyyy")}</div>
+                                            <div className="font-medium text-sm">{format(new Date(entry.transaction_date), "MMM d, yyyy")}</div>
                                             <div className="text-xs text-muted-foreground">{entry.description}</div>
                                         </div>
                                         <div className="font-bold">
