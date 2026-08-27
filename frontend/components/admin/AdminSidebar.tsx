@@ -1,65 +1,35 @@
 /**
- * AdminSidebar – standalone variant (used by external consumers).
- * The admin page now has its own inline sidebar for full layout control.
+ * AdminSidebar – the real in-page navigation for /dashboard/admin.
+ *
+ * Section links are driven entirely by ADMIN_NAVIGATION_GROUPS in
+ * lib/navigation.ts, the single source of truth also used elsewhere in the
+ * app. This avoids a second, hand-maintained, hardcoded copy of the section
+ * list drifting out of sync (the previous version of this file was never
+ * rendered by the admin page and was missing "Credit Notes" as a result).
  */
 "use client";
 
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  Building2,
-  Warehouse,
-  Users,
-  Package,
-  ShoppingCart,
-  Truck,
-  DollarSign,
-  Wallet,
-  Shield,
-  ChevronRight,
-  Crown,
-} from "lucide-react";
+import { Crown, ChevronRight } from "lucide-react";
+import { ADMIN_NAVIGATION_GROUPS } from "@/lib/navigation";
 
 interface AdminSidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
   userName?: string;
 }
 
-const NAV_GROUPS = [
-  {
-    label: "Command Center",
-    items: [{ id: "overview", label: "Overview", icon: LayoutDashboard }],
-  },
-  {
-    label: "Infrastructure",
-    items: [
-      { id: "branches",   label: "Branches",   icon: Building2 },
-      { id: "warehouses", label: "Warehouses",  icon: Warehouse },
-    ],
-  },
-  {
-    label: "People",
-    items: [
-      { id: "users",   label: "Users",   icon: Users   },
-      { id: "payroll", label: "Payroll",  icon: Wallet  },
-      { id: "roles",   label: "Roles",    icon: Shield  },
-    ],
-  },
-  {
-    label: "Operations",
-    items: [
-      { id: "products",   label: "Products",   icon: Package      },
-      { id: "sales",      label: "Sales",       icon: ShoppingCart },
-      { id: "deliveries", label: "Deliveries",  icon: Truck        },
-      { id: "finance",    label: "Finance",     icon: DollarSign   },
-    ],
-  },
-];
+function sectionFromHref(href: string): string {
+  const query = href.split("?section=")[1];
+  return query ?? "overview";
+}
 
-export function AdminSidebar({ activeSection, onSectionChange, userName }: AdminSidebarProps) {
+export function AdminSidebar({ userName }: AdminSidebarProps) {
+  const searchParams = useSearchParams();
+  const activeSection = searchParams.get("section") || "overview";
+
   return (
-    <aside className="flex h-full w-60 flex-col bg-emerald-900">
+    <aside className="flex h-full w-60 shrink-0 flex-col bg-emerald-900">
       {/* Identity */}
       <div className="border-b border-emerald-800/40 px-5 py-5">
         <div className="flex items-center gap-3">
@@ -77,18 +47,19 @@ export function AdminSidebar({ activeSection, onSectionChange, userName }: Admin
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        {NAV_GROUPS.map((group) => (
+        {ADMIN_NAVIGATION_GROUPS.map((group) => (
           <div key={group.label} className="mb-5">
             <p className="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-widest text-emerald-400">
               {group.label}
             </p>
             <div className="space-y-0.5">
-              {group.items.map(({ id, label, icon: Icon }) => {
-                const active = activeSection === id;
+              {group.pages.map(({ id, label, href, icon: Icon }) => {
+                const active = activeSection === sectionFromHref(href);
                 return (
-                  <button
+                  <Link
                     key={id}
-                    onClick={() => onSectionChange(id)}
+                    href={href}
+                    scroll={false}
                     className={cn(
                       "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       active
@@ -99,7 +70,7 @@ export function AdminSidebar({ activeSection, onSectionChange, userName }: Admin
                     <Icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-emerald-400")} />
                     <span className="flex-1 text-left">{label}</span>
                     {active && <ChevronRight className="h-3.5 w-3.5 opacity-70" />}
-                  </button>
+                  </Link>
                 );
               })}
             </div>

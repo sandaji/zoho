@@ -833,6 +833,67 @@ export const fetchDailySummary = async (token: string): Promise<DailySummary> =>
   return data;
 };
 
+export interface SalesPerformanceItem {
+  productId: string;
+  sku: string;
+  name: string;
+  totalQty: number;
+  totalRevenue: number;
+  orderCount: number;
+}
+
+export interface SalesPerformanceDay {
+  date: string;
+  revenue: number;
+  orderCount: number;
+  avgOrderValue: number;
+}
+
+export interface SalesPerformanceSalesman {
+  userId: string;
+  name: string;
+  salesPrefix: string | null;
+  totalRevenue: number;
+  orderCount: number;
+}
+
+export interface SalesPerformanceSummary {
+  totalRevenue: number;
+  totalTax: number;
+  totalOrders: number;
+  avgOrderValue: number;
+}
+
+export interface SalesPerformanceData {
+  byItem: SalesPerformanceItem[];
+  byDay: SalesPerformanceDay[];
+  bySalesman: SalesPerformanceSalesman[];
+  summary: SalesPerformanceSummary | null;
+}
+
+export const fetchSalesPerformance = async (
+  token: string,
+  params: { branchId?: string; limit?: number } = {}
+): Promise<SalesPerformanceData> => {
+  const query = new URLSearchParams();
+  if (params.branchId) query.set("branchId", params.branchId);
+  query.set("limit", String(params.limit ?? 10));
+
+  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/performance?${query}`, {
+    headers: getAuthHeadersWithToken(token),
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch sales performance (${response.status})`);
+  }
+  const { data } = await response.json();
+  return {
+    byItem: data?.byItem || [],
+    byDay: data?.byDay || [],
+    bySalesman: data?.bySalesman || [],
+    summary: data?.summary || null,
+  };
+};
+
 export const getFinancialReport = async (
   token: string,
   month: number,

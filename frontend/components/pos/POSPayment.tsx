@@ -24,7 +24,11 @@ type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
 interface POSPaymentProps {
   subtotal: number;
   tax: number;
+  /** Sum of per-item discounts already applied on individual cart lines (display only). */
   totalDiscount: number;
+  /** Whole-order discount amount — separate from any per-item discounts. */
+  orderDiscount: number;
+  setOrderDiscount: (amount: number) => void;
   grandTotal: number;
   paymentMethod: PaymentMethod;
   setPaymentMethod: (method: PaymentMethod) => void;
@@ -44,6 +48,8 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   subtotal,
   tax,
   totalDiscount,
+  orderDiscount,
+  setOrderDiscount,
   grandTotal,
   paymentMethod,
   setPaymentMethod,
@@ -94,8 +100,14 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
         </div>
         {totalDiscount > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-emerald-800">Discount</span>
+            <span className="text-emerald-800">Item Discounts</span>
             <span className="font-medium text-emerald-600">-{formatCurrency(totalDiscount)}</span>
+          </div>
+        )}
+        {orderDiscount > 0 && (
+          <div className="flex justify-between text-sm">
+            <span className="text-emerald-800">Order Discount</span>
+            <span className="font-medium text-emerald-600">-{formatCurrency(orderDiscount)}</span>
           </div>
         )}
         <div className="flex justify-between text-sm">
@@ -107,6 +119,23 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           <span className="text-emerald-900">Total</span>
           <span className="text-2xl text-emerald-900">{formatCurrency(grandTotal)}</span>
         </div>
+      </div>
+
+      {/* Whole-Order Discount — separate from per-item discounts above */}
+      <div className="space-y-2">
+        <Label htmlFor="orderDiscount" className="text-sm font-semibold text-emerald-900">
+          Order Discount (KES)
+        </Label>
+        <Input
+          id="orderDiscount"
+          type="number"
+          value={orderDiscount || ""}
+          onChange={(e) => setOrderDiscount(Math.max(0, parseFloat(e.target.value) || 0))}
+          placeholder="0"
+          className="border-emerald-200"
+          min="0"
+          step="1"
+        />
       </div>
 
       {/* Payment Method */}

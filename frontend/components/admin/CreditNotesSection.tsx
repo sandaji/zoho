@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
+import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { SalesStatus } from "@/lib/types";
 import { useToast } from "@/lib/toast-context";
@@ -89,7 +90,7 @@ export default function CreditNotesSection() {
     {
       key: "total",
       label: "Total",
-      render: (total) => `KES ${(total as number).toLocaleString()}`,
+      render: (total) => formatCurrency(total as number),
     },
     {
       key: "status",
@@ -157,7 +158,7 @@ export default function CreditNotesSection() {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Amount</p>
                   <p className="text-sm font-bold text-red-600 uppercase">
-                    KES {selectedCN.total.toLocaleString()}
+                    {formatCurrency(selectedCN.total)}
                   </p>
                 </div>
                 <div>
@@ -182,15 +183,15 @@ export default function CreditNotesSection() {
               <div className="border-t pt-4 space-y-1 text-sm">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>KES {selectedCN.subtotal.toLocaleString()}</span>
+                  <span>{formatCurrency(selectedCN.subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax</span>
-                  <span>KES {selectedCN.tax.toLocaleString()}</span>
+                  <span>{formatCurrency(selectedCN.tax)}</span>
                 </div>
                 <div className="flex justify-between font-bold text-base border-t mt-2 pt-2">
                   <span>Total Credited</span>
-                  <span>KES {selectedCN.total.toLocaleString()}</span>
+                  <span>{formatCurrency(selectedCN.total)}</span>
                 </div>
               </div>
 

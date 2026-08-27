@@ -111,6 +111,23 @@ export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
  */
 export type DocumentSequence = $Result.DefaultSelection<Prisma.$DocumentSequencePayload>
 /**
+ * Model CustomerCodeSetting
+ * Admin-configurable prefix + auto-incrementing counter for customer
+ * codes (2 letters chosen by admin + 6-digit auto-incrementing number,
+ * e.g. "AB000001"). Single active row — admin can change the prefix at
+ * any time; the counter keeps incrementing regardless.
+ */
+export type CustomerCodeSetting = $Result.DefaultSelection<Prisma.$CustomerCodeSettingPayload>
+/**
+ * Model Department
+ * HR-managed departments. Each department has its own 2-letter code
+ * prefix (chosen by HR) and its own auto-incrementing employee number
+ * sequence — e.g. Junior Staff = "JS" → JS001, JS002...; Senior Staff =
+ * "SS" → SS001...; Sales = "SA" → SA001... Each department's counter is
+ * independent of the others.
+ */
+export type Department = $Result.DefaultSelection<Prisma.$DepartmentPayload>
+/**
  * Model SalesOrder
  * Sales Orders - Internal purchase requests by customers
  */
@@ -1350,6 +1367,26 @@ export class PrismaClient<
   get documentSequence(): Prisma.DocumentSequenceDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.customerCodeSetting`: Exposes CRUD operations for the **CustomerCodeSetting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CustomerCodeSettings
+    * const customerCodeSettings = await prisma.customerCodeSetting.findMany()
+    * ```
+    */
+  get customerCodeSetting(): Prisma.CustomerCodeSettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.department`: Exposes CRUD operations for the **Department** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Departments
+    * const departments = await prisma.department.findMany()
+    * ```
+    */
+  get department(): Prisma.DepartmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.salesOrder`: Exposes CRUD operations for the **SalesOrder** model.
     * Example usage:
     * ```ts
@@ -2374,6 +2411,8 @@ export namespace Prisma {
     SalesDocumentItem: 'SalesDocumentItem',
     Payment: 'Payment',
     DocumentSequence: 'DocumentSequence',
+    CustomerCodeSetting: 'CustomerCodeSetting',
+    Department: 'Department',
     SalesOrder: 'SalesOrder',
     SOItem: 'SOItem',
     DispatchNote: 'DispatchNote',
@@ -2445,7 +2484,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "notification"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "customer" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "customerCodeSetting" | "department" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "financeTransaction" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3852,6 +3891,154 @@ export namespace Prisma {
           count: {
             args: Prisma.DocumentSequenceCountArgs<ExtArgs>
             result: $Utils.Optional<DocumentSequenceCountAggregateOutputType> | number
+          }
+        }
+      }
+      CustomerCodeSetting: {
+        payload: Prisma.$CustomerCodeSettingPayload<ExtArgs>
+        fields: Prisma.CustomerCodeSettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CustomerCodeSettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CustomerCodeSettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>
+          }
+          findFirst: {
+            args: Prisma.CustomerCodeSettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CustomerCodeSettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>
+          }
+          findMany: {
+            args: Prisma.CustomerCodeSettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>[]
+          }
+          create: {
+            args: Prisma.CustomerCodeSettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>
+          }
+          createMany: {
+            args: Prisma.CustomerCodeSettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CustomerCodeSettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>[]
+          }
+          delete: {
+            args: Prisma.CustomerCodeSettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>
+          }
+          update: {
+            args: Prisma.CustomerCodeSettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.CustomerCodeSettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CustomerCodeSettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CustomerCodeSettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.CustomerCodeSettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CustomerCodeSettingPayload>
+          }
+          aggregate: {
+            args: Prisma.CustomerCodeSettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCustomerCodeSetting>
+          }
+          groupBy: {
+            args: Prisma.CustomerCodeSettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CustomerCodeSettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CustomerCodeSettingCountArgs<ExtArgs>
+            result: $Utils.Optional<CustomerCodeSettingCountAggregateOutputType> | number
+          }
+        }
+      }
+      Department: {
+        payload: Prisma.$DepartmentPayload<ExtArgs>
+        fields: Prisma.DepartmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DepartmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DepartmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>
+          }
+          findFirst: {
+            args: Prisma.DepartmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DepartmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>
+          }
+          findMany: {
+            args: Prisma.DepartmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>[]
+          }
+          create: {
+            args: Prisma.DepartmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>
+          }
+          createMany: {
+            args: Prisma.DepartmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DepartmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>[]
+          }
+          delete: {
+            args: Prisma.DepartmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>
+          }
+          update: {
+            args: Prisma.DepartmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.DepartmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DepartmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DepartmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.DepartmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DepartmentPayload>
+          }
+          aggregate: {
+            args: Prisma.DepartmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDepartment>
+          }
+          groupBy: {
+            args: Prisma.DepartmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DepartmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DepartmentCountArgs<ExtArgs>
+            result: $Utils.Optional<DepartmentCountAggregateOutputType> | number
           }
         }
       }
@@ -8141,6 +8328,8 @@ export namespace Prisma {
     salesDocumentItem?: SalesDocumentItemOmit
     payment?: PaymentOmit
     documentSequence?: DocumentSequenceOmit
+    customerCodeSetting?: CustomerCodeSettingOmit
+    department?: DepartmentOmit
     salesOrder?: SalesOrderOmit
     sOItem?: SOItemOmit
     dispatchNote?: DispatchNoteOmit
@@ -9120,6 +9309,37 @@ export namespace Prisma {
    */
   export type SalesDocumentCountOutputTypeCountStockMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StockMovementWhereInput
+  }
+
+
+  /**
+   * Count Type DepartmentCountOutputType
+   */
+
+  export type DepartmentCountOutputType = {
+    users: number
+  }
+
+  export type DepartmentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | DepartmentCountOutputTypeCountUsersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DepartmentCountOutputType without action
+   */
+  export type DepartmentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DepartmentCountOutputType
+     */
+    select?: DepartmentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DepartmentCountOutputType without action
+   */
+  export type DepartmentCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -10146,6 +10366,8 @@ export namespace Prisma {
     lastSequence: number | null
     hasSystemAccess: boolean | null
     role: string | null
+    employeeCode: string | null
+    departmentId: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -10162,6 +10384,8 @@ export namespace Prisma {
     lastSequence: number | null
     hasSystemAccess: boolean | null
     role: string | null
+    employeeCode: string | null
+    departmentId: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -10178,6 +10402,8 @@ export namespace Prisma {
     lastSequence: number
     hasSystemAccess: number
     role: number
+    employeeCode: number
+    departmentId: number
     _all: number
   }
 
@@ -10204,6 +10430,8 @@ export namespace Prisma {
     lastSequence?: true
     hasSystemAccess?: true
     role?: true
+    employeeCode?: true
+    departmentId?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -10220,6 +10448,8 @@ export namespace Prisma {
     lastSequence?: true
     hasSystemAccess?: true
     role?: true
+    employeeCode?: true
+    departmentId?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -10236,6 +10466,8 @@ export namespace Prisma {
     lastSequence?: true
     hasSystemAccess?: true
     role?: true
+    employeeCode?: true
+    departmentId?: true
     _all?: true
   }
 
@@ -10339,6 +10571,8 @@ export namespace Prisma {
     lastSequence: number
     hasSystemAccess: boolean
     role: string
+    employeeCode: string | null
+    departmentId: string | null
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -10374,6 +10608,8 @@ export namespace Prisma {
     lastSequence?: boolean
     hasSystemAccess?: boolean
     role?: boolean
+    employeeCode?: boolean
+    departmentId?: boolean
     approvedApprovals?: boolean | User$approvedApprovalsArgs<ExtArgs>
     requestedApprovals?: boolean | User$requestedApprovalsArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
@@ -10411,6 +10647,7 @@ export namespace Prisma {
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
+    department?: boolean | User$departmentArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -10428,7 +10665,10 @@ export namespace Prisma {
     lastSequence?: boolean
     hasSystemAccess?: boolean
     role?: boolean
+    employeeCode?: boolean
+    departmentId?: boolean
     branch?: boolean | User$branchArgs<ExtArgs>
+    department?: boolean | User$departmentArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10445,7 +10685,10 @@ export namespace Prisma {
     lastSequence?: boolean
     hasSystemAccess?: boolean
     role?: boolean
+    employeeCode?: boolean
+    departmentId?: boolean
     branch?: boolean | User$branchArgs<ExtArgs>
+    department?: boolean | User$departmentArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -10462,9 +10705,11 @@ export namespace Prisma {
     lastSequence?: boolean
     hasSystemAccess?: boolean
     role?: boolean
+    employeeCode?: boolean
+    departmentId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "branchId" | "isActive" | "createdAt" | "updatedAt" | "salesPrefix" | "lastSequence" | "hasSystemAccess" | "role", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "branchId" | "isActive" | "createdAt" | "updatedAt" | "salesPrefix" | "lastSequence" | "hasSystemAccess" | "role" | "employeeCode" | "departmentId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     approvedApprovals?: boolean | User$approvedApprovalsArgs<ExtArgs>
     requestedApprovals?: boolean | User$requestedApprovalsArgs<ExtArgs>
@@ -10503,13 +10748,16 @@ export namespace Prisma {
     notifications?: boolean | User$notificationsArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     branch?: boolean | User$branchArgs<ExtArgs>
+    department?: boolean | User$departmentArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     branch?: boolean | User$branchArgs<ExtArgs>
+    department?: boolean | User$departmentArgs<ExtArgs>
   }
   export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     branch?: boolean | User$branchArgs<ExtArgs>
+    department?: boolean | User$departmentArgs<ExtArgs>
   }
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10552,6 +10800,7 @@ export namespace Prisma {
       notifications: Prisma.$NotificationPayload<ExtArgs>[]
       roles: Prisma.$RoleAssignmentPayload<ExtArgs>[]
       branch: Prisma.$BranchPayload<ExtArgs> | null
+      department: Prisma.$DepartmentPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10567,6 +10816,8 @@ export namespace Prisma {
       lastSequence: number
       hasSystemAccess: boolean
       role: string
+      employeeCode: string | null
+      departmentId: string | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -10998,6 +11249,7 @@ export namespace Prisma {
     notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branch<T extends User$branchArgs<ExtArgs> = {}>(args?: Subset<T, User$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    department<T extends User$departmentArgs<ExtArgs> = {}>(args?: Subset<T, User$departmentArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11040,6 +11292,8 @@ export namespace Prisma {
     readonly lastSequence: FieldRef<"User", 'Int'>
     readonly hasSystemAccess: FieldRef<"User", 'Boolean'>
     readonly role: FieldRef<"User", 'String'>
+    readonly employeeCode: FieldRef<"User", 'String'>
+    readonly departmentId: FieldRef<"User", 'String'>
   }
     
 
@@ -12321,6 +12575,25 @@ export namespace Prisma {
      */
     include?: BranchInclude<ExtArgs> | null
     where?: BranchWhereInput
+  }
+
+  /**
+   * User.department
+   */
+  export type User$departmentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    where?: DepartmentWhereInput
   }
 
   /**
@@ -28961,6 +29234,7 @@ export namespace Prisma {
 
   export type CustomerMinAggregateOutputType = {
     id: string | null
+    code: string | null
     name: string | null
     email: string | null
     phone: string | null
@@ -28976,6 +29250,7 @@ export namespace Prisma {
 
   export type CustomerMaxAggregateOutputType = {
     id: string | null
+    code: string | null
     name: string | null
     email: string | null
     phone: string | null
@@ -28991,6 +29266,7 @@ export namespace Prisma {
 
   export type CustomerCountAggregateOutputType = {
     id: number
+    code: number
     name: number
     email: number
     phone: number
@@ -29018,6 +29294,7 @@ export namespace Prisma {
 
   export type CustomerMinAggregateInputType = {
     id?: true
+    code?: true
     name?: true
     email?: true
     phone?: true
@@ -29033,6 +29310,7 @@ export namespace Prisma {
 
   export type CustomerMaxAggregateInputType = {
     id?: true
+    code?: true
     name?: true
     email?: true
     phone?: true
@@ -29048,6 +29326,7 @@ export namespace Prisma {
 
   export type CustomerCountAggregateInputType = {
     id?: true
+    code?: true
     name?: true
     email?: true
     phone?: true
@@ -29150,6 +29429,7 @@ export namespace Prisma {
 
   export type CustomerGroupByOutputType = {
     id: string
+    code: string
     name: string
     email: string | null
     phone: string | null
@@ -29184,6 +29464,7 @@ export namespace Prisma {
 
   export type CustomerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    code?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -29203,6 +29484,7 @@ export namespace Prisma {
 
   export type CustomerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    code?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -29218,6 +29500,7 @@ export namespace Prisma {
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    code?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -29233,6 +29516,7 @@ export namespace Prisma {
 
   export type CustomerSelectScalar = {
     id?: boolean
+    code?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -29246,7 +29530,7 @@ export namespace Prisma {
     isActive?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "taxId" | "createdAt" | "updatedAt" | "creditLimit" | "currentBalance" | "customerType" | "isActive", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "email" | "phone" | "address" | "taxId" | "createdAt" | "updatedAt" | "creditLimit" | "currentBalance" | "customerType" | "isActive", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     payments?: boolean | Customer$paymentsArgs<ExtArgs>
     salesDocuments?: boolean | Customer$salesDocumentsArgs<ExtArgs>
@@ -29265,6 +29549,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      code: string
       name: string
       email: string | null
       phone: string | null
@@ -29703,6 +29988,7 @@ export namespace Prisma {
    */
   interface CustomerFieldRefs {
     readonly id: FieldRef<"Customer", 'String'>
+    readonly code: FieldRef<"Customer", 'String'>
     readonly name: FieldRef<"Customer", 'String'>
     readonly email: FieldRef<"Customer", 'String'>
     readonly phone: FieldRef<"Customer", 'String'>
@@ -35460,6 +35746,2175 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DocumentSequenceInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CustomerCodeSetting
+   */
+
+  export type AggregateCustomerCodeSetting = {
+    _count: CustomerCodeSettingCountAggregateOutputType | null
+    _avg: CustomerCodeSettingAvgAggregateOutputType | null
+    _sum: CustomerCodeSettingSumAggregateOutputType | null
+    _min: CustomerCodeSettingMinAggregateOutputType | null
+    _max: CustomerCodeSettingMaxAggregateOutputType | null
+  }
+
+  export type CustomerCodeSettingAvgAggregateOutputType = {
+    nextNumber: number | null
+  }
+
+  export type CustomerCodeSettingSumAggregateOutputType = {
+    nextNumber: number | null
+  }
+
+  export type CustomerCodeSettingMinAggregateOutputType = {
+    id: string | null
+    prefix: string | null
+    nextNumber: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomerCodeSettingMaxAggregateOutputType = {
+    id: string | null
+    prefix: string | null
+    nextNumber: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CustomerCodeSettingCountAggregateOutputType = {
+    id: number
+    prefix: number
+    nextNumber: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CustomerCodeSettingAvgAggregateInputType = {
+    nextNumber?: true
+  }
+
+  export type CustomerCodeSettingSumAggregateInputType = {
+    nextNumber?: true
+  }
+
+  export type CustomerCodeSettingMinAggregateInputType = {
+    id?: true
+    prefix?: true
+    nextNumber?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomerCodeSettingMaxAggregateInputType = {
+    id?: true
+    prefix?: true
+    nextNumber?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CustomerCodeSettingCountAggregateInputType = {
+    id?: true
+    prefix?: true
+    nextNumber?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CustomerCodeSettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomerCodeSetting to aggregate.
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerCodeSettings to fetch.
+     */
+    orderBy?: CustomerCodeSettingOrderByWithRelationInput | CustomerCodeSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CustomerCodeSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerCodeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerCodeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CustomerCodeSettings
+    **/
+    _count?: true | CustomerCodeSettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CustomerCodeSettingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CustomerCodeSettingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CustomerCodeSettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CustomerCodeSettingMaxAggregateInputType
+  }
+
+  export type GetCustomerCodeSettingAggregateType<T extends CustomerCodeSettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateCustomerCodeSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCustomerCodeSetting[P]>
+      : GetScalarType<T[P], AggregateCustomerCodeSetting[P]>
+  }
+
+
+
+
+  export type CustomerCodeSettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerCodeSettingWhereInput
+    orderBy?: CustomerCodeSettingOrderByWithAggregationInput | CustomerCodeSettingOrderByWithAggregationInput[]
+    by: CustomerCodeSettingScalarFieldEnum[] | CustomerCodeSettingScalarFieldEnum
+    having?: CustomerCodeSettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CustomerCodeSettingCountAggregateInputType | true
+    _avg?: CustomerCodeSettingAvgAggregateInputType
+    _sum?: CustomerCodeSettingSumAggregateInputType
+    _min?: CustomerCodeSettingMinAggregateInputType
+    _max?: CustomerCodeSettingMaxAggregateInputType
+  }
+
+  export type CustomerCodeSettingGroupByOutputType = {
+    id: string
+    prefix: string
+    nextNumber: number
+    createdAt: Date
+    updatedAt: Date
+    _count: CustomerCodeSettingCountAggregateOutputType | null
+    _avg: CustomerCodeSettingAvgAggregateOutputType | null
+    _sum: CustomerCodeSettingSumAggregateOutputType | null
+    _min: CustomerCodeSettingMinAggregateOutputType | null
+    _max: CustomerCodeSettingMaxAggregateOutputType | null
+  }
+
+  type GetCustomerCodeSettingGroupByPayload<T extends CustomerCodeSettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CustomerCodeSettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CustomerCodeSettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CustomerCodeSettingGroupByOutputType[P]>
+            : GetScalarType<T[P], CustomerCodeSettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CustomerCodeSettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["customerCodeSetting"]>
+
+  export type CustomerCodeSettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["customerCodeSetting"]>
+
+  export type CustomerCodeSettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["customerCodeSetting"]>
+
+  export type CustomerCodeSettingSelectScalar = {
+    id?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CustomerCodeSettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "prefix" | "nextNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["customerCodeSetting"]>
+
+  export type $CustomerCodeSettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CustomerCodeSetting"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      prefix: string
+      nextNumber: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["customerCodeSetting"]>
+    composites: {}
+  }
+
+  type CustomerCodeSettingGetPayload<S extends boolean | null | undefined | CustomerCodeSettingDefaultArgs> = $Result.GetResult<Prisma.$CustomerCodeSettingPayload, S>
+
+  type CustomerCodeSettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CustomerCodeSettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CustomerCodeSettingCountAggregateInputType | true
+    }
+
+  export interface CustomerCodeSettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CustomerCodeSetting'], meta: { name: 'CustomerCodeSetting' } }
+    /**
+     * Find zero or one CustomerCodeSetting that matches the filter.
+     * @param {CustomerCodeSettingFindUniqueArgs} args - Arguments to find a CustomerCodeSetting
+     * @example
+     * // Get one CustomerCodeSetting
+     * const customerCodeSetting = await prisma.customerCodeSetting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CustomerCodeSettingFindUniqueArgs>(args: SelectSubset<T, CustomerCodeSettingFindUniqueArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CustomerCodeSetting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CustomerCodeSettingFindUniqueOrThrowArgs} args - Arguments to find a CustomerCodeSetting
+     * @example
+     * // Get one CustomerCodeSetting
+     * const customerCodeSetting = await prisma.customerCodeSetting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CustomerCodeSettingFindUniqueOrThrowArgs>(args: SelectSubset<T, CustomerCodeSettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomerCodeSetting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingFindFirstArgs} args - Arguments to find a CustomerCodeSetting
+     * @example
+     * // Get one CustomerCodeSetting
+     * const customerCodeSetting = await prisma.customerCodeSetting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CustomerCodeSettingFindFirstArgs>(args?: SelectSubset<T, CustomerCodeSettingFindFirstArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CustomerCodeSetting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingFindFirstOrThrowArgs} args - Arguments to find a CustomerCodeSetting
+     * @example
+     * // Get one CustomerCodeSetting
+     * const customerCodeSetting = await prisma.customerCodeSetting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CustomerCodeSettingFindFirstOrThrowArgs>(args?: SelectSubset<T, CustomerCodeSettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CustomerCodeSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CustomerCodeSettings
+     * const customerCodeSettings = await prisma.customerCodeSetting.findMany()
+     * 
+     * // Get first 10 CustomerCodeSettings
+     * const customerCodeSettings = await prisma.customerCodeSetting.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const customerCodeSettingWithIdOnly = await prisma.customerCodeSetting.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CustomerCodeSettingFindManyArgs>(args?: SelectSubset<T, CustomerCodeSettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CustomerCodeSetting.
+     * @param {CustomerCodeSettingCreateArgs} args - Arguments to create a CustomerCodeSetting.
+     * @example
+     * // Create one CustomerCodeSetting
+     * const CustomerCodeSetting = await prisma.customerCodeSetting.create({
+     *   data: {
+     *     // ... data to create a CustomerCodeSetting
+     *   }
+     * })
+     * 
+     */
+    create<T extends CustomerCodeSettingCreateArgs>(args: SelectSubset<T, CustomerCodeSettingCreateArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CustomerCodeSettings.
+     * @param {CustomerCodeSettingCreateManyArgs} args - Arguments to create many CustomerCodeSettings.
+     * @example
+     * // Create many CustomerCodeSettings
+     * const customerCodeSetting = await prisma.customerCodeSetting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CustomerCodeSettingCreateManyArgs>(args?: SelectSubset<T, CustomerCodeSettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CustomerCodeSettings and returns the data saved in the database.
+     * @param {CustomerCodeSettingCreateManyAndReturnArgs} args - Arguments to create many CustomerCodeSettings.
+     * @example
+     * // Create many CustomerCodeSettings
+     * const customerCodeSetting = await prisma.customerCodeSetting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CustomerCodeSettings and only return the `id`
+     * const customerCodeSettingWithIdOnly = await prisma.customerCodeSetting.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CustomerCodeSettingCreateManyAndReturnArgs>(args?: SelectSubset<T, CustomerCodeSettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CustomerCodeSetting.
+     * @param {CustomerCodeSettingDeleteArgs} args - Arguments to delete one CustomerCodeSetting.
+     * @example
+     * // Delete one CustomerCodeSetting
+     * const CustomerCodeSetting = await prisma.customerCodeSetting.delete({
+     *   where: {
+     *     // ... filter to delete one CustomerCodeSetting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CustomerCodeSettingDeleteArgs>(args: SelectSubset<T, CustomerCodeSettingDeleteArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CustomerCodeSetting.
+     * @param {CustomerCodeSettingUpdateArgs} args - Arguments to update one CustomerCodeSetting.
+     * @example
+     * // Update one CustomerCodeSetting
+     * const customerCodeSetting = await prisma.customerCodeSetting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CustomerCodeSettingUpdateArgs>(args: SelectSubset<T, CustomerCodeSettingUpdateArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CustomerCodeSettings.
+     * @param {CustomerCodeSettingDeleteManyArgs} args - Arguments to filter CustomerCodeSettings to delete.
+     * @example
+     * // Delete a few CustomerCodeSettings
+     * const { count } = await prisma.customerCodeSetting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CustomerCodeSettingDeleteManyArgs>(args?: SelectSubset<T, CustomerCodeSettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomerCodeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CustomerCodeSettings
+     * const customerCodeSetting = await prisma.customerCodeSetting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CustomerCodeSettingUpdateManyArgs>(args: SelectSubset<T, CustomerCodeSettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CustomerCodeSettings and returns the data updated in the database.
+     * @param {CustomerCodeSettingUpdateManyAndReturnArgs} args - Arguments to update many CustomerCodeSettings.
+     * @example
+     * // Update many CustomerCodeSettings
+     * const customerCodeSetting = await prisma.customerCodeSetting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CustomerCodeSettings and only return the `id`
+     * const customerCodeSettingWithIdOnly = await prisma.customerCodeSetting.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CustomerCodeSettingUpdateManyAndReturnArgs>(args: SelectSubset<T, CustomerCodeSettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CustomerCodeSetting.
+     * @param {CustomerCodeSettingUpsertArgs} args - Arguments to update or create a CustomerCodeSetting.
+     * @example
+     * // Update or create a CustomerCodeSetting
+     * const customerCodeSetting = await prisma.customerCodeSetting.upsert({
+     *   create: {
+     *     // ... data to create a CustomerCodeSetting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CustomerCodeSetting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CustomerCodeSettingUpsertArgs>(args: SelectSubset<T, CustomerCodeSettingUpsertArgs<ExtArgs>>): Prisma__CustomerCodeSettingClient<$Result.GetResult<Prisma.$CustomerCodeSettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CustomerCodeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingCountArgs} args - Arguments to filter CustomerCodeSettings to count.
+     * @example
+     * // Count the number of CustomerCodeSettings
+     * const count = await prisma.customerCodeSetting.count({
+     *   where: {
+     *     // ... the filter for the CustomerCodeSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends CustomerCodeSettingCountArgs>(
+      args?: Subset<T, CustomerCodeSettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CustomerCodeSettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CustomerCodeSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CustomerCodeSettingAggregateArgs>(args: Subset<T, CustomerCodeSettingAggregateArgs>): Prisma.PrismaPromise<GetCustomerCodeSettingAggregateType<T>>
+
+    /**
+     * Group by CustomerCodeSetting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CustomerCodeSettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CustomerCodeSettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CustomerCodeSettingGroupByArgs['orderBy'] }
+        : { orderBy?: CustomerCodeSettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CustomerCodeSettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCustomerCodeSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CustomerCodeSetting model
+   */
+  readonly fields: CustomerCodeSettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CustomerCodeSetting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CustomerCodeSettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CustomerCodeSetting model
+   */
+  interface CustomerCodeSettingFieldRefs {
+    readonly id: FieldRef<"CustomerCodeSetting", 'String'>
+    readonly prefix: FieldRef<"CustomerCodeSetting", 'String'>
+    readonly nextNumber: FieldRef<"CustomerCodeSetting", 'Int'>
+    readonly createdAt: FieldRef<"CustomerCodeSetting", 'DateTime'>
+    readonly updatedAt: FieldRef<"CustomerCodeSetting", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CustomerCodeSetting findUnique
+   */
+  export type CustomerCodeSettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which CustomerCodeSetting to fetch.
+     */
+    where: CustomerCodeSettingWhereUniqueInput
+  }
+
+  /**
+   * CustomerCodeSetting findUniqueOrThrow
+   */
+  export type CustomerCodeSettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which CustomerCodeSetting to fetch.
+     */
+    where: CustomerCodeSettingWhereUniqueInput
+  }
+
+  /**
+   * CustomerCodeSetting findFirst
+   */
+  export type CustomerCodeSettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which CustomerCodeSetting to fetch.
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerCodeSettings to fetch.
+     */
+    orderBy?: CustomerCodeSettingOrderByWithRelationInput | CustomerCodeSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomerCodeSettings.
+     */
+    cursor?: CustomerCodeSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerCodeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerCodeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerCodeSettings.
+     */
+    distinct?: CustomerCodeSettingScalarFieldEnum | CustomerCodeSettingScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerCodeSetting findFirstOrThrow
+   */
+  export type CustomerCodeSettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which CustomerCodeSetting to fetch.
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerCodeSettings to fetch.
+     */
+    orderBy?: CustomerCodeSettingOrderByWithRelationInput | CustomerCodeSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CustomerCodeSettings.
+     */
+    cursor?: CustomerCodeSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerCodeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerCodeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerCodeSettings.
+     */
+    distinct?: CustomerCodeSettingScalarFieldEnum | CustomerCodeSettingScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerCodeSetting findMany
+   */
+  export type CustomerCodeSettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * Filter, which CustomerCodeSettings to fetch.
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CustomerCodeSettings to fetch.
+     */
+    orderBy?: CustomerCodeSettingOrderByWithRelationInput | CustomerCodeSettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CustomerCodeSettings.
+     */
+    cursor?: CustomerCodeSettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CustomerCodeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CustomerCodeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CustomerCodeSettings.
+     */
+    distinct?: CustomerCodeSettingScalarFieldEnum | CustomerCodeSettingScalarFieldEnum[]
+  }
+
+  /**
+   * CustomerCodeSetting create
+   */
+  export type CustomerCodeSettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CustomerCodeSetting.
+     */
+    data: XOR<CustomerCodeSettingCreateInput, CustomerCodeSettingUncheckedCreateInput>
+  }
+
+  /**
+   * CustomerCodeSetting createMany
+   */
+  export type CustomerCodeSettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CustomerCodeSettings.
+     */
+    data: CustomerCodeSettingCreateManyInput | CustomerCodeSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomerCodeSetting createManyAndReturn
+   */
+  export type CustomerCodeSettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many CustomerCodeSettings.
+     */
+    data: CustomerCodeSettingCreateManyInput | CustomerCodeSettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CustomerCodeSetting update
+   */
+  export type CustomerCodeSettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CustomerCodeSetting.
+     */
+    data: XOR<CustomerCodeSettingUpdateInput, CustomerCodeSettingUncheckedUpdateInput>
+    /**
+     * Choose, which CustomerCodeSetting to update.
+     */
+    where: CustomerCodeSettingWhereUniqueInput
+  }
+
+  /**
+   * CustomerCodeSetting updateMany
+   */
+  export type CustomerCodeSettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CustomerCodeSettings.
+     */
+    data: XOR<CustomerCodeSettingUpdateManyMutationInput, CustomerCodeSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomerCodeSettings to update
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * Limit how many CustomerCodeSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerCodeSetting updateManyAndReturn
+   */
+  export type CustomerCodeSettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * The data used to update CustomerCodeSettings.
+     */
+    data: XOR<CustomerCodeSettingUpdateManyMutationInput, CustomerCodeSettingUncheckedUpdateManyInput>
+    /**
+     * Filter which CustomerCodeSettings to update
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * Limit how many CustomerCodeSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerCodeSetting upsert
+   */
+  export type CustomerCodeSettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CustomerCodeSetting to update in case it exists.
+     */
+    where: CustomerCodeSettingWhereUniqueInput
+    /**
+     * In case the CustomerCodeSetting found by the `where` argument doesn't exist, create a new CustomerCodeSetting with this data.
+     */
+    create: XOR<CustomerCodeSettingCreateInput, CustomerCodeSettingUncheckedCreateInput>
+    /**
+     * In case the CustomerCodeSetting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CustomerCodeSettingUpdateInput, CustomerCodeSettingUncheckedUpdateInput>
+  }
+
+  /**
+   * CustomerCodeSetting delete
+   */
+  export type CustomerCodeSettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+    /**
+     * Filter which CustomerCodeSetting to delete.
+     */
+    where: CustomerCodeSettingWhereUniqueInput
+  }
+
+  /**
+   * CustomerCodeSetting deleteMany
+   */
+  export type CustomerCodeSettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CustomerCodeSettings to delete
+     */
+    where?: CustomerCodeSettingWhereInput
+    /**
+     * Limit how many CustomerCodeSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CustomerCodeSetting without action
+   */
+  export type CustomerCodeSettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CustomerCodeSetting
+     */
+    select?: CustomerCodeSettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CustomerCodeSetting
+     */
+    omit?: CustomerCodeSettingOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Department
+   */
+
+  export type AggregateDepartment = {
+    _count: DepartmentCountAggregateOutputType | null
+    _avg: DepartmentAvgAggregateOutputType | null
+    _sum: DepartmentSumAggregateOutputType | null
+    _min: DepartmentMinAggregateOutputType | null
+    _max: DepartmentMaxAggregateOutputType | null
+  }
+
+  export type DepartmentAvgAggregateOutputType = {
+    nextNumber: number | null
+  }
+
+  export type DepartmentSumAggregateOutputType = {
+    nextNumber: number | null
+  }
+
+  export type DepartmentMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    prefix: string | null
+    nextNumber: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DepartmentMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    prefix: string | null
+    nextNumber: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DepartmentCountAggregateOutputType = {
+    id: number
+    name: number
+    prefix: number
+    nextNumber: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DepartmentAvgAggregateInputType = {
+    nextNumber?: true
+  }
+
+  export type DepartmentSumAggregateInputType = {
+    nextNumber?: true
+  }
+
+  export type DepartmentMinAggregateInputType = {
+    id?: true
+    name?: true
+    prefix?: true
+    nextNumber?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DepartmentMaxAggregateInputType = {
+    id?: true
+    name?: true
+    prefix?: true
+    nextNumber?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DepartmentCountAggregateInputType = {
+    id?: true
+    name?: true
+    prefix?: true
+    nextNumber?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DepartmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Department to aggregate.
+     */
+    where?: DepartmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Departments to fetch.
+     */
+    orderBy?: DepartmentOrderByWithRelationInput | DepartmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DepartmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Departments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Departments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Departments
+    **/
+    _count?: true | DepartmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DepartmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DepartmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DepartmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DepartmentMaxAggregateInputType
+  }
+
+  export type GetDepartmentAggregateType<T extends DepartmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateDepartment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDepartment[P]>
+      : GetScalarType<T[P], AggregateDepartment[P]>
+  }
+
+
+
+
+  export type DepartmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DepartmentWhereInput
+    orderBy?: DepartmentOrderByWithAggregationInput | DepartmentOrderByWithAggregationInput[]
+    by: DepartmentScalarFieldEnum[] | DepartmentScalarFieldEnum
+    having?: DepartmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DepartmentCountAggregateInputType | true
+    _avg?: DepartmentAvgAggregateInputType
+    _sum?: DepartmentSumAggregateInputType
+    _min?: DepartmentMinAggregateInputType
+    _max?: DepartmentMaxAggregateInputType
+  }
+
+  export type DepartmentGroupByOutputType = {
+    id: string
+    name: string
+    prefix: string
+    nextNumber: number
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: DepartmentCountAggregateOutputType | null
+    _avg: DepartmentAvgAggregateOutputType | null
+    _sum: DepartmentSumAggregateOutputType | null
+    _min: DepartmentMinAggregateOutputType | null
+    _max: DepartmentMaxAggregateOutputType | null
+  }
+
+  type GetDepartmentGroupByPayload<T extends DepartmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DepartmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DepartmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DepartmentGroupByOutputType[P]>
+            : GetScalarType<T[P], DepartmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DepartmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    users?: boolean | Department$usersArgs<ExtArgs>
+    _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["department"]>
+
+  export type DepartmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["department"]>
+
+  export type DepartmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["department"]>
+
+  export type DepartmentSelectScalar = {
+    id?: boolean
+    name?: boolean
+    prefix?: boolean
+    nextNumber?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DepartmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "prefix" | "nextNumber" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
+  export type DepartmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    users?: boolean | Department$usersArgs<ExtArgs>
+    _count?: boolean | DepartmentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DepartmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $DepartmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Department"
+    objects: {
+      users: Prisma.$UserPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      prefix: string
+      nextNumber: number
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["department"]>
+    composites: {}
+  }
+
+  type DepartmentGetPayload<S extends boolean | null | undefined | DepartmentDefaultArgs> = $Result.GetResult<Prisma.$DepartmentPayload, S>
+
+  type DepartmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DepartmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DepartmentCountAggregateInputType | true
+    }
+
+  export interface DepartmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Department'], meta: { name: 'Department' } }
+    /**
+     * Find zero or one Department that matches the filter.
+     * @param {DepartmentFindUniqueArgs} args - Arguments to find a Department
+     * @example
+     * // Get one Department
+     * const department = await prisma.department.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DepartmentFindUniqueArgs>(args: SelectSubset<T, DepartmentFindUniqueArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Department that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DepartmentFindUniqueOrThrowArgs} args - Arguments to find a Department
+     * @example
+     * // Get one Department
+     * const department = await prisma.department.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DepartmentFindUniqueOrThrowArgs>(args: SelectSubset<T, DepartmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Department that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentFindFirstArgs} args - Arguments to find a Department
+     * @example
+     * // Get one Department
+     * const department = await prisma.department.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DepartmentFindFirstArgs>(args?: SelectSubset<T, DepartmentFindFirstArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Department that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentFindFirstOrThrowArgs} args - Arguments to find a Department
+     * @example
+     * // Get one Department
+     * const department = await prisma.department.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DepartmentFindFirstOrThrowArgs>(args?: SelectSubset<T, DepartmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Departments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Departments
+     * const departments = await prisma.department.findMany()
+     * 
+     * // Get first 10 Departments
+     * const departments = await prisma.department.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const departmentWithIdOnly = await prisma.department.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DepartmentFindManyArgs>(args?: SelectSubset<T, DepartmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Department.
+     * @param {DepartmentCreateArgs} args - Arguments to create a Department.
+     * @example
+     * // Create one Department
+     * const Department = await prisma.department.create({
+     *   data: {
+     *     // ... data to create a Department
+     *   }
+     * })
+     * 
+     */
+    create<T extends DepartmentCreateArgs>(args: SelectSubset<T, DepartmentCreateArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Departments.
+     * @param {DepartmentCreateManyArgs} args - Arguments to create many Departments.
+     * @example
+     * // Create many Departments
+     * const department = await prisma.department.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DepartmentCreateManyArgs>(args?: SelectSubset<T, DepartmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Departments and returns the data saved in the database.
+     * @param {DepartmentCreateManyAndReturnArgs} args - Arguments to create many Departments.
+     * @example
+     * // Create many Departments
+     * const department = await prisma.department.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Departments and only return the `id`
+     * const departmentWithIdOnly = await prisma.department.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DepartmentCreateManyAndReturnArgs>(args?: SelectSubset<T, DepartmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Department.
+     * @param {DepartmentDeleteArgs} args - Arguments to delete one Department.
+     * @example
+     * // Delete one Department
+     * const Department = await prisma.department.delete({
+     *   where: {
+     *     // ... filter to delete one Department
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DepartmentDeleteArgs>(args: SelectSubset<T, DepartmentDeleteArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Department.
+     * @param {DepartmentUpdateArgs} args - Arguments to update one Department.
+     * @example
+     * // Update one Department
+     * const department = await prisma.department.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DepartmentUpdateArgs>(args: SelectSubset<T, DepartmentUpdateArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Departments.
+     * @param {DepartmentDeleteManyArgs} args - Arguments to filter Departments to delete.
+     * @example
+     * // Delete a few Departments
+     * const { count } = await prisma.department.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DepartmentDeleteManyArgs>(args?: SelectSubset<T, DepartmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Departments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Departments
+     * const department = await prisma.department.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DepartmentUpdateManyArgs>(args: SelectSubset<T, DepartmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Departments and returns the data updated in the database.
+     * @param {DepartmentUpdateManyAndReturnArgs} args - Arguments to update many Departments.
+     * @example
+     * // Update many Departments
+     * const department = await prisma.department.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Departments and only return the `id`
+     * const departmentWithIdOnly = await prisma.department.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DepartmentUpdateManyAndReturnArgs>(args: SelectSubset<T, DepartmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Department.
+     * @param {DepartmentUpsertArgs} args - Arguments to update or create a Department.
+     * @example
+     * // Update or create a Department
+     * const department = await prisma.department.upsert({
+     *   create: {
+     *     // ... data to create a Department
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Department we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DepartmentUpsertArgs>(args: SelectSubset<T, DepartmentUpsertArgs<ExtArgs>>): Prisma__DepartmentClient<$Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Departments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentCountArgs} args - Arguments to filter Departments to count.
+     * @example
+     * // Count the number of Departments
+     * const count = await prisma.department.count({
+     *   where: {
+     *     // ... the filter for the Departments we want to count
+     *   }
+     * })
+    **/
+    count<T extends DepartmentCountArgs>(
+      args?: Subset<T, DepartmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DepartmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Department.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DepartmentAggregateArgs>(args: Subset<T, DepartmentAggregateArgs>): Prisma.PrismaPromise<GetDepartmentAggregateType<T>>
+
+    /**
+     * Group by Department.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DepartmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DepartmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DepartmentGroupByArgs['orderBy'] }
+        : { orderBy?: DepartmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DepartmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDepartmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Department model
+   */
+  readonly fields: DepartmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Department.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    users<T extends Department$usersArgs<ExtArgs> = {}>(args?: Subset<T, Department$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Department model
+   */
+  interface DepartmentFieldRefs {
+    readonly id: FieldRef<"Department", 'String'>
+    readonly name: FieldRef<"Department", 'String'>
+    readonly prefix: FieldRef<"Department", 'String'>
+    readonly nextNumber: FieldRef<"Department", 'Int'>
+    readonly isActive: FieldRef<"Department", 'Boolean'>
+    readonly createdAt: FieldRef<"Department", 'DateTime'>
+    readonly updatedAt: FieldRef<"Department", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Department findUnique
+   */
+  export type DepartmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Department to fetch.
+     */
+    where: DepartmentWhereUniqueInput
+  }
+
+  /**
+   * Department findUniqueOrThrow
+   */
+  export type DepartmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Department to fetch.
+     */
+    where: DepartmentWhereUniqueInput
+  }
+
+  /**
+   * Department findFirst
+   */
+  export type DepartmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Department to fetch.
+     */
+    where?: DepartmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Departments to fetch.
+     */
+    orderBy?: DepartmentOrderByWithRelationInput | DepartmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Departments.
+     */
+    cursor?: DepartmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Departments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Departments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Departments.
+     */
+    distinct?: DepartmentScalarFieldEnum | DepartmentScalarFieldEnum[]
+  }
+
+  /**
+   * Department findFirstOrThrow
+   */
+  export type DepartmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Department to fetch.
+     */
+    where?: DepartmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Departments to fetch.
+     */
+    orderBy?: DepartmentOrderByWithRelationInput | DepartmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Departments.
+     */
+    cursor?: DepartmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Departments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Departments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Departments.
+     */
+    distinct?: DepartmentScalarFieldEnum | DepartmentScalarFieldEnum[]
+  }
+
+  /**
+   * Department findMany
+   */
+  export type DepartmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * Filter, which Departments to fetch.
+     */
+    where?: DepartmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Departments to fetch.
+     */
+    orderBy?: DepartmentOrderByWithRelationInput | DepartmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Departments.
+     */
+    cursor?: DepartmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Departments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Departments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Departments.
+     */
+    distinct?: DepartmentScalarFieldEnum | DepartmentScalarFieldEnum[]
+  }
+
+  /**
+   * Department create
+   */
+  export type DepartmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Department.
+     */
+    data: XOR<DepartmentCreateInput, DepartmentUncheckedCreateInput>
+  }
+
+  /**
+   * Department createMany
+   */
+  export type DepartmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Departments.
+     */
+    data: DepartmentCreateManyInput | DepartmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Department createManyAndReturn
+   */
+  export type DepartmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many Departments.
+     */
+    data: DepartmentCreateManyInput | DepartmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Department update
+   */
+  export type DepartmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Department.
+     */
+    data: XOR<DepartmentUpdateInput, DepartmentUncheckedUpdateInput>
+    /**
+     * Choose, which Department to update.
+     */
+    where: DepartmentWhereUniqueInput
+  }
+
+  /**
+   * Department updateMany
+   */
+  export type DepartmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Departments.
+     */
+    data: XOR<DepartmentUpdateManyMutationInput, DepartmentUncheckedUpdateManyInput>
+    /**
+     * Filter which Departments to update
+     */
+    where?: DepartmentWhereInput
+    /**
+     * Limit how many Departments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Department updateManyAndReturn
+   */
+  export type DepartmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * The data used to update Departments.
+     */
+    data: XOR<DepartmentUpdateManyMutationInput, DepartmentUncheckedUpdateManyInput>
+    /**
+     * Filter which Departments to update
+     */
+    where?: DepartmentWhereInput
+    /**
+     * Limit how many Departments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Department upsert
+   */
+  export type DepartmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Department to update in case it exists.
+     */
+    where: DepartmentWhereUniqueInput
+    /**
+     * In case the Department found by the `where` argument doesn't exist, create a new Department with this data.
+     */
+    create: XOR<DepartmentCreateInput, DepartmentUncheckedCreateInput>
+    /**
+     * In case the Department was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DepartmentUpdateInput, DepartmentUncheckedUpdateInput>
+  }
+
+  /**
+   * Department delete
+   */
+  export type DepartmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
+    /**
+     * Filter which Department to delete.
+     */
+    where: DepartmentWhereUniqueInput
+  }
+
+  /**
+   * Department deleteMany
+   */
+  export type DepartmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Departments to delete
+     */
+    where?: DepartmentWhereInput
+    /**
+     * Limit how many Departments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Department.users
+   */
+  export type Department$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
+  }
+
+  /**
+   * Department without action
+   */
+  export type DepartmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Department
+     */
+    select?: DepartmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Department
+     */
+    omit?: DepartmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DepartmentInclude<ExtArgs> | null
   }
 
 
@@ -101676,7 +104131,9 @@ export namespace Prisma {
     salesPrefix: 'salesPrefix',
     lastSequence: 'lastSequence',
     hasSystemAccess: 'hasSystemAccess',
-    role: 'role'
+    role: 'role',
+    employeeCode: 'employeeCode',
+    departmentId: 'departmentId'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -101919,6 +104376,7 @@ export namespace Prisma {
 
   export const CustomerScalarFieldEnum: {
     id: 'id',
+    code: 'code',
     name: 'name',
     email: 'email',
     phone: 'phone',
@@ -102016,6 +104474,30 @@ export namespace Prisma {
   };
 
   export type DocumentSequenceScalarFieldEnum = (typeof DocumentSequenceScalarFieldEnum)[keyof typeof DocumentSequenceScalarFieldEnum]
+
+
+  export const CustomerCodeSettingScalarFieldEnum: {
+    id: 'id',
+    prefix: 'prefix',
+    nextNumber: 'nextNumber',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CustomerCodeSettingScalarFieldEnum = (typeof CustomerCodeSettingScalarFieldEnum)[keyof typeof CustomerCodeSettingScalarFieldEnum]
+
+
+  export const DepartmentScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    prefix: 'prefix',
+    nextNumber: 'nextNumber',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
 
 
   export const SalesOrderScalarFieldEnum: {
@@ -103716,6 +106198,8 @@ export namespace Prisma {
     lastSequence?: IntFilter<"User"> | number
     hasSystemAccess?: BoolFilter<"User"> | boolean
     role?: StringFilter<"User"> | string
+    employeeCode?: StringNullableFilter<"User"> | string | null
+    departmentId?: StringNullableFilter<"User"> | string | null
     approvedApprovals?: ApprovalRequestListRelationFilter
     requestedApprovals?: ApprovalRequestListRelationFilter
     auditLogs?: AuditLogListRelationFilter
@@ -103753,6 +106237,7 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    department?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
   }
 
   export type UserOrderByWithRelationInput = {
@@ -103769,6 +106254,8 @@ export namespace Prisma {
     lastSequence?: SortOrder
     hasSystemAccess?: SortOrder
     role?: SortOrder
+    employeeCode?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
     approvedApprovals?: ApprovalRequestOrderByRelationAggregateInput
     requestedApprovals?: ApprovalRequestOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
@@ -103806,12 +106293,14 @@ export namespace Prisma {
     notifications?: NotificationOrderByRelationAggregateInput
     roles?: RoleAssignmentOrderByRelationAggregateInput
     branch?: BranchOrderByWithRelationInput
+    department?: DepartmentOrderByWithRelationInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
     salesPrefix?: string
+    employeeCode?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
@@ -103825,6 +106314,7 @@ export namespace Prisma {
     lastSequence?: IntFilter<"User"> | number
     hasSystemAccess?: BoolFilter<"User"> | boolean
     role?: StringFilter<"User"> | string
+    departmentId?: StringNullableFilter<"User"> | string | null
     approvedApprovals?: ApprovalRequestListRelationFilter
     requestedApprovals?: ApprovalRequestListRelationFilter
     auditLogs?: AuditLogListRelationFilter
@@ -103862,7 +106352,8 @@ export namespace Prisma {
     notifications?: NotificationListRelationFilter
     roles?: RoleAssignmentListRelationFilter
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
-  }, "id" | "email" | "salesPrefix">
+    department?: XOR<DepartmentNullableScalarRelationFilter, DepartmentWhereInput> | null
+  }, "id" | "email" | "salesPrefix" | "employeeCode">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -103878,6 +106369,8 @@ export namespace Prisma {
     lastSequence?: SortOrder
     hasSystemAccess?: SortOrder
     role?: SortOrder
+    employeeCode?: SortOrderInput | SortOrder
+    departmentId?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -103902,6 +106395,8 @@ export namespace Prisma {
     lastSequence?: IntWithAggregatesFilter<"User"> | number
     hasSystemAccess?: BoolWithAggregatesFilter<"User"> | boolean
     role?: StringWithAggregatesFilter<"User"> | string
+    employeeCode?: StringNullableWithAggregatesFilter<"User"> | string | null
+    departmentId?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
   export type BranchWhereInput = {
@@ -105251,6 +107746,7 @@ export namespace Prisma {
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
     id?: StringFilter<"Customer"> | string
+    code?: StringFilter<"Customer"> | string
     name?: StringFilter<"Customer"> | string
     email?: StringNullableFilter<"Customer"> | string | null
     phone?: StringNullableFilter<"Customer"> | string | null
@@ -105269,6 +107765,7 @@ export namespace Prisma {
 
   export type CustomerOrderByWithRelationInput = {
     id?: SortOrder
+    code?: SortOrder
     name?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
@@ -105287,6 +107784,7 @@ export namespace Prisma {
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    code?: string
     name?: string
     email?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
@@ -105304,10 +107802,11 @@ export namespace Prisma {
     payments?: PaymentListRelationFilter
     salesDocuments?: SalesDocumentListRelationFilter
     salesOrders?: SalesOrderListRelationFilter
-  }, "id" | "name" | "email">
+  }, "id" | "code" | "name" | "email">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
+    code?: SortOrder
     name?: SortOrder
     email?: SortOrderInput | SortOrder
     phone?: SortOrderInput | SortOrder
@@ -105331,6 +107830,7 @@ export namespace Prisma {
     OR?: CustomerScalarWhereWithAggregatesInput[]
     NOT?: CustomerScalarWhereWithAggregatesInput | CustomerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Customer"> | string
+    code?: StringWithAggregatesFilter<"Customer"> | string
     name?: StringWithAggregatesFilter<"Customer"> | string
     email?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     phone?: StringNullableWithAggregatesFilter<"Customer"> | string | null
@@ -105809,6 +108309,127 @@ export namespace Prisma {
     type?: EnumSalesDocumentTypeWithAggregatesFilter<"DocumentSequence"> | $Enums.SalesDocumentType
     prefix?: StringWithAggregatesFilter<"DocumentSequence"> | string
     nextNumber?: IntWithAggregatesFilter<"DocumentSequence"> | number
+  }
+
+  export type CustomerCodeSettingWhereInput = {
+    AND?: CustomerCodeSettingWhereInput | CustomerCodeSettingWhereInput[]
+    OR?: CustomerCodeSettingWhereInput[]
+    NOT?: CustomerCodeSettingWhereInput | CustomerCodeSettingWhereInput[]
+    id?: StringFilter<"CustomerCodeSetting"> | string
+    prefix?: StringFilter<"CustomerCodeSetting"> | string
+    nextNumber?: IntFilter<"CustomerCodeSetting"> | number
+    createdAt?: DateTimeFilter<"CustomerCodeSetting"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerCodeSetting"> | Date | string
+  }
+
+  export type CustomerCodeSettingOrderByWithRelationInput = {
+    id?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerCodeSettingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CustomerCodeSettingWhereInput | CustomerCodeSettingWhereInput[]
+    OR?: CustomerCodeSettingWhereInput[]
+    NOT?: CustomerCodeSettingWhereInput | CustomerCodeSettingWhereInput[]
+    prefix?: StringFilter<"CustomerCodeSetting"> | string
+    nextNumber?: IntFilter<"CustomerCodeSetting"> | number
+    createdAt?: DateTimeFilter<"CustomerCodeSetting"> | Date | string
+    updatedAt?: DateTimeFilter<"CustomerCodeSetting"> | Date | string
+  }, "id">
+
+  export type CustomerCodeSettingOrderByWithAggregationInput = {
+    id?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CustomerCodeSettingCountOrderByAggregateInput
+    _avg?: CustomerCodeSettingAvgOrderByAggregateInput
+    _max?: CustomerCodeSettingMaxOrderByAggregateInput
+    _min?: CustomerCodeSettingMinOrderByAggregateInput
+    _sum?: CustomerCodeSettingSumOrderByAggregateInput
+  }
+
+  export type CustomerCodeSettingScalarWhereWithAggregatesInput = {
+    AND?: CustomerCodeSettingScalarWhereWithAggregatesInput | CustomerCodeSettingScalarWhereWithAggregatesInput[]
+    OR?: CustomerCodeSettingScalarWhereWithAggregatesInput[]
+    NOT?: CustomerCodeSettingScalarWhereWithAggregatesInput | CustomerCodeSettingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CustomerCodeSetting"> | string
+    prefix?: StringWithAggregatesFilter<"CustomerCodeSetting"> | string
+    nextNumber?: IntWithAggregatesFilter<"CustomerCodeSetting"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"CustomerCodeSetting"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CustomerCodeSetting"> | Date | string
+  }
+
+  export type DepartmentWhereInput = {
+    AND?: DepartmentWhereInput | DepartmentWhereInput[]
+    OR?: DepartmentWhereInput[]
+    NOT?: DepartmentWhereInput | DepartmentWhereInput[]
+    id?: StringFilter<"Department"> | string
+    name?: StringFilter<"Department"> | string
+    prefix?: StringFilter<"Department"> | string
+    nextNumber?: IntFilter<"Department"> | number
+    isActive?: BoolFilter<"Department"> | boolean
+    createdAt?: DateTimeFilter<"Department"> | Date | string
+    updatedAt?: DateTimeFilter<"Department"> | Date | string
+    users?: UserListRelationFilter
+  }
+
+  export type DepartmentOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    users?: UserOrderByRelationAggregateInput
+  }
+
+  export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    prefix?: string
+    AND?: DepartmentWhereInput | DepartmentWhereInput[]
+    OR?: DepartmentWhereInput[]
+    NOT?: DepartmentWhereInput | DepartmentWhereInput[]
+    nextNumber?: IntFilter<"Department"> | number
+    isActive?: BoolFilter<"Department"> | boolean
+    createdAt?: DateTimeFilter<"Department"> | Date | string
+    updatedAt?: DateTimeFilter<"Department"> | Date | string
+    users?: UserListRelationFilter
+  }, "id" | "name" | "prefix">
+
+  export type DepartmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DepartmentCountOrderByAggregateInput
+    _avg?: DepartmentAvgOrderByAggregateInput
+    _max?: DepartmentMaxOrderByAggregateInput
+    _min?: DepartmentMinOrderByAggregateInput
+    _sum?: DepartmentSumOrderByAggregateInput
+  }
+
+  export type DepartmentScalarWhereWithAggregatesInput = {
+    AND?: DepartmentScalarWhereWithAggregatesInput | DepartmentScalarWhereWithAggregatesInput[]
+    OR?: DepartmentScalarWhereWithAggregatesInput[]
+    NOT?: DepartmentScalarWhereWithAggregatesInput | DepartmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Department"> | string
+    name?: StringWithAggregatesFilter<"Department"> | string
+    prefix?: StringWithAggregatesFilter<"Department"> | string
+    nextNumber?: IntWithAggregatesFilter<"Department"> | number
+    isActive?: BoolWithAggregatesFilter<"Department"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Department"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Department"> | Date | string
   }
 
   export type SalesOrderWhereInput = {
@@ -110732,6 +113353,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -110769,6 +113391,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -110785,6 +113408,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -110836,6 +113461,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -110873,6 +113499,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -110889,6 +113516,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -110941,6 +113570,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -110956,6 +113587,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -110972,6 +113604,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type BranchCreateInput = {
@@ -112445,6 +115079,7 @@ export namespace Prisma {
 
   export type CustomerCreateInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -112463,6 +115098,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -112481,6 +115117,7 @@ export namespace Prisma {
 
   export type CustomerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -112499,6 +115136,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -112517,6 +115155,7 @@ export namespace Prisma {
 
   export type CustomerCreateManyInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -112532,6 +115171,7 @@ export namespace Prisma {
 
   export type CustomerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -112547,6 +115187,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -113057,6 +115698,136 @@ export namespace Prisma {
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     prefix?: StringFieldUpdateOperationsInput | string
     nextNumber?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type CustomerCodeSettingCreateInput = {
+    id?: string
+    prefix: string
+    nextNumber?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerCodeSettingUncheckedCreateInput = {
+    id?: string
+    prefix: string
+    nextNumber?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerCodeSettingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerCodeSettingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerCodeSettingCreateManyInput = {
+    id?: string
+    prefix: string
+    nextNumber?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CustomerCodeSettingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerCodeSettingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DepartmentCreateInput = {
+    id?: string
+    name: string
+    prefix: string
+    nextNumber?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentUncheckedCreateInput = {
+    id?: string
+    name: string
+    prefix: string
+    nextNumber?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutDepartmentInput
+  }
+
+  export type DepartmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type DepartmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutDepartmentNestedInput
+  }
+
+  export type DepartmentCreateManyInput = {
+    id?: string
+    name: string
+    prefix: string
+    nextNumber?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DepartmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DepartmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SalesOrderCreateInput = {
@@ -118711,6 +121482,11 @@ export namespace Prisma {
     isNot?: BranchWhereInput | null
   }
 
+  export type DepartmentNullableScalarRelationFilter = {
+    is?: DepartmentWhereInput | null
+    isNot?: DepartmentWhereInput | null
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -118826,6 +121602,8 @@ export namespace Prisma {
     lastSequence?: SortOrder
     hasSystemAccess?: SortOrder
     role?: SortOrder
+    employeeCode?: SortOrder
+    departmentId?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -118846,6 +121624,8 @@ export namespace Prisma {
     lastSequence?: SortOrder
     hasSystemAccess?: SortOrder
     role?: SortOrder
+    employeeCode?: SortOrder
+    departmentId?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -118862,6 +121642,8 @@ export namespace Prisma {
     lastSequence?: SortOrder
     hasSystemAccess?: SortOrder
     role?: SortOrder
+    employeeCode?: SortOrder
+    departmentId?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -120144,6 +122926,7 @@ export namespace Prisma {
 
   export type CustomerCountOrderByAggregateInput = {
     id?: SortOrder
+    code?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -120164,6 +122947,7 @@ export namespace Prisma {
 
   export type CustomerMaxOrderByAggregateInput = {
     id?: SortOrder
+    code?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -120179,6 +122963,7 @@ export namespace Prisma {
 
   export type CustomerMinOrderByAggregateInput = {
     id?: SortOrder
+    code?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -120554,6 +123339,76 @@ export namespace Prisma {
   }
 
   export type DocumentSequenceSumOrderByAggregateInput = {
+    nextNumber?: SortOrder
+  }
+
+  export type CustomerCodeSettingCountOrderByAggregateInput = {
+    id?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerCodeSettingAvgOrderByAggregateInput = {
+    nextNumber?: SortOrder
+  }
+
+  export type CustomerCodeSettingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerCodeSettingMinOrderByAggregateInput = {
+    id?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CustomerCodeSettingSumOrderByAggregateInput = {
+    nextNumber?: SortOrder
+  }
+
+  export type DepartmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DepartmentAvgOrderByAggregateInput = {
+    nextNumber?: SortOrder
+  }
+
+  export type DepartmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DepartmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    prefix?: SortOrder
+    nextNumber?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DepartmentSumOrderByAggregateInput = {
     nextNumber?: SortOrder
   }
 
@@ -124466,6 +127321,12 @@ export namespace Prisma {
     connect?: BranchWhereUniqueInput
   }
 
+  export type DepartmentCreateNestedOneWithoutUsersInput = {
+    create?: XOR<DepartmentCreateWithoutUsersInput, DepartmentUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutUsersInput
+    connect?: DepartmentWhereUniqueInput
+  }
+
   export type ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput = {
     create?: XOR<ApprovalRequestCreateWithoutApprovedByInput, ApprovalRequestUncheckedCreateWithoutApprovedByInput> | ApprovalRequestCreateWithoutApprovedByInput[] | ApprovalRequestUncheckedCreateWithoutApprovedByInput[]
     connectOrCreate?: ApprovalRequestCreateOrConnectWithoutApprovedByInput | ApprovalRequestCreateOrConnectWithoutApprovedByInput[]
@@ -125254,6 +128115,16 @@ export namespace Prisma {
     delete?: BranchWhereInput | boolean
     connect?: BranchWhereUniqueInput
     update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutUsersInput, BranchUpdateWithoutUsersInput>, BranchUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type DepartmentUpdateOneWithoutUsersNestedInput = {
+    create?: XOR<DepartmentCreateWithoutUsersInput, DepartmentUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: DepartmentCreateOrConnectWithoutUsersInput
+    upsert?: DepartmentUpsertWithoutUsersInput
+    disconnect?: DepartmentWhereInput | boolean
+    delete?: DepartmentWhereInput | boolean
+    connect?: DepartmentWhereUniqueInput
+    update?: XOR<XOR<DepartmentUpdateToOneWithWhereWithoutUsersInput, DepartmentUpdateWithoutUsersInput>, DepartmentUncheckedUpdateWithoutUsersInput>
   }
 
   export type ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput = {
@@ -128152,6 +131023,48 @@ export namespace Prisma {
     upsert?: BranchUpsertWithoutDocumentSequencesInput
     connect?: BranchWhereUniqueInput
     update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutDocumentSequencesInput, BranchUpdateWithoutDocumentSequencesInput>, BranchUncheckedUpdateWithoutDocumentSequencesInput>
+  }
+
+  export type UserCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<UserCreateWithoutDepartmentInput, UserUncheckedCreateWithoutDepartmentInput> | UserCreateWithoutDepartmentInput[] | UserUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutDepartmentInput | UserCreateOrConnectWithoutDepartmentInput[]
+    createMany?: UserCreateManyDepartmentInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutDepartmentInput = {
+    create?: XOR<UserCreateWithoutDepartmentInput, UserUncheckedCreateWithoutDepartmentInput> | UserCreateWithoutDepartmentInput[] | UserUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutDepartmentInput | UserCreateOrConnectWithoutDepartmentInput[]
+    createMany?: UserCreateManyDepartmentInputEnvelope
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
+  export type UserUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<UserCreateWithoutDepartmentInput, UserUncheckedCreateWithoutDepartmentInput> | UserCreateWithoutDepartmentInput[] | UserUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutDepartmentInput | UserCreateOrConnectWithoutDepartmentInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutDepartmentInput | UserUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: UserCreateManyDepartmentInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutDepartmentInput | UserUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutDepartmentInput | UserUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutDepartmentNestedInput = {
+    create?: XOR<UserCreateWithoutDepartmentInput, UserUncheckedCreateWithoutDepartmentInput> | UserCreateWithoutDepartmentInput[] | UserUncheckedCreateWithoutDepartmentInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutDepartmentInput | UserCreateOrConnectWithoutDepartmentInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutDepartmentInput | UserUpsertWithWhereUniqueWithoutDepartmentInput[]
+    createMany?: UserCreateManyDepartmentInputEnvelope
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutDepartmentInput | UserUpdateWithWhereUniqueWithoutDepartmentInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutDepartmentInput | UserUpdateManyWithWhereWithoutDepartmentInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type DispatchNoteCreateNestedManyWithoutSalesOrderInput = {
@@ -133851,6 +136764,31 @@ export namespace Prisma {
     create: XOR<BranchCreateWithoutUsersInput, BranchUncheckedCreateWithoutUsersInput>
   }
 
+  export type DepartmentCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    prefix: string
+    nextNumber?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DepartmentUncheckedCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    prefix: string
+    nextNumber?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DepartmentCreateOrConnectWithoutUsersInput = {
+    where: DepartmentWhereUniqueInput
+    create: XOR<DepartmentCreateWithoutUsersInput, DepartmentUncheckedCreateWithoutUsersInput>
+  }
+
   export type ApprovalRequestUpsertWithWhereUniqueWithoutApprovedByInput = {
     where: ApprovalRequestWhereUniqueInput
     update: XOR<ApprovalRequestUpdateWithoutApprovedByInput, ApprovalRequestUncheckedUpdateWithoutApprovedByInput>
@@ -134916,6 +137854,37 @@ export namespace Prisma {
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
+  export type DepartmentUpsertWithoutUsersInput = {
+    update: XOR<DepartmentUpdateWithoutUsersInput, DepartmentUncheckedUpdateWithoutUsersInput>
+    create: XOR<DepartmentCreateWithoutUsersInput, DepartmentUncheckedCreateWithoutUsersInput>
+    where?: DepartmentWhereInput
+  }
+
+  export type DepartmentUpdateToOneWithWhereWithoutUsersInput = {
+    where?: DepartmentWhereInput
+    data: XOR<DepartmentUpdateWithoutUsersInput, DepartmentUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type DepartmentUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DepartmentUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    prefix?: StringFieldUpdateOperationsInput | string
+    nextNumber?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BranchInventoryCreateWithoutBranchInput = {
     id?: string
     quantity?: number
@@ -135359,6 +138328,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -135395,6 +138365,7 @@ export namespace Prisma {
     resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutBranchInput = {
@@ -135410,6 +138381,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -135785,6 +138758,8 @@ export namespace Prisma {
     lastSequence?: IntFilter<"User"> | number
     hasSystemAccess?: BoolFilter<"User"> | boolean
     role?: StringFilter<"User"> | string
+    employeeCode?: StringNullableFilter<"User"> | string | null
+    departmentId?: StringNullableFilter<"User"> | string | null
   }
 
   export type VATTransactionUpsertWithWhereUniqueWithoutBranchInput = {
@@ -135976,6 +138951,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -136012,6 +138988,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutTransfersInput = {
@@ -136028,6 +139005,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -136208,6 +139187,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -136244,6 +139224,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTransfersInput = {
@@ -136260,6 +139241,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -139055,6 +142038,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -139091,6 +142075,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutApprovedTransfersInput = {
@@ -139107,6 +142092,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -139162,6 +142149,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -139198,6 +142186,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutCreatedTransfersInput = {
@@ -139214,6 +142203,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -139308,6 +142299,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -139344,6 +142336,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutDriverTransfersInput = {
@@ -139360,6 +142353,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -139415,6 +142410,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -139451,6 +142447,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutReceivedTransfersInput = {
@@ -139467,6 +142464,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -139522,6 +142521,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -139558,6 +142558,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutPickedTransfersInput = {
@@ -139574,6 +142575,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -139629,6 +142632,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -139665,6 +142669,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutVerifiedTransfersInput = {
@@ -139681,6 +142686,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -139903,6 +142910,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -139939,6 +142947,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovedTransfersInput = {
@@ -139955,6 +142964,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -140016,6 +143027,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -140052,6 +143064,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedTransfersInput = {
@@ -140068,6 +143081,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -140174,6 +143189,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -140210,6 +143226,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDriverTransfersInput = {
@@ -140226,6 +143243,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -140287,6 +143306,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -140323,6 +143343,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedTransfersInput = {
@@ -140339,6 +143360,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -140400,6 +143423,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -140436,6 +143460,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPickedTransfersInput = {
@@ -140452,6 +143477,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -140513,6 +143540,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -140549,6 +143577,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutVerifiedTransfersInput = {
@@ -140565,6 +143594,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -140790,6 +143821,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -140826,6 +143858,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutRaisedTransferIssuesInput = {
@@ -140842,6 +143875,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -140897,6 +143932,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -140933,6 +143969,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutResolvedTransferIssuesInput = {
@@ -140949,6 +143986,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -141082,6 +144121,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -141118,6 +144158,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRaisedTransferIssuesInput = {
@@ -141134,6 +144175,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -141195,6 +144238,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -141231,6 +144275,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutResolvedTransferIssuesInput = {
@@ -141247,6 +144292,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -141881,6 +144928,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -141917,6 +144965,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutApprovedSalesDocumentsInput = {
@@ -141933,6 +144982,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -141988,6 +145039,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -142024,6 +145076,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutInvoicedSalesDocumentsInput = {
@@ -142040,6 +145093,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -142095,6 +145150,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -142131,6 +145187,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutClosedSalesDocumentsInput = {
@@ -142147,6 +145204,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -142253,6 +145312,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -142289,6 +145349,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSalesDocumentsInput = {
@@ -142305,6 +145366,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -142349,6 +145412,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutSalesDocumentsInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -142366,6 +145430,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutSalesDocumentsInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -142690,6 +145755,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -142726,6 +145792,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovedSalesDocumentsInput = {
@@ -142742,6 +145809,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -142803,6 +145872,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -142839,6 +145909,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoicedSalesDocumentsInput = {
@@ -142855,6 +145926,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -142916,6 +145989,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -142952,6 +146026,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutClosedSalesDocumentsInput = {
@@ -142968,6 +146043,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -143086,6 +146163,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -143122,6 +146200,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSalesDocumentsInput = {
@@ -143138,6 +146217,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -143188,6 +146269,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutSalesDocumentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143205,6 +146287,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutSalesDocumentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -143741,6 +146824,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -143777,6 +146861,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutCreatedPaymentsInput = {
@@ -143793,6 +146878,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -143837,6 +146924,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutPaymentsInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -143854,6 +146942,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutPaymentsInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -143975,6 +147064,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -144011,6 +147101,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedPaymentsInput = {
@@ -144027,6 +147118,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -144077,6 +147170,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144094,6 +147188,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144300,6 +147395,138 @@ export namespace Prisma {
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
+  export type UserCreateWithoutDepartmentInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesPrefix?: string | null
+    lastSequence?: number
+    hasSystemAccess?: boolean
+    role?: string
+    employeeCode?: string | null
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    invoicedSalesDocuments?: SalesDocumentCreateNestedManyWithoutInvoicedByInput
+    closedSalesDocuments?: SalesDocumentCreateNestedManyWithoutClosedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutDepartmentInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    branchId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesPrefix?: string | null
+    lastSequence?: number
+    hasSystemAccess?: boolean
+    role?: string
+    employeeCode?: string | null
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    invoicedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutInvoicedByInput
+    closedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutClosedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutDepartmentInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDepartmentInput, UserUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type UserCreateManyDepartmentInputEnvelope = {
+    data: UserCreateManyDepartmentInput | UserCreateManyDepartmentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutDepartmentInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutDepartmentInput, UserUncheckedUpdateWithoutDepartmentInput>
+    create: XOR<UserCreateWithoutDepartmentInput, UserUncheckedCreateWithoutDepartmentInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutDepartmentInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutDepartmentInput, UserUncheckedUpdateWithoutDepartmentInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutDepartmentInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutDepartmentInput>
+  }
+
   export type DispatchNoteCreateWithoutSalesOrderInput = {
     id?: string
     dnNumber: string
@@ -144396,6 +147623,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -144432,6 +147660,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutCreatedSalesOrdersInput = {
@@ -144448,6 +147677,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -144492,6 +147723,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutSalesOrdersInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -144509,6 +147741,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutSalesOrdersInput = {
     id?: string
+    code: string
     name: string
     email?: string | null
     phone?: string | null
@@ -144658,6 +147891,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -144694,6 +147928,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedSalesOrdersInput = {
@@ -144710,6 +147945,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -144760,6 +147997,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutSalesOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -144777,6 +148015,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutSalesOrdersInput = {
     id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phone?: NullableStringFieldUpdateOperationsInput | string | null
@@ -145169,6 +148408,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -145205,6 +148445,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutDispatchNotesInput = {
@@ -145221,6 +148462,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -145365,6 +148608,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -145401,6 +148645,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDispatchNotesInput = {
@@ -145417,6 +148662,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -145853,6 +149100,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -145889,6 +149137,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutCashierSessionsInput = {
@@ -145905,6 +149154,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -146110,6 +149361,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -146146,6 +149398,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCashierSessionsInput = {
@@ -146162,6 +149415,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -146503,6 +149758,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -146539,6 +149795,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutApprovedPurchaseOrdersInput = {
@@ -146555,6 +149812,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -146700,6 +149959,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -146736,6 +149996,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutRequestedPurchaseOrdersInput = {
@@ -146752,6 +150013,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -146889,6 +150152,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -146925,6 +150189,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovedPurchaseOrdersInput = {
@@ -146941,6 +150206,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -147104,6 +150371,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -147140,6 +150408,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRequestedPurchaseOrdersInput = {
@@ -147156,6 +150425,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -147251,6 +150522,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
@@ -147287,6 +150559,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutApprovedApprovalsInput = {
@@ -147303,6 +150576,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
@@ -147358,6 +150633,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
     benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
@@ -147394,6 +150670,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutRequestedApprovalsInput = {
@@ -147410,6 +150687,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
     benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
@@ -147476,6 +150755,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
@@ -147512,6 +150792,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutApprovedApprovalsInput = {
@@ -147528,6 +150809,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
@@ -147589,6 +150872,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
     benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
@@ -147625,6 +150909,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRequestedApprovalsInput = {
@@ -147641,6 +150926,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
     benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
@@ -148062,6 +151349,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -148098,6 +151386,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutReceivedGRNInput = {
@@ -148114,6 +151403,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -148265,6 +151556,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -148301,6 +151593,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutReceivedGRNInput = {
@@ -148317,6 +151610,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -148883,6 +152178,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -148919,6 +152215,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutDeliveriesInput = {
@@ -148935,6 +152232,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -149052,6 +152351,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -149088,6 +152388,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDeliveriesInput = {
@@ -149104,6 +152405,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -149487,6 +152790,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -149523,6 +152827,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutPayrollRecordsInput = {
@@ -149539,6 +152844,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -149640,6 +152947,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -149676,6 +152984,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPayrollRecordsInput = {
@@ -149692,6 +153001,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -150447,6 +153758,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -150483,6 +153795,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutLockedPeriodsInput = {
@@ -150499,6 +153812,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -150694,6 +154009,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -150730,6 +154046,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLockedPeriodsInput = {
@@ -150746,6 +154063,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -152182,6 +155501,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -152218,6 +155538,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutLeaveAllocationsInput = {
@@ -152234,6 +155555,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -152333,6 +155656,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -152369,6 +155693,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeaveAllocationsInput = {
@@ -152385,6 +155710,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -152462,6 +155789,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -152498,6 +155826,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutLeaveRequestsInput = {
@@ -152514,6 +155843,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -152613,6 +155944,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -152649,6 +155981,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -152665,6 +155998,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -152926,6 +156261,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -152962,6 +156298,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutInterviewsInput = {
@@ -152978,6 +156315,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -153081,6 +156420,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -153117,6 +156457,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInterviewsInput = {
@@ -153133,6 +156474,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -153183,6 +156526,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -153219,6 +156563,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutGoalsInput = {
@@ -153235,6 +156580,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -153301,6 +156648,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -153337,6 +156685,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGoalsInput = {
@@ -153353,6 +156702,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -153403,6 +156754,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -153439,6 +156791,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutGivenEvaluationsInput = {
@@ -153455,6 +156808,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -153510,6 +156865,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -153546,6 +156902,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutEvaluationsInput = {
@@ -153562,6 +156919,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -153628,6 +156987,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -153664,6 +157024,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGivenEvaluationsInput = {
@@ -153680,6 +157041,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -153741,6 +157104,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -153777,6 +157141,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutEvaluationsInput = {
@@ -153793,6 +157158,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -153843,6 +157210,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -153879,6 +157247,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutDevelopmentPlansInput = {
@@ -153895,6 +157264,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -153961,6 +157332,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -153997,6 +157369,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDevelopmentPlansInput = {
@@ -154013,6 +157386,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -154132,6 +157507,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -154168,6 +157544,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutBenefitEnrollmentsInput = {
@@ -154184,6 +157561,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -154281,6 +157660,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -154317,6 +157697,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBenefitEnrollmentsInput = {
@@ -154333,6 +157714,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -154741,6 +158124,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -154777,6 +158161,7 @@ export namespace Prisma {
     resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
     notifications?: NotificationCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutRolesInput = {
@@ -154793,6 +158178,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -154892,6 +158279,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -154928,6 +158316,7 @@ export namespace Prisma {
     resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRolesInput = {
@@ -154944,6 +158333,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -154994,6 +158385,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
@@ -155030,6 +158422,7 @@ export namespace Prisma {
     notifications?: NotificationCreateNestedManyWithoutUserInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -155046,6 +158439,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
@@ -155112,6 +158507,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
@@ -155148,6 +158544,7 @@ export namespace Prisma {
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -155164,6 +158561,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
@@ -155786,6 +159185,7 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
     approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
@@ -155822,6 +159222,7 @@ export namespace Prisma {
     resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
     roles?: RoleAssignmentCreateNestedManyWithoutUserInput
     branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
   }
 
   export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -155838,6 +159239,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
     approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
     requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
@@ -155904,6 +159307,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -155940,6 +159344,7 @@ export namespace Prisma {
     resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
     branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -155956,6 +159361,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -158714,6 +162121,8 @@ export namespace Prisma {
     lastSequence?: number
     hasSystemAccess?: boolean
     role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
   }
 
   export type VATTransactionCreateManyBranchInput = {
@@ -159263,6 +162672,7 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
@@ -159299,6 +162709,7 @@ export namespace Prisma {
     resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
     notifications?: NotificationUpdateManyWithoutUserNestedInput
     roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBranchInput = {
@@ -159314,6 +162725,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
@@ -159365,6 +162778,8 @@ export namespace Prisma {
     lastSequence?: IntFieldUpdateOperationsInput | number
     hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
     role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VATTransactionUpdateWithoutBranchInput = {
@@ -161129,6 +164544,146 @@ export namespace Prisma {
     reference?: NullableStringFieldUpdateOperationsInput | string | null
     createdById?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateManyDepartmentInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    branchId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesPrefix?: string | null
+    lastSequence?: number
+    hasSystemAccess?: boolean
+    role?: string
+    employeeCode?: string | null
+  }
+
+  export type UserUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    invoicedSalesDocuments?: SalesDocumentUpdateManyWithoutInvoicedByNestedInput
+    closedSalesDocuments?: SalesDocumentUpdateManyWithoutClosedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    invoicedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutInvoicedByNestedInput
+    closedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutClosedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutDepartmentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DispatchNoteCreateManySalesOrderInput = {

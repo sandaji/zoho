@@ -6,6 +6,7 @@ import { FinanceTransaction, fetchFinanceTransactions } from "@/lib/admin-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
+import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { TransactionType } from "@/lib/types";
 
@@ -53,7 +54,7 @@ export default function FinanceSection() {
     {
       key: "amount",
       label: "Amount",
-      render: (amount: number) => `KES ${amount.toLocaleString()}`,
+      render: (amount: number) => formatCurrency(amount),
     },
     {
       key: "payment_method",
@@ -102,7 +103,7 @@ export default function FinanceSection() {
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Amount</p>
                   <p className="text-sm font-semibold text-lg">
-                    KES {selected.amount.toLocaleString()}
+                    {formatCurrency(selected.amount)}
                   </p>
                 </div>
                 <div>

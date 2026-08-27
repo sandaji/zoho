@@ -32,6 +32,9 @@ interface AdjustStockModalProps {
   productId?: string;
   productName?: string;
   currentStock?: number;
+  /** Product's reference cost_price, shown as the default/placeholder for
+   * the optional unit cost field on "increase" adjustments. */
+  productCostPrice?: number;
   onAdjustComplete?: () => void;
 }
 
@@ -62,11 +65,13 @@ export function AdjustStockModal({
   productId,
   productName,
   currentStock = 0,
+  productCostPrice,
   onAdjustComplete,
 }: AdjustStockModalProps) {
   const [adjustmentType, setAdjustmentType] = useState<"increase" | "decrease">("increase");
   const [warehouseId, setWarehouseId] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [unitCost, setUnitCost] = useState("");
   const [reason, setReason] = useState<AdjustmentReason | "">("");
   const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
@@ -77,6 +82,7 @@ export function AdjustStockModal({
     setAdjustmentType("increase");
     setWarehouseId("");
     setQuantity("");
+    setUnitCost("");
     setReason("");
     setReference("");
     setNotes("");
@@ -131,6 +137,10 @@ export function AdjustStockModal({
         reason,
         reference: reference.trim() || undefined,
         notes: notes.trim() || undefined,
+        unitCost:
+          adjustmentType === "increase" && unitCost.trim() !== ""
+            ? parseFloat(unitCost)
+            : undefined,
       };
 
       const response = await fetch(
@@ -266,6 +276,31 @@ export function AdjustStockModal({
               required
             />
           </div>
+
+          {/* Unit Cost (increase only) */}
+          {adjustmentType === "increase" && (
+            <div className="space-y-2">
+              <Label htmlFor="unitCost">Unit Cost (Optional)</Label>
+              <Input
+                id="unitCost"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder={
+                  productCostPrice != null
+                    ? `Defaults to current cost price: ${productCostPrice}`
+                    : "Defaults to product's cost price"
+                }
+                value={unitCost}
+                onChange={(e) => setUnitCost(e.target.value)}
+              />
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                The cost basis this stock is added at (used for FIFO valuation). Leave blank to
+                use the product's current cost price — set this when the real cost differs, e.g.
+                a receipt at a different purchase price.
+              </p>
+            </div>
+          )}
 
           {/* Reason */}
           <div className="space-y-2">

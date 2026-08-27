@@ -22,6 +22,8 @@ model User {
   lastSequence            Int                     @default(0) @map("lastSequence")
   hasSystemAccess         Boolean                 @default(false)
   role                    String                  @default("warehouse_staff")
+  employeeCode            String?                 @unique @map("employee_code")
+  departmentId            String?                 @map("department_id")
   approvedApprovals       ApprovalRequest[]       @relation("ApprovedApprovals")
   requestedApprovals      ApprovalRequest[]       @relation("RequestedApprovals")
   auditLogs               AuditLog[]
@@ -59,11 +61,13 @@ model User {
   notifications           Notification[]
   roles                   RoleAssignment[]
   branch                  Branch?                 @relation(fields: [branchId], references: [id])
+  department              Department?             @relation(fields: [departmentId], references: [id])
 
   @@index([branchId])
   @@index([email])
   @@index([isActive])
   @@index([hasSystemAccess])
+  @@index([departmentId])
   @@map("users")
 }
 
@@ -414,6 +418,7 @@ model TransferItem {
 /// Customers/Clients of the business
 model Customer {
   id             String          @id @default(cuid())
+  code           String          @unique
   name           String          @unique
   email          String?         @unique
   phone          String?
@@ -553,6 +558,39 @@ model DocumentSequence {
   @@unique([branchId, type])
   @@index([branchId])
   @@map("document_sequences")
+}
+
+/// Admin-configurable prefix + auto-incrementing counter for customer
+/// codes (2 letters chosen by admin + 6-digit auto-incrementing number,
+/// e.g. "AB000001"). Single active row — admin can change the prefix at
+/// any time; the counter keeps incrementing regardless.
+model CustomerCodeSetting {
+  id         String   @id @default(cuid())
+  prefix     String   @db.VarChar(2)
+  nextNumber Int      @default(1) @map("next_number")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("customer_code_settings")
+}
+
+/// HR-managed departments. Each department has its own 2-letter code
+/// prefix (chosen by HR) and its own auto-incrementing employee number
+/// sequence — e.g. Junior Staff = "JS" → JS001, JS002...; Senior Staff =
+/// "SS" → SS001...; Sales = "SA" → SA001... Each department's counter is
+/// independent of the others.
+model Department {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  prefix     String   @unique @db.VarChar(2)
+  nextNumber Int      @default(1) @map("next_number")
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  users      User[]
+
+  @@index([isActive])
+  @@map("departments")
 }
 
 /// Sales Orders - Internal purchase requests by customers

@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/lib/auth-context";
+import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { PayrollStatus } from "@/lib/types";
 
@@ -49,7 +50,7 @@ export default function PayrollSection() {
     {
       key: "net_salary",
       label: "Net Salary",
-      render: (salary: number) => `KES ${salary.toLocaleString()}`,
+      render: (salary: number) => formatCurrency(salary),
     },
     {
       key: "status",
@@ -107,7 +108,7 @@ export default function PayrollSection() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Net Salary:</span>
-                  <span className="font-medium">KES {selected.net_salary.toLocaleString()}</span>
+                  <span className="font-medium">{formatCurrency(selected.net_salary)}</span>
                 </div>
               </div>
             </div>

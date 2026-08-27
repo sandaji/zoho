@@ -1,5 +1,6 @@
 // backend/src/modules/customers/customers.service.ts
 import { prisma } from "../../lib/db";
+import { CodeGeneratorService } from "../../lib/code-generator.service";
 
 export class CustomersService {
   /**
@@ -16,8 +17,10 @@ export class CustomersService {
     currentBalance?: number;
     isActive?: boolean;
   }) {
+    const code = await CodeGeneratorService.generateCustomerCode();
     return prisma.customer.create({
       data: {
+        code,
         name: data.name,
         email: data.email || null,
         phone: data.phone || null,
@@ -58,6 +61,7 @@ export class CustomersService {
           { name: { contains: query.search, mode: "insensitive" as const } },
           { email: { contains: query.search, mode: "insensitive" as const } },
           { phone: { contains: query.search, mode: "insensitive" as const } },
+          { code: { contains: query.search, mode: "insensitive" as const } },
         ],
       }),
     };
@@ -90,10 +94,12 @@ export class CustomersService {
           { name: { contains: term, mode: "insensitive" } },
           { phone: { contains: term, mode: "insensitive" } },
           { email: { contains: term, mode: "insensitive" } },
+          { code: { contains: term, mode: "insensitive" } },
         ],
       },
       select: {
         id: true,
+        code: true,
         name: true,
         phone: true,
         email: true,

@@ -7,6 +7,7 @@ import CreateCreditNoteDialog from "./CreateCreditNoteDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
+import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { SalesStatus, PaymentMethod } from "@/lib/types";
 import {
@@ -76,7 +77,7 @@ export default function SalesSection() {
     {
       key: "grand_total",
       label: "Total",
-      render: (total) => `KES ${(total as number).toLocaleString()}`,
+      render: (total) => formatCurrency(total as number),
     },
     {
       key: "payment_method",
@@ -209,10 +210,10 @@ export default function SalesSection() {
                             <TableCell className="text-xs font-mono">{item.productId}</TableCell>
                             <TableCell className="text-right">{item.quantity}</TableCell>
                             <TableCell className="text-right">
-                              KES {item.unitPrice.toLocaleString()}
+                              {formatCurrency(item.unitPrice)}
                             </TableCell>
                             <TableCell className="text-right">
-                              KES {(item.quantity * item.unitPrice).toLocaleString()}
+                              {formatCurrency(item.quantity * item.unitPrice)}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -224,15 +225,15 @@ export default function SalesSection() {
                   <div className="flex flex-col items-end space-y-1 pt-4 border-t">
                     <div className="flex justify-between w-48 text-sm">
                       <span className="text-muted-foreground">Subtotal:</span>
-                      <span>KES {selectedSale.subtotal?.toLocaleString()}</span>
+                      <span>{formatCurrency(selectedSale.subtotal)}</span>
                     </div>
                     <div className="flex justify-between w-48 text-sm">
                       <span className="text-muted-foreground">Tax:</span>
-                      <span>KES {selectedSale.tax?.toLocaleString()}</span>
+                      <span>{formatCurrency(selectedSale.tax)}</span>
                     </div>
                     <div className="flex justify-between w-48 font-bold text-lg pt-2">
                       <span>Total:</span>
-                      <span>KES {selectedSale.grand_total?.toLocaleString()}</span>
+                      <span>{formatCurrency(selectedSale.grand_total)}</span>
                     </div>
                   </div>
 

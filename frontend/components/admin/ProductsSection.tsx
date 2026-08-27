@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
-import { Product, fetchProducts } from "@/lib/admin-api";
+import { Product, fetchProducts, updateProduct } from "@/lib/admin-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
-import { frontendEnv } from "@/lib/env";
+import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
@@ -36,41 +36,23 @@ export default function ProductsSection() {
   };
 
   const handleSave = async () => {
-    if (!editData || !token) return;
+    if (!editData || !token || !editData.id) return;
 
     setIsSaving(true);
     try {
-      const response = await fetch(
-        `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/${editData.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: editData.name,
-            description: editData.description,
-            category: editData.category,
-            unit_price: editData.unit_price,
-            cost_price: editData.cost_price,
-            reorder_level: editData.reorder_level,
-            isActive: editData.isActive,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-        // Handle both wrapped and unwrapped responses
-        const updatedProduct = result.data || result;
-        setProducts(products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
-        setSelectedProduct(updatedProduct);
-        setIsEditing(false);
-        setEditData(null);
-      } else {
-        console.error("Failed to update product");
-      }
+      const updatedProduct = await updateProduct(token, editData.id, {
+        name: editData.name,
+        description: editData.description,
+        category: editData.category,
+        unit_price: editData.unit_price,
+        cost_price: editData.cost_price,
+        reorder_level: editData.reorder_level,
+        status: editData.isActive ? "active" : "inactive",
+      });
+      setProducts(products.map((p) => (p.id === updatedProduct.id ? updatedProduct : p)));
+      setSelectedProduct(updatedProduct);
+      setIsEditing(false);
+      setEditData(null);
     } catch (error) {
       console.error("Error updating product:", error);
     } finally {
@@ -100,7 +82,7 @@ export default function ProductsSection() {
     {
       key: "unit_price",
       label: "Price",
-      render: (price: number) => `KES ${price.toLocaleString()}`,
+      render: (price: number) => formatCurrency(price),
     },
     {
       key: "quantity",
@@ -273,7 +255,7 @@ export default function ProductsSection() {
                     />
                   ) : (
                     <p className="text-sm font-semibold">
-                      KES {(selectedProduct?.unit_price ?? 0).toLocaleString()}
+                      {formatCurrency(selectedProduct?.unit_price)}
                     </p>
                   )}
                 </div>
@@ -295,7 +277,7 @@ export default function ProductsSection() {
                     />
                   ) : (
                     <p className="text-sm">
-                      KES {(selectedProduct?.cost_price ?? 0).toLocaleString()}
+                      {formatCurrency(selectedProduct?.cost_price)}
                     </p>
                   )}
                 </div>

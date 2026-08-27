@@ -176,8 +176,89 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: Crown,
     section: "system",
     accent: sharedAccent("text-yellow-200", "text-yellow-400", "bg-yellow-400/15 text-yellow-200", "bg-yellow-400"),
-    roles: ["admin", "super_admin"],
-    pages: [{ id: "admin", label: "Admin Dashboard", href: "/dashboard/admin", icon: Crown }],
+    // No module-level roles/permissions restriction — visibility is decided
+    // per-page below so each person only sees the admin sections their
+    // permissions actually grant. The module itself only disappears once
+    // every page inside it has been filtered out.
+    pages: [
+      {
+        id: "admin-overview",
+        label: "Overview",
+        href: "/dashboard/admin?section=overview",
+        icon: LayoutDashboard,
+        permissions: ["admin.branch.manage", "admin.system.view", "admin.user.manage", "admin.role.manage"],
+      },
+      {
+        id: "admin-branches",
+        label: "Branches",
+        href: "/dashboard/admin?section=branches",
+        icon: Building2,
+        permissions: ["admin.branch.manage"],
+      },
+      {
+        id: "admin-warehouses",
+        label: "Warehouses",
+        href: "/dashboard/admin?section=warehouses",
+        icon: Warehouse,
+        permissions: ["admin.branch.manage", "inventory.warehouse.view", "inventory.warehouse.manage"],
+      },
+      {
+        id: "admin-users",
+        label: "Users",
+        href: "/dashboard/admin?section=users",
+        icon: Users,
+        permissions: ["admin.user.manage"],
+      },
+      {
+        id: "admin-roles",
+        label: "Roles & Permissions",
+        href: "/dashboard/admin?section=roles",
+        icon: Shield,
+        permissions: ["admin.role.manage"],
+      },
+      {
+        id: "admin-products",
+        label: "Products",
+        href: "/dashboard/admin?section=products",
+        icon: Package,
+        permissions: ["inventory.product.view", "inventory.product.manage"],
+      },
+      {
+        id: "admin-sales",
+        label: "Sales",
+        href: "/dashboard/admin?section=sales",
+        icon: ShoppingCart,
+        permissions: ["sales.order.view_all"],
+      },
+      {
+        id: "admin-deliveries",
+        label: "Deliveries",
+        href: "/dashboard/admin?section=deliveries",
+        icon: Truck,
+        permissions: ["sales.order.view_all", "sales.order.manage"],
+      },
+      {
+        id: "admin-finance",
+        label: "Finance",
+        href: "/dashboard/admin?section=finance",
+        icon: DollarSign,
+        permissions: ["finance.gl.view"],
+      },
+      {
+        id: "admin-payroll",
+        label: "Payroll",
+        href: "/dashboard/admin?section=payroll",
+        icon: Wallet,
+        permissions: ["hr.payroll.view", "hr.payroll.manage"],
+      },
+      {
+        id: "admin-credit-notes",
+        label: "Credit Notes",
+        href: "/dashboard/admin?section=credit_notes",
+        icon: RefreshCw,
+        permissions: ["sales.order.view_all", "finance.gl.view"],
+      },
+    ],
   },
   {
     id: "settings",
@@ -220,3 +301,24 @@ export function canAccessNavigationItem(
   return (!item.permissions?.length || hasAnyPermission(item.permissions))
     && (!item.roles?.length || item.roles.includes(role));
 }
+
+/**
+ * Extracts the `section` query value from an admin page href
+ * ("/dashboard/admin?section=branches" -> "branches"). Defaults to
+ * "overview" for the bare "/dashboard/admin" case.
+ */
+export function sectionFromAdminHref(href: string): string {
+  return href.split("?section=")[1] ?? "overview";
+}
+
+/**
+ * Single source of truth mapping each admin-dashboard section to the
+ * permissions required to view it. Derived directly from the "system"
+ * module's pages above, so the sidebar and the page-level access guard
+ * in app/dashboard/admin/page.tsx can never drift out of sync.
+ */
+export const ADMIN_SECTION_PERMISSIONS: Record<string, string[]> = Object.fromEntries(
+  (NAVIGATION_MODULES.find((m) => m.id === "system")?.pages ?? [])
+    .filter((p) => p.href.startsWith("/dashboard/admin"))
+    .map((p) => [sectionFromAdminHref(p.href), p.permissions ?? []])
+);

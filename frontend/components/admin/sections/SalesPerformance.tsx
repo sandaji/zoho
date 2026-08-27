@@ -1,27 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { frontendEnv } from "@/lib/env";
 import { useAuth } from "@/lib/auth-context";
-
-type ItemRow = {
-  productId: string;
-  sku: string;
-  name: string;
-  totalQty: number;
-  totalRevenue: number;
-  orderCount: number;
-};
-
-type DayRow = { date: string; revenue: number; orderCount: number; avgOrderValue: number };
-
-type SalesmanRow = {
-  userId: string;
-  name: string;
-  salesPrefix: string | null;
-  totalRevenue: number;
-  orderCount: number;
-};
+import { formatCurrency } from "@/lib/utils";
+import {
+  fetchSalesPerformance,
+  SalesPerformanceItem as ItemRow,
+  SalesPerformanceDay as DayRow,
+  SalesPerformanceSalesman as SalesmanRow,
+  SalesPerformanceSummary,
+} from "@/lib/admin-api";
 
 export default function SalesPerformance({ branchId }: { branchId?: string }) {
   const { token } = useAuth();
@@ -29,29 +17,17 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
   const [items, setItems] = useState<ItemRow[]>([]);
   const [days, setDays] = useState<DayRow[]>([]);
   const [salesmen, setSalesmen] = useState<SalesmanRow[]>([]);
-  const [summary, setSummary] = useState<any>(null);
+  const [summary, setSummary] = useState<SalesPerformanceSummary | null>(null);
 
   useEffect(() => {
     if (!token) return;
     setLoading(true);
-    const q = new URLSearchParams();
-    if (branchId) q.set("branchId", branchId);
-    q.set("limit", "10");
-
-    fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/sales-documents/performance?${q.toString()}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => {
-        if (!r.ok) throw new Error(`Failed to load (${r.status})`);
-        return r.json();
-      })
+    fetchSalesPerformance(token, { branchId, limit: 10 })
       .then((data) => {
-        if (data?.success && data.data) {
-          setItems(data.data.byItem || []);
-          setDays(data.data.byDay || []);
-          setSalesmen(data.data.bySalesman || []);
-          setSummary(data.data.summary || null);
-        }
+        setItems(data.byItem);
+        setDays(data.byDay);
+        setSalesmen(data.bySalesman);
+        setSummary(data.summary);
       })
       .catch((e) => console.error(e))
       .finally(() => setLoading(false));
@@ -80,13 +56,11 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
             <div className="text-sm space-y-1">
               <div className="flex justify-between">
                 <span>Total Revenue</span>
-                <span className="font-medium">
-                  KES {Number(summary.totalRevenue || 0).toLocaleString()}
-                </span>
+                <span className="font-medium">{formatCurrency(summary.totalRevenue)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Total Tax</span>
-                <span>KES {Number(summary.totalTax || 0).toLocaleString()}</span>
+                <span>{formatCurrency(summary.totalTax)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Total Orders</span>
@@ -94,7 +68,7 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
               </div>
               <div className="flex justify-between">
                 <span>Avg Order</span>
-                <span>KES {Number(summary.avgOrderValue || 0).toLocaleString()}</span>
+                <span>{formatCurrency(summary.avgOrderValue)}</span>
               </div>
             </div>
           ) : (
@@ -117,7 +91,7 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
                   return (
                     <div key={d.date} className="flex-1 text-center">
                       <div
-                        title={`KES ${d.revenue}`}
+                        title={formatCurrency(d.revenue)}
                         className="mx-0.5 bg-emerald-600"
                         style={{ height: `${Math.max(4, hPct)}%`, width: "100%" }}
                       ></div>
@@ -151,7 +125,7 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
                   <td className="py-2 font-mono">{it.sku}</td>
                   <td className="py-2 truncate">{it.name}</td>
                   <td className="py-2 text-right">{it.totalQty}</td>
-                  <td className="py-2 text-right">KES {it.totalRevenue.toLocaleString()}</td>
+                  <td className="py-2 text-right">{formatCurrency(it.totalRevenue)}</td>
                 </tr>
               ))}
             </tbody>
@@ -184,7 +158,7 @@ export default function SalesPerformance({ branchId }: { branchId?: string }) {
                   </td>
                   <td className="py-2 truncate">{s.name}</td>
                   <td className="py-2 text-right">{s.orderCount}</td>
-                  <td className="py-2 text-right">KES {s.totalRevenue.toLocaleString()}</td>
+                  <td className="py-2 text-right">{formatCurrency(s.totalRevenue)}</td>
                 </tr>
               ))}
             </tbody>

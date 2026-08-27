@@ -102,6 +102,7 @@ export class POSController {
         notes: dto.notes,
         customerId: dto.customerId,
         idempotencyKey,
+        discount: dto.discount || 0,
       });
 
       // Fetch branch details for receipt header

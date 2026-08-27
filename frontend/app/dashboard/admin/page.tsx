@@ -2,10 +2,12 @@
 
 import { useAuth } from "@/lib/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Crown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AdminBranchProvider } from "@/lib/AdminBranchContext";
+import { useHasPermission } from "@/hooks/use-permissions";
+import { ADMIN_SECTION_PERMISSIONS } from "@/lib/navigation";
 
 import AdminOverview from "@/components/admin/AdminOverview";
 import BranchesSection from "@/components/admin/BranchesSection";
@@ -71,30 +73,57 @@ const SECTION_META: Record<string, { title: string; subtitle: string; icon: Reac
 
 export default function AdminDashboardPage() {
   const { user, isLoading, isAuthenticated } = useAuth();
+  const { hasAnyPermission } = useHasPermission();
   const router = useRouter();
   const searchParams = useSearchParams();
   const section = searchParams.get("section") || "overview";
 
   const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
 
+  // Real RBAC: derive which admin sections this user's permissions actually
+  // grant, from the single source of truth in lib/navigation.ts (the same
+  // map the global Sidebar uses to decide which admin links to show).
+  const accessibleSections = useMemo(
+    () =>
+      Object.entries(ADMIN_SECTION_PERMISSIONS)
+        .filter(([, permissions]) => !permissions.length || hasAnyPermission(permissions))
+        .map(([key]) => key),
+    [hasAnyPermission]
+  );
+  const canViewSection = accessibleSections.includes(section);
+
   useEffect(() => {
     if (isLoading) return;
-    if (!isAuthenticated || !isAdminUser) {
-      const roleRoutes: Record<string, string> = {
-        procurement: "/dashboard/purchasing",
-        cashier: "/dashboard/pos",
-        warehouse_staff: "/dashboard/inventory",
-        driver: "/dashboard/fleet",
-        hr: "/dashboard/employees",
-        accountant: "/dashboard/finance",
-      };
-      const fallback = roleRoutes[user?.role ?? ""] ?? "/dashboard";
-      router.replace(fallback);
-    }
-  }, [isLoading, isAuthenticated, isAdminUser, user, router]);
 
-  // Return nothing while auth is resolving or if user isn't admin — no flash of forbidden UI
-  if (isLoading || !user || !isAdminUser) return null;
+    const roleRoutes: Record<string, string> = {
+      procurement: "/dashboard/purchasing",
+      cashier: "/dashboard/pos",
+      warehouse_staff: "/dashboard/inventory",
+      driver: "/dashboard/fleet",
+      hr: "/dashboard/employees",
+      accountant: "/dashboard/finance",
+    };
+    const fallback = roleRoutes[user?.role ?? ""] ?? "/dashboard";
+
+    if (!isAuthenticated || !isAdminUser) {
+      router.replace(fallback);
+      return;
+    }
+
+    // Admin/super_admin role, but this specific section's permissions aren't
+    // held (e.g. an admin without admin.role.manage hitting ?section=roles
+    // directly) — send them to the first admin section they can actually see,
+    // or out of /dashboard/admin entirely if they can see none of it.
+    if (!canViewSection) {
+      router.replace(
+        accessibleSections.length ? `/dashboard/admin?section=${accessibleSections[0]}` : fallback
+      );
+    }
+  }, [isLoading, isAuthenticated, isAdminUser, canViewSection, accessibleSections, user, router]);
+
+  // Return nothing while auth is resolving, user isn't admin, or this section
+  // isn't permitted — no flash of forbidden UI.
+  if (isLoading || !user || !isAdminUser || !canViewSection) return null;
 
   const renderSection = () => {
     switch (section) {
@@ -130,34 +159,26 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminBranchProvider>
-      <div className="flex flex-col min-h-full bg-emerald-50/20">
+      <div className="flex min-h-full flex-col bg-emerald-50/20">
         {/* ── Page heading strip ──────────────────────────────────────────── */}
         <div className="sticky top-0 z-10 border-b border-emerald-100 bg-white/95 backdrop-blur-sm px-6 py-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div
+          <div className="flex items-center gap-3">
+            <div
+              className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-lg",
+                section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
+              )}
+            >
+              <MetaIcon
                 className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-lg",
-                  section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
+                  "h-4 w-4",
+                  section === "overview" ? "text-emerald-900" : "text-emerald-700"
                 )}
-              >
-                <MetaIcon
-                  className={cn(
-                    "h-4 w-4",
-                    section === "overview" ? "text-emerald-900" : "text-emerald-700"
-                  )}
-                />
-              </div>
-              <div>
-                <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
-                <p className="mt-0.5 text-xs text-emerald-500">{meta!.subtitle}</p>
-              </div>
+              />
             </div>
-
-            {/* Super Admin pill */}
-            <div className="flex items-center gap-1.5 rounded-full border border-yellow-200 bg-yellow-50 px-3 py-1">
-              <Crown className="h-3.5 w-3.5 text-yellow-600" />
-              <span className="text-xs font-semibold text-yellow-800">Super Admin</span>
+            <div>
+              <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
+              <p className="mt-0.5 text-xs text-emerald-500">{meta!.subtitle}</p>
             </div>
           </div>
         </div>

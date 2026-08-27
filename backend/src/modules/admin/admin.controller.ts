@@ -4,6 +4,7 @@ import { logger } from '../../lib/logger';
 import { inventoryRepository } from '../../repositories/inventory.repository';
 import { purchasingRepository } from '../../repositories/purchasing.repository';
 import { StatCardBuilder } from '../../utils/stat-card.builder';
+import { CodeGeneratorService } from '../../lib/code-generator.service';
 import * as bcrypt from 'bcrypt';
 
 /**
@@ -462,6 +463,45 @@ export class AdminController {
           api_status:        'operational',
           checked_at:        new Date().toISOString(),
         },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Get the current customer code setting (2-letter prefix + next number preview).
+   */
+  async getCustomerCodeSetting(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const setting = await CodeGeneratorService.getCustomerCodeSetting();
+      res.json({
+        success: true,
+        data: {
+          prefix: setting.prefix,
+          nextCode: `${setting.prefix}${String(setting.nextNumber).padStart(6, '0')}`,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Admin sets/changes the 2-letter customer code prefix.
+   * Body: { prefix: "AB" }
+   */
+  async updateCustomerCodePrefix(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { prefix } = req.body;
+      const setting = await CodeGeneratorService.setCustomerCodePrefix(prefix);
+      res.json({
+        success: true,
+        data: {
+          prefix: setting.prefix,
+          nextCode: `${setting.prefix}${String(setting.nextNumber).padStart(6, '0')}`,
+        },
+        message: 'Customer code prefix updated',
       });
     } catch (error) {
       next(error);

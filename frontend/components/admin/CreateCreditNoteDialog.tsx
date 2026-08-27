@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/lib/toast-context";
 import { useAuth } from "@/lib/auth-context";
+import { formatCurrency } from "@/lib/utils";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -154,7 +155,7 @@ export default function CreateCreditNoteDialog({
                       </TableCell>
                       <TableCell className="text-xs font-mono">{item.productId}</TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>
-                      <TableCell className="text-right">KES {item.unitPrice.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(item.unitPrice)}</TableCell>
                       <TableCell>
                         <Input 
                           type="number" 
@@ -185,15 +186,15 @@ export default function CreateCreditNoteDialog({
           <div className="bg-slate-50 p-4 rounded-lg space-y-2 border border-slate-200">
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Subtotal to Credit</span>
-              <span>KES {totals.subtotal.toLocaleString()}</span>
+              <span>{formatCurrency(totals.subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-500">Tax to Credit</span>
-              <span>KES {totals.tax.toLocaleString()}</span>
+              <span>{formatCurrency(totals.tax)}</span>
             </div>
             <div className="flex justify-between font-bold text-lg border-t pt-2 mt-2">
               <span>Total Credit Amount</span>
-              <span className="text-red-600">KES {totals.total.toLocaleString()}</span>
+              <span className="text-red-600">{formatCurrency(totals.total)}</span>
             </div>
           </div>
         </div>

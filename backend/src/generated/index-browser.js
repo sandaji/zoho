@@ -133,7 +133,9 @@ exports.Prisma.UserScalarFieldEnum = {
   salesPrefix: 'salesPrefix',
   lastSequence: 'lastSequence',
   hasSystemAccess: 'hasSystemAccess',
-  role: 'role'
+  role: 'role',
+  employeeCode: 'employeeCode',
+  departmentId: 'departmentId'
 };
 
 exports.Prisma.BranchScalarFieldEnum = {
@@ -334,6 +336,7 @@ exports.Prisma.TransferItemScalarFieldEnum = {
 
 exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
+  code: 'code',
   name: 'name',
   email: 'email',
   phone: 'phone',
@@ -416,6 +419,24 @@ exports.Prisma.DocumentSequenceScalarFieldEnum = {
   type: 'type',
   prefix: 'prefix',
   nextNumber: 'nextNumber'
+};
+
+exports.Prisma.CustomerCodeSettingScalarFieldEnum = {
+  id: 'id',
+  prefix: 'prefix',
+  nextNumber: 'nextNumber',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DepartmentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  prefix: 'prefix',
+  nextNumber: 'nextNumber',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SalesOrderScalarFieldEnum = {
@@ -1555,6 +1576,8 @@ exports.Prisma.ModelName = {
   SalesDocumentItem: 'SalesDocumentItem',
   Payment: 'Payment',
   DocumentSequence: 'DocumentSequence',
+  CustomerCodeSetting: 'CustomerCodeSetting',
+  Department: 'Department',
   SalesOrder: 'SalesOrder',
   SOItem: 'SOItem',
   DispatchNote: 'DispatchNote',

@@ -263,6 +263,7 @@ export default function ProductsPage() {
         productId={stockAdjustProduct?.id}
         productName={stockAdjustProduct?.name}
         currentStock={stockAdjustProduct?.currentStock}
+        productCostPrice={stockAdjustProduct?.costPrice}
         onAdjustComplete={refresh}
       />
 

@@ -16,6 +16,7 @@ import { InventoryService } from "../../inventory/service/inventory.service";
 import {
   calculateItemTotals,
   calculateDocumentTotals,
+  applyOrderDiscount,
 } from "../../../lib/sales-calculator";
 
 // -----------------------------
@@ -231,7 +232,7 @@ export class SalesService {
         if (invoice.customerId) {
           await tx.customer.update({
             where: { id: invoice.customerId },
-            data: { currentBalance: { increment: Math.round(invoice.total) } },
+            data: { currentBalance: { increment: Math.floor(invoice.total) } },
           });
         }
 
@@ -366,7 +367,7 @@ export class SalesService {
       if (invoice.customerId) {
         await tx.customer.update({
           where: { id: invoice.customerId },
-          data: { currentBalance: { increment: Math.round(invoice.balance) } },
+          data: { currentBalance: { increment: Math.floor(invoice.balance) } },
         });
       }
 
@@ -393,6 +394,8 @@ export class SalesService {
     notes?: string;
     customerId?: string;
     idempotencyKey?: string;
+    /** Whole-order discount (section 7B) — separate from any per-item discounts already in `items`. */
+    discount?: number;
   }) {
     const {
       branchId,
@@ -403,6 +406,7 @@ export class SalesService {
       notes,
       customerId,
       idempotencyKey,
+      discount: orderDiscount = 0,
     } = input;
 
     // Idempotency check: if idempotency key provided, check for existing sale
@@ -453,11 +457,13 @@ export class SalesService {
       };
     });
 
-    const totals = calculateDocumentTotals(preparedItems);
+    // Fold in the whole-order discount (section 7B), separate from any
+    // per-item discounts already summed into `totals`.
+    const totals = applyOrderDiscount(calculateDocumentTotals(preparedItems), orderDiscount);
 
     return prisma.$transaction(
       async (tx) => {
-        const balance = Math.max(0, Math.round(totals.total - amountPaid));
+        const balance = Math.max(0, Math.floor(totals.total - amountPaid));
         const isPaid = balance <= 0;
 
         const invoice = await tx.salesDocument.create({
@@ -491,7 +497,7 @@ export class SalesService {
           data: {
             salesDocumentId: invoice.id,
             customerId: customerId || null,
-            amount: Math.round(amountPaid),
+            amount: Math.floor(amountPaid),
             method: paymentMethod as PaymentMethod,
             paymentDate: new Date(),
             createdById: userId,
@@ -503,7 +509,7 @@ export class SalesService {
           await tx.customer.update({
             where: { id: customerId },
             data: {
-              currentBalance: { increment: Math.round(balance) },
+              currentBalance: { increment: Math.floor(balance) },
             },
           });
         }
@@ -533,7 +539,7 @@ export class SalesService {
             salesId: invoice.id,
             reference: `POS Sale - ${invoice.documentId}`,
           });
-          totalCogs += Math.round(depletion.totalCost.toNumber());
+          totalCogs += Math.floor(depletion.totalCost.toNumber());
         }
 
         // Record financial transaction
@@ -686,7 +692,7 @@ export class SalesService {
 
       // Adjust customer balance if invoice had an outstanding balance
       if (document.customerId && document.type === SalesDocumentType.INVOICE) {
-        const outstanding = Math.round(document.balance || 0);
+        const outstanding = Math.floor(document.balance || 0);
         if (outstanding > 0) {
           await tx.customer.update({
             where: { id: document.customerId },
@@ -841,11 +847,11 @@ export class SalesService {
         invoice_no: doc.documentId,
         status: doc.status,
         payment_method: doc.payments?.[0]?.method || "cash",
-        subtotal: Math.round(doc.subtotal),
-        discount: Math.round(doc.discount),
-        tax: Math.round(doc.tax),
-        grand_total: Math.round(doc.total),
-        amount_paid: Math.round(doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0),
+        subtotal: Math.floor(doc.subtotal),
+        discount: Math.floor(doc.discount),
+        tax: Math.floor(doc.tax),
+        grand_total: Math.floor(doc.total),
+        amount_paid: Math.floor(doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0),
         change: 0,
         created_date: doc.createdAt,
         createdAt: doc.createdAt,
@@ -880,11 +886,11 @@ export class SalesService {
       invoice_no: doc.documentId,
       status: doc.status,
       payment_method: doc.payments?.[0]?.method || "cash",
-      subtotal: Math.round(doc.subtotal),
-      discount: Math.round(doc.discount),
-      tax: Math.round(doc.tax),
-      grand_total: Math.round(doc.total),
-      amount_paid: Math.round(doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0),
+      subtotal: Math.floor(doc.subtotal),
+      discount: Math.floor(doc.discount),
+      tax: Math.floor(doc.tax),
+      grand_total: Math.floor(doc.total),
+      amount_paid: Math.floor(doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0),
       change: 0,
       created_date: doc.createdAt,
       createdAt: doc.createdAt,
@@ -907,8 +913,8 @@ export class SalesService {
         quantity: item.quantity,
         unit_price: item.unitPrice,
         tax_rate: item.taxRate,
-        discount: Math.round(item.discount),
-        amount: Math.round(item.total),
+        discount: Math.floor(item.discount),
+        amount: Math.floor(item.total),
       })),
     };
   }
@@ -1068,9 +1074,9 @@ export class SalesService {
     });
 
     const totalSales = sales.length;
-    const totalRevenue = Math.round(sales.reduce((sum, s) => sum + s.total, 0));
-    const totalTax = Math.round(sales.reduce((sum, s) => sum + s.tax, 0));
-    const totalDiscount = Math.round(sales.reduce((sum, s) => sum + s.discount, 0));
+    const totalRevenue = Math.floor(sales.reduce((sum, s) => sum + s.total, 0));
+    const totalTax = Math.floor(sales.reduce((sum, s) => sum + s.tax, 0));
+    const totalDiscount = Math.floor(sales.reduce((sum, s) => sum + s.discount, 0));
 
     const paymentMethods = {
       cash: 0,
@@ -1084,7 +1090,7 @@ export class SalesService {
       for (const payment of sale.payments) {
         const method = payment.method as keyof typeof paymentMethods;
         if (method in paymentMethods) {
-          paymentMethods[method] += Math.round(payment.amount);
+          paymentMethods[method] += Math.floor(payment.amount);
         }
       }
     }
@@ -1095,12 +1101,12 @@ export class SalesService {
         const existing = productSales.get(item.productId);
         if (existing) {
           existing.quantity += item.quantity;
-          existing.revenue += Math.round(item.total);
+          existing.revenue += Math.floor(item.total);
         } else {
           productSales.set(item.productId, {
             name: item.product?.name || "Unknown",
             quantity: item.quantity,
-            revenue: Math.round(item.total),
+            revenue: Math.floor(item.total),
           });
         }
       }
@@ -1205,7 +1211,7 @@ export class SalesService {
         data: {
           salesDocumentId: documentId,
           customerId: document.customerId || null,
-          amount: Math.round(amount),
+          amount: Math.floor(amount),
           method: paymentMethod as PaymentMethod,
           reference: reference || null,
           paymentDate: new Date(),
@@ -1214,14 +1220,14 @@ export class SalesService {
       });
 
       // Update document balance
-      const newBalance = Math.round(document.balance - amount);
+      const newBalance = Math.floor(document.balance - amount);
       const isPaid = newBalance <= 0;
 
       await tx.salesDocument.update({
         where: { id: documentId },
         data: {
           balance: Math.max(0, newBalance),
-          paidAmount: Math.round((document.paidAmount || 0) + amount),
+          paidAmount: Math.floor((document.paidAmount || 0) + amount),
           paymentStatus: isPaid
             ? PaymentStatus.PAID
             : PaymentStatus.PARTIALLY_PAID,
@@ -1233,7 +1239,7 @@ export class SalesService {
       if (document.customerId) {
         await tx.customer.update({
           where: { id: document.customerId },
-          data: { currentBalance: { decrement: Math.round(amount) } },
+          data: { currentBalance: { decrement: Math.floor(amount) } },
         });
       }
 
@@ -1242,7 +1248,7 @@ export class SalesService {
       await BankTreasuryService.recordTransaction(tx, {
         paymentMethod,
         type: "income",
-        amount: Math.round(amount),
+        amount: Math.floor(amount),
         description: `Invoice Payment - ${document.documentId}`,
         referenceNo: reference || payment.id,
         category: "invoice_payment",
@@ -1316,7 +1322,10 @@ export class SalesService {
       };
     });
 
-    const totals = calculateDocumentTotals(preparedItems);
+    // Fold in the whole-order discount (section 7B), separate from any
+    // per-item discounts already summed into `totals`. Previously this
+    // added `discount` to the total instead of subtracting it — fixed.
+    const totals = applyOrderDiscount(calculateDocumentTotals(preparedItems), discount);
 
     return prisma.salesDocument.create({
       data: {
@@ -1329,9 +1338,9 @@ export class SalesService {
         issueDate: new Date(),
         subtotal: totals.subtotal,
         tax: totals.tax,
-        discount: Math.round(discount),
-        total: Math.round(totals.total + discount),
-        balance: Math.round(totals.total + discount),
+        discount: totals.discount,
+        total: totals.total,
+        balance: totals.total,
         paidAmount: 0,
         notes: notes || null,
         createdById: userId,
@@ -1405,7 +1414,10 @@ export class SalesService {
       };
     });
 
-    const totals = calculateDocumentTotals(preparedItems);
+    // Fold in the whole-order discount (section 7B), separate from any
+    // per-item discounts already summed into `totals`. Previously this
+    // added `discount` to the total instead of subtracting it — fixed.
+    const totals = applyOrderDiscount(calculateDocumentTotals(preparedItems), discount);
 
     return prisma.salesDocument.create({
       data: {
@@ -1418,9 +1430,9 @@ export class SalesService {
         issueDate: new Date(),
         subtotal: totals.subtotal,
         tax: totals.tax,
-        discount: Math.round(discount),
-        total: Math.round(totals.total + discount),
-        balance: Math.round(totals.total + discount),
+        discount: totals.discount,
+        total: totals.total,
+        balance: totals.total,
         paidAmount: 0,
         notes: notes || null,
         createdById: userId,

@@ -80,6 +80,9 @@ export default function POSPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  // Whole-order discount (section 7B) — a cashier-entered amount off the
+  // entire cart, separate from any per-item discounts on individual lines.
+  const [orderDiscount, setOrderDiscount] = useState<number>(0);
 
   // Document mode state
   const [docMode, setDocMode] = useState<"SALE" | "DRAFT" | "QUOTE">("SALE");
@@ -135,7 +138,15 @@ export default function POSPage() {
     [cart]
   );
 
-  const grandTotal = useMemo(() => subtotal + tax, [subtotal, tax]);
+  // Order-level discount can never exceed what's actually left to discount.
+  const clampedOrderDiscount = useMemo(
+    () => Math.max(0, Math.min(orderDiscount, subtotal + tax)),
+    [orderDiscount, subtotal, tax]
+  );
+  const grandTotal = useMemo(
+    () => Math.floor(subtotal + tax - clampedOrderDiscount),
+    [subtotal, tax, clampedOrderDiscount]
+  );
   const changeAmount = useMemo(
     () => Math.max(0, amountTendered - grandTotal),
     [amountTendered, grandTotal]
@@ -223,6 +234,7 @@ export default function POSPage() {
     setNotes("");
     setAmountTendered(0);
     setPaymentMethod("cash");
+    setOrderDiscount(0);
     toast("Cart cleared", "info");
   };
 
@@ -262,7 +274,7 @@ export default function POSPage() {
             discount: c.discount,
             discount_percent: c.discount_percent,
           })),
-          discount: totalDiscount,
+          discount: clampedOrderDiscount,
           payment_method: paymentMethod,
           amount_paid: paymentMethod === "cash" ? amountTendered : grandTotal,
           customerId: selectedCustomer?.id || undefined,
@@ -477,7 +489,7 @@ export default function POSPage() {
             discount: c.discount,
             discount_percent: c.discount_percent,
           })),
-          discount: totalDiscount,
+          discount: clampedOrderDiscount,
           payment_method: paymentMethod,
           customerId: selectedCustomer?.id || undefined,
           notes: notes || undefined,
@@ -523,7 +535,7 @@ export default function POSPage() {
             discount: c.discount,
             discount_percent: c.discount_percent,
           })),
-          discount: totalDiscount,
+          discount: clampedOrderDiscount,
           payment_method: paymentMethod,
           customerId: selectedCustomer?.id || undefined,
           notes: notes || undefined,
@@ -689,6 +701,8 @@ export default function POSPage() {
                 subtotal={subtotal}
                 tax={tax}
                 totalDiscount={totalDiscount}
+                orderDiscount={orderDiscount}
+                setOrderDiscount={setOrderDiscount}
                 grandTotal={grandTotal}
                 paymentMethod={paymentMethod}
                 setPaymentMethod={setPaymentMethod}
