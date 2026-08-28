@@ -2,6 +2,51 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuAction,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import {
+  Building2,
+  Check,
+  ChevronsUpDown,
+  Search,
+  Settings,
+  LogOut,
+  Wifi,
+  WifiOff,
+  ChevronDown,
+  Pin,
+  Star,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
@@ -9,25 +54,34 @@ import { useStoredStringList } from "@/hooks/use-sidebar-preferences";
 import { API_BASE_URL, API_ENDPOINTS } from "@/lib/api-config";
 import { NAVIGATION_MODULES, canAccessNavigationItem } from "@/lib/navigation";
 import type { Branch } from "@/lib/types/admin";
-
-import type { SwitcherBranch, SearchResult } from "./types";
-import { SidebarMobileHeader } from "./SidebarMobileHeader";
-import { SidebarSearch } from "./SidebarSearch";
-import { SidebarNavigation } from "./SidebarNavigation";
-import { SidebarFooter } from "./SidebarFooter";
-import { SidebarHeader } from "./SidebarHeader";
+import { ROLE_LABELS, ROLE_COLORS, APP_VERSION, isActivePath } from "./constants";
 import { CommandPalette } from "./CommandPalette";
 import { SettingsDialog } from "./SettingsDialog";
 
-export function Sidebar() {
+// Types
+interface SwitcherBranch {
+  id: string;
+  name: string;
+  code: string;
+}
+
+interface SearchResult {
+  id: string;
+  label: string;
+  href: string;
+  type: "product" | "customer";
+}
+
+// Internal component that uses the sidebar context
+function SidebarContentInternal() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, logout, switchBranch } = useAuth();
   const { hasAnyPermission, hasPermission } = useHasPermission();
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
 
   // UI State
-  const [isOpen, setIsOpen] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const [openModule, setOpenModule] = useState<string | null>(null);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,17 +100,6 @@ export function Sidebar() {
 
   // Derived state
   const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
-  const switcherRef = useRef<HTMLDivElement>(null);
-
-  // Load collapsed state from localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("zoho.sidebar.collapsed");
-      setIsCollapsed(stored === "true");
-    } catch {
-      // Storage unavailable
-    }
-  }, []);
 
   // Online/offline status
   useEffect(() => {
@@ -68,17 +111,6 @@ export function Sidebar() {
       window.removeEventListener("online", updateConnection);
       window.removeEventListener("offline", updateConnection);
     };
-  }, []);
-
-  // Close branch switcher on outside click
-  useEffect(() => {
-    const closeOnOutsideClick = (event: MouseEvent) => {
-      if (switcherRef.current && !switcherRef.current.contains(event.target as Node)) {
-        setSwitcherOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", closeOnOutsideClick);
-    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
   }, []);
 
   // Load branches for admin users
@@ -286,20 +318,10 @@ export function Sidebar() {
     (href: string) => {
       router.push(href);
       setIsPaletteOpen(false);
-      setIsOpen(false);
       setSearchQuery("");
     },
     [router]
   );
-
-  const toggleCollapsed = () => {
-    setIsCollapsed((collapsed) => {
-      const next = !collapsed;
-      localStorage.setItem("zoho.sidebar.collapsed", String(next));
-      return next;
-    });
-    setOpenModule(null);
-  };
 
   const handleBranchSwitch = async (branchId: string) => {
     if (isSwitching) return;
@@ -320,74 +342,371 @@ export function Sidebar() {
 
   if (!user) return null;
 
+  // Get current branch name for display
+  const currentBranch = switcherBranches.find((b) => b.id === user.branchId);
+
   return (
     <>
-      {/* Mobile Header */}
-      <SidebarMobileHeader isOpen={isOpen} setIsOpen={setIsOpen} />
-
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed inset-y-0 left-0 z-40 flex h-screen flex-col border-r border-border/30 bg-background transition-all duration-300 lg:static",
-          isCollapsed ? "w-[68px]" : "w-72",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      {/* Sidebar Header */}
+      <SidebarHeader className="border-b p-3">
+        {isAdminUser && switcherBranches.length > 0 && (
+          <DropdownMenu open={switcherOpen} onOpenChange={setSwitcherOpen}>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton className="w-full justify-start text-xs" disabled={isSwitching}>
+                <Building2 className={cn("h-4 w-4", isCollapsed ? "mr-0" : "mr-2")} />
+                {!isCollapsed && (
+                  <>
+                    <span className="flex-1 truncate text-left">
+                      {isSwitching ? "Switching…" : (currentBranch?.name ?? "All Branches")}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-3.5 w-3.5" />
+                  </>
+                )}
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56">
+              {/* <DropdownMenuLabel>Switch Branch</DropdownMenuLabel> */}
+              <DropdownMenuSeparator />
+              {switcherBranches.map((branch) => (
+                <DropdownMenuItem
+                  key={branch.id}
+                  onClick={() => handleBranchSwitch(branch.id)}
+                  className="flex items-center gap-2"
+                >
+                  <Building2 className="h-3.5 w-3.5" />
+                  <span className="flex-1">{branch.name}</span>
+                  {user.branchId === branch.id && <Check className="h-3.5 w-3.5 text-primary" />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
-      >
-        {/* Header with Branch Switcher */}
-        <SidebarHeader
-          isCollapsed={isCollapsed}
-          isAdminUser={isAdminUser}
-          switcherBranches={switcherBranches}
-          currentBranchId={user.branchId || undefined}
-          isSwitching={isSwitching}
-          switcherOpen={switcherOpen}
-          setSwitcherOpen={setSwitcherOpen}
-          handleBranchSwitch={handleBranchSwitch}
-          toggleCollapsed={toggleCollapsed}
-        />
+        {/* Show app name when collapsed and no branch switcher */}
+        {isCollapsed && !(isAdminUser && switcherBranches.length > 0) && (
+          <div className="flex justify-center">
+            <span className="text-xs font-bold">Jimi</span>
+          </div>
+        )}
+      </SidebarHeader>
 
-        {/* Search / Command Palette Trigger */}
-        <SidebarSearch
-          isCollapsed={isCollapsed}
-          onOpenPalette={() => setIsPaletteOpen(true)}
-        />
+      {/* Search / Command Palette Trigger */}
+      <div className="border-b p-3">
+        <SidebarMenuButton
+          onClick={() => setIsPaletteOpen(true)}
+          className={cn(
+            "w-full justify-start text-muted-foreground",
+            isCollapsed && "justify-center"
+          )}
+        >
+          <Search className="h-4 w-4" />
+          {!isCollapsed && (
+            <>
+              <span className="flex-1 text-left">Search or run a command</span>
+              <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+            </>
+          )}
+        </SidebarMenuButton>
+      </div>
 
-        {/* Navigation */}
-        <SidebarNavigation
-          modules={visibleModules}
-          favorites={favorites.value}
-          recents={recents.value}
-          pinnedModules={pinnedModules.value}
-          pathname={pathname}
-          isCollapsed={isCollapsed}
-          openModule={openModule}
-          setOpenModule={setOpenModule}
-          stats={stats}
-          onNavigate={navigate}
-          onToggleFavorite={favorites.toggle}
-          onTogglePinned={pinnedModules.toggle}
-          onCloseMobile={() => setIsOpen(false)}
-        />
+      {/* Navigation Content */}
+      <SidebarContent>
+        <ScrollArea className="h-full">
+          {/* Group modules by section */}
+          {(() => {
+            const sections = {
+              operations: visibleModules.filter((m: any) => m.section === "operations"),
+              reports: visibleModules.filter((m: any) => m.section === "reports"),
+              system: visibleModules.filter((m: any) => m.section === "system"),
+              settings: visibleModules.filter((m: any) => m.section === "settings"),
+            };
 
-        {/* Footer with User Profile and Actions */}
-        <SidebarFooter
-          isCollapsed={isCollapsed}
-          user={user}
-          isOnline={isOnline}
-          onOpenSettings={() => setShowSettingsDialog(true)}
-          onLogout={handleLogout}
-        />
-      </aside>
+            const sectionLabels = {
+              operations: "Operations",
+              reports: "Reports",
+              system: "System",
+              settings: "Settings",
+            };
 
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+            // Get favorite and recent pages
+            const favoritePages = allPages.filter((page: any) =>
+              favorites.value.includes(page.href)
+            );
+            const recentPages = recents.value
+              .map((href) => allPages.find((page: any) => page.href === href))
+              .filter(Boolean);
 
-      {/* Command Palette */}
+            return (
+              <>
+                {/* Favorites Section */}
+                {!isCollapsed && favoritePages.length > 0 && (
+                  <SidebarGroup>
+                    <SidebarGroupLabel>Favorites</SidebarGroupLabel>
+                    <SidebarMenu>
+                      {favoritePages.map((page: any) => (
+                        <SidebarMenuItem key={page.href}>
+                          <SidebarMenuButton asChild isActive={isActivePath(pathname, page.href)}>
+                            <a
+                              href={page.href}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(page.href);
+                              }}
+                            >
+                              <page.icon className="h-4 w-4" />
+                              <span>{page.label}</span>
+                            </a>
+                          </SidebarMenuButton>
+                          <SidebarMenuAction
+                            onClick={() => favorites.toggle(page.href)}
+                            className="text-amber-500"
+                          >
+                            <Star className="h-3 w-3 fill-current" />
+                          </SidebarMenuAction>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroup>
+                )}
+
+                {/* Recent Section */}
+                {!isCollapsed && recentPages.length > 0 && (
+                  <SidebarGroup>
+                    <SidebarGroupLabel>Recent</SidebarGroupLabel>
+                    <SidebarMenu>
+                      {recentPages.slice(0, 3).map((page: any) => (
+                        <SidebarMenuItem key={page.href}>
+                          <SidebarMenuButton asChild isActive={isActivePath(pathname, page.href)}>
+                            <a
+                              href={page.href}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(page.href);
+                              }}
+                            >
+                              <page.icon className="h-4 w-4" />
+                              <span>{page.label}</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroup>
+                )}
+
+                {/* Main Navigation Sections */}
+                {Object.entries(sections).map(([sectionKey, sectionModules]) => {
+                  if (!sectionModules.length) return null;
+
+                  return (
+                    <SidebarGroup key={sectionKey}>
+                      {!isCollapsed && (
+                        <SidebarGroupLabel>
+                          {sectionLabels[sectionKey as keyof typeof sectionLabels]}
+                        </SidebarGroupLabel>
+                      )}
+                      <SidebarMenu>
+                        {sectionModules.map((module: any) => {
+                          const Icon = module.icon;
+                          const isOpen = openModule === module.id;
+                          const isPinned = pinnedModules.value.includes(module.id);
+                          const isActive = module.pages.some((page: any) =>
+                            isActivePath(pathname, page.href)
+                          );
+
+                          return (
+                            <SidebarMenuItem key={module.id}>
+                              <SidebarMenuButton
+                                isActive={isActive}
+                                onClick={() => setOpenModule(isOpen ? null : module.id)}
+                                className="w-full"
+                              >
+                                <Icon
+                                  className={cn(
+                                    "h-4 w-4",
+                                    isActive ? "text-primary" : "text-muted-foreground/60"
+                                  )}
+                                />
+                                {!isCollapsed && (
+                                  <>
+                                    <span className="flex-1">{module.label}</span>
+                                    {module.summary?.(stats) && (
+                                      <Badge
+                                        variant="secondary"
+                                        className="text-[10px] font-medium"
+                                      >
+                                        {module.summary(stats)}
+                                      </Badge>
+                                    )}
+                                    <ChevronDown
+                                      className={cn(
+                                        "h-3.5 w-3.5 transition-transform duration-200",
+                                        isOpen && "rotate-180"
+                                      )}
+                                    />
+                                  </>
+                                )}
+                              </SidebarMenuButton>
+                              {!isCollapsed && (
+                                <SidebarMenuAction onClick={() => pinnedModules.toggle(module.id)}>
+                                  <Pin
+                                    className={cn(
+                                      "h-3 w-3",
+                                      isPinned && "fill-current text-primary"
+                                    )}
+                                  />
+                                </SidebarMenuAction>
+                              )}
+                              {isOpen && !isCollapsed && (
+                                <SidebarMenuSub>
+                                  {module.pages.map((page: any) => {
+                                    const PageIcon = page.icon;
+                                    const isPageActive = isActivePath(pathname, page.href);
+                                    const isFavorite = favorites.value.includes(page.href);
+
+                                    return (
+                                      <SidebarMenuSubItem key={page.href}>
+                                        <SidebarMenuSubButton asChild isActive={isPageActive}>
+                                          <a
+                                            href={page.href}
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              navigate(page.href);
+                                            }}
+                                          >
+                                            <PageIcon
+                                              className={cn(
+                                                "h-4 w-4",
+                                                isPageActive
+                                                  ? "text-primary"
+                                                  : "text-muted-foreground/60"
+                                              )}
+                                            />
+                                            <span>{page.label}</span>
+                                          </a>
+                                        </SidebarMenuSubButton>
+                                        <SidebarMenuAction
+                                          onClick={() => favorites.toggle(page.href)}
+                                          className={cn(isFavorite && "text-amber-500")}
+                                        >
+                                          <Star
+                                            className={cn("h-3 w-3", isFavorite && "fill-current")}
+                                          />
+                                        </SidebarMenuAction>
+                                      </SidebarMenuSubItem>
+                                    );
+                                  })}
+                                </SidebarMenuSub>
+                              )}
+                            </SidebarMenuItem>
+                          );
+                        })}
+                      </SidebarMenu>
+                    </SidebarGroup>
+                  );
+                })}
+              </>
+            );
+          })()}
+        </ScrollArea>
+      </SidebarContent>
+
+      {/* Sidebar Footer */}
+      <SidebarFooter className="border-t p-3">
+        <div className="space-y-3">
+          {/* User Profile */}
+          {(() => {
+            const avatarFallback = user.name?.charAt(0).toUpperCase() || "U";
+            const roleLabel = ROLE_LABELS[user.role] ?? user.role;
+            const branchName = user.branch?.name ?? "All branches";
+
+            if (isCollapsed) {
+              return (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <SidebarMenuButton className="justify-center">
+                        <Avatar className="h-9 w-9 ring-2 ring-primary/20">
+                          <AvatarFallback className="bg-primary/10 text-sm text-primary">
+                            {avatarFallback}
+                          </AvatarFallback>
+                        </Avatar>
+                      </SidebarMenuButton>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                      <p className="font-medium">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {roleLabel} · {branchName}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              );
+            }
+
+            return (
+              <SidebarMenuButton className="w-full justify-start gap-3">
+                <Avatar className="h-9 w-9 ring-2 ring-primary/20">
+                  <AvatarFallback className="bg-primary/10 text-sm text-primary">
+                    {avatarFallback}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{user.name}</p>
+                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "px-1.5 py-0 text-[10px]",
+                        ROLE_COLORS[user.role] || "bg-muted"
+                      )}
+                    >
+                      {roleLabel}
+                    </Badge>
+                    <span className="truncate text-[10px] text-muted-foreground">{branchName}</span>
+                  </div>
+                </div>
+              </SidebarMenuButton>
+            );
+          })()}
+
+          {/* Actions */}
+          <div className="flex items-center gap-1">
+            <SidebarMenu className="w-full">
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => setShowSettingsDialog(true)} className="w-full">
+                  <Settings className="h-4 w-4" />
+                  {!isCollapsed && <span>Settings</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={handleLogout}
+                  className="w-full text-destructive hover:text-destructive"
+                >
+                  <LogOut className="h-4 w-4" />
+                  {!isCollapsed && <span>Logout</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </div>
+
+          {/* Status */}
+          {!isCollapsed && (
+            <div className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground">
+              {isOnline ? (
+                <Wifi className="h-3 w-3 text-emerald-500" />
+              ) : (
+                <WifiOff className="h-3 w-3 text-red-500" />
+              )}
+              <span>{isOnline ? "Connected" : "Offline"}</span>
+              <Separator orientation="vertical" className="h-3" />
+              <span>v{APP_VERSION}</span>
+            </div>
+          )}
+        </div>
+      </SidebarFooter>
+
+      {/* Command Palette - rendered outside sidebar */}
       <CommandPalette
         isOpen={isPaletteOpen}
         onOpenChange={setIsPaletteOpen}
@@ -404,11 +723,33 @@ export function Sidebar() {
         }}
       />
 
-      {/* Settings Dialog */}
-      <SettingsDialog
-        isOpen={showSettingsDialog}
-        onOpenChange={setShowSettingsDialog}
-      />
+      {/* Settings Dialog - rendered outside sidebar */}
+      <SettingsDialog isOpen={showSettingsDialog} onOpenChange={setShowSettingsDialog} />
     </>
+  );
+}
+
+// Main Sidebar component using shadcn Sidebar
+export function CustomSidebar() {
+  return (
+    <Sidebar collapsible="icon" variant="sidebar">
+      <SidebarContentInternal />
+    </Sidebar>
+  );
+}
+
+// Layout wrapper component
+export function SidebarLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider defaultOpen={true}>
+      <CustomSidebar />
+      <main className="flex-1 overflow-y-auto">
+        <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-background px-4 lg:hidden">
+          <SidebarTrigger />
+          <span className="ml-2 font-semibold">Jimi ERP</span>
+        </div>
+        {children}
+      </main>
+    </SidebarProvider>
   );
 }

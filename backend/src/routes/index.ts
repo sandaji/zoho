@@ -107,6 +107,22 @@ router.get(
     adminController.getSystemHealth(req, res, next),
 );
 
+// Customer code settings — admin-configurable 2-letter prefix; numbers auto-increment
+router.get(
+  "/admin/settings/customer-code",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.getCustomerCodeSetting(req, res, next),
+);
+router.put(
+  "/admin/settings/customer-code",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.updateCustomerCodePrefix(req, res, next),
+);
+
 // Branches - Admin only for management, but allow viewing
 router.get(
   "/admin/branches",

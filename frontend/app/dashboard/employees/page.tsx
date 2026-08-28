@@ -6,6 +6,7 @@ import {
   Employee,
   EmployeeFormData,
   EmployeeTransfer,
+  Department,
 } from "@/lib/employee.service";
 import { branchService, Branch } from "@/lib/branch.service";
 import { useAuth } from "@/lib/auth-context";
@@ -22,7 +23,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Users, Plus, Trash2, Edit2, History } from "lucide-react";
+import { Users, Plus, Trash2, Edit2, History, Settings } from "lucide-react";
 
 const ROLES = [
   { value: "cashier", label: "Cashier" },
@@ -40,6 +41,7 @@ export default function EmployeeManagement() {
   const { token } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
@@ -48,6 +50,9 @@ export default function EmployeeManagement() {
   const [showTransferDialog, setShowTransferDialog] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [showHistoryDialog, setShowHistoryDialog] = useState(false);
+  const [showDepartmentsDialog, setShowDepartmentsDialog] = useState(false);
+  const [newDepartment, setNewDepartment] = useState({ name: "", prefix: "" });
+  const [isSavingDepartment, setIsSavingDepartment] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [transferHistory, setTransferHistory] = useState<EmployeeTransfer[]>([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -74,13 +79,15 @@ export default function EmployeeManagement() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [empResult, branchResult] = await Promise.all([
+      const [empResult, branchResult, deptResult] = await Promise.all([
         employeeService.getAllEmployees(token!),
         branchService.getAllBranches(token!),
+        employeeService.getAllDepartments(token!),
       ]);
       const branchesData = branchResult.data?.branches || branchResult.data || [];
       setEmployees(empResult.data || []);
       setBranches(Array.isArray(branchesData) ? branchesData : []);
+      setDepartments(deptResult.data || []);
     } catch (error) {
       toast.error("Failed to load data");
       console.error(error);
@@ -103,6 +110,7 @@ export default function EmployeeManagement() {
       phone: employee.phone,
       role: employee.role,
       branchId: employee.branchId,
+      departmentId: employee.departmentId || undefined,
     });
     setSelectedEmployee(employee);
     setIsEditing(true);
@@ -113,6 +121,11 @@ export default function EmployeeManagement() {
     try {
       if (!formData.email || !formData.name) {
         toast.error("Please fill in required fields");
+        return;
+      }
+
+      if (!isEditing && !formData.departmentId) {
+        toast.error("Please select a department so an employee code can be generated");
         return;
       }
 

@@ -20,9 +20,22 @@ export interface Employee {
   | "super_admin";
   branchId?: string;
   branch?: { id: string; name: string; code: string };
+  employeeCode?: string | null;
+  departmentId?: string | null;
+  department?: { id: string; name: string; prefix: string } | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  prefix: string;
+  isActive: boolean;
+  employeeCount: number;
+  nextCode: string;
+  createdAt: string;
 }
 
 export interface EmployeeFormData {
@@ -32,6 +45,7 @@ export interface EmployeeFormData {
   password?: string;
   role: string;
   branchId?: string;
+  departmentId?: string;
 }
 
 export interface EmployeeTransfer {
@@ -206,6 +220,65 @@ export const employeeService = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || "Failed to delete employee");
+    }
+    return response.json();
+  },
+
+  /**
+   * List departments (HR-managed employee code prefixes)
+   */
+  async getAllDepartments(token: string) {
+    const response = await fetch(`${API_URL}/employees/departments`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch departments");
+    return response.json();
+  },
+
+  /**
+   * Create a department with its own 2-letter code prefix, e.g.
+   * { name: "Junior Staff", prefix: "JS" } → employees get JS001, JS002...
+   */
+  async createDepartment(token: string, data: { name: string; prefix: string }) {
+    const response = await fetch(`${API_URL}/employees/departments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to create department");
+    }
+    return response.json();
+  },
+
+  /**
+   * Update a department's name, prefix, or active status
+   */
+  async updateDepartment(
+    token: string,
+    id: string,
+    data: { name?: string; prefix?: string; isActive?: boolean }
+  ) {
+    const response = await fetch(`${API_URL}/employees/departments/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "Failed to update department");
     }
     return response.json();
   },

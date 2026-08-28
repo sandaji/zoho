@@ -2,6 +2,24 @@ import { Request, Response, NextFunction } from "express";
 import { PurchasingService } from "./purchasing.service";
 import { AppError, ErrorCode } from "../../lib/errors";
 import { PurchaseOrderStatus } from "../../generated";
+import { PermissionService } from "../auth/service/permission.service";
+
+// TokenPayload (backend/src/types/index.ts) never carries a `permissions`
+// field — auth.service.ts computes permissions at login/refresh but only
+// puts them in the response body for the frontend, not on the signed JWT.
+// `(req as any).user?.permissions` was therefore always undefined here,
+// silently defaulting every branch-isolation check below to an empty
+// permission list (i.e. "no view_all access") regardless of the user's
+// real permissions. Resolving permissions live via PermissionService on
+// each request — the same approach the requirePermission middleware
+// already uses — avoids baking permissions into the JWT, which would
+// otherwise mean a revoked permission stays valid until the token
+// expires or is refreshed (up to 24h per JWT_EXPIRY).
+async function getUserPermissions(req: Request): Promise<string[]> {
+  const userId = (req as any).user?.userId;
+  if (!userId) return [];
+  return PermissionService.getUserPermissions(userId);
+}
 
 export class PurchasingController {
   private service = new PurchasingService();
@@ -104,7 +122,7 @@ export class PurchasingController {
       }
 
       const userBranchId = (req as any).user?.branchId;
-      const userPermissions = (req as any).user?.permissions || [];
+      const userPermissions = await getUserPermissions(req);
 
       const order = await this.service.getPurchaseOrder(id);
 
@@ -134,7 +152,7 @@ export class PurchasingController {
   ) => {
     try {
       const userBranchId = (req as any).user?.branchId;
-      const userPermissions = (req as any).user?.permissions || [];
+      const userPermissions = await getUserPermissions(req);
 
       const result = await this.service.listPurchaseOrders({
         status: req.query.status as any,
@@ -176,7 +194,7 @@ export class PurchasingController {
       }
 
       const userBranchId = (req as any).user?.branchId;
-      const userPermissions = (req as any).user?.permissions || [];
+      const userPermissions = await getUserPermissions(req);
 
       // ✅ NEW: Verify PO belongs to user's branch
       const order = await this.service.getPurchaseOrder(id);
@@ -221,7 +239,7 @@ export class PurchasingController {
       }
 
       const id = req.params.id as string;
-      const userPermissions = (req as any).user?.permissions || [];
+      const userPermissions = await getUserPermissions(req);
 
       // Note: We don't check for specific roles here because the route middleware
       // already enforces that the user has approval permissions.
@@ -279,7 +297,7 @@ export class PurchasingController {
       }
 
       const userBranchId = (req as any).user?.branchId;
-      const userPermissions = (req as any).user?.permissions || [];
+      const userPermissions = await getUserPermissions(req);
 
       const order = await this.service.getPurchaseOrder(id);
 

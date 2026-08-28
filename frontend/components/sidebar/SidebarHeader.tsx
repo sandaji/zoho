@@ -53,9 +53,9 @@ export function SidebarHeader({
         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         {isCollapsed ? (
-          <PanelLeftOpen className="h-4 w-4" />
+          <PanelLeftOpen className="h-4 w-4 " />
         ) : (
-          <PanelLeftClose className="h-4 w-4" />
+          <PanelLeftClose className="h-4 w-4 " />
         )}
       </Button>
     </header>

@@ -8,6 +8,7 @@ import { prisma } from "../../lib/db";
 import { UserRole } from "../../types";
 import { AppError, ErrorCode } from "../../lib/errors";
 import { logger } from "../../lib/logger";
+import { CodeGeneratorService } from "../../lib/code-generator.service";
 import * as bcrypt from "bcrypt";
 
 export class EmployeeController {
@@ -53,6 +54,9 @@ export class EmployeeController {
           role: true,
           branchId: true,
           branch: { select: { id: true, name: true, code: true } },
+          employeeCode: true,
+          departmentId: true,
+          department: { select: { id: true, name: true, prefix: true } },
           isActive: true,
           createdAt: true,
           updatedAt: true,
@@ -107,6 +111,9 @@ export class EmployeeController {
           role: true,
           branchId: true,
           branch: { select: { id: true, name: true, code: true } },
+          employeeCode: true,
+          departmentId: true,
+          department: { select: { id: true, name: true, prefix: true } },
           isActive: true,
           createdAt: true,
           updatedAt: true,
@@ -161,7 +168,7 @@ export class EmployeeController {
    */
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, name, phone, password, role, branchId } = req.body;
+      const { email, name, phone, password, role, branchId, departmentId } = req.body;
 
       // Validate required fields
       if (!email || !name) {
@@ -169,6 +176,14 @@ export class EmployeeController {
           ErrorCode.VALIDATION_ERROR,
           400,
           "Missing required fields: email, name",
+        );
+      }
+
+      if (!departmentId) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          400,
+          "departmentId is required so the employee's code can be generated (HR sets up departments and their prefixes first).",
         );
       }
 
@@ -211,6 +226,11 @@ export class EmployeeController {
         }
       }
 
+      // Employee code: HR-configured 2-letter department prefix + an
+      // auto-incrementing number scoped to that department (e.g. JS001).
+      // Claimed atomically before the user row is written.
+      const employeeCode = await CodeGeneratorService.generateEmployeeCode(departmentId);
+
       // Hash password if provided, otherwise create a dummy hash since it's required by the schema
       // Employees created here do NOT have system access initially
       const passwordToHash =
@@ -225,6 +245,8 @@ export class EmployeeController {
           passwordHash,
           role: role || "cashier",
           branchId: targetBranchId,
+          departmentId,
+          employeeCode,
           hasSystemAccess: false,
         },
         select: {
@@ -235,12 +257,15 @@ export class EmployeeController {
           role: true,
           branchId: true,
           branch: { select: { id: true, name: true } },
+          employeeCode: true,
+          departmentId: true,
+          department: { select: { id: true, name: true, prefix: true } },
           isActive: true,
           createdAt: true,
         },
       });
 
-      logger.info(`Employee created: ${employee.id}`);
+      logger.info(`Employee created: ${employee.id} (${employee.employeeCode})`);
 
       res.status(201).json({
         success: true,
@@ -259,7 +284,7 @@ export class EmployeeController {
       const id = Array.isArray(req.params.id)
         ? req.params.id[0]
         : req.params.id;
-      const { name, phone, role, branchId, isActive } = req.body;
+      const { name, phone, role, branchId, isActive, departmentId } = req.body;
 
       const where: any = { id };
       if (req.authorizedBranchIds && req.authorizedBranchIds.length > 0) {
@@ -283,6 +308,20 @@ export class EmployeeController {
         }
       }
 
+      // Department reassignment: validate the new department exists.
+      // An employee who doesn't yet have a code (legacy record, or one
+      // created before departments existed) gets one generated now, scoped
+      // to whichever department they're being assigned into. Employees who
+      // already have a code keep it — moving departments later doesn't
+      // reissue a new code.
+      let employeeCodeUpdate: string | undefined;
+      if (departmentId && departmentId !== employee.departmentId) {
+        await CodeGeneratorService.getDepartment(departmentId);
+        if (!employee.employeeCode) {
+          employeeCodeUpdate = await CodeGeneratorService.generateEmployeeCode(departmentId);
+        }
+      }
+
       const updatedEmployee = await prisma.user.update({
         where: { id },
         data: {
@@ -290,6 +329,8 @@ export class EmployeeController {
           phone: phone ?? employee.phone,
           role: role ?? employee.role,
           branchId: branchId ?? employee.branchId,
+          departmentId: departmentId ?? employee.departmentId,
+          ...(employeeCodeUpdate ? { employeeCode: employeeCodeUpdate } : {}),
           isActive: isActive ?? employee.isActive,
         },
         select: {
@@ -300,6 +341,9 @@ export class EmployeeController {
           role: true,
           branchId: true,
           branch: { select: { id: true, name: true } },
+          employeeCode: true,
+          departmentId: true,
+          department: { select: { id: true, name: true, prefix: true } },
           isActive: true,
           createdAt: true,
           updatedAt: true,
@@ -500,6 +544,97 @@ export class EmployeeController {
       res.json({
         success: true,
         message: "Employee deleted successfully",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // ============================================================
+  // Departments (HR-managed employee code prefixes)
+  // ============================================================
+
+  /**
+   * List all departments, each with its HR-chosen prefix, current
+   * employee count, and next code preview.
+   */
+  async listDepartments(req: Request, res: Response, next: NextFunction) {
+    try {
+      const departments = await CodeGeneratorService.listDepartments();
+      const data = departments.map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        prefix: d.prefix,
+        isActive: d.isActive,
+        employeeCount: d._count.users,
+        nextCode: `${d.prefix}${String(d.nextNumber).padStart(3, "0")}`,
+        createdAt: d.createdAt,
+      }));
+
+      res.json({
+        success: true,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * HR creates a department with its own 2-letter code prefix, e.g.
+   * { name: "Junior Staff", prefix: "JS" } → employees get JS001, JS002...
+   */
+  async createDepartment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { name, prefix } = req.body;
+
+      if (!name || !prefix) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          400,
+          "Missing required fields: name, prefix",
+        );
+      }
+
+      const department = await CodeGeneratorService.createDepartment(name, prefix);
+
+      logger.info(`Department created: ${department.id} (${department.prefix})`);
+
+      res.status(201).json({
+        success: true,
+        data: {
+          ...department,
+          nextCode: `${department.prefix}${String(department.nextNumber).padStart(3, "0")}`,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * HR updates a department's name, prefix, or active status.
+   * Changing the prefix does not reset that department's counter.
+   */
+  async updateDepartment(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+      const { name, prefix, isActive } = req.body;
+
+      const department = await CodeGeneratorService.updateDepartment(id, {
+        name,
+        prefix,
+        isActive,
+      });
+
+      logger.info(`Department updated: ${id}`);
+
+      res.json({
+        success: true,
+        data: {
+          ...department,
+          nextCode: `${department.prefix}${String(department.nextNumber).padStart(3, "0")}`,
+        },
       });
     } catch (error) {
       next(error);

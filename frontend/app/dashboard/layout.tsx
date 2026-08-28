@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { Sidebar } from "@/components/sidebar/Sidebar";
+import { SidebarLayout } from "@/components/sidebar/Sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -30,10 +30,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return null;
   }
 
-  return (
-    <div className="flex h-screen bg-background">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto">{children}</main>
-    </div>
-  );
+  return <SidebarLayout>{children}</SidebarLayout>;
 }

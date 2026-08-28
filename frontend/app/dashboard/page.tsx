@@ -6,15 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { getRoleDashboardRoute } from "@/lib/role-routing";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  BarChart3,
-  Users,
-  Package,
-  Truck,
-  TrendingUp,
-  ShoppingCart,
-  FileText,
-} from "lucide-react";
+import { BarChart3, Users, Package, Truck, TrendingUp, ShoppingCart, FileText } from "lucide-react";
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
@@ -102,13 +94,11 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="p-6">
       <div className="mx-auto max-w-screen-xl space-y-6">
         {/* Header */}
         <div className="rounded-xl border border-emerald-100 bg-white px-6 py-5 shadow-sm">
-          <h1 className="text-2xl font-bold text-emerald-900">
-            Welcome back, {user?.name}!
-          </h1>
+          <h1 className="text-2xl font-bold text-emerald-900">Welcome back, {user?.name}!</h1>
           <p className="mt-1 text-sm text-emerald-600">
             Here's what's happening with your business today.
           </p>
@@ -153,7 +143,11 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {[
-                  { label: "New sales order created", time: "2 hours ago", color: "bg-emerald-500" },
+                  {
+                    label: "New sales order created",
+                    time: "2 hours ago",
+                    color: "bg-emerald-500",
+                  },
                   { label: "Delivery completed", time: "4 hours ago", color: "bg-emerald-400" },
                   { label: "Inventory updated", time: "6 hours ago", color: "bg-yellow-400" },
                 ].map((item) => (
