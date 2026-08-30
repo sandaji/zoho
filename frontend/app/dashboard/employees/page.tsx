@@ -194,6 +194,36 @@ export default function EmployeeManagement() {
     }
   };
 
+  const handleCreateDepartment = async () => {
+    if (!newDepartment.name || !newDepartment.prefix) {
+      toast.error("Please provide a department name and a 2-letter prefix");
+      return;
+    }
+
+    try {
+      setIsSavingDepartment(true);
+      await employeeService.createDepartment(token!, newDepartment);
+      toast.success("Department created successfully");
+      setNewDepartment({ name: "", prefix: "" });
+      await loadData();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to create department");
+    } finally {
+      setIsSavingDepartment(false);
+    }
+  };
+
+  const handleToggleDepartmentActive = async (department: Department) => {
+    try {
+      await employeeService.updateDepartment(token!, department.id, {
+        isActive: !department.isActive,
+      });
+      await loadData();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to update department");
+    }
+  };
+
   const filteredEmployees = employees.filter((emp) => {
     const matchesSearch =
       emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -218,10 +248,16 @@ export default function EmployeeManagement() {
             <p className="text-sm text-muted-foreground">Manage employees, roles, and transfers</p>
           </div>
         </div>
-        <Button onClick={handleCreate} className="gap-2">
-          <Plus className="w-4 h-4" />
-          New Staff
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowDepartmentsDialog(true)} className="gap-2">
+            <Settings className="w-4 h-4" />
+            Departments
+          </Button>
+          <Button onClick={handleCreate} className="gap-2">
+            <Plus className="w-4 h-4" />
+            New Staff
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -263,8 +299,10 @@ export default function EmployeeManagement() {
         <table className="w-full">
           <thead className="bg-muted">
             <tr>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Code</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Name</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold">Department</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Role</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Branch</th>
               <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
@@ -278,8 +316,12 @@ export default function EmployeeManagement() {
                 ROLES.find((r) => r.value === employee.role)?.label || employee.role;
               return (
                 <tr key={employee.id} className="border-t hover:bg-muted/50">
+                  <td className="px-6 py-4 text-sm font-mono text-muted-foreground">
+                    {employee.employeeCode || "—"}
+                  </td>
                   <td className="px-6 py-4 text-sm font-medium">{employee.name}</td>
                   <td className="px-6 py-4 text-sm text-muted-foreground">{employee.email}</td>
+                  <td className="px-6 py-4 text-sm">{employee.department?.name || "-"}</td>
                   <td className="px-6 py-4 text-sm">
                     <Badge variant="secondary">{roleLabel}</Badge>
                   </td>
@@ -388,6 +430,37 @@ export default function EmployeeManagement() {
               />
             </div>
 
+
+            <div>
+              <label className="text-sm font-medium">
+                Department {!isEditing && "*"}
+              </label>
+              <select
+                value={formData.departmentId || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, departmentId: e.target.value || undefined })
+                }
+                disabled={isEditing && !!selectedEmployee?.employeeCode}
+                className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
+              >
+                <option value="">-- Select Department --</option>
+                {departments.filter((d) => d.isActive).map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.name} ({department.prefix}) — next: {department.nextCode}
+                  </option>
+                ))}
+              </select>
+              {isEditing && selectedEmployee?.employeeCode && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Code {selectedEmployee.employeeCode} already assigned — department can't be changed here.
+                </p>
+              )}
+              {departments.length === 0 && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  No departments yet — use "Departments" above to create one first.
+                </p>
+              )}
+            </div>
 
             <div>
               <label className="text-sm font-medium">Role</label>
@@ -556,6 +629,85 @@ export default function EmployeeManagement() {
             ) : (
               <p className="text-center text-muted-foreground py-8">No transfer history</p>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Departments Dialog */}
+      <Dialog open={showDepartmentsDialog} onOpenChange={setShowDepartmentsDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Departments</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Each department has its own 2-letter code prefix. New staff hired
+              into a department get the next number in that department's own
+              sequence, e.g. Junior Staff ("JS") → JS001, JS002...
+            </p>
+
+            <div className="border rounded-lg divide-y max-h-[260px] overflow-y-auto">
+              {departments.length === 0 && (
+                <p className="text-sm text-muted-foreground p-4">
+                  No departments yet. Create one below.
+                </p>
+              )}
+              {departments.map((department) => (
+                <div key={department.id} className="flex items-center justify-between px-4 py-3">
+                  <div>
+                    <p className="font-medium text-sm">
+                      {department.name}{" "}
+                      <span className="font-mono text-muted-foreground">({department.prefix})</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {department.employeeCount} staff · next: {department.nextCode}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={department.isActive ? "default" : "secondary"}>
+                      {department.isActive ? "Active" : "Inactive"}
+                    </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleToggleDepartmentActive(department)}
+                    >
+                      {department.isActive ? "Deactivate" : "Activate"}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t pt-4 space-y-3">
+              <p className="text-sm font-medium">New department</p>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="e.g. Junior Staff"
+                  value={newDepartment.name}
+                  onChange={(e) => setNewDepartment({ ...newDepartment, name: e.target.value })}
+                  className="flex-1"
+                />
+                <Input
+                  placeholder="JS"
+                  maxLength={2}
+                  value={newDepartment.prefix}
+                  onChange={(e) =>
+                    setNewDepartment({ ...newDepartment, prefix: e.target.value.toUpperCase() })
+                  }
+                  className="w-20 uppercase"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Prefix must be exactly 2 letters and unique across departments (e.g. "JS", "SS", "SA").
+              </p>
+              <div className="flex justify-end">
+                <Button onClick={handleCreateDepartment} disabled={isSavingDepartment}>
+                  {isSavingDepartment ? "Creating..." : "Create Department"}
+                </Button>
+              </div>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

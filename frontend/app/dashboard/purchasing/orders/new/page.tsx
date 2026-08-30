@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -79,6 +79,11 @@ export default function CreatePurchaseOrderPage() {
   const [vendors, setVendors] = useState<Vendor[]>([]);
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  // Accumulates every product we've ever fetched, keyed by id, so a line
+  // item's already-selected product stays visible/labelled in its dropdown
+  // even after a new search narrows the shared `products` list down to
+  // something that no longer includes it.
+  const [productsCache, setProductsCache] = useState<Record<string, Product>>({});
 
   // UI state
   const [loading, setLoading] = useState(true);
@@ -107,9 +112,6 @@ export default function CreatePurchaseOrderPage() {
 
       // Handle warehouses mapping: warehouseService.getWarehouses returns { success, data, pagination }
       setWarehouses(warehousesData.data || []);
-
-      // Initial products fetch (without vendor filter)
-      await fetchProducts("");
     } catch (error) {
       console.error("Failed to fetch initial data:", error);
       toast.error("Failed to load vendors and warehouses");
@@ -118,8 +120,13 @@ export default function CreatePurchaseOrderPage() {
     }
   };
 
+  // Tracks the most recently *fired* products request so an older, slower
+  // response can never overwrite a newer one that already resolved.
+  const productsRequestId = useRef(0);
+
   const fetchProducts = async (vId: string, search: string = "") => {
     if (!token) return;
+    const requestId = ++productsRequestId.current;
     try {
       setProductsLoading(true);
       const productsResponse = await warehouseService.getProducts(token, {
@@ -127,35 +134,60 @@ export default function CreatePurchaseOrderPage() {
         search: search || undefined,
         limit: 100
       });
+      // Ignore this response if a newer request has been fired since —
+      // otherwise a slow earlier keystroke's result can flash in and
+      // overwrite the correct, later result (the search race condition).
+      if (requestId !== productsRequestId.current) return;
       // warehouseService.getProducts returns { success, data: { products, pagination } }
-      setProducts(productsResponse.data?.products || []);
+      const fetched: Product[] = productsResponse.data?.products || [];
+      setProducts(fetched);
+      if (fetched.length > 0) {
+        setProductsCache((prev) => {
+          const next = { ...prev };
+          for (const p of fetched) next[p.id] = p;
+          return next;
+        });
+      }
     } catch (error) {
+      if (requestId !== productsRequestId.current) return;
       console.error("Failed to fetch products:", error);
     } finally {
-      setProductsLoading(false);
+      if (requestId === productsRequestId.current) {
+        setProductsLoading(false);
+      }
     }
   };
 
-  // Refetch products when vendorId changes
+  // Refetch products whenever vendor or search term changes, debounced so we
+  // don't fire a request per keystroke. Vendor changes apply immediately
+  // (no need to debounce a Select), search text is debounced 500ms.
   useEffect(() => {
-    if (token) {
-      fetchProducts(vendorId, productSearch);
-    }
-  }, [vendorId, token]);
-
-  // Handle product search with debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (token) {
+    if (!token) return;
+    const timer = setTimeout(
+      () => {
         fetchProducts(vendorId, productSearch);
-      }
-    }, 500);
+      },
+      productSearch ? 500 : 0
+    );
     return () => clearTimeout(timer);
-  }, [productSearch]);
+  }, [vendorId, productSearch, token]);
 
   // Calculate line item total
   const calculateLineTotal = (quantity: number, unitPrice: number): number => {
     return quantity * unitPrice;
+  };
+
+  // Options to render in a given row's product dropdown: the live
+  // (possibly search-filtered) products list, plus that row's own selected
+  // product pulled from the cache if the live list no longer contains it —
+  // otherwise the dropdown loses its label the moment a search filters the
+  // selected product out, even though item.productId is still set.
+  const getRowProductOptions = (selectedProductId: string): Product[] => {
+    if (!selectedProductId || products.some((p) => p.id === selectedProductId)) {
+      return products;
+    }
+    const cached = productsCache[selectedProductId];
+    return cached ? [cached, ...products] : products;
   };
 
   // Calculate totals
@@ -196,7 +228,8 @@ export default function CreatePurchaseOrderPage() {
         if (item.id === id) {
           // If product is changed, update the unit price from product data
           if (field === "productId") {
-            const selectedProduct = products.find((p) => p.id === value);
+            const selectedProduct =
+              products.find((p) => p.id === value) || productsCache[value];
             return {
               ...item,
               [field]: value,
@@ -478,7 +511,9 @@ export default function CreatePurchaseOrderPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.map((item, index) => (
+                {items.map((item, index) => {
+                  const rowProductOptions = getRowProductOptions(item.productId);
+                  return (
                   <TableRow key={item.id} className="hover:bg-emerald-50/50">
                     {/* Product Select */}
                     <TableCell>
@@ -492,12 +527,12 @@ export default function CreatePurchaseOrderPage() {
                           <SelectValue placeholder="Select product" />
                         </SelectTrigger>
                         <SelectContent>
-                          {products.length === 0 ? (
+                          {rowProductOptions.length === 0 ? (
                             <SelectItem value="none" disabled>
                               No products found
                             </SelectItem>
                           ) : (
-                            products.map((product) => (
+                            rowProductOptions.map((product) => (
                               <SelectItem key={product.id} value={product.id}>
                                 {product.name} ({product.sku})
                               </SelectItem>
@@ -562,7 +597,8 @@ export default function CreatePurchaseOrderPage() {
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
               </TableBody>
             </Table>
           </CardContent>

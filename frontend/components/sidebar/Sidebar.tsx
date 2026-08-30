@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Sidebar,
@@ -33,7 +33,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 import {
   Building2,
   Check,
@@ -57,20 +56,7 @@ import type { Branch } from "@/lib/types/admin";
 import { ROLE_LABELS, ROLE_COLORS, APP_VERSION, isActivePath } from "./constants";
 import { CommandPalette } from "./CommandPalette";
 import { SettingsDialog } from "./SettingsDialog";
-
-// Types
-interface SwitcherBranch {
-  id: string;
-  name: string;
-  code: string;
-}
-
-interface SearchResult {
-  id: string;
-  label: string;
-  href: string;
-  type: "product" | "customer";
-}
+import type { SwitcherBranch, SearchResult } from "./types";
 
 // Internal component that uses the sidebar context
 function SidebarContentInternal() {
@@ -221,14 +207,7 @@ function SidebarContentInternal() {
     () =>
       [...allPages]
         .sort((a, b) => b.href.length - a.href.length)
-        .find((page) => {
-          const [path, query] = page.href.split("?");
-          if (query) {
-            return pathname === path && window.location.search === `?${query}`;
-          }
-          if (path === "/dashboard") return pathname === path;
-          return Boolean(pathname?.startsWith(path));
-        }),
+        .find((page) => isActivePath(pathname, page.href)),
     [allPages, pathname]
   );
 
@@ -348,7 +327,7 @@ function SidebarContentInternal() {
   return (
     <>
       {/* Sidebar Header */}
-      <SidebarHeader className="border-b p-3">
+      <SidebarHeader className="border-b border-sidebar-border p-3">
         {isAdminUser && switcherBranches.length > 0 && (
           <DropdownMenu open={switcherOpen} onOpenChange={setSwitcherOpen}>
             <DropdownMenuTrigger asChild>
@@ -365,7 +344,7 @@ function SidebarContentInternal() {
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
-              {/* <DropdownMenuLabel>Switch Branch</DropdownMenuLabel> */}
+              <DropdownMenuLabel>Switch Branch</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {switcherBranches.map((branch) => (
                 <DropdownMenuItem
@@ -390,11 +369,11 @@ function SidebarContentInternal() {
       </SidebarHeader>
 
       {/* Search / Command Palette Trigger */}
-      <div className="border-b p-3">
+      <div className="border-b border-sidebar-border p-3">
         <SidebarMenuButton
           onClick={() => setIsPaletteOpen(true)}
           className={cn(
-            "w-full justify-start text-muted-foreground",
+            "w-full justify-start text-sidebar-foreground/60",
             isCollapsed && "justify-center"
           )}
         >
@@ -402,7 +381,7 @@ function SidebarContentInternal() {
           {!isCollapsed && (
             <>
               <span className="flex-1 text-left">Search or run a command</span>
-              <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+              <kbd className="rounded bg-sidebar-accent px-1.5 py-0.5 font-mono text-[10px] text-sidebar-foreground/80">⌘K</kbd>
             </>
           )}
         </SidebarMenuButton>
@@ -523,7 +502,7 @@ function SidebarContentInternal() {
                                 <Icon
                                   className={cn(
                                     "h-4 w-4",
-                                    isActive ? "text-primary" : "text-muted-foreground/60"
+                                    isActive ? "text-primary" : "text-sidebar-foreground/50"
                                   )}
                                 />
                                 {!isCollapsed && (
@@ -578,7 +557,7 @@ function SidebarContentInternal() {
                                                 "h-4 w-4",
                                                 isPageActive
                                                   ? "text-primary"
-                                                  : "text-muted-foreground/60"
+                                                  : "text-sidebar-foreground/50"
                                               )}
                                             />
                                             <span>{page.label}</span>
@@ -611,7 +590,7 @@ function SidebarContentInternal() {
       </SidebarContent>
 
       {/* Sidebar Footer */}
-      <SidebarFooter className="border-t p-3">
+      <SidebarFooter className="border-t border-sidebar-border p-3">
         <div className="space-y-3">
           {/* User Profile */}
           {(() => {
@@ -657,12 +636,12 @@ function SidebarContentInternal() {
                       variant="outline"
                       className={cn(
                         "px-1.5 py-0 text-[10px]",
-                        ROLE_COLORS[user.role] || "bg-muted"
+                        ROLE_COLORS[user.role] || "bg-sidebar-accent text-sidebar-foreground"
                       )}
                     >
                       {roleLabel}
                     </Badge>
-                    <span className="truncate text-[10px] text-muted-foreground">{branchName}</span>
+                    <span className="truncate text-[10px] text-sidebar-foreground/60">{branchName}</span>
                   </div>
                 </div>
               </SidebarMenuButton>
@@ -692,14 +671,14 @@ function SidebarContentInternal() {
 
           {/* Status */}
           {!isCollapsed && (
-            <div className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5 px-1 text-xs text-sidebar-foreground/60">
               {isOnline ? (
                 <Wifi className="h-3 w-3 text-emerald-500" />
               ) : (
                 <WifiOff className="h-3 w-3 text-red-500" />
               )}
               <span>{isOnline ? "Connected" : "Offline"}</span>
-              <Separator orientation="vertical" className="h-3" />
+              <Separator orientation="vertical" className="h-3 bg-sidebar-border" />
               <span>v{APP_VERSION}</span>
             </div>
           )}

@@ -23,12 +23,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search, Loader2, AlertCircle } from "lucide-react";
+import { Plus, Search, Loader2, AlertCircle, Settings } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface Customer {
   id: string;
+  code: string;
   name: string;
   email?: string;
   phone?: string;
@@ -54,6 +55,12 @@ export default function CustomersPage() {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [customerDetails, setCustomerDetails] = useState<any | null>(null);
+
+  // Admin-configurable customer code prefix (2 letters + auto-incrementing 6-digit number)
+  const [codeSettingOpen, setCodeSettingOpen] = useState(false);
+  const [codeSetting, setCodeSetting] = useState<{ prefix: string; nextCode: string } | null>(null);
+  const [prefixInput, setPrefixInput] = useState("");
+  const [savingPrefix, setSavingPrefix] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -104,6 +111,57 @@ export default function CustomersPage() {
 
     return () => clearTimeout(timer);
   }, [fetchCustomers]);
+
+  // Fetch the current admin-configured customer code prefix
+  const fetchCodeSetting = useCallback(async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/v1/admin/settings/customer-code`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) return; // Non-admins won't have access — fail quietly
+      const data = await response.json();
+      setCodeSetting(data.data);
+      setPrefixInput(data.data?.prefix || "");
+    } catch {
+      // Ignore — setting panel just won't render usefully for non-admins
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchCodeSetting();
+  }, [fetchCodeSetting]);
+
+  const handleSavePrefix = async () => {
+    if (!token) return;
+    if (!/^[A-Za-z]{2}$/.test(prefixInput)) {
+      showToast("Error", 'Prefix must be exactly 2 letters (e.g. "AB")', "error");
+      return;
+    }
+    try {
+      setSavingPrefix(true);
+      const response = await fetch(`${API_BASE_URL}/v1/admin/settings/customer-code`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prefix: prefixInput }),
+      });
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || "Failed to update prefix");
+      }
+      const data = await response.json();
+      setCodeSetting(data.data);
+      showToast("Success", "Customer code prefix updated", "success");
+      setCodeSettingOpen(false);
+    } catch (error) {
+      showToast("Error", error instanceof Error ? error.message : "Failed to update prefix", "error");
+    } finally {
+      setSavingPrefix(false);
+    }
+  };
 
   // Create customer
   const handleCreateCustomer = async (e: React.FormEvent) => {
@@ -206,15 +264,67 @@ export default function CustomersPage() {
           </p>
         </div>
 
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-          <DialogTrigger asChild>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              <Plus className="h-4 w-4 mr-2" />
-              New Customer
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          {codeSetting && (
+            <Dialog open={codeSettingOpen} onOpenChange={setCodeSettingOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" title={`Next code: ${codeSetting.nextCode}`}>
+                  <Settings className="h-4 w-4 mr-2" />
+                  Code Prefix: {codeSetting.prefix}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-sm">
+                <DialogHeader>
+                  <DialogTitle>Customer Code Prefix</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600">
+                    Every customer gets a code of 2 letters + an auto-incrementing
+                    6-digit number (e.g. "{codeSetting.prefix}000001"). Changing the
+                    prefix here only affects new customers going forward — the
+                    number keeps counting up from where it is.
+                  </p>
+                  <div>
+                    <Label htmlFor="prefix" className="text-sm font-medium">
+                      2-Letter Prefix
+                    </Label>
+                    <Input
+                      id="prefix"
+                      maxLength={2}
+                      value={prefixInput}
+                      onChange={(e) => setPrefixInput(e.target.value.toUpperCase())}
+                      className="mt-1 uppercase w-24"
+                    />
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Next code will be: {prefixInput.toUpperCase() || "??"}
+                    {codeSetting.nextCode.replace(codeSetting.prefix, "")}
+                  </p>
+                  <div className="flex gap-3 justify-end pt-2">
+                    <Button variant="outline" onClick={() => setCodeSettingOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSavePrefix}
+                      disabled={savingPrefix}
+                      className="bg-emerald-600 hover:bg-emerald-700"
+                    >
+                      {savingPrefix ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
 
-          <DialogContent className="max-w-md">
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogTrigger asChild>
+              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Plus className="h-4 w-4 mr-2" />
+                New Customer
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Create New Customer</DialogTitle>
             </DialogHeader>
@@ -347,7 +457,8 @@ export default function CustomersPage() {
               </div>
             </form>
           </DialogContent>
-        </Dialog>
+          </Dialog>
+        </div>
       </div>
 
       {/* ── Search Bar ────────────────────────────────────────────────────── */}
@@ -379,6 +490,7 @@ export default function CustomersPage() {
           <Table>
             <TableHeader>
               <TableRow className="border-b border-slate-200 bg-emerald-50">
+                <TableHead className="font-semibold text-emerald-900">Code</TableHead>
                 <TableHead className="font-semibold text-emerald-900">Name</TableHead>
                 <TableHead className="font-semibold text-emerald-900">Type</TableHead>
                 <TableHead className="font-semibold text-emerald-900">Phone</TableHead>
@@ -401,6 +513,9 @@ export default function CustomersPage() {
                     key={customer.id}
                     className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
                   >
+                    <TableCell>
+                      <span className="font-mono text-sm text-slate-600">{customer.code}</span>
+                    </TableCell>
                     <TableCell>
                       <div className="font-medium text-slate-900">{customer.name}</div>
                       {customer.email && (
@@ -480,6 +595,7 @@ export default function CustomersPage() {
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-slate-900">{customerDetails.name}</h3>
+                <p className="text-sm font-mono text-slate-500">{customerDetails.code}</p>
                 <p className="text-sm text-slate-600">{customerDetails.email || ""}</p>
                 <p className="text-sm text-slate-600">{customerDetails.phone || ""}</p>
               </div>

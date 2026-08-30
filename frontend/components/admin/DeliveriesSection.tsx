@@ -218,7 +218,7 @@ function CreateDeliveryDialog({ isOpen, onClose, onSuccess, drivers, trucks, sal
                              <Select onValueChange={v => setPayload(p => ({ ...p, salesDocumentId: deliveryType === 'sales' ? v : undefined, stockTransferId: deliveryType === 'transfer' ? v : undefined }))}>
                                  <SelectTrigger><SelectValue /></SelectTrigger>
                                  <SelectContent>
-                                     {(deliveryType === 'sales' ? sales : stockTransfers).map(item => (
+                                     {(deliveryType === 'sales' ? sales : stockTransfers).map((item: Sales | StockTransfer) => (
                                          <SelectItem key={item.id} value={item.id}>{deliveryType === 'sales' ? (item as Sales).invoice_no : (item as StockTransfer).documentId}</SelectItem>
                                      ))}
                                  </SelectContent>

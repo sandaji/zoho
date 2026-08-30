@@ -91,6 +91,7 @@ export default function PurchaseOrderDetailPage() {
   const [po, setPO] = useState<PurchaseOrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   useEffect(() => {
@@ -165,6 +166,37 @@ export default function PurchaseOrderDetailPage() {
     }
   };
 
+  const handleSubmitForApproval = async () => {
+    if (!token || !po) return;
+
+    try {
+      setSubmitting(true);
+      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/status`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "SUBMITTED" }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Failed to submit purchase order");
+      }
+
+      showToast("success", "Purchase Order submitted for approval");
+      setPO((prev) =>
+        prev ? { ...prev, status: "SUBMITTED", submittedAt: new Date().toISOString() } : null
+      );
+    } catch (error) {
+      showToast("error", error instanceof Error ? error.message : "Submission failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -188,9 +220,17 @@ export default function PurchaseOrderDetailPage() {
   }
 
   const canReceiveGoods = ["APPROVED", "PARTIALLY_RECEIVED"].includes(po.status);
+  // Only a SUBMITTED order can move to APPROVED — the backend's state
+  // machine (VALID_STATE_TRANSITIONS) never allows DRAFT -> APPROVED
+  // directly, so offering this button on a DRAFT order just guarantees a
+  // rejected request. "PENDING" isn't a real PurchaseOrderStatus value at
+  // all, so it never matched anything and is dropped here too.
   const canApprove =
     (user?.role === "super_admin" || user?.role === "branch_manager") &&
-    ["DRAFT", "SUBMITTED", "PENDING"].includes(po.status);
+    po.status === "SUBMITTED";
+  // A DRAFT order's only forward path is Submit for Approval (DRAFT ->
+  // SUBMITTED per the backend state machine); nothing else is legal yet.
+  const canSubmit = po.status === "DRAFT";
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -401,6 +441,26 @@ export default function PurchaseOrderDetailPage() {
             </Card>
 
             {/* Action Buttons */}
+            {canSubmit && (
+              <Button
+                onClick={handleSubmitForApproval}
+                disabled={submitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-4"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Submit for Approval
+                  </>
+                )}
+              </Button>
+            )}
+
             {canApprove && (
               <Button
                 onClick={handleApprove}

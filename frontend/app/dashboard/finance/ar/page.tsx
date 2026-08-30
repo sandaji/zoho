@@ -367,7 +367,9 @@ export default function ReceivablesPage() {
               filteredReceivables.map((ar) => (
                 <TableRow
                   key={ar.id}
-                  ref={(el) => (rowRefs.current[ar.id] = el)}
+                  ref={(el) => {
+                    rowRefs.current[ar.id] = el;
+                  }}
                   className={
                     "hover:bg-slate-50 transition-colors border-b border-slate-50 " +
                     (highlightInvoiceId === ar.id ? "ring-2 ring-amber-300 bg-amber-50" : "")

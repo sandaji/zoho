@@ -1,4 +1,7 @@
+"use client";
 
+import * as React from "react";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -9,6 +12,8 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 interface LeaveRequest {
   id: string;
@@ -28,7 +33,73 @@ const statusMap: Record<string, { label: string; variant: "default" | "secondary
   CANCELLED: { label: "Cancelled", variant: "outline" },
 };
 
-export function LeaveRequestsTable({ requests, isLoading }: { requests: LeaveRequest[], isLoading: boolean }) {
+const columnHelper = createColumnHelper<AppTableFeatures, LeaveRequest>();
+
+const columns = columnHelper.columns([
+  columnHelper.accessor((row) => row.leaveType.name, {
+    id: "type",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+    cell: (ctx) => <span className="font-medium">{ctx.getValue()}</span>,
+    sortFn: "text",
+  }),
+  columnHelper.accessor((row) => row.startDate, {
+    id: "dates",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Dates" />,
+    cell: (ctx) => {
+      const request = ctx.row.original;
+      return (
+        <>
+          {new Date(request.startDate).toLocaleDateString()} - {new Date(request.endDate).toLocaleDateString()}
+        </>
+      );
+    },
+    sortFn: "alphanumeric",
+  }),
+  columnHelper.accessor((row) => row.days, {
+    id: "days",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Days" />,
+    sortFn: "alphanumeric",
+  }),
+  columnHelper.accessor((row) => row.reason, {
+    id: "reason",
+    header: "Reason",
+    enableSorting: false,
+    cell: (ctx) => <span className="block max-w-[200px] truncate">{ctx.getValue() || "-"}</span>,
+  }),
+  columnHelper.accessor((row) => row.status, {
+    id: "status",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    cell: (ctx) => {
+      const status = ctx.getValue();
+      return (
+        <Badge variant={statusMap[status]?.variant || "secondary"}>
+          {statusMap[status]?.label || status}
+        </Badge>
+      );
+    },
+    sortFn: "text",
+  }),
+  columnHelper.accessor((row) => row.createdAt, {
+    id: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Requested On" className="w-full justify-end" />
+    ),
+    cell: (ctx) => <div className="text-right">{new Date(ctx.getValue()).toLocaleDateString()}</div>,
+    sortFn: "alphanumeric",
+  }),
+]);
+
+export function LeaveRequestsTable({ requests, isLoading }: { requests: LeaveRequest[]; isLoading: boolean }) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: requests,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -43,37 +114,36 @@ export function LeaveRequestsTable({ requests, isLoading }: { requests: LeaveReq
     <div className="rounded-md border">
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead>Type</TableHead>
-            <TableHead>Dates</TableHead>
-            <TableHead>Days</TableHead>
-            <TableHead>Reason</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Requested On</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {requests.map((request) => (
-            <TableRow key={request.id}>
-              <TableCell className="font-medium">{request.leaveType.name}</TableCell>
-              <TableCell>
-                {new Date(request.startDate).toLocaleDateString()} - {new Date(request.endDate).toLocaleDateString()}
-              </TableCell>
-              <TableCell>{request.days}</TableCell>
-              <TableCell className="max-w-[200px] truncate">{request.reason || "-"}</TableCell>
-              <TableCell>
-                <Badge variant={statusMap[request.status]?.variant || "secondary"}>
-                  {statusMap[request.status]?.label || request.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                {new Date(request.createdAt).toLocaleDateString()}
-              </TableCell>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={header.column.id === "createdAt" ? "text-right" : undefined}
+                >
+                  {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
-          {requests.length === 0 && (
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.length > 0 ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={cell.column.id === "createdAt" ? "text-right" : undefined}
+                  >
+                    <table.FlexRender cell={cell} />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
             <TableRow>
-              <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
+              <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
                 No leave history found.
               </TableCell>
             </TableRow>

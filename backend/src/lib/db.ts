@@ -110,8 +110,8 @@ function createPrismaClient(): CustomPrismaClient {
   const pool = new Pool({
     connectionString: cleanConnectionString,
     ssl: { rejectUnauthorized: false },
-    max: 50,
-    min: 5,
+    max: 10,
+    min: 2,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 20000,
     statement_timeout: 30000,

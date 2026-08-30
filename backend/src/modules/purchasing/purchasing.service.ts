@@ -293,8 +293,26 @@ export class PurchasingService {
       items: { productId: string; quantity: number; unitPrice: number }[];
       notes?: string;
       expectedDeliveryDate?: string;
+      // Only DRAFT and SUBMITTED are legal at creation time — anything
+      // further along the workflow (APPROVED, RECEIVED, etc.) has to go
+      // through updateStatus so its transition rules (segregation of
+      // duties, approval thresholds, vendor-active checks) actually run.
+      // Defaults to DRAFT so "Save as Draft" keeps working unchanged.
+      status?: PurchaseOrderStatus;
     },
   ) {
+    const requestedStatus = data.status ?? PurchaseOrderStatus.DRAFT;
+    if (
+      requestedStatus !== PurchaseOrderStatus.DRAFT &&
+      requestedStatus !== PurchaseOrderStatus.SUBMITTED
+    ) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        `A Purchase Order can only be created as DRAFT or SUBMITTED, not ${requestedStatus}.`,
+      );
+    }
+
     return prisma.$transaction(
       async (tx) => {
         // 1. Validate Vendor
@@ -386,7 +404,9 @@ export class PurchasingService {
             branchId: resolvedBranchId,
             destinationWarehouseId: data.warehouseId || null,
             requestedById: userId,
-            status: PurchaseOrderStatus.DRAFT,
+            status: requestedStatus,
+            submittedAt:
+              requestedStatus === PurchaseOrderStatus.SUBMITTED ? new Date() : null,
             subtotal,
             tax: subtotal * 0.16,
             total: subtotal * 1.16,
@@ -411,6 +431,165 @@ export class PurchasingService {
       },
       {
         timeout: 30000, // 30 seconds transaction timeout
+      },
+    );
+  }
+
+  /**
+   * Update a Purchase Order (DRAFT only)
+   *
+   * Once a PO leaves DRAFT it has already entered the approval workflow —
+   * letting it be edited in place after that would mean an approver signs
+   * off on different line items/prices than a requester later changes it
+   * to. Editing is therefore only legal while status === DRAFT; anything
+   * else should be cancelled and recreated instead.
+   */
+  async updatePurchaseOrder(
+    id: string,
+    data: {
+      vendorId?: string;
+      warehouseId?: string;
+      items?: { productId: string; quantity: number; unitPrice: number }[];
+      notes?: string;
+      expectedDeliveryDate?: string;
+    },
+  ) {
+    return prisma.$transaction(
+      async (tx) => {
+        const existing = await tx.purchaseOrder.findUnique({ where: { id } });
+        if (!existing) {
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            "Purchase Order not found",
+          );
+        }
+
+        if (existing.status !== PurchaseOrderStatus.DRAFT) {
+          throw new AppError(
+            ErrorCode.INVALID_STATUS,
+            400,
+            `Cannot edit a Purchase Order once it has left DRAFT status (current status: ${existing.status}). Cancel it and create a new one instead.`,
+          );
+        }
+
+        const vendorId = data.vendorId ?? existing.vendorId;
+
+        // Validate vendor if it's being changed
+        if (data.vendorId && data.vendorId !== existing.vendorId) {
+          const vendor = await tx.vendor.findUnique({
+            where: { id: data.vendorId },
+          });
+          if (!vendor || !vendor.isActive) {
+            throw new AppError(ErrorCode.BAD_REQUEST, 400, "Invalid vendor");
+          }
+        }
+
+        // Resolve branch from warehouse if the warehouse is being changed
+        let resolvedBranchId = existing.branchId;
+        let destinationWarehouseId = existing.destinationWarehouseId;
+        if (data.warehouseId && data.warehouseId !== existing.destinationWarehouseId) {
+          const warehouse = await tx.warehouse.findUnique({
+            where: { id: data.warehouseId },
+            select: { branchId: true },
+          });
+          if (!warehouse) {
+            throw new AppError(
+              ErrorCode.NOT_FOUND,
+              404,
+              "Target warehouse not found",
+            );
+          }
+          resolvedBranchId = warehouse.branchId;
+          destinationWarehouseId = data.warehouseId;
+        }
+
+        const updateData: Prisma.PurchaseOrderUpdateInput = {
+          vendor: { connect: { id: vendorId } },
+          branch: { connect: { id: resolvedBranchId } },
+          ...(destinationWarehouseId
+            ? { destinationWarehouse: { connect: { id: destinationWarehouseId } } }
+            : { destinationWarehouse: { disconnect: true } }),
+          ...(data.notes !== undefined && { notes: data.notes }),
+          ...(data.expectedDeliveryDate !== undefined && {
+            expectedDeliveryDate: data.expectedDeliveryDate
+              ? new Date(data.expectedDeliveryDate)
+              : null,
+          }),
+          updatedAt: new Date(),
+        };
+
+        // Only touch items/totals if the caller actually sent a new items
+        // array — this lets a caller update just notes/vendor/warehouse
+        // without being forced to resend every line item.
+        if (data.items) {
+          let subtotal = 0;
+          const itemsData: Array<{
+            productId: string;
+            quantity: number;
+            unitPrice: number;
+            subtotal: number;
+          }> = [];
+
+          for (const item of data.items) {
+            const product = await tx.product.findUnique({
+              where: { id: item.productId },
+              select: { vendorId: true, name: true },
+            });
+
+            if (!product) {
+              throw new AppError(
+                ErrorCode.NOT_FOUND,
+                404,
+                `Product ${item.productId} not found`,
+              );
+            }
+
+            if (product.vendorId !== vendorId) {
+              throw new AppError(
+                ErrorCode.VALIDATION_ERROR,
+                400,
+                `Product "${product.name}" does not belong to the selected vendor. SAP discipline requires all items in a PO to match the vendor.`,
+              );
+            }
+
+            const itemSubtotal = item.quantity * item.unitPrice;
+            subtotal += itemSubtotal;
+
+            itemsData.push({
+              productId: item.productId,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              subtotal: itemSubtotal,
+            });
+          }
+
+          updateData.subtotal = subtotal;
+          updateData.tax = subtotal * 0.16;
+          updateData.total = subtotal * 1.16;
+          // Replace the line items wholesale rather than diffing — a DRAFT
+          // PO has no GRNs or received quantities yet, so there's nothing
+          // downstream that depends on the old item rows surviving.
+          updateData.items = {
+            deleteMany: {},
+            create: itemsData,
+          };
+        }
+
+        const po = await tx.purchaseOrder.update({
+          where: { id },
+          data: updateData,
+          include: {
+            items: { include: { product: true } },
+            vendor: true,
+            requestedBy: true,
+          },
+        });
+
+        return po;
+      },
+      {
+        timeout: 30000,
       },
     );
   }

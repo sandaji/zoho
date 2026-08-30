@@ -69,7 +69,7 @@
     "npm": ">=9.0.0"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.9.1"
+    "@prisma/adapter-pg": "^7.10.0"
   },
   "allowScripts": {}
 }

@@ -31,6 +31,7 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/*.test.tsx",
-    "**/*.spec.tsx"
+    "**/*.spec.tsx",
+    "**/_deprecated/**"
   ]
 }

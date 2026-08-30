@@ -154,7 +154,7 @@ export default function ProfitLossPage() {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="end">
-        <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} initialFocus />
+        <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} autoFocus />
       </PopoverContent>
     </Popover>
   );

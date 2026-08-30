@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import {
+  useTable,
+  createColumnHelper,
+  type SortingState,
+} from "@tanstack/react-table";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,8 +16,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ArrowUp, ArrowDown, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { DataTablePagination } from "@/components/ui/data-table-pagination";
 
+// Public API is unchanged from the pre-TanStack version of this component —
+// every existing call site (ProductsSection, UsersSection, RolesSection, etc.)
+// keeps working with zero changes.
 export interface Column<T> {
   key: keyof T | string;
   label: string;
@@ -29,6 +39,8 @@ interface AdminTableProps<T> {
   onRowClick?: (row: T) => void;
   loading?: boolean;
   actions?: (row: T) => React.ReactNode;
+  /** Optional action(s) rendered in the header, next to the search box (e.g. a "Create X" button). */
+  headerActions?: React.ReactNode;
   pageSize?: number;
   emptyText?: string;
 }
@@ -45,14 +57,19 @@ export function AdminTable<T extends Record<string, any>>({
   onRowClick,
   loading = false,
   actions,
+  headerActions,
   pageSize = 10,
   emptyText = "No data available",
 }: AdminTableProps<T>) {
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   const safeData = Array.isArray(data) ? data : [];
 
+  // Search stays a pre-filter over the raw data rather than a TanStack
+  // column filter: searchKeys can reference dotted paths ("branch.name",
+  // "_count.permissions") that don't map 1:1 onto a single column, so this
+  // preserves the exact multi-key search behavior the old implementation had.
   const filteredData = useMemo(() => {
     if (!search) return safeData;
     const q = search.toLowerCase();
@@ -64,13 +81,59 @@ export function AdminTable<T extends Record<string, any>>({
     );
   }, [safeData, search, searchKeys]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredData.length / pageSize));
-  const currentPage = Math.min(page, totalPages);
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedData = useMemo(
-    () => filteredData.slice(startIndex, startIndex + pageSize),
-    [filteredData, startIndex, pageSize]
-  );
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, T>(), []);
+
+  // Map of tanstack column id -> original Column<T> definition, so we can
+  // still apply per-column `className` the way the old TableCell did.
+  const columnMetaById = useMemo(() => {
+    const map = new Map<string, Column<T>>();
+    columns.forEach((col) => map.set(String(col.key), col));
+    return map;
+  }, [columns]);
+
+  const tanstackColumns = useMemo(() => {
+    const accessorCols = columns.map((col) => {
+      const key = String(col.key);
+      return columnHelper.accessor(
+        (row) => (key.includes(".") ? getValueByPath(row, key) : (row as any)[col.key]),
+        {
+          id: key,
+          header: col.label,
+          cell: (ctx) =>
+            col.render ? col.render(ctx.getValue(), ctx.row.original) : ctx.getValue(),
+          sortFn: "alphanumeric",
+        }
+      );
+    });
+
+    const actionsCol = actions
+      ? columnHelper.display({
+          id: "__actions",
+          header: () => <div className="text-right">Actions</div>,
+          enableSorting: false,
+          cell: (ctx) => (
+            <div className="text-right" onClick={(e) => e.stopPropagation()}>
+              {actions(ctx.row.original)}
+            </div>
+          ),
+        })
+      : null;
+
+    // A single array expression (spread + conditional spread) instead of a
+    // ternary between two differently-typed arrays — that ternary shape was
+    // what confused TS's overload resolution for columnHelper.columns() and
+    // made it reject the display column.
+    return columnHelper.columns([...accessorCols, ...(actionsCol ? [actionsCol] : [])]);
+  }, [columns, actions, columnHelper]);
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: filteredData,
+    columns: tanstackColumns,
+    onSortingChange: setSorting,
+    state: { sorting },
+    initialState: { pagination: { pageIndex: 0, pageSize } },
+  });
 
   if (loading) {
     return (
@@ -92,18 +155,21 @@ export function AdminTable<T extends Record<string, any>>({
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
           <CardTitle className="text-sm font-bold text-emerald-900">{title}</CardTitle>
-          <div className="relative w-60">
-            <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-400" />
-            <Input
-              placeholder="Search…"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="h-9 border-emerald-200 pl-8 text-sm focus-visible:ring-emerald-500"
-              aria-label="Search table"
-            />
+          <div className="flex items-center gap-3">
+            <div className="relative w-60">
+              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-emerald-400" />
+              <Input
+                placeholder="Search…"
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  table.setPageIndex(0);
+                }}
+                className="h-9 border-emerald-200 pl-8 text-sm focus-visible:ring-emerald-500"
+                aria-label="Search table"
+              />
+            </div>
+            {headerActions}
           </div>
         </div>
       </CardHeader>
@@ -118,91 +184,70 @@ export function AdminTable<T extends Record<string, any>>({
             <div className="rounded-lg border border-emerald-100 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="border-emerald-100 bg-emerald-50/70 hover:bg-emerald-50/70">
-                    {columns.map((col) => (
-                      <TableHead
-                        key={String(col.key)}
-                        className="text-xs font-semibold uppercase tracking-wide text-emerald-600"
-                      >
-                        {col.label}
-                      </TableHead>
-                    ))}
-                    {actions && (
-                      <TableHead className="text-right text-xs font-semibold uppercase tracking-wide text-emerald-600">
-                        Actions
-                      </TableHead>
-                    )}
-                  </TableRow>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow
+                      key={headerGroup.id}
+                      className="border-emerald-100 bg-emerald-50/70 hover:bg-emerald-50/70"
+                    >
+                      {headerGroup.headers.map((header) => {
+                        const sorted = header.column.getIsSorted();
+                        return (
+                          <TableHead
+                            key={header.id}
+                            className={cn(
+                              "text-xs font-semibold uppercase tracking-wide text-emerald-600",
+                              header.column.getCanSort() && "cursor-pointer select-none"
+                            )}
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {header.isPlaceholder ? null : (
+                              <div className="flex items-center gap-1">
+                                <table.FlexRender header={header} />
+                                {header.column.getCanSort() &&
+                                  (sorted === "asc" ? (
+                                    <ArrowUp className="h-3 w-3" />
+                                  ) : sorted === "desc" ? (
+                                    <ArrowDown className="h-3 w-3" />
+                                  ) : (
+                                    <ChevronsUpDown className="h-3 w-3 opacity-40" />
+                                  ))}
+                              </div>
+                            )}
+                          </TableHead>
+                        );
+                      })}
+                    </TableRow>
+                  ))}
                 </TableHeader>
 
                 <TableBody>
-                  {paginatedData.map((row, rowIndex) => (
+                  {table.getRowModel().rows.map((row) => (
                     <TableRow
-                      key={rowIndex}
-                      className={`border-emerald-50 transition-colors ${
-                        onRowClick
-                          ? "cursor-pointer hover:bg-emerald-50/60"
-                          : "hover:bg-emerald-50/40"
-                      }`}
-                      onClick={() => onRowClick?.(row)}
+                      key={row.id}
+                      className={cn(
+                        "border-emerald-50 transition-colors",
+                        onRowClick ? "cursor-pointer hover:bg-emerald-50/60" : "hover:bg-emerald-50/40"
+                      )}
+                      onClick={() => onRowClick?.(row.original)}
                     >
-                      {columns.map((col) => {
-                        const key = String(col.key);
-                        const value = key.includes(".")
-                          ? getValueByPath(row, key)
-                          : (row as any)[col.key];
+                      {row.getVisibleCells().map((cell) => {
+                        const meta = columnMetaById.get(cell.column.id);
                         return (
                           <TableCell
-                            key={key}
-                            className={`text-sm text-slate-700 ${col.className ?? ""}`}
+                            key={cell.id}
+                            className={cn("text-sm text-slate-700", meta?.className)}
                           >
-                            {col.render ? col.render(value, row) : value}
+                            <table.FlexRender cell={cell} />
                           </TableCell>
                         );
                       })}
-                      {actions && (
-                        <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                          {actions(row)}
-                        </TableCell>
-                      )}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="mt-4 flex items-center justify-between">
-                <p className="text-xs text-emerald-500">
-                  Showing {startIndex + 1}–{Math.min(startIndex + pageSize, filteredData.length)} of{" "}
-                  {filteredData.length}
-                </p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    className="h-8 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                  >
-                    <ChevronLeft className="mr-1 h-3.5 w-3.5" /> Prev
-                  </Button>
-                  <span className="text-xs text-emerald-600">
-                    {currentPage} / {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={currentPage === totalPages}
-                    className="h-8 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
-                  >
-                    Next <ChevronRight className="ml-1 h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-            )}
+            <DataTablePagination table={table} totalRows={filteredData.length} />
           </>
         )}
       </CardContent>

@@ -70,12 +70,14 @@ function parseWorkbook(data: ArrayBuffer): ParsedRow[] {
   });
 
   return rawRows.map((raw, index) => {
-    // Map whatever headers the file actually has onto our known fields
-    const mapped: Partial<BulkImportProductRow> = {};
+    // Map whatever headers the file actually has onto our known fields.
+    // Values are raw spreadsheet cells (string | number | undefined) at this
+    // stage, before we parse/coerce them into BulkImportProductRow's types below.
+    const mapped: Partial<Record<keyof BulkImportProductRow, unknown>> = {};
     for (const [key, value] of Object.entries(raw)) {
       const field = HEADER_MAP[normalizeHeader(key)];
       if (!field) continue;
-      (mapped as any)[field] = value;
+      mapped[field] = value;
     }
 
     const sku = String(mapped.sku ?? "").trim();
