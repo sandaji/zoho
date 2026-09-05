@@ -13,6 +13,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { warehouseService } from "@/lib/warehouse.service";
 import { RequestStockTransferPayload, ApproveStockTransferPayload, DispatchStockTransferPayload, ReceiveStockTransferPayload, fetchUsers, fetchTrucks, User, Truck as TruckType } from "@/lib/admin-api";
 
@@ -32,6 +43,125 @@ interface TransferForm {
   items: Array<{ productId: string; requested_qty: number; }>;
   notes: string;
 }
+
+type PendingTransferItem = TransferForm["items"][number];
+
+const pendingItemColumnHelper = createColumnHelper<AppTableFeatures, PendingTransferItem>();
+
+// The list of items staged for a new transfer request, before submission.
+// Order is insertion order (meaningful to the user building the request),
+// so every column has sorting disabled rather than wiring up SortingState -
+// this is a static, ordered preview list, not a sortable dataset.
+function buildPendingItemColumns(products: any[], onRemove: (productId: string) => void) {
+  return pendingItemColumnHelper.columns([
+    pendingItemColumnHelper.accessor((row) => row.productId, {
+      id: "product",
+      header: "Product",
+      enableSorting: false,
+      cell: (ctx) => {
+        const product = products.find((p) => p.id === ctx.getValue());
+        return product?.name;
+      },
+    }),
+    pendingItemColumnHelper.accessor((row) => row.requested_qty, {
+      id: "quantity",
+      header: () => <div className="text-right">Quantity</div>,
+      enableSorting: false,
+      cell: (ctx) => <div className="text-right">{ctx.getValue()}</div>,
+    }),
+    pendingItemColumnHelper.display({
+      id: "remove",
+      header: "",
+      enableSorting: false,
+      cell: (ctx) => (
+        <div className="text-center">
+          <Button variant="ghost" size="sm" onClick={() => onRemove(ctx.row.original.productId)}>
+            <X size={16} />
+          </Button>
+        </div>
+      ),
+    }),
+  ]);
+}
+
+// Read-only "Requested vs. Picked" comparison shown in VerifyModal - no
+// per-row inputs, so (unlike CompletePickingModal/DispatchModal) this one
+// is a straightforward migration candidate.
+const verifyItemColumnHelper = createColumnHelper<AppTableFeatures, any>();
+const verifyItemColumns = verifyItemColumnHelper.columns([
+  verifyItemColumnHelper.accessor((row) => row.product?.name || row.productId, {
+    id: "product",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Product" />,
+    sortFn: "text",
+  }),
+  verifyItemColumnHelper.accessor((row) => row.requested_qty, {
+    id: "requested",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Requested" className="w-full justify-end" />
+    ),
+    cell: (ctx) => <div className="text-right text-slate-500">{ctx.getValue()}</div>,
+    sortFn: "alphanumeric",
+  }),
+  verifyItemColumnHelper.accessor((row) => row.picked_qty ?? 0, {
+    id: "picked",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Picked" className="w-full justify-end" />
+    ),
+    cell: (ctx) => {
+      const short = ctx.getValue() < ctx.row.original.requested_qty;
+      return (
+        <div className={`text-right font-medium ${short ? "text-amber-600" : "text-slate-700"}`}>
+          {ctx.getValue()}
+        </div>
+      );
+    },
+    sortFn: "alphanumeric",
+  }),
+]);
+
+// Read-only Requested/Dispatched/Received/Damaged breakdown shown per
+// transfer in the expanded timeline row - no per-row inputs, so this is
+// also a straightforward migration candidate.
+const timelineItemColumnHelper = createColumnHelper<AppTableFeatures, any>();
+const timelineItemColumns = timelineItemColumnHelper.columns([
+  timelineItemColumnHelper.accessor((row) => row.product?.name || row.productId, {
+    id: "product",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Product" />,
+    sortFn: "text",
+  }),
+  timelineItemColumnHelper.accessor((row) => row.requested_qty, {
+    id: "requested",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Requested" className="w-full justify-end" />
+    ),
+    cell: (ctx) => <div className="text-right">{ctx.getValue()}</div>,
+    sortFn: "alphanumeric",
+  }),
+  timelineItemColumnHelper.accessor((row) => row.dispatched_qty, {
+    id: "dispatched",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Dispatched" className="w-full justify-end" />
+    ),
+    cell: (ctx) => <div className="text-right text-slate-500">{ctx.getValue() ?? "\u2014"}</div>,
+    sortFn: "alphanumeric",
+  }),
+  timelineItemColumnHelper.accessor((row) => row.received_qty, {
+    id: "received",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Received" className="w-full justify-end" />
+    ),
+    cell: (ctx) => <div className="text-right text-slate-500">{ctx.getValue() ?? "\u2014"}</div>,
+    sortFn: "alphanumeric",
+  }),
+  timelineItemColumnHelper.accessor((row) => row.damaged_qty, {
+    id: "damaged",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Damaged" className="w-full justify-end" />
+    ),
+    cell: (ctx) => <div className="text-right text-slate-500">{ctx.getValue() ?? "\u2014"}</div>,
+    sortFn: "alphanumeric",
+  }),
+]);
 
 export default function TransfersPage() {
   const { token } = useAuth();
@@ -215,6 +345,16 @@ export default function TransfersPage() {
     p.name.toLowerCase().includes(itemSearch.toLowerCase()) ||
     p.sku.toLowerCase().includes(itemSearch.toLowerCase())
   );
+
+  const pendingItemColumns = useMemo(
+    () => buildPendingItemColumns(products, removeItem),
+    [products]
+  );
+  const pendingItemsTable = useTable({
+    features: tableFeaturesConfig,
+    data: transferForm.items,
+    columns: pendingItemColumns,
+  });
 
   if (loading) {
     return (
@@ -495,29 +635,30 @@ export default function TransfersPage() {
                 </div>
                  {transferForm.items.length > 0 && (
                     <div className="border border-slate-200 rounded-lg overflow-hidden mt-4 shadow-sm">
-                    <table className="w-full text-sm">
-                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
-                        <tr>
-                            <th className="px-4 py-2 font-medium">Product</th>
-                            <th className="px-4 py-2 font-medium text-right">Quantity</th>
-                            <th className="px-4 py-2 w-16 text-center"></th>
-                        </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                        {transferForm.items.map((item) => {
-                            const product = products.find(p => p.id === item.productId);
-                            return (
-                            <tr key={item.productId} className="bg-white hover:bg-slate-50">
-                                <td className="px-4 py-3">{product?.name}</td>
-                                <td className="px-4 py-3 text-right">{item.requested_qty}</td>
-                                <td className="px-4 py-3 text-center">
-                                    <Button variant="ghost" size="sm" onClick={() => removeItem(item.productId)}><X size={16} /></Button>
-                                </td>
-                            </tr>
-                            );
-                        })}
-                        </tbody>
-                    </table>
+                    <Table>
+                        <TableHeader className="bg-slate-50">
+                          {pendingItemsTable.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id} className="border-slate-200">
+                              {headerGroup.headers.map((header) => (
+                                <TableHead key={header.id} className="text-slate-600 font-medium">
+                                  {header.isPlaceholder ? null : <pendingItemsTable.FlexRender header={header} />}
+                                </TableHead>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableHeader>
+                        <TableBody>
+                          {pendingItemsTable.getPrePaginatedRowModel().rows.map((row) => (
+                            <TableRow key={row.id} className="bg-white hover:bg-slate-50 border-slate-100">
+                              {row.getVisibleCells().map((cell) => (
+                                <TableCell key={cell.id}>
+                                  <pendingItemsTable.FlexRender cell={cell} />
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                    </Table>
                     </div>
                  )}
             </div>
@@ -691,6 +832,10 @@ function CompletePickingModal({isOpen, onClose, transfer, onSuccess}: any) {
                             Picked Quantities {hasShortPick && <span className="text-amber-600 font-normal">(short pick — verifier will see this)</span>}
                         </label>
                         <div className="border border-slate-200 rounded-lg overflow-hidden">
+                            {/* Excluded from the shadcn/TanStack table migration: "Picked" is an
+                                editable Input bound directly to this row's array index/productId
+                                (same editable field-array pattern as CartTable.tsx /
+                                DocumentItemTable.tsx), so it stays a raw <table>. */}
                             <table className="w-full text-sm">
                                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
                                     <tr>
@@ -738,6 +883,15 @@ function VerifyModal({isOpen, onClose, transfer, onSuccess}: any) {
     const { token } = useAuth();
     const [submitting, setSubmitting] = useState(false);
     const [notes, setNotes] = useState('');
+    const [sorting, setSorting] = useState<SortingState>([]);
+
+    const verifyTable = useTable({
+        features: tableFeaturesConfig,
+        data: transfer.items || [],
+        columns: verifyItemColumns,
+        onSortingChange: setSorting,
+        state: { sorting },
+    });
 
     const handleSubmit = async () => {
         try {
@@ -763,27 +917,30 @@ function VerifyModal({isOpen, onClose, transfer, onSuccess}: any) {
                 <div className="py-2">
                     <p className="text-sm text-slate-600 mb-3">Confirm the picked quantities below match what's physically staged before this moves on to dispatch.</p>
                     <div className="border border-slate-200 rounded-lg overflow-hidden">
-                        <table className="w-full text-sm">
-                            <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
-                                <tr>
-                                    <th className="px-4 py-2 font-medium">Product</th>
-                                    <th className="px-4 py-2 font-medium text-right">Requested</th>
-                                    <th className="px-4 py-2 font-medium text-right">Picked</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {(transfer.items || []).map((item: any) => {
-                                    const short = (item.picked_qty ?? 0) < item.requested_qty;
-                                    return (
-                                        <tr key={item.productId} className="bg-white">
-                                            <td className="px-4 py-2">{item.product?.name || item.productId}</td>
-                                            <td className="px-4 py-2 text-right text-slate-500">{item.requested_qty}</td>
-                                            <td className={`px-4 py-2 text-right font-medium ${short ? "text-amber-600" : "text-slate-700"}`}>{item.picked_qty ?? 0}</td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                        <Table>
+                            <TableHeader>
+                              {verifyTable.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id} className="bg-slate-50 border-slate-200">
+                                  {headerGroup.headers.map((header) => (
+                                    <TableHead key={header.id} className="text-slate-600 font-medium">
+                                      {header.isPlaceholder ? null : <verifyTable.FlexRender header={header} />}
+                                    </TableHead>
+                                  ))}
+                                </TableRow>
+                              ))}
+                            </TableHeader>
+                            <TableBody>
+                              {verifyTable.getPrePaginatedRowModel().rows.map((row) => (
+                                <TableRow key={row.id} className="bg-white border-slate-100">
+                                  {row.getVisibleCells().map((cell) => (
+                                    <TableCell key={cell.id}>
+                                      <verifyTable.FlexRender cell={cell} />
+                                    </TableCell>
+                                  ))}
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                        </Table>
                     </div>
                     <Input className="mt-4" placeholder="Optional notes..." value={notes} onChange={e => setNotes(e.target.value)} />
                 </div>
@@ -955,6 +1112,10 @@ function DispatchModal({isOpen, onClose, transfer, onSuccess, users, trucks}: an
                             Items to Dispatch {isPartial && <span className="text-amber-600 font-normal">(partial dispatch)</span>}
                         </label>
                         <div className="border border-slate-200 rounded-lg overflow-hidden">
+                            {/* Excluded from the shadcn/TanStack table migration: "Dispatching" is
+                                an editable Input bound directly to this row's array index/productId
+                                (same editable field-array pattern as CartTable.tsx /
+                                DocumentItemTable.tsx), so it stays a raw <table>. */}
                             <table className="w-full text-sm">
                                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
                                     <tr>
@@ -1068,6 +1229,15 @@ function TransferTimeline({ transfer }: { transfer: any }) {
   const [showAuditLogs, setShowAuditLogs] = useState(false);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const timelineTable = useTable({
+    features: tableFeaturesConfig,
+    data: transfer.items || [],
+    columns: timelineItemColumns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
 
   const loadAuditLogs = async () => {
     if (!showAuditLogs && auditLogs.length === 0) {
@@ -1162,28 +1332,30 @@ function TransferTimeline({ transfer }: { transfer: any }) {
       </div>
 
       <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-left">
-            <tr>
-              <th className="px-4 py-2 font-medium">Product</th>
-              <th className="px-4 py-2 font-medium text-right">Requested</th>
-              <th className="px-4 py-2 font-medium text-right">Dispatched</th>
-              <th className="px-4 py-2 font-medium text-right">Received</th>
-              <th className="px-4 py-2 font-medium text-right">Damaged</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {(transfer.items || []).map((item: any) => (
-              <tr key={item.id || item.productId} className="bg-white">
-                <td className="px-4 py-2">{item.product?.name || item.productId}</td>
-                <td className="px-4 py-2 text-right">{item.requested_qty}</td>
-                <td className="px-4 py-2 text-right text-slate-500">{item.dispatched_qty ?? "—"}</td>
-                <td className="px-4 py-2 text-right text-slate-500">{item.received_qty ?? "—"}</td>
-                <td className="px-4 py-2 text-right text-slate-500">{item.damaged_qty ?? "—"}</td>
-              </tr>
+        <Table>
+          <TableHeader>
+            {timelineTable.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="bg-slate-50 border-slate-200">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id} className="text-slate-600 font-medium">
+                    {header.isPlaceholder ? null : <timelineTable.FlexRender header={header} />}
+                  </TableHead>
+                ))}
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableHeader>
+          <TableBody>
+            {timelineTable.getPrePaginatedRowModel().rows.map((row) => (
+              <TableRow key={row.id} className="bg-white border-slate-100">
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    <timelineTable.FlexRender cell={cell} />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
       <div className="flex justify-between items-center mt-3">

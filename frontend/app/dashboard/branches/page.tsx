@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +57,10 @@ import {
   deleteBranch,
   type BranchSummary,
 } from "@/lib/api/branch-api";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { cn } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -230,6 +234,167 @@ export default function BranchesPage() {
   const totalWarehouses = branches.reduce((s, b) => s + b.warehouseCount, 0);
   const activeBranches = branches.filter((b) => b.isActive).length;
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, Branch>(), []);
+
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => row.code, {
+          id: "code",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
+          cell: (ctx) => (
+            <span className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">
+              {ctx.getValue()}
+            </span>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.name, {
+          id: "name",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+          cell: (ctx) => (
+            <span className="font-medium text-slate-900 dark:text-white">{ctx.getValue()}</span>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.city, {
+          id: "city",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="City" />,
+          cell: (ctx) => (
+            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
+              <MapPin className="h-3.5 w-3.5" />
+              {ctx.getValue()}
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.phone || "", {
+          id: "phone",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
+          cell: (ctx) =>
+            ctx.getValue() ? (
+              <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
+                <Phone className="h-3.5 w-3.5" />
+                {ctx.getValue()}
+              </div>
+            ) : (
+              <span className="text-slate-400 dark:text-slate-500 text-sm">—</span>
+            ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.employeeCount, {
+          id: "employeeCount",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Employees" className="w-full justify-center" />
+          ),
+          cell: (ctx) => (
+            <div className="text-center">
+              <Badge
+                variant="secondary"
+                className="bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
+              >
+                <Users className="h-3 w-3 mr-1" />
+                {ctx.getValue()}
+              </Badge>
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.warehouseCount, {
+          id: "warehouseCount",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Warehouses" className="w-full justify-center" />
+          ),
+          cell: (ctx) => (
+            <div className="text-center">
+              <Badge
+                variant="secondary"
+                className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
+              >
+                <Warehouse className="h-3 w-3 mr-1" />
+                {ctx.getValue()}
+              </Badge>
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.isActive, {
+          id: "isActive",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" className="w-full justify-center" />
+          ),
+          cell: (ctx) => {
+            const branch = ctx.row.original;
+            return (
+              <div className="text-center">
+                <button
+                  onClick={() => toggleActive(branch)}
+                  title={branch.isActive ? "Click to deactivate" : "Click to activate"}
+                >
+                  {branch.isActive ? (
+                    <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer border-0">
+                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                      Active
+                    </Badge>
+                  ) : (
+                    <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer border-0">
+                      <XCircle className="h-3 w-3 mr-1" />
+                      Inactive
+                    </Badge>
+                  )}
+                </button>
+              </div>
+            );
+          },
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: () => <div className="text-right">Actions</div>,
+          enableSorting: false,
+          cell: (ctx) => {
+            const branch = ctx.row.original;
+            return (
+              <div className="flex items-center justify-end gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
+                  onClick={() => openEditDialog(branch)}
+                  title="Edit branch"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 dark:hover:text-red-400"
+                  onClick={() => openDeleteDialog(branch)}
+                  title="Delete branch"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            );
+          },
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: filteredBranches,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
+
   // ─── Render ─────────────────────────────────────────────────────────────
 
   return (
@@ -388,38 +553,29 @@ export default function BranchesPage() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-slate-200 dark:border-slate-700">
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
-                        Code
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
-                        Name
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
-                        City
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold">
-                        Phone
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-center">
-                        Employees
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-center">
-                        Warehouses
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-center">
-                        Status
-                      </TableHead>
-                      <TableHead className="text-slate-500 dark:text-slate-400 font-semibold text-right">
-                        Actions
-                      </TableHead>
-                    </TableRow>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id} className="border-slate-200 dark:border-slate-700">
+                        {headerGroup.headers.map((header) => (
+                          <TableHead
+                            key={header.id}
+                            className={cn(
+                              "text-slate-500 dark:text-slate-400 font-semibold",
+                              ["employeeCount", "warehouseCount", "isActive"].includes(header.column.id) &&
+                                "text-center",
+                              header.column.id === "actions" && "text-right"
+                            )}
+                          >
+                            {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    ))}
                   </TableHeader>
                   <TableBody>
-                    {filteredBranches.length === 0 ? (
+                    {rows.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={8}
+                          colSpan={columns.length}
                           className="text-center py-12 text-slate-500 dark:text-slate-400"
                         >
                           <div className="flex flex-col items-center gap-2">
@@ -434,97 +590,16 @@ export default function BranchesPage() {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredBranches.map((branch) => (
+                      rows.map((row) => (
                         <TableRow
-                          key={branch.id}
+                          key={row.id}
                           className="border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
                         >
-                          <TableCell className="font-mono text-sm font-semibold text-slate-700 dark:text-slate-300">
-                            {branch.code}
-                          </TableCell>
-                          <TableCell className="font-medium text-slate-900 dark:text-white">
-                            {branch.name}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
-                              <MapPin className="h-3.5 w-3.5" />
-                              {branch.city}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {branch.phone ? (
-                              <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
-                                <Phone className="h-3.5 w-3.5" />
-                                {branch.phone}
-                              </div>
-                            ) : (
-                              <span className="text-slate-400 dark:text-slate-500 text-sm">
-                                —
-                              </span>
-                            )}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <Badge
-                              variant="secondary"
-                              className="bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
-                            >
-                              <Users className="h-3 w-3 mr-1" />
-                              {branch.employeeCount}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <Badge
-                              variant="secondary"
-                              className="bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
-                            >
-                              <Warehouse className="h-3 w-3 mr-1" />
-                              {branch.warehouseCount}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <button
-                              onClick={() => toggleActive(branch)}
-                              title={
-                                branch.isActive
-                                  ? "Click to deactivate"
-                                  : "Click to activate"
-                              }
-                            >
-                              {branch.isActive ? (
-                                <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 cursor-pointer border-0">
-                                  <CheckCircle2 className="h-3 w-3 mr-1" />
-                                  Active
-                                </Badge>
-                              ) : (
-                                <Badge className="bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 cursor-pointer border-0">
-                                  <XCircle className="h-3 w-3 mr-1" />
-                                  Inactive
-                                </Badge>
-                              )}
-                            </button>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
-                                onClick={() => openEditDialog(branch)}
-                                title="Edit branch"
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 dark:hover:text-red-400"
-                                onClick={() => openDeleteDialog(branch)}
-                                title="Delete branch"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>
+                              <table.FlexRender cell={cell} />
+                            </TableCell>
+                          ))}
                         </TableRow>
                       ))
                     )}

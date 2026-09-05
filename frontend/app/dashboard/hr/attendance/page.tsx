@@ -5,6 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { Calendar, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api-client";
@@ -29,6 +40,67 @@ interface AttendanceSummary {
   attendancePercentage: number;
   currentMonth: string;
 }
+
+function getStatusColor(status: string) {
+  switch (status) {
+    case "present":
+      return "bg-green-100 text-green-800";
+    case "absent":
+      return "bg-red-100 text-red-800";
+    case "late":
+      return "bg-yellow-100 text-yellow-800";
+    case "half-day":
+      return "bg-blue-100 text-blue-800";
+    case "excused":
+      return "bg-purple-100 text-purple-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
+
+const attendanceColumnHelper = createColumnHelper<AppTableFeatures, AttendanceRecord>();
+
+// A month's worth of records at most (~31 rows) - sortable but with nothing
+// to paginate, so this follows leave-requests-table.tsx: render via
+// getPrePaginatedRowModel() rather than getRowModel().
+const attendanceColumns = attendanceColumnHelper.columns([
+  attendanceColumnHelper.accessor((row) => row.date, {
+    id: "date",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
+    cell: (ctx) => format(new Date(ctx.getValue()), "MMM dd, yyyy"),
+    sortFn: "alphanumeric",
+  }),
+  attendanceColumnHelper.accessor((row) => row.clockIn, {
+    id: "clockIn",
+    header: "Clock In",
+    enableSorting: false,
+    cell: (ctx) => ctx.getValue() || "-",
+  }),
+  attendanceColumnHelper.accessor((row) => row.clockOut, {
+    id: "clockOut",
+    header: "Clock Out",
+    enableSorting: false,
+    cell: (ctx) => ctx.getValue() || "-",
+  }),
+  attendanceColumnHelper.accessor((row) => row.workHours, {
+    id: "workHours",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Hours" />,
+    cell: (ctx) => `${ctx.getValue().toFixed(2)}h`,
+    sortFn: "alphanumeric",
+  }),
+  attendanceColumnHelper.accessor((row) => row.status, {
+    id: "status",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    cell: (ctx) => <Badge className={getStatusColor(ctx.getValue())}>{ctx.getValue()}</Badge>,
+    sortFn: "text",
+  }),
+  attendanceColumnHelper.accessor((row) => row.notes, {
+    id: "notes",
+    header: "Notes",
+    enableSorting: false,
+    cell: (ctx) => <span className="text-sm text-gray-600">{ctx.getValue() || "-"}</span>,
+  }),
+]);
 
 export default function AttendancePage() {
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
@@ -92,22 +164,14 @@ export default function AttendancePage() {
     fetchAttendanceData();
   }, [selectedMonth]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "present":
-        return "bg-green-100 text-green-800";
-      case "absent":
-        return "bg-red-100 text-red-800";
-      case "late":
-        return "bg-yellow-100 text-yellow-800";
-      case "half-day":
-        return "bg-blue-100 text-blue-800";
-      case "excused":
-        return "bg-purple-100 text-purple-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const attendanceTable = useTable({
+    features: tableFeaturesConfig,
+    data: records,
+    columns: attendanceColumns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
 
   return (
     <div className="space-y-6">
@@ -209,35 +273,31 @@ export default function AttendancePage() {
             ) : records.length === 0 ? (
               <div className="text-center py-8 text-gray-500">No attendance records found</div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-3 px-4 font-medium">Date</th>
-                      <th className="text-left py-3 px-4 font-medium">Clock In</th>
-                      <th className="text-left py-3 px-4 font-medium">Clock Out</th>
-                      <th className="text-left py-3 px-4 font-medium">Hours</th>
-                      <th className="text-left py-3 px-4 font-medium">Status</th>
-                      <th className="text-left py-3 px-4 font-medium">Notes</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {records.map((record) => (
-                      <tr key={record.id} className="border-b hover:bg-gray-50">
-                        <td className="py-3 px-4">
-                          {format(new Date(record.date), "MMM dd, yyyy")}
-                        </td>
-                        <td className="py-3 px-4">{record.clockIn || "-"}</td>
-                        <td className="py-3 px-4">{record.clockOut || "-"}</td>
-                        <td className="py-3 px-4">{record.workHours.toFixed(2)}h</td>
-                        <td className="py-3 px-4">
-                          <Badge className={getStatusColor(record.status)}>{record.status}</Badge>
-                        </td>
-                        <td className="py-3 px-4 text-sm text-gray-600">{record.notes || "-"}</td>
-                      </tr>
+              <div className="rounded-md border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    {attendanceTable.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableHead key={header.id} className="font-medium">
+                            {header.isPlaceholder ? null : <attendanceTable.FlexRender header={header} />}
+                          </TableHead>
+                        ))}
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableHeader>
+                  <TableBody>
+                    {attendanceTable.getPrePaginatedRowModel().rows.map((row) => (
+                      <TableRow key={row.id} className="hover:bg-gray-50">
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            <attendanceTable.FlexRender cell={cell} />
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             )}
           </CardContent>

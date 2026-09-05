@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 import { getApiUrl } from "@/lib/api-config";
@@ -56,6 +56,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { cn } from "@/lib/utils";
 
 export default function PayablesPage() {
   const { token } = useAuth();
@@ -184,6 +188,155 @@ export default function PayablesPage() {
 
   const partialCount = payables.filter((ap) => ap.status === "partial").length;
 
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, any>(), []);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => row.vendor_name, {
+          id: "vendor",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Vendor Name" />,
+          cell: (ctx) => (
+            <div className="flex flex-col">
+              <span className="font-bold text-sm text-slate-700">{ctx.getValue()}</span>
+              <span className="text-[10px] text-slate-400">
+                {ctx.row.original.vendor_email || "N/A"}
+              </span>
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.bill_no, {
+          id: "billNo",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Bill Reference" />,
+          cell: (ctx) => (
+            <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
+              {ctx.getValue()}
+            </span>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => new Date(row.bill_date).getTime(), {
+          id: "billDate",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Bill Date" />,
+          cell: (ctx) => (
+            <span className="text-[11px] text-slate-500">
+              {format(new Date(ctx.row.original.bill_date), "MMM dd, yyyy")}
+            </span>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => new Date(row.due_date).getTime(), {
+          id: "dueDate",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Due Date" />,
+          cell: (ctx) => {
+            const ap = ctx.row.original;
+            return (
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                {new Date() > new Date(ap.due_date) && ap.status !== "paid" && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                )}
+                {format(new Date(ap.due_date), "MMM dd, yyyy")}
+              </div>
+            );
+          },
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.total_amount, {
+          id: "total",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Total" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right text-xs font-semibold text-slate-600">
+              KES {ctx.getValue()?.toLocaleString()}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.balance, {
+          id: "balance",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Balance" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right text-sm font-black text-slate-800">
+              KES {ctx.getValue()?.toLocaleString()}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.status, {
+          id: "status",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" className="w-full justify-center" />
+          ),
+          cell: (ctx) => (
+            <div className="text-center">{getStatusBadge(ctx.getValue(), ctx.row.original.due_date)}</div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.display({
+          id: "action",
+          header: () => <div className="text-right pr-6">Action</div>,
+          enableSorting: false,
+          cell: (ctx) => {
+            const ap = ctx.row.original;
+            return (
+              <div className="text-right pr-6">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 hover:bg-white hover:shadow-sm transition-all rounded-xl"
+                    >
+                      <MoreHorizontal className="w-4 h-4 text-slate-400" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
+                    <DropdownMenuLabel className="text-[10px] uppercase text-slate-400 tracking-widest">
+                      Bill Options
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem
+                      className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium"
+                      onClick={() => handleOpenPayment(ap)}
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      Mark as Settled
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium">
+                      <Clock className="w-4 h-4 text-blue-500" />
+                      View History
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-slate-50" />
+                    <DropdownMenuItem className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium text-red-500">
+                      <AlertCircle className="w-4 h-4" />
+                      Dispute Bill
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            );
+          },
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: filteredPayables,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
+
   return (
     <div className="p-6 space-y-6 bg-slate-50/30 min-h-screen">
       {/* Page Header */}
@@ -311,32 +464,24 @@ export default function PayablesPage() {
 
         <Table>
           <TableHeader className="bg-slate-50/50">
-            <TableRow className="hover:bg-transparent border-none">
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase pl-6">
-                Vendor Name
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase">
-                Bill Reference
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase">
-                Bill Date
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase">
-                Due Date
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase text-right">
-                Total
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase text-right">
-                Balance
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase text-center">
-                Status
-              </TableHead>
-              <TableHead className="text-slate-400 font-bold text-[10px] uppercase text-right pr-6">
-                Action
-              </TableHead>
-            </TableRow>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent border-none">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={cn(
+                      "text-slate-400 font-bold text-[10px] uppercase",
+                      header.column.id === "vendor" && "pl-6",
+                      ["total", "balance"].includes(header.column.id) && "text-right",
+                      header.column.id === "status" && "text-center",
+                      header.column.id === "action" && "text-right pr-6"
+                    )}
+                  >
+                    {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
             {loading ? (
@@ -368,10 +513,10 @@ export default function PayablesPage() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : filteredPayables.length === 0 ? (
+            ) : rows.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={columns.length}
                   className="h-48 text-center py-10 border-none"
                 >
                   <div className="flex flex-col items-center justify-center space-y-3">
@@ -390,84 +535,23 @@ export default function PayablesPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredPayables.map((ap) => (
+              rows.map((row) => (
                 <TableRow
-                  key={ap.id}
+                  key={row.id}
                   className="hover:bg-slate-50/30 transition-colors border-slate-50"
                 >
-                  <TableCell className="pl-6 py-4">
-                    <div className="flex flex-col">
-                      <span className="font-bold text-sm text-slate-700">
-                        {ap.vendor_name}
-                      </span>
-                      <span className="text-[10px] text-slate-400">
-                        {ap.vendor_email || "N/A"}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
-                      {ap.bill_no}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-[11px] text-slate-500">
-                    {format(new Date(ap.bill_date), "MMM dd, yyyy")}
-                  </TableCell>
-                  <TableCell className="text-[11px] text-slate-500 font-medium">
-                    <div className="flex items-center gap-1.5">
-                      {new Date() > new Date(ap.due_date) &&
-                        ap.status !== "paid" && (
-                          <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                        )}
-                      {format(new Date(ap.due_date), "MMM dd, yyyy")}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right text-xs font-semibold text-slate-600">
-                    KES {ap.total_amount?.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right text-sm font-black text-slate-800">
-                    KES {ap.balance?.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {getStatusBadge(ap.status, ap.due_date)}
-                  </TableCell>
-                  <TableCell className="text-right pr-6">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-9 w-9 hover:bg-white hover:shadow-sm transition-all rounded-xl"
-                        >
-                          <MoreHorizontal className="w-4 h-4 text-slate-400" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="rounded-xl border-slate-100 shadow-xl"
-                      >
-                        <DropdownMenuLabel className="text-[10px] uppercase text-slate-400 tracking-widest">
-                          Bill Options
-                        </DropdownMenuLabel>
-                        <DropdownMenuItem
-                          className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium"
-                          onClick={() => handleOpenPayment(ap)}
-                        >
-                          <CheckCircle2 className="w-4 h-4 text-green-500" />
-                          Mark as Settled
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium">
-                          <Clock className="w-4 h-4 text-blue-500" />
-                          View History
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-slate-50" />
-                        <DropdownMenuItem className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium text-red-500">
-                          <AlertCircle className="w-4 h-4" />
-                          Dispute Bill
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "py-4",
+                        cell.column.id === "vendor" && "pl-6",
+                        cell.column.id === "action" && "pr-6"
+                      )}
+                    >
+                      <table.FlexRender cell={cell} />
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             )}

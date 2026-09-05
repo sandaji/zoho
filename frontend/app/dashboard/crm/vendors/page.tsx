@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL } from "@/lib/api-config";
@@ -18,6 +18,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Loader2, AlertCircle } from "lucide-react";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { cn } from "@/lib/utils";
 
 interface Vendor {
   id: string;
@@ -157,6 +161,97 @@ export default function VendorsPage() {
       setIsCreating(false);
     }
   };
+
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, Vendor>(), []);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => row.name, {
+          id: "name",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+          cell: (ctx) => (
+            <div>
+              <div className="font-medium text-slate-900">{ctx.getValue()}</div>
+              {ctx.row.original.email && (
+                <div className="text-xs text-slate-500">{ctx.row.original.email}</div>
+              )}
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.code, {
+          id: "code",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
+          cell: (ctx) => (
+            <code className="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded">
+              {ctx.getValue()}
+            </code>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.phone || "-", {
+          id: "phone",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
+          cell: (ctx) => <span className="text-slate-600">{ctx.getValue()}</span>,
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.paymentTerms, {
+          id: "paymentTerms",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Payment Terms" />,
+          cell: (ctx) => (
+            <Badge variant="outline" className="bg-emerald-50">
+              {ctx.getValue().replace(/_/g, " ")}
+            </Badge>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.leadTimeDays, {
+          id: "leadTimeDays",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Lead Time (Days)" className="w-full justify-center" />
+          ),
+          cell: (ctx) => (
+            <div className="text-center font-medium">
+              <span className="inline-block bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-sm font-semibold">
+                {ctx.getValue()} days
+              </span>
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.isActive, {
+          id: "isActive",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+          cell: (ctx) => {
+            const isActive = ctx.getValue();
+            return (
+              <Badge
+                variant={isActive ? "default" : "secondary"}
+                className={isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}
+              >
+                {isActive ? "Active" : "Inactive"}
+              </Badge>
+            );
+          },
+          sortFn: "alphanumeric",
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: vendors,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
 
   return (
     <div className="space-y-6">
@@ -395,71 +490,35 @@ export default function VendorsPage() {
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-slate-200 bg-emerald-50">
-                <TableHead className="font-semibold text-emerald-900">Name</TableHead>
-                <TableHead className="font-semibold text-emerald-900">Code</TableHead>
-                <TableHead className="font-semibold text-emerald-900">Phone</TableHead>
-                <TableHead className="font-semibold text-emerald-900">
-                  Payment Terms
-                </TableHead>
-                <TableHead className="text-center font-semibold text-emerald-900">
-                  Lead Time (Days)
-                </TableHead>
-                <TableHead className="font-semibold text-emerald-900">Status</TableHead>
-              </TableRow>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="border-b border-slate-200 bg-emerald-50">
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        "font-semibold text-emerald-900",
+                        header.column.id === "leadTimeDays" && "text-center"
+                      )}
+                    >
+                      {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
             </TableHeader>
             <TableBody>
-              {vendors.map((vendor) => {
-                const paymentTermsLabel = vendor.paymentTerms.replace(/_/g, " ");
-
-                return (
-                  <TableRow
-                    key={vendor.id}
-                    className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
-                  >
-                    <TableCell>
-                      <div className="font-medium text-slate-900">
-                        {vendor.name}
-                      </div>
-                      {vendor.email && (
-                        <div className="text-xs text-slate-500">
-                          {vendor.email}
-                        </div>
-                      )}
+              {rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      <table.FlexRender cell={cell} />
                     </TableCell>
-                    <TableCell>
-                      <code className="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded">
-                        {vendor.code}
-                      </code>
-                    </TableCell>
-                    <TableCell className="text-slate-600">
-                      {vendor.phone || "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className="bg-emerald-50">
-                        {paymentTermsLabel}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center font-medium">
-                      <span className="inline-block bg-slate-100 text-slate-700 px-3 py-1 rounded-md text-sm font-semibold">
-                        {vendor.leadTimeDays} days
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={vendor.isActive ? "default" : "secondary"}
-                        className={
-                          vendor.isActive
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-slate-100 text-slate-700"
-                        }
-                      >
-                        {vendor.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                  ))}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         )}

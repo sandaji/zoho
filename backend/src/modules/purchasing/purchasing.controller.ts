@@ -110,6 +110,51 @@ export class PurchasingController {
     }
   };
 
+  updatePurchaseOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      if (!req.user || !req.user.userId) {
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
+      }
+
+      const id = req.params.id as string;
+      if (!id) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      }
+
+      const userBranchId = (req as any).user?.branchId;
+      const userPermissions = await getUserPermissions(req);
+
+      // Verify PO belongs to user's branch before allowing an edit — same
+      // isolation rule as updateStatus/approve.
+      const existing = await this.service.getPurchaseOrder(id);
+      const hasViewAll = userPermissions.includes("purchasing.order.view_all");
+      if (!hasViewAll && existing.branchId !== userBranchId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Cannot modify Purchase Orders from other branches",
+        );
+      }
+
+      const order = await this.service.updatePurchaseOrder(id, req.body);
+
+      res.json({
+        success: true,
+        data: order,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getPurchaseOrder = async (
     req: Request,
     res: Response,

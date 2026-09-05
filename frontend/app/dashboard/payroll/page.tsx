@@ -1,10 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { User, TrendingUp, BarChart3, CreditCard, RotateCw } from "lucide-react";
 import { StatCard, BarChart, LineChart } from "@/components/ui/chart";
 import { PayslipAccordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 interface Payroll {
   id: string;
@@ -38,11 +49,59 @@ interface PayrollAnalytics {
   }>;
 }
 
+type DepartmentBreakdown = PayrollAnalytics["department_breakdown"][number];
+
+const departmentColumnHelper = createColumnHelper<AppTableFeatures, DepartmentBreakdown>();
+
+// `totalCost` is closed over so the "% of Total" column can be computed per
+// row without threading extra props through the row/cell context.
+function buildDepartmentColumns(totalCost: number) {
+  return departmentColumnHelper.columns([
+    departmentColumnHelper.accessor((row) => row.department, {
+      id: "department",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Department" />,
+      cell: (ctx) => <span className="font-medium text-foreground">{ctx.getValue()}</span>,
+      sortFn: "text",
+    }),
+    departmentColumnHelper.accessor((row) => row.employee_count, {
+      id: "employee_count",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Employees" />,
+      cell: (ctx) => <span className="text-muted-foreground">{ctx.getValue()} employees</span>,
+      sortFn: "alphanumeric",
+    }),
+    departmentColumnHelper.accessor((row) => row.total_cost, {
+      id: "total_cost",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Total Cost" />,
+      cell: (ctx) => (
+        <span className="font-semibold text-foreground">${ctx.getValue().toLocaleString()}</span>
+      ),
+      sortFn: "alphanumeric",
+    }),
+    departmentColumnHelper.accessor((row) => row.average_salary, {
+      id: "average_salary",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Average Salary" />,
+      cell: (ctx) => <span className="text-muted-foreground">${ctx.getValue().toLocaleString()}</span>,
+      sortFn: "alphanumeric",
+    }),
+    departmentColumnHelper.display({
+      id: "percent_of_total",
+      header: "% of Total",
+      enableSorting: false,
+      cell: (ctx) => (
+        <span className="text-muted-foreground">
+          {((ctx.row.original.total_cost / totalCost) * 100).toFixed(1)}%
+        </span>
+      ),
+    }),
+  ]);
+}
+
 /**
  * Payroll Dashboard - Comprehensive payroll management interface
  */
 export default function PayrollDashboard() {
   const [activeTab, setActiveTab] = useState<"overview" | "payslips" | "analytics">("overview");
+  const [departmentSorting, setDepartmentSorting] = useState<SortingState>([]);
 
   // Mock payroll analytics
   const analytics: PayrollAnalytics = {
@@ -162,6 +221,23 @@ export default function PayrollDashboard() {
     { label: "Nov", value: 87500 },
     { label: "Dec", value: 87500 },
   ];
+
+  // Small, fully client-side dataset (a handful of departments) - sorting is
+  // useful, but there's nothing to paginate, so this follows the same
+  // pattern as leave-requests-table.tsx: render via getPrePaginatedRowModel()
+  // rather than getRowModel(), since the latter would silently truncate to
+  // the default page size.
+  const departmentColumns = useMemo(
+    () => buildDepartmentColumns(analytics.total_cost),
+    [analytics.total_cost]
+  );
+  const departmentTable = useTable({
+    features: tableFeaturesConfig,
+    data: analytics.department_breakdown,
+    columns: departmentColumns,
+    onSortingChange: setDepartmentSorting,
+    state: { sorting: departmentSorting },
+  });
 
   // Maps each status to a fixed set of Tailwind classes. Building these as
   // template strings (e.g. `bg-${stat.color}-50`) is a common Tailwind trap:
@@ -400,46 +476,31 @@ export default function PayrollDashboard() {
             <div className="bg-card p-6 rounded-lg border border-border">
               <h2 className="text-xl font-semibold text-foreground mb-4">Department Analysis</h2>
 
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="border-b border-border">
-                    <tr>
-                      <th className="text-left py-3 px-4 font-semibold text-foreground">
-                        Department
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-foreground">Employees</th>
-                      <th className="text-left py-3 px-4 font-semibold text-foreground">
-                        Total Cost
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-foreground">
-                        Average Salary
-                      </th>
-                      <th className="text-left py-3 px-4 font-semibold text-foreground">
-                        % of Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {analytics.department_breakdown.map((dept) => (
-                      <tr
-                        key={dept.department}
-                        className="border-b border-border hover:bg-muted/50"
-                      >
-                        <td className="py-3 px-4 font-medium text-foreground">{dept.department}</td>
-                        <td className="py-3 px-4 text-muted-foreground">{dept.employee_count} employees</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">
-                          ${dept.total_cost.toLocaleString()}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">
-                          ${dept.average_salary.toLocaleString()}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">
-                          {((dept.total_cost / analytics.total_cost) * 100).toFixed(1)}%
-                        </td>
-                      </tr>
+              <div className="rounded-md border border-border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    {departmentTable.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableHead key={header.id} className="font-semibold text-foreground">
+                            {header.isPlaceholder ? null : <departmentTable.FlexRender header={header} />}
+                          </TableHead>
+                        ))}
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableHeader>
+                  <TableBody>
+                    {departmentTable.getPrePaginatedRowModel().rows.map((row) => (
+                      <TableRow key={row.id} className="hover:bg-muted/50">
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            <departmentTable.FlexRender cell={cell} />
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </div>
           </div>

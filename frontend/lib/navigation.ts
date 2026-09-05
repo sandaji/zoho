@@ -119,6 +119,26 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
       { id: "purchasing", label: "Purchasing Overview", href: "/dashboard/purchasing", icon: BookOpen },
       { id: "vendors", label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users, permissions: ["procurement.vendor.view", "admin.branch.manage"] },
       { id: "purchase-orders", label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen, permissions: ["procurement.order.view", "admin.branch.manage"] },
+      // NOTE: this module's other entries gate on "procurement.*" permission
+      // codes that don't exist in the actual RBAC seed (backend uses
+      // "purchasing.*" — see backend/prisma/update-rbac.ts). Left as-is here
+      // since fixing it is outside this pass's scope, but the new
+      // requisitions entry below uses the real codes rather than repeating
+      // that mismatch.
+      {
+        id: "purchase-requisitions",
+        label: "Requisitions",
+        href: "/dashboard/purchasing/requisitions",
+        icon: BookOpen,
+        permissions: [
+          "purchasing.requisition.view",
+          "purchasing.requisition.create",
+          "purchasing.requisition.approve_standard",
+          "purchasing.requisition.approve_high_value",
+          "purchasing.requisition.approve_executive",
+          "purchasing.requisition.convert",
+        ],
+      },
       { id: "purchase-approvals", label: "Approvals", href: "/dashboard/purchasing/approvals", icon: Shield, permissions: ["procurement.order.view", "admin.branch.manage"] },
     ],
   },
@@ -135,6 +155,20 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
       { id: "accounts-receivable", label: "Accounts Receivable", href: "/dashboard/finance/ar", icon: DollarSign },
       { id: "accounts-payable", label: "Accounts Payable", href: "/dashboard/finance/ap", icon: Wallet },
       { id: "reconciliation", label: "Reconciliation", href: "/dashboard/finance/reconciliation", icon: RefreshCw },
+      {
+        id: "expense-reports",
+        label: "Expense Reports",
+        href: "/dashboard/finance/expenses",
+        icon: Wallet,
+        permissions: [
+          "finance.expense.view",
+          "finance.expense.view_all",
+          "finance.expense.create",
+          "finance.expense.approve_standard",
+          "finance.expense.approve_high_value",
+          "finance.expense.approve_executive",
+        ],
+      },
     ],
   },
   {

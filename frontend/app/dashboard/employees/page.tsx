@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   employeeService,
   Employee,
@@ -22,6 +22,18 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { DataTablePagination } from "@/components/ui/data-table-pagination";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { toast } from "sonner";
 import { Users, Plus, Trash2, Edit2, History, Settings } from "lucide-react";
 
@@ -36,6 +48,97 @@ const ROLES = [
   { value: "admin", label: "Admin" },
   { value: "super_admin", label: "Super Admin" },
 ];
+
+const employeeColumnHelper = createColumnHelper<AppTableFeatures, Employee>();
+
+// Branches and the row action handlers are all component state/closures, so
+// this is rebuilt via useMemo in the component (mirrors inventory-table.tsx's
+// buildColumns pattern) rather than living at module scope.
+function buildEmployeeColumns(
+  branches: Branch[],
+  onEdit: (employee: Employee) => void,
+  onDelete: (employee: Employee) => void,
+  onHistory: (employee: Employee) => void
+) {
+  return employeeColumnHelper.columns([
+    employeeColumnHelper.accessor((row) => row.employeeCode, {
+      id: "employeeCode",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
+      cell: (ctx) => (
+        <span className="font-mono text-muted-foreground">{ctx.getValue() || "\u2014"}</span>
+      ),
+      sortFn: "text",
+    }),
+    employeeColumnHelper.accessor((row) => row.name, {
+      id: "name",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+      cell: (ctx) => <span className="font-medium">{ctx.getValue()}</span>,
+      sortFn: "text",
+    }),
+    employeeColumnHelper.accessor((row) => row.email, {
+      id: "email",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Email" />,
+      cell: (ctx) => <span className="text-muted-foreground">{ctx.getValue()}</span>,
+      sortFn: "text",
+    }),
+    employeeColumnHelper.accessor((row) => row.department?.name, {
+      id: "department",
+      header: "Department",
+      enableSorting: false,
+      cell: (ctx) => <span>{ctx.getValue() || "-"}</span>,
+    }),
+    employeeColumnHelper.accessor((row) => row.role, {
+      id: "role",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Role" />,
+      cell: (ctx) => {
+        const roleLabel = ROLES.find((r) => r.value === ctx.getValue())?.label || ctx.getValue();
+        return <Badge variant="secondary">{roleLabel}</Badge>;
+      },
+      sortFn: "text",
+    }),
+    employeeColumnHelper.accessor((row) => row.branchId, {
+      id: "branch",
+      header: "Branch",
+      enableSorting: false,
+      cell: (ctx) => {
+        const branch = branches.find((b) => b.id === ctx.getValue());
+        return <span>{branch ? branch.name : "-"}</span>;
+      },
+    }),
+    employeeColumnHelper.accessor((row) => row.isActive, {
+      id: "status",
+      header: "Status",
+      enableSorting: false,
+      cell: (ctx) => (
+        <Badge variant={ctx.getValue() ? "default" : "secondary"}>
+          {ctx.getValue() ? "Active" : "Inactive"}
+        </Badge>
+      ),
+    }),
+    employeeColumnHelper.display({
+      id: "actions",
+      header: "Actions",
+      enableSorting: false,
+      cell: (ctx) => {
+        const employee = ctx.row.original;
+        return (
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => onEdit(employee)}>
+              <Edit2 className="w-4 h-4" />
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => onDelete(employee)}>
+              <Trash2 className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => onHistory(employee)} className="gap-1">
+              <History className="w-4 h-4" />
+              History
+            </Button>
+          </div>
+        );
+      },
+    }),
+  ]);
+}
 
 export default function EmployeeManagement() {
   const { token } = useAuth();
@@ -68,6 +171,7 @@ export default function EmployeeManagement() {
     reason: "",
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [employeeSorting, setEmployeeSorting] = useState<SortingState>([]);
 
   // Fetch data
   useEffect(() => {
@@ -233,6 +337,27 @@ export default function EmployeeManagement() {
     return matchesSearch && matchesRole && matchesBranch;
   });
 
+  const handleDeleteClick = (employee: Employee) => {
+    setSelectedEmployee(employee);
+    setShowDeleteAlert(true);
+  };
+
+  // Real client-side pagination (like AdminTable): filteredEmployees is the
+  // full, already search/role/branch-filtered set, and the table paginates
+  // it locally via getRowModel() + initialState.pagination.
+  const employeeColumns = useMemo(
+    () => buildEmployeeColumns(branches, handleEdit, handleDeleteClick, handleShowHistory),
+    [branches]
+  );
+  const employeeTable = useTable({
+    features: tableFeaturesConfig,
+    data: filteredEmployees,
+    columns: employeeColumns,
+    onSortingChange: setEmployeeSorting,
+    state: { sorting: employeeSorting },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
+  });
+
   if (loading) {
     return <div className="p-6 text-center">Loading employees...</div>;
   }
@@ -295,99 +420,42 @@ export default function EmployeeManagement() {
       </div>
 
       {/* Employees Table */}
-      <div className="border rounded-lg overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-muted">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Code</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Name</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Email</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Department</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Role</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Branch</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Status</th>
-              <th className="px-6 py-3 text-left text-sm font-semibold">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployees.map((employee) => {
-              const branch = branches.find((b) => b.id === employee.branchId);
-              const roleLabel =
-                ROLES.find((r) => r.value === employee.role)?.label || employee.role;
-              return (
-                <tr key={employee.id} className="border-t hover:bg-muted/50">
-                  <td className="px-6 py-4 text-sm font-mono text-muted-foreground">
-                    {employee.employeeCode || "—"}
-                  </td>
-                  <td className="px-6 py-4 text-sm font-medium">{employee.name}</td>
-                  <td className="px-6 py-4 text-sm text-muted-foreground">{employee.email}</td>
-                  <td className="px-6 py-4 text-sm">{employee.department?.name || "-"}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <Badge variant="secondary">{roleLabel}</Badge>
-                  </td>
-                  <td className="px-6 py-4 text-sm">{branch ? branch.name : "-"}</td>
-                  <td className="px-6 py-4 text-sm">
-                    <Badge variant={employee.isActive ? "default" : "secondary"}>
-                      {employee.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 text-sm">
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => handleEdit(employee)}>
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      {/* <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedEmployee(employee);
-                          setTransferData({
-                            toBranchId: employee.branchId || "",
-                            toRole: employee.role,
-                            effectiveDate: new Date().toISOString().split("T")[0],
-                            reason: "",
-                          });
-                          setShowTransferDialog(true);
-                        }}
-                        className="gap-1"
-                      >
-                        <ArrowRight className="w-4 h-4" />
-                        Transfer8
-                      </Button> */}
-
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedEmployee(employee);
-                          setShowDeleteAlert(true);
-                        }}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleShowHistory(employee)}
-                        className="gap-1"
-                      >
-                        <History className="w-4 h-4" />
-                        History
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {filteredEmployees.length === 0 && (
+      {filteredEmployees.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
           <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
           <p>No employees found. Create one to get started.</p>
         </div>
+      ) : (
+        <>
+          <div className="border rounded-lg overflow-hidden">
+            <Table>
+              <TableHeader>
+                {employeeTable.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="bg-muted hover:bg-muted">
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id} className="font-semibold">
+                        {header.isPlaceholder ? null : <employeeTable.FlexRender header={header} />}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {employeeTable.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} className="hover:bg-muted/50">
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        <employeeTable.FlexRender cell={cell} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <DataTablePagination table={employeeTable} totalRows={filteredEmployees.length} />
+        </>
       )}
 
       {/* Create/Edit Dialog */}

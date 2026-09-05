@@ -1,0 +1,696 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { useRouter, useParams } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { ArrowLeft, Plus, Trash2, Loader2, Search, CheckCircle } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { purchasingService } from "@/lib/purchasing.service";
+import { warehouseService } from "@/lib/warehouse.service";
+import { toast } from "sonner";
+
+interface Vendor {
+  id: string;
+  code: string;
+  name: string;
+  email?: string;
+}
+
+interface Warehouse {
+  id: string;
+  code: string;
+  name: string;
+}
+
+interface Product {
+  id: string;
+  sku: string;
+  name: string;
+  unit_price: number;
+  cost_price: number;
+}
+
+interface LineItem {
+  id: string;
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+const TAX_RATE = 0; // Assume 0% tax for now, matching the "new order" form
+
+export default function EditPurchaseOrderPage() {
+  const router = useRouter();
+  const params = useParams();
+  const orderId = params.id as string;
+  const { token } = useAuth();
+
+  // Form state
+  const [poNumber, setPoNumber] = useState("");
+  const [vendorId, setVendorId] = useState("");
+  const [destinationId, setDestinationId] = useState("");
+  const [notes, setNotes] = useState("");
+  const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
+  const [items, setItems] = useState<LineItem[]>([]);
+
+  // Data state
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  // Accumulates every product we've ever fetched or already knew about (from
+  // the PO's existing line items), keyed by id, so a line item's selected
+  // product stays visible/labelled in its dropdown even after a search
+  // narrows the shared `products` list down to something that no longer
+  // includes it. See orders/new/page.tsx for the original writeup of this.
+  const [productsCache, setProductsCache] = useState<Record<string, Product>>({});
+
+  // UI state
+  const [loading, setLoading] = useState(true);
+  // A PO can only be edited while it's still DRAFT \u2014 the backend enforces
+  // this too, but we check up front so we don't render a form the save
+  // button is guaranteed to reject.
+  const [notEditable, setNotEditable] = useState<{ status: string } | null>(null);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [activeAction, setActiveAction] = useState<"save" | "submit">("save");
+  const [productSearch, setProductSearch] = useState("");
+
+  // Fetch initial data: vendors, warehouses, and the PO itself
+  useEffect(() => {
+    if (token && orderId) {
+      fetchInitialData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, orderId]);
+
+  const fetchInitialData = async () => {
+    try {
+      setLoading(true);
+      const [vendorsData, warehousesData, orderResponse] = await Promise.all([
+        purchasingService.getVendors(token!),
+        warehouseService.getWarehouses(token!),
+        purchasingService.getOrderById(token!, orderId),
+      ]);
+
+      setVendors(vendorsData.vendors || vendorsData || []);
+      setWarehouses(warehousesData.data || []);
+
+      const po = orderResponse.data || orderResponse;
+
+      if (po.status !== "DRAFT") {
+        setNotEditable({ status: po.status });
+        return;
+      }
+
+      setPoNumber(po.poNumber || "");
+      setVendorId(po.vendor?.id || "");
+      setDestinationId(po.destinationWarehouseId || "");
+      setNotes(po.notes || "");
+      setExpectedDeliveryDate(
+        po.expectedDeliveryDate ? String(po.expectedDeliveryDate).slice(0, 10) : ""
+      );
+
+      const initialItems: LineItem[] = (po.items || []).map((item: any) => ({
+        id: item.id,
+        productId: item.product?.id || item.productId,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      }));
+      setItems(
+        initialItems.length > 0
+          ? initialItems
+          : [{ id: "1", productId: "", quantity: 1, unitPrice: 0 }]
+      );
+
+      // Seed the product cache from the PO's own line items so every
+      // already-selected product shows its label immediately, without
+      // waiting on a fetchProducts() call that happens to include it.
+      const seedCache: Record<string, Product> = {};
+      for (const item of po.items || []) {
+        if (item.product) {
+          seedCache[item.product.id] = {
+            id: item.product.id,
+            sku: item.product.sku,
+            name: item.product.name,
+            unit_price: item.unitPrice,
+            cost_price: item.unitPrice,
+          };
+        }
+      }
+      setProductsCache(seedCache);
+    } catch (error) {
+      console.error("Failed to load purchase order for editing:", error);
+      toast.error("Failed to load purchase order");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Tracks the most recently *fired* products request so an older, slower
+  // response can never overwrite a newer one that already resolved (the
+  // same search race-condition guard used on the "new order" form).
+  const productsRequestId = useRef(0);
+
+  const fetchProducts = async (vId: string, search: string = "") => {
+    if (!token) return;
+    const requestId = ++productsRequestId.current;
+    try {
+      setProductsLoading(true);
+      const productsResponse = await warehouseService.getProducts(token, {
+        vendorId: vId || undefined,
+        search: search || undefined,
+        limit: 100,
+      });
+      if (requestId !== productsRequestId.current) return;
+      const fetched: Product[] = productsResponse.data?.products || [];
+      setProducts(fetched);
+      if (fetched.length > 0) {
+        setProductsCache((prev) => {
+          const next = { ...prev };
+          for (const p of fetched) next[p.id] = p;
+          return next;
+        });
+      }
+    } catch (error) {
+      if (requestId !== productsRequestId.current) return;
+      console.error("Failed to fetch products:", error);
+    } finally {
+      if (requestId === productsRequestId.current) {
+        setProductsLoading(false);
+      }
+    }
+  };
+
+  // Refetch products whenever vendor or search term changes, debounced.
+  // Waits for the initial PO load to finish first so this doesn't fire an
+  // extra request with an empty vendorId before the PO's vendor is known.
+  useEffect(() => {
+    if (!token || loading || notEditable) return;
+    const timer = setTimeout(
+      () => {
+        fetchProducts(vendorId, productSearch);
+      },
+      productSearch ? 500 : 0
+    );
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vendorId, productSearch, token, loading]);
+
+  // Calculate line item total
+  const calculateLineTotal = (quantity: number, unitPrice: number): number => {
+    return quantity * unitPrice;
+  };
+
+  // Options to render in a given row's product dropdown: the live
+  // (possibly search-filtered) products list, plus that row's own selected
+  // product pulled from the cache if the live list no longer contains it.
+  const getRowProductOptions = (selectedProductId: string): Product[] => {
+    if (!selectedProductId || products.some((p) => p.id === selectedProductId)) {
+      return products;
+    }
+    const cached = productsCache[selectedProductId];
+    return cached ? [cached, ...products] : products;
+  };
+
+  // Calculate totals
+  const subtotal = items.reduce((sum, item) => {
+    return sum + calculateLineTotal(item.quantity, item.unitPrice);
+  }, 0);
+
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + tax;
+
+  // Add new line item
+  const addLineItem = () => {
+    const newId = Math.random().toString(36).substr(2, 9);
+    setItems([
+      ...items,
+      {
+        id: newId,
+        productId: "",
+        quantity: 1,
+        unitPrice: 0,
+      },
+    ]);
+  };
+
+  // Remove line item
+  const removeLineItem = (id: string) => {
+    if (items.length === 1) {
+      toast.error("You must have at least one line item");
+      return;
+    }
+    setItems(items.filter((item) => item.id !== id));
+  };
+
+  // Update line item
+  const updateLineItem = (id: string, field: keyof LineItem, value: any) => {
+    setItems(
+      items.map((item) => {
+        if (item.id === id) {
+          // If product is changed, update the unit price from product data
+          if (field === "productId") {
+            const selectedProduct =
+              products.find((p) => p.id === value) || productsCache[value];
+            return {
+              ...item,
+              [field]: value,
+              unitPrice: selectedProduct?.cost_price || 0,
+            };
+          }
+          return { ...item, [field]: value };
+        }
+        return item;
+      })
+    );
+  };
+
+  // Validation
+  const validateForm = (): boolean => {
+    if (!vendorId) {
+      toast.error("Please select a vendor");
+      return false;
+    }
+
+    if (!destinationId) {
+      toast.error("Please select a destination warehouse");
+      return false;
+    }
+
+    if (items.length === 0) {
+      toast.error("Please add at least one line item");
+      return false;
+    }
+
+    const hasInvalidItems = items.some(
+      (item) => !item.productId || item.quantity <= 0
+    );
+
+    if (hasInvalidItems) {
+      toast.error("Please ensure all items have a product and valid quantity");
+      return false;
+    }
+
+    return true;
+  };
+
+  // Save changes, optionally submitting for approval right after
+  const handleSave = async (thenSubmit: boolean) => {
+    if (!validateForm()) {
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      setActiveAction(thenSubmit ? "submit" : "save");
+
+      const orderData = {
+        vendorId,
+        warehouseId: destinationId,
+        notes,
+        expectedDeliveryDate: expectedDeliveryDate || undefined,
+        items: items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+        })),
+      };
+
+      await purchasingService.updateOrder(token!, orderId, orderData);
+
+      if (thenSubmit) {
+        await purchasingService.updateOrderStatus(token!, orderId, "SUBMITTED");
+        toast.success("Purchase Order updated and submitted for approval");
+      } else {
+        toast.success("Purchase Order changes saved");
+      }
+
+      router.push(`/dashboard/purchasing/orders/${orderId}`);
+    } catch (error) {
+      console.error("Failed to update purchase order:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update purchase order"
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+          <p className="text-slate-600">Loading purchase order...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (notEditable) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6">
+        <div className="max-w-2xl mx-auto">
+          <Card className="border-slate-200">
+            <CardContent className="pt-6 text-center space-y-4">
+              <h1 className="text-xl font-bold text-slate-900">
+                This order can no longer be edited
+              </h1>
+              <p className="text-slate-600">
+                Purchase Orders can only be edited while in{" "}
+                <span className="font-semibold">DRAFT</span> status. This order is
+                currently <span className="font-semibold">{notEditable.status}</span>.
+              </p>
+              <Link href={`/dashboard/purchasing/orders/${orderId}`}>
+                <Button variant="outline">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Order
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href={`/dashboard/purchasing/orders/${orderId}`}>
+              <Button variant="ghost" size="sm" className="hover:text-emerald-600">
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900">
+                Edit Purchase Order{poNumber ? ` \u2014 ${poNumber}` : ""}
+              </h1>
+              <p className="text-slate-500">
+                Update this draft and save your changes, or submit it for approval
+              </p>
+            </div>
+          </div>
+
+          {/* Dual Action Buttons */}
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => handleSave(false)}
+              disabled={submitting}
+              className="text-slate-700"
+            >
+              {submitting && activeAction === "save" ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
+            </Button>
+            <Button
+              onClick={() => handleSave(true)}
+              disabled={submitting}
+              className="bg-emerald-600 hover:bg-emerald-700"
+            >
+              {submitting && activeAction === "submit" ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Save &amp; Submit for Approval
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
+        {/* Details Section */}
+        <Card className="border-slate-200">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Order Details</CardTitle>
+            <CardDescription>
+              Provide vendor, warehouse, and order information
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Vendor Select */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-700">
+                  Vendor <span className="text-red-500">*</span>
+                </label>
+                <Select value={vendorId} onValueChange={setVendorId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a vendor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {vendors.map((vendor) => (
+                      <SelectItem key={vendor.id} value={vendor.id}>
+                        {vendor.name} ({vendor.code})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Warehouse Select */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-700">
+                  Destination Warehouse <span className="text-red-500">*</span>
+                </label>
+                <Select value={destinationId} onValueChange={setDestinationId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select warehouse" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {warehouses.map((warehouse) => (
+                      <SelectItem key={warehouse.id} value={warehouse.id}>
+                        {warehouse.name} ({warehouse.code})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Expected Delivery Date (Optional) */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-700">
+                  Expected Delivery Date
+                </label>
+                <Input
+                  type="date"
+                  className="w-full"
+                  value={expectedDeliveryDate}
+                  onChange={(e) => setExpectedDeliveryDate(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Notes Section */}
+            <div className="mt-6 space-y-2">
+              <label className="block text-sm font-medium text-slate-700">
+                Order Notes
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add any special instructions or notes..."
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                rows={3}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Line Items Section */}
+        <Card className="border-slate-200">
+          <CardHeader className="pb-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle className="text-lg">Line Items</CardTitle>
+                <CardDescription>
+                  Add products and quantities to your order
+                </CardDescription>
+              </div>
+              <div className="flex gap-3 items-center">
+                <div className="relative w-64">
+                  <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                  <Input
+                    placeholder="Search products..."
+                    className="pl-9 h-9 text-xs"
+                    value={productSearch}
+                    onChange={(e) => setProductSearch(e.target.value)}
+                  />
+                  {productsLoading && (
+                    <Loader2 className="absolute right-3 top-2.5 h-4 w-4 animate-spin text-slate-400" />
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={addLineItem}
+                  className="text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Row
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-slate-200">
+                  <TableHead className="min-w-48">Product</TableHead>
+                  <TableHead className="min-w-24 text-right">Quantity</TableHead>
+                  <TableHead className="min-w-28 text-right">Unit Price</TableHead>
+                  <TableHead className="min-w-28 text-right">Total</TableHead>
+                  <TableHead className="w-12 text-center">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {items.map((item) => {
+                  const rowProductOptions = getRowProductOptions(item.productId);
+                  return (
+                    <TableRow key={item.id} className="hover:bg-emerald-50/50">
+                      {/* Product Select */}
+                      <TableCell>
+                        <Select
+                          value={item.productId}
+                          onValueChange={(value) =>
+                            updateLineItem(item.id, "productId", value)
+                          }
+                        >
+                          <SelectTrigger className="w-full border-slate-200">
+                            <SelectValue placeholder="Select product" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {rowProductOptions.length === 0 ? (
+                              <SelectItem value="none" disabled>
+                                No products found
+                              </SelectItem>
+                            ) : (
+                              rowProductOptions.map((product) => (
+                                <SelectItem key={product.id} value={product.id}>
+                                  {product.name} ({product.sku})
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
+
+                      {/* Quantity Input */}
+                      <TableCell>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateLineItem(
+                              item.id,
+                              "quantity",
+                              parseInt(e.target.value) || 1
+                            )
+                          }
+                          className="w-full border-slate-200 text-right"
+                        />
+                      </TableCell>
+
+                      {/* Unit Price Input */}
+                      <TableCell>
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={item.unitPrice}
+                          onChange={(e) =>
+                            updateLineItem(
+                              item.id,
+                              "unitPrice",
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
+                          className="w-full border-slate-200 text-right"
+                        />
+                      </TableCell>
+
+                      {/* Total (Auto-calculated) */}
+                      <TableCell className="text-right font-semibold text-slate-900">
+                        $
+                        {calculateLineTotal(item.quantity, item.unitPrice).toFixed(2)}
+                      </TableCell>
+
+                      {/* Remove Button */}
+                      <TableCell className="text-center">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeLineItem(item.id)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Summary Section */}
+        <Card className="border-slate-200 ml-auto max-w-sm">
+          <CardContent className="pt-6 space-y-3">
+            <div className="flex justify-between items-center text-slate-700">
+              <span>Subtotal:</span>
+              <span className="font-medium">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-slate-700">
+              <span>Tax ({(TAX_RATE * 100).toFixed(0)}%):</span>
+              <span className="font-medium">${tax.toFixed(2)}</span>
+            </div>
+            <div className="border-t border-slate-200 pt-3 flex justify-between items-center text-lg font-bold text-slate-900">
+              <span>Grand Total:</span>
+              <span className="text-emerald-600">${total.toFixed(2)}</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

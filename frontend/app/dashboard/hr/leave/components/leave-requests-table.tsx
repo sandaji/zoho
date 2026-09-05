@@ -128,8 +128,8 @@ export function LeaveRequestsTable({ requests, isLoading }: { requests: LeaveReq
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
+          {table.getPrePaginatedRowModel().rows.length > 0 ? (
+            table.getPrePaginatedRowModel().rows.map((row) => (
               <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

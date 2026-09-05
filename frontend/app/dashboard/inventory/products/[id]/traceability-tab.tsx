@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -14,6 +14,9 @@ import { Badge } from "@/components/ui/badge";
 import { API_ENDPOINTS } from "@/lib/api-config";
 import { useAuth } from "@/lib/auth-context";
 import { Loader2, ArrowUpRight, ArrowDownLeft, RefreshCw } from "lucide-react";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 interface StockMovement {
   id: string;
@@ -28,11 +31,82 @@ interface StockMovement {
   createdById: string; // Could expand to user name if backend sends it
 }
 
+const OUTBOUND_TYPES = ["OUTBOUND", "SALE", "TRANSFER_OUT"];
+
+const columnHelper = createColumnHelper<AppTableFeatures, StockMovement>();
+
+const columns = columnHelper.columns([
+  columnHelper.accessor((row) => new Date(row.createdAt).getTime(), {
+    id: "date",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
+    cell: (ctx) => new Date(ctx.row.original.createdAt).toLocaleString(),
+    sortFn: "alphanumeric",
+  }),
+  columnHelper.accessor((row) => row.type, {
+    id: "type",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+    cell: (ctx) => {
+      const type = ctx.getValue();
+      const badge =
+        ["INBOUND", "PURCHASE_IN", "TRANSFER_IN", "RETURN_IN"].includes(type) ? (
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+            <ArrowDownLeft className="w-3 h-3 mr-1" /> Inbound
+          </Badge>
+        ) : OUTBOUND_TYPES.includes(type) ? (
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+            <ArrowUpRight className="w-3 h-3 mr-1" /> Outbound
+          </Badge>
+        ) : type === "ADJUSTMENT" ? (
+          <Badge variant="outline">
+            <RefreshCw className="w-3 h-3 mr-1" /> Adjustment
+          </Badge>
+        ) : (
+          <Badge variant="secondary">{type}</Badge>
+        );
+      return (
+        <div className="flex flex-col gap-1">
+          {badge}
+          <span className="text-xs text-muted-foreground">{type}</span>
+        </div>
+      );
+    },
+    sortFn: "text",
+  }),
+  columnHelper.accessor((row) => row.reference || "-", {
+    id: "reference",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Reference" />,
+    sortFn: "text",
+  }),
+  columnHelper.accessor((row) => row.warehouse?.name || "Unknown", {
+    id: "warehouse",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Warehouse" />,
+    sortFn: "text",
+  }),
+  columnHelper.accessor((row) => row.quantity, {
+    id: "quantity",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Quantity" className="w-full justify-end" />
+    ),
+    cell: (ctx) => {
+      const movement = ctx.row.original;
+      const isOutbound = OUTBOUND_TYPES.includes(movement.type);
+      return (
+        <div className={`text-right font-medium ${isOutbound ? "text-red-600" : "text-green-600"}`}>
+          {isOutbound ? "-" : "+"}
+          {movement.quantity}
+        </div>
+      );
+    },
+    sortFn: "alphanumeric",
+  }),
+]);
+
 export function TraceabilityTab({ productId }: { productId: string }) {
   const { token } = useAuth();
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<SortingState>([]);
 
   useEffect(() => {
     if (productId && token) {
@@ -61,23 +135,17 @@ export function TraceabilityTab({ productId }: { productId: string }) {
     }
   };
 
-  const getMovementTypeBadge = (type: string) => {
-    switch (type) {
-      case "INBOUND":
-      case "PURCHASE_IN":
-      case "TRANSFER_IN":
-      case "RETURN_IN":
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100"><ArrowDownLeft className="w-3 h-3 mr-1" /> Inbound</Badge>;
-      case "OUTBOUND":
-      case "SALE":
-      case "TRANSFER_OUT":
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100"><ArrowUpRight className="w-3 h-3 mr-1" /> Outbound</Badge>;
-      case "ADJUSTMENT":
-        return <Badge variant="outline"><RefreshCw className="w-3 h-3 mr-1" /> Adjustment</Badge>;
-      default:
-        return <Badge variant="secondary">{type}</Badge>;
-    }
-  };
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: movements,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
 
   if (loading) {
     return (
@@ -102,31 +170,27 @@ export function TraceabilityTab({ productId }: { productId: string }) {
         ) : (
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Reference</TableHead>
-                <TableHead>Warehouse</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-              </TableRow>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={header.column.id === "quantity" ? "text-right" : undefined}
+                    >
+                      {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
             </TableHeader>
             <TableBody>
-              {movements.map((movement) => (
-                <TableRow key={movement.id}>
-                  <TableCell>{new Date(movement.createdAt).toLocaleString()}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                        {getMovementTypeBadge(movement.type)}
-                        <span className="text-xs text-muted-foreground">{movement.type}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>{movement.reference || "-"}</TableCell>
-                  <TableCell>{movement.warehouse?.name || "Unknown"}</TableCell>
-                  <TableCell className={`text-right font-medium ${
-                    ["OUTBOUND", "SALE", "TRANSFER_OUT"].includes(movement.type) ? "text-red-600" : "text-green-600"
-                  }`}>
-                    {["OUTBOUND", "SALE", "TRANSFER_OUT"].includes(movement.type) ? "-" : "+"}{movement.quantity}
-                  </TableCell>
+              {rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      <table.FlexRender cell={cell} />
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>

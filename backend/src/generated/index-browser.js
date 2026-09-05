@@ -120,25 +120,210 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserScalarFieldEnum = {
+exports.Prisma.Accounts_payableScalarFieldEnum = {
   id: 'id',
-  email: 'email',
-  passwordHash: 'passwordHash',
-  name: 'name',
-  phone: 'phone',
-  branchId: 'branchId',
-  isActive: 'isActive',
+  bill_no: 'bill_no',
+  vendor_name: 'vendor_name',
+  vendor_email: 'vendor_email',
+  vendor_phone: 'vendor_phone',
+  total_amount: 'total_amount',
+  paid_amount: 'paid_amount',
+  balance: 'balance',
+  bill_date: 'bill_date',
+  due_date: 'due_date',
+  paid_date: 'paid_date',
+  status: 'status',
+  aging_days: 'aging_days',
+  notes: 'notes',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  salesPrefix: 'salesPrefix',
-  lastSequence: 'lastSequence',
-  hasSystemAccess: 'hasSystemAccess',
-  role: 'role',
-  employeeCode: 'employeeCode',
-  departmentId: 'departmentId'
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.BranchScalarFieldEnum = {
+exports.Prisma.Accounts_receivableScalarFieldEnum = {
+  id: 'id',
+  invoice_no: 'invoice_no',
+  customer_name: 'customer_name',
+  customer_email: 'customer_email',
+  customer_phone: 'customer_phone',
+  total_amount: 'total_amount',
+  paid_amount: 'paid_amount',
+  balance: 'balance',
+  invoice_date: 'invoice_date',
+  due_date: 'due_date',
+  paid_date: 'paid_date',
+  status: 'status',
+  aging_days: 'aging_days',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Ap_paymentsScalarFieldEnum = {
+  id: 'id',
+  payment_no: 'payment_no',
+  ap_id: 'ap_id',
+  amount: 'amount',
+  payment_method: 'payment_method',
+  payment_date: 'payment_date',
+  bank_name: 'bank_name',
+  check_no: 'check_no',
+  transaction_id: 'transaction_id',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApplicantsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  resumeUrl: 'resumeUrl',
+  status: 'status',
+  jobPostingId: 'jobPostingId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  notes: 'notes'
+};
+
+exports.Prisma.Approval_requestsScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  requestedById: 'requestedById',
+  approvedById: 'approvedById',
+  data: 'data',
+  referenceId: 'referenceId',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Ar_paymentsScalarFieldEnum = {
+  id: 'id',
+  payment_no: 'payment_no',
+  ar_id: 'ar_id',
+  amount: 'amount',
+  payment_method: 'payment_method',
+  payment_date: 'payment_date',
+  bank_name: 'bank_name',
+  check_no: 'check_no',
+  transaction_id: 'transaction_id',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Audit_logsScalarFieldEnum = {
+  id: 'id',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  action: 'action',
+  userId: 'userId',
+  changes: 'changes',
+  ipAddress: 'ipAddress',
+  timestamp: 'timestamp'
+};
+
+exports.Prisma.Bank_accountsScalarFieldEnum = {
+  id: 'id',
+  account_name: 'account_name',
+  account_number: 'account_number',
+  bank_name: 'bank_name',
+  branch: 'branch',
+  account_type: 'account_type',
+  currency: 'currency',
+  current_balance: 'current_balance',
+  available_balance: 'available_balance',
+  overdraft_limit: 'overdraft_limit',
+  is_active: 'is_active',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Bank_statement_linesScalarFieldEnum = {
+  id: 'id',
+  statement_id: 'statement_id',
+  date: 'date',
+  description: 'description',
+  amount: 'amount',
+  reference: 'reference',
+  is_reconciled: 'is_reconciled',
+  reconciled_date: 'reconciled_date',
+  journal_entry_id: 'journal_entry_id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Bank_statementsScalarFieldEnum = {
+  id: 'id',
+  account_id: 'account_id',
+  filename: 'filename',
+  upload_date: 'upload_date',
+  uploaded_by: 'uploaded_by',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Bank_transactionsScalarFieldEnum = {
+  id: 'id',
+  transaction_no: 'transaction_no',
+  bank_account_id: 'bank_account_id',
+  transaction_type: 'transaction_type',
+  amount: 'amount',
+  balance_after: 'balance_after',
+  description: 'description',
+  reference_no: 'reference_no',
+  category: 'category',
+  is_reconciled: 'is_reconciled',
+  reconciled_date: 'reconciled_date',
+  transaction_date: 'transaction_date',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Benefit_enrollmentsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  benefitId: 'benefitId',
+  enrolledAt: 'enrolledAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BenefitsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  description: 'description',
+  provider: 'provider',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Branch_inventoryScalarFieldEnum = {
+  id: 'id',
+  productId: 'productId',
+  branchId: 'branchId',
+  quantity: 'quantity',
+  reorder_level: 'reorder_level',
+  reorder_quantity: 'reorder_quantity',
+  reserved: 'reserved',
+  available: 'available',
+  status: 'status',
+  local_price: 'local_price',
+  bin_location: 'bin_location',
+  last_counted: 'last_counted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.BranchesScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
@@ -150,7 +335,184 @@ exports.Prisma.BranchScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.EmployeeTransferScalarFieldEnum = {
+exports.Prisma.BudgetsScalarFieldEnum = {
+  id: 'id',
+  budget_name: 'budget_name',
+  fiscal_year: 'fiscal_year',
+  account_id: 'account_id',
+  period_type: 'period_type',
+  period_start: 'period_start',
+  period_end: 'period_end',
+  budgeted_amount: 'budgeted_amount',
+  actual_amount: 'actual_amount',
+  variance: 'variance',
+  variance_percent: 'variance_percent',
+  status: 'status',
+  created_by: 'created_by',
+  approved_by: 'approved_by',
+  approved_date: 'approved_date',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Cashier_sessionsScalarFieldEnum = {
+  id: 'id',
+  sessionNo: 'sessionNo',
+  userId: 'userId',
+  branchId: 'branchId',
+  opening_balance: 'opening_balance',
+  closing_balance: 'closing_balance',
+  expected_cash: 'expected_cash',
+  actual_cash: 'actual_cash',
+  cash_variance: 'cash_variance',
+  total_sales_count: 'total_sales_count',
+  total_sales_amount: 'total_sales_amount',
+  total_cash_received: 'total_cash_received',
+  total_card_received: 'total_card_received',
+  total_mpesa_received: 'total_mpesa_received',
+  total_other_received: 'total_other_received',
+  opened_at: 'opened_at',
+  closed_at: 'closed_at',
+  reconciled_at: 'reconciled_at',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  status: 'status'
+};
+
+exports.Prisma.CategoriesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Chart_of_accountsScalarFieldEnum = {
+  id: 'id',
+  account_code: 'account_code',
+  account_name: 'account_name',
+  account_type: 'account_type',
+  parent_id: 'parent_id',
+  category: 'category',
+  subcategory: 'subcategory',
+  is_active: 'is_active',
+  is_system: 'is_system',
+  current_balance: 'current_balance',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Customer_code_settingsScalarFieldEnum = {
+  id: 'id',
+  prefix: 'prefix',
+  next_number: 'next_number',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CustomersScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  tax_id: 'tax_id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  creditLimit: 'creditLimit',
+  currentBalance: 'currentBalance',
+  customerType: 'customerType',
+  isActive: 'isActive',
+  code: 'code'
+};
+
+exports.Prisma.Daily_spending_limitsScalarFieldEnum = {
+  id: 'id',
+  limit: 'limit',
+  date: 'date',
+  spent: 'spent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DeliveriesScalarFieldEnum = {
+  id: 'id',
+  delivery_no: 'delivery_no',
+  status: 'status',
+  driverId: 'driverId',
+  truckId: 'truckId',
+  destination: 'destination',
+  estimated_km: 'estimated_km',
+  actual_km: 'actual_km',
+  scheduled_date: 'scheduled_date',
+  picked_up_at: 'picked_up_at',
+  delivered_at: 'delivered_at',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deliveryOtp: 'deliveryOtp',
+  podPhotoUrl: 'podPhotoUrl',
+  podSignatureUrl: 'podSignatureUrl'
+};
+
+exports.Prisma.Delivery_dispatch_notesScalarFieldEnum = {
+  id: 'id',
+  deliveryId: 'deliveryId',
+  dispatchNoteId: 'dispatchNoteId'
+};
+
+exports.Prisma.DepartmentsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  prefix: 'prefix',
+  next_number: 'next_number',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Development_plansScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Dispatch_itemsScalarFieldEnum = {
+  id: 'id',
+  dispatchNoteId: 'dispatchNoteId',
+  soItemId: 'soItemId',
+  productId: 'productId',
+  qty_dispatched: 'qty_dispatched',
+  total_cogs: 'total_cogs',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Dispatch_notesScalarFieldEnum = {
+  id: 'id',
+  dn_number: 'dn_number',
+  salesOrderId: 'salesOrderId',
+  dispatchedById: 'dispatchedById',
+  dispatched_at: 'dispatched_at',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Document_sequencesScalarFieldEnum = {
+  id: 'id',
+  branchId: 'branchId',
+  type: 'type',
+  prefix: 'prefix',
+  next_number: 'next_number'
+};
+
+exports.Prisma.Employee_transfersScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   fromBranchId: 'fromBranchId',
@@ -167,19 +529,322 @@ exports.Prisma.EmployeeTransferScalarFieldEnum = {
   toRole: 'toRole'
 };
 
-exports.Prisma.WarehouseScalarFieldEnum = {
+exports.Prisma.Finance_transactionsScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  reference_no: 'reference_no',
+  description: 'description',
+  amount: 'amount',
+  payrollId: 'payrollId',
+  payment_method: 'payment_method',
+  reference_doc: 'reference_doc',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  category: 'category',
+  transactionDate: 'transactionDate'
+};
+
+exports.Prisma.Financial_alertsScalarFieldEnum = {
+  id: 'id',
+  alert_type: 'alert_type',
+  severity: 'severity',
+  title: 'title',
+  message: 'message',
+  threshold_value: 'threshold_value',
+  current_value: 'current_value',
+  status: 'status',
+  acknowledged_by: 'acknowledged_by',
+  acknowledged_at: 'acknowledged_at',
+  resolved_at: 'resolved_at',
+  recipients: 'recipients',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Financial_forecastsScalarFieldEnum = {
+  id: 'id',
+  forecast_name: 'forecast_name',
+  forecast_type: 'forecast_type',
+  fiscal_year: 'fiscal_year',
+  period_start: 'period_start',
+  period_end: 'period_end',
+  forecast_data: 'forecast_data',
+  actual_data: 'actual_data',
+  accuracy_score: 'accuracy_score',
+  mape: 'mape',
+  model_type: 'model_type',
+  model_params: 'model_params',
+  status: 'status',
+  created_by: 'created_by',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Fiscal_periodsScalarFieldEnum = {
+  id: 'id',
+  fiscal_year_id: 'fiscal_year_id',
+  name: 'name',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  isLocked: 'isLocked',
+  lockedAt: 'lockedAt',
+  lockedById: 'lockedById'
+};
+
+exports.Prisma.Fiscal_yearsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  start_date: 'start_date',
+  end_date: 'end_date',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Goods_receipt_notesScalarFieldEnum = {
+  id: 'id',
+  grn_number: 'grn_number',
+  purchaseOrderId: 'purchaseOrderId',
+  receivedById: 'receivedById',
+  status: 'status',
+  receivedAt: 'receivedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Grn_itemsScalarFieldEnum = {
+  id: 'id',
+  grnId: 'grnId',
+  poItemId: 'poItemId',
+  productId: 'productId',
+  qty_received: 'qty_received',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InterviewsScalarFieldEnum = {
+  id: 'id',
+  applicantId: 'applicantId',
+  interviewerId: 'interviewerId',
+  scheduledAt: 'scheduledAt',
+  feedback: 'feedback',
+  rating: 'rating',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InventoryScalarFieldEnum = {
+  id: 'id',
+  quantity: 'quantity',
+  reserved: 'reserved',
+  available: 'available',
+  status: 'status',
+  last_counted: 'last_counted',
+  productId: 'productId',
+  warehouseId: 'warehouseId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Job_postingsScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  department: 'department',
+  location: 'location',
+  type: 'type',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Journal_entriesScalarFieldEnum = {
+  id: 'id',
+  entry_no: 'entry_no',
+  entry_date: 'entry_date',
+  account_id: 'account_id',
+  debit: 'debit',
+  credit: 'credit',
+  reference_type: 'reference_type',
+  reference_id: 'reference_id',
+  batch_id: 'batch_id',
+  description: 'description',
+  notes: 'notes',
+  is_reconciled: 'is_reconciled',
+  reconciled_date: 'reconciled_date',
+  created_by: 'created_by',
+  approved_by: 'approved_by',
+  approved_date: 'approved_date',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  journal_id: 'journal_id',
+  period_id: 'period_id'
+};
+
+exports.Prisma.Journal_headersScalarFieldEnum = {
+  id: 'id',
+  entry_no: 'entry_no',
+  entry_date: 'entry_date',
+  period_id: 'period_id',
+  journal_id: 'journal_id',
+  branch_id: 'branch_id',
+  description: 'description',
+  total_debit: 'total_debit',
+  total_credit: 'total_credit',
+  source_type: 'source_type',
+  source_id: 'source_id',
+  created_by: 'created_by',
+  created_at: 'created_at'
+};
+
+exports.Prisma.Journal_linesScalarFieldEnum = {
+  id: 'id',
+  header_id: 'header_id',
+  account_id: 'account_id',
+  line_no: 'line_no',
+  description: 'description',
+  debit: 'debit',
+  credit: 'credit'
+};
+
+exports.Prisma.JournalsScalarFieldEnum = {
   id: 'id',
   code: 'code',
   name: 'name',
-  location: 'location',
-  capacity: 'capacity',
-  branchId: 'branchId',
+  type: 'type',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.ProductScalarFieldEnum = {
+exports.Prisma.Leave_allocationsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  leaveTypeId: 'leaveTypeId',
+  year: 'year',
+  allocated: 'allocated',
+  used: 'used',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Leave_requestsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  leaveTypeId: 'leaveTypeId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  days: 'days',
+  reason: 'reason',
+  status: 'status',
+  processedBy: 'processedBy',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Leave_typesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  daysAllowed: 'daysAllowed',
+  carryOver: 'carryOver',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ModulesScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NotificationsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  link: 'link',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PaymentsScalarFieldEnum = {
+  id: 'id',
+  salesDocumentId: 'salesDocumentId',
+  customerId: 'customerId',
+  amount: 'amount',
+  payment_date: 'payment_date',
+  method: 'method',
+  reference: 'reference',
+  createdById: 'createdById',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PayrollScalarFieldEnum = {
+  id: 'id',
+  payroll_no: 'payroll_no',
+  status: 'status',
+  userId: 'userId',
+  base_salary: 'base_salary',
+  allowances: 'allowances',
+  deductions: 'deductions',
+  net_salary: 'net_salary',
+  period_start: 'period_start',
+  period_end: 'period_end',
+  paid_date: 'paid_date',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Performance_evaluationsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  evaluatorId: 'evaluatorId',
+  period: 'period',
+  date: 'date',
+  ratings: 'ratings',
+  comments: 'comments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Performance_goalsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  targetDate: 'targetDate',
+  progress: 'progress',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PermissionsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  moduleId: 'moduleId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductsScalarFieldEnum = {
   id: 'id',
   sku: 'sku',
   barcode: 'barcode',
@@ -209,52 +874,143 @@ exports.Prisma.ProductScalarFieldEnum = {
   vendorId: 'vendorId'
 };
 
-exports.Prisma.CategoryScalarFieldEnum = {
+exports.Prisma.Purchase_order_itemsScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SubcategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  categoryId: 'categoryId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BranchInventoryScalarFieldEnum = {
-  id: 'id',
+  purchaseOrderId: 'purchaseOrderId',
   productId: 'productId',
+  quantity: 'quantity',
+  unit_price: 'unit_price',
+  subtotal: 'subtotal',
+  received_quantity: 'received_quantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Purchase_ordersScalarFieldEnum = {
+  id: 'id',
+  po_number: 'po_number',
+  status: 'status',
+  vendorId: 'vendorId',
   branchId: 'branchId',
-  quantity: 'quantity',
-  reorder_level: 'reorder_level',
-  reorder_quantity: 'reorder_quantity',
-  reserved: 'reserved',
-  available: 'available',
-  status: 'status',
-  local_price: 'local_price',
-  bin_location: 'bin_location',
-  last_counted: 'last_counted',
+  requestedById: 'requestedById',
+  approvedById: 'approvedById',
+  destinationWarehouseId: 'destinationWarehouseId',
+  subtotal: 'subtotal',
+  tax: 'tax',
+  total: 'total',
+  notes: 'notes',
+  expected_delivery_date: 'expected_delivery_date',
+  submittedAt: 'submittedAt',
+  approvedAt: 'approvedAt',
+  closedAt: 'closedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.InventoryScalarFieldEnum = {
+exports.Prisma.Role_permissionsScalarFieldEnum = {
+  roleId: 'roleId',
+  permissionId: 'permissionId',
+  scope: 'scope'
+};
+
+exports.Prisma.RolesScalarFieldEnum = {
   id: 'id',
-  quantity: 'quantity',
-  reserved: 'reserved',
-  available: 'available',
-  status: 'status',
-  last_counted: 'last_counted',
-  productId: 'productId',
-  warehouseId: 'warehouseId',
+  name: 'name',
+  code: 'code',
+  description: 'description',
+  isSystem: 'isSystem',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.StockBatchScalarFieldEnum = {
+exports.Prisma.Sales_document_itemsScalarFieldEnum = {
+  id: 'id',
+  salesDocumentId: 'salesDocumentId',
+  productId: 'productId',
+  description: 'description',
+  quantity: 'quantity',
+  unit_price: 'unit_price',
+  tax_rate: 'tax_rate',
+  discount: 'discount',
+  subtotal: 'subtotal',
+  tax_amount: 'tax_amount',
+  total: 'total',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Sales_documentsScalarFieldEnum = {
+  id: 'id',
+  documentId: 'documentId',
+  type: 'type',
+  status: 'status',
+  source_document_id: 'source_document_id',
+  branchId: 'branchId',
+  customerId: 'customerId',
+  createdById: 'createdById',
+  subtotal: 'subtotal',
+  discount: 'discount',
+  tax: 'tax',
+  total: 'total',
+  notes: 'notes',
+  terms: 'terms',
+  payment_status: 'payment_status',
+  paidAmount: 'paidAmount',
+  balance: 'balance',
+  issue_date: 'issue_date',
+  due_date: 'due_date',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  sessionId: 'sessionId',
+  approvedById: 'approvedById',
+  idempotency_key: 'idempotency_key',
+  draft_number: 'draft_number',
+  quote_number: 'quote_number',
+  invoice_number: 'invoice_number',
+  invoiced_by_id: 'invoiced_by_id',
+  closed_by_id: 'closed_by_id',
+  closed_at: 'closed_at'
+};
+
+exports.Prisma.Sales_ordersScalarFieldEnum = {
+  id: 'id',
+  so_number: 'so_number',
+  customerId: 'customerId',
+  branchId: 'branchId',
+  status: 'status',
+  subtotal: 'subtotal',
+  tax: 'tax',
+  total_amount: 'total_amount',
+  notes: 'notes',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Savings_goalsScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  targetAmount: 'targetAmount',
+  currentAmount: 'currentAmount',
+  deadline: 'deadline',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.So_itemsScalarFieldEnum = {
+  id: 'id',
+  salesOrderId: 'salesOrderId',
+  productId: 'productId',
+  qty_requested: 'qty_requested',
+  qty_dispatched: 'qty_dispatched',
+  unit_price: 'unit_price',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Stock_batchesScalarFieldEnum = {
   id: 'id',
   productId: 'productId',
   warehouseId: 'warehouseId',
@@ -268,7 +1024,7 @@ exports.Prisma.StockBatchScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.StockMovementScalarFieldEnum = {
+exports.Prisma.Stock_movementsScalarFieldEnum = {
   id: 'id',
   type: 'type',
   quantity: 'quantity',
@@ -281,7 +1037,7 @@ exports.Prisma.StockMovementScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.StockTransferScalarFieldEnum = {
+exports.Prisma.Stock_transfersScalarFieldEnum = {
   id: 'id',
   status: 'status',
   notes: 'notes',
@@ -292,7 +1048,7 @@ exports.Prisma.StockTransferScalarFieldEnum = {
   receivedById: 'receivedById',
   destinationWarehouseId: 'destinationWarehouseId',
   dispatchedAt: 'dispatchedAt',
-  documentId: 'documentId',
+  document_id: 'document_id',
   driverId: 'driverId',
   sourceWarehouseId: 'sourceWarehouseId',
   truckId: 'truckId',
@@ -300,655 +1056,22 @@ exports.Prisma.StockTransferScalarFieldEnum = {
   approvedById: 'approvedById',
   dispatchMode: 'dispatchMode',
   vehicleRegistration: 'vehicleRegistration',
-  pickedById: 'pickedById',
   pickedAt: 'pickedAt',
+  pickedById: 'pickedById',
   pickingCompletedAt: 'pickingCompletedAt',
-  verifiedById: 'verifiedById',
-  verifiedAt: 'verifiedAt'
+  verifiedAt: 'verifiedAt',
+  verifiedById: 'verifiedById'
 };
 
-exports.Prisma.TransferIssueScalarFieldEnum = {
-  id: 'id',
-  transferId: 'transferId',
-  category: 'category',
-  description: 'description',
-  status: 'status',
-  raisedById: 'raisedById',
-  resolution: 'resolution',
-  resolvedById: 'resolvedById',
-  resolvedAt: 'resolvedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.TransferItemScalarFieldEnum = {
-  id: 'id',
-  productId: 'productId',
-  transferId: 'transferId',
-  batchId: 'batchId',
-  damaged_qty: 'damaged_qty',
-  dispatched_qty: 'dispatched_qty',
-  picked_qty: 'picked_qty',
-  received_qty: 'received_qty',
-  requested_qty: 'requested_qty',
-  unitCost: 'unitCost'
-};
-
-exports.Prisma.CustomerScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
-  address: 'address',
-  taxId: 'taxId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  creditLimit: 'creditLimit',
-  currentBalance: 'currentBalance',
-  customerType: 'customerType',
-  isActive: 'isActive'
-};
-
-exports.Prisma.SalesDocumentScalarFieldEnum = {
-  id: 'id',
-  documentId: 'documentId',
-  type: 'type',
-  status: 'status',
-  draftNumber: 'draftNumber',
-  quoteNumber: 'quoteNumber',
-  invoiceNumber: 'invoiceNumber',
-  sourceDocumentId: 'sourceDocumentId',
-  branchId: 'branchId',
-  customerId: 'customerId',
-  createdById: 'createdById',
-  invoicedById: 'invoicedById',
-  closedById: 'closedById',
-  closedAt: 'closedAt',
-  subtotal: 'subtotal',
-  discount: 'discount',
-  tax: 'tax',
-  total: 'total',
-  notes: 'notes',
-  terms: 'terms',
-  paymentStatus: 'paymentStatus',
-  paidAmount: 'paidAmount',
-  balance: 'balance',
-  issueDate: 'issueDate',
-  dueDate: 'dueDate',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  sessionId: 'sessionId',
-  approvedById: 'approvedById',
-  idempotencyKey: 'idempotencyKey'
-};
-
-exports.Prisma.SalesDocumentItemScalarFieldEnum = {
-  id: 'id',
-  salesDocumentId: 'salesDocumentId',
-  productId: 'productId',
-  description: 'description',
-  quantity: 'quantity',
-  unitPrice: 'unitPrice',
-  taxRate: 'taxRate',
-  discount: 'discount',
-  subtotal: 'subtotal',
-  taxAmount: 'taxAmount',
-  total: 'total',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PaymentScalarFieldEnum = {
-  id: 'id',
-  salesDocumentId: 'salesDocumentId',
-  customerId: 'customerId',
-  amount: 'amount',
-  paymentDate: 'paymentDate',
-  method: 'method',
-  reference: 'reference',
-  createdById: 'createdById',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.DocumentSequenceScalarFieldEnum = {
-  id: 'id',
-  branchId: 'branchId',
-  type: 'type',
-  prefix: 'prefix',
-  nextNumber: 'nextNumber'
-};
-
-exports.Prisma.CustomerCodeSettingScalarFieldEnum = {
-  id: 'id',
-  prefix: 'prefix',
-  nextNumber: 'nextNumber',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.DepartmentScalarFieldEnum = {
+exports.Prisma.SubcategoriesScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  prefix: 'prefix',
-  nextNumber: 'nextNumber',
-  isActive: 'isActive',
+  categoryId: 'categoryId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.SalesOrderScalarFieldEnum = {
-  id: 'id',
-  soNumber: 'soNumber',
-  customerId: 'customerId',
-  branchId: 'branchId',
-  status: 'status',
-  subtotal: 'subtotal',
-  tax: 'tax',
-  totalAmount: 'totalAmount',
-  notes: 'notes',
-  createdById: 'createdById',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.SOItemScalarFieldEnum = {
-  id: 'id',
-  salesOrderId: 'salesOrderId',
-  productId: 'productId',
-  qtyRequested: 'qtyRequested',
-  qtyDispatched: 'qtyDispatched',
-  unitPrice: 'unitPrice',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.DispatchNoteScalarFieldEnum = {
-  id: 'id',
-  dnNumber: 'dnNumber',
-  salesOrderId: 'salesOrderId',
-  dispatchedById: 'dispatchedById',
-  dispatchedAt: 'dispatchedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.DispatchItemScalarFieldEnum = {
-  id: 'id',
-  dispatchNoteId: 'dispatchNoteId',
-  soItemId: 'soItemId',
-  productId: 'productId',
-  qtyDispatched: 'qtyDispatched',
-  totalCogs: 'totalCogs',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.CashierSessionScalarFieldEnum = {
-  id: 'id',
-  sessionNo: 'sessionNo',
-  userId: 'userId',
-  branchId: 'branchId',
-  openingBalance: 'openingBalance',
-  closingBalance: 'closingBalance',
-  expectedCash: 'expectedCash',
-  actualCash: 'actualCash',
-  cashVariance: 'cashVariance',
-  totalSalesCount: 'totalSalesCount',
-  totalSalesAmount: 'totalSalesAmount',
-  totalCashReceived: 'totalCashReceived',
-  totalCardReceived: 'totalCardReceived',
-  totalMpesaReceived: 'totalMpesaReceived',
-  totalOtherReceived: 'totalOtherReceived',
-  openedAt: 'openedAt',
-  closedAt: 'closedAt',
-  reconciledAt: 'reconciledAt',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  status: 'status'
-};
-
-exports.Prisma.VendorScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
-  address: 'address',
-  taxId: 'taxId',
-  website: 'website',
-  paymentTerms: 'paymentTerms',
-  leadTimeDays: 'leadTimeDays',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PurchaseOrderScalarFieldEnum = {
-  id: 'id',
-  poNumber: 'poNumber',
-  status: 'status',
-  vendorId: 'vendorId',
-  branchId: 'branchId',
-  requestedById: 'requestedById',
-  approvedById: 'approvedById',
-  destinationWarehouseId: 'destinationWarehouseId',
-  subtotal: 'subtotal',
-  tax: 'tax',
-  total: 'total',
-  notes: 'notes',
-  expectedDeliveryDate: 'expectedDeliveryDate',
-  submittedAt: 'submittedAt',
-  approvedAt: 'approvedAt',
-  closedAt: 'closedAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ApprovalRequestScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  status: 'status',
-  requestedById: 'requestedById',
-  approvedById: 'approvedById',
-  data: 'data',
-  referenceId: 'referenceId',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PurchaseOrderItemScalarFieldEnum = {
-  id: 'id',
-  purchaseOrderId: 'purchaseOrderId',
-  productId: 'productId',
-  quantity: 'quantity',
-  unitPrice: 'unitPrice',
-  subtotal: 'subtotal',
-  receivedQuantity: 'receivedQuantity',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.GoodsReceiptNoteScalarFieldEnum = {
-  id: 'id',
-  grnNumber: 'grnNumber',
-  purchaseOrderId: 'purchaseOrderId',
-  receivedById: 'receivedById',
-  status: 'status',
-  receivedAt: 'receivedAt',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.GRNItemScalarFieldEnum = {
-  id: 'id',
-  grnId: 'grnId',
-  poItemId: 'poItemId',
-  productId: 'productId',
-  qtyReceived: 'qtyReceived',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.TruckScalarFieldEnum = {
-  id: 'id',
-  registration: 'registration',
-  model: 'model',
-  capacity: 'capacity',
-  license_plate: 'license_plate',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  vehicle_type: 'vehicle_type'
-};
-
-exports.Prisma.DeliveryScalarFieldEnum = {
-  id: 'id',
-  deliveryNo: 'deliveryNo',
-  status: 'status',
-  driverId: 'driverId',
-  truckId: 'truckId',
-  destination: 'destination',
-  estimatedKm: 'estimatedKm',
-  actualKm: 'actualKm',
-  scheduledDate: 'scheduledDate',
-  pickedUpAt: 'pickedUpAt',
-  deliveredAt: 'deliveredAt',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  deliveryOtp: 'deliveryOtp',
-  podPhotoUrl: 'podPhotoUrl',
-  podSignatureUrl: 'podSignatureUrl'
-};
-
-exports.Prisma.DeliveryDispatchNoteScalarFieldEnum = {
-  id: 'id',
-  deliveryId: 'deliveryId',
-  dispatchNoteId: 'dispatchNoteId'
-};
-
-exports.Prisma.FinanceTransactionScalarFieldEnum = {
-  id: 'id',
-  type: 'type',
-  reference_no: 'reference_no',
-  description: 'description',
-  amount: 'amount',
-  payrollId: 'payrollId',
-  payment_method: 'payment_method',
-  reference_doc: 'reference_doc',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  category: 'category',
-  transactionDate: 'transactionDate'
-};
-
-exports.Prisma.SavingsGoalScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  targetAmount: 'targetAmount',
-  currentAmount: 'currentAmount',
-  deadline: 'deadline',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.DailySpendingLimitScalarFieldEnum = {
-  id: 'id',
-  limit: 'limit',
-  date: 'date',
-  spent: 'spent',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PayrollScalarFieldEnum = {
-  id: 'id',
-  payroll_no: 'payroll_no',
-  status: 'status',
-  userId: 'userId',
-  base_salary: 'base_salary',
-  allowances: 'allowances',
-  deductions: 'deductions',
-  net_salary: 'net_salary',
-  period_start: 'period_start',
-  period_end: 'period_end',
-  paid_date: 'paid_date',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ChartOfAccountScalarFieldEnum = {
-  id: 'id',
-  account_code: 'account_code',
-  account_name: 'account_name',
-  account_type: 'account_type',
-  parent_id: 'parent_id',
-  category: 'category',
-  subcategory: 'subcategory',
-  is_active: 'is_active',
-  is_system: 'is_system',
-  current_balance: 'current_balance',
-  description: 'description',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.JournalScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  name: 'name',
-  type: 'type',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.FiscalYearScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.FiscalPeriodScalarFieldEnum = {
-  id: 'id',
-  fiscalYearId: 'fiscalYearId',
-  name: 'name',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  isLocked: 'isLocked',
-  lockedAt: 'lockedAt',
-  lockedById: 'lockedById'
-};
-
-exports.Prisma.JournalEntryScalarFieldEnum = {
-  id: 'id',
-  entry_no: 'entry_no',
-  entry_date: 'entry_date',
-  account_id: 'account_id',
-  debit: 'debit',
-  credit: 'credit',
-  reference_type: 'reference_type',
-  reference_id: 'reference_id',
-  batch_id: 'batch_id',
-  description: 'description',
-  notes: 'notes',
-  is_reconciled: 'is_reconciled',
-  reconciled_date: 'reconciled_date',
-  created_by: 'created_by',
-  approved_by: 'approved_by',
-  approved_date: 'approved_date',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  journal_id: 'journal_id',
-  period_id: 'period_id'
-};
-
-exports.Prisma.BudgetScalarFieldEnum = {
-  id: 'id',
-  budget_name: 'budget_name',
-  fiscal_year: 'fiscal_year',
-  account_id: 'account_id',
-  period_type: 'period_type',
-  period_start: 'period_start',
-  period_end: 'period_end',
-  budgeted_amount: 'budgeted_amount',
-  actual_amount: 'actual_amount',
-  variance: 'variance',
-  variance_percent: 'variance_percent',
-  status: 'status',
-  created_by: 'created_by',
-  approved_by: 'approved_by',
-  approved_date: 'approved_date',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BankStatementScalarFieldEnum = {
-  id: 'id',
-  account_id: 'account_id',
-  filename: 'filename',
-  upload_date: 'upload_date',
-  uploaded_by: 'uploaded_by',
-  start_date: 'start_date',
-  end_date: 'end_date',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BankStatementLineScalarFieldEnum = {
-  id: 'id',
-  statement_id: 'statement_id',
-  date: 'date',
-  description: 'description',
-  amount: 'amount',
-  reference: 'reference',
-  is_reconciled: 'is_reconciled',
-  reconciled_date: 'reconciled_date',
-  journal_entry_id: 'journal_entry_id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.AccountReceivableScalarFieldEnum = {
-  id: 'id',
-  invoice_no: 'invoice_no',
-  customer_name: 'customer_name',
-  customer_email: 'customer_email',
-  customer_phone: 'customer_phone',
-  total_amount: 'total_amount',
-  paid_amount: 'paid_amount',
-  balance: 'balance',
-  invoice_date: 'invoice_date',
-  due_date: 'due_date',
-  paid_date: 'paid_date',
-  status: 'status',
-  aging_days: 'aging_days',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ARPaymentScalarFieldEnum = {
-  id: 'id',
-  payment_no: 'payment_no',
-  ar_id: 'ar_id',
-  amount: 'amount',
-  payment_method: 'payment_method',
-  payment_date: 'payment_date',
-  bank_name: 'bank_name',
-  check_no: 'check_no',
-  transaction_id: 'transaction_id',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.AccountPayableScalarFieldEnum = {
-  id: 'id',
-  bill_no: 'bill_no',
-  vendor_name: 'vendor_name',
-  vendor_email: 'vendor_email',
-  vendor_phone: 'vendor_phone',
-  total_amount: 'total_amount',
-  paid_amount: 'paid_amount',
-  balance: 'balance',
-  bill_date: 'bill_date',
-  due_date: 'due_date',
-  paid_date: 'paid_date',
-  status: 'status',
-  aging_days: 'aging_days',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.APPaymentScalarFieldEnum = {
-  id: 'id',
-  payment_no: 'payment_no',
-  ap_id: 'ap_id',
-  amount: 'amount',
-  payment_method: 'payment_method',
-  payment_date: 'payment_date',
-  bank_name: 'bank_name',
-  check_no: 'check_no',
-  transaction_id: 'transaction_id',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BankAccountScalarFieldEnum = {
-  id: 'id',
-  account_name: 'account_name',
-  account_number: 'account_number',
-  bank_name: 'bank_name',
-  branch: 'branch',
-  account_type: 'account_type',
-  currency: 'currency',
-  current_balance: 'current_balance',
-  available_balance: 'available_balance',
-  overdraft_limit: 'overdraft_limit',
-  is_active: 'is_active',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BankTransactionScalarFieldEnum = {
-  id: 'id',
-  transaction_no: 'transaction_no',
-  bank_account_id: 'bank_account_id',
-  transaction_type: 'transaction_type',
-  amount: 'amount',
-  balance_after: 'balance_after',
-  description: 'description',
-  reference_no: 'reference_no',
-  category: 'category',
-  is_reconciled: 'is_reconciled',
-  reconciled_date: 'reconciled_date',
-  transaction_date: 'transaction_date',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.FinancialForecastScalarFieldEnum = {
-  id: 'id',
-  forecast_name: 'forecast_name',
-  forecast_type: 'forecast_type',
-  fiscal_year: 'fiscal_year',
-  period_start: 'period_start',
-  period_end: 'period_end',
-  forecast_data: 'forecast_data',
-  actual_data: 'actual_data',
-  accuracy_score: 'accuracy_score',
-  mape: 'mape',
-  model_type: 'model_type',
-  model_params: 'model_params',
-  status: 'status',
-  created_by: 'created_by',
-  notes: 'notes',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.FinancialAlertScalarFieldEnum = {
-  id: 'id',
-  alert_type: 'alert_type',
-  severity: 'severity',
-  title: 'title',
-  message: 'message',
-  threshold_value: 'threshold_value',
-  current_value: 'current_value',
-  status: 'status',
-  acknowledged_by: 'acknowledged_by',
-  acknowledged_at: 'acknowledged_at',
-  resolved_at: 'resolved_at',
-  recipients: 'recipients',
-  metadata: 'metadata',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.TaxRecordScalarFieldEnum = {
+exports.Prisma.Tax_recordsScalarFieldEnum = {
   id: 'id',
   tax_type: 'tax_type',
   tax_period: 'tax_period',
@@ -966,209 +1089,69 @@ exports.Prisma.TaxRecordScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.LeaveTypeScalarFieldEnum = {
+exports.Prisma.Transfer_issuesScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  transferId: 'transferId',
+  category: 'category',
   description: 'description',
-  daysAllowed: 'daysAllowed',
-  carryOver: 'carryOver',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.LeaveAllocationScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  leaveTypeId: 'leaveTypeId',
-  year: 'year',
-  allocated: 'allocated',
-  used: 'used',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.LeaveRequestScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  leaveTypeId: 'leaveTypeId',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  days: 'days',
-  reason: 'reason',
   status: 'status',
-  processedBy: 'processedBy',
-  processedAt: 'processedAt',
+  raisedById: 'raisedById',
+  resolution: 'resolution',
+  resolvedById: 'resolvedById',
+  resolvedAt: 'resolvedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.JobPostingScalarFieldEnum = {
+exports.Prisma.Transfer_itemsScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  description: 'description',
-  department: 'department',
-  location: 'location',
-  type: 'type',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  productId: 'productId',
+  transferId: 'transferId',
+  batchId: 'batchId',
+  damaged_qty: 'damaged_qty',
+  dispatched_qty: 'dispatched_qty',
+  received_qty: 'received_qty',
+  requested_qty: 'requested_qty',
+  unitCost: 'unitCost',
+  picked_qty: 'picked_qty'
 };
 
-exports.Prisma.ApplicantScalarFieldEnum = {
+exports.Prisma.TrucksScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
-  resumeUrl: 'resumeUrl',
-  status: 'status',
-  jobPostingId: 'jobPostingId',
+  registration: 'registration',
+  model: 'model',
+  capacity: 'capacity',
+  license_plate: 'license_plate',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  notes: 'notes'
+  vehicle_type: 'vehicle_type'
 };
 
-exports.Prisma.InterviewScalarFieldEnum = {
-  id: 'id',
-  applicantId: 'applicantId',
-  interviewerId: 'interviewerId',
-  scheduledAt: 'scheduledAt',
-  feedback: 'feedback',
-  rating: 'rating',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.GoalScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  description: 'description',
-  targetDate: 'targetDate',
-  progress: 'progress',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PerformanceEvaluationScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  evaluatorId: 'evaluatorId',
-  period: 'period',
-  date: 'date',
-  ratings: 'ratings',
-  comments: 'comments',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.DevelopmentPlanScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  title: 'title',
-  description: 'description',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BenefitScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  type: 'type',
-  description: 'description',
-  provider: 'provider',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.BenefitEnrollmentScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  benefitId: 'benefitId',
-  enrolledAt: 'enrolledAt',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ModuleScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  code: 'code',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.PermissionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  code: 'code',
-  moduleId: 'moduleId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.RoleScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  code: 'code',
-  description: 'description',
-  isSystem: 'isSystem',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.RolePermissionScalarFieldEnum = {
-  roleId: 'roleId',
-  permissionId: 'permissionId',
-  scope: 'scope'
-};
-
-exports.Prisma.RoleAssignmentScalarFieldEnum = {
+exports.Prisma.User_rolesScalarFieldEnum = {
   userId: 'userId',
   roleId: 'roleId'
 };
 
-exports.Prisma.AuditLogScalarFieldEnum = {
+exports.Prisma.UsersScalarFieldEnum = {
   id: 'id',
-  entityType: 'entityType',
-  entityId: 'entityId',
-  action: 'action',
-  userId: 'userId',
-  changes: 'changes',
-  ipAddress: 'ipAddress',
-  timestamp: 'timestamp'
+  email: 'email',
+  password: 'password',
+  name: 'name',
+  phone: 'phone',
+  branchId: 'branchId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  salesPrefix: 'salesPrefix',
+  lastSequence: 'lastSequence',
+  hasSystemAccess: 'hasSystemAccess',
+  role: 'role',
+  employee_code: 'employee_code',
+  department_id: 'department_id'
 };
 
-exports.Prisma.JournalHeaderScalarFieldEnum = {
-  id: 'id',
-  entry_no: 'entry_no',
-  entry_date: 'entry_date',
-  period_id: 'period_id',
-  journal_id: 'journal_id',
-  branch_id: 'branch_id',
-  description: 'description',
-  total_debit: 'total_debit',
-  total_credit: 'total_credit',
-  source_type: 'source_type',
-  source_id: 'source_id',
-  created_by: 'created_by',
-  created_at: 'created_at'
-};
-
-exports.Prisma.JournalLineScalarFieldEnum = {
-  id: 'id',
-  header_id: 'header_id',
-  account_id: 'account_id',
-  line_no: 'line_no',
-  description: 'description',
-  debit: 'debit',
-  credit: 'credit'
-};
-
-exports.Prisma.VATTransactionScalarFieldEnum = {
+exports.Prisma.Vat_transactionsScalarFieldEnum = {
   id: 'id',
   transaction_no: 'transaction_no',
   vat_type: 'vat_type',
@@ -1192,15 +1175,32 @@ exports.Prisma.VATTransactionScalarFieldEnum = {
   created_at: 'created_at'
 };
 
-exports.Prisma.NotificationScalarFieldEnum = {
+exports.Prisma.VendorsScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  title: 'title',
-  message: 'message',
-  type: 'type',
-  link: 'link',
-  isRead: 'isRead',
-  createdAt: 'createdAt'
+  code: 'code',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  tax_id: 'tax_id',
+  website: 'website',
+  paymentTerms: 'paymentTerms',
+  leadTimeDays: 'leadTimeDays',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WarehousesScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  location: 'location',
+  capacity: 'capacity',
+  branchId: 'branchId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -1232,68 +1232,247 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
-exports.ProductType = exports.$Enums.ProductType = {
-  physical: 'physical',
-  digital: 'digital',
-  service: 'service'
+exports.ap_status = exports.$Enums.ap_status = {
+  outstanding: 'outstanding',
+  partial: 'partial',
+  paid: 'paid',
+  overdue: 'overdue'
 };
 
-exports.ProductStatus = exports.$Enums.ProductStatus = {
-  active: 'active',
-  inactive: 'inactive',
-  discontinued: 'discontinued'
+exports.ar_status = exports.$Enums.ar_status = {
+  outstanding: 'outstanding',
+  partial: 'partial',
+  paid: 'paid',
+  overdue: 'overdue',
+  written_off: 'written_off'
 };
 
-exports.InventoryStatus = exports.$Enums.InventoryStatus = {
+exports.payment_method = exports.$Enums.payment_method = {
+  cash: 'cash',
+  card: 'card',
+  mpesa: 'mpesa',
+  cheque: 'cheque',
+  bank_transfer: 'bank_transfer'
+};
+
+exports.ApplicantStatus = exports.$Enums.ApplicantStatus = {
+  NEW: 'NEW',
+  REVIEWING: 'REVIEWING',
+  INTERVIEWING: 'INTERVIEWING',
+  OFFERED: 'OFFERED',
+  HIRED: 'HIRED',
+  REJECTED: 'REJECTED'
+};
+
+exports.approval_type = exports.$Enums.approval_type = {
+  VENDOR_CHANGE: 'VENDOR_CHANGE',
+  PO_APPROVAL: 'PO_APPROVAL',
+  TRANSFER_APPROVAL: 'TRANSFER_APPROVAL',
+  PRICE_ADJUSTMENT: 'PRICE_ADJUSTMENT',
+  STOCK_ADJUSTMENT: 'STOCK_ADJUSTMENT'
+};
+
+exports.approval_status = exports.$Enums.approval_status = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+exports.AuditAction = exports.$Enums.AuditAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE'
+};
+
+exports.bank_account_type = exports.$Enums.bank_account_type = {
+  checking: 'checking',
+  savings: 'savings',
+  credit_line: 'credit_line',
+  money_market: 'money_market'
+};
+
+exports.transaction_type = exports.$Enums.transaction_type = {
+  income: 'income',
+  expense: 'expense',
+  transfer: 'transfer',
+  adjustment: 'adjustment'
+};
+
+exports.inventory_status = exports.$Enums.inventory_status = {
   in_stock: 'in_stock',
   low_stock: 'low_stock',
   out_of_stock: 'out_of_stock',
   discontinued: 'discontinued'
 };
 
-exports.MovementType = exports.$Enums.MovementType = {
-  INBOUND: 'INBOUND',
-  OUTBOUND: 'OUTBOUND',
-  TRANSFER_IN: 'TRANSFER_IN',
-  TRANSFER_OUT: 'TRANSFER_OUT',
-  ADJUSTMENT: 'ADJUSTMENT'
+exports.period_type = exports.$Enums.period_type = {
+  monthly: 'monthly',
+  quarterly: 'quarterly',
+  annually: 'annually'
 };
 
-exports.TransferStatus = exports.$Enums.TransferStatus = {
-  DRAFT: 'DRAFT',
-  PENDING_APPROVAL: 'PENDING_APPROVAL',
-  APPROVED: 'APPROVED',
-  PICKING: 'PICKING',
-  VERIFIED: 'VERIFIED',
-  DISPATCHED: 'DISPATCHED',
-  PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
-  RECEIVED: 'RECEIVED',
-  CANCELLED: 'CANCELLED',
-  DISCREPANCY: 'DISCREPANCY'
+exports.budget_status = exports.$Enums.budget_status = {
+  draft: 'draft',
+  submitted: 'submitted',
+  approved: 'approved',
+  active: 'active',
+  closed: 'closed'
 };
 
-exports.DispatchMode = exports.$Enums.DispatchMode = {
-  RIDER: 'RIDER',
-  TRUCK: 'TRUCK'
-};
-
-exports.IssueStatus = exports.$Enums.IssueStatus = {
+exports.cashier_session_status = exports.$Enums.cashier_session_status = {
   OPEN: 'OPEN',
-  INVESTIGATING: 'INVESTIGATING',
-  RESOLVED: 'RESOLVED',
-  DISMISSED: 'DISMISSED'
+  CLOSED: 'CLOSED',
+  DISCREPANCY: 'DISCREPANCY',
+  RECONCILED: 'RECONCILED'
 };
 
-exports.SalesDocumentType = exports.$Enums.SalesDocumentType = {
+exports.account_type = exports.$Enums.account_type = {
+  asset: 'asset',
+  liability: 'liability',
+  equity: 'equity',
+  revenue: 'revenue',
+  expense: 'expense'
+};
+
+exports.delivery_status = exports.$Enums.delivery_status = {
+  pending: 'pending',
+  assigned: 'assigned',
+  in_transit: 'in_transit',
+  delivered: 'delivered',
+  failed: 'failed',
+  rescheduled: 'rescheduled',
+  returned_to_base: 'returned_to_base'
+};
+
+exports.sales_document_type = exports.$Enums.sales_document_type = {
   DRAFT: 'DRAFT',
   QUOTE: 'QUOTE',
-  INVOICE: 'INVOICE',
   OPEN_INVOICE: 'OPEN_INVOICE',
   CLOSED_INVOICE: 'CLOSED_INVOICE',
-  CREDIT_NOTE: 'CREDIT_NOTE'
+  CREDIT_NOTE: 'CREDIT_NOTE',
+  INVOICE: 'INVOICE'
 };
 
-exports.SalesDocumentStatus = exports.$Enums.SalesDocumentStatus = {
+exports.alert_type = exports.$Enums.alert_type = {
+  budget_exceeded: 'budget_exceeded',
+  low_cash_balance: 'low_cash_balance',
+  overdue_receivable: 'overdue_receivable',
+  overdue_payable: 'overdue_payable',
+  unusual_transaction: 'unusual_transaction',
+  forecast_deviation: 'forecast_deviation',
+  compliance_issue: 'compliance_issue'
+};
+
+exports.alert_severity = exports.$Enums.alert_severity = {
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+  critical: 'critical'
+};
+
+exports.alert_status = exports.$Enums.alert_status = {
+  active: 'active',
+  acknowledged: 'acknowledged',
+  resolved: 'resolved',
+  dismissed: 'dismissed'
+};
+
+exports.forecast_type = exports.$Enums.forecast_type = {
+  revenue: 'revenue',
+  expense: 'expense',
+  cashflow: 'cashflow',
+  profit: 'profit'
+};
+
+exports.forecast_status = exports.$Enums.forecast_status = {
+  draft: 'draft',
+  active: 'active',
+  archived: 'archived'
+};
+
+exports.fiscal_status = exports.$Enums.fiscal_status = {
+  open: 'open',
+  closed: 'closed',
+  locked: 'locked'
+};
+
+exports.grn_status = exports.$Enums.grn_status = {
+  COMPLETED: 'COMPLETED',
+  QUARANTINED: 'QUARANTINED'
+};
+
+exports.InterviewStatus = exports.$Enums.InterviewStatus = {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.JobPostingStatus = exports.$Enums.JobPostingStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  CLOSED: 'CLOSED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.journal_type = exports.$Enums.journal_type = {
+  sale: 'sale',
+  purchase: 'purchase',
+  cash: 'cash',
+  bank: 'bank',
+  general: 'general'
+};
+
+exports.LeaveStatus = exports.$Enums.LeaveStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.payroll_status = exports.$Enums.payroll_status = {
+  draft: 'draft',
+  submitted: 'submitted',
+  approved: 'approved',
+  paid: 'paid',
+  reversed: 'reversed'
+};
+
+exports.PerformanceStatus = exports.$Enums.PerformanceStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  OVERDUE: 'OVERDUE'
+};
+
+exports.product_type = exports.$Enums.product_type = {
+  physical: 'physical',
+  digital: 'digital',
+  service: 'service'
+};
+
+exports.product_status = exports.$Enums.product_status = {
+  active: 'active',
+  inactive: 'inactive',
+  discontinued: 'discontinued'
+};
+
+exports.purchase_order_status = exports.$Enums.purchase_order_status = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
+  RECEIVED: 'RECEIVED',
+  CLOSED: 'CLOSED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.AccessScope = exports.$Enums.AccessScope = {
+  GLOBAL: 'GLOBAL',
+  BRANCH: 'BRANCH',
+  OWN: 'OWN'
+};
+
+exports.sales_document_status = exports.$Enums.sales_document_status = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
   PARTIALLY_PAID: 'PARTIALLY_PAID',
@@ -1307,22 +1486,14 @@ exports.SalesDocumentStatus = exports.$Enums.SalesDocumentStatus = {
   CLOSED: 'CLOSED'
 };
 
-exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+exports.payment_status = exports.$Enums.payment_status = {
   UNPAID: 'UNPAID',
   PARTIALLY_PAID: 'PARTIALLY_PAID',
   PAID: 'PAID',
   REFUNDED: 'REFUNDED'
 };
 
-exports.PaymentMethod = exports.$Enums.PaymentMethod = {
-  cash: 'cash',
-  card: 'card',
-  mpesa: 'mpesa',
-  cheque: 'cheque',
-  bank_transfer: 'bank_transfer'
-};
-
-exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {
+exports.sales_order_status = exports.$Enums.sales_order_status = {
   DRAFT: 'DRAFT',
   APPROVED: 'APPROVED',
   DISPATCHED: 'DISPATCHED',
@@ -1332,163 +1503,33 @@ exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {
   DELIVERY_FAILED: 'DELIVERY_FAILED'
 };
 
-exports.CashierSessionStatus = exports.$Enums.CashierSessionStatus = {
-  OPEN: 'OPEN',
-  CLOSED: 'CLOSED',
-  DISCREPANCY: 'DISCREPANCY',
-  RECONCILED: 'RECONCILED'
+exports.movement_type = exports.$Enums.movement_type = {
+  INBOUND: 'INBOUND',
+  OUTBOUND: 'OUTBOUND',
+  TRANSFER_IN: 'TRANSFER_IN',
+  TRANSFER_OUT: 'TRANSFER_OUT',
+  ADJUSTMENT: 'ADJUSTMENT'
 };
 
-exports.PurchaseOrderStatus = exports.$Enums.PurchaseOrderStatus = {
+exports.transfer_status = exports.$Enums.transfer_status = {
   DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
+  PENDING_APPROVAL: 'PENDING_APPROVAL',
   APPROVED: 'APPROVED',
+  DISPATCHED: 'DISPATCHED',
   PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
   RECEIVED: 'RECEIVED',
-  CLOSED: 'CLOSED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  DISCREPANCY: 'DISCREPANCY',
+  PICKING: 'PICKING',
+  VERIFIED: 'VERIFIED'
 };
 
-exports.ApprovalType = exports.$Enums.ApprovalType = {
-  VENDOR_CHANGE: 'VENDOR_CHANGE',
-  PO_APPROVAL: 'PO_APPROVAL',
-  TRANSFER_APPROVAL: 'TRANSFER_APPROVAL',
-  PRICE_ADJUSTMENT: 'PRICE_ADJUSTMENT',
-  STOCK_ADJUSTMENT: 'STOCK_ADJUSTMENT'
+exports.dispatch_mode = exports.$Enums.dispatch_mode = {
+  RIDER: 'RIDER',
+  TRUCK: 'TRUCK'
 };
 
-exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
-};
-
-exports.GRNStatus = exports.$Enums.GRNStatus = {
-  COMPLETED: 'COMPLETED',
-  QUARANTINED: 'QUARANTINED'
-};
-
-exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
-  pending: 'pending',
-  assigned: 'assigned',
-  in_transit: 'in_transit',
-  delivered: 'delivered',
-  failed: 'failed',
-  rescheduled: 'rescheduled',
-  returned_to_base: 'returned_to_base'
-};
-
-exports.TransactionType = exports.$Enums.TransactionType = {
-  income: 'income',
-  expense: 'expense',
-  transfer: 'transfer',
-  adjustment: 'adjustment'
-};
-
-exports.PayrollStatus = exports.$Enums.PayrollStatus = {
-  draft: 'draft',
-  submitted: 'submitted',
-  approved: 'approved',
-  paid: 'paid',
-  reversed: 'reversed'
-};
-
-exports.AccountType = exports.$Enums.AccountType = {
-  asset: 'asset',
-  liability: 'liability',
-  equity: 'equity',
-  revenue: 'revenue',
-  expense: 'expense'
-};
-
-exports.JournalType = exports.$Enums.JournalType = {
-  sale: 'sale',
-  purchase: 'purchase',
-  cash: 'cash',
-  bank: 'bank',
-  general: 'general'
-};
-
-exports.FiscalStatus = exports.$Enums.FiscalStatus = {
-  open: 'open',
-  closed: 'closed',
-  locked: 'locked'
-};
-
-exports.PeriodType = exports.$Enums.PeriodType = {
-  monthly: 'monthly',
-  quarterly: 'quarterly',
-  annually: 'annually'
-};
-
-exports.BudgetStatus = exports.$Enums.BudgetStatus = {
-  draft: 'draft',
-  submitted: 'submitted',
-  approved: 'approved',
-  active: 'active',
-  closed: 'closed'
-};
-
-exports.ARStatus = exports.$Enums.ARStatus = {
-  outstanding: 'outstanding',
-  partial: 'partial',
-  paid: 'paid',
-  overdue: 'overdue',
-  written_off: 'written_off'
-};
-
-exports.APStatus = exports.$Enums.APStatus = {
-  outstanding: 'outstanding',
-  partial: 'partial',
-  paid: 'paid',
-  overdue: 'overdue'
-};
-
-exports.BankAccountType = exports.$Enums.BankAccountType = {
-  checking: 'checking',
-  savings: 'savings',
-  credit_line: 'credit_line',
-  money_market: 'money_market'
-};
-
-exports.ForecastType = exports.$Enums.ForecastType = {
-  revenue: 'revenue',
-  expense: 'expense',
-  cashflow: 'cashflow',
-  profit: 'profit'
-};
-
-exports.ForecastStatus = exports.$Enums.ForecastStatus = {
-  draft: 'draft',
-  active: 'active',
-  archived: 'archived'
-};
-
-exports.AlertType = exports.$Enums.AlertType = {
-  budget_exceeded: 'budget_exceeded',
-  low_cash_balance: 'low_cash_balance',
-  overdue_receivable: 'overdue_receivable',
-  overdue_payable: 'overdue_payable',
-  unusual_transaction: 'unusual_transaction',
-  forecast_deviation: 'forecast_deviation',
-  compliance_issue: 'compliance_issue'
-};
-
-exports.AlertSeverity = exports.$Enums.AlertSeverity = {
-  low: 'low',
-  medium: 'medium',
-  high: 'high',
-  critical: 'critical'
-};
-
-exports.AlertStatus = exports.$Enums.AlertStatus = {
-  active: 'active',
-  acknowledged: 'acknowledged',
-  resolved: 'resolved',
-  dismissed: 'dismissed'
-};
-
-exports.TaxType = exports.$Enums.TaxType = {
+exports.tax_type = exports.$Enums.tax_type = {
   vat: 'vat',
   income_tax: 'income_tax',
   payroll_tax: 'payroll_tax',
@@ -1496,59 +1537,18 @@ exports.TaxType = exports.$Enums.TaxType = {
   sales_tax: 'sales_tax'
 };
 
-exports.TaxStatus = exports.$Enums.TaxStatus = {
+exports.tax_status = exports.$Enums.tax_status = {
   pending: 'pending',
   filed: 'filed',
   paid: 'paid',
   overdue: 'overdue'
 };
 
-exports.LeaveStatus = exports.$Enums.LeaveStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED',
-  CANCELLED: 'CANCELLED'
-};
-
-exports.JobPostingStatus = exports.$Enums.JobPostingStatus = {
-  DRAFT: 'DRAFT',
-  PUBLISHED: 'PUBLISHED',
-  CLOSED: 'CLOSED',
-  ARCHIVED: 'ARCHIVED'
-};
-
-exports.ApplicantStatus = exports.$Enums.ApplicantStatus = {
-  NEW: 'NEW',
-  REVIEWING: 'REVIEWING',
-  INTERVIEWING: 'INTERVIEWING',
-  OFFERED: 'OFFERED',
-  HIRED: 'HIRED',
-  REJECTED: 'REJECTED'
-};
-
-exports.InterviewStatus = exports.$Enums.InterviewStatus = {
-  SCHEDULED: 'SCHEDULED',
-  COMPLETED: 'COMPLETED',
-  CANCELLED: 'CANCELLED'
-};
-
-exports.PerformanceStatus = exports.$Enums.PerformanceStatus = {
-  NOT_STARTED: 'NOT_STARTED',
-  IN_PROGRESS: 'IN_PROGRESS',
-  COMPLETED: 'COMPLETED',
-  OVERDUE: 'OVERDUE'
-};
-
-exports.AccessScope = exports.$Enums.AccessScope = {
-  GLOBAL: 'GLOBAL',
-  BRANCH: 'BRANCH',
-  OWN: 'OWN'
-};
-
-exports.AuditAction = exports.$Enums.AuditAction = {
-  CREATE: 'CREATE',
-  UPDATE: 'UPDATE',
-  DELETE: 'DELETE'
+exports.issue_status = exports.$Enums.issue_status = {
+  OPEN: 'OPEN',
+  INVESTIGATING: 'INVESTIGATING',
+  RESOLVED: 'RESOLVED',
+  DISMISSED: 'DISMISSED'
 };
 
 exports.VATType = exports.$Enums.VATType = {
@@ -1557,83 +1557,83 @@ exports.VATType = exports.$Enums.VATType = {
 };
 
 exports.Prisma.ModelName = {
-  User: 'User',
-  Branch: 'Branch',
-  EmployeeTransfer: 'EmployeeTransfer',
-  Warehouse: 'Warehouse',
-  Product: 'Product',
-  Category: 'Category',
-  Subcategory: 'Subcategory',
-  BranchInventory: 'BranchInventory',
-  Inventory: 'Inventory',
-  StockBatch: 'StockBatch',
-  StockMovement: 'StockMovement',
-  StockTransfer: 'StockTransfer',
-  TransferIssue: 'TransferIssue',
-  TransferItem: 'TransferItem',
-  Customer: 'Customer',
-  SalesDocument: 'SalesDocument',
-  SalesDocumentItem: 'SalesDocumentItem',
-  Payment: 'Payment',
-  DocumentSequence: 'DocumentSequence',
-  CustomerCodeSetting: 'CustomerCodeSetting',
-  Department: 'Department',
-  SalesOrder: 'SalesOrder',
-  SOItem: 'SOItem',
-  DispatchNote: 'DispatchNote',
-  DispatchItem: 'DispatchItem',
-  CashierSession: 'CashierSession',
-  Vendor: 'Vendor',
-  PurchaseOrder: 'PurchaseOrder',
-  ApprovalRequest: 'ApprovalRequest',
-  PurchaseOrderItem: 'PurchaseOrderItem',
-  GoodsReceiptNote: 'GoodsReceiptNote',
-  GRNItem: 'GRNItem',
-  Truck: 'Truck',
-  Delivery: 'Delivery',
-  DeliveryDispatchNote: 'DeliveryDispatchNote',
-  FinanceTransaction: 'FinanceTransaction',
-  SavingsGoal: 'SavingsGoal',
-  DailySpendingLimit: 'DailySpendingLimit',
-  Payroll: 'Payroll',
-  ChartOfAccount: 'ChartOfAccount',
-  Journal: 'Journal',
-  FiscalYear: 'FiscalYear',
-  FiscalPeriod: 'FiscalPeriod',
-  JournalEntry: 'JournalEntry',
-  Budget: 'Budget',
-  BankStatement: 'BankStatement',
-  BankStatementLine: 'BankStatementLine',
-  AccountReceivable: 'AccountReceivable',
-  ARPayment: 'ARPayment',
-  AccountPayable: 'AccountPayable',
-  APPayment: 'APPayment',
-  BankAccount: 'BankAccount',
-  BankTransaction: 'BankTransaction',
-  FinancialForecast: 'FinancialForecast',
-  FinancialAlert: 'FinancialAlert',
-  TaxRecord: 'TaxRecord',
-  LeaveType: 'LeaveType',
-  LeaveAllocation: 'LeaveAllocation',
-  LeaveRequest: 'LeaveRequest',
-  JobPosting: 'JobPosting',
-  Applicant: 'Applicant',
-  Interview: 'Interview',
-  Goal: 'Goal',
-  PerformanceEvaluation: 'PerformanceEvaluation',
-  DevelopmentPlan: 'DevelopmentPlan',
-  Benefit: 'Benefit',
-  BenefitEnrollment: 'BenefitEnrollment',
-  Module: 'Module',
-  Permission: 'Permission',
-  Role: 'Role',
-  RolePermission: 'RolePermission',
-  RoleAssignment: 'RoleAssignment',
-  AuditLog: 'AuditLog',
-  JournalHeader: 'JournalHeader',
-  JournalLine: 'JournalLine',
-  VATTransaction: 'VATTransaction',
-  Notification: 'Notification'
+  accounts_payable: 'accounts_payable',
+  accounts_receivable: 'accounts_receivable',
+  ap_payments: 'ap_payments',
+  applicants: 'applicants',
+  approval_requests: 'approval_requests',
+  ar_payments: 'ar_payments',
+  audit_logs: 'audit_logs',
+  bank_accounts: 'bank_accounts',
+  bank_statement_lines: 'bank_statement_lines',
+  bank_statements: 'bank_statements',
+  bank_transactions: 'bank_transactions',
+  benefit_enrollments: 'benefit_enrollments',
+  benefits: 'benefits',
+  branch_inventory: 'branch_inventory',
+  branches: 'branches',
+  budgets: 'budgets',
+  cashier_sessions: 'cashier_sessions',
+  categories: 'categories',
+  chart_of_accounts: 'chart_of_accounts',
+  customer_code_settings: 'customer_code_settings',
+  customers: 'customers',
+  daily_spending_limits: 'daily_spending_limits',
+  deliveries: 'deliveries',
+  delivery_dispatch_notes: 'delivery_dispatch_notes',
+  departments: 'departments',
+  development_plans: 'development_plans',
+  dispatch_items: 'dispatch_items',
+  dispatch_notes: 'dispatch_notes',
+  document_sequences: 'document_sequences',
+  employee_transfers: 'employee_transfers',
+  finance_transactions: 'finance_transactions',
+  financial_alerts: 'financial_alerts',
+  financial_forecasts: 'financial_forecasts',
+  fiscal_periods: 'fiscal_periods',
+  fiscal_years: 'fiscal_years',
+  goods_receipt_notes: 'goods_receipt_notes',
+  grn_items: 'grn_items',
+  interviews: 'interviews',
+  inventory: 'inventory',
+  job_postings: 'job_postings',
+  journal_entries: 'journal_entries',
+  journal_headers: 'journal_headers',
+  journal_lines: 'journal_lines',
+  journals: 'journals',
+  leave_allocations: 'leave_allocations',
+  leave_requests: 'leave_requests',
+  leave_types: 'leave_types',
+  modules: 'modules',
+  notifications: 'notifications',
+  payments: 'payments',
+  payroll: 'payroll',
+  performance_evaluations: 'performance_evaluations',
+  performance_goals: 'performance_goals',
+  permissions: 'permissions',
+  products: 'products',
+  purchase_order_items: 'purchase_order_items',
+  purchase_orders: 'purchase_orders',
+  role_permissions: 'role_permissions',
+  roles: 'roles',
+  sales_document_items: 'sales_document_items',
+  sales_documents: 'sales_documents',
+  sales_orders: 'sales_orders',
+  savings_goals: 'savings_goals',
+  so_items: 'so_items',
+  stock_batches: 'stock_batches',
+  stock_movements: 'stock_movements',
+  stock_transfers: 'stock_transfers',
+  subcategories: 'subcategories',
+  tax_records: 'tax_records',
+  transfer_issues: 'transfer_issues',
+  transfer_items: 'transfer_items',
+  trucks: 'trucks',
+  user_roles: 'user_roles',
+  users: 'users',
+  vat_transactions: 'vat_transactions',
+  vendors: 'vendors',
+  warehouses: 'warehouses'
 };
 
 /**

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import financeController from "./finance.controller";
+import expenseReportController from "./controller/expense-report.controller";
 import { authMiddleware } from "../../lib/auth";
 import {
   requirePermission,
@@ -270,6 +271,48 @@ router.get(
   "/top-customers-vendors",
   hasAnyPermission(["finance.gl.view", "finance.report.aging"]),
   (req, res, next) => financeController.getTopCustomersVendors(req, res, next),
+);
+
+// ============================================
+// Expense Reports (finance-department roadmap Phase 1/2)
+// See erp-finance-gap-analysis.md §1.1
+// ============================================
+router.post(
+  "/expenses",
+  requirePermission("finance.expense.create"),
+  (req, res, next) => expenseReportController.createExpenseReport(req, res, next),
+);
+router.get(
+  "/expenses",
+  hasAnyPermission(["finance.expense.view", "finance.expense.view_all"]),
+  (req, res, next) => expenseReportController.listExpenseReports(req, res, next),
+);
+router.get(
+  "/expenses/:id",
+  hasAnyPermission(["finance.expense.view", "finance.expense.view_all"]),
+  (req, res, next) => expenseReportController.getExpenseReport(req, res, next),
+);
+router.patch(
+  "/expenses/:id",
+  requirePermission("finance.expense.create"),
+  (req, res, next) => expenseReportController.updateExpenseReport(req, res, next),
+);
+router.patch(
+  "/expenses/:id/status",
+  hasAnyPermission([
+    "finance.expense.create",
+    "finance.expense.approve_standard",
+    "finance.expense.approve_high_value",
+    "finance.expense.approve_executive",
+  ]),
+  // Threshold + self-approval checks happen in the service, same pattern
+  // as purchasing's /orders/:id/status and /requisitions/:id/status.
+  (req, res, next) => expenseReportController.updateStatus(req, res, next),
+);
+router.post(
+  "/expenses/:id/post",
+  requirePermission("finance.expense.post"),
+  (req, res, next) => expenseReportController.postToGL(req, res, next),
 );
 
 export default router;

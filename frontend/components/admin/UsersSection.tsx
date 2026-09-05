@@ -24,14 +24,24 @@ export default function UsersSection() {
   const { token } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [grantingAccess, setGrantingAccess] = useState(false);
 
   useEffect(() => {
     if (token) {
+      setError(null);
       fetchUsers(token)
         .then(setUsers)
-        .catch(console.error)
+        .catch((err) => {
+          console.error(err);
+          // Previously this only logged to the console — the table then
+          // rendered its normal "No data available" empty state, which reads
+          // as "there are simply no users" rather than "this request failed"
+          // (e.g. the caller's role lacks the admin.user.view permission).
+          // Surface the real reason instead.
+          setError(err instanceof Error ? err.message : "Failed to load users");
+        })
         .finally(() => setLoading(false));
     }
   }, [token]);
@@ -90,12 +100,19 @@ export default function UsersSection() {
         </Button>
       </div>
 
+      {error && (
+        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          Couldn't load users: {error}
+        </div>
+      )}
+
       <AdminTable
         title="System Users"
         data={users}
         columns={columns}
         loading={loading}
         searchKeys={["name", "email", "phone", "role", "branch.name"]}
+        emptyText={error ? "Users could not be loaded" : "No data available"}
         actions={(user) => (
           <Button variant="outline" size="sm" onClick={() => setEditingUser(user)}>
             Edit

@@ -16,6 +16,10 @@ const benefitsController = new BenefitsController();
 // Dashboard Stats
 router.get("/stats", authenticate, requirePermission('hr.employee.view'), hrController.getHRStats as any);
 
+// Departments (reference data — open to any authenticated user, see
+// hr.controller.ts's getDepartments doc comment)
+router.get("/departments", authenticate, hrController.getDepartments as any);
+
 // Leave Types
 router.get("/leaves/types", authenticate, hrController.getLeaveTypes as any);
 

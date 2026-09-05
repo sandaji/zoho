@@ -149,27 +149,85 @@ class PurchasingService {
   }
 
   /**
-   * Update an existing purchase order
+   * Update an existing purchase order (DRAFT only — backend enforces this)
    * @param token - Authentication token
    * @param orderId - Purchase order ID
    * @param orderData - Updated order data
    * @returns Updated order
    */
   async updateOrder(token: string, orderId: string, orderData: any) {
-    const response = await fetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(orderData),
-    });
+    try {
+      const response = await fetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Failed to update purchase order: ${response.statusText}`);
+      if (!response.ok) {
+        let errorMessage = `Failed to update purchase order: ${response.statusText}`;
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error?.message || errorData.message || errorMessage;
+        } catch (e) {
+          // If response body is not JSON, use status text
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to update purchase order: Unknown error");
     }
+  }
 
-    return response.json();
+  /**
+   * Update a purchase order's status (e.g. DRAFT -> SUBMITTED)
+   * @param token - Authentication token
+   * @param orderId - Purchase order ID
+   * @param status - Target status
+   */
+  async updateOrderStatus(token: string, orderId: string, status: string) {
+    try {
+      const response = await fetch(
+        `${API_URL}/v1/purchasing/orders/${orderId}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
+
+      if (!response.ok) {
+        let errorMessage = `Failed to update purchase order status: ${response.statusText}`;
+
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error?.message || errorData.message || errorMessage;
+        } catch (e) {
+          // If response body is not JSON, use status text
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      return response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("Failed to update purchase order status: Unknown error");
+    }
   }
 
   /**

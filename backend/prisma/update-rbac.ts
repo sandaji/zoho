@@ -63,6 +63,7 @@ async function main() {
     // Finance
     { code: 'finance.gl.view', name: 'View General Ledger', module: 'finance' },
     { code: 'finance.gl.create', name: 'Create GL Entries', module: 'finance' },
+    { code: 'finance.gl.approve', name: 'Approve GL Entries', module: 'finance' },
     { code: 'finance.gl.manage', name: 'Manage General Ledger', module: 'finance' },
     { code: 'finance.report.aging', name: 'View Aging Reports', module: 'finance' },
     { code: 'finance.invoice.create', name: 'Create Invoices', module: 'finance' },
@@ -71,6 +72,15 @@ async function main() {
     { code: 'finance.payment.create', name: 'Create Payments', module: 'finance' },
     { code: 'finance.payment.view', name: 'View Payments', module: 'finance' },
     { code: 'finance.settings.periods', name: 'Manage Fiscal Periods', module: 'finance' },
+
+    // Expense Reports (finance-department roadmap Phase 1/2)
+    { code: 'finance.expense.view', name: 'View Own Expense Reports', module: 'finance' },
+    { code: 'finance.expense.view_all', name: 'View All Expense Reports', module: 'finance' },
+    { code: 'finance.expense.create', name: 'Submit Expense Reports', module: 'finance' },
+    { code: 'finance.expense.post', name: 'Post Approved Expenses to GL', module: 'finance' },
+    { code: 'finance.expense.approve_standard', name: 'Approve Standard Expenses (< KSH 10,000)', module: 'finance' },
+    { code: 'finance.expense.approve_high_value', name: 'Approve High-Value Expenses (KSH 10,000 - 100,000)', module: 'finance' },
+    { code: 'finance.expense.approve_executive', name: 'Approve Executive Expenses (> KSH 100,000)', module: 'finance' },
 
     // Sales
     { code: 'sales.order.view_all', name: 'View All Sales Orders', module: 'sales' },
@@ -108,6 +118,14 @@ async function main() {
     { code: 'purchasing.vendor.manage', name: 'Manage Vendors (Create/Edit)', module: 'purchasing' },
     { code: 'purchasing.vendor.delete', name: 'Delete/Deactivate Vendors', module: 'purchasing' },
 
+    // Purchase Requisitions (pre-PO stage, finance-department roadmap Phase 1/2)
+    { code: 'purchasing.requisition.view', name: 'View Purchase Requisitions', module: 'purchasing' },
+    { code: 'purchasing.requisition.create', name: 'Create Purchase Requisitions', module: 'purchasing' },
+    { code: 'purchasing.requisition.approve_standard', name: 'Approve Standard Requisitions (< KSH 10,000)', module: 'purchasing' },
+    { code: 'purchasing.requisition.approve_high_value', name: 'Approve High-Value Requisitions (KSH 10,000 - 100,000)', module: 'purchasing' },
+    { code: 'purchasing.requisition.approve_executive', name: 'Approve Executive Requisitions (> KSH 100,000)', module: 'purchasing' },
+    { code: 'purchasing.requisition.convert', name: 'Convert Requisition to Purchase Order', module: 'purchasing' },
+
     // Audit
     { code: 'audit.log.view', name: 'View Audit Logs', module: 'audit' },
   ];
@@ -140,8 +158,24 @@ async function main() {
     { code: 'auditor', name: 'Auditor', isSystem: true, description: 'Read-only access for auditing' },
     { code: 'ceo', name: 'Managing Director / CEO', isSystem: true, description: 'Executive view' },
     { code: 'branch_manager', name: 'Branch Manager', isSystem: true, description: 'Manage specific branch' },
+    // --- Finance seniority tiers (finance-department roadmap Phase 1, see
+    // erp-finance-gap-analysis.md §3.1). The requirement asked for four
+    // tiers: Junior Accountant, Senior Accountant, Finance Manager, Finance
+    // Controller. Rather than adding a 5th role that duplicates 'director'
+    // (already used below as the top-level executive approver on both LPOs
+    // and, now, expense/requisition approvals), the mapping is:
+    //   junior_accountant  -> Junior Accountant (new, view-only)
+    //   senior_accountant  -> Senior Accountant (new: can post, cannot approve high-value)
+    //   finance_manager    -> Finance Manager (existing)
+    //   director           -> Finance Controller / Finance Director (existing, see below)
+    // 'accountant' (below) predates this tiering and overlaps with
+    // senior_accountant — kept for backward compatibility with any users
+    // already assigned that role code; assign new users to senior_accountant
+    // going forward and consider migrating 'accountant' users off it later.
+    { code: 'junior_accountant', name: 'Junior Accountant', isSystem: true, description: 'View-only access to finance records; cannot post or approve' },
+    { code: 'senior_accountant', name: 'Senior Accountant', isSystem: true, description: 'Can post journal entries and submit expenses/requisitions; cannot approve high-value transactions' },
     { code: 'finance_manager', name: 'Finance Manager', isSystem: true, description: 'Head of Finance' },
-    { code: 'accountant', name: 'Accountant', isSystem: true, description: 'Daily accounting operations' },
+    { code: 'accountant', name: 'Accountant (legacy — see senior_accountant)', isSystem: true, description: 'Daily accounting operations' },
     { code: 'cashier', name: 'Cashier', isSystem: true, description: 'POS and basic sales' },
     { code: 'sales_manager', name: 'Sales Manager', isSystem: true, description: 'Head of Sales' },
     { code: 'sales_rep', name: 'Sales Representative', isSystem: true, description: 'Sales operations' },
@@ -151,6 +185,17 @@ async function main() {
     { code: 'purchasing_officer', name: 'Purchasing Officer', isSystem: true, description: 'Purchasing operations' },
     { code: 'hr_manager', name: 'HR Manager', isSystem: true, description: 'Head of HR' },
     { code: 'hr_officer', name: 'HR Officer', isSystem: true, description: 'HR operations' },
+    // NOTE: 'director' and 'procurement' were previously referenced below in
+    // assignAll() calls without ever being created here — assign()'s
+    // roleMap.get(roleCode) silently returned undefined for both, so those
+    // permission assignments were no-ops (logged as "⚠️ Missing ID for
+    // assignment" and nothing else). Adding them here fixes that; if
+    // 'director' and 'procurement' should really just be aliases for the
+    // existing 'ceo'/'purchasing_manager' roles instead of new distinct
+    // roles, replace the role codes in the assignAll() calls below rather
+    // than keeping both this entry and the alias.
+    { code: 'director', name: 'Finance Director / Finance Controller', isSystem: true, description: 'Executive-level financial sign-off (LPOs, expenses, requisitions)' },
+    { code: 'procurement', name: 'Procurement Staff', isSystem: true, description: 'General procurement operations' },
   ];
 
   const roleMap = new Map<string, string>();
@@ -241,6 +286,28 @@ async function main() {
   ];
   await assignAll('accountant', accountantPerms, AccessScope.BRANCH);
 
+  // Junior Accountant: view-only across finance, expenses, and requisitions
+  // ("can only view data, not approve" — erp-finance-gap-analysis.md §3.1)
+  const juniorAccountantPerms = [
+    'finance.gl.view', 'finance.report.aging', 'finance.invoice.view', 'finance.payment.view',
+    'finance.expense.view', 'purchasing.requisition.view', 'purchasing.vendor.view',
+  ];
+  await assignAll('junior_accountant', juniorAccountantPerms, AccessScope.BRANCH);
+
+  // Senior Accountant: can post GL entries and submit expenses/requisitions,
+  // but no approve_* permissions of any kind — approval starts at Finance
+  // Manager. ("can post journal entries but cannot approve high-value
+  // requests" — erp-finance-gap-analysis.md §3.1)
+  const seniorAccountantPerms = [
+    'finance.gl.view', 'finance.gl.create', 'finance.report.aging',
+    'finance.invoice.create', 'finance.invoice.view',
+    'finance.payment.create', 'finance.payment.view',
+    'finance.expense.view', 'finance.expense.create', 'finance.expense.post',
+    'purchasing.requisition.view', 'purchasing.requisition.create',
+    'purchasing.vendor.view',
+  ];
+  await assignAll('senior_accountant', seniorAccountantPerms, AccessScope.BRANCH);
+
   // Sales Manager
   const salesManagerPerms = permissions.filter(p => p.module === 'sales').map(p => p.code);
   await assignAll('sales_manager', salesManagerPerms, AccessScope.GLOBAL);
@@ -280,6 +347,8 @@ async function main() {
     'purchasing.order.receive',
     'purchasing.vendor.view',
     'purchasing.vendor.manage',
+    'purchasing.requisition.view',
+    'purchasing.requisition.convert',
   ], AccessScope.BRANCH);
 
   // Finance Manager (Approve standard & high-value, receive goods)
@@ -288,7 +357,15 @@ async function main() {
     'purchasing.order.approve_high_value',
     'purchasing.order.view_all',
     'purchasing.order.receive',
-    'purchasing.vendor.view'
+    'purchasing.vendor.view',
+    'purchasing.requisition.view',
+    'purchasing.requisition.approve_standard',
+    'purchasing.requisition.approve_high_value',
+    'purchasing.requisition.convert',
+    'finance.expense.view_all',
+    'finance.expense.approve_standard',
+    'finance.expense.approve_high_value',
+    'finance.gl.approve',
   ], AccessScope.BRANCH);
 
   // Director (Approve all including executive, full purchasing oversight)
@@ -301,7 +378,17 @@ async function main() {
     'purchasing.order.receive',
     'purchasing.vendor.view',
     'purchasing.vendor.manage',
-    'purchasing.vendor.delete'
+    'purchasing.vendor.delete',
+    'purchasing.requisition.view',
+    'purchasing.requisition.approve_standard',
+    'purchasing.requisition.approve_high_value',
+    'purchasing.requisition.approve_executive',
+    'purchasing.requisition.convert',
+    'finance.expense.view_all',
+    'finance.expense.approve_standard',
+    'finance.expense.approve_high_value',
+    'finance.expense.approve_executive',
+    'finance.gl.approve',
   ], AccessScope.BRANCH);
 
   // HR Manager

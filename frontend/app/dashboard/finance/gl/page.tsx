@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 import { getApiUrl } from "@/lib/api-config";
@@ -52,6 +52,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 interface JournalEntry {
   id: string;
@@ -236,6 +239,118 @@ export default function GeneralLedgerPage() {
       e.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       e.account?.account_name?.toLowerCase().includes(searchQuery.toLowerCase()),
   ) : [];
+
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, JournalEntry>(), []);
+  const [entriesSorting, setEntriesSorting] = useState<SortingState>([]);
+
+  const entryColumns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => new Date(row.entry_date).getTime(), {
+          id: "date",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
+          cell: (ctx) => (
+            <span className="text-sm font-medium">
+              {format(new Date(ctx.row.original.entry_date), "MMM dd, yyyy")}
+            </span>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.entry_no, {
+          id: "entryNo",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Entry No" />,
+          cell: (ctx) => (
+            <Badge variant="outline" className="font-mono text-xs">
+              {ctx.getValue()}
+            </Badge>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.account?.account_name || "", {
+          id: "account",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Account" />,
+          cell: (ctx) => (
+            <div className="flex flex-col">
+              <span className="font-medium text-sm">{ctx.row.original.account?.account_name}</span>
+              <span className="text-[10px] text-slate-400 font-mono">
+                {ctx.row.original.account?.account_code}
+              </span>
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.description, {
+          id: "description",
+          header: "Description",
+          enableSorting: false,
+          cell: (ctx) => (
+            <span className="max-w-[200px] truncate text-sm text-slate-600 block">
+              {ctx.getValue()}
+            </span>
+          ),
+        }),
+        columnHelper.accessor((row) => row.debit, {
+          id: "debit",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Debit" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right font-medium text-sm text-emerald-700">
+              {ctx.getValue() > 0 ? `KES ${ctx.getValue().toLocaleString()}` : "—"}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.credit, {
+          id: "credit",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Credit" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right font-medium text-sm text-slate-600">
+              {ctx.getValue() > 0 ? `KES ${ctx.getValue().toLocaleString()}` : "—"}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.display({
+          id: "action",
+          header: () => <div className="text-right">Action</div>,
+          enableSorting: false,
+          cell: () => (
+            <div className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-200">
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                  <DropdownMenuItem>View Details</DropdownMenuItem>
+                  <DropdownMenuItem>Export PDF</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="text-red-600">Reverse Entry</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ),
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  const entriesTable = useTable({
+    features: tableFeaturesConfig,
+    data: filtered,
+    columns: entryColumns,
+    onSortingChange: setEntriesSorting,
+    state: { sorting: entriesSorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const entryRows = entriesTable.getPrePaginatedRowModel().rows;
 
   return (
     <div className="p-6 space-y-6">
@@ -509,15 +624,20 @@ export default function GeneralLedgerPage() {
 
         <Table>
           <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Entry No</TableHead>
-              <TableHead>Account</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="text-right">Debit</TableHead>
-              <TableHead className="text-right">Credit</TableHead>
-              <TableHead className="text-right">Action</TableHead>
-            </TableRow>
+            {entriesTable.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={
+                      ["debit", "credit", "action"].includes(header.column.id) ? "text-right" : undefined
+                    }
+                  >
+                    {header.isPlaceholder ? null : <entriesTable.FlexRender header={header} />}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
             {loading ? (
@@ -530,9 +650,9 @@ export default function GeneralLedgerPage() {
                   ))}
                 </TableRow>
               ))
-            ) : filtered.length === 0 ? (
+            ) : entryRows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-40 text-center">
+                <TableCell colSpan={entryColumns.length} className="h-40 text-center">
                   <div className="flex flex-col items-center gap-2 text-slate-400">
                     <BookOpen className="h-8 w-8 opacity-40" />
                     <p className="text-sm font-medium">No journal entries found</p>
@@ -540,57 +660,13 @@ export default function GeneralLedgerPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              filtered.map((entry) => (
-                <TableRow key={entry.id} className="hover:bg-slate-50/50">
-                  <TableCell className="text-sm font-medium">
-                    {format(new Date(entry.entry_date), "MMM dd, yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="font-mono text-xs">
-                      {entry.entry_no}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium text-sm">
-                        {entry.account?.account_name}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        {entry.account?.account_code}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="max-w-[200px] truncate text-sm text-slate-600">
-                    {entry.description}
-                  </TableCell>
-                  <TableCell className="text-right font-medium text-sm text-emerald-700">
-                    {entry.debit > 0 ? `KES ${entry.debit.toLocaleString()}` : "—"}
-                  </TableCell>
-                  <TableCell className="text-right font-medium text-sm text-slate-600">
-                    {entry.credit > 0 ? `KES ${entry.credit.toLocaleString()}` : "—"}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 hover:bg-slate-200"
-                        >
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem>Export PDF</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                          Reverse Entry
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+              entryRows.map((row) => (
+                <TableRow key={row.id} className="hover:bg-slate-50/50">
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      <entriesTable.FlexRender cell={cell} />
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             )}

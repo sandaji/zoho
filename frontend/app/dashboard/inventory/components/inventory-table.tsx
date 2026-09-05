@@ -1,21 +1,32 @@
 // app/dashboard/inventory/components/inventory-table.tsx
 "use client";
-   
-import { useState } from "react";
+
+import { useState, useMemo } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
-  Search, 
-  Package, 
-  Edit, 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Search,
+  Package,
+  Edit,
   MoreHorizontal,
-  ArrowUpDown,
   Filter,
-  SlidersHorizontal
+  SlidersHorizontal,
 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 interface InventoryItem {
   id: string;
@@ -52,14 +63,12 @@ interface InventoryTableProps {
   };
 }
 
-// No longer using internal SortField/SortDirection
-
 const getStatusVariant = (status: string) => {
   switch (status) {
     case "in_stock":
       return "default";
     case "low_stock":
-      return "secondary"; // Changed from "warning" to "secondary"
+      return "secondary";
     case "out_of_stock":
       return "destructive";
     default:
@@ -89,34 +98,195 @@ const getStockColor = (current: number, min: number, max: number) => {
   return "bg-emerald-500";
 };
 
-export function InventoryTable({ 
-  items, 
-  isLoading, 
-  pagination, 
-  onSort, 
+const columnHelper = createColumnHelper<AppTableFeatures, InventoryItem>();
+
+function buildColumns(
+  onEdit?: (item: InventoryItem) => void,
+  onAdjustStock?: (item: InventoryItem) => void
+) {
+  return columnHelper.columns([
+    // Column ids match the `field` names the server-side sort API expects
+    // ("name" / "quantity" / "price"), since sorting here is fully manual —
+    // the id is passed straight through to onSort().
+    columnHelper.accessor((row) => row.name, {
+      id: "name",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Item" />,
+      cell: (ctx) => {
+        const item = ctx.row.original;
+        return (
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+              <Package className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+            </div>
+            <div className="min-w-0">
+              <Link
+                href={`/dashboard/inventory/products/${item.id}`}
+                className="text-sm font-medium text-slate-900 dark:text-white truncate hover:underline hover:text-blue-600 block"
+              >
+                {item.name}
+              </Link>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">{item.itemCode}</p>
+            </div>
+          </div>
+        );
+      },
+      sortFn: "text",
+    }),
+    columnHelper.accessor((row) => row.category, {
+      id: "category",
+      header: "Category",
+      enableSorting: false,
+      cell: (ctx) => <span className="text-sm text-slate-600 dark:text-slate-400">{ctx.getValue()}</span>,
+    }),
+    columnHelper.accessor((row) => row.currentStock, {
+      id: "quantity",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Stock Level" />,
+      cell: (ctx) => {
+        const item = ctx.row.original;
+        return (
+          <div className="flex items-center space-x-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between text-sm mb-1">
+                <span className="text-slate-600 dark:text-slate-400">
+                  {item.currentStock} {item.unit}
+                </span>
+                <span className="text-xs text-slate-500 dark:text-slate-500">Min: {item.minStock}</span>
+              </div>
+              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full ${getStockColor(item.currentStock, item.minStock, item.maxStock)}`}
+                  style={{ width: `${Math.min((item.currentStock / item.maxStock) * 100, 100)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      },
+      sortFn: "alphanumeric",
+    }),
+    columnHelper.accessor((row) => row.sellingPrice, {
+      id: "price",
+      header: ({ column }) => <DataTableColumnHeader column={column} title="Price" />,
+      cell: (ctx) => {
+        const item = ctx.row.original;
+        return (
+          <div className="text-sm">
+            <p className="text-slate-900 dark:text-white font-medium">{formatCurrency(item.sellingPrice)}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Cost: {formatCurrency(item.costPrice)}</p>
+          </div>
+        );
+      },
+      sortFn: "alphanumeric",
+    }),
+    columnHelper.accessor((row) => row.status, {
+      id: "status",
+      header: "Status",
+      enableSorting: false,
+      cell: (ctx) => (
+        <Badge variant={getStatusVariant(ctx.getValue())} className="text-xs">
+          {getStatusText(ctx.getValue())}
+        </Badge>
+      ),
+    }),
+    columnHelper.accessor((row) => row.branch, {
+      id: "branch",
+      header: "Branch",
+      enableSorting: false,
+      cell: (ctx) => <span className="text-sm text-slate-600 dark:text-slate-400">{ctx.getValue()}</span>,
+    }),
+    columnHelper.display({
+      id: "actions",
+      header: "Actions",
+      enableSorting: false,
+      cell: (ctx) => {
+        const item = ctx.row.original;
+        return (
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+              onClick={() => onEdit?.(item)}
+              title="Edit product"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+              onClick={() => onAdjustStock?.(item)}
+              title="Adjust stock"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      },
+    }),
+  ]);
+}
+
+export function InventoryTable({
+  items,
+  isLoading,
+  pagination,
+  onSort,
   onPageChange,
   onEdit,
   onAdjustStock,
-  currentSort
+  currentSort,
 }: InventoryTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSort = (field: string) => {
-    onSort?.(field);
-  };
+  const columns = useMemo(() => buildColumns(onEdit, onAdjustStock), [onEdit, onAdjustStock]);
 
-  const sortedItems = items; // Already sorted on server
-
-  const SortableHeader = ({ field, children }: { field: string; children: React.ReactNode }) => (
-    <Button
-      variant="ghost"
-      onClick={() => handleSort(field)}
-      className={`p-0 h-auto font-semibold hover:bg-transparent ${currentSort?.sortBy === field ? "text-blue-600" : ""}`}
-    >
-      {children}
-      <ArrowUpDown className={`ml-2 h-3 w-3 ${currentSort?.sortBy === field ? "opacity-100" : "opacity-50"}`} />
-    </Button>
+  // Sorting and pagination are both server-driven (see useInventory's
+  // fetchProducts / setSort), so this table is a pure view: sorting is
+  // derived straight from the currentSort prop (fully controlled, no local
+  // state needed since the parent already owns the true sort state), and
+  // state changes call back out to the parent instead of the table
+  // re-slicing/re-sorting `items` itself.
+  const sorting: SortingState = useMemo(
+    () => (currentSort ? [{ id: currentSort.sortBy, desc: currentSort.sortOrder === "desc" }] : []),
+    [currentSort]
   );
+
+  const currentPagination = useMemo(
+    () => ({
+      pageIndex: pagination ? pagination.page - 1 : 0,
+      pageSize: pagination?.limit || items.length || 10,
+    }),
+    [pagination, items.length]
+  );
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: items,
+    columns,
+    manualSorting: true,
+    manualPagination: true,
+    pageCount: pagination?.totalPages ?? -1,
+    state: { sorting, pagination: currentPagination },
+    onSortingChange: (updater) => {
+      const next = typeof updater === "function" ? updater(sorting) : updater;
+      const [first] = next;
+      if (first) onSort?.(first.id);
+    },
+    onPaginationChange: (updater) => {
+      const next = typeof updater === "function" ? updater(currentPagination) : updater;
+      if (next.pageIndex !== currentPagination.pageIndex) {
+        onPageChange?.(next.pageIndex + 1);
+      }
+    },
+  });
 
   if (items.length === 0) {
     return (
@@ -174,136 +344,39 @@ export function InventoryTable({
       <CardContent>
         <div className="rounded-md border border-slate-200 dark:border-slate-700">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    <SortableHeader field="name">Item</SortableHeader>
-                  </th>
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    Category
-                  </th>
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    <SortableHeader field="quantity">Stock Level</SortableHeader>
-                  </th>
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    <SortableHeader field="price">Price</SortableHeader>
-                  </th>
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    Status
-                  </th>
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    Branch
-                  </th>
-                  <th className="text-left py-3 px-4 font-semibold text-slate-700 dark:text-slate-300">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                {sortedItems.map((item) => (
-                  <tr 
-                    key={item.id} 
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-700/50"
                   >
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                          <Package className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                        </div>
-                        <div className="min-w-0">
-                          <p 
-                            className="text-sm font-medium text-slate-900 dark:text-white truncate cursor-pointer hover:underline hover:text-blue-600"
-                            onClick={() => window.location.href = `/dashboard/inventory/products/${item.id}`}
-                          >
-                            {item.name}
-                          </p>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                            {item.itemCode}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        {item.category}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between text-sm mb-1">
-                            <span className="text-slate-600 dark:text-slate-400">
-                              {item.currentStock} {item.unit}
-                            </span>
-                            <span className="text-xs text-slate-500 dark:text-slate-500">
-                              Min: {item.minStock}
-                            </span>
-                          </div>
-                          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                            <div 
-                              className={`h-2 rounded-full ${getStockColor(item.currentStock, item.minStock, item.maxStock)}`}
-                              style={{ 
-                                width: `${Math.min((item.currentStock / item.maxStock) * 100, 100)}%` 
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="text-sm">
-                        <p className="text-slate-900 dark:text-white font-medium">
-                          {formatCurrency(item.sellingPrice)}
-                        </p>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
-                          Cost: {formatCurrency(item.costPrice)}
-                        </p>
-                      </div>
-                    </td>
-                    <td className="py-3 px-4">
-                      <Badge variant={getStatusVariant(item.status)} className="text-xs">
-                        {getStatusText(item.status)}
-                      </Badge>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="text-sm text-slate-600 dark:text-slate-400">
-                        {item.branch}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                          onClick={() => onEdit?.(item)}
-                          title="Edit product"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                          onClick={() => onAdjustStock?.(item)}
-                          title="Adjust stock"
-                        >
-                          <SlidersHorizontal className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-8 w-8 p-0 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className="text-slate-700 dark:text-slate-300 font-semibold"
+                      >
+                        {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                      </TableHead>
+                    ))}
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    className="border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        <table.FlexRender cell={cell} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
 
@@ -311,27 +384,28 @@ export function InventoryTable({
         {pagination && (
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-slate-600 dark:text-slate-400">
-              Showing {(pagination.page - 1) * pagination.limit + 1} to {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} items
+              Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
+              {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} items
             </div>
             <div className="flex items-center space-x-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                disabled={pagination.page <= 1 || isLoading} 
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!table.getCanPreviousPage() || isLoading}
                 className="border-slate-300 dark:border-slate-600"
-                onClick={() => onPageChange?.(pagination.page - 1)}
+                onClick={() => table.previousPage()}
               >
                 Previous
               </Button>
               <div className="text-sm font-medium">
                 Page {pagination.page} of {pagination.totalPages}
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                disabled={pagination.page >= pagination.totalPages || isLoading}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!table.getCanNextPage() || isLoading}
                 className="border-slate-300 dark:border-slate-600"
-                onClick={() => onPageChange?.(pagination.page + 1)}
+                onClick={() => table.nextPage()}
               >
                 Next
               </Button>

@@ -375,7 +375,9 @@ export const fetchUsers = async (token: string): Promise<User[]> => {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
-    throw new Error("Failed to fetch users");
+    const errorBody = await response.text().catch(() => "");
+    console.error(`fetchUsers failed with status ${response.status}:`, errorBody);
+    throw new Error(`Failed to fetch users (${response.status}): ${errorBody || response.statusText}`);
   }
   const { data } = await response.json();
   return data;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
@@ -45,6 +45,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { cn } from "@/lib/utils";
 
 
 export default function ReceivablesPage() {
@@ -194,6 +198,153 @@ export default function ReceivablesPage() {
     (ar) => ar.status !== "paid" && new Date() > new Date(ar.due_date)
   ).length;
 
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, any>(), []);
+
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => row.customer_name, {
+          id: "customer",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Customer" />,
+          cell: (ctx) => (
+            <div className="flex flex-col">
+              <span className="font-semibold text-sm text-slate-900">{ctx.getValue()}</span>
+              <span className="text-[10px] text-slate-400">
+                {ctx.row.original.customer_email || "No email"}
+              </span>
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.invoice_no, {
+          id: "invoiceNo",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Invoice No" />,
+          cell: (ctx) => (
+            <span className="text-xs font-mono font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+              {ctx.getValue()}
+            </span>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => new Date(row.invoice_date).getTime(), {
+          id: "invoiceDate",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Invoice Date" />,
+          cell: (ctx) => (
+            <span className="text-xs text-slate-600">
+              {format(new Date(ctx.row.original.invoice_date), "dd/MM/yyyy")}
+            </span>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => new Date(row.due_date).getTime(), {
+          id: "dueDate",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Due Date" />,
+          cell: (ctx) => {
+            const ar = ctx.row.original;
+            return (
+              <div className="flex items-center gap-1 text-xs text-slate-600">
+                {new Date() > new Date(ar.due_date) && ar.status !== "paid" && (
+                  <AlertCircle className="w-3 h-3 text-red-500" />
+                )}
+                {format(new Date(ar.due_date), "dd/MM/yyyy")}
+              </div>
+            );
+          },
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.total_amount, {
+          id: "amount",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Amount" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right text-sm font-medium text-slate-900">
+              KES {ctx.getValue().toLocaleString()}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.balance, {
+          id: "balance",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Balance" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right text-sm font-bold text-slate-900">
+              KES {ctx.getValue().toLocaleString()}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.status, {
+          id: "status",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Status" className="w-full justify-center" />
+          ),
+          cell: (ctx) => (
+            <div className="text-center">{getStatusBadge(ctx.getValue(), ctx.row.original.due_date)}</div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.display({
+          id: "action",
+          header: () => <div className="text-right">Action</div>,
+          enableSorting: false,
+          cell: (ctx) => {
+            const ar = ctx.row.original;
+            return (
+              <div className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-100">
+                      <MoreHorizontal className="w-4 h-4 text-slate-400" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Invoice Options</DropdownMenuLabel>
+                    <DropdownMenuItem
+                      className="gap-2 cursor-pointer"
+                      onClick={() => handleOpenPayment(ar)}
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      Record Payment
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="gap-2 cursor-pointer">
+                      <Clock className="w-4 h-4 text-blue-500" />
+                      Follow Up
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="gap-2 cursor-pointer">
+                      <Plus className="w-4 h-4 text-slate-500" />
+                      View Sales Link
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            );
+          },
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  // getRowId keeps TanStack's row.id equal to the AR's own id, so the
+  // scroll-to-highlighted-row ref logic (rowRefs) and highlight matching
+  // below keep working exactly as before, independent of sort order.
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: filteredReceivables,
+    columns,
+    getRowId: (row: any) => row.id,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
+
   return (
     <div className="p-6 space-y-6 text-slate-900">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -302,24 +453,22 @@ export default function ReceivablesPage() {
 
         <Table>
           <TableHeader className="bg-slate-50">
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="text-slate-500 font-semibold text-xs">Customer</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs">Invoice No</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs">Invoice Date</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs">Due Date</TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-right">
-                Amount
-              </TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-right">
-                Balance
-              </TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-center">
-                Status
-              </TableHead>
-              <TableHead className="text-slate-500 font-semibold text-xs text-right">
-                Action
-              </TableHead>
-            </TableRow>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={cn(
+                      "text-slate-500 font-semibold text-xs",
+                      ["amount", "balance", "action"].includes(header.column.id) && "text-right",
+                      header.column.id === "status" && "text-center"
+                    )}
+                  >
+                    {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
           </TableHeader>
           <TableBody>
             {loading ? (
@@ -351,9 +500,9 @@ export default function ReceivablesPage() {
                   </TableCell>
                 </TableRow>
               ))
-            ) : filteredReceivables.length === 0 ? (
+            ) : rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="h-40 text-center py-10">
+                <TableCell colSpan={columns.length} className="h-40 text-center py-10">
                   <div className="flex flex-col items-center justify-center space-y-2">
                     <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
                       <Clock className="w-6 h-6 text-slate-400" />
@@ -364,80 +513,22 @@ export default function ReceivablesPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              filteredReceivables.map((ar) => (
+              rows.map((row) => (
                 <TableRow
-                  key={ar.id}
+                  key={row.id}
                   ref={(el) => {
-                    rowRefs.current[ar.id] = el;
+                    rowRefs.current[row.id] = el;
                   }}
                   className={
                     "hover:bg-slate-50 transition-colors border-b border-slate-50 " +
-                    (highlightInvoiceId === ar.id ? "ring-2 ring-amber-300 bg-amber-50" : "")
+                    (highlightInvoiceId === row.id ? "ring-2 ring-amber-300 bg-amber-50" : "")
                   }
                 >
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm text-slate-900">
-                        {ar.customer_name}
-                      </span>
-                      <span className="text-[10px] text-slate-400">
-                        {ar.customer_email || "No email"}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-xs font-mono font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                      {ar.invoice_no}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-600">
-                    {format(new Date(ar.invoice_date), "dd/MM/yyyy")}
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-600">
-                    <div className="flex items-center gap-1">
-                      {new Date() > new Date(ar.due_date) && ar.status !== "paid" && (
-                        <AlertCircle className="w-3 h-3 text-red-500" />
-                      )}
-                      {format(new Date(ar.due_date), "dd/MM/yyyy")}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right text-sm font-medium text-slate-900">
-                    KES {ar.total_amount.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right text-sm font-bold text-slate-900">
-                    KES {ar.balance.toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    {getStatusBadge(ar.status, ar.due_date)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-100">
-                          <MoreHorizontal className="w-4 h-4 text-slate-400" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Invoice Options</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          className="gap-2 cursor-pointer"
-                          onClick={() => handleOpenPayment(ar)}
-                        >
-                          <CheckCircle2 className="w-4 h-4 text-green-500" />
-                          Record Payment
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 cursor-pointer">
-                          <Clock className="w-4 h-4 text-blue-500" />
-                          Follow Up
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="gap-2 cursor-pointer">
-                          <Plus className="w-4 h-4 text-slate-500" />
-                          View Sales Link
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      <table.FlexRender cell={cell} />
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             )}

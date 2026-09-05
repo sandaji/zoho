@@ -1,4 +1,24 @@
 // backend/src/modules/finance/services/alerts.service.ts
+//
+// ARCHITECTURAL NOTE (Phase 0 decision, finance-department roadmap):
+// This service computes alerts on demand, in-memory, every time it's
+// called — nothing here is persisted. There is a separate `FinancialAlert`
+// Prisma model (see schema.prisma) with a broader alert_type enum
+// (budget_exceeded, low_cash_balance, overdue_receivable, overdue_payable,
+// unusual_transaction, forecast_deviation, compliance_issue) that no
+// service currently writes to.
+//
+// Decision: FinancialAlert is the persisted target going forward. Phase 4
+// of the roadmap will add a scheduled job that evaluates alert conditions
+// (including the four the finance dept asked for: budget-threshold,
+// approval-pending-too-long, high-value-transaction, budget-utilization)
+// and writes rows into FinancialAlert, then pushes them via
+// NotificationService. At that point this class should stop computing its
+// own ephemeral alert list and instead read from FinancialAlert (filtered
+// to the five types it currently covers, if those stay in scope) so there
+// is one alert pipeline, not two. Left as-is for now — no functional
+// change in this pass, just recording the decision before Phase 4 work
+// starts on top of it.
 import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 

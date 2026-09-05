@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { LeaveService } from "./services/leave.service";
 import { AppError, ErrorCode } from "../../lib/errors";
 import { HrService } from "./service";
+import { prisma } from "../../lib/db";
 
 const leaveService = new LeaveService();
 const hrService = new HrService();
@@ -14,6 +15,29 @@ export class HRController {
     try {
       const stats = await hrService.getHRStats();
       res.json({ success: true, data: stats });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * List active departments — minimal reference-data endpoint, added for
+   * the finance-department roadmap (Phase 2). The Department model has
+   * existed since employee-numbering was built, but was never exposed via
+   * any API route until now, so expense reports / purchase requisitions
+   * had nothing to populate a cost-center dropdown from. Deliberately
+   * open to any authenticated user (no specific permission) since anyone
+   * submitting an expense or requisition needs to be able to pick their
+   * own department.
+   */
+  async getDepartments(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const departments = await prisma.department.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true, prefix: true },
+        orderBy: { name: "asc" },
+      });
+      res.json({ success: true, data: departments });
     } catch (error) {
       next(error);
     }

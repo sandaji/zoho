@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { API_BASE_URL } from "@/lib/api-config";
@@ -26,6 +26,9 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, Search, Loader2, AlertCircle, Settings } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 interface Customer {
   id: string;
@@ -252,6 +255,126 @@ export default function CustomersPage() {
 
     fetchDetails();
   }, [detailsOpen, selectedCustomerId, token, showToast]);
+
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, Customer>(), []);
+
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => row.code, {
+          id: "code",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
+          cell: (ctx) => <span className="font-mono text-sm text-slate-600">{ctx.getValue()}</span>,
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.name, {
+          id: "name",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
+          cell: (ctx) => (
+            <div>
+              <div className="font-medium text-slate-900">{ctx.getValue()}</div>
+              {ctx.row.original.email && (
+                <div className="text-xs text-slate-500">{ctx.row.original.email}</div>
+              )}
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.customerType, {
+          id: "customerType",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+          cell: (ctx) => <Badge variant="outline">{ctx.getValue()}</Badge>,
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.phone || "-", {
+          id: "phone",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
+          cell: (ctx) => <span className="text-slate-600">{ctx.getValue()}</span>,
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.creditLimit, {
+          id: "creditLimit",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Credit Limit" className="w-full justify-end" />
+          ),
+          cell: (ctx) => (
+            <div className="text-right font-mono text-sm">
+              {ctx.getValue().toLocaleString("en-KE", { style: "currency", currency: "KES" })}
+            </div>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.currentBalance, {
+          id: "currentBalance",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Current Balance" className="w-full justify-end" />
+          ),
+          cell: (ctx) => {
+            const customer = ctx.row.original;
+            const isOverLimit = customer.currentBalance > customer.creditLimit;
+            return (
+              <div>
+                <div
+                  className={cn(
+                    "text-right font-mono text-sm font-semibold",
+                    isOverLimit ? "text-red-600" : "text-emerald-600"
+                  )}
+                >
+                  {customer.currentBalance.toLocaleString("en-KE", {
+                    style: "currency",
+                    currency: "KES",
+                  })}
+                </div>
+                {isOverLimit && <div className="text-xs text-red-600 mt-1 text-right">Over limit</div>}
+              </div>
+            );
+          },
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.isActive, {
+          id: "isActive",
+          header: "Status",
+          enableSorting: false,
+          cell: (ctx) => {
+            const isActive = ctx.getValue();
+            return (
+              <Badge
+                variant={isActive ? "default" : "secondary"}
+                className={isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}
+              >
+                {isActive ? "Active" : "Inactive"}
+              </Badge>
+            );
+          },
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: "Actions",
+          enableSorting: false,
+          cell: (ctx) => (
+            <div className="w-32">
+              <Button size="sm" variant="ghost" onClick={() => handleOpenDetails(ctx.row.original.id)}>
+                View
+              </Button>
+            </div>
+          ),
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: customers,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
 
   return (
     <div className="space-y-6">
@@ -489,87 +612,35 @@ export default function CustomersPage() {
         ) : (
           <Table>
             <TableHeader>
-              <TableRow className="border-b border-slate-200 bg-emerald-50">
-                <TableHead className="font-semibold text-emerald-900">Code</TableHead>
-                <TableHead className="font-semibold text-emerald-900">Name</TableHead>
-                <TableHead className="font-semibold text-emerald-900">Type</TableHead>
-                <TableHead className="font-semibold text-emerald-900">Phone</TableHead>
-                <TableHead className="text-right font-semibold text-emerald-900">
-                  Credit Limit
-                </TableHead>
-                <TableHead className="text-right font-semibold text-emerald-900">
-                  Current Balance
-                </TableHead>
-                <TableHead className="font-semibold text-emerald-900">Status</TableHead>
-                <TableHead className="font-semibold text-emerald-900">Actions</TableHead>
-              </TableRow>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="border-b border-slate-200 bg-emerald-50">
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      className={cn(
+                        "font-semibold text-emerald-900",
+                        ["creditLimit", "currentBalance"].includes(header.column.id) && "text-right"
+                      )}
+                    >
+                      {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              ))}
             </TableHeader>
             <TableBody>
-              {customers.map((customer) => {
-                const isOverLimit = customer.currentBalance > customer.creditLimit;
-
-                return (
-                  <TableRow
-                    key={customer.id}
-                    className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
-                  >
-                    <TableCell>
-                      <span className="font-mono text-sm text-slate-600">{customer.code}</span>
+              {rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      <table.FlexRender cell={cell} />
                     </TableCell>
-                    <TableCell>
-                      <div className="font-medium text-slate-900">{customer.name}</div>
-                      {customer.email && (
-                        <div className="text-xs text-slate-500">{customer.email}</div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{customer.customerType}</Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-600">{customer.phone || "-"}</TableCell>
-                    <TableCell className="text-right font-mono text-sm">
-                      {customer.creditLimit.toLocaleString("en-KE", {
-                        style: "currency",
-                        currency: "KES",
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      <div
-                        className={cn(
-                          "text-right font-mono text-sm font-semibold",
-                          isOverLimit ? "text-red-600" : "text-emerald-600"
-                        )}
-                      >
-                        {customer.currentBalance.toLocaleString("en-KE", {
-                          style: "currency",
-                          currency: "KES",
-                        })}
-                      </div>
-                      {isOverLimit && <div className="text-xs text-red-600 mt-1">Over limit</div>}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={customer.isActive ? "default" : "secondary"}
-                        className={
-                          customer.isActive
-                            ? "bg-emerald-100 text-emerald-800"
-                            : "bg-slate-100 text-slate-700"
-                        }
-                      >
-                        {customer.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="w-32">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleOpenDetails(customer.id)}
-                      >
-                        View
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                  ))}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         )}

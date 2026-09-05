@@ -1,7 +1,7 @@
 //frontend/src/app/dashboard/pos/history/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -35,6 +35,9 @@ import {
   Eye,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
+import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
 type DocumentType = "ALL" | "DRAFT" | "QUOTE" | "INVOICE" | "CREDIT_NOTE";
 
@@ -164,6 +167,98 @@ export default function HistoryPage() {
     );
   };
 
+  const columnHelper = useMemo(() => createColumnHelper<AppTableFeatures, SalesDocument>(), []);
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const columns = useMemo(
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor((row) => row.type, {
+          id: "type",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
+          cell: (ctx) => (
+            <div className="flex items-center gap-2">
+              {getDocumentIcon(ctx.getValue())}
+              <span className="text-sm">{ctx.getValue()}</span>
+            </div>
+          ),
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.documentId, {
+          id: "documentId",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Document #" />,
+          cell: (ctx) => <span className="font-mono font-medium">{ctx.getValue()}</span>,
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => row.customer?.name || "", {
+          id: "customer",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Customer" />,
+          cell: (ctx) =>
+            ctx.getValue() || <span className="text-muted-foreground">N/A</span>,
+          sortFn: "text",
+        }),
+        columnHelper.accessor((row) => new Date(row.issueDate).getTime(), {
+          id: "issueDate",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Date" />,
+          cell: (ctx) => format(new Date(ctx.row.original.issueDate), "MMM dd, yyyy"),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.total, {
+          id: "total",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Amount" />,
+          cell: (ctx) => (
+            <span className="font-semibold">KES {ctx.getValue().toFixed(2)}</span>
+          ),
+          sortFn: "alphanumeric",
+        }),
+        columnHelper.accessor((row) => row.status, {
+          id: "status",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+          cell: (ctx) => getStatusBadge(ctx.getValue()),
+          sortFn: "text",
+        }),
+        columnHelper.display({
+          id: "actions",
+          header: () => <div className="text-right">Actions</div>,
+          enableSorting: false,
+          cell: (ctx) => {
+            const doc = ctx.row.original;
+            return (
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => router.push(`/dashboard/pos/documents/${doc.id}`)}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                {(doc.type === "QUOTE" || doc.type === "INVOICE") && (
+                  <PDFViewer
+                    documentId={doc.id}
+                    documentType={doc.type === "QUOTE" ? "quote" : "invoice"}
+                    documentNumber={doc.documentId}
+                  />
+                )}
+              </div>
+            );
+          },
+        }),
+      ]),
+    [columnHelper]
+  );
+
+  const table = useTable({
+    features: tableFeaturesConfig,
+    data: documents,
+    columns,
+    onSortingChange: setSorting,
+    state: { sorting },
+  });
+
+  // No pagination is wanted here, so rows are read via getPrePaginatedRowModel()
+  // rather than getRowModel() — see the note in lib/table/table-features.ts.
+  const rows = table.getPrePaginatedRowModel().rows;
+
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -289,62 +384,27 @@ export default function HistoryPage() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Document #</TableHead>
-                      <TableHead>Customer</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
+                    {table.getHeaderGroups().map((headerGroup) => (
+                      <TableRow key={headerGroup.id}>
+                        {headerGroup.headers.map((header) => (
+                          <TableHead
+                            key={header.id}
+                            className={header.column.id === "actions" ? "text-right" : undefined}
+                          >
+                            {header.isPlaceholder ? null : <table.FlexRender header={header} />}
+                          </TableHead>
+                        ))}
+                      </TableRow>
+                    ))}
                   </TableHeader>
                   <TableBody>
-                    {documents.map((doc) => (
-                      <TableRow key={doc.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            {getDocumentIcon(doc.type)}
-                            <span className="text-sm">{doc.type}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="font-mono font-medium">
-                          {doc.documentId}
-                        </TableCell>
-                        <TableCell>
-                          {doc.customer?.name || (
-                            <span className="text-muted-foreground">N/A</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {format(new Date(doc.issueDate), "MMM dd, yyyy")}
-                        </TableCell>
-                        <TableCell className="font-semibold">
-                          KES {doc.total.toFixed(2)}
-                        </TableCell>
-                        <TableCell>{getStatusBadge(doc.status)}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/pos/documents/${doc.id}`
-                                )
-                              }
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            {(doc.type === "QUOTE" || doc.type === "INVOICE") && (
-                              <PDFViewer
-                                documentId={doc.id}
-                                documentType={doc.type === "QUOTE" ? "quote" : "invoice"}
-                                documentNumber={doc.documentId}
-                              />
-                            )}
-                          </div>
-                        </TableCell>
+                    {rows.map((row) => (
+                      <TableRow key={row.id}>
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            <table.FlexRender cell={cell} />
+                          </TableCell>
+                        ))}
                       </TableRow>
                     ))}
                   </TableBody>
