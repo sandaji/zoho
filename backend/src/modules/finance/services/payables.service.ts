@@ -1,6 +1,7 @@
 // backend/src/modules/finance/services/payables.service.ts
 import { prisma } from "../../../lib/db";
-import { APStatus, PaymentMethod, Prisma } from "../../../generated";
+import { Prisma } from "../../../generated";
+import { APStatus, PaymentMethod } from "../../../generated/enums.js";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
 import { BankTreasuryService } from "./bank-treasury.service";
@@ -38,13 +39,13 @@ export class PayablesService {
         throw new AppError(
           ErrorCode.NOT_FOUND as any,
           404,
-          "Payable not found"
+          "Payable not found",
         );
       if (data.amount > ap.balance) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR as any,
           400,
-          "Payment amount exceeds balance"
+          "Payment amount exceeds balance",
         );
       }
 
@@ -79,7 +80,7 @@ export class PayablesService {
       // 3. Post to General Ledger: DR Accounts Payable / CR Cash (Bank/Mobile Money)
       const apAccount = await AccountingService.getEnsureAccount(
         DEFAULT_ACCOUNTS.ACCOUNTS_PAYABLE,
-        tx
+        tx,
       );
 
       let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
@@ -93,7 +94,7 @@ export class PayablesService {
 
       const assetAccount = await AccountingService.getEnsureAccount(
         assetAccountDef,
-        tx
+        tx,
       );
 
       await JournalEntryService.createJournalEntry(
@@ -118,7 +119,7 @@ export class PayablesService {
           sourceId: payment.id,
           createdBy: data.userId,
         },
-        tx
+        tx,
       );
 
       // 4. Record the actual cash outflow in the treasury model, so
@@ -175,23 +176,23 @@ export class PayablesService {
     statusCounts.paid = paidPayables.length;
     statusTotals.paid = paidPayables.reduce(
       (sum, ap) => sum + ap.total_amount,
-      0
+      0,
     );
 
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
     const upcomingPayables = allPayables.filter(
-      (ap) => ap.due_date <= thirtyDaysFromNow
+      (ap) => ap.due_date <= thirtyDaysFromNow,
     );
     const upcomingTotal = upcomingPayables.reduce(
       (sum, ap) => sum + ap.balance,
-      0
+      0,
     );
 
     const overduePayables = allPayables.filter((ap) => ap.due_date < today);
     const overdueTotal = overduePayables.reduce(
       (sum, ap) => sum + ap.balance,
-      0
+      0,
     );
 
     const totalPayables =

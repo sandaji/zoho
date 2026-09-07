@@ -9,10 +9,22 @@ import { PeriodService } from "./services/period.service";
 import { DashboardFinanceService } from "./services/dashboard.service";
 import { AlertsService } from "./services/alerts.service";
 import { BudgetService } from "./services/budget.service";
-import { validationError } from "../../lib/errors";
+import { validationError, AppError, ErrorCode } from "../../lib/errors";
 import { logger } from "../../lib/logger";
 import { prisma } from "../../lib/db";
 import { FinanceAnalyticsService } from "./services/finance-analytics.service";
+import { PermissionService } from "../auth/service/permission.service";
+
+// Same KSH tier used for PO/requisition/expense "executive" approval
+// elsewhere (see purchasing.service.ts, requisition.service.ts,
+// expense-report.service.ts). Journal entries have no draft/approval
+// workflow (JournalHeader posts immediately on creation — see
+// journal-entry.service.ts), so this is enforced as a create-time gate
+// rather than a separate approval step: a Senior Accountant can post
+// ordinary entries via 'finance.gl.create', but posting a high-value
+// entry additionally requires 'finance.gl.approve' (Finance Manager /
+// Director tier). See erp-finance-gap-analysis.md §3.2.
+const HIGH_VALUE_JOURNAL_ENTRY_THRESHOLD = 100000;
 
 class FinanceController {
   private financeService = new FinanceService();
@@ -455,6 +467,21 @@ class FinanceController {
       const { date, description, journalId, lines } = req.body;
       // @ts-ignore
       const userId = (req.user as any)?.userId || "system";
+
+      const totalDebit = (lines || []).reduce(
+        (sum: number, line: any) => sum + (Number(line.debit) || 0),
+        0,
+      );
+      if (totalDebit >= HIGH_VALUE_JOURNAL_ENTRY_THRESHOLD) {
+        const permissions = await PermissionService.getUserPermissions(userId);
+        if (!permissions.includes("finance.gl.approve")) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            `Segregation of Duties: journal entries of KSH ${HIGH_VALUE_JOURNAL_ENTRY_THRESHOLD.toLocaleString()} or more require 'finance.gl.approve' in addition to 'finance.gl.create'.`,
+          );
+        }
+      }
 
       const result = await GeneralLedgerService.createManualEntry({
         date: new Date(date),

@@ -1,6 +1,21 @@
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { ExpenseReportStatus, TransactionType, Prisma } from "../../../generated";
+import { Prisma } from "../../../generated";
+import {
+  TransactionType,
+} from "../../../generated/enums";
+
+// Define enum values since Prisma is not generating them
+const ExpenseReportStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  POSTED: 'POSTED',
+  CANCELLED: 'CANCELLED'
+} as const;
+
+type ExpenseReportStatus = (typeof ExpenseReportStatus)[keyof typeof ExpenseReportStatus];
 
 // ============================================================================
 // APPROVAL THRESHOLDS (KSH) — same three-tier structure as
@@ -20,20 +35,33 @@ const APPROVAL_THRESHOLDS = {
 
 function getApprovalLevel(total: number): ApprovalLevel {
   if (total < APPROVAL_THRESHOLDS.STANDARD_MAX) return ApprovalLevel.STANDARD;
-  if (total < APPROVAL_THRESHOLDS.HIGH_VALUE_MAX) return ApprovalLevel.HIGH_VALUE;
+  if (total < APPROVAL_THRESHOLDS.HIGH_VALUE_MAX)
+    return ApprovalLevel.HIGH_VALUE;
   return ApprovalLevel.EXECUTIVE;
 }
 
-const VALID_STATE_TRANSITIONS: Record<ExpenseReportStatus, ExpenseReportStatus[]> = {
-  [ExpenseReportStatus.DRAFT]: [ExpenseReportStatus.SUBMITTED, ExpenseReportStatus.CANCELLED],
+const VALID_STATE_TRANSITIONS: Record<
+  string,
+  string[]
+> = {
+  [ExpenseReportStatus.DRAFT]: [
+    ExpenseReportStatus.SUBMITTED,
+    ExpenseReportStatus.CANCELLED,
+  ],
   [ExpenseReportStatus.SUBMITTED]: [
     ExpenseReportStatus.APPROVED,
     ExpenseReportStatus.REJECTED,
     ExpenseReportStatus.DRAFT,
     ExpenseReportStatus.CANCELLED,
   ],
-  [ExpenseReportStatus.APPROVED]: [ExpenseReportStatus.POSTED, ExpenseReportStatus.CANCELLED],
-  [ExpenseReportStatus.REJECTED]: [ExpenseReportStatus.DRAFT, ExpenseReportStatus.CANCELLED],
+  [ExpenseReportStatus.APPROVED]: [
+    ExpenseReportStatus.POSTED,
+    ExpenseReportStatus.CANCELLED,
+  ],
+  [ExpenseReportStatus.REJECTED]: [
+    ExpenseReportStatus.DRAFT,
+    ExpenseReportStatus.CANCELLED,
+  ],
   [ExpenseReportStatus.POSTED]: [], // terminal — it's in the GL now
   [ExpenseReportStatus.CANCELLED]: [], // terminal
 };
@@ -61,7 +89,7 @@ export class ExpenseReportService {
         receiptUrl?: string;
       }[];
       notes?: string;
-      status?: ExpenseReportStatus;
+      status?: string;
     },
   ) {
     const requestedStatus = data.status ?? ExpenseReportStatus.DRAFT;
@@ -99,7 +127,10 @@ export class ExpenseReportService {
       const count = await tx.expenseReport.count();
       const expenseNumber = `EXP-${year}-${(count + 1).toString().padStart(5, "0")}`;
 
-      const totalAmount = data.items.reduce((sum, item) => sum + item.amount, 0);
+      const totalAmount = data.items.reduce(
+        (sum, item) => sum + item.amount,
+        0,
+      );
 
       return tx.expenseReport.create({
         data: {
@@ -108,7 +139,10 @@ export class ExpenseReportService {
           branchId: data.branchId,
           departmentId: data.departmentId,
           status: requestedStatus,
-          submittedAt: requestedStatus === ExpenseReportStatus.SUBMITTED ? new Date() : null,
+          submittedAt:
+            requestedStatus === ExpenseReportStatus.SUBMITTED
+              ? new Date()
+              : null,
           totalAmount,
           notes: data.notes,
           items: {
@@ -122,7 +156,12 @@ export class ExpenseReportService {
             })),
           },
         },
-        include: { items: true, employee: true, department: true, branch: true },
+        include: {
+          items: true,
+          employee: true,
+          department: true,
+          branch: true,
+        },
       });
     });
   }
@@ -149,7 +188,11 @@ export class ExpenseReportService {
     return prisma.$transaction(async (tx) => {
       const existing = await tx.expenseReport.findUnique({ where: { id } });
       if (!existing) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Expense Report not found");
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Expense Report not found",
+        );
       }
       if (existing.status !== ExpenseReportStatus.DRAFT) {
         throw new AppError(
@@ -179,7 +222,10 @@ export class ExpenseReportService {
             );
           }
         }
-        updateData.totalAmount = data.items.reduce((sum, item) => sum + item.amount, 0);
+        updateData.totalAmount = data.items.reduce(
+          (sum, item) => sum + item.amount,
+          0,
+        );
         updateData.items = {
           deleteMany: {},
           create: data.items.map((item) => ({
@@ -196,7 +242,12 @@ export class ExpenseReportService {
       return tx.expenseReport.update({
         where: { id },
         data: updateData,
-        include: { items: true, employee: true, department: true, branch: true },
+        include: {
+          items: true,
+          employee: true,
+          department: true,
+          branch: true,
+        },
       });
     });
   }
@@ -212,7 +263,8 @@ export class ExpenseReportService {
         branch: true,
       },
     });
-    if (!report) throw new AppError(ErrorCode.NOT_FOUND, 404, "Expense Report not found");
+    if (!report)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Expense Report not found");
     return report;
   }
 
@@ -224,14 +276,21 @@ export class ExpenseReportService {
    * the caller to only ask for their own.
    */
   async listExpenseReports(query: {
-    status?: ExpenseReportStatus;
+    status?: string;
     departmentId?: string;
     skip?: number;
     take?: number;
     userId: string;
     userPermissions?: string[];
   }) {
-    const { status, departmentId, skip = 0, take = 50, userId, userPermissions = [] } = query;
+    const {
+      status,
+      departmentId,
+      skip = 0,
+      take = 50,
+      userId,
+      userPermissions = [],
+    } = query;
 
     const canViewAll = userPermissions.includes("finance.expense.view_all");
 
@@ -267,7 +326,7 @@ export class ExpenseReportService {
    */
   async updateStatus(
     id: string,
-    status: ExpenseReportStatus,
+    status: string,
     userId: string,
     userPermissions: string[] = [],
     rejectionReason?: string,
@@ -328,7 +387,12 @@ export class ExpenseReportService {
     return prisma.expenseReport.update({
       where: { id },
       data: updateData,
-      include: { items: true, employee: true, approvedBy: true, department: true },
+      include: {
+        items: true,
+        employee: true,
+        approvedBy: true,
+        department: true,
+      },
     });
   }
 
@@ -346,8 +410,16 @@ export class ExpenseReportService {
    */
   async postToGL(id: string, userId: string) {
     return prisma.$transaction(async (tx) => {
-      const report = await tx.expenseReport.findUnique({ where: { id }, include: { items: true } });
-      if (!report) throw new AppError(ErrorCode.NOT_FOUND, 404, "Expense Report not found");
+      const report = await tx.expenseReport.findUnique({
+        where: { id },
+        include: { items: true },
+      });
+      if (!report)
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Expense Report not found",
+        );
       if (report.status !== ExpenseReportStatus.APPROVED) {
         throw new AppError(
           ErrorCode.INVALID_STATUS,
@@ -357,7 +429,9 @@ export class ExpenseReportService {
       }
 
       const referenceNo = `EXP-POST-${report.expenseNumber}`;
-      const categorySummary = Array.from(new Set(report.items.map((i) => i.category))).join(", ");
+      const categorySummary = Array.from(
+        new Set(report.items.map((i) => i.category)),
+      ).join(", ");
 
       const transaction = await tx.financeTransaction.create({
         data: {
@@ -383,8 +457,8 @@ export class ExpenseReportService {
   }
 
   private isValidStateTransition(
-    currentStatus: ExpenseReportStatus,
-    newStatus: ExpenseReportStatus,
+    currentStatus: string,
+    newStatus: string,
   ): boolean {
     return VALID_STATE_TRANSITIONS[currentStatus]?.includes(newStatus) ?? false;
   }

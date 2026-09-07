@@ -1,7 +1,7 @@
 // backend/src/modules/finance/services/period.service.ts
 import { prisma } from "../../../lib/db";
 import { AppError, ErrorCode } from "../../../lib/errors";
-import { FiscalStatus } from "../../../generated";
+import { FiscalStatus } from "../../../generated/enums.js";
 
 export class PeriodService {
   /**

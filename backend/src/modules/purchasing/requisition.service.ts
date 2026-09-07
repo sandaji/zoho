@@ -1,6 +1,21 @@
 import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { PurchaseRequisitionStatus, PurchaseOrderStatus, Prisma } from "../../generated";
+import { Prisma } from "../../generated";
+import {
+  PurchaseOrderStatus,
+} from "../../generated/enums";
+
+// Define enum values since Prisma is not generating them
+const PurchaseRequisitionStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+  CONVERTED: 'CONVERTED'
+} as const;
+
+type PurchaseRequisitionStatus = (typeof PurchaseRequisitionStatus)[keyof typeof PurchaseRequisitionStatus];
 
 // ============================================================================
 // APPROVAL THRESHOLDS (KSH) — mirrors purchasing.service.ts's PO thresholds.
@@ -24,7 +39,8 @@ const APPROVAL_THRESHOLDS = {
 
 function getApprovalLevel(total: number): ApprovalLevel {
   if (total < APPROVAL_THRESHOLDS.STANDARD_MAX) return ApprovalLevel.STANDARD;
-  if (total < APPROVAL_THRESHOLDS.HIGH_VALUE_MAX) return ApprovalLevel.HIGH_VALUE;
+  if (total < APPROVAL_THRESHOLDS.HIGH_VALUE_MAX)
+    return ApprovalLevel.HIGH_VALUE;
   return ApprovalLevel.EXECUTIVE;
 }
 
@@ -32,8 +48,8 @@ function getApprovalLevel(total: number): ApprovalLevel {
 // VALID STATE TRANSITIONS
 // ============================================================================
 const VALID_STATE_TRANSITIONS: Record<
-  PurchaseRequisitionStatus,
-  PurchaseRequisitionStatus[]
+  string,
+  string[]
 > = {
   [PurchaseRequisitionStatus.DRAFT]: [
     PurchaseRequisitionStatus.SUBMITTED,
@@ -80,7 +96,7 @@ export class PurchaseRequisitionService {
       // Only DRAFT and SUBMITTED are legal at creation time, same reasoning
       // as PurchaseOrder.createPurchaseOrder — anything further along has
       // to go through updateStatus so approval/segregation rules run.
-      status?: PurchaseRequisitionStatus;
+      status?: string;
     },
   ) {
     const requestedStatus = data.status ?? PurchaseRequisitionStatus.DRAFT;
@@ -130,7 +146,9 @@ export class PurchaseRequisitionService {
           requestedById: userId,
           status: requestedStatus,
           submittedAt:
-            requestedStatus === PurchaseRequisitionStatus.SUBMITTED ? new Date() : null,
+            requestedStatus === PurchaseRequisitionStatus.SUBMITTED
+              ? new Date()
+              : null,
           estimatedTotal,
           notes: data.notes,
           items: { create: itemsData },
@@ -165,9 +183,15 @@ export class PurchaseRequisitionService {
     },
   ) {
     return prisma.$transaction(async (tx) => {
-      const existing = await tx.purchaseRequisition.findUnique({ where: { id } });
+      const existing = await tx.purchaseRequisition.findUnique({
+        where: { id },
+      });
       if (!existing) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Purchase Requisition not found");
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Purchase Requisition not found",
+        );
       }
       if (existing.status !== PurchaseRequisitionStatus.DRAFT) {
         throw new AppError(
@@ -183,7 +207,9 @@ export class PurchaseRequisitionService {
             ? { connect: { id: data.departmentId } }
             : { disconnect: true },
         }),
-        ...(data.projectCode !== undefined && { projectCode: data.projectCode }),
+        ...(data.projectCode !== undefined && {
+          projectCode: data.projectCode,
+        }),
         ...(data.notes !== undefined && { notes: data.notes }),
         updatedAt: new Date(),
       };
@@ -232,7 +258,12 @@ export class PurchaseRequisitionService {
         purchaseOrder: true,
       },
     });
-    if (!req) throw new AppError(ErrorCode.NOT_FOUND, 404, "Purchase Requisition not found");
+    if (!req)
+      throw new AppError(
+        ErrorCode.NOT_FOUND,
+        404,
+        "Purchase Requisition not found",
+      );
     return req;
   }
 
@@ -241,7 +272,7 @@ export class PurchaseRequisitionService {
    * PurchasingService.listPurchaseOrders.
    */
   async listRequisitions(query: {
-    status?: PurchaseRequisitionStatus;
+    status?: string;
     branchId?: string;
     departmentId?: string;
     skip?: number;
@@ -307,7 +338,7 @@ export class PurchaseRequisitionService {
    */
   async updateStatus(
     id: string,
-    status: PurchaseRequisitionStatus,
+    status: string,
     userId: string,
     userPermissions: string[] = [],
     rejectionReason?: string,
@@ -395,7 +426,11 @@ export class PurchaseRequisitionService {
     data: {
       vendorId: string;
       warehouseId?: string;
-      items: { requisitionItemId: string; productId: string; unitPrice: number }[];
+      items: {
+        requisitionItemId: string;
+        productId: string;
+        unitPrice: number;
+      }[];
     },
   ) {
     return prisma.$transaction(
@@ -404,8 +439,13 @@ export class PurchaseRequisitionService {
           where: { id },
           include: { items: true },
         });
-        if (!req) throw new AppError(ErrorCode.NOT_FOUND, 404, "Purchase Requisition not found");
-        if (req.status !== PurchaseRequisitionStatus.APPROVED) {
+        if (!req)
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            "Purchase Requisition not found",
+          );
+        if (req.status !== 'APPROVED') {
           throw new AppError(
             ErrorCode.INVALID_STATUS,
             400,
@@ -413,7 +453,9 @@ export class PurchaseRequisitionService {
           );
         }
 
-        const vendor = await tx.vendor.findUnique({ where: { id: data.vendorId } });
+        const vendor = await tx.vendor.findUnique({
+          where: { id: data.vendorId },
+        });
         if (!vendor || !vendor.isActive) {
           throw new AppError(ErrorCode.BAD_REQUEST, 400, "Invalid vendor");
         }
@@ -425,7 +467,11 @@ export class PurchaseRequisitionService {
             select: { branchId: true },
           });
           if (!warehouse) {
-            throw new AppError(ErrorCode.NOT_FOUND, 404, "Target warehouse not found");
+            throw new AppError(
+              ErrorCode.NOT_FOUND,
+              404,
+              "Target warehouse not found",
+            );
           }
           resolvedBranchId = warehouse.branchId;
         }
@@ -439,7 +485,9 @@ export class PurchaseRequisitionService {
         }> = [];
 
         for (const line of data.items) {
-          const reqItem = req.items.find((i) => i.id === line.requisitionItemId);
+          const reqItem = req.items.find(
+            (i) => i.id === line.requisitionItemId,
+          );
           if (!reqItem) {
             throw new AppError(
               ErrorCode.VALIDATION_ERROR,
@@ -453,7 +501,11 @@ export class PurchaseRequisitionService {
             select: { vendorId: true, name: true },
           });
           if (!product) {
-            throw new AppError(ErrorCode.NOT_FOUND, 404, `Product ${line.productId} not found`);
+            throw new AppError(
+              ErrorCode.NOT_FOUND,
+              404,
+              `Product ${line.productId} not found`,
+            );
           }
           if (product.vendorId !== data.vendorId) {
             throw new AppError(
@@ -499,7 +551,7 @@ export class PurchaseRequisitionService {
 
         await tx.purchaseRequisition.update({
           where: { id },
-          data: { status: PurchaseRequisitionStatus.CONVERTED },
+          data: { status: 'CONVERTED' },
         });
 
         return po;
@@ -509,8 +561,8 @@ export class PurchaseRequisitionService {
   }
 
   private isValidStateTransition(
-    currentStatus: PurchaseRequisitionStatus,
-    newStatus: PurchaseRequisitionStatus,
+    currentStatus: string,
+    newStatus: string,
   ): boolean {
     return VALID_STATE_TRANSITIONS[currentStatus]?.includes(newStatus) ?? false;
   }

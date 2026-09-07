@@ -1,19 +1,65 @@
 // backend/src/modules/finance/services/accounting.service.ts
 import { prisma } from "../../../lib/db";
-import { AccountType, Prisma } from "../../../generated";
+import { Prisma } from "../../../generated";
+import { AccountType } from "../../../generated/enums.js";
 import { JournalEntryService, JournalLineInput } from "./journal-entry.service";
 import { BankTreasuryService } from "./bank-treasury.service";
 
 export const DEFAULT_ACCOUNTS = {
-  CASH_ON_HAND: { code: "1001", name: "Cash on Hand", type: AccountType.asset, category: "Current Assets" },
-  BANK_ACCOUNT: { code: "1002", name: "Bank Account", type: AccountType.asset, category: "Current Assets" },
-  MOBILE_MONEY: { code: "1003", name: "Mobile Money (M-Pesa)", type: AccountType.asset, category: "Current Assets" },
-  ACCOUNTS_RECEIVABLE: { code: "1100", name: "Accounts Receivable", type: AccountType.asset, category: "Current Assets" },
-  ACCOUNTS_PAYABLE: { code: "2100", name: "Accounts Payable", type: AccountType.liability, category: "Current Liabilities" },
-  SALES_REVENUE: { code: "4001", name: "Sales Revenue", type: AccountType.revenue, category: "Revenue" },
-  SALES_TAX_PAYABLE: { code: "2001", name: "Sales Tax Payable", type: AccountType.liability, category: "Current Liabilities" },
-  COST_OF_GOODS: { code: "5001", name: "Cost of Goods Sold", type: AccountType.expense, category: "Direct Costs" },
-  INVENTORY_ASSET: { code: "1200", name: "Inventory Asset", type: AccountType.asset, category: "Current Assets" },
+  CASH_ON_HAND: {
+    code: "1001",
+    name: "Cash on Hand",
+    type: AccountType.asset,
+    category: "Current Assets",
+  },
+  BANK_ACCOUNT: {
+    code: "1002",
+    name: "Bank Account",
+    type: AccountType.asset,
+    category: "Current Assets",
+  },
+  MOBILE_MONEY: {
+    code: "1003",
+    name: "Mobile Money (M-Pesa)",
+    type: AccountType.asset,
+    category: "Current Assets",
+  },
+  ACCOUNTS_RECEIVABLE: {
+    code: "1100",
+    name: "Accounts Receivable",
+    type: AccountType.asset,
+    category: "Current Assets",
+  },
+  ACCOUNTS_PAYABLE: {
+    code: "2100",
+    name: "Accounts Payable",
+    type: AccountType.liability,
+    category: "Current Liabilities",
+  },
+  SALES_REVENUE: {
+    code: "4001",
+    name: "Sales Revenue",
+    type: AccountType.revenue,
+    category: "Revenue",
+  },
+  SALES_TAX_PAYABLE: {
+    code: "2001",
+    name: "Sales Tax Payable",
+    type: AccountType.liability,
+    category: "Current Liabilities",
+  },
+  COST_OF_GOODS: {
+    code: "5001",
+    name: "Cost of Goods Sold",
+    type: AccountType.expense,
+    category: "Direct Costs",
+  },
+  INVENTORY_ASSET: {
+    code: "1200",
+    name: "Inventory Asset",
+    type: AccountType.asset,
+    category: "Current Assets",
+  },
 };
 
 export class AccountingService {
@@ -21,8 +67,13 @@ export class AccountingService {
    * Get or create a chart of account by code
    */
   static async getEnsureAccount(
-    accountDef: { code: string; name: string; type: AccountType; category: string },
-    tx?: any
+    accountDef: {
+      code: string;
+      name: string;
+      type: AccountType;
+      category: string;
+    },
+    tx?: any,
   ) {
     const client = tx || prisma;
 
@@ -66,14 +117,24 @@ export class AccountingService {
       userId: string;
       branchId: string;
       cogs?: number;
-    }
+    },
   ) {
-    const revenueAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_REVENUE, tx);
-    const taxAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.SALES_TAX_PAYABLE, tx);
+    const revenueAccount = await this.getEnsureAccount(
+      DEFAULT_ACCOUNTS.SALES_REVENUE,
+      tx,
+    );
+    const taxAccount = await this.getEnsureAccount(
+      DEFAULT_ACCOUNTS.SALES_TAX_PAYABLE,
+      tx,
+    );
 
     let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
-    if (data.paymentMethod === "mpesa") assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
-    else if (data.paymentMethod === "card" || data.paymentMethod === "bank_transfer")
+    if (data.paymentMethod === "mpesa")
+      assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
+    else if (
+      data.paymentMethod === "card" ||
+      data.paymentMethod === "bank_transfer"
+    )
       assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
 
     const assetAccount = await this.getEnsureAccount(assetAccountDef, tx);
@@ -109,8 +170,14 @@ export class AccountingService {
 
     // 4. COGS & Inventory Asset Relief (if cost is available)
     if (data.cogs && data.cogs > 0) {
-      const cogsAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.COST_OF_GOODS, tx);
-      const inventoryAccount = await this.getEnsureAccount(DEFAULT_ACCOUNTS.INVENTORY_ASSET, tx);
+      const cogsAccount = await this.getEnsureAccount(
+        DEFAULT_ACCOUNTS.COST_OF_GOODS,
+        tx,
+      );
+      const inventoryAccount = await this.getEnsureAccount(
+        DEFAULT_ACCOUNTS.INVENTORY_ASSET,
+        tx,
+      );
 
       const roundedCogs = Math.round(data.cogs);
       lines.push({
@@ -153,7 +220,7 @@ export class AccountingService {
           sourceId: data.saleId,
           createdBy: data.userId,
         },
-        tx
+        tx,
       );
     } catch (err: any) {
       // A missing fiscal period must never block a POS sale from completing.
@@ -165,7 +232,7 @@ export class AccountingService {
         const { logger } = await import("../../../lib/logger");
         logger.warn(
           { saleId: data.saleId, err: err.message },
-          "POS journal entry skipped — no open fiscal period. Sale completed successfully. Reconcile manually."
+          "POS journal entry skipped — no open fiscal period. Sale completed successfully. Reconcile manually.",
         );
         return null;
       }
@@ -192,8 +259,16 @@ export class AccountingService {
     return await JournalEntryService.getBalanceSheet(asOfDate, branchId);
   }
 
-  static async getIncomeStatement(startDate: Date, endDate: Date, branchId?: string) {
-    return await JournalEntryService.getIncomeStatement(startDate, endDate, branchId);
+  static async getIncomeStatement(
+    startDate: Date,
+    endDate: Date,
+    branchId?: string,
+  ) {
+    return await JournalEntryService.getIncomeStatement(
+      startDate,
+      endDate,
+      branchId,
+    );
   }
 
   static async getCashFlow(startDate: Date, endDate: Date, branchId?: string) {

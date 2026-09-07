@@ -5,7 +5,7 @@ import {
   SalesDocumentStatus,
   PaymentStatus,
   PaymentMethod,
-} from "../../../generated";
+} from "../../../generated/enums.js";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { BankTreasuryService } from "../../finance/services/bank-treasury.service";
@@ -83,7 +83,10 @@ export class SalesService {
       );
     }
 
-    const documentId = await SequenceService.getNextNumber(input.type, branchId);
+    const documentId = await SequenceService.getNextNumber(
+      input.type,
+      branchId,
+    );
 
     const preparedItems = input.items.map((item) => {
       const totals = calculateItemTotals(item);
@@ -155,7 +158,12 @@ export class SalesService {
     userId: string,
   ) {
     // Validate stock availability (no override allowed for direct invoices)
-    await StockValidationService.validateOrThrow(branchId, input.items, userId, false);
+    await StockValidationService.validateOrThrow(
+      branchId,
+      input.items,
+      userId,
+      false,
+    );
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.INVOICE,
@@ -282,97 +290,103 @@ export class SalesService {
       branchId,
     );
 
-    return prisma.$transaction(async (tx) => {
-      // Create invoice
-      const invoice = await tx.salesDocument.create({
-        data: {
-          documentId,
-          type: SalesDocumentType.INVOICE,
-          status: SalesDocumentStatus.SENT,
-          paymentStatus: PaymentStatus.UNPAID,
-          branchId,
-          customerId: source.customerId,
-          issueDate: new Date(),
-          dueDate: source.dueDate,
-          subtotal: source.subtotal,
-          tax: source.tax,
-          discount: source.discount,
-          total: source.total,
-          balance: source.total,
-          notes: source.notes,
-          // sourceDocumentId is a self-referencing FK with onDelete: NoAction.
-          // For a QUOTE we keep the source (marked CONVERTED below), so the
-          // reference is valid. For a DRAFT we delete the source right after
-          // this create, so pointing at it would violate the FK constraint
-          // the moment we tried to delete it — leave it unset instead.
-          sourceDocumentId: source.type === SalesDocumentType.QUOTE ? source.id : null,
-          createdById: userId,
-          items: {
-            create: source.items.map((item) => ({
-              productId: item.productId,
-              description: item.description,
-              quantity: item.quantity,
-              unitPrice: item.unitPrice,
-              taxRate: item.taxRate,
-              subtotal: item.subtotal,
-              taxAmount: item.taxAmount,
-              discount: item.discount,
-              total: item.total,
-            })),
+    return prisma.$transaction(
+      async (tx) => {
+        // Create invoice
+        const invoice = await tx.salesDocument.create({
+          data: {
+            documentId,
+            type: SalesDocumentType.INVOICE,
+            status: SalesDocumentStatus.SENT,
+            paymentStatus: PaymentStatus.UNPAID,
+            branchId,
+            customerId: source.customerId,
+            issueDate: new Date(),
+            dueDate: source.dueDate,
+            subtotal: source.subtotal,
+            tax: source.tax,
+            discount: source.discount,
+            total: source.total,
+            balance: source.total,
+            notes: source.notes,
+            // sourceDocumentId is a self-referencing FK with onDelete: NoAction.
+            // For a QUOTE we keep the source (marked CONVERTED below), so the
+            // reference is valid. For a DRAFT we delete the source right after
+            // this create, so pointing at it would violate the FK constraint
+            // the moment we tried to delete it — leave it unset instead.
+            sourceDocumentId:
+              source.type === SalesDocumentType.QUOTE ? source.id : null,
+            createdById: userId,
+            items: {
+              create: source.items.map((item) => ({
+                productId: item.productId,
+                description: item.description,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                taxRate: item.taxRate,
+                subtotal: item.subtotal,
+                taxAmount: item.taxAmount,
+                discount: item.discount,
+                total: item.total,
+              })),
+            },
           },
-        },
-        include: { items: true },
-      });
-
-      // REQUIREMENT 5: Deduct stock when invoice is created
-      const warehouse = await tx.warehouse.findFirst({
-        where: { branchId },
-      });
-
-      if (!warehouse) {
-        throw new AppError(
-          ErrorCode.NOT_FOUND,
-          404,
-          "No warehouse found for this branch",
-        );
-      }
-
-      // Deduct stock using canonical FIFO
-      for (const item of source.items) {
-        await InventoryService.depleteStockFIFO(tx, {
-          productId: item.productId,
-          warehouseId: warehouse.id,
-          quantity: item.quantity,
-          userId,
-          salesId: invoice.id,
-          reference: `Invoice ${invoice.documentId} (converted from ${source.type})`,
+          include: { items: true },
         });
-      }
 
-      // REQUIREMENT 2: Handle source document based on type
-      if (source.type === SalesDocumentType.DRAFT) {
-        // PERMANENTLY DELETE the draft
-        await tx.salesDocument.delete({
-          where: { id: sourceId },
+        // REQUIREMENT 5: Deduct stock when invoice is created
+        const warehouse = await tx.warehouse.findFirst({
+          where: { branchId },
         });
-      } else if (source.type === SalesDocumentType.QUOTE) {
-        // Keep the quote for audit/history, mark as CONVERTED
-        await tx.salesDocument.update({
-          where: { id: sourceId },
-          data: { status: SalesDocumentStatus.CONVERTED },
-        });
-      }
 
-      // Update customer's balance when converting to an invoice
-      if (invoice.customerId) {
-        await tx.customer.update({
-          where: { id: invoice.customerId },
-          data: { currentBalance: { increment: Math.floor(invoice.balance) } },
-        });
-      }
+        if (!warehouse) {
+          throw new AppError(
+            ErrorCode.NOT_FOUND,
+            404,
+            "No warehouse found for this branch",
+          );
+        }
 
-      return invoice;
-    }, { timeout: 30000 });
+        // Deduct stock using canonical FIFO
+        for (const item of source.items) {
+          await InventoryService.depleteStockFIFO(tx, {
+            productId: item.productId,
+            warehouseId: warehouse.id,
+            quantity: item.quantity,
+            userId,
+            salesId: invoice.id,
+            reference: `Invoice ${invoice.documentId} (converted from ${source.type})`,
+          });
+        }
+
+        // REQUIREMENT 2: Handle source document based on type
+        if (source.type === SalesDocumentType.DRAFT) {
+          // PERMANENTLY DELETE the draft
+          await tx.salesDocument.delete({
+            where: { id: sourceId },
+          });
+        } else if (source.type === SalesDocumentType.QUOTE) {
+          // Keep the quote for audit/history, mark as CONVERTED
+          await tx.salesDocument.update({
+            where: { id: sourceId },
+            data: { status: SalesDocumentStatus.CONVERTED },
+          });
+        }
+
+        // Update customer's balance when converting to an invoice
+        if (invoice.customerId) {
+          await tx.customer.update({
+            where: { id: invoice.customerId },
+            data: {
+              currentBalance: { increment: Math.floor(invoice.balance) },
+            },
+          });
+        }
+
+        return invoice;
+      },
+      { timeout: 30000 },
+    );
   }
 
   // =============================
@@ -423,7 +437,7 @@ export class SalesService {
       if (existingSale) {
         logger.info(
           { idempotencyKey, existingSaleId: existingSale.id },
-          "Returning existing sale for idempotency key"
+          "Returning existing sale for idempotency key",
         );
         return existingSale;
       }
@@ -459,7 +473,10 @@ export class SalesService {
 
     // Fold in the whole-order discount (section 7B), separate from any
     // per-item discounts already summed into `totals`.
-    const totals = applyOrderDiscount(calculateDocumentTotals(preparedItems), orderDiscount);
+    const totals = applyOrderDiscount(
+      calculateDocumentTotals(preparedItems),
+      orderDiscount,
+    );
 
     return prisma.$transaction(
       async (tx) => {
@@ -646,66 +663,79 @@ export class SalesService {
   // Void Document
   // =============================
   static async voidDocument(id: string, reason?: string) {
-    return prisma.$transaction(async (tx) => {
-      const document = await tx.salesDocument.findUnique({
-        where: { id },
-        include: { items: true },
-      });
-      if (!document)
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
-
-      // Restore stock only for invoices that actually deducted stock (PAID / PARTIALLY_PAID / SENT)
-      const stockWasDeducted = document.type === SalesDocumentType.INVOICE &&
-        ([SalesDocumentStatus.PAID, SalesDocumentStatus.PARTIALLY_PAID, SalesDocumentStatus.SENT] as SalesDocumentStatus[]).includes(document.status);
-
-      if (stockWasDeducted) {
-        const warehouse = await tx.warehouse.findFirst({
-          where: { branchId: document.branchId },
+    return prisma.$transaction(
+      async (tx) => {
+        const document = await tx.salesDocument.findUnique({
+          where: { id },
+          include: { items: true },
         });
+        if (!document)
+          throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
 
-        if (warehouse) {
-          for (const item of document.items) {
-            // Restore stock with a real cost-basis StockBatch (not just a
-            // bare quantity bump) so FIFO valuation stays consistent after
-            // a void. We don't record which exact batch(es) were originally
-            // depleted for this line item, so this uses the product's
-            // current reference cost_price as the restored batch's cost —
-            // an approximation, not the exact original COGS. Tracking the
-            // real originating batch cost per sale line would need a
-            // schema change (e.g. a cost field on SalesDocumentItem) that's
-            // out of scope here.
-            const product = await tx.product.findUnique({
-              where: { id: item.productId },
-              select: { cost_price: true },
-            });
-            await InventoryService.receiveStock(tx, {
-              productId: item.productId,
-              warehouseId: warehouse.id,
-              quantity: item.quantity,
-              unitCost: product?.cost_price ?? 0,
-              userId: document.createdById,
-              reference: `Void of ${document.documentId}`,
+        // Restore stock only for invoices that actually deducted stock (PAID / PARTIALLY_PAID / SENT)
+        const stockWasDeducted =
+          document.type === SalesDocumentType.INVOICE &&
+          (
+            [
+              SalesDocumentStatus.PAID,
+              SalesDocumentStatus.PARTIALLY_PAID,
+              SalesDocumentStatus.SENT,
+            ] as SalesDocumentStatus[]
+          ).includes(document.status);
+
+        if (stockWasDeducted) {
+          const warehouse = await tx.warehouse.findFirst({
+            where: { branchId: document.branchId },
+          });
+
+          if (warehouse) {
+            for (const item of document.items) {
+              // Restore stock with a real cost-basis StockBatch (not just a
+              // bare quantity bump) so FIFO valuation stays consistent after
+              // a void. We don't record which exact batch(es) were originally
+              // depleted for this line item, so this uses the product's
+              // current reference cost_price as the restored batch's cost —
+              // an approximation, not the exact original COGS. Tracking the
+              // real originating batch cost per sale line would need a
+              // schema change (e.g. a cost field on SalesDocumentItem) that's
+              // out of scope here.
+              const product = await tx.product.findUnique({
+                where: { id: item.productId },
+                select: { cost_price: true },
+              });
+              await InventoryService.receiveStock(tx, {
+                productId: item.productId,
+                warehouseId: warehouse.id,
+                quantity: item.quantity,
+                unitCost: product?.cost_price ?? 0,
+                userId: document.createdById,
+                reference: `Void of ${document.documentId}`,
+              });
+            }
+          }
+        }
+
+        // Adjust customer balance if invoice had an outstanding balance
+        if (
+          document.customerId &&
+          document.type === SalesDocumentType.INVOICE
+        ) {
+          const outstanding = Math.floor(document.balance || 0);
+          if (outstanding > 0) {
+            await tx.customer.update({
+              where: { id: document.customerId },
+              data: { currentBalance: { decrement: outstanding } },
             });
           }
         }
-      }
 
-      // Adjust customer balance if invoice had an outstanding balance
-      if (document.customerId && document.type === SalesDocumentType.INVOICE) {
-        const outstanding = Math.floor(document.balance || 0);
-        if (outstanding > 0) {
-          await tx.customer.update({
-            where: { id: document.customerId },
-            data: { currentBalance: { decrement: outstanding } },
-          });
-        }
-      }
-
-      return tx.salesDocument.update({
-        where: { id },
-        data: { status: SalesDocumentStatus.VOID, notes: reason || "VOIDED" },
-      });
-    }, { timeout: 30000 });
+        return tx.salesDocument.update({
+          where: { id },
+          data: { status: SalesDocumentStatus.VOID, notes: reason || "VOIDED" },
+        });
+      },
+      { timeout: 30000 },
+    );
   }
 
   // =============================
@@ -851,7 +881,9 @@ export class SalesService {
         discount: Math.floor(doc.discount),
         tax: Math.floor(doc.tax),
         grand_total: Math.floor(doc.total),
-        amount_paid: Math.floor(doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0),
+        amount_paid: Math.floor(
+          doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
+        ),
         change: 0,
         created_date: doc.createdAt,
         createdAt: doc.createdAt,
@@ -871,8 +903,8 @@ export class SalesService {
   static async getPOSSaleById(id: string) {
     const doc = await prisma.salesDocument.findUnique({
       where: { id },
-      include: { 
-        items: { include: { product: true } }, 
+      include: {
+        items: { include: { product: true } },
         payments: true,
         branch: true,
         createdBy: true,
@@ -890,22 +922,28 @@ export class SalesService {
       discount: Math.floor(doc.discount),
       tax: Math.floor(doc.tax),
       grand_total: Math.floor(doc.total),
-      amount_paid: Math.floor(doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0),
+      amount_paid: Math.floor(
+        doc.payments?.reduce((sum, p) => sum + p.amount, 0) || 0,
+      ),
       change: 0,
       created_date: doc.createdAt,
       createdAt: doc.createdAt,
-      branch: doc.branch ? {
-        id: doc.branch.id,
-        name: doc.branch.name,
-        code: doc.branch.code,
-        address: doc.branch.address,
-        phone: doc.branch.phone,
-      } : null,
-      user: doc.createdBy ? {
-        id: doc.createdBy.id,
-        name: doc.createdBy.name,
-        email: doc.createdBy.email,
-      } : null,
+      branch: doc.branch
+        ? {
+            id: doc.branch.id,
+            name: doc.branch.name,
+            code: doc.branch.code,
+            address: doc.branch.address,
+            phone: doc.branch.phone,
+          }
+        : null,
+      user: doc.createdBy
+        ? {
+            id: doc.createdBy.id,
+            name: doc.createdBy.name,
+            email: doc.createdBy.email,
+          }
+        : null,
       sales_items: doc.items.map((item) => ({
         id: item.id,
         productId: item.productId,
@@ -928,7 +966,7 @@ export class SalesService {
       status?: SalesDocumentStatus;
       notes?: string;
       discount?: number;
-    }
+    },
   ) {
     const doc = await prisma.salesDocument.findUnique({
       where: { id },
@@ -970,9 +1008,13 @@ export class SalesService {
     },
   ) {
     const existing = await prisma.salesDocument.findUnique({ where: { id } });
-    if (!existing) throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
+    if (!existing)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
 
-    if (existing.type !== SalesDocumentType.DRAFT && existing.type !== SalesDocumentType.QUOTE) {
+    if (
+      existing.type !== SalesDocumentType.DRAFT &&
+      existing.type !== SalesDocumentType.QUOTE
+    ) {
       throw new AppError(
         ErrorCode.BAD_REQUEST,
         400,
@@ -987,11 +1029,19 @@ export class SalesService {
       );
     }
     if (existing.status === SalesDocumentStatus.VOID) {
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, "This document has been voided and can no longer be edited.");
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "This document has been voided and can no longer be edited.",
+      );
     }
 
     if (!input.items || input.items.length === 0) {
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, "At least one item is required");
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "At least one item is required",
+      );
     }
 
     // Re-run the same stock validation createDocument applies for this type.
@@ -999,7 +1049,9 @@ export class SalesService {
       branchId,
       input.items,
       userId,
-      existing.type === SalesDocumentType.QUOTE ? (input.allowStockOverride || false) : false,
+      existing.type === SalesDocumentType.QUOTE
+        ? input.allowStockOverride || false
+        : false,
     );
 
     const preparedItems = input.items.map((item) => {
@@ -1044,10 +1096,7 @@ export class SalesService {
   // =============================
   // Get Daily Summary
   // =============================
-  static async getDailySummary(query: {
-    branchId?: string;
-    date?: string;
-  }) {
+  static async getDailySummary(query: { branchId?: string; date?: string }) {
     const targetDate = query.date ? new Date(query.date) : new Date();
     const startOfDay = new Date(targetDate);
     startOfDay.setHours(0, 0, 0, 0);
@@ -1066,7 +1115,7 @@ export class SalesService {
 
     const sales = await prisma.salesDocument.findMany({
       where,
-      include: { 
+      include: {
         items: { include: { product: true } },
         payments: true,
         branch: true,
@@ -1076,7 +1125,9 @@ export class SalesService {
     const totalSales = sales.length;
     const totalRevenue = Math.floor(sales.reduce((sum, s) => sum + s.total, 0));
     const totalTax = Math.floor(sales.reduce((sum, s) => sum + s.tax, 0));
-    const totalDiscount = Math.floor(sales.reduce((sum, s) => sum + s.discount, 0));
+    const totalDiscount = Math.floor(
+      sales.reduce((sum, s) => sum + s.discount, 0),
+    );
 
     const paymentMethods = {
       cash: 0,
@@ -1095,7 +1146,10 @@ export class SalesService {
       }
     }
 
-    const productSales = new Map<string, { name: string; quantity: number; revenue: number }>();
+    const productSales = new Map<
+      string,
+      { name: string; quantity: number; revenue: number }
+    >();
     for (const sale of sales) {
       for (const item of sale.items) {
         const existing = productSales.get(item.productId);
@@ -1149,7 +1203,11 @@ export class SalesService {
   // =============================
   // Approve Discount
   // =============================
-  static async approveDiscount(saleId: string, managerId: string, managerPassword: string) {
+  static async approveDiscount(
+    saleId: string,
+    managerId: string,
+    managerPassword: string,
+  ) {
     const manager = await prisma.user.findUnique({
       where: { id: managerId },
     });
@@ -1206,56 +1264,59 @@ export class SalesService {
     if (!document)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
     // Use transaction: create payment, update document, and update customer balance if any
-    return prisma.$transaction(async (tx) => {
-      const payment = await tx.payment.create({
-        data: {
-          salesDocumentId: documentId,
-          customerId: document.customerId || null,
-          amount: Math.floor(amount),
-          method: paymentMethod as PaymentMethod,
-          reference: reference || null,
-          paymentDate: new Date(),
-          createdById: userId,
-        },
-      });
-
-      // Update document balance
-      const newBalance = Math.floor(document.balance - amount);
-      const isPaid = newBalance <= 0;
-
-      await tx.salesDocument.update({
-        where: { id: documentId },
-        data: {
-          balance: Math.max(0, newBalance),
-          paidAmount: Math.floor((document.paidAmount || 0) + amount),
-          paymentStatus: isPaid
-            ? PaymentStatus.PAID
-            : PaymentStatus.PARTIALLY_PAID,
-          status: isPaid ? SalesDocumentStatus.PAID : document.status,
-        },
-      });
-
-      // Update customer balance if document linked to a customer
-      if (document.customerId) {
-        await tx.customer.update({
-          where: { id: document.customerId },
-          data: { currentBalance: { decrement: Math.floor(amount) } },
+    return prisma.$transaction(
+      async (tx) => {
+        const payment = await tx.payment.create({
+          data: {
+            salesDocumentId: documentId,
+            customerId: document.customerId || null,
+            amount: Math.floor(amount),
+            method: paymentMethod as PaymentMethod,
+            reference: reference || null,
+            paymentDate: new Date(),
+            createdById: userId,
+          },
         });
-      }
 
-      // Record the cash movement in the treasury model so it's reconcilable
-      // against imported bank statements.
-      await BankTreasuryService.recordTransaction(tx, {
-        paymentMethod,
-        type: "income",
-        amount: Math.floor(amount),
-        description: `Invoice Payment - ${document.documentId}`,
-        referenceNo: reference || payment.id,
-        category: "invoice_payment",
-      });
+        // Update document balance
+        const newBalance = Math.floor(document.balance - amount);
+        const isPaid = newBalance <= 0;
 
-      return payment;
-    }, { timeout: 30000 });
+        await tx.salesDocument.update({
+          where: { id: documentId },
+          data: {
+            balance: Math.max(0, newBalance),
+            paidAmount: Math.floor((document.paidAmount || 0) + amount),
+            paymentStatus: isPaid
+              ? PaymentStatus.PAID
+              : PaymentStatus.PARTIALLY_PAID,
+            status: isPaid ? SalesDocumentStatus.PAID : document.status,
+          },
+        });
+
+        // Update customer balance if document linked to a customer
+        if (document.customerId) {
+          await tx.customer.update({
+            where: { id: document.customerId },
+            data: { currentBalance: { decrement: Math.floor(amount) } },
+          });
+        }
+
+        // Record the cash movement in the treasury model so it's reconcilable
+        // against imported bank statements.
+        await BankTreasuryService.recordTransaction(tx, {
+          paymentMethod,
+          type: "income",
+          amount: Math.floor(amount),
+          description: `Invoice Payment - ${document.documentId}`,
+          referenceNo: reference || payment.id,
+          category: "invoice_payment",
+        });
+
+        return payment;
+      },
+      { timeout: 30000 },
+    );
   }
 
   // =============================
@@ -1325,7 +1386,10 @@ export class SalesService {
     // Fold in the whole-order discount (section 7B), separate from any
     // per-item discounts already summed into `totals`. Previously this
     // added `discount` to the total instead of subtracting it — fixed.
-    const totals = applyOrderDiscount(calculateDocumentTotals(preparedItems), discount);
+    const totals = applyOrderDiscount(
+      calculateDocumentTotals(preparedItems),
+      discount,
+    );
 
     return prisma.salesDocument.create({
       data: {
@@ -1417,7 +1481,10 @@ export class SalesService {
     // Fold in the whole-order discount (section 7B), separate from any
     // per-item discounts already summed into `totals`. Previously this
     // added `discount` to the total instead of subtracting it — fixed.
-    const totals = applyOrderDiscount(calculateDocumentTotals(preparedItems), discount);
+    const totals = applyOrderDiscount(
+      calculateDocumentTotals(preparedItems),
+      discount,
+    );
 
     return prisma.salesDocument.create({
       data: {
@@ -1454,43 +1521,54 @@ export class SalesService {
     if (!document)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Credit note not found");
     if (document.type !== SalesDocumentType.CREDIT_NOTE)
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, "Document is not a credit note");
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Document is not a credit note",
+      );
     if (document.status !== SalesDocumentStatus.DRAFT)
-      throw new AppError(ErrorCode.BAD_REQUEST, 400, `Credit note is already ${document.status.toLowerCase()}`);
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        `Credit note is already ${document.status.toLowerCase()}`,
+      );
 
-    return prisma.$transaction(async (tx) => {
-      // Restore stock for each returned item
-      // Credit note items have negative quantities (stored as -qty), so we negate them to get the return qty
-      const warehouse = await tx.warehouse.findFirst({
-        where: { branchId: document.branchId },
-      });
+    return prisma.$transaction(
+      async (tx) => {
+        // Restore stock for each returned item
+        // Credit note items have negative quantities (stored as -qty), so we negate them to get the return qty
+        const warehouse = await tx.warehouse.findFirst({
+          where: { branchId: document.branchId },
+        });
 
-      if (warehouse) {
-        for (const item of document.items) {
-          const returnQty = Math.abs(item.quantity); // credit note quantities are stored negative
+        if (warehouse) {
+          for (const item of document.items) {
+            const returnQty = Math.abs(item.quantity); // credit note quantities are stored negative
 
-          // Same cost-basis note as voidDocument above: restores at the
-          // product's current reference cost_price rather than the exact
-          // original COGS, which isn't tracked per sale line today.
-          const product = await tx.product.findUnique({
-            where: { id: item.productId },
-            select: { cost_price: true },
-          });
-          await InventoryService.receiveStock(tx, {
-            productId: item.productId,
-            warehouseId: warehouse.id,
-            quantity: returnQty,
-            unitCost: product?.cost_price ?? 0,
-            userId,
-            reference: `Credit Note ${document.documentId} approved`,
-          });
+            // Same cost-basis note as voidDocument above: restores at the
+            // product's current reference cost_price rather than the exact
+            // original COGS, which isn't tracked per sale line today.
+            const product = await tx.product.findUnique({
+              where: { id: item.productId },
+              select: { cost_price: true },
+            });
+            await InventoryService.receiveStock(tx, {
+              productId: item.productId,
+              warehouseId: warehouse.id,
+              quantity: returnQty,
+              unitCost: product?.cost_price ?? 0,
+              userId,
+              reference: `Credit Note ${document.documentId} approved`,
+            });
+          }
         }
-      }
 
-      return tx.salesDocument.update({
-        where: { id },
-        data: { status: SalesDocumentStatus.CLOSED, approvedById: userId },
-      });
-    }, { timeout: 30000 });
+        return tx.salesDocument.update({
+          where: { id },
+          data: { status: SalesDocumentStatus.CLOSED, approvedById: userId },
+        });
+      },
+      { timeout: 30000 },
+    );
   }
 }

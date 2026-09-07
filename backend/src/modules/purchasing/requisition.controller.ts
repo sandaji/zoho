@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { PurchaseRequisitionService } from "./requisition.service";
-import { PurchaseRequisitionStatus } from "../../generated";
+import { PurchaseRequisitionStatus } from "../../generated/enums.js";
 import { PermissionService } from "../auth/service/permission.service";
 
 // Same reasoning as purchasing.controller.ts's identical helper: the JWT
@@ -17,19 +17,33 @@ async function getUserPermissions(req: Request): Promise<string[]> {
 export class RequisitionController {
   private service = new PurchaseRequisitionService();
 
-  createRequisition = async (req: Request, res: Response, next: NextFunction) => {
+  createRequisition = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userId = (req as any).user?.userId;
-      const requisition = await this.service.createRequisition(userId, req.body);
+      const requisition = await this.service.createRequisition(
+        userId,
+        req.body,
+      );
       res.status(201).json({ success: true, data: requisition });
     } catch (error) {
       next(error);
     }
   };
 
-  updateRequisition = async (req: Request, res: Response, next: NextFunction) => {
+  updateRequisition = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
-      const requisition = await this.service.updateRequisition(req.params.id, req.body);
+      const requisition = await this.service.updateRequisition(
+        req.params.id,
+        req.body,
+      );
       res.status(200).json({ success: true, data: requisition });
     } catch (error) {
       next(error);
@@ -45,7 +59,11 @@ export class RequisitionController {
     }
   };
 
-  listRequisitions = async (req: Request, res: Response, next: NextFunction) => {
+  listRequisitions = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userPermissions = await getUserPermissions(req);
       const userBranchId = (req as any).user?.branchId;
@@ -85,10 +103,18 @@ export class RequisitionController {
     }
   };
 
-  convertToPurchaseOrder = async (req: Request, res: Response, next: NextFunction) => {
+  convertToPurchaseOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const userId = (req as any).user?.userId;
-      const po = await this.service.convertToPurchaseOrder(req.params.id, userId, req.body);
+      const po = await this.service.convertToPurchaseOrder(
+        req.params.id,
+        userId,
+        req.body,
+      );
       res.status(201).json({ success: true, data: po });
     } catch (error) {
       next(error);

@@ -4,7 +4,8 @@
  */
 
 import { prisma } from "../../../lib/db";
-import { VATType, Prisma } from "../../../generated";
+import { Prisma } from "../../../generated";
+import { VATType } from "../../../generated/enums.js";
 import { logger } from "../../../lib/logger";
 
 export interface VATTransactionInput {
@@ -55,7 +56,7 @@ export class VATService {
    */
   static async recordVATTransaction(
     tx: Prisma.TransactionClient,
-    data: VATTransactionInput
+    data: VATTransactionInput,
   ) {
     const transactionNo = await this.generateVTNumber();
 
@@ -88,7 +89,7 @@ export class VATService {
       vatRate: Prisma.Decimal;
       vatAmount: Prisma.Decimal;
       userId: string;
-    }
+    },
   ) {
     return await this.recordVATTransaction(tx, {
       vatType: VATType.OUTPUT,
@@ -116,7 +117,7 @@ export class VATService {
       vatAmount: Prisma.Decimal;
       isClaimable?: boolean;
       userId: string;
-    }
+    },
   ) {
     return await this.recordVATTransaction(tx, {
       vatType: VATType.INPUT,
@@ -160,9 +161,9 @@ export class VATService {
       },
     });
 
-    const vatPayable = (outputVAT._sum.vat_amount || new Prisma.Decimal(0)).minus(
-      inputVAT._sum.vat_amount || new Prisma.Decimal(0)
-    );
+    const vatPayable = (
+      outputVAT._sum.vat_amount || new Prisma.Decimal(0)
+    ).minus(inputVAT._sum.vat_amount || new Prisma.Decimal(0));
 
     return {
       period,
@@ -181,10 +182,7 @@ export class VATService {
   /**
    * Mark Input VAT as claimed
    */
-  static async claimInputVAT(
-    transactionIds: string[],
-    claimPeriod: string
-  ) {
+  static async claimInputVAT(transactionIds: string[], claimPeriod: string) {
     return await prisma.vATTransaction.updateMany({
       where: {
         id: {
@@ -225,7 +223,7 @@ export class VATService {
       cuin: string;
       cusn: string;
       qrCode: string;
-    }
+    },
   ) {
     return await prisma.vATTransaction.update({
       where: {
@@ -244,10 +242,7 @@ export class VATService {
   /**
    * Record eTIMS sync error
    */
-  static async recordETIMSError(
-    transactionId: string,
-    errorMessage: string
-  ) {
+  static async recordETIMSError(transactionId: string, errorMessage: string) {
     return await prisma.vATTransaction.update({
       where: {
         id: transactionId,

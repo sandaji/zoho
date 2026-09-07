@@ -18,10 +18,13 @@ import {
   SalesDocumentType,
   SalesDocumentStatus,
   PaymentStatus,
-} from "../../../generated";
+} from "../../../generated/enums.js";
 import { getCompanyInfo } from "../../../config/company.config";
 import { logger } from "../../../lib/logger";
-import { calculateItemTotals, calculateDocumentTotals } from "../../../lib/sales-calculator";
+import {
+  calculateItemTotals,
+  calculateDocumentTotals,
+} from "../../../lib/sales-calculator";
 import { InventoryService } from "../../inventory/service/inventory.service";
 
 // ── Types ────────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ExpenseReportService } from "../services/expense-report.service";
-import { ExpenseReportStatus } from "../../../generated";
+import { ExpenseReportStatus } from "../../../generated/enums.js";
 import { PermissionService } from "../../auth/service/permission.service";
 import { logger } from "../../../lib/logger";
 
@@ -16,7 +16,11 @@ async function getUserPermissions(req: Request): Promise<string[]> {
 export class ExpenseReportController {
   private service = new ExpenseReportService();
 
-  async createExpenseReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async createExpenseReport(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       // @ts-ignore
       const userId = (req.user as any)?.userId;
@@ -28,10 +32,17 @@ export class ExpenseReportController {
     }
   }
 
-  async updateExpenseReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async updateExpenseReport(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const { id } = req.params;
-      const report = await this.service.updateExpenseReport(id as string, req.body);
+      const report = await this.service.updateExpenseReport(
+        id as string,
+        req.body,
+      );
       res.status(200).json({ status: "success", data: report });
     } catch (error) {
       logger.error(error, "Error updating expense report:");
@@ -39,7 +50,11 @@ export class ExpenseReportController {
     }
   }
 
-  async getExpenseReport(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async getExpenseReport(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const { id } = req.params;
       const report = await this.service.getExpenseReport(id as string);
@@ -50,7 +65,11 @@ export class ExpenseReportController {
     }
   }
 
-  async listExpenseReports(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async listExpenseReports(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       // @ts-ignore
       const userId = (req.user as any)?.userId;
@@ -72,7 +91,11 @@ export class ExpenseReportController {
     }
   }
 
-  async updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async updateStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       // @ts-ignore
       const userId = (req.user as any)?.userId;
@@ -94,7 +117,11 @@ export class ExpenseReportController {
     }
   }
 
-  async postToGL(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async postToGL(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       // @ts-ignore
       const userId = (req.user as any)?.userId;

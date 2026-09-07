@@ -12,7 +12,7 @@
 
 import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { MovementType, TransferStatus } from "../../generated";
+import { MovementType, TransferStatus } from "../../generated/enums.js";
 import { synchronizeBranchInventoryForWarehouse } from "../../lib/inventory-sync";
 import { InventoryService } from "../inventory/service/inventory.service";
 import type {
@@ -27,7 +27,10 @@ export class WarehouseService {
   /**
    * Create a new stock transfer — verifies availability at source warehouse
    */
-  async createTransfer(data: CreateTransferInput, createdById: string): Promise<any> {
+  async createTransfer(
+    data: CreateTransferInput,
+    createdById: string,
+  ): Promise<any> {
     const { sourceId, targetId, items, notes } = data;
 
     const [sourceWarehouse, targetWarehouse] = await Promise.all([
@@ -35,23 +38,42 @@ export class WarehouseService {
       prisma.warehouse.findUnique({ where: { id: targetId } }),
     ]);
 
-    if (!sourceWarehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Source warehouse not found");
-    if (!targetWarehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Target warehouse not found");
+    if (!sourceWarehouse)
+      throw new AppError(
+        ErrorCode.NOT_FOUND,
+        404,
+        "Source warehouse not found",
+      );
+    if (!targetWarehouse)
+      throw new AppError(
+        ErrorCode.NOT_FOUND,
+        404,
+        "Target warehouse not found",
+      );
 
     for (const item of items) {
       const inventory = await prisma.inventory.findUnique({
-        where: { productId_warehouseId: { productId: item.productId, warehouseId: sourceId } },
+        where: {
+          productId_warehouseId: {
+            productId: item.productId,
+            warehouseId: sourceId,
+          },
+        },
         include: { product: { select: { name: true, sku: true } } },
       });
 
       if (!inventory) {
-        throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Product ${item.productId} not found in source warehouse`);
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          400,
+          `Product ${item.productId} not found in source warehouse`,
+        );
       }
       if (inventory.available < item.quantity) {
         throw new AppError(
           ErrorCode.INSUFFICIENT_INVENTORY,
           400,
-          `Insufficient stock for product ${inventory.product.name} (SKU: ${inventory.product.sku}). Available: ${inventory.available}, Requested: ${item.quantity}`
+          `Insufficient stock for product ${inventory.product.name} (SKU: ${inventory.product.sku}). Available: ${inventory.available}, Requested: ${item.quantity}`,
         );
       }
     }
@@ -74,9 +96,25 @@ export class WarehouseService {
         },
       },
       include: {
-        items: { include: { product: { select: { id: true, name: true, sku: true } } } },
-        sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-        destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
+        items: {
+          include: { product: { select: { id: true, name: true, sku: true } } },
+        },
+        sourceWarehouse: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            branch: { select: { name: true } },
+          },
+        },
+        destinationWarehouse: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            branch: { select: { name: true } },
+          },
+        },
       },
     });
   }
@@ -98,7 +136,8 @@ export class WarehouseService {
         },
       });
 
-      if (!transfer) throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+      if (!transfer)
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
       if (
         transfer.status !== TransferStatus.APPROVED &&
         transfer.status !== TransferStatus.DISPATCHED
@@ -106,7 +145,7 @@ export class WarehouseService {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR,
           400,
-          `Cannot fulfill transfer with status: ${transfer.status}`
+          `Cannot fulfill transfer with status: ${transfer.status}`,
         );
       }
 
@@ -138,9 +177,27 @@ export class WarehouseService {
         where: { id: transferId },
         data: { status: TransferStatus.RECEIVED },
         include: {
-          items: { include: { product: { select: { id: true, name: true, sku: true } } } },
-          sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-          destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
+          items: {
+            include: {
+              product: { select: { id: true, name: true, sku: true } },
+            },
+          },
+          sourceWarehouse: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              branch: { select: { name: true } },
+            },
+          },
+          destinationWarehouse: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              branch: { select: { name: true } },
+            },
+          },
         },
       });
     });
@@ -158,8 +215,10 @@ export class WarehouseService {
         tx.product.findUnique({ where: { id: productId } }),
       ]);
 
-      if (!warehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
-      if (!product) throw new AppError(ErrorCode.NOT_FOUND, 404, "Product not found");
+      if (!warehouse)
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
+      if (!product)
+        throw new AppError(ErrorCode.NOT_FOUND, 404, "Product not found");
 
       const inventory = await tx.inventory.findUnique({
         where: { productId_warehouseId: { productId, warehouseId } },
@@ -169,17 +228,23 @@ export class WarehouseService {
         throw new AppError(
           ErrorCode.INSUFFICIENT_INVENTORY,
           400,
-          `Insufficient stock for adjustment. Available: ${inventory?.available ?? 0}, Requested: ${Math.abs(quantity)}`
+          `Insufficient stock for adjustment. Available: ${inventory?.available ?? 0}, Requested: ${Math.abs(quantity)}`,
         );
       }
 
       const updatedInventory = await tx.inventory.upsert({
         where: { productId_warehouseId: { productId, warehouseId } },
         create: {
-          productId, warehouseId,
-          quantity: Math.max(0, quantity), available: Math.max(0, quantity), reserved: 0,
+          productId,
+          warehouseId,
+          quantity: Math.max(0, quantity),
+          available: Math.max(0, quantity),
+          reserved: 0,
         },
-        update: { quantity: { increment: quantity }, available: { increment: quantity } },
+        update: {
+          quantity: { increment: quantity },
+          available: { increment: quantity },
+        },
       });
 
       const movement = await tx.stockMovement.create({
@@ -199,7 +264,11 @@ export class WarehouseService {
 
       await synchronizeBranchInventoryForWarehouse(tx, productId, warehouseId);
 
-      return { movement, inventory: updatedInventory, adjustmentType: quantity > 0 ? "increase" : "decrease" };
+      return {
+        movement,
+        inventory: updatedInventory,
+        adjustmentType: quantity > 0 ? "increase" : "decrease",
+      };
     });
   }
 
@@ -207,7 +276,15 @@ export class WarehouseService {
    * Get stock movements with filtering
    */
   async getStockMovements(params: GetStockMovementsInput): Promise<any> {
-    const { warehouseId, productId, type, startDate, endDate, page = 1, limit = 50 } = params;
+    const {
+      warehouseId,
+      productId,
+      type,
+      startDate,
+      endDate,
+      page = 1,
+      limit = 50,
+    } = params;
 
     const where: any = {};
     if (warehouseId) where.warehouseId = warehouseId;
@@ -233,7 +310,10 @@ export class WarehouseService {
       prisma.stockMovement.count({ where }),
     ]);
 
-    return { movements, pagination: { total, page, limit, totalPages: Math.ceil(total / limit) } };
+    return {
+      movements,
+      pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   /**
@@ -251,9 +331,27 @@ export class WarehouseService {
       prisma.stockTransfer.findMany({
         where,
         include: {
-          items: { include: { product: { select: { id: true, name: true, sku: true } } } },
-          sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-          destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
+          items: {
+            include: {
+              product: { select: { id: true, name: true, sku: true } },
+            },
+          },
+          sourceWarehouse: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              branch: { select: { name: true } },
+            },
+          },
+          destinationWarehouse: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              branch: { select: { name: true } },
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
@@ -262,7 +360,10 @@ export class WarehouseService {
       prisma.stockTransfer.count({ where }),
     ]);
 
-    return { transfers, pagination: { total, page, limit, totalPages: Math.ceil(total / limit) } };
+    return {
+      transfers,
+      pagination: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   /**
@@ -277,12 +378,27 @@ export class WarehouseService {
             product: { select: { id: true, name: true, sku: true } },
           },
         },
-        sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-        destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
+        sourceWarehouse: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            branch: { select: { name: true } },
+          },
+        },
+        destinationWarehouse: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            branch: { select: { name: true } },
+          },
+        },
       },
     });
 
-    if (!transfer) throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+    if (!transfer)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
     return transfer;
   }
 
@@ -292,20 +408,35 @@ export class WarehouseService {
   async updateTransferStatus(
     transferId: string,
     data: UpdateTransferStatusInput,
-    _userId: string
+    _userId: string,
   ): Promise<any> {
-    const transfer = await prisma.stockTransfer.findUnique({ where: { id: transferId } });
-    if (!transfer) throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
+    const transfer = await prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+    });
+    if (!transfer)
+      throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
 
-    if (transfer.status === TransferStatus.RECEIVED || transfer.status === TransferStatus.CANCELLED) {
-      throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Cannot update transfer with status: ${transfer.status}`);
+    if (
+      transfer.status === TransferStatus.RECEIVED ||
+      transfer.status === TransferStatus.CANCELLED
+    ) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        `Cannot update transfer with status: ${transfer.status}`,
+      );
     }
 
     return prisma.stockTransfer.update({
       where: { id: transferId },
-      data: { status: data.status as TransferStatus, notes: data.notes || transfer.notes },
+      data: {
+        status: data.status as TransferStatus,
+        notes: data.notes || transfer.notes,
+      },
       include: {
-        items: { include: { product: { select: { id: true, name: true, sku: true } } } },
+        items: {
+          include: { product: { select: { id: true, name: true, sku: true } } },
+        },
         sourceWarehouse: { select: { id: true, name: true, code: true } },
         destinationWarehouse: { select: { id: true, name: true, code: true } },
       },
@@ -318,12 +449,13 @@ export class WarehouseService {
   async getWarehouseStats(warehouseId?: string): Promise<any> {
     const where = warehouseId ? { warehouseId } : {};
 
-    const [totalValue, lowStockCount, outOfStockCount, totalProducts] = await Promise.all([
-      prisma.inventory.aggregate({ where, _sum: { quantity: true } }),
-      prisma.inventory.count({ where: { ...where, status: "low_stock" } }),
-      prisma.inventory.count({ where: { ...where, status: "out_of_stock" } }),
-      prisma.inventory.count({ where }),
-    ]);
+    const [totalValue, lowStockCount, outOfStockCount, totalProducts] =
+      await Promise.all([
+        prisma.inventory.aggregate({ where, _sum: { quantity: true } }),
+        prisma.inventory.count({ where: { ...where, status: "low_stock" } }),
+        prisma.inventory.count({ where: { ...where, status: "out_of_stock" } }),
+        prisma.inventory.count({ where }),
+      ]);
 
     return {
       totalValue: totalValue._sum.quantity || 0,

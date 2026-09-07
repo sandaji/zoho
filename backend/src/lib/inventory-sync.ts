@@ -1,4 +1,5 @@
-import { InventoryStatus, type Prisma } from "../generated";
+import { type Prisma } from "../generated";
+import { InventoryStatus } from "../generated/enums.js";
 
 /**
  * Keeps the branch-level inventory projection aligned with the sum of its
@@ -25,11 +26,12 @@ export async function synchronizeBranchInventory(
   const reserved = totals._sum.reserved ?? 0;
   const available = totals._sum.available ?? 0;
   const reorderLevel = existing?.reorder_level ?? 10;
-  const status = available <= 0
-    ? InventoryStatus.out_of_stock
-    : quantity < reorderLevel
-      ? InventoryStatus.low_stock
-      : InventoryStatus.in_stock;
+  const status =
+    available <= 0
+      ? InventoryStatus.out_of_stock
+      : quantity < reorderLevel
+        ? InventoryStatus.low_stock
+        : InventoryStatus.in_stock;
 
   return tx.branchInventory.upsert({
     where: { productId_branchId: { productId, branchId } },
@@ -58,6 +60,9 @@ export async function synchronizeBranchInventoryForWarehouse(
     select: { branchId: true },
   });
 
-  if (!warehouse) throw new Error(`Warehouse ${warehouseId} not found while synchronizing inventory`);
+  if (!warehouse)
+    throw new Error(
+      `Warehouse ${warehouseId} not found while synchronizing inventory`,
+    );
   return synchronizeBranchInventory(tx, productId, warehouse.branchId);
 }

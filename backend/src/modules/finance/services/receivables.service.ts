@@ -1,6 +1,7 @@
 // backend/src/modules/finance/services/receivables.service.ts
 import { prisma } from "../../../lib/db";
-import { ARStatus, PaymentMethod, Prisma } from "../../../generated";
+import { Prisma } from "../../../generated";
+import { ARStatus, PaymentMethod } from "../../../generated/enums.js";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
 import { BankTreasuryService } from "./bank-treasury.service";
@@ -38,13 +39,13 @@ export class ReceivablesService {
         throw new AppError(
           ErrorCode.NOT_FOUND as any,
           404,
-          "Receivable not found"
+          "Receivable not found",
         );
       if (data.amount > ar.balance) {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR as any,
           400,
-          "Payment amount exceeds balance"
+          "Payment amount exceeds balance",
         );
       }
 
@@ -90,7 +91,7 @@ export class ReceivablesService {
       // 4. Post to General Ledger: DR Cash (Bank/Mobile Money) / CR Accounts Receivable
       const arAccount = await AccountingService.getEnsureAccount(
         DEFAULT_ACCOUNTS.ACCOUNTS_RECEIVABLE,
-        tx
+        tx,
       );
 
       let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
@@ -104,7 +105,7 @@ export class ReceivablesService {
 
       const assetAccount = await AccountingService.getEnsureAccount(
         assetAccountDef,
-        tx
+        tx,
       );
 
       await JournalEntryService.createJournalEntry(
@@ -129,7 +130,7 @@ export class ReceivablesService {
           sourceId: payment.id,
           createdBy: data.userId,
         },
-        tx
+        tx,
       );
 
       // 5. Record the actual cash movement in the treasury model, so
@@ -201,7 +202,7 @@ export class ReceivablesService {
       throw new AppError(
         ErrorCode.NOT_FOUND as any,
         404,
-        "AR payment not found"
+        "AR payment not found",
       );
     }
 

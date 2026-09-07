@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma, TransactionType } from "../generated";
+import { PrismaClient, Prisma } from "../generated";
+import { TransactionType } from "../generated/enums.js";
 import { prisma as defaultPrisma } from "../lib/db";
 import { sum } from "../utils/money";
 

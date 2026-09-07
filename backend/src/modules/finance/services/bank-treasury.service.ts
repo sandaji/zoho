@@ -1,6 +1,7 @@
 // backend/src/modules/finance/services/bank-treasury.service.ts
 import { prisma } from "../../../lib/db";
-import { Prisma, TransactionType, BankAccountType } from "../../../generated";
+import { Prisma } from "../../../generated";
+import { TransactionType, BankAccountType } from "../../../generated/enums.js";
 import { logger } from "../../../lib/logger";
 
 export interface RecordTreasuryTransactionInput {
@@ -18,7 +19,7 @@ export class BankTreasuryService {
    */
   static async resolveAccount(
     paymentMethod?: string,
-    tx?: Prisma.TransactionClient
+    tx?: Prisma.TransactionClient,
   ) {
     const client = tx || prisma;
     const method = (paymentMethod || "").toUpperCase();
@@ -79,15 +80,24 @@ export class BankTreasuryService {
    */
   static async recordTransaction(
     tx: Prisma.TransactionClient,
-    input: RecordTreasuryTransactionInput
+    input: RecordTreasuryTransactionInput,
   ) {
     try {
-      const { paymentMethod, type, amount, description, referenceNo, category } = input;
+      const {
+        paymentMethod,
+        type,
+        amount,
+        description,
+        referenceNo,
+        category,
+      } = input;
       if (!amount || amount <= 0) return null;
 
       const account = await this.resolveAccount(paymentMethod, tx);
       const isIncome = type === "income" || type === TransactionType.income;
-      const transactionType: TransactionType = isIncome ? TransactionType.income : TransactionType.expense;
+      const transactionType: TransactionType = isIncome
+        ? TransactionType.income
+        : TransactionType.expense;
 
       const delta = isIncome ? amount : -amount;
       const newBalance = (account.current_balance || 0) + delta;

@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { PurchaseOrderStatus, Prisma } from "../../../src/generated";
+import { Prisma } from "../../../src/generated";
+import { PurchaseOrderStatus } from "../../../src/generated/enums.js";
 import { InventoryService } from "../inventory/service/inventory.service";
 import PDFDocument from "pdfkit";
 
@@ -406,7 +407,9 @@ export class PurchasingService {
             requestedById: userId,
             status: requestedStatus,
             submittedAt:
-              requestedStatus === PurchaseOrderStatus.SUBMITTED ? new Date() : null,
+              requestedStatus === PurchaseOrderStatus.SUBMITTED
+                ? new Date()
+                : null,
             subtotal,
             tax: subtotal * 0.16,
             total: subtotal * 1.16,
@@ -488,7 +491,10 @@ export class PurchasingService {
         // Resolve branch from warehouse if the warehouse is being changed
         let resolvedBranchId = existing.branchId;
         let destinationWarehouseId = existing.destinationWarehouseId;
-        if (data.warehouseId && data.warehouseId !== existing.destinationWarehouseId) {
+        if (
+          data.warehouseId &&
+          data.warehouseId !== existing.destinationWarehouseId
+        ) {
           const warehouse = await tx.warehouse.findUnique({
             where: { id: data.warehouseId },
             select: { branchId: true },
@@ -508,7 +514,11 @@ export class PurchasingService {
           vendor: { connect: { id: vendorId } },
           branch: { connect: { id: resolvedBranchId } },
           ...(destinationWarehouseId
-            ? { destinationWarehouse: { connect: { id: destinationWarehouseId } } }
+            ? {
+                destinationWarehouse: {
+                  connect: { id: destinationWarehouseId },
+                },
+              }
             : { destinationWarehouse: { disconnect: true } }),
           ...(data.notes !== undefined && { notes: data.notes }),
           ...(data.expectedDeliveryDate !== undefined && {

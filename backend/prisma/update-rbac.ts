@@ -262,7 +262,13 @@ async function main() {
   // CEO: View all, Approve high level
   await assignAll('ceo', readOnlyPerms, AccessScope.GLOBAL);
 
-  // Branch Manager
+  // Branch Manager — also serves as the "Dept Head" Level 1 approver in
+  // the finance-department escalation chain (see erp-finance-gap-
+  // analysis.md §3.3 / implementation roadmap Phase 3): every PO,
+  // requisition, and expense report needs Level-1 sign-off regardless of
+  // amount, and until now nobody held 'approve_standard' except
+  // Finance Manager/Director — meaning there was no genuinely distinct
+  // Level 1 tier below Finance Manager. This closes that gap.
   const bmPerms = [
     'hr.employee.view', 'hr.employee.manage', 'hr.leave.approve',
     'sales.order.view_all', 'sales.order.manage', 'sales.customer.view',
@@ -270,6 +276,10 @@ async function main() {
     'finance.invoice.view',
     'purchasing.order.view_all',
     'purchasing.vendor.view',
+    'purchasing.order.approve_standard',
+    'purchasing.requisition.view',
+    'purchasing.requisition.approve_standard',
+    'finance.expense.approve_standard',
   ];
   await assignAll('branch_manager', bmPerms, AccessScope.BRANCH);
 

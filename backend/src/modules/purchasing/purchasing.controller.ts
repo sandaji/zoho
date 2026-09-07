@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PurchasingService } from "./purchasing.service";
 import { AppError, ErrorCode } from "../../lib/errors";
-import { PurchaseOrderStatus } from "../../generated";
+import { PurchaseOrderStatus } from "../../generated/enums.js";
 import { PermissionService } from "../auth/service/permission.service";
 
 // TokenPayload (backend/src/types/index.ts) never carries a `permissions`

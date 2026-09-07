@@ -2,7 +2,7 @@ import { prisma } from "../../../lib/db";
 import { logger } from "../../../lib/logger";
 import { AppError, ErrorCode } from "../../../lib/errors";
 
-import { PurchaseOrderStatus } from "../../../generated";
+import { PurchaseOrderStatus } from "../../../generated/enums.js";
 import { PermissionService } from "../../auth/service/permission.service";
 import { PurchasingService } from "../purchasing.service";
 export enum ApprovalLevel {

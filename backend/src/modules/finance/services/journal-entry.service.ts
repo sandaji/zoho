@@ -4,7 +4,8 @@
  */
 
 import { prisma } from "../../../lib/db";
-import { Prisma, AccountType } from "../../../generated";
+import { Prisma } from "../../../generated";
+import { AccountType } from "../../../generated/enums.js";
 import { logger } from "../../../lib/logger";
 import { AppError, ErrorCode } from "../../../lib/errors";
 import { PeriodService } from "./period.service";
@@ -35,7 +36,7 @@ export class JournalEntryService {
    */
   static async createJournalEntry(
     input: JournalEntryInput,
-    tx?: Prisma.TransactionClient
+    tx?: Prisma.TransactionClient,
   ) {
     const client = tx || prisma;
 
@@ -51,11 +52,11 @@ export class JournalEntryService {
     // 2. Validate balance
     const totalDebits = input.lines.reduce(
       (sum, line) => sum.add(line.debit),
-      new Prisma.Decimal(0)
+      new Prisma.Decimal(0),
     );
     const totalCredits = input.lines.reduce(
       (sum, line) => sum.add(line.credit),
-      new Prisma.Decimal(0)
+      new Prisma.Decimal(0),
     );
 
     // Round to whole numbers to avoid floating-point precision issues
@@ -66,7 +67,7 @@ export class JournalEntryService {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR as any,
         400,
-        `Journal entry is not balanced. Debits: ${roundedDebits}, Credits: ${roundedCredits}`
+        `Journal entry is not balanced. Debits: ${roundedDebits}, Credits: ${roundedCredits}`,
       );
     }
 
@@ -74,7 +75,7 @@ export class JournalEntryService {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR as any,
         400,
-        "Journal entry amount must be greater than zero"
+        "Journal entry amount must be greater than zero",
       );
     }
 
@@ -108,7 +109,7 @@ export class JournalEntryService {
         throw new AppError(
           ErrorCode.NOT_FOUND as any,
           404,
-          `Account with ID ${line.accountId} not found`
+          `Account with ID ${line.accountId} not found`,
         );
       }
 
@@ -116,7 +117,7 @@ export class JournalEntryService {
         throw new AppError(
           ErrorCode.VALIDATION_ERROR as any,
           400,
-          `Account ${account.account_name} is inactive`
+          `Account ${account.account_name} is inactive`,
         );
       }
 
@@ -139,7 +140,7 @@ export class JournalEntryService {
 
     logger.info(
       { headerId: header.id, entryNo: header.entry_no },
-      "Journal entry created successfully"
+      "Journal entry created successfully",
     );
 
     return {
@@ -155,7 +156,7 @@ export class JournalEntryService {
    */
   private static async updateAccountBalances(
     client: Prisma.TransactionClient,
-    lines: JournalLineInput[]
+    lines: JournalLineInput[],
   ) {
     for (const line of lines) {
       const account = await client.chartOfAccount.findUnique({
@@ -188,7 +189,7 @@ export class JournalEntryService {
    * Generate unique entry number
    */
   private static async generateEntryNumber(
-    client: Prisma.TransactionClient
+    client: Prisma.TransactionClient,
   ): Promise<string> {
     const year = new Date().getFullYear();
     const count = await client.journalHeader.count({
@@ -318,7 +319,7 @@ export class JournalEntryService {
     originalEntryId: string,
     reversalDate: Date,
     reason: string,
-    createdBy: string
+    createdBy: string,
   ) {
     return await prisma.$transaction(async (tx) => {
       const original = await tx.journalHeader.findUnique({
@@ -332,14 +333,12 @@ export class JournalEntryService {
         throw new Error("Original journal entry not found");
       }
 
-      const reversalLines: JournalLineInput[] = original.lines.map(
-        (line) => ({
-          accountId: line.account_id,
-          debit: line.credit.toDecimalPlaces(0),
-          credit: line.debit.toDecimalPlaces(0),
-          description: `Reversal of ${original.entry_no}: ${line.description}`,
-        })
-      );
+      const reversalLines: JournalLineInput[] = original.lines.map((line) => ({
+        accountId: line.account_id,
+        debit: line.credit.toDecimalPlaces(0),
+        credit: line.debit.toDecimalPlaces(0),
+        description: `Reversal of ${original.entry_no}: ${line.description}`,
+      }));
 
       const reversalEntry = await this.createJournalEntry(
         {
@@ -352,7 +351,7 @@ export class JournalEntryService {
           sourceId: originalEntryId,
           createdBy,
         },
-        tx
+        tx,
       );
 
       return reversalEntry;
@@ -369,7 +368,9 @@ export class JournalEntryService {
   static async getBalanceSheet(asOfDate: Date = new Date(), branchId?: string) {
     const accounts = await prisma.chartOfAccount.findMany({
       where: {
-        account_type: { in: [AccountType.asset, AccountType.liability, AccountType.equity] },
+        account_type: {
+          in: [AccountType.asset, AccountType.liability, AccountType.equity],
+        },
         is_active: true,
       },
     });
@@ -413,9 +414,15 @@ export class JournalEntryService {
       })
       .filter((acc) => acc.balance !== 0 || acc.current_balance !== 0);
 
-    const assets = accountBalances.filter((a) => a.account_type === AccountType.asset);
-    const liabilities = accountBalances.filter((a) => a.account_type === AccountType.liability);
-    const equity = accountBalances.filter((a) => a.account_type === AccountType.equity);
+    const assets = accountBalances.filter(
+      (a) => a.account_type === AccountType.asset,
+    );
+    const liabilities = accountBalances.filter(
+      (a) => a.account_type === AccountType.liability,
+    );
+    const equity = accountBalances.filter(
+      (a) => a.account_type === AccountType.equity,
+    );
 
     return {
       assets,
@@ -430,7 +437,11 @@ export class JournalEntryService {
   /**
    * Income Statement (P&L) Report
    */
-  static async getIncomeStatement(startDate: Date, endDate: Date, branchId?: string) {
+  static async getIncomeStatement(
+    startDate: Date,
+    endDate: Date,
+    branchId?: string,
+  ) {
     const accounts = await prisma.chartOfAccount.findMany({
       where: {
         account_type: { in: [AccountType.revenue, AccountType.expense] },
@@ -477,8 +488,12 @@ export class JournalEntryService {
       })
       .filter((acc) => acc.amount !== 0);
 
-    const revenueItems = accountMovements.filter((a) => a.account_type === AccountType.revenue);
-    const expenseItems = accountMovements.filter((a) => a.account_type === AccountType.expense);
+    const revenueItems = accountMovements.filter(
+      (a) => a.account_type === AccountType.revenue,
+    );
+    const expenseItems = accountMovements.filter(
+      (a) => a.account_type === AccountType.expense,
+    );
     const totalRevenue = revenueItems.reduce((sum, a) => sum + a.amount, 0);
     const totalExpenses = expenseItems.reduce((sum, a) => sum + a.amount, 0);
 
