@@ -55,7 +55,7 @@ export class AuthService {
         user = await prisma.user.create({
           data: {
             email: normalizedEmail,
-            passwordHash,
+            passwordHash: passwordHash,
             name: "Admin User",
             role: "admin",
             branchId: null,
@@ -176,7 +176,7 @@ export class AuthService {
       const newUser = await tx.user.create({
         data: {
           email: email.toLowerCase(),
-          passwordHash,
+          passwordHash: passwordHash,
           name,
           phone,
           role: role || "cashier",

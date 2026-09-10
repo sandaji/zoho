@@ -81,14 +81,15 @@ export function PosFeed({ orders, loading }: PosFeedProps) {
                         <div>
                           <p className="text-sm font-semibold text-emerald-900">{order.id}</p>
                           <p className="text-xs text-emerald-600">
-                            {order.customer} · {order.items} item{order.items !== 1 ? "s" : ""} ·{" "}
+                            {order.customer}
+                            {order.items != null && ` · ${order.items} item${order.items !== 1 ? "s" : ""}`} ·{" "}
                             <span className="text-emerald-400">{order.timeElapsed}m ago</span>
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-bold text-emerald-800">
-                          KES {order.amount.toLocaleString()}
+                          {order.amount != null ? `KES ${order.amount.toLocaleString()}` : "—"}
                         </p>
                         <span
                           className={cn(statusBadge({ status: order.status }))}

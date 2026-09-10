@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../../lib/db';
-import { logger } from '../../lib/logger';
-import { inventoryRepository } from '../../repositories/inventory.repository';
-import { purchasingRepository } from '../../repositories/purchasing.repository';
-import { StatCardBuilder } from '../../utils/stat-card.builder';
-import { CodeGeneratorService } from '../../lib/code-generator.service';
-import * as bcrypt from 'bcrypt';
+import { Request, Response, NextFunction } from "express";
+import { prisma } from "../../lib/db";
+import { logger } from "../../lib/logger";
+import { inventoryRepository } from "../../repositories/inventory.repository";
+import { purchasingRepository } from "../../repositories/purchasing.repository";
+import { StatCardBuilder } from "../../utils/stat-card.builder";
+import { CodeGeneratorService } from "../../lib/code-generator.service";
+import * as bcrypt from "bcrypt";
 
 /**
  * Controller for admin-related operations.
@@ -24,21 +24,36 @@ export class AdminController {
         pending_deliveries,
         low_stock_items,
       ] = await Promise.all([
-        prisma.branch.count({ where: { isActive: true } }),
+        prisma.branches.count({ where: { isActive: true } }),
         inventoryRepository.getWarehousesCount(),
-        prisma.user.count({ where: { isActive: true } }),
+        prisma.users.count({ where: { isActive: true } }),
         inventoryRepository.getActiveProductsCount(),
         purchasingRepository.getPendingDeliveriesCount(),
         inventoryRepository.getLowStockItemsCount(),
       ]);
 
       const cards = {
-        branches: StatCardBuilder.create("Total Branches", total_branches).setColor("indigo").build(),
-        warehouses: StatCardBuilder.create("Total Warehouses", total_warehouses).setColor("sky").build(),
-        users: StatCardBuilder.create("Active Users", total_users).setColor("emerald").build(),
-        products: StatCardBuilder.create("Total Products", total_products).setColor("violet").build(),
-        deliveries: StatCardBuilder.create("Pending Deliveries", pending_deliveries).setColor("amber").build(),
-        lowStock: StatCardBuilder.create("Low Stock Items", low_stock_items).setColor("rose").build(),
+        branches: StatCardBuilder.create("Total Branches", total_branches)
+          .setColor("indigo")
+          .build(),
+        warehouses: StatCardBuilder.create("Total Warehouses", total_warehouses)
+          .setColor("sky")
+          .build(),
+        users: StatCardBuilder.create("Active Users", total_users)
+          .setColor("emerald")
+          .build(),
+        products: StatCardBuilder.create("Total Products", total_products)
+          .setColor("violet")
+          .build(),
+        deliveries: StatCardBuilder.create(
+          "Pending Deliveries",
+          pending_deliveries,
+        )
+          .setColor("amber")
+          .build(),
+        lowStock: StatCardBuilder.create("Low Stock Items", low_stock_items)
+          .setColor("rose")
+          .build(),
       };
 
       res.status(200).json({
@@ -51,7 +66,7 @@ export class AdminController {
         cards,
       });
     } catch (error) {
-      logger.error(error as Error, 'Error in getStats');
+      logger.error(error as Error, "Error in getStats");
       next(error);
     }
   }
@@ -61,9 +76,9 @@ export class AdminController {
 
   async listBranches(_req: Request, res: Response, next: NextFunction) {
     try {
-      const branches = await prisma.branch.findMany({
+      const branches = await prisma.branches.findMany({
         where: { isActive: true },
-        orderBy: { name: 'asc' },
+        orderBy: { name: "asc" },
       });
       res.json({
         success: true,
@@ -83,7 +98,7 @@ export class AdminController {
           ...(branchId ? { branchId: branchId as string } : {}),
         },
         include: { branch: { select: { name: true } } },
-        orderBy: { name: 'asc' },
+        orderBy: { name: "asc" },
       });
       res.json({
         success: true,
@@ -97,8 +112,12 @@ export class AdminController {
   async listUsers(req: Request, res: Response, next: NextFunction) {
     try {
       const { role, branchId } = req.query;
-      const roleStr = Array.isArray(role) ? role[0] as string : role as string | undefined;
-      const branchIdStr = Array.isArray(branchId) ? branchId[0] as string : branchId as string | undefined;
+      const roleStr = Array.isArray(role)
+        ? (role[0] as string)
+        : (role as string | undefined);
+      const branchIdStr = Array.isArray(branchId)
+        ? (branchId[0] as string)
+        : (branchId as string | undefined);
 
       const users = await prisma.user.findMany({
         where: {
@@ -117,7 +136,7 @@ export class AdminController {
           hasSystemAccess: true,
           createdAt: true,
         },
-        orderBy: { name: 'asc' },
+        orderBy: { name: "asc" },
       });
       res.json({
         success: true,
@@ -145,7 +164,7 @@ export class AdminController {
           role: true,
           branchId: true,
         },
-        orderBy: { name: 'asc' },
+        orderBy: { name: "asc" },
       });
       res.json({
         success: true,
@@ -156,13 +175,19 @@ export class AdminController {
     }
   }
 
-  async grantSystemAccess(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async grantSystemAccess(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     try {
       const id = req.params.id as string;
       const { password, role } = req.body;
 
       if (!password || !role) {
-        res.status(400).json({ error: "Password and Role are required to grant access." });
+        res
+          .status(400)
+          .json({ error: "Password and Role are required to grant access." });
         return;
       }
 
@@ -173,7 +198,9 @@ export class AdminController {
         return;
       }
       if (employee.hasSystemAccess) {
-        res.status(400).json({ error: "This employee already has system access." });
+        res
+          .status(400)
+          .json({ error: "This employee already has system access." });
         return;
       }
 
@@ -184,7 +211,7 @@ export class AdminController {
         where: { id },
         data: {
           hasSystemAccess: true,
-          passwordHash,
+          password: passwordHash,
           role,
         },
         select: {
@@ -193,7 +220,7 @@ export class AdminController {
           name: true,
           role: true,
           hasSystemAccess: true,
-        }
+        },
       });
 
       res.status(200).json({
@@ -213,15 +240,23 @@ export class AdminController {
         include: {
           branchInventory: true,
         },
-        orderBy: { name: 'asc' },
+        orderBy: { name: "asc" },
       });
 
       // Aggregate quantities across branches for global admin view
       const mappedProducts = products.map((p: any) => {
-        const quantity = p.branchInventory?.reduce((sum: number, inv: any) => sum + (inv.quantity || 0), 0) || 0;
+        const quantity =
+          p.branchInventory?.reduce(
+            (sum: number, inv: any) => sum + (inv.quantity || 0),
+            0,
+          ) || 0;
         // Use the highest reorder level found among branches as the global reference
-        const reorder_level = p.branchInventory?.reduce((max: number, inv: any) => Math.max(max, inv.reorder_level || 10), 0) || 10;
-        
+        const reorder_level =
+          p.branchInventory?.reduce(
+            (max: number, inv: any) => Math.max(max, inv.reorder_level || 10),
+            0,
+          ) || 10;
+
         return {
           ...p,
           quantity,
@@ -240,13 +275,13 @@ export class AdminController {
 
   async listDeliveries(_req: Request, res: Response, next: NextFunction) {
     try {
-      const deliveries = await prisma.delivery.findMany({
+      const deliveries = (await prisma.delivery.findMany({
         include: {
           truck: { select: { registration: true } },
           driver: { select: { name: true } },
         },
-        orderBy: { createdAt: 'desc' },
-      }) as any[];
+        orderBy: { createdAt: "desc" },
+      })) as any[];
       res.json({
         success: true,
         data: deliveries,
@@ -255,16 +290,22 @@ export class AdminController {
       next(error);
     }
   }
-  async listFinanceTransactions(req: Request, res: Response, next: NextFunction) {
+  async listFinanceTransactions(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const { branchId, type, limit = '50' } = req.query;
+      const { branchId, type, limit = "50" } = req.query;
       // FinanceTransaction has no direct branchId — join via Payroll→User→Branch if needed
       const transactions = await prisma.financeTransaction.findMany({
         where: {
           ...(type ? { type: type as any } : {}),
         },
-        include: { payroll: { include: { user: { select: { branchId: true } } } } },
-        orderBy: { createdAt: 'desc' },
+        include: {
+          payroll: { include: { user: { select: { branchId: true } } } },
+        },
+        orderBy: { createdAt: "desc" },
         take: Math.min(parseInt(limit as string), 200),
       });
       res.json({ success: true, data: transactions });
@@ -282,9 +323,11 @@ export class AdminController {
           ...(branchId ? { user: { branchId: branchId as string } } : {}),
         },
         include: {
-          user: { select: { id: true, name: true, email: true, branchId: true } },
+          user: {
+            select: { id: true, name: true, email: true, branchId: true },
+          },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 100,
       });
       res.json({ success: true, data: payrolls });
@@ -299,21 +342,20 @@ export class AdminController {
    */
   async getGlobalFinancials(req: Request, res: Response, next: NextFunction) {
     try {
-      const { branchId, period = '30' } = req.query;
+      const { branchId, period = "30" } = req.query;
       const days = Math.min(parseInt(period as string) || 30, 365);
       const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
 
-      const branchFilter = branchId && branchId !== 'all'
-        ? { branchId: branchId as string }
-        : {};
+      const branchFilter =
+        branchId && branchId !== "all" ? { branchId: branchId as string } : {};
 
       // Aggregate sales per branch from SalesDocument (INVOICE + PAID/PARTIALLY_PAID only)
       const [branchSales, internalTransferTotal, branches] = await Promise.all([
         prisma.salesDocument.groupBy({
-          by: ['branchId'],
+          by: ["branchId"],
           where: {
-            type: 'INVOICE',
-            status: { in: ['PAID', 'PARTIALLY_PAID', 'CLOSED'] },
+            type: "INVOICE",
+            status: { in: ["PAID", "PARTIALLY_PAID", "CLOSED"] },
             issueDate: { gte: since },
             ...branchFilter,
           },
@@ -323,7 +365,7 @@ export class AdminController {
         // Internal transfers — stock movements classified as TRANSFER_OUT to prevent double-count
         prisma.stockTransfer.aggregate({
           where: {
-            status: 'RECEIVED',
+            status: "RECEIVED",
             createdAt: { gte: since },
           },
           _count: { id: true },
@@ -335,26 +377,31 @@ export class AdminController {
       ]);
 
       // Build branch-keyed map
-      const branchMap = Object.fromEntries(branches.map(b => [b.id, b]));
+      const branchMap = Object.fromEntries(branches.map((b) => [b.id, b]));
 
-      const branchBreakdown = branchSales.map(s => ({
-        branch: branchMap[s.branchId] || { id: s.branchId, name: 'Unknown', code: '-', city: '-' },
-        revenue:    s._sum.total    || 0,
-        subtotal:   s._sum.subtotal || 0,
-        tax:        s._sum.tax      || 0,
-        discount:   s._sum.discount || 0,
+      const branchBreakdown = branchSales.map((s) => ({
+        branch: branchMap[s.branchId] || {
+          id: s.branchId,
+          name: "Unknown",
+          code: "-",
+          city: "-",
+        },
+        revenue: s._sum.total || 0,
+        subtotal: s._sum.subtotal || 0,
+        tax: s._sum.tax || 0,
+        discount: s._sum.discount || 0,
         orderCount: s._count.id,
       }));
 
-      const grossRevenue      = branchBreakdown.reduce((a, b) => a + b.revenue,  0);
-      const totalTax          = branchBreakdown.reduce((a, b) => a + b.tax,      0);
-      const totalDiscount     = branchBreakdown.reduce((a, b) => a + b.discount, 0);
-      const totalOrders       = branchBreakdown.reduce((a, b) => a + b.orderCount, 0);
+      const grossRevenue = branchBreakdown.reduce((a, b) => a + b.revenue, 0);
+      const totalTax = branchBreakdown.reduce((a, b) => a + b.tax, 0);
+      const totalDiscount = branchBreakdown.reduce((a, b) => a + b.discount, 0);
+      const totalOrders = branchBreakdown.reduce((a, b) => a + b.orderCount, 0);
       const internalTransfers = internalTransferTotal._count.id;
 
       // Expense aggregation from FinanceTransaction
       const expenses = await prisma.financeTransaction.aggregate({
-        where: { type: 'expense', createdAt: { gte: since } },
+        where: { type: "expense", createdAt: { gte: since } },
         _sum: { amount: true },
       });
       const totalExpenses = expenses._sum.amount || 0;
@@ -362,16 +409,16 @@ export class AdminController {
       res.json({
         success: true,
         data: {
-          period_days:        days,
-          gross_revenue:      grossRevenue,
+          period_days: days,
+          gross_revenue: grossRevenue,
           net_global_revenue: grossRevenue, // IBT deduction at product level not applicable in revenue terms
-          total_tax:          totalTax,
-          total_discount:     totalDiscount,
-          total_expenses:     totalExpenses,
-          net_profit:         grossRevenue - totalExpenses,
-          total_orders:       totalOrders,
+          total_tax: totalTax,
+          total_discount: totalDiscount,
+          total_expenses: totalExpenses,
+          net_profit: grossRevenue - totalExpenses,
+          total_orders: totalOrders,
           internal_transfers: internalTransfers,
-          branch_breakdown:   branchBreakdown,
+          branch_breakdown: branchBreakdown,
         },
       });
     } catch (error) {
@@ -395,25 +442,47 @@ export class AdminController {
       const transfers = await prisma.stockTransfer.findMany({
         where: {
           status: {
-            in: ['PENDING_APPROVAL', 'APPROVED', 'DISPATCHED', 'PARTIALLY_RECEIVED', 'DISCREPANCY'],
+            in: [
+              "PENDING_APPROVAL",
+              "APPROVED",
+              "DISPATCHED",
+              "PARTIALLY_RECEIVED",
+              "DISCREPANCY",
+            ],
           },
         },
         include: {
-          sourceWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
-          destinationWarehouse: { include: { branch: { select: { id: true, name: true, code: true } } } },
-          items: { include: { product: { select: { id: true, name: true, sku: true } } } },
+          sourceWarehouse: {
+            include: {
+              branch: { select: { id: true, name: true, code: true } },
+            },
+          },
+          destinationWarehouse: {
+            include: {
+              branch: { select: { id: true, name: true, code: true } },
+            },
+          },
+          items: {
+            include: {
+              product: { select: { id: true, name: true, sku: true } },
+            },
+          },
           createdBy: { select: { id: true, name: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         take: 50,
       });
 
       const summary = {
-        pending_approval:   transfers.filter(t => t.status === 'PENDING_APPROVAL').length,
-        approved:           transfers.filter(t => t.status === 'APPROVED').length,
-        in_transit:         transfers.filter(t => t.status === 'DISPATCHED').length,
-        partially_received: transfers.filter(t => t.status === 'PARTIALLY_RECEIVED').length,
-        discrepancy:        transfers.filter(t => t.status === 'DISCREPANCY').length,
+        pending_approval: transfers.filter(
+          (t) => t.status === "PENDING_APPROVAL",
+        ).length,
+        approved: transfers.filter((t) => t.status === "APPROVED").length,
+        in_transit: transfers.filter((t) => t.status === "DISPATCHED").length,
+        partially_received: transfers.filter(
+          (t) => t.status === "PARTIALLY_RECEIVED",
+        ).length,
+        discrepancy: transfers.filter((t) => t.status === "DISCREPANCY").length,
       };
 
       res.json({ success: true, data: { summary, transfers } });
@@ -435,33 +504,37 @@ export class AdminController {
         activeUsers,
         activeBranches,
       ] = await Promise.all([
-        prisma.cashierSession.count({ where: { status: 'OPEN' } }),
-        prisma.delivery.count({ where: { status: { in: ['pending', 'assigned', 'in_transit'] } } }),
-        prisma.branchInventory.count({ where: { status: 'low_stock' } }),
-        prisma.approvalRequest.count({ where: { status: 'PENDING' } }),
+        prisma.cashierSession.count({ where: { status: "OPEN" } }),
+        prisma.delivery.count({
+          where: { status: { in: ["pending", "assigned", "in_transit"] } },
+        }),
+        prisma.branchInventory.count({ where: { status: "low_stock" } }),
+        prisma.approvalRequest.count({ where: { status: "PENDING" } }),
         prisma.user.count({ where: { isActive: true, hasSystemAccess: true } }),
         prisma.branch.count({ where: { isActive: true } }),
       ]);
 
       // Compute overall health score (0–100)
-      const healthScore = Math.max(0, 100
-        - (pendingDeliveries > 10 ? 15 : pendingDeliveries > 5 ? 8 : 0)
-        - (lowStockItems > 20 ? 20 : lowStockItems > 10 ? 10 : 0)
-        - (pendingApprovals > 5 ? 10 : 0)
+      const healthScore = Math.max(
+        0,
+        100 -
+          (pendingDeliveries > 10 ? 15 : pendingDeliveries > 5 ? 8 : 0) -
+          (lowStockItems > 20 ? 20 : lowStockItems > 10 ? 10 : 0) -
+          (pendingApprovals > 5 ? 10 : 0),
       );
 
       res.json({
         success: true,
         data: {
-          health_score:      healthScore,
-          open_sessions:     openSessions,
+          health_score: healthScore,
+          open_sessions: openSessions,
           pending_deliveries: pendingDeliveries,
-          low_stock_items:   lowStockItems,
+          low_stock_items: lowStockItems,
           pending_approvals: pendingApprovals,
-          active_users:      activeUsers,
-          active_branches:   activeBranches,
-          api_status:        'operational',
-          checked_at:        new Date().toISOString(),
+          active_users: activeUsers,
+          active_branches: activeBranches,
+          api_status: "operational",
+          checked_at: new Date().toISOString(),
         },
       });
     } catch (error) {
@@ -472,14 +545,18 @@ export class AdminController {
   /**
    * Get the current customer code setting (2-letter prefix + next number preview).
    */
-  async getCustomerCodeSetting(_req: Request, res: Response, next: NextFunction) {
+  async getCustomerCodeSetting(
+    _req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const setting = await CodeGeneratorService.getCustomerCodeSetting();
       res.json({
         success: true,
         data: {
           prefix: setting.prefix,
-          nextCode: `${setting.prefix}${String(setting.nextNumber).padStart(6, '0')}`,
+          nextCode: `${setting.prefix}${String(setting.nextNumber).padStart(6, "0")}`,
         },
       });
     } catch (error) {
@@ -491,7 +568,11 @@ export class AdminController {
    * Admin sets/changes the 2-letter customer code prefix.
    * Body: { prefix: "AB" }
    */
-  async updateCustomerCodePrefix(req: Request, res: Response, next: NextFunction) {
+  async updateCustomerCodePrefix(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { prefix } = req.body;
       const setting = await CodeGeneratorService.setCustomerCodePrefix(prefix);
@@ -499,9 +580,9 @@ export class AdminController {
         success: true,
         data: {
           prefix: setting.prefix,
-          nextCode: `${setting.prefix}${String(setting.nextNumber).padStart(6, '0')}`,
+          nextCode: `${setting.prefix}${String(setting.nextNumber).padStart(6, "0")}`,
         },
-        message: 'Customer code prefix updated',
+        message: "Customer code prefix updated",
       });
     } catch (error) {
       next(error);

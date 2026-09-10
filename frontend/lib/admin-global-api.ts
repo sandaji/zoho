@@ -32,31 +32,42 @@ export interface GlobalFinancialsData {
 }
 
 export interface IBTSummary {
-  pending:         number;
-  in_transit:      number;
-  pending_receipt: number;
-  discrepancy:     number;
+  pending_approval:   number;
+  approved:           number;
+  in_transit:         number;
+  partially_received: number;
+  discrepancy:        number;
 }
+
+export type IBTTransferStatus =
+  | "DRAFT"
+  | "PENDING_APPROVAL"
+  | "APPROVED"
+  | "DISPATCHED"
+  | "PARTIALLY_RECEIVED"
+  | "RECEIVED"
+  | "CANCELLED"
+  | "DISCREPANCY"
+  | "PICKING"
+  | "VERIFIED";
 
 export interface IBTTransfer {
   id:           string;
-  transferNo:   string;
-  status:       "PENDING" | "IN_TRANSIT" | "PENDING_RECEIPT" | "DISCREPANCY";
+  document_id:  string;
+  status:       IBTTransferStatus;
   notes:        string | null;
-  truckRegNo:   string | null;
-  driverName:   string | null;
   createdAt:    string;
   updatedAt:    string;
   sourceWarehouse: {
     id: string; name: string;
     branch: { id: string; name: string; code: string };
   };
-  targetWarehouse: {
+  destinationWarehouse: {
     id: string; name: string;
     branch: { id: string; name: string; code: string };
   };
   items: {
-    id: string; quantity: number;
+    id: string; requested_qty: number;
     product: { id: string; name: string; sku: string };
   }[];
   createdBy: { id: string; name: string };

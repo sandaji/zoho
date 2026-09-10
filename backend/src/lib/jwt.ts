@@ -7,8 +7,13 @@ import jwt from "jsonwebtoken";
 import { logger } from "./logger";
 import { TokenPayload } from "../types";
 
-const JWT_SECRET =
-  process.env.JWT_SECRET || "your-super-secret-key-change-in-production";
+if (!process.env.JWT_SECRET) {
+  throw new Error(
+    "JWT_SECRET environment variable is not set. Refusing to start with an insecure default."
+  );
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRY = process.env.JWT_EXPIRY || "24h";
 
 /**
@@ -39,7 +44,7 @@ export function verifyToken(token: string): TokenPayload {
     }) as TokenPayload;
     return decoded;
   } catch (error) {
-    logger.warn({ token: token.substring(0, 20) }, "Token verification failed");
+    logger.warn("Token verification failed");
     throw error;
   }
 }

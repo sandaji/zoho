@@ -76,22 +76,26 @@ export function IBTMonitorWidget() {
 
   // Safe data access
   const safeData = data || {
-    summary: { pending: 0, in_transit: 0, pending_receipt: 0, discrepancy: 0 },
+    summary: { pending_approval: 0, approved: 0, in_transit: 0, partially_received: 0, discrepancy: 0 },
     transfers: [],
   };
 
   // Status helpers
   const getStatusBadge = (status: IBTTransfer["status"]) => {
     const variants = {
-      PENDING: { variant: "secondary" as const, icon: Clock, label: "Pending" },
-      IN_TRANSIT: { variant: "default" as const, icon: Truck, label: "In Transit" },
-      PENDING_RECEIPT: { variant: "outline" as const, icon: Package, label: "Pending Receipt" },
-      COMPLETED: { variant: "default" as const, icon: CheckCircle, label: "Completed" },
+      DRAFT: { variant: "secondary" as const, icon: Clock, label: "Draft" },
+      PENDING_APPROVAL: { variant: "secondary" as const, icon: Clock, label: "Pending Approval" },
+      APPROVED: { variant: "outline" as const, icon: CheckCircle, label: "Approved" },
+      DISPATCHED: { variant: "default" as const, icon: Truck, label: "In Transit" },
+      PARTIALLY_RECEIVED: { variant: "outline" as const, icon: Package, label: "Partially Received" },
+      RECEIVED: { variant: "default" as const, icon: CheckCircle, label: "Received" },
       CANCELLED: { variant: "destructive" as const, icon: AlertTriangle, label: "Cancelled" },
       DISCREPANCY: { variant: "destructive" as const, icon: AlertTriangle, label: "Discrepancy" },
+      PICKING: { variant: "secondary" as const, icon: Package, label: "Picking" },
+      VERIFIED: { variant: "outline" as const, icon: CheckCircle, label: "Verified" },
     };
 
-    const config = variants[status] || variants.PENDING;
+    const config = variants[status] || variants.PENDING_APPROVAL;
     const Icon = config.icon;
 
     return (
@@ -144,7 +148,10 @@ export function IBTMonitorWidget() {
   }
 
   const totalActiveTransfers =
-    safeData.summary.pending + safeData.summary.in_transit + safeData.summary.pending_receipt;
+    safeData.summary.pending_approval +
+    safeData.summary.approved +
+    safeData.summary.in_transit +
+    safeData.summary.partially_received;
 
   return (
     <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
@@ -174,8 +181,8 @@ export function IBTMonitorWidget() {
                 <Clock className="h-5 w-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-yellow-900">{safeData.summary.pending}</p>
-                <p className="text-xs text-yellow-700">Pending</p>
+                <p className="text-2xl font-bold text-yellow-900">{safeData.summary.pending_approval}</p>
+                <p className="text-xs text-yellow-700">Pending Approval</p>
               </div>
             </div>
           </div>
@@ -199,9 +206,9 @@ export function IBTMonitorWidget() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-purple-900">
-                  {safeData.summary.pending_receipt}
+                  {safeData.summary.partially_received}
                 </p>
-                <p className="text-xs text-purple-700">Pending Receipt</p>
+                <p className="text-xs text-purple-700">Partially Received</p>
               </div>
             </div>
           </div>
@@ -239,7 +246,9 @@ export function IBTMonitorWidget() {
                 <TableBody>
                   {safeData.transfers
                     .filter((t) =>
-                      ["PENDING", "IN_TRANSIT", "PENDING_RECEIPT", "DISCREPANCY"].includes(t.status)
+                      ["PENDING_APPROVAL", "APPROVED", "DISPATCHED", "PARTIALLY_RECEIVED", "DISCREPANCY"].includes(
+                        t.status
+                      )
                     )
                     .slice(0, 10)
                     .map((transfer) => (
@@ -250,7 +259,7 @@ export function IBTMonitorWidget() {
                         <TableCell>
                           <div>
                             <p className="text-sm font-semibold text-slate-800">
-                              #{transfer.id.slice(-8)}
+                              #{transfer.document_id}
                             </p>
                             <p className="text-xs text-slate-500">by {transfer.createdBy.name}</p>
                           </div>
@@ -263,13 +272,13 @@ export function IBTMonitorWidget() {
                               </span>
                               <span className="text-slate-500"> → </span>
                               <span className="font-medium text-slate-700">
-                                {transfer.targetWarehouse.branch.code}
+                                {transfer.destinationWarehouse.branch.code}
                               </span>
                             </div>
                             <ArrowRight className="h-3 w-3 text-slate-400" />
                           </div>
                           <div className="text-xs text-slate-500 mt-1">
-                            {transfer.sourceWarehouse.name} → {transfer.targetWarehouse.name}
+                            {transfer.sourceWarehouse.name} → {transfer.destinationWarehouse.name}
                           </div>
                         </TableCell>
                         <TableCell>

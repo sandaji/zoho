@@ -6,7 +6,11 @@
 import { prisma } from "../../lib/db";
 import { AppError, ErrorCode } from "../../lib/errors";
 import { logger } from "../../lib/logger";
-import { CreateBranchDTO, UpdateBranchDTO, BranchListFilters } from "./branch.dto";
+import {
+  CreateBranchDTO,
+  UpdateBranchDTO,
+  BranchListFilters,
+} from "./branch.dto";
 
 export class BranchService {
   /**
@@ -27,7 +31,10 @@ export class BranchService {
       ];
     }
 
-    if (filters?.authorizedBranchIds && filters.authorizedBranchIds.length > 0) {
+    if (
+      filters?.authorizedBranchIds &&
+      filters.authorizedBranchIds.length > 0
+    ) {
       where.id = { in: filters.authorizedBranchIds };
     }
 
@@ -36,7 +43,7 @@ export class BranchService {
     const skip = (page - 1) * limit;
 
     const [branches, total] = await Promise.all([
-      prisma.branch.findMany({
+      prisma.branches.findMany({
         where,
         orderBy: { name: "asc" },
         skip,
@@ -50,7 +57,7 @@ export class BranchService {
           },
         },
       }),
-      prisma.branch.count({ where }),
+      prisma.branches.count({ where }),
     ]);
 
     const data = branches.map((b) => ({
@@ -82,7 +89,7 @@ export class BranchService {
    * Get single branch with users and warehouses
    */
   async getBranch(id: string) {
-    const branch = await prisma.branch.findUnique({
+    const branch = await prisma.branches.findUnique({
       where: { id },
       include: {
         users: {
@@ -96,7 +103,13 @@ export class BranchService {
           },
         },
         warehouses: {
-          select: { id: true, name: true, location: true, capacity: true, isActive: true },
+          select: {
+            id: true,
+            name: true,
+            location: true,
+            capacity: true,
+            isActive: true,
+          },
         },
         _count: {
           select: {
@@ -123,12 +136,12 @@ export class BranchService {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
         400,
-        "Missing required fields: code, name, city"
+        "Missing required fields: code, name, city",
       );
     }
 
     // Check if code already exists
-    const existingBranch = await prisma.branch.findUnique({
+    const existingBranch = await prisma.branches.findUnique({
       where: { code: dto.code },
     });
 
@@ -136,12 +149,12 @@ export class BranchService {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
         400,
-        `Branch code '${dto.code}' already exists`
+        `Branch code '${dto.code}' already exists`,
       );
     }
 
     const branch = await prisma.$transaction(async (tx) => {
-      const newBranch = await tx.branch.create({
+      const newBranch = await tx.branches.create({
         data: {
           code: dto.code,
           name: dto.name,
@@ -153,7 +166,7 @@ export class BranchService {
 
       // Optional: Assign manager
       if (dto.managerId) {
-        await tx.user.update({
+        await tx.users.update({
           where: { id: dto.managerId },
           data: { branchId: newBranch.id, role: "manager" },
         });
@@ -171,14 +184,14 @@ export class BranchService {
    * Update an existing branch
    */
   async updateBranch(id: string, dto: UpdateBranchDTO) {
-    const branch = await prisma.branch.findUnique({ where: { id } });
+    const branch = await prisma.branches.findUnique({ where: { id } });
 
     if (!branch) {
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch not found");
     }
 
     const updatedBranch = await prisma.$transaction(async (tx) => {
-      const updated = await tx.branch.update({
+      const updated = await tx.branches.update({
         where: { id },
         data: {
           name: dto.name ?? branch.name,
@@ -191,7 +204,7 @@ export class BranchService {
 
       // Optional: Update manager
       if (dto.managerId) {
-        await tx.user.update({
+        await tx.users.update({
           where: { id: dto.managerId },
           data: { branchId: id, role: "manager" },
         });
@@ -209,7 +222,7 @@ export class BranchService {
    * Delete a branch (with dependency checks)
    */
   async deleteBranch(id: string) {
-    const branch = await prisma.branch.findUnique({
+    const branch = await prisma.branches.findUnique({
       where: { id },
       include: {
         users: { select: { id: true } },
@@ -236,11 +249,11 @@ export class BranchService {
           employeeCount: branch.users.length,
           warehouseCount: branch.warehouses.length,
           salesCount: branch.salesDocuments.length,
-        }
+        },
       );
     }
 
-    await prisma.branch.delete({ where: { id } });
+    await prisma.branches.delete({ where: { id } });
 
     logger.info({ branchId: id, code: branch.code }, "Branch deleted");
   }

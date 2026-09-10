@@ -13,9 +13,9 @@ node_modules
 # Misc
 .DS_Store
 *.pem
-# .env
-# .env.local
-# .env.*.local
+.env
+.env.local
+.env.*.local
 
 # Logs
 logs
@@ -30,3 +30,12 @@ yarn-error.log*
 *.swp
 *.swo
 *~
+
+# Ad hoc debug/output artifacts (not part of the test suite)
+schema_changes.txt
+schema_diff_check.txt
+seed_output.txt
+test-*.js
+test-*.sh
+prisma/schema.backup.prisma
+_delete_me/

@@ -151,13 +151,21 @@ export function AlertsTabs({
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Progress
-                            value={s.conversionRate * 100}
-                            className="h-1.5 flex-1 bg-emerald-100 [&>div]:bg-yellow-400"
-                          />
-                          <span className="shrink-0 text-[10px] text-emerald-500">
-                            {(s.conversionRate * 100).toFixed(0)}%
-                          </span>
+                          {s.conversionRate != null ? (
+                            <>
+                              <Progress
+                                value={s.conversionRate * 100}
+                                className="h-1.5 flex-1 bg-emerald-100 [&>div]:bg-yellow-400"
+                              />
+                              <span className="shrink-0 text-[10px] text-emerald-500">
+                                {(s.conversionRate * 100).toFixed(0)}%
+                              </span>
+                            </>
+                          ) : (
+                            <span className="shrink-0 text-[10px] text-emerald-300">
+                              {s.transactions} order{s.transactions !== 1 ? "s" : ""}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>

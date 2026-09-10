@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, DollarSign, ShoppingCart, Users, Activity } from "lucide-react";
+import { DollarSign, ShoppingCart, Users, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
@@ -15,17 +15,6 @@ const iconBadge = cva("flex h-10 w-10 items-center justify-center rounded-full",
     },
   },
   defaultVariants: { color: "emerald" },
-});
-
-// ── CVA variant for trend pill ───────────────────────────────────────────────
-const trendPill = cva("mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium", {
-  variants: {
-    direction: {
-      up: "bg-emerald-50 text-emerald-700",
-      down: "bg-red-50 text-red-600",
-    },
-  },
-  defaultVariants: { direction: "up" },
 });
 
 interface KpiGridProps {
@@ -48,32 +37,24 @@ export function KpiGrid({ metrics, loading }: KpiGridProps) {
     {
       title: "Gross Revenue",
       value: `KES ${metrics.totalRevenue.toLocaleString()}`,
-      change: "+12.5%",
-      direction: "up" as const,
       icon: DollarSign,
       color: "emerald" as const,
     },
     {
       title: "Transaction Volume",
       value: metrics.totalSales.toLocaleString(),
-      change: "+8.2%",
-      direction: "up" as const,
       icon: ShoppingCart,
       color: "yellow" as const,
     },
     {
       title: "Customer Count",
       value: metrics.customerCount.toLocaleString(),
-      change: "+5.3%",
-      direction: "up" as const,
       icon: Users,
       color: "teal" as const,
     },
     {
       title: "Avg Transaction",
       value: `KES ${metrics.averageTransaction.toLocaleString()}`,
-      change: "+2.1%",
-      direction: "up" as const,
       icon: Activity,
       color: "sky" as const,
     },
@@ -83,7 +64,6 @@ export function KpiGrid({ metrics, loading }: KpiGridProps) {
     <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
       {kpis.map((kpi) => {
         const Icon = kpi.icon;
-        const TrendIcon = kpi.direction === "up" ? TrendingUp : TrendingDown;
         return (
           <Card
             key={kpi.title}
@@ -97,10 +77,6 @@ export function KpiGrid({ metrics, loading }: KpiGridProps) {
             </CardHeader>
             <CardContent>
               <p className="text-2xl font-bold text-emerald-900">{kpi.value}</p>
-              <span className={cn(trendPill({ direction: kpi.direction }))}>
-                <TrendIcon className="h-3 w-3" />
-                {kpi.change} vs last period
-              </span>
             </CardContent>
           </Card>
         );

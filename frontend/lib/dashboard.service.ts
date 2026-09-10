@@ -8,7 +8,8 @@ export interface BranchMetrics {
   totalRevenue: number;
   averageTransaction: number;
   customerCount: number;
-  conversionRate: number;
+  // Not currently computable from a backend endpoint — see getBranchMetrics().
+  conversionRate: number | null;
   inventoryValue: number;
 }
 
@@ -38,8 +39,11 @@ export interface LowStockItem {
 export interface PendingOrder {
   id: string;
   customer: string;
-  amount: number;
-  items: number;
+  // The `deliveries` model has no link to a sales document/order in the
+  // current schema, so amount/items can't be computed — null until that
+  // relation exists.
+  amount: number | null;
+  items: number | null;
   status: "pending" | "processing" | "ready";
   timeElapsed: number;
 }
@@ -50,7 +54,8 @@ export interface StaffPerformance {
   role: string;
   sales: number;
   transactions: number;
-  conversionRate: number;
+  // Requires visit/lead data the backend doesn't track yet — null, not guessed.
+  conversionRate: number | null;
 }
 
 import { frontendEnv } from "./env";
@@ -85,7 +90,9 @@ export const dashboardService = {
           totalRevenue: data.data?.totalRevenue || 0,
           averageTransaction: data.data?.averageOrderValue || 0,
           customerCount: data.data?.totalUsers || 0,
-          conversionRate: 0.68,
+          // No conversion-rate source on the backend yet — report "not
+          // available" rather than a fixed, made-up figure.
+          conversionRate: null,
           inventoryValue: data.data?.totalInventoryValue || 0,
         },
       };
@@ -99,30 +106,47 @@ export const dashboardService = {
   },
 
   /**
-   * Get sales data for time period
+   * Get real daily sales/revenue trend from GET /sales-documents/performance
+   * (aggregated server-side from paid invoices in the requested window).
    */
-  async getSalesData(_token: string, timeRange: string = "week") {
+  async getSalesData(token: string, timeRange: string = "week") {
     try {
-      // The POS sales endpoint isn't available, so we generate mock data
-      // In production, this would be replaced with actual sales API
-      return this.getMockSalesData(timeRange);
+      const days = timeRange === "day" ? 1 : timeRange === "week" ? 7 : 30;
+      const endDate = new Date();
+      const startDate = new Date(endDate.getTime() - days * 24 * 60 * 60 * 1000);
+
+      const params = new URLSearchParams({
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      });
+
+      const response = await fetch(`${API_URL}/sales-documents/performance?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch sales performance");
+      }
+
+      const result = await response.json();
+      const byDay: { date: string; revenue: number; orderCount: number }[] =
+        result.data?.byDay || [];
+
+      const data: SalesData[] = byDay.map((d) => ({
+        date: d.date,
+        amount: d.revenue,
+        transactions: d.orderCount,
+      }));
+
+      return { success: true, data };
     } catch (error) {
-      return this.getMockSalesData(timeRange);
+      console.error("Error fetching sales data:", error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+        data: [],
+      };
     }
-  },
-
-  /**
-   * Mock sales data fallback
-   */
-  getMockSalesData(timeRange: string = "week") {
-    const days = timeRange === "day" ? 1 : timeRange === "week" ? 7 : 30;
-    const data = Array.from({ length: days }, (_, i) => ({
-      date: `Day ${i + 1}`,
-      amount: Math.floor(Math.random() * 50000) + 10000,
-      transactions: Math.floor(Math.random() * 50) + 20,
-    }));
-
-    return { success: true, data };
   },
 
   /**
@@ -222,7 +246,14 @@ export const dashboardService = {
   },
 
   /**
-   * Get pending deliveries/orders
+   * Get pending deliveries/orders.
+   *
+   * Note: `amount` and `items` are always null — the `deliveries` model has
+   * no foreign key to a sales document/order in the current schema, so
+   * there's no real value to compute here. Previously this filled in
+   * Math.random() figures, which looked real but weren't; null + an
+   * "unavailable" state in the UI is the honest option until that relation
+   * is added on the backend.
    */
   async getPendingOrders(token: string) {
     try {
@@ -238,12 +269,11 @@ export const dashboardService = {
 
       const data = await response.json();
 
-      // Transform delivery data to pending orders
-      const orders = (data.data || []).slice(0, 4).map((delivery: any) => ({
+      const orders: PendingOrder[] = (data.data || []).slice(0, 4).map((delivery: any) => ({
         id: delivery.id,
         customer: delivery.destination || "Customer",
-        amount: Math.floor(Math.random() * 3000) + 500,
-        items: Math.floor(Math.random() * 5) + 1,
+        amount: null,
+        items: null,
         status: (delivery.status?.toLowerCase() || "pending") as "pending" | "processing" | "ready",
         timeElapsed: Math.floor(
           (Date.now() - new Date(delivery.createdAt).getTime()) / (1000 * 60)
@@ -262,33 +292,51 @@ export const dashboardService = {
   },
 
   /**
-   * Get staff performance - Uses admin users endpoint
+   * Get staff performance. Real sales figures come from
+   * GET /sales-documents/performance's bySalesman aggregation; role/name
+   * come from admin/users. conversionRate is null — the backend doesn't
+   * track visits/leads, so there's nothing real to show there yet.
    */
   async getStaffPerformance(token: string) {
     try {
-      // Use admin endpoint to get users
-      const response = await fetch(`${API_URL}/admin/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const [usersRes, perfRes] = await Promise.all([
+        fetch(`${API_URL}/admin/users`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch(`${API_URL}/sales-documents/performance`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
-      if (!response.ok) {
-        // Return empty array if endpoint fails
+      if (!usersRes.ok) {
         return { success: true, data: [] };
       }
 
-      const data = await response.json();
+      const usersData = await usersRes.json();
+      const users: any[] = usersData.data || [];
 
-      // Transform user data to staff performance
-      const staff = (data.data || []).slice(0, 4).map((user: any) => ({
-        id: user.id,
-        name: user.name,
-        role: user.role || "Staff",
-        sales: Math.floor(Math.random() * 200000) + 50000,
-        transactions: Math.floor(Math.random() * 150) + 50,
-        conversionRate: Math.random() * 0.3 + 0.5,
-      }));
+      let bySalesman: {
+        userId: string;
+        totalRevenue: number;
+        orderCount: number;
+      }[] = [];
+      if (perfRes.ok) {
+        const perfData = await perfRes.json();
+        bySalesman = perfData.data?.bySalesman || [];
+      }
+      const perfByUserId = Object.fromEntries(bySalesman.map((s) => [s.userId, s]));
+
+      const staff: StaffPerformance[] = users.slice(0, 4).map((user: any) => {
+        const perf = perfByUserId[user.id];
+        return {
+          id: user.id,
+          name: user.name,
+          role: user.role || "Staff",
+          sales: perf?.totalRevenue ?? 0,
+          transactions: perf?.orderCount ?? 0,
+          conversionRate: null,
+        };
+      });
 
       return { success: true, data: staff };
     } catch (error) {
@@ -347,7 +395,11 @@ export const dashboardService = {
     csv += "METRICS\n";
     csv +=
       "Total Revenue,Total Sales,Avg Transaction,Customer Count,Conversion Rate,Inventory Value\n";
-    csv += `${data.metrics?.totalRevenue || 0},${data.metrics?.totalSales || 0},${data.metrics?.averageTransaction || 0},${data.metrics?.customerCount || 0},${((data.metrics?.conversionRate || 0) * 100).toFixed(1)}%,${data.metrics?.inventoryValue || 0}\n\n`;
+    const conversionRateLabel =
+      data.metrics?.conversionRate == null
+        ? "N/A"
+        : `${(data.metrics.conversionRate * 100).toFixed(1)}%`;
+    csv += `${data.metrics?.totalRevenue || 0},${data.metrics?.totalSales || 0},${data.metrics?.averageTransaction || 0},${data.metrics?.customerCount || 0},${conversionRateLabel},${data.metrics?.inventoryValue || 0}\n\n`;
 
     // Top Products
     csv += "TOP PRODUCTS\n";
@@ -369,7 +421,8 @@ export const dashboardService = {
     csv += "STAFF PERFORMANCE\n";
     csv += "Staff,Role,Sales,Transactions,Conversion Rate\n";
     (data.staff || []).forEach((member: any) => {
-      csv += `${member.name},${member.role},${member.sales},${member.transactions},${(member.conversionRate * 100).toFixed(1)}%\n`;
+      const rate = member.conversionRate == null ? "N/A" : `${(member.conversionRate * 100).toFixed(1)}%`;
+      csv += `${member.name},${member.role},${member.sales},${member.transactions},${rate}\n`;
     });
 
     return new Blob([csv], { type: "text/csv" });

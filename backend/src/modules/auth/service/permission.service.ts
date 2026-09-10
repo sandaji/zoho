@@ -56,7 +56,7 @@ export class PermissionService {
     } catch (error) {
       logger.error(
         { userId, error: error as Error },
-        "Failed to get user permissions"
+        "Failed to get user permissions",
       );
       return [];
     }
@@ -80,7 +80,7 @@ export class PermissionService {
     } catch (error) {
       logger.error(
         { userId, error: error as Error },
-        "Failed to get user roles"
+        "Failed to get user roles",
       );
       return [];
     }
@@ -91,7 +91,7 @@ export class PermissionService {
    * (GLOBAL > BRANCH > OWN)
    */
   static async getUserPermissionsWithScopes(
-    userId: string
+    userId: string,
   ): Promise<ResolvedPermission[]> {
     try {
       const rows = await prisma.roleAssignment.findMany({
@@ -138,7 +138,7 @@ export class PermissionService {
     } catch (error) {
       logger.error(
         { userId, error: error as Error },
-        "Failed to get user permissions with scopes"
+        "Failed to get user permissions with scopes",
       );
       return [];
     }
@@ -150,7 +150,7 @@ export class PermissionService {
    */
   static async getResolvedScope(
     userId: string,
-    permissionCode: string
+    permissionCode: string,
   ): Promise<AccessScope | null> {
     try {
       const rows = await prisma.roleAssignment.findMany({
@@ -203,7 +203,7 @@ export class PermissionService {
     } catch (error) {
       logger.error(
         { userId, permissionCode, error: error as Error },
-        "Failed to resolve permission scope"
+        "Failed to resolve permission scope",
       );
       return null;
     }
@@ -215,7 +215,7 @@ export class PermissionService {
    */
   static async hasPermission(
     userId: string,
-    permissionCode: string
+    permissionCode: string,
   ): Promise<boolean> {
     try {
       const count = await prisma.roleAssignment.count({
@@ -237,7 +237,7 @@ export class PermissionService {
     } catch (error) {
       logger.error(
         { userId, permissionCode, error: error as Error },
-        "Failed to check permission"
+        "Failed to check permission",
       );
       return false;
     }
