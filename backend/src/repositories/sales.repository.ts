@@ -1,19 +1,22 @@
-import { PrismaClient, Prisma } from "../generated";
+import { Prisma } from "../generated";
+import { SalesDocumentStatus } from "../generated/enums.js";
 import { prisma as defaultPrisma } from "../lib/db";
-import { sum, multiply } from "../utils/money";
+import { sum } from "../utils/money";
+
+type SalesDbClient = typeof defaultPrisma;
 
 export interface SalesFilterOptions {
   startDate?: Date;
   endDate?: Date;
   branchId?: string;
-  status?: string[];
+  status?: SalesDocumentStatus[];
   limit?: number;
 }
 
 export class SalesRepository {
-  private db: PrismaClient;
+  private db: SalesDbClient;
 
-  constructor(db: PrismaClient = defaultPrisma) {
+  constructor(db: SalesDbClient = defaultPrisma) {
     this.db = db;
   }
 
@@ -21,7 +24,16 @@ export class SalesRepository {
    * Get total revenue within optional date range and branch filter
    */
   async getRevenue(filters?: SalesFilterOptions): Promise<number> {
-    const { startDate, endDate, branchId, status = ["PAID", "PARTIALLY_PAID", "SENT"] } = filters || {};
+    const {
+      startDate,
+      endDate,
+      branchId,
+      status = [
+        SalesDocumentStatus.PAID,
+        SalesDocumentStatus.PARTIALLY_PAID,
+        SalesDocumentStatus.SENT,
+      ],
+    } = filters || {};
 
     const where: Prisma.SalesDocumentWhereInput = {
       ...(status && status.length > 0 ? { status: { in: status } } : {}),
@@ -50,7 +62,16 @@ export class SalesRepository {
    * Get detailed sales aggregate totals (revenue, subtotal, tax, count)
    */
   async getSalesTotals(filters?: SalesFilterOptions) {
-    const { startDate, endDate, branchId, status = ["PAID", "PARTIALLY_PAID", "SENT"] } = filters || {};
+    const {
+      startDate,
+      endDate,
+      branchId,
+      status = [
+        SalesDocumentStatus.PAID,
+        SalesDocumentStatus.PARTIALLY_PAID,
+        SalesDocumentStatus.SENT,
+      ],
+    } = filters || {};
 
     const where: Prisma.SalesDocumentWhereInput = {
       ...(status && status.length > 0 ? { status: { in: status } } : {}),
@@ -146,7 +167,9 @@ export class SalesRepository {
       take: limit,
     });
 
-    const customerIds = grouped.map((g) => g.customerId).filter(Boolean) as string[];
+    const customerIds = grouped
+      .map((g) => g.customerId)
+      .filter(Boolean) as string[];
     const customers = await this.db.customer.findMany({
       where: { id: { in: customerIds } },
     });
@@ -155,7 +178,9 @@ export class SalesRepository {
 
     return grouped.map((g) => ({
       customerId: g.customerId,
-      customerName: customerMap.get(g.customerId) || "Unknown Customer",
+      customerName: g.customerId
+        ? customerMap.get(g.customerId) || "Unknown Customer"
+        : "Unknown Customer",
       totalSpent: sum(g._sum.total),
       ordersCount: g._count,
     }));
@@ -169,7 +194,13 @@ export class SalesRepository {
 
     const where: Prisma.SalesDocumentItemWhereInput = {
       salesDocument: {
-        status: { in: ["PAID", "PARTIALLY_PAID", "SENT"] },
+        status: {
+          in: [
+            SalesDocumentStatus.PAID,
+            SalesDocumentStatus.PARTIALLY_PAID,
+            SalesDocumentStatus.SENT,
+          ],
+        },
         ...(branchId ? { branchId } : {}),
         ...(startDate || endDate
           ? {
@@ -186,18 +217,20 @@ export class SalesRepository {
       by: ["productId"],
       where,
       _sum: {
-        qty: true,
+        quantity: true,
         subtotal: true,
       },
       orderBy: {
         _sum: {
-          qty: "desc",
+          quantity: "desc",
         },
       },
       take: limit,
     });
 
-    const productIds = grouped.map((g) => g.productId).filter(Boolean) as string[];
+    const productIds = grouped
+      .map((g) => g.productId)
+      .filter(Boolean) as string[];
     const products = await this.db.product.findMany({
       where: { id: { in: productIds } },
     });
@@ -207,8 +240,8 @@ export class SalesRepository {
     return grouped.map((g) => ({
       productId: g.productId,
       productName: productMap.get(g.productId) || "Unknown Product",
-      quantitySold: g._sum.qty || 0,
-      totalRevenue: sum(g._sum.subtotal),
+      quantitySold: g._sum?.quantity || 0,
+      totalRevenue: sum(g._sum?.subtotal),
     }));
   }
 
@@ -220,7 +253,13 @@ export class SalesRepository {
 
     const docs = await this.db.salesDocument.findMany({
       where: {
-        status: { in: ["PAID", "PARTIALLY_PAID", "SENT"] },
+        status: {
+          in: [
+            SalesDocumentStatus.PAID,
+            SalesDocumentStatus.PARTIALLY_PAID,
+            SalesDocumentStatus.SENT,
+          ],
+        },
         ...(branchId ? { branchId } : {}),
         ...(startDate || endDate
           ? {

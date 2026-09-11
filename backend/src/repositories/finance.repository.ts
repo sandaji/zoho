@@ -1,7 +1,8 @@
-import { PrismaClient, Prisma } from "../generated";
 import { TransactionType } from "../generated/enums.js";
 import { prisma as defaultPrisma } from "../lib/db";
 import { sum } from "../utils/money";
+
+type FinanceDbClient = typeof defaultPrisma;
 
 export interface FinanceFilterOptions {
   startDate?: Date;
@@ -11,9 +12,9 @@ export interface FinanceFilterOptions {
 }
 
 export class FinanceRepository {
-  private db: PrismaClient;
+  private db: FinanceDbClient;
 
-  constructor(db: PrismaClient = defaultPrisma) {
+  constructor(db: FinanceDbClient = defaultPrisma) {
     this.db = db;
   }
 

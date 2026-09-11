@@ -1113,12 +1113,12 @@ export class SalesService {
       where.branchId = query.branchId;
     }
 
-    const sales = await prisma.sales_documents.findMany({
+    const sales = await prisma.salesDocument.findMany({
       where,
       include: {
-        sales_document_items: { include: { products: true } },
+        items: { include: { product: true } },
         payments: true,
-        branches: true,
+        branch: true,
       },
     });
 
@@ -1151,14 +1151,14 @@ export class SalesService {
       { name: string; quantity: number; revenue: number }
     >();
     for (const sale of sales) {
-      for (const item of sale.sales_document_items) {
+      for (const item of sale.items) {
         const existing = productSales.get(item.productId);
         if (existing) {
           existing.quantity += item.quantity;
           existing.revenue += Math.floor(item.total);
         } else {
           productSales.set(item.productId, {
-            name: item.products?.name || "Unknown",
+            name: item.product?.name || "Unknown",
             quantity: item.quantity,
             revenue: Math.floor(item.total),
           });

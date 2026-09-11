@@ -24,9 +24,9 @@ export class AdminController {
         pending_deliveries,
         low_stock_items,
       ] = await Promise.all([
-        prisma.branches.count({ where: { isActive: true } }),
+        prisma.branch.count({ where: { isActive: true } }),
         inventoryRepository.getWarehousesCount(),
-        prisma.users.count({ where: { isActive: true } }),
+        prisma.user.count({ where: { isActive: true } }),
         inventoryRepository.getActiveProductsCount(),
         purchasingRepository.getPendingDeliveriesCount(),
         inventoryRepository.getLowStockItemsCount(),
@@ -76,7 +76,7 @@ export class AdminController {
 
   async listBranches(_req: Request, res: Response, next: NextFunction) {
     try {
-      const branches = await prisma.branches.findMany({
+      const branches = await prisma.branch.findMany({
         where: { isActive: true },
         orderBy: { name: "asc" },
       });

@@ -1,15 +1,17 @@
-import { PrismaClient, Prisma } from "../generated";
+import { Prisma } from "../generated";
 import { prisma as defaultPrisma } from "../lib/db";
 import { sum, multiply } from "../utils/money";
+
+type InventoryDbClient = typeof defaultPrisma;
 
 export interface InventoryFilterOptions {
   branchId?: string;
 }
 
 export class InventoryRepository {
-  private db: PrismaClient;
+  private db: InventoryDbClient;
 
-  constructor(db: PrismaClient = defaultPrisma) {
+  constructor(db: InventoryDbClient = defaultPrisma) {
     this.db = db;
   }
 
@@ -38,7 +40,9 @@ export class InventoryRepository {
   /**
    * Get count of low stock items across active products / branch inventory
    */
-  async getLowStockItemsCount(filters?: InventoryFilterOptions): Promise<number> {
+  async getLowStockItemsCount(
+    filters?: InventoryFilterOptions,
+  ): Promise<number> {
     try {
       const result = await this.db.$queryRaw<Array<{ count: bigint }>>`
         SELECT COUNT(DISTINCT bi."productId")::bigint as count

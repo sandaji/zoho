@@ -22,9 +22,7 @@ const ISOLATION_CONFIGS: Record<string, string> = {
   FinanceTransaction: "payroll.user.branchId",
 };
 
-/**
- * Deeply applies a branch isolation filter to a Prisma where clause
- */
+/** Deeply applies a branch isolation filter to a Prisma where clause */
 function applyIsolation(where: any, path: string, branchId: string) {
   const parts = path.split(".");
   let current = where;
