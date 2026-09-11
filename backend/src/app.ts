@@ -20,7 +20,7 @@ export async function createApp(): Promise<Express> {
 
   // 1. GLOBAL MIDDLEWARE
   const allowedOrigins = process.env.FRONTEND_URLS
-    ? process.env.FRONTEND_URLS.split(",").map(s => s.trim())
+    ? process.env.FRONTEND_URLS.split(",").map((s) => s.trim())
     : ["http://localhost:3000", "http://127.0.0.1:3000"];
 
   app.use(
@@ -33,12 +33,14 @@ export async function createApp(): Promise<Express> {
 
         const isLocalDevelopmentOrigin =
           process.env.NODE_ENV !== "production" &&
-          /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin);
+          /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(
+            origin,
+          );
 
         callback(null, isLocalDevelopmentOrigin);
       },
       credentials: true,
-    })
+    }),
   );
 
   logger.debug({ allowedOrigins }, "🔧 CORS origins configured");
