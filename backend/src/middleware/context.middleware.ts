@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { asyncContext } from "../lib/async-context";
+import { asyncContext } from '@core/async-context';
 
 export const contextMiddleware = (
   req: Request,

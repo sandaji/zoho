@@ -35,14 +35,18 @@
  *   npx tsx scripts/backfill-stock-batches.ts              # apply
  */
 import "dotenv/config";
-import { prisma } from "../src/lib/db";
+import { prisma } from "../src/core/database/db";
 
 async function main() {
   const dryRun = process.argv.includes("--dry-run");
 
   const inventoryRows = await prisma.inventory.findMany({
     where: { quantity: { gt: 0 } },
-    include: { product: { select: { id: true, sku: true, name: true, cost_price: true } } },
+    include: {
+      product: {
+        select: { id: true, sku: true, name: true, cost_price: true },
+      },
+    },
   });
 
   console.log(
@@ -54,7 +58,11 @@ async function main() {
 
   for (const inv of inventoryRows) {
     const batches = await prisma.stockBatch.findMany({
-      where: { productId: inv.productId, warehouseId: inv.warehouseId, isDepleted: false },
+      where: {
+        productId: inv.productId,
+        warehouseId: inv.warehouseId,
+        isDepleted: false,
+      },
       select: { currentQuantity: true },
     });
     const batchTotal = batches.reduce((sum, b) => sum + b.currentQuantity, 0);

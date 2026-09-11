@@ -6,7 +6,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult, body, ValidationChain } from "express-validator";
 import { ZodSchema, ZodError } from "zod";
-import { logger } from "../lib/logger";
+import { logger } from '@core/utils/logger';
 
 // ============================================================================
 // VALIDATION RESULT HANDLER

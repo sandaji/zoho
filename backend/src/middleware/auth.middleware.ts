@@ -1,7 +1,7 @@
 // backend/src/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../lib/jwt';
-import { AppError, ErrorCode } from '../lib/errors';
+import { verifyToken } from '@core/utils/jwt';
+import { AppError, ErrorCode } from '@core/errors/errors';
 
 /**
  * Middleware to authenticate JWT token from Authorization header

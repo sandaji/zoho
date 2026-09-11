@@ -16,10 +16,10 @@
  * the journal entries independently.
  */
 
-import { prisma } from "../../../lib/db";
+import { prisma } from "@core/database/db";
 import { Prisma } from "../../../generated";
-import { logger } from "../../../lib/logger";
-import { InventoryService } from "../service/inventory.service";
+import { logger } from "@core/utils/logger";
+import { InventoryService } from "./inventory.service";
 
 export interface COGSAllocation {
   batchId: string;
@@ -55,7 +55,12 @@ export class FifoCOGSService {
     const batches = await prisma.stockBatch.findMany({
       where: { productId, warehouseId, isDepleted: false },
       orderBy: { receivedAt: "asc" },
-      select: { id: true, currentQuantity: true, unitCost: true, receivedAt: true },
+      select: {
+        id: true,
+        currentQuantity: true,
+        unitCost: true,
+        receivedAt: true,
+      },
     });
 
     if (batches.length === 0) {
@@ -74,7 +79,13 @@ export class FifoCOGSService {
       const unitCost = new Prisma.Decimal(batch.unitCost);
       const cost = unitCost.mul(new Prisma.Decimal(take));
       totalCOGS = totalCOGS.add(cost);
-      allocations.push({ batchId: batch.id, quantity: take, unitCost, totalCost: cost, receivedAt: batch.receivedAt });
+      allocations.push({
+        batchId: batch.id,
+        quantity: take,
+        unitCost,
+        totalCost: cost,
+        receivedAt: batch.receivedAt,
+      });
       remaining -= take;
     }
 
@@ -162,11 +173,17 @@ export class FifoCOGSService {
     ]);
 
     if (!cogsAccount || !inventoryAccount) {
-      throw new Error("COGS (5001) or Inventory Asset (1200) account not found in Chart of Accounts");
+      throw new Error(
+        "COGS (5001) or Inventory Asset (1200) account not found in Chart of Accounts",
+      );
     }
 
     const period = await tx.fiscalPeriod.findFirst({
-      where: { startDate: { lte: new Date() }, endDate: { gte: new Date() }, status: "open" },
+      where: {
+        startDate: { lte: new Date() },
+        endDate: { gte: new Date() },
+        status: "open",
+      },
     });
 
     if (!period) {
@@ -219,7 +236,11 @@ export class FifoCOGSService {
    * COGS report for a period — delegates to InventoryService.getCOGSReport.
    * @deprecated Use InventoryService.getCOGSReport directly.
    */
-  static async getCOGSReport(startDate: Date, endDate: Date, branchId?: string) {
+  static async getCOGSReport(
+    startDate: Date,
+    endDate: Date,
+    branchId?: string,
+  ) {
     return InventoryService.getCOGSReport(startDate, endDate, branchId);
   }
 }

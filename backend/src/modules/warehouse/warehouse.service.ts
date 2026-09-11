@@ -10,11 +10,11 @@
  * documentId, TransferStatus.PENDING_APPROVAL / RECEIVED / CANCELLED.
  */
 
-import { prisma } from "../../lib/db";
-import { AppError, ErrorCode } from "../../lib/errors";
+import { prisma } from "@core/database/db";
+import { AppError, ErrorCode } from "@core/errors/errors";
 import { MovementType, TransferStatus } from "../../generated/enums.js";
-import { synchronizeBranchInventoryForWarehouse } from "../../lib/inventory-sync";
-import { InventoryService } from "../inventory/service/inventory.service";
+import { synchronizeBranchInventoryForWarehouse } from "@shared/inventory-sync";
+import { InventoryService } from "../inventory/services/inventory.service";
 import type {
   CreateTransferInput,
   AdjustStockInput,

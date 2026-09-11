@@ -1,12 +1,12 @@
 // backend/src/modules/sales/sales.routes.ts
 import { Router } from "express";
-import { SalesController } from "../modules/pos/controller/sales.controller";
-import { PDFController } from "../modules/pos/controller/pdf.controller";
-import { authMiddleware } from "../lib/auth";
+import { SalesController } from "../modules/pos/controllers/sales.controller";
+import { PDFController } from "../modules/pos/controllers/pdf.controller";
+import { authMiddleware } from "@core/middleware/auth";
 import { requirePermission } from "../middleware/rbac.middleware";
 import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
-import { PrefixedDocumentController } from "../modules/pos/controller/prefixed-document.controller";
-import { SalesPerformanceController } from "../modules/pos/controller/sales-performance.controller";
+import { PrefixedDocumentController } from "../modules/pos/controllers/prefixed-document.controller";
+import { SalesPerformanceController } from "../modules/pos/controllers/sales-performance.controller";
 
 const router = Router();
 
@@ -16,11 +16,7 @@ const prefixedCtrl = new PrefixedDocumentController();
 const performanceCtrl = new SalesPerformanceController();
 
 // Get available document types
-router.get(
-  "/documents/types",
-  authenticate,
-  SalesController.getDocumentTypes,
-);
+router.get("/documents/types", authenticate, SalesController.getDocumentTypes);
 
 router.post(
   "/documents",
@@ -169,10 +165,8 @@ router.post(
 );
 
 // GET /sales-documents/invoices/prefixed/preview — preview next invoice ID without consuming it
-router.get(
-  "/invoices/prefixed/preview",
-  authenticate,
-  (req, res, next) => prefixedCtrl.previewNextId(req, res, next),
+router.get("/invoices/prefixed/preview", authenticate, (req, res, next) =>
+  prefixedCtrl.previewNextId(req, res, next),
 );
 
 // PATCH /sales-documents/users/:userId/prefix — set/update a user's sales prefix

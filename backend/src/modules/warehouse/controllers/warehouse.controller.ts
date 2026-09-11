@@ -14,12 +14,12 @@ import {
   getTransfersSchema,
   updateTransferStatusSchema,
 } from "../warehouse.schema";
-import { AppError, ErrorCode, validationError } from "../../../lib/errors";
+import { AppError, ErrorCode, validationError } from "@core/errors/errors";
 import type {
   CreateWarehouseDTO,
   UpdateWarehouseDTO,
   WarehouseListQueryDTO,
-} from "../dto";
+} from "../dtos";
 
 export class WarehouseController {
   private inventoryService: WarehouseInventoryService;

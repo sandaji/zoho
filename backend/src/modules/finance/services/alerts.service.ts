@@ -19,8 +19,8 @@
 // is one alert pipeline, not two. Left as-is for now — no functional
 // change in this pass, just recording the decision before Phase 4 work
 // starts on top of it.
-import { prisma } from "../../../lib/db";
-import { logger } from "../../../lib/logger";
+import { prisma } from '@core/database/db';
+import { logger } from '@core/utils/logger';
 
 export type AlertSeverity = "critical" | "warning" | "info";
 export type AlertType =

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getFinancialReport } from './reports.controller';
-import { authMiddleware as authenticate } from '../../lib/auth';
+import { authMiddleware as authenticate } from '@core/middleware/auth';
 import { hasAnyPermission } from '../../middleware/rbac.middleware';
 
 const router = Router();

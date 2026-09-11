@@ -3,10 +3,10 @@
  * Handles Input/Output VAT tracking, eTIMS integration, and VAT3 return generation
  */
 
-import { prisma } from "../../../lib/db";
+import { prisma } from "@core/database/db";
 import { Prisma } from "../../../generated";
-import { VATType } from "../../../generated/enums.js";
-import { logger } from "../../../lib/logger";
+import { VATType } from "../../../generated/index.js";
+import { logger } from "@core/utils/logger";
 
 export interface VATTransactionInput {
   vatType: VATType;

@@ -1,7 +1,7 @@
 // NOTE: This file will have compilation errors until the Prisma client is regenerated.
 // Please run `npx prisma generate` in the `backend` directory.
 
-import { Delivery, DispatchNote, Truck, User } from '@prisma/client';
+import { Delivery, DispatchNote, Truck, User } from "../../generated/index.js";
 
 export type DeliveryWithDetails = Delivery & {
   driver: User;

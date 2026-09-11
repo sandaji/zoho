@@ -1,7 +1,7 @@
 import { Router } from "express";
 import financeController from "./finance.controller";
-import expenseReportController from "./controller/expense-report.controller";
-import { authMiddleware } from "../../lib/auth";
+import expenseReportController from "./controllers/expense-report.controller";
+import { authMiddleware } from "@core/middleware/auth";
 import {
   requirePermission,
   hasAnyPermission,
@@ -280,12 +280,14 @@ router.get(
 router.post(
   "/expenses",
   requirePermission("finance.expense.create"),
-  (req, res, next) => expenseReportController.createExpenseReport(req, res, next),
+  (req, res, next) =>
+    expenseReportController.createExpenseReport(req, res, next),
 );
 router.get(
   "/expenses",
   hasAnyPermission(["finance.expense.view", "finance.expense.view_all"]),
-  (req, res, next) => expenseReportController.listExpenseReports(req, res, next),
+  (req, res, next) =>
+    expenseReportController.listExpenseReports(req, res, next),
 );
 router.get(
   "/expenses/:id",
@@ -295,7 +297,8 @@ router.get(
 router.patch(
   "/expenses/:id",
   requirePermission("finance.expense.create"),
-  (req, res, next) => expenseReportController.updateExpenseReport(req, res, next),
+  (req, res, next) =>
+    expenseReportController.updateExpenseReport(req, res, next),
 );
 router.patch(
   "/expenses/:id/status",

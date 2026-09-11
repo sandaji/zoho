@@ -1,8 +1,8 @@
 // backend/src/modules/finance/services/bank-treasury.service.ts
-import { prisma } from "../../../lib/db";
+import { prisma } from '@core/database/db';
 import { Prisma } from "../../../generated";
 import { TransactionType, BankAccountType } from "../../../generated/enums.js";
-import { logger } from "../../../lib/logger";
+import { logger } from '@core/utils/logger';
 
 export interface RecordTreasuryTransactionInput {
   paymentMethod?: string;

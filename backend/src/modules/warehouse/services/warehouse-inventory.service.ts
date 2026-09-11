@@ -24,9 +24,9 @@
  * call InventoryService's four stages directly instead of this wrapper.
  */
 
-import { prisma } from "../../../lib/db";
-import { AppError, ErrorCode } from "../../../lib/errors";
-import { InventoryService } from "../../inventory/service/inventory.service";
+import { prisma } from "@core/database/db";
+import { AppError, ErrorCode } from "@core/errors/errors";
+import { InventoryService } from "../../inventory/services/inventory.service";
 import type {
   CreateTransferInput,
   AdjustStockInput,
@@ -42,7 +42,10 @@ export class WarehouseInventoryService {
   /**
    * Create a new stock transfer (request stage only — no stock moves yet).
    */
-  async createTransfer(data: CreateTransferInput, createdById: string): Promise<any> {
+  async createTransfer(
+    data: CreateTransferInput,
+    createdById: string,
+  ): Promise<any> {
     return this.inventoryService.requestTransfer(createdById, {
       sourceWarehouseId: data.sourceId,
       destinationWarehouseId: data.targetId,
@@ -125,7 +128,15 @@ export class WarehouseInventoryService {
    * this table's fields were already correct in the old implementation.
    */
   async getStockMovements(params: GetStockMovementsInput): Promise<any> {
-    const { warehouseId, productId, type, startDate, endDate, page = 1, limit = 50 } = params;
+    const {
+      warehouseId,
+      productId,
+      type,
+      startDate,
+      endDate,
+      page = 1,
+      limit = 50,
+    } = params;
 
     const where: any = {};
     if (warehouseId) where.warehouseId = warehouseId;
@@ -172,9 +183,29 @@ export class WarehouseInventoryService {
       prisma.stockTransfer.findMany({
         where,
         include: {
-          items: { include: { product: { select: { id: true, name: true, sku: true, unit_price: true } } } },
-          sourceWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
-          destinationWarehouse: { select: { id: true, name: true, code: true, branch: { select: { name: true } } } },
+          items: {
+            include: {
+              product: {
+                select: { id: true, name: true, sku: true, unit_price: true },
+              },
+            },
+          },
+          sourceWarehouse: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              branch: { select: { name: true } },
+            },
+          },
+          destinationWarehouse: {
+            select: {
+              id: true,
+              name: true,
+              code: true,
+              branch: { select: { name: true } },
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip: (page - 1) * limit,
@@ -198,14 +229,34 @@ export class WarehouseInventoryService {
       include: {
         items: {
           include: {
-            product: { select: { id: true, name: true, sku: true, unit_price: true, image_url: true } },
+            product: {
+              select: {
+                id: true,
+                name: true,
+                sku: true,
+                unit_price: true,
+                image_url: true,
+              },
+            },
           },
         },
         sourceWarehouse: {
-          select: { id: true, name: true, code: true, location: true, branch: { select: { name: true, city: true } } },
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            location: true,
+            branch: { select: { name: true, city: true } },
+          },
         },
         destinationWarehouse: {
-          select: { id: true, name: true, code: true, location: true, branch: { select: { name: true, city: true } } },
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            location: true,
+            branch: { select: { name: true, city: true } },
+          },
         },
       },
     });
@@ -228,11 +279,15 @@ export class WarehouseInventoryService {
     data: UpdateTransferStatusInput,
     _userId: string,
   ): Promise<any> {
-    const transfer = await prisma.stockTransfer.findUnique({ where: { id: transferId } });
+    const transfer = await prisma.stockTransfer.findUnique({
+      where: { id: transferId },
+    });
     if (!transfer) {
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Transfer not found");
     }
-    if (["RECEIVED", "PARTIALLY_RECEIVED", "CANCELLED"].includes(transfer.status)) {
+    if (
+      ["RECEIVED", "PARTIALLY_RECEIVED", "CANCELLED"].includes(transfer.status)
+    ) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
         400,
@@ -244,7 +299,9 @@ export class WarehouseInventoryService {
       where: { id: transferId },
       data: { status: data.status, notes: data.notes ?? transfer.notes },
       include: {
-        items: { include: { product: { select: { id: true, name: true, sku: true } } } },
+        items: {
+          include: { product: { select: { id: true, name: true, sku: true } } },
+        },
         sourceWarehouse: { select: { id: true, name: true, code: true } },
         destinationWarehouse: { select: { id: true, name: true, code: true } },
       },
@@ -257,12 +314,13 @@ export class WarehouseInventoryService {
   async getWarehouseStats(warehouseId?: string): Promise<any> {
     const where = warehouseId ? { warehouseId } : {};
 
-    const [totalValue, lowStockCount, outOfStockCount, totalProducts] = await Promise.all([
-      prisma.inventory.aggregate({ where, _sum: { quantity: true } }),
-      prisma.inventory.count({ where: { ...where, status: "low_stock" } }),
-      prisma.inventory.count({ where: { ...where, status: "out_of_stock" } }),
-      prisma.inventory.count({ where }),
-    ]);
+    const [totalValue, lowStockCount, outOfStockCount, totalProducts] =
+      await Promise.all([
+        prisma.inventory.aggregate({ where, _sum: { quantity: true } }),
+        prisma.inventory.count({ where: { ...where, status: "low_stock" } }),
+        prisma.inventory.count({ where: { ...where, status: "out_of_stock" } }),
+        prisma.inventory.count({ where }),
+      ]);
 
     return {
       totalValue: totalValue._sum.quantity || 0,

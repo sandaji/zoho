@@ -1,5 +1,5 @@
 // backend/src/modules/finance/services/gl.service.ts
-import { prisma } from "../../../lib/db";
+import { prisma } from '@core/database/db';
 import { Prisma } from "../../../generated";
 import { JournalEntryService, JournalLineInput } from "./journal-entry.service";
 

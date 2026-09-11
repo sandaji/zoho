@@ -1,8 +1,8 @@
 // backend/src/modules/finance/services/receivables.service.ts
-import { prisma } from "../../../lib/db";
+import { prisma } from '@core/database/db';
 import { Prisma } from "../../../generated";
 import { ARStatus, PaymentMethod } from "../../../generated/enums.js";
-import { AppError, ErrorCode } from "../../../lib/errors";
+import { AppError, ErrorCode } from '@core/errors/errors';
 import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
 import { BankTreasuryService } from "./bank-treasury.service";
 import { JournalEntryService } from "./journal-entry.service";

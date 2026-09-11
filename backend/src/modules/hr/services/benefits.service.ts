@@ -1,6 +1,6 @@
 
-import { prisma } from "../../../lib/db";
-import { logger } from "../../../lib/logger";
+import { prisma } from '@core/database/db';
+import { logger } from '@core/utils/logger';
 
 export class BenefitsService {
   /**

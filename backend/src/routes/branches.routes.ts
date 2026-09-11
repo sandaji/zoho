@@ -5,7 +5,7 @@
 
 import { Router } from "express";
 import { BranchController } from "../modules/branches/branch.controller";
-import { authMiddleware } from "../lib/auth";
+import { authMiddleware } from '@core/middleware/auth';
 import { requirePermission } from "../middleware/rbac.middleware";
 
 const router = Router();

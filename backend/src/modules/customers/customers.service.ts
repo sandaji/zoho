@@ -1,6 +1,6 @@
 // backend/src/modules/customers/customers.service.ts
-import { prisma } from "../../lib/db";
-import { CodeGeneratorService } from "../../lib/code-generator.service";
+import { prisma } from '@core/database/db';
+import { CodeGeneratorService } from '@shared/code-generator.service';
 
 export class CustomersService {
   /**

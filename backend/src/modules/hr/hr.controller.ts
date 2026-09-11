@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { LeaveService } from "./services/leave.service";
-import { AppError, ErrorCode } from "../../lib/errors";
-import { HrService } from "./service";
-import { prisma } from "../../lib/db";
+import { AppError, ErrorCode } from "@core/errors/errors";
+import { HrService } from "./services";
+import { prisma } from "@core/database/db";
 
 const leaveService = new LeaveService();
 const hrService = new HrService();

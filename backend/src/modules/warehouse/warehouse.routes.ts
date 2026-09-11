@@ -4,8 +4,8 @@
  */
 
 import { Router } from "express";
-import { WarehouseController } from "./controllers";
-import { authMiddleware } from "../../lib/auth";
+import { WarehouseController } from "./controllers/warehouse.controller";
+import { authMiddleware } from "@core/middleware/auth";
 import { requirePermission } from "../../middleware/rbac.middleware";
 
 const router = Router();
@@ -20,8 +20,8 @@ const warehouseController = new WarehouseController();
 router.post(
   "/transfer",
   authMiddleware,
-  requirePermission('inventory.stock.adjust'),
-  (req, res, next) => warehouseController.createTransfer(req, res, next)
+  requirePermission("inventory.stock.adjust"),
+  (req, res, next) => warehouseController.createTransfer(req, res, next),
 );
 
 // Get all transfers with filtering
@@ -29,8 +29,8 @@ router.post(
 router.get(
   "/transfers",
   authMiddleware,
-  requirePermission('inventory.stock.view'),
-  (req, res, next) => warehouseController.getTransfers(req, res, next)
+  requirePermission("inventory.stock.view"),
+  (req, res, next) => warehouseController.getTransfers(req, res, next),
 );
 
 // Get a single transfer by ID
@@ -38,8 +38,8 @@ router.get(
 router.get(
   "/transfers/:id",
   authMiddleware,
-  requirePermission('inventory.stock.view'),
-  (req, res, next) => warehouseController.getTransferById(req, res, next)
+  requirePermission("inventory.stock.view"),
+  (req, res, next) => warehouseController.getTransferById(req, res, next),
 );
 
 // Update transfer status (to IN_TRANSIT or CANCELLED)
@@ -47,8 +47,8 @@ router.get(
 router.patch(
   "/transfers/:id/status",
   authMiddleware,
-  requirePermission('inventory.stock.adjust'),
-  (req, res, next) => warehouseController.updateTransferStatus(req, res, next)
+  requirePermission("inventory.stock.adjust"),
+  (req, res, next) => warehouseController.updateTransferStatus(req, res, next),
 );
 
 // Fulfill/receive a transfer (completes the transfer)
@@ -56,8 +56,8 @@ router.patch(
 router.post(
   "/transfer/:id/receive",
   authMiddleware,
-  requirePermission('inventory.stock.adjust'),
-  (req, res, next) => warehouseController.fulfillTransfer(req, res, next)
+  requirePermission("inventory.stock.adjust"),
+  (req, res, next) => warehouseController.fulfillTransfer(req, res, next),
 );
 
 /**
@@ -69,8 +69,8 @@ router.post(
 router.post(
   "/adjust",
   authMiddleware,
-  requirePermission('inventory.stock.adjust'),
-  (req, res, next) => warehouseController.adjustStock(req, res, next)
+  requirePermission("inventory.stock.adjust"),
+  (req, res, next) => warehouseController.adjustStock(req, res, next),
 );
 
 /**
@@ -82,8 +82,8 @@ router.post(
 router.get(
   "/movements",
   authMiddleware,
-  requirePermission('inventory.stock.view'),
-  (req, res, next) => warehouseController.getStockMovements(req, res, next)
+  requirePermission("inventory.stock.view"),
+  (req, res, next) => warehouseController.getStockMovements(req, res, next),
 );
 
 /**
@@ -95,8 +95,8 @@ router.get(
 router.get(
   "/stats",
   authMiddleware,
-  requirePermission('inventory.stock.view'),
-  (req, res, next) => warehouseController.getWarehouseStats(req, res, next)
+  requirePermission("inventory.stock.view"),
+  (req, res, next) => warehouseController.getWarehouseStats(req, res, next),
 );
 
 export default router;

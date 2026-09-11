@@ -1,18 +1,20 @@
-import { PrismaClient, Prisma } from "../generated";
-import { prisma as defaultPrisma } from "../lib/db";
+import { PurchaseOrderStatus } from "../generated/enums.js";
+import { prisma as defaultPrisma } from "@core/database/db";
 import { sum } from "../utils/money";
+
+type PurchasingDbClient = typeof defaultPrisma;
 
 export interface PurchasingFilterOptions {
   startDate?: Date;
   endDate?: Date;
   branchId?: string;
-  status?: string[];
+  status?: PurchaseOrderStatus[];
 }
 
 export class PurchasingRepository {
-  private db: PrismaClient;
+  private db: PurchasingDbClient;
 
-  constructor(db: PrismaClient = defaultPrisma) {
+  constructor(db: PurchasingDbClient = defaultPrisma) {
     this.db = db;
   }
 

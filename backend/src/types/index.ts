@@ -18,7 +18,7 @@ import {
   Payroll,
   CashierSession,
   SalesDocument,
-} from "../generated/client.js";
+} from "../generated/index.js";
 import {
   InventoryStatus,
   DeliveryStatus,
@@ -49,7 +49,13 @@ import {
  * User role enumeration
  * Defines the different roles available in the system
  */
-export type UserRole = "cashier" | "warehouse_staff" | "driver" | "manager" | "admin" | "super_admin";
+export type UserRole =
+  | "cashier"
+  | "warehouse_staff"
+  | "driver"
+  | "manager"
+  | "admin"
+  | "super_admin";
 
 // ============================================================================
 // AUTH & TOKEN TYPES
@@ -407,7 +413,10 @@ export const DELIVERY_STATUS_LABELS: Record<DeliveryStatus, string> = {
   rescheduled: "Rescheduled",
 };
 
-export const CASHIER_SESSION_STATUS_LABELS: Record<CashierSessionStatus, string> = {
+export const CASHIER_SESSION_STATUS_LABELS: Record<
+  CashierSessionStatus,
+  string
+> = {
   OPEN: "Open",
   CLOSED: "Closed",
   DISCREPANCY: "Discrepancy Detected",
@@ -617,7 +626,7 @@ export const HTTP_STATUS_CODES = {
 export function calculateNetSalary(
   baseSalary: number,
   allowances: number = 0,
-  deductions: number = 0
+  deductions: number = 0,
 ): number {
   return baseSalary + allowances - deductions;
 }
@@ -627,7 +636,7 @@ export function calculateNetSalary(
  */
 export function calculateAvailableInventory(
   quantity: number,
-  reserved: number
+  reserved: number,
 ): number {
   return quantity - reserved;
 }
@@ -638,7 +647,7 @@ export function calculateAvailableInventory(
 export function calculateSalesTotal(
   subtotal: number,
   discount: number = 0,
-  tax: number = 0
+  tax: number = 0,
 ): number {
   return subtotal - discount + tax;
 }

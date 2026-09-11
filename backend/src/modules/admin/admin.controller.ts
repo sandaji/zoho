@@ -1,11 +1,40 @@
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../../lib/db";
-import { logger } from "../../lib/logger";
 import { inventoryRepository } from "../../repositories/inventory.repository";
 import { purchasingRepository } from "../../repositories/purchasing.repository";
 import { StatCardBuilder } from "../../utils/stat-card.builder";
-import { CodeGeneratorService } from "../../lib/code-generator.service";
 import * as bcrypt from "bcrypt";
+import { prisma } from "@/core/database/db";
+import { logger } from "@/core/utils/logger";
+import { CodeGeneratorService } from "@/shared/code-generator.service";
+
+type BranchSummary = {
+  id: string;
+  name: string;
+  code: string;
+  city: string;
+};
+
+type BranchSalesSummary = {
+  branchId: string;
+  _sum: {
+    total: number | null;
+    subtotal: number | null;
+    tax: number | null;
+    discount: number | null;
+  };
+  _count: { id: number };
+};
+
+type BranchBreakdown = {
+  branch: BranchSummary;
+  revenue: number;
+  subtotal: number;
+  tax: number;
+  discount: number;
+  orderCount: number;
+};
+
+type TransferSummary = { status: string };
 
 /**
  * Controller for admin-related operations.
@@ -377,9 +406,13 @@ export class AdminController {
       ]);
 
       // Build branch-keyed map
-      const branchMap = Object.fromEntries(branches.map((b) => [b.id, b]));
+      const branchMap = Object.fromEntries(
+        (branches as BranchSummary[]).map((b: BranchSummary) => [b.id, b]),
+      ) as Record<string, BranchSummary>;
 
-      const branchBreakdown = branchSales.map((s) => ({
+      const branchBreakdown: BranchBreakdown[] = (
+        branchSales as BranchSalesSummary[]
+      ).map((s: BranchSalesSummary) => ({
         branch: branchMap[s.branchId] || {
           id: s.branchId,
           name: "Unknown",
@@ -393,10 +426,22 @@ export class AdminController {
         orderCount: s._count.id,
       }));
 
-      const grossRevenue = branchBreakdown.reduce((a, b) => a + b.revenue, 0);
-      const totalTax = branchBreakdown.reduce((a, b) => a + b.tax, 0);
-      const totalDiscount = branchBreakdown.reduce((a, b) => a + b.discount, 0);
-      const totalOrders = branchBreakdown.reduce((a, b) => a + b.orderCount, 0);
+      const grossRevenue = branchBreakdown.reduce(
+        (a: number, b: BranchBreakdown) => a + b.revenue,
+        0,
+      );
+      const totalTax = branchBreakdown.reduce(
+        (a: number, b: BranchBreakdown) => a + b.tax,
+        0,
+      );
+      const totalDiscount = branchBreakdown.reduce(
+        (a: number, b: BranchBreakdown) => a + b.discount,
+        0,
+      );
+      const totalOrders = branchBreakdown.reduce(
+        (a: number, b: BranchBreakdown) => a + b.orderCount,
+        0,
+      );
       const internalTransfers = internalTransferTotal._count.id;
 
       // Expense aggregation from FinanceTransaction
@@ -475,14 +520,20 @@ export class AdminController {
 
       const summary = {
         pending_approval: transfers.filter(
-          (t) => t.status === "PENDING_APPROVAL",
+          (t: TransferSummary) => t.status === "PENDING_APPROVAL",
         ).length,
-        approved: transfers.filter((t) => t.status === "APPROVED").length,
-        in_transit: transfers.filter((t) => t.status === "DISPATCHED").length,
+        approved: transfers.filter(
+          (t: TransferSummary) => t.status === "APPROVED",
+        ).length,
+        in_transit: transfers.filter(
+          (t: TransferSummary) => t.status === "DISPATCHED",
+        ).length,
         partially_received: transfers.filter(
-          (t) => t.status === "PARTIALLY_RECEIVED",
+          (t: TransferSummary) => t.status === "PARTIALLY_RECEIVED",
         ).length,
-        discrepancy: transfers.filter((t) => t.status === "DISCREPANCY").length,
+        discrepancy: transfers.filter(
+          (t: TransferSummary) => t.status === "DISCREPANCY",
+        ).length,
       };
 
       res.json({ success: true, data: { summary, transfers } });

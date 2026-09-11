@@ -1,5 +1,5 @@
 // backend/src/modules/finance/services/accounting.service.ts
-import { prisma } from "../../../lib/db";
+import { prisma } from '@core/database/db';
 import { Prisma } from "../../../generated";
 import { AccountType } from "../../../generated/enums.js";
 import { JournalEntryService, JournalLineInput } from "./journal-entry.service";
@@ -229,7 +229,7 @@ export class AccountingService {
         err?.message?.includes("No open fiscal period") ||
         err?.message?.includes("Fiscal period is closed")
       ) {
-        const { logger } = await import("../../../lib/logger");
+        const { logger } = await import('@core/utils/logger');
         logger.warn(
           { saleId: data.saleId, err: err.message },
           "POS journal entry skipped — no open fiscal period. Sale completed successfully. Reconcile manually.",

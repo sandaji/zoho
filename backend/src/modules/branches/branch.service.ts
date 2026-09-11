@@ -3,9 +3,9 @@
  * Handles business logic for branch management operations
  */
 
-import { prisma } from "../../lib/db";
-import { AppError, ErrorCode } from "../../lib/errors";
-import { logger } from "../../lib/logger";
+import { prisma } from '@core/database/db';
+import { AppError, ErrorCode } from '@core/errors/errors';
+import { logger } from '@core/utils/logger';
 import {
   CreateBranchDTO,
   UpdateBranchDTO,

@@ -1,7 +1,7 @@
-import { prisma } from "../../../lib/db";
-import { AppError, ErrorCode } from "../../../lib/errors";
-import { logger } from "../../../lib/logger";
-import { InventoryService } from "../../inventory/service/inventory.service";
+import { prisma } from "@core/database/db";
+import { AppError, ErrorCode } from "@core/errors/errors";
+import { logger } from "@core/utils/logger";
+import { InventoryService } from "../../inventory/services/inventory.service";
 
 interface CreateProductDTO {
   sku: string;
@@ -106,10 +106,18 @@ export class ProductService {
         include: { warehouses: { where: { isActive: true } } },
       });
       if (!branch) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Specified branch not found");
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Specified branch not found",
+        );
       }
       if (branch.warehouses.length === 0) {
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch has no active warehouses");
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          "Branch has no active warehouses",
+        );
       }
 
       const initialQuantity = data.quantity || 0;
@@ -127,90 +135,93 @@ export class ProductService {
 
       // Create the product and branch inventory in a transaction
       // Timeout raised to 15s — remote DB + audit log middleware adds latency
-      const result = await prisma.$transaction(async (tx) => {
-        // 1. Create the master product
-        const product = await tx.product.create({
-          data: {
-            sku: data.sku,
-            upc: data.upc || null,
-            barcode: data.barcode || null,
-            name: data.name,
-            description: data.description || null,
-            category: data.category || null,
-            subcategory: data.subcategory || null,
-            product_type: data.product_type || "physical",
-            cost_price: data.cost_price,
-            unit_price: data.unit_price,
-            tax_rate: data.tax_rate || 0.16,
-            unit_of_measurement: data.unit_of_measurement || "pcs",
-            weight: data.weight || null,
-            weight_unit: data.weight_unit || null,
-            length: data.length || null,
-            width: data.width || null,
-            height: data.height || null,
-            dimension_unit: data.dimension_unit || null,
-            image_url: data.image_url || null,
-            vendorId: data.vendorId,
-            supplier_part_number: data.supplier_part_number || null,
-            lead_time_days: data.lead_time_days || null,
-            status: data.status || "active",
-          },
-        });
-
-        // 2. Create BranchInventory record for localised inventory
-        await tx.branchInventory.create({
-          data: {
-            productId: product.id,
-            branchId: data.branchId,
-            quantity: initialQuantity,
-            reorder_level: reorderLevel,
-            reorder_quantity: reorderQuantity,
-            reserved: 0,
-            available: initialQuantity,
-            status: inventoryStatus,
-            last_counted: new Date(),
-          },
-        });
-
-        // 3. Create warehouse-level stock. Initial stock with quantity > 0
-        // must go through InventoryService.receiveStock — it's the only
-        // path that also creates a StockBatch cost lot, which is what FIFO
-        // depletion (every POS sale) actually reads from. A bare
-        // tx.inventory.create() here made Inventory.quantity look correct
-        // everywhere in the UI while leaving zero StockBatch rows behind,
-        // so the very first sale of a newly-added product failed with
-        // "Insufficient stock: ... available 0" despite the product page
-        // showing full stock. receiveStock also re-syncs BranchInventory
-        // itself, so the row created in step 2 above gets its
-        // quantity/available/status recalculated from the real ledger
-        // while keeping the reorder_level/reorder_quantity just set on it.
-        const primaryWarehouse = branch.warehouses[0];
-        if (initialQuantity > 0) {
-          await InventoryService.receiveStock(tx, {
-            productId: product.id,
-            warehouseId: primaryWarehouse!.id,
-            quantity: initialQuantity,
-            unitCost: data.cost_price,
-            reference: "Initial stock on product creation",
+      const result = await prisma.$transaction(
+        async (tx) => {
+          // 1. Create the master product
+          const product = await tx.product.create({
+            data: {
+              sku: data.sku,
+              upc: data.upc || null,
+              barcode: data.barcode || null,
+              name: data.name,
+              description: data.description || null,
+              category: data.category || null,
+              subcategory: data.subcategory || null,
+              product_type: data.product_type || "physical",
+              cost_price: data.cost_price,
+              unit_price: data.unit_price,
+              tax_rate: data.tax_rate || 0.16,
+              unit_of_measurement: data.unit_of_measurement || "pcs",
+              weight: data.weight || null,
+              weight_unit: data.weight_unit || null,
+              length: data.length || null,
+              width: data.width || null,
+              height: data.height || null,
+              dimension_unit: data.dimension_unit || null,
+              image_url: data.image_url || null,
+              vendorId: data.vendorId,
+              supplier_part_number: data.supplier_part_number || null,
+              lead_time_days: data.lead_time_days || null,
+              status: data.status || "active",
+            },
           });
-        } else {
-          await tx.inventory.create({
+
+          // 2. Create BranchInventory record for localised inventory
+          await tx.branchInventory.create({
             data: {
               productId: product.id,
-              warehouseId: primaryWarehouse!.id,
-              quantity: 0,
+              branchId: data.branchId,
+              quantity: initialQuantity,
+              reorder_level: reorderLevel,
+              reorder_quantity: reorderQuantity,
               reserved: 0,
-              available: 0,
-              status: "out_of_stock",
+              available: initialQuantity,
+              status: inventoryStatus,
               last_counted: new Date(),
             },
           });
-        }
 
-        return product;
-      }, {
-        timeout: 15000, // 15s — accommodates remote DB latency + audit log writes
-      });
+          // 3. Create warehouse-level stock. Initial stock with quantity > 0
+          // must go through InventoryService.receiveStock — it's the only
+          // path that also creates a StockBatch cost lot, which is what FIFO
+          // depletion (every POS sale) actually reads from. A bare
+          // tx.inventory.create() here made Inventory.quantity look correct
+          // everywhere in the UI while leaving zero StockBatch rows behind,
+          // so the very first sale of a newly-added product failed with
+          // "Insufficient stock: ... available 0" despite the product page
+          // showing full stock. receiveStock also re-syncs BranchInventory
+          // itself, so the row created in step 2 above gets its
+          // quantity/available/status recalculated from the real ledger
+          // while keeping the reorder_level/reorder_quantity just set on it.
+          const primaryWarehouse = branch.warehouses[0];
+          if (initialQuantity > 0) {
+            await InventoryService.receiveStock(tx, {
+              productId: product.id,
+              warehouseId: primaryWarehouse!.id,
+              quantity: initialQuantity,
+              unitCost: data.cost_price,
+              reference: "Initial stock on product creation",
+            });
+          } else {
+            await tx.inventory.create({
+              data: {
+                productId: product.id,
+                warehouseId: primaryWarehouse!.id,
+                quantity: 0,
+                reserved: 0,
+                available: 0,
+                status: "out_of_stock",
+                last_counted: new Date(),
+              },
+            });
+          }
+
+          return product;
+        },
+        {
+          timeout: 15000, // 15s — accommodates remote DB latency + audit log writes
+        },
+      );
 
       logger.info(
         {
@@ -277,15 +288,27 @@ export class ProductService {
       include: { warehouses: { where: { isActive: true } } },
     });
     if (!branch) {
-      throw new AppError(ErrorCode.NOT_FOUND, 404, "Specified branch not found");
+      throw new AppError(
+        ErrorCode.NOT_FOUND,
+        404,
+        "Specified branch not found",
+      );
     }
     if (branch.warehouses.length === 0) {
-      throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch has no active warehouses");
+      throw new AppError(
+        ErrorCode.NOT_FOUND,
+        404,
+        "Branch has no active warehouses",
+      );
     }
 
     const vendor = await prisma.vendor.findUnique({ where: { id: vendorId } });
     if (!vendor) {
-      throw new AppError(ErrorCode.NOT_FOUND, 404, "Specified vendor not found");
+      throw new AppError(
+        ErrorCode.NOT_FOUND,
+        404,
+        "Specified vendor not found",
+      );
     }
 
     const primaryWarehouse = branch.warehouses[0]!;
@@ -312,10 +335,22 @@ export class ProductService {
 
         if (!sku) throw new Error("SKU is required");
         if (!name) throw new Error("Product name is required");
-        if (row.cost_price === undefined || row.cost_price === null || row.cost_price === ("" as any) || isNaN(costPrice) || costPrice < 0) {
+        if (
+          row.cost_price === undefined ||
+          row.cost_price === null ||
+          row.cost_price === ("" as any) ||
+          isNaN(costPrice) ||
+          costPrice < 0
+        ) {
           throw new Error("Valid cost price is required");
         }
-        if (row.unit_price === undefined || row.unit_price === null || row.unit_price === ("" as any) || isNaN(unitPrice) || unitPrice < 0) {
+        if (
+          row.unit_price === undefined ||
+          row.unit_price === null ||
+          row.unit_price === ("" as any) ||
+          isNaN(unitPrice) ||
+          unitPrice < 0
+        ) {
           throw new Error("Valid selling price is required");
         }
 
@@ -325,11 +360,15 @@ export class ProductService {
         }
 
         const initialQuantity =
-          row.quantity !== undefined && !isNaN(Number(row.quantity)) && Number(row.quantity) > 0
+          row.quantity !== undefined &&
+          !isNaN(Number(row.quantity)) &&
+          Number(row.quantity) > 0
             ? Math.floor(Number(row.quantity))
             : 0;
         const reorderLevel =
-          row.reorder_level !== undefined && !isNaN(Number(row.reorder_level)) && Number(row.reorder_level) >= 0
+          row.reorder_level !== undefined &&
+          !isNaN(Number(row.reorder_level)) &&
+          Number(row.reorder_level) >= 0
             ? Math.floor(Number(row.reorder_level))
             : 10;
         const reorderQuantity = Math.max(reorderLevel * 2, 20);
@@ -339,7 +378,8 @@ export class ProductService {
           ? (statusValue as "active" | "inactive" | "discontinued")
           : "active";
 
-        let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" = "in_stock";
+        let inventoryStatus: "in_stock" | "low_stock" | "out_of_stock" =
+          "in_stock";
         if (initialQuantity === 0) inventoryStatus = "out_of_stock";
         else if (initialQuantity < reorderLevel) inventoryStatus = "low_stock";
 
@@ -414,7 +454,13 @@ export class ProductService {
     }
 
     logger.info(
-      { branchId, vendorId, total: results.total, created: results.created, failed: results.failed },
+      {
+        branchId,
+        vendorId,
+        total: results.total,
+        created: results.created,
+        failed: results.failed,
+      },
       "Bulk product import completed",
     );
 
@@ -624,8 +670,15 @@ export class ProductService {
       logger.info(`Product updated: ${product.id} - ${product.name}`);
 
       // CONSOLIDATION: Update localized inventory if branchId and inventory fields are provided
-      if (data.branchId && (data.quantity !== undefined || data.reorder_level !== undefined || data.reorder_quantity !== undefined)) {
-        const branchInv = existing.branchInventory?.find((bi: any) => bi.branchId === data.branchId);
+      if (
+        data.branchId &&
+        (data.quantity !== undefined ||
+          data.reorder_level !== undefined ||
+          data.reorder_quantity !== undefined)
+      ) {
+        const branchInv = existing.branchInventory?.find(
+          (bi: any) => bi.branchId === data.branchId,
+        );
         const currentReserved = branchInv?.reserved || 0;
 
         // Update Branch-level inventory
@@ -634,7 +687,7 @@ export class ProductService {
             productId_branchId: {
               productId: id,
               branchId: data.branchId,
-            }
+            },
           },
           create: {
             productId: id,
@@ -645,28 +698,32 @@ export class ProductService {
             reorder_quantity: data.reorder_quantity || 20,
           },
           update: {
-            ...(data.quantity !== undefined && { 
+            ...(data.quantity !== undefined && {
               quantity: data.quantity,
-              available: data.quantity - currentReserved
+              available: data.quantity - currentReserved,
             }),
-            ...(data.reorder_level !== undefined && { reorder_level: data.reorder_level }),
-            ...(data.reorder_quantity !== undefined && { reorder_quantity: data.reorder_quantity }),
-          }
+            ...(data.reorder_level !== undefined && {
+              reorder_level: data.reorder_level,
+            }),
+            ...(data.reorder_quantity !== undefined && {
+              reorder_quantity: data.reorder_quantity,
+            }),
+          },
         });
 
         // Update Warehouse-level inventory (for POS validation)
         if (data.quantity !== undefined) {
           const warehouse = await prisma.warehouse.findFirst({
-            where: { branchId: data.branchId, isActive: true }
+            where: { branchId: data.branchId, isActive: true },
           });
           if (warehouse) {
             const warehouseInv = await prisma.inventory.findUnique({
-              where: { 
-                productId_warehouseId: { 
-                  productId: id, 
-                  warehouseId: warehouse.id 
-                } 
-              }
+              where: {
+                productId_warehouseId: {
+                  productId: id,
+                  warehouseId: warehouse.id,
+                },
+              },
             });
             const whReserved = warehouseInv?.reserved || 0;
 
@@ -675,7 +732,7 @@ export class ProductService {
                 productId_warehouseId: {
                   productId: id,
                   warehouseId: warehouse.id,
-                }
+                },
               },
               create: {
                 productId: id,
@@ -690,7 +747,9 @@ export class ProductService {
             });
           }
         }
-        logger.info(`Inventory synchronized for product ${id} in branch ${data.branchId}`);
+        logger.info(
+          `Inventory synchronized for product ${id} in branch ${data.branchId}`,
+        );
       }
 
       return product;

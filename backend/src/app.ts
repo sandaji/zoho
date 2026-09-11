@@ -1,8 +1,5 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { logger } from "./lib/logger";
-import { prisma } from "./lib/db";
-import { AppError } from "./lib/errors";
 import routes from "./routes/index";
 import { initializeSubscribers } from "./subscribers";
 
@@ -14,6 +11,9 @@ import {
 import { sanitizeInputs } from "./middleware/validation.middleware";
 import { globalLimiter } from "./middleware/rate-limit.middleware";
 import { contextMiddleware } from "./middleware/context.middleware";
+import { logger } from "./core/utils/logger";
+import { prisma } from "./core/database/db";
+import { AppError } from "./core/errors/errors";
 
 export async function createApp(): Promise<Express> {
   const app = express();
@@ -25,7 +25,18 @@ export async function createApp(): Promise<Express> {
 
   app.use(
     cors({
-      origin: allowedOrigins,
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+          return;
+        }
+
+        const isLocalDevelopmentOrigin =
+          process.env.NODE_ENV !== "production" &&
+          /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3})(:\d+)?$/.test(origin);
+
+        callback(null, isLocalDevelopmentOrigin);
+      },
       credentials: true,
     })
   );

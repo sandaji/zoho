@@ -1,4 +1,4 @@
-import { prisma } from "../../../lib/db";
+import { prisma } from '@core/database/db';
 import { TransactionType } from "../../../generated/enums.js";
 
 export class BankService {

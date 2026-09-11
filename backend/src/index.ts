@@ -2,8 +2,8 @@ import "dotenv/config";
 import "reflect-metadata";
 import chalk from "chalk";
 import boxen from "boxen";
-import { logger } from "./lib/logger";
 import { createApp } from "./app";
+import { logger } from "./core/utils/logger";
 
 const PORT = parseInt(process.env.PORT || "5000", 10);
 const NODE_ENV = process.env.NODE_ENV || "development";

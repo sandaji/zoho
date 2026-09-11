@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PurchasingController } from "./purchasing.controller";
 import { RequisitionController } from "./requisition.controller";
-import { authMiddleware } from "../../lib/auth";
+import { authMiddleware } from '@core/middleware/auth';
 import {
   requirePermission,
   hasAnyPermission,

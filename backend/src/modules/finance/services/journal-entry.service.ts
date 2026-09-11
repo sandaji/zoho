@@ -3,11 +3,11 @@
  * Uses JournalHeader + JournalLine pattern for balanced entries
  */
 
-import { prisma } from "../../../lib/db";
+import { prisma } from '@core/database/db';
 import { Prisma } from "../../../generated";
 import { AccountType } from "../../../generated/enums.js";
-import { logger } from "../../../lib/logger";
-import { AppError, ErrorCode } from "../../../lib/errors";
+import { logger } from '@core/utils/logger';
+import { AppError, ErrorCode } from '@core/errors/errors';
 import { PeriodService } from "./period.service";
 
 export interface JournalLineInput {

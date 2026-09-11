@@ -1,6 +1,6 @@
-import { eventBus } from '../lib/events';
-import { SALES_EVENTS, FINANCE_EVENTS } from '../lib/domain-events';
-import { logger } from '../lib/logger';
+import { eventBus } from '@core/events/events';
+import { SALES_EVENTS, FINANCE_EVENTS } from '@core/events/domain-events';
+import { logger } from '@core/utils/logger';
 
 /**
  * Subscriber for Sales domain events.

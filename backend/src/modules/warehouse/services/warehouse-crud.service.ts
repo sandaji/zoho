@@ -3,22 +3,22 @@
  * Handles warehouse record management (create, read, update, list)
  */
 
-import { prisma } from "../../../lib/db";
-import { logger } from "../../../lib/logger";
-import { notFoundError } from "../../../lib/errors";
+import { prisma } from "@core/database/db";
+import { logger } from "@core/utils/logger";
+import { notFoundError } from "@core/errors/errors";
 import {
   CreateWarehouseDTO,
   UpdateWarehouseDTO,
   WarehouseResponseDTO,
   WarehouseListQueryDTO,
   WarehouseStockDTO,
-} from "../dto";
+} from "../dtos";
 
 export class WarehouseCrudService {
   private prisma = prisma;
 
   async createWarehouse(
-    dto: CreateWarehouseDTO
+    dto: CreateWarehouseDTO,
   ): Promise<WarehouseResponseDTO> {
     try {
       logger.debug(
@@ -26,7 +26,7 @@ export class WarehouseCrudService {
           code: dto.code,
           branchId: dto.branchId,
         },
-        "Creating warehouse"
+        "Creating warehouse",
       );
 
       const warehouse = await this.prisma.warehouse.create({
@@ -44,7 +44,7 @@ export class WarehouseCrudService {
           id: warehouse.id,
           code: warehouse.code,
         },
-        "Warehouse created"
+        "Warehouse created",
       );
 
       return this.formatResponse(warehouse);
@@ -72,7 +72,7 @@ export class WarehouseCrudService {
   }
 
   async listWarehouses(
-    query: WarehouseListQueryDTO
+    query: WarehouseListQueryDTO,
   ): Promise<{ data: WarehouseResponseDTO[]; total: number }> {
     try {
       const page = query.page || 1;
@@ -112,7 +112,7 @@ export class WarehouseCrudService {
 
   async updateWarehouse(
     id: string,
-    dto: UpdateWarehouseDTO
+    dto: UpdateWarehouseDTO,
   ): Promise<WarehouseResponseDTO> {
     try {
       const warehouse = await this.prisma.warehouse.findUnique({
@@ -159,7 +159,7 @@ export class WarehouseCrudService {
 
       const usedCapacity = inventory.reduce(
         (sum, inv) => sum + inv.quantity,
-        0
+        0,
       );
       const availableCapacity = warehouse.capacity - usedCapacity;
 

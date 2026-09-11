@@ -17,8 +17,8 @@
  * and run the resulting .js with node.)
  */
 import "dotenv/config";
-import { prisma } from "../src/lib/db";
-import { synchronizeBranchInventoryForWarehouse } from "../src/lib/inventory-sync";
+import { prisma } from "../src/core/database/db";
+import { synchronizeBranchInventoryForWarehouse } from "../src/shared/inventory-sync";
 
 async function main() {
   const allInventory = await prisma.inventory.findMany();
@@ -54,7 +54,9 @@ async function main() {
     }
   }
 
-  console.log(`Corrected ${fixedCount} Inventory rows. Re-syncing BranchInventory...`);
+  console.log(
+    `Corrected ${fixedCount} Inventory rows. Re-syncing BranchInventory...`,
+  );
 
   // Re-sync BranchInventory for every distinct (product, warehouse) pair so
   // the branch-level read model reflects the corrected warehouse data.
@@ -73,7 +75,9 @@ async function main() {
     }
   });
 
-  console.log(`Re-synced BranchInventory for ${distinctPairs.length} product/warehouse pairs.`);
+  console.log(
+    `Re-synced BranchInventory for ${distinctPairs.length} product/warehouse pairs.`,
+  );
   console.log("Done.");
 }
 

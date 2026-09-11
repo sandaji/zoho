@@ -12,7 +12,7 @@ import {
   getTransfersSchema,
   updateTransferStatusSchema,
 } from "./warehouse.schema";
-import { AppError, ErrorCode } from "../../lib/errors";
+import { AppError, ErrorCode } from '@core/errors/errors';
 
 export class WarehouseController {
   private warehouseService: WarehouseService;

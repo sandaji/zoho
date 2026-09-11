@@ -6,11 +6,14 @@
  */
 
 import "dotenv/config";
-import { prisma } from "../src/lib/db";
+import { prisma } from "../src/core/database/db";
 import { FiscalStatus } from "../src/generated";
 
 async function main() {
-  const year = parseInt(process.argv[2] ?? String(new Date().getFullYear()), 10);
+  const year = parseInt(
+    process.argv[2] ?? String(new Date().getFullYear()),
+    10,
+  );
 
   console.log(`Initialising fiscal year ${year}…`);
 
@@ -20,7 +23,9 @@ async function main() {
   });
 
   if (existing) {
-    console.log(`Fiscal year ${year} already exists (id: ${existing.id}, status: ${existing.status}).`);
+    console.log(
+      `Fiscal year ${year} already exists (id: ${existing.id}, status: ${existing.status}).`,
+    );
     console.log("Checking for open periods…");
 
     const openPeriods = await prisma.fiscalPeriod.count({
@@ -30,8 +35,8 @@ async function main() {
     return;
   }
 
-  const startDate = new Date(year, 0, 1);       // Jan 1
-  const endDate   = new Date(year, 11, 31, 23, 59, 59); // Dec 31
+  const startDate = new Date(year, 0, 1); // Jan 1
+  const endDate = new Date(year, 11, 31, 23, 59, 59); // Dec 31
 
   await prisma.$transaction(async (tx) => {
     const fiscalYear = await tx.fiscalYear.create({
@@ -53,10 +58,13 @@ async function main() {
 
     for (let month = 0; month < 12; month++) {
       const pStart = new Date(year, month, 1);
-      const pEnd   = new Date(year, month + 1, 0, 23, 59, 59);
+      const pEnd = new Date(year, month + 1, 0, 23, 59, 59);
       periods.push({
         fiscalYearId: fiscalYear.id,
-        name: pStart.toLocaleString("en-US", { month: "short", year: "numeric" }),
+        name: pStart.toLocaleString("en-US", {
+          month: "short",
+          year: "numeric",
+        }),
         startDate: pStart,
         endDate: pEnd,
         status: FiscalStatus.open,
@@ -71,5 +79,8 @@ async function main() {
 }
 
 main()
-  .catch((err) => { console.error(err); process.exit(1); })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  })
   .finally(() => prisma.$disconnect());

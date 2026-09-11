@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { PurchasingService } from "./purchasing.service";
-import { AppError, ErrorCode } from "../../lib/errors";
+import { AppError, ErrorCode } from "@core/errors/errors";
 import { PurchaseOrderStatus } from "../../generated/enums.js";
-import { PermissionService } from "../auth/service/permission.service";
+import { PermissionService } from "../auth/services/permission.service";
 
 // TokenPayload (backend/src/types/index.ts) never carries a `permissions`
 // field — auth.service.ts computes permissions at login/refresh but only

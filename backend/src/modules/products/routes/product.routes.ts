@@ -5,9 +5,9 @@
 
 import { Router } from "express";
 import { ProductService } from "../services/product.service";
-import { authMiddleware as authenticate } from "../../../lib/auth";
+import { authMiddleware as authenticate } from '@core/middleware/auth';
 import { requirePermission } from "../../../middleware/rbac.middleware";
-import { AppError, ErrorCode } from "../../../lib/errors";
+import { AppError, ErrorCode } from '@core/errors/errors';
 
 const router = Router();
 const productService = new ProductService();
@@ -165,7 +165,7 @@ router.delete("/:id", authenticate, requirePermission('inventory.product.manage'
 // Get all categories
 router.get("/categories", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
   try {
-    const { prisma } = await import("../../../lib/db");
+    const { prisma } = await import('@core/database/db');
     
     // Get all categories with their subcategories
     const categories = await prisma.category.findMany({
@@ -189,7 +189,7 @@ router.get("/categories", authenticate, requirePermission('inventory.product.vie
 // Create category
 router.post("/categories", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
   try {
-    const { prisma } = await import("../../../lib/db");
+    const { prisma } = await import('@core/database/db');
     const { name } = req.body;
 
     if (!name) {
@@ -212,7 +212,7 @@ router.post("/categories", authenticate, requirePermission('inventory.product.ma
 // Delete category
 router.delete("/categories/:id", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
   try {
-    const { prisma } = await import("../../../lib/db");
+    const { prisma } = await import('@core/database/db');
     
     // Delete subcategories first
     await prisma.subcategory.deleteMany({
@@ -236,7 +236,7 @@ router.delete("/categories/:id", authenticate, requirePermission('inventory.prod
 // Create subcategory
 router.post("/categories/:categoryId/subcategories", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
   try {
-    const { prisma } = await import("../../../lib/db");
+    const { prisma } = await import('@core/database/db');
     const { name } = req.body;
     const { categoryId } = req.params;
 
@@ -263,7 +263,7 @@ router.post("/categories/:categoryId/subcategories", authenticate, requirePermis
 // Delete subcategory
 router.delete("/categories/:categoryId/subcategories/:subcategoryId", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
   try {
-    const { prisma } = await import("../../../lib/db");
+    const { prisma } = await import('@core/database/db');
     
     await prisma.subcategory.delete({
       where: { id: req.params.subcategoryId }

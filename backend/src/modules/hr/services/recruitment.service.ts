@@ -1,7 +1,7 @@
 
-import { prisma } from "../../../lib/db";
-import { logger } from "../../../lib/logger";
-import { AppError, ErrorCode } from "../../../lib/errors";
+import { prisma } from '@core/database/db';
+import { logger } from '@core/utils/logger';
+import { AppError, ErrorCode } from '@core/errors/errors';
 
 export class RecruitmentService {
   /**

@@ -3,7 +3,7 @@
  * Refactored to consume Repositories & DashboardMetricsService without knowing database table names.
  */
 
-import { logger } from "../../lib/logger";
+import { logger } from '@core/utils/logger';
 import { salesRepository, SalesRepository } from "../../repositories/sales.repository";
 import { inventoryRepository, InventoryRepository } from "../../repositories/inventory.repository";
 import { financeRepository, FinanceRepository } from "../../repositories/finance.repository";

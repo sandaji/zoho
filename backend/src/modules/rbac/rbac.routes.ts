@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { RbacController } from "./rbac.controller";
-import { authMiddleware } from "../../lib/auth";
+import { authMiddleware } from '@core/middleware/auth';
 import { requirePermission } from "../../middleware/rbac.middleware";
 
 const router = Router();

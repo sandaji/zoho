@@ -1,7 +1,7 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { CashierSessionController } from '../controller/session.controller';
-import { authenticate as authMiddleware } from '@/middleware/auth.middleware';
-import { requirePermission } from '@/middleware/rbac.middleware';
+import { Router, Request, Response, NextFunction } from "express";
+import { CashierSessionController } from "../controllers/session.controller";
+import { authenticate as authMiddleware } from "@/middleware/auth.middleware";
+import { requirePermission } from "@/middleware/rbac.middleware";
 
 /**
  * Cashier Session Routes
@@ -38,9 +38,10 @@ router.use(authMiddleware);
  * Permission: cashier.session.open (OWN scope)
  */
 router.post(
-  '/sessions/open',
-  requirePermission('cashier.session.open'),
-  (req: Request, res: Response, next: NextFunction) => controller.openSession(req, res, next)
+  "/sessions/open",
+  requirePermission("cashier.session.open"),
+  (req: Request, res: Response, next: NextFunction) =>
+    controller.openSession(req, res, next),
 );
 
 /**
@@ -49,9 +50,10 @@ router.post(
  * Permission: cashier.session.close (OWN scope)
  */
 router.post(
-  '/sessions/:id/close',
-  requirePermission('cashier.session.close'),
-  (req: Request, res: Response, next: NextFunction) => controller.closeSession(req, res, next)
+  "/sessions/:id/close",
+  requirePermission("cashier.session.close"),
+  (req: Request, res: Response, next: NextFunction) =>
+    controller.closeSession(req, res, next),
 );
 
 /**
@@ -60,8 +62,9 @@ router.post(
  * Permission: None (auth required, user's own session only)
  */
 router.get(
-  '/sessions/current',
-  (req: Request, res: Response, next: NextFunction) => controller.getCurrentSession(req, res, next)
+  "/sessions/current",
+  (req: Request, res: Response, next: NextFunction) =>
+    controller.getCurrentSession(req, res, next),
 );
 
 /**
@@ -71,26 +74,23 @@ router.get(
  * - view_own: Can only see own sessions
  * - view_all: Can see all sessions in branch
  */
-router.get(
-  '/sessions',
-  (req: Request, res: Response, next: NextFunction) => {
-    // Check if user has at least one of the view permissions
-    const userPermissions = (req as any).user?.permissions || [];
-    const hasViewPermission =
-      userPermissions.includes('cashier.session.view_own') ||
-      userPermissions.includes('cashier.session.view_all');
+router.get("/sessions", (req: Request, res: Response, next: NextFunction) => {
+  // Check if user has at least one of the view permissions
+  const userPermissions = (req as any).user?.permissions || [];
+  const hasViewPermission =
+    userPermissions.includes("cashier.session.view_own") ||
+    userPermissions.includes("cashier.session.view_all");
 
-    if (!hasViewPermission) {
-      return res.status(403).json({
-        success: false,
-        message: 'Permission denied: Requires view_own or view_all permission',
-        statusCode: 403,
-      });
-    }
-
-    return controller.listSessions(req, res, next);
+  if (!hasViewPermission) {
+    return res.status(403).json({
+      success: false,
+      message: "Permission denied: Requires view_own or view_all permission",
+      statusCode: 403,
+    });
   }
-);
+
+  return controller.listSessions(req, res, next);
+});
 
 /**
  * GET /cashier/sessions/:id
@@ -98,23 +98,23 @@ router.get(
  * Permission: Must have view permission (checked in controller based on ownership)
  */
 router.get(
-  '/sessions/:id',
+  "/sessions/:id",
   (req: Request, res: Response, next: NextFunction) => {
     const userPermissions = (req as any).user?.permissions || [];
     const hasViewPermission =
-      userPermissions.includes('cashier.session.view_own') ||
-      userPermissions.includes('cashier.session.view_all');
+      userPermissions.includes("cashier.session.view_own") ||
+      userPermissions.includes("cashier.session.view_all");
 
     if (!hasViewPermission) {
       return res.status(403).json({
         success: false,
-        message: 'Permission denied: Requires view permission',
+        message: "Permission denied: Requires view permission",
         statusCode: 403,
       });
     }
 
     return controller.getSessionById(req, res, next);
-  }
+  },
 );
 
 /**
@@ -123,9 +123,10 @@ router.get(
  * Permission: cashier.variance.approve (BRANCH scope)
  */
 router.post(
-  '/sessions/:id/reconcile',
-  requirePermission('cashier.variance.approve'),
-  (req: Request, res: Response, next: NextFunction) => controller.reconcileSession(req, res, next)
+  "/sessions/:id/reconcile",
+  requirePermission("cashier.variance.approve"),
+  (req: Request, res: Response, next: NextFunction) =>
+    controller.reconcileSession(req, res, next),
 );
 
 /**
@@ -134,23 +135,23 @@ router.post(
  * Permission: cashier.session.view_own OR cashier.session.view_all
  */
 router.get(
-  '/reports/daily',
+  "/reports/daily",
   (req: Request, res: Response, next: NextFunction) => {
     const userPermissions = (req as any).user?.permissions || [];
     const hasViewPermission =
-      userPermissions.includes('cashier.session.view_own') ||
-      userPermissions.includes('cashier.session.view_all');
+      userPermissions.includes("cashier.session.view_own") ||
+      userPermissions.includes("cashier.session.view_all");
 
     if (!hasViewPermission) {
       return res.status(403).json({
         success: false,
-        message: 'Permission denied: Requires view permission',
+        message: "Permission denied: Requires view permission",
         statusCode: 403,
       });
     }
 
     return controller.getDailySummary(req, res, next);
-  }
+  },
 );
 
 // ============================================================================

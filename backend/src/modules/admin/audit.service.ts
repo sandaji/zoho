@@ -1,5 +1,5 @@
 
-import { prisma } from '../../lib/db';
+import { prisma } from '@core/database/db';
 
 export class AuditService {
   static async getAuditLogs(filters: {

@@ -9,11 +9,11 @@ import { PeriodService } from "./services/period.service";
 import { DashboardFinanceService } from "./services/dashboard.service";
 import { AlertsService } from "./services/alerts.service";
 import { BudgetService } from "./services/budget.service";
-import { validationError, AppError, ErrorCode } from "../../lib/errors";
-import { logger } from "../../lib/logger";
-import { prisma } from "../../lib/db";
+import { validationError, AppError, ErrorCode } from "@core/errors/errors";
+import { logger } from "@core/utils/logger";
+import { prisma } from "@core/database/db";
 import { FinanceAnalyticsService } from "./services/finance-analytics.service";
-import { PermissionService } from "../auth/service/permission.service";
+import { PermissionService } from "../auth/services/permission.service";
 
 // Same KSH tier used for PO/requisition/expense "executive" approval
 // elsewhere (see purchasing.service.ts, requisition.service.ts,
@@ -368,7 +368,8 @@ class FinanceController {
             balance: acc.current_balance,
             availableBalance: acc.available_balance,
             unreconciliedTransactions: unreconciledCount,
-            lastReconciliationDate: lastReconciled?.reconciled_date?.toISOString(),
+            lastReconciliationDate:
+              lastReconciled?.reconciled_date?.toISOString(),
             currency: acc.currency,
           };
         }),
@@ -805,10 +806,7 @@ class FinanceController {
   ): Promise<void> {
     try {
       const period = (req.query.period || "month") as
-        | "today"
-        | "week"
-        | "month"
-        | "year";
+        "today" | "week" | "month" | "year";
       const startDate = req.query.startDate as string | undefined;
       const endDate = req.query.endDate as string | undefined;
 
@@ -863,9 +861,7 @@ class FinanceController {
   ): Promise<void> {
     try {
       const status = (req.query.status || "active") as
-        | "active"
-        | "completed"
-        | "all";
+        "active" | "completed" | "all";
 
       const result = await this.dashboardService.getSavingsGoals({
         status,
@@ -1159,7 +1155,8 @@ class FinanceController {
 
       const categories = Array.from(grouped.entries()).map(([type, v]) => ({
         category: taxTypeLabels[type] || type,
-        rate: v.taxable > 0 ? Number(((v.tax / v.taxable) * 100).toFixed(2)) : 0,
+        rate:
+          v.taxable > 0 ? Number(((v.tax / v.taxable) * 100).toFixed(2)) : 0,
         baseAmount: v.taxable,
         taxAmount: v.tax,
         percentage:
@@ -1299,35 +1296,52 @@ class FinanceController {
       const monthList: Array<{ year: number; month: number; date: Date }> = [];
       for (let i = periods - 1; i >= 0; i--) {
         const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        monthList.push({ year: d.getFullYear(), month: d.getMonth() + 1, date: d });
+        monthList.push({
+          year: d.getFullYear(),
+          month: d.getMonth() + 1,
+          date: d,
+        });
       }
 
       // Gather unique years needed and fetch GL monthly data for each
       const years = [...new Set(monthList.map((m) => m.year))];
-      const glByYearMonth = new Map<string, { revenue: number; expenses: number; profit: number }>();
-      await Promise.all(years.map(async (year) => {
-        const data = await analytics.getMonthlyChartData(year);
-        for (const row of data) {
-          glByYearMonth.set(`${row.year}-${row.month}`, {
-            revenue: row.revenue,
-            expenses: row.expenses,
-            profit: row.profit,
-          });
-        }
-      }));
+      const glByYearMonth = new Map<
+        string,
+        { revenue: number; expenses: number; profit: number }
+      >();
+      await Promise.all(
+        years.map(async (year) => {
+          const data = await analytics.getMonthlyChartData(year);
+          for (const row of data) {
+            glByYearMonth.set(`${row.year}-${row.month}`, {
+              revenue: row.revenue,
+              expenses: row.expenses,
+              profit: row.profit,
+            });
+          }
+        }),
+      );
 
       const trends = monthList.map(({ year, month, date }) => {
         const key = `${year}-${month}`;
-        const row = glByYearMonth.get(key) ?? { revenue: 0, expenses: 0, profit: 0 };
+        const row = glByYearMonth.get(key) ?? {
+          revenue: 0,
+          expenses: 0,
+          profit: 0,
+        };
         const revenue = Math.round(row.revenue);
         const expenses = Math.round(row.expenses);
         const profit = Math.round(row.profit);
         return {
-          period: date.toLocaleDateString("en-US", { year: "2-digit", month: "short" }),
+          period: date.toLocaleDateString("en-US", {
+            year: "2-digit",
+            month: "short",
+          }),
           revenue,
           expenses,
           profit,
-          margin: revenue > 0 ? Number(((profit / revenue) * 100).toFixed(2)) : 0,
+          margin:
+            revenue > 0 ? Number(((profit / revenue) * 100).toFixed(2)) : 0,
         };
       });
 
@@ -1370,11 +1384,7 @@ class FinanceController {
     try {
       const limit = parseInt(req.query.limit as string) || 5;
       const now = new Date();
-      const periodStart = new Date(
-        now.getFullYear(),
-        now.getMonth() - 1,
-        1,
-      );
+      const periodStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const previousPeriodStart = new Date(
         now.getFullYear(),
         now.getMonth() - 2,
@@ -1435,7 +1445,11 @@ class FinanceController {
         const prevRevenue = prevCustomerMap.get(c.customerId) || 0;
         const trend =
           prevRevenue > 0
-            ? Number((((c.totalRevenue - prevRevenue) / prevRevenue) * 100).toFixed(1))
+            ? Number(
+                (((c.totalRevenue - prevRevenue) / prevRevenue) * 100).toFixed(
+                  1,
+                ),
+              )
             : 0;
 
         return {
@@ -1502,7 +1516,12 @@ class FinanceController {
         const prevExpenses = prevVendorMap.get(v.vendorId) || 0;
         const trend =
           prevExpenses > 0
-            ? Number((((v.totalExpenses - prevExpenses) / prevExpenses) * 100).toFixed(1))
+            ? Number(
+                (
+                  ((v.totalExpenses - prevExpenses) / prevExpenses) *
+                  100
+                ).toFixed(1),
+              )
             : 0;
 
         return {

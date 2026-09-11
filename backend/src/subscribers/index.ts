@@ -1,6 +1,6 @@
 import { SalesSubscriber } from './sales.subscriber';
 import { InventorySubscriber } from './inventory.subscriber';
-import { logger } from '../lib/logger';
+import { logger } from '@core/utils/logger';
 
 /**
  * Initialize all domain event subscribers.

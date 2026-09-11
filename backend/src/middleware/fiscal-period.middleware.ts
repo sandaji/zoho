@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../lib/prisma';
+import { prisma } from '@core/database/prisma';
 
 export const validateFiscalPeriod = (dateFieldName?: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {

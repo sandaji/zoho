@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@core/database/prisma';
 import { Prisma } from '../../generated';
-import { AppError, ErrorCode } from '../../lib/errors';
+import { AppError, ErrorCode } from '@core/errors/errors';
 import { dashboardMetricsService } from '../../services/dashboard-metrics.service';
 import { inventoryRepository } from '../../repositories/inventory.repository';
 import { getMonthRange } from '../../utils/date';

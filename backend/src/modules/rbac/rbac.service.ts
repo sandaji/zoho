@@ -1,6 +1,6 @@
-import { prisma } from "../../lib/db";
-import { notFoundError, validationError, forbiddenError } from "../../lib/errors";
-import { logger } from "../../lib/logger";
+import { prisma } from '@core/database/db';
+import { notFoundError, validationError, forbiddenError } from '@core/errors/errors';
+import { logger } from '@core/utils/logger';
 
 export class RbacService {
   /**

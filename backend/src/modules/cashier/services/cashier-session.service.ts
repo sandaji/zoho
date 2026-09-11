@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/db';
-import { AppError, ErrorCode } from '@/lib/errors';
+import { prisma } from '@core/database/db';
+import { AppError, ErrorCode } from '@core/errors/errors';
 import { CashierSessionStatus } from '@/types';
 
 /**

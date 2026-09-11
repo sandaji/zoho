@@ -4,10 +4,10 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { AppError, ErrorCode } from "../../lib/errors";
+import { AppError, ErrorCode } from "@core/errors/errors";
 import { BranchService } from "./branch.service";
-import { BranchService as FinanceBranchService } from "../finance/service/branch.service";
-import { AuthService } from "../auth/service/auth.service";
+import { BranchService as FinanceBranchService } from "../finance/services/branch.service";
+import { AuthService } from "../auth/services/auth.service";
 import { CreateBranchDTO, UpdateBranchDTO } from "./branch.dto";
 
 export class BranchController {
@@ -124,7 +124,10 @@ export class BranchController {
       }
 
       const { id: targetBranchId } = req.params as { id: string };
-      const result = await this.authService.switchBranch(req.user.userId, targetBranchId);
+      const result = await this.authService.switchBranch(
+        req.user.userId,
+        targetBranchId,
+      );
 
       res.json({ success: true, data: result });
     } catch (error) {
@@ -140,10 +143,15 @@ export class BranchController {
     try {
       const { branchId } = req.query;
       if (!branchId || typeof branchId !== "string") {
-        throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Branch ID is required");
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          400,
+          "Branch ID is required",
+        );
       }
 
-      const stats = await this.financeBranchService.getBranchDashboard(branchId);
+      const stats =
+        await this.financeBranchService.getBranchDashboard(branchId);
       res.json({
         success: true,
         data: stats,

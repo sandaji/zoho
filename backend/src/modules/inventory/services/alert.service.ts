@@ -3,8 +3,8 @@
  * Monitors inventory levels and triggers alerts for low stock
  */
 
-import { prisma } from "../../../lib/db";
-import { logger } from "../../../lib/logger";
+import { prisma } from '@core/database/db';
+import { logger } from '@core/utils/logger';
 
 export interface LowStockAlert {
   productId: string;

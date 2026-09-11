@@ -5,7 +5,7 @@
 
 import { Request, Response, NextFunction } from "express";
 import rateLimit from "express-rate-limit";
-import { logger, logSecurityEvent } from "../lib/logger"; // Now this works!
+import { logger, logSecurityEvent } from '@core/utils/logger'; // Now this works!
 
 // ============================================================================
 // GLOBAL RATE LIMITER

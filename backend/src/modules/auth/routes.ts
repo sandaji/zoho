@@ -4,8 +4,8 @@
  */
 
 import { Router, Request, Response, NextFunction } from "express";
-import { AuthController } from "./controller/auth.controller";
-import { authMiddleware } from "../../lib/auth";
+import { AuthController } from "./controllers/auth.controller";
+import { authMiddleware } from "@core/middleware/auth";
 
 const router = Router();
 

@@ -4,11 +4,11 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { prisma } from "../../lib/db";
+import { prisma } from '@core/database/db';
 import { UserRole } from "../../types";
-import { AppError, ErrorCode } from "../../lib/errors";
-import { logger } from "../../lib/logger";
-import { CodeGeneratorService } from "../../lib/code-generator.service";
+import { AppError, ErrorCode } from '@core/errors/errors';
+import { logger } from '@core/utils/logger';
+import { CodeGeneratorService } from '@shared/code-generator.service';
 import * as bcrypt from "bcrypt";
 
 export class EmployeeController {

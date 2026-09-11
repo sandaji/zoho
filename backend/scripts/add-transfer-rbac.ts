@@ -8,7 +8,7 @@
 // Run with: cd backend && npx tsx scripts/add-transfer-rbac.ts
 
 import "dotenv/config";
-import { prisma } from "../src/lib/db";
+import { prisma } from "../src/core/database/db";
 
 async function main() {
   console.log("🔐 Adding granular transfer RBAC permissions...");
@@ -30,7 +30,10 @@ async function main() {
     { code: "inventory.transfer.dispatch", name: "Dispatch Stock Transfer" },
     { code: "inventory.transfer.receive", name: "Receive Stock Transfer" },
     { code: "inventory.transfer.issue", name: "Raise Transfer Issue" },
-    { code: "inventory.transfer.resolve_issue", name: "Resolve Transfer Issue" },
+    {
+      code: "inventory.transfer.resolve_issue",
+      name: "Resolve Transfer Issue",
+    },
   ];
 
   const permissionIds: string[] = [];

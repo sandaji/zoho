@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import notificationService from "./notification.service";
-import { validationError } from "../../lib/errors";
+import { validationError } from '@core/errors/errors';
 
 export class NotificationController {
   private service = notificationService;

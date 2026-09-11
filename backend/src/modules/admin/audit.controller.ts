@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { prisma } from '../../lib/db';
+import { prisma } from '@core/database/db';
 
 export class AuditController {
   

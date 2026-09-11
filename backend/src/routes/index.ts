@@ -1,17 +1,17 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { AdminController } from "../modules/admin/admin.controller";
-import { POSController } from "../modules/pos/controller";
-import { InventoryController } from "../modules/inventory/controller";
+import { POSController } from "../modules/pos/controllers";
+import { InventoryController } from "../modules/inventory/controllers";
 import { WarehouseController } from "../modules/warehouse/controllers";
-import { FleetController } from "../modules/fleet/controller";
-import { HrController } from "../modules/hr/controller";
-import { FinanceController } from "../modules/finance/controller";
+import { FleetController } from "../modules/fleet/controllers";
+import { HrController } from "../modules/hr/controllers";
+import { FinanceController } from "../modules/finance/controllers";
 import authRoutes from "../modules/auth/routes";
 import financeRoutes from "../modules/finance/finance.routes";
 import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
-import { PayrollController } from "../modules/finance/controller/payroll.controller";
-import { BranchController } from "../modules/finance/controller/branch.controller";
-import { authMiddleware } from "../lib/auth";
+import { PayrollController } from "../modules/finance/controllers/payroll.controller";
+import { BranchController } from "../modules/finance/controllers/branch.controller";
+import { authMiddleware } from "@core/middleware/auth";
 import { requirePermission } from "../middleware/rbac.middleware";
 import { hasAnyPermission } from "../middleware/rbac.middleware";
 import productRoutes from "../modules/products/routes/product.routes";
@@ -27,7 +27,7 @@ import rbacRoutes from "../modules/rbac/rbac.routes";
 import auditRoutes from "../modules/admin/audit.routes";
 import purchasingRoutes from "../modules/purchasing/purchasing.routes";
 import cashierRoutes from "../modules/cashier/routes/session.routes";
-import { PDFController } from "../modules/pos/controller";
+import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import notificationController from "../modules/notifications/notification.controller";
 
 const router = Router();
@@ -243,34 +243,34 @@ router.get(
 );
 
 // Get sales by ID - All authenticated users (must come after specific routes)
-  router.get(
-    "/pos/sales/:id",
-    authMiddleware,
-    (req: Request, res: Response, next: NextFunction) =>
-      posController.getSalesById(req, res, next),
-  );
+router.get(
+  "/pos/sales/:id",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    posController.getSalesById(req, res, next),
+);
 
-  // List sales - All authenticated users
-  router.get(
-    "/pos/sales",
-    authMiddleware,
-    (req: Request, res: Response, next: NextFunction) =>
-      posController.listSales(req, res, next),
-  );
+// List sales - All authenticated users
+router.get(
+  "/pos/sales",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    posController.listSales(req, res, next),
+);
 
-  // PDF routes for POS sales (use PDFController)
-  router.get(
-    "/pos/sales/:id/pdf",
-    authMiddleware,
-    (req: Request, res: Response, next: NextFunction) =>
-      PDFController.generatePDF(req, res, next),
-  );
-  router.get(
-    "/pos/sales/:id/preview",
-    authMiddleware,
-    (req: Request, res: Response, next: NextFunction) =>
-      PDFController.previewDocument(req, res, next),
-  );
+// PDF routes for POS sales (use PDFController)
+router.get(
+  "/pos/sales/:id/pdf",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    PDFController.generatePDF(req, res, next),
+);
+router.get(
+  "/pos/sales/:id/preview",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    PDFController.previewDocument(req, res, next),
+);
 
 // Update sales - Managers and admins only
 router.patch(
@@ -456,7 +456,10 @@ router.post(
 router.post(
   "/inventory/transfers/issues/:issueId/resolve",
   authMiddleware,
-  hasAnyPermission(["inventory.transfer.resolve_issue", "inventory.stock.adjust"]),
+  hasAnyPermission([
+    "inventory.transfer.resolve_issue",
+    "inventory.stock.adjust",
+  ]),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.resolveIssue(req, res, next),
 );
@@ -482,14 +485,23 @@ router.get(
 // ============================================================================
 // NOTIFICATIONS ROUTES
 // ============================================================================
-router.get("/notifications", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
-  notificationController.getNotifications(req, res, next),
+router.get(
+  "/notifications",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    notificationController.getNotifications(req, res, next),
 );
-router.patch("/notifications/:id/read", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
-  notificationController.markAsRead(req, res, next),
+router.patch(
+  "/notifications/:id/read",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    notificationController.markAsRead(req, res, next),
 );
-router.post("/notifications/read-all", authMiddleware, (req: Request, res: Response, next: NextFunction) =>
-  notificationController.markAllAsRead(req, res, next),
+router.post(
+  "/notifications/read-all",
+  authMiddleware,
+  (req: Request, res: Response, next: NextFunction) =>
+    notificationController.markAllAsRead(req, res, next),
 );
 
 // Legacy endpoints for backwards compatibility

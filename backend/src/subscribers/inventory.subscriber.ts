@@ -1,6 +1,6 @@
-import { eventBus } from '../lib/events';
-import { INVENTORY_EVENTS } from '../lib/domain-events';
-import { logger } from '../lib/logger';
+import { eventBus } from '@core/events/events';
+import { INVENTORY_EVENTS } from '@core/events/domain-events';
+import { logger } from '@core/utils/logger';
 
 /**
  * Subscriber for Inventory domain events.

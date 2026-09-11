@@ -1,7 +1,7 @@
 // backend/src/middleware/rbac.middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import { PermissionService } from '../modules/auth/service/permission.service';
-import { AppError, ErrorCode } from '../lib/errors';
+import { Request, Response, NextFunction } from "express";
+import { PermissionService } from "../modules/auth/services/permission.service";
+import { AppError, ErrorCode } from "@core/errors/errors";
 
 /**
  * Middleware to enforce a specific permission
@@ -14,12 +14,12 @@ export const requirePermission = (permissionCode: string) => {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
-          'User not authenticated'
+          "User not authenticated",
         );
       }
 
       // Admin users have full access to all endpoints
-      if (req.user.role === 'admin' || req.user.role === 'super_admin') {
+      if (req.user.role === "admin" || req.user.role === "super_admin") {
         // Grant GLOBAL scope to admin users, unless they explicitly switched branch
         if (req.user.branchId) {
           req.authorizedBranchIds = [req.user.branchId];
@@ -31,27 +31,34 @@ export const requirePermission = (permissionCode: string) => {
       const userId = req.user.userId;
 
       // Resolve effective scope for this permission
-      const scope = await PermissionService.getResolvedScope(userId, permissionCode);
+      const scope = await PermissionService.getResolvedScope(
+        userId,
+        permissionCode,
+      );
 
       if (!scope) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
           `Permission denied: ${permissionCode}`,
-          { requiredPermission: permissionCode }
+          { requiredPermission: permissionCode },
         );
       }
 
       // Record-level isolation: Inject resolved scopes into request object
-      if (scope === 'BRANCH') {
+      if (scope === "BRANCH") {
         if (!req.user.branchId) {
           // If user is supposed to be restricted to a branch but doesn't have one,
           // this is a configuration error or they are a global user with wrong role.
           // For safety, we block if they have no branch context.
-          throw new AppError(ErrorCode.FORBIDDEN, 403, 'User must belong to a branch for branch-scoped actions');
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "User must belong to a branch for branch-scoped actions",
+          );
         }
         req.authorizedBranchIds = [req.user.branchId];
-      } else if (scope === 'OWN') {
+      } else if (scope === "OWN") {
         req.onlyOwnedRecords = true;
       }
       // If scope is GLOBAL, we don't inject any restrictions (authorizedBranchIds/onlyOwnedRecords remain undefined)
@@ -73,28 +80,31 @@ export const hasAnyPermission = (permissionCodes: string[]) => {
         throw new AppError(
           ErrorCode.UNAUTHORIZED,
           401,
-          'User not authenticated'
+          "User not authenticated",
         );
       }
 
       // Admin users have full access to all endpoints
-      if (req.user.role === 'admin' || req.user.role === 'super_admin') {
+      if (req.user.role === "admin" || req.user.role === "super_admin") {
         next();
         return;
       }
 
       const userId = req.user.userId;
 
-      const userPermissions = await PermissionService.getUserPermissions(userId);
+      const userPermissions =
+        await PermissionService.getUserPermissions(userId);
 
-      const hasAccess = permissionCodes.some(code => userPermissions.includes(code));
+      const hasAccess = permissionCodes.some((code) =>
+        userPermissions.includes(code),
+      );
 
       if (!hasAccess) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
-          'Insufficient permissions',
-          { requiredAny: permissionCodes }
+          "Insufficient permissions",
+          { requiredAny: permissionCodes },
         );
       }
 
