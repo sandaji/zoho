@@ -575,7 +575,15 @@ export class SalesService {
 
         return invoice;
       },
-      { timeout: 30000 },
+      // Raised from 30s: this transaction does a per-item FIFO depletion
+      // (each with its own audit-log insert) plus a full journal-entry
+      // write (header + multiple lines + chart-of-account balance updates),
+      // and against the remote Prisma Postgres instance each round trip
+      // measured 300-800ms+ in practice — a real sale with a handful of
+      // items was observed to exceed the old 30s limit by ~700ms and abort
+      // the whole sale on an otherwise-successful transaction. 90s gives
+      // real headroom without masking a genuinely stuck transaction.
+      { timeout: 90000 },
     );
   }
 

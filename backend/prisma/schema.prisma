@@ -9,64 +9,64 @@ datasource db {
 
 /// Users/Employees
 model User {
-  id                      String                  @id @default(cuid())
-  email                   String                  @unique
-  passwordHash            String                  @map("password")
-  name                    String
-  phone                   String?
-  branchId                String?
-  isActive                Boolean                 @default(true)
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
-  salesPrefix             String?                 @unique @map("salesPrefix")
-  lastSequence            Int                     @default(0) @map("lastSequence")
-  hasSystemAccess         Boolean                 @default(false)
-  role                    String                  @default("warehouse_staff")
-  employeeCode            String?                 @unique @map("employee_code")
-  departmentId            String?                 @map("department_id")
-  approvedApprovals       ApprovalRequest[]       @relation("ApprovedApprovals")
-  requestedApprovals      ApprovalRequest[]       @relation("RequestedApprovals")
-  auditLogs               AuditLog[]
-  benefitEnrollments      BenefitEnrollment[]
-  cashierSessions         CashierSession[]
-  deliveries              Delivery[]              @relation("DriverDeliveries")
-  developmentPlans        DevelopmentPlan[]
-  dispatchNotes           DispatchNote[]          @relation("DispatchNoteCreatedBy")
-  transfers               EmployeeTransfer[]
-  lockedPeriods           FiscalPeriod[]          @relation("LockedPeriods")
-  receivedGRN             GoodsReceiptNote[]      @relation("ReceivedByGRN")
-  interviews              Interview[]             @relation("Interviewer")
-  leaveAllocations        LeaveAllocation[]
-  leaveRequests           LeaveRequest[]
-  notifications           Notification[]
-  createdPayments         Payment[]
-  payrollRecords          Payroll[]
-  givenEvaluations        PerformanceEvaluation[] @relation("Evaluator")
-  evaluations             PerformanceEvaluation[] @relation("Evaluatee")
-  goals                   Goal[]
-  approvedPurchaseOrders  PurchaseOrder[]         @relation("ApprovedByPO")
-  requestedPurchaseOrders PurchaseOrder[]         @relation("RequestedByPO")
-  approvedPurchaseRequisitions  PurchaseRequisition[] @relation("ApprovedByRequisition")
-  requestedPurchaseRequisitions PurchaseRequisition[] @relation("RequestedByRequisition")
-  approvedExpenseReports  ExpenseReport[]         @relation("ApprovedByExpenseReport")
-  submittedExpenseReports ExpenseReport[]         @relation("SubmittedByExpenseReport")
-  approvalSteps           ApprovalStep[]
-  approvedSalesDocuments  SalesDocument[]         @relation("ApprovedBySD")
-  invoicedSalesDocuments  SalesDocument[]         @relation("InvoicedBySD")
-  closedSalesDocuments    SalesDocument[]         @relation("ClosedBySD")
-  createdSalesDocuments   SalesDocument[]         @relation("CreatedBySD")
-  createdSalesOrders      SalesOrder[]
-  approvedTransfers       StockTransfer[]         @relation("ApprovedTransfers")
-  createdTransfers        StockTransfer[]         @relation("CreatedTransfers")
-  driverTransfers         StockTransfer[]         @relation("DriverTransfers")
-  receivedTransfers       StockTransfer[]         @relation("ReceivedTransfers")
-  pickedTransfers         StockTransfer[]         @relation("PickedTransfers")
-  verifiedTransfers       StockTransfer[]         @relation("VerifiedTransfers")
-  raisedTransferIssues    TransferIssue[]         @relation("RaisedTransferIssues")
-  resolvedTransferIssues  TransferIssue[]         @relation("ResolvedTransferIssues")
-  roles                   RoleAssignment[]
-  branch                  Branch?                 @relation(fields: [branchId], references: [id])
-  department              Department?             @relation(fields: [departmentId], references: [id])
+  id                            String                  @id @default(cuid())
+  email                         String                  @unique
+  passwordHash                  String                  @map("password")
+  name                          String
+  phone                         String?
+  branchId                      String?
+  isActive                      Boolean                 @default(true)
+  createdAt                     DateTime                @default(now())
+  updatedAt                     DateTime                @updatedAt
+  salesPrefix                   String?                 @unique @map("salesPrefix")
+  lastSequence                  Int                     @default(0) @map("lastSequence")
+  hasSystemAccess               Boolean                 @default(false)
+  role                          String                  @default("warehouse_staff")
+  employeeCode                  String?                 @unique @map("employee_code")
+  departmentId                  String?                 @map("department_id")
+  approvedApprovals             ApprovalRequest[]       @relation("ApprovedApprovals")
+  requestedApprovals            ApprovalRequest[]       @relation("RequestedApprovals")
+  auditLogs                     AuditLog[]
+  benefitEnrollments            BenefitEnrollment[]
+  cashierSessions               CashierSession[]
+  deliveries                    Delivery[]              @relation("DriverDeliveries")
+  developmentPlans              DevelopmentPlan[]
+  dispatchNotes                 DispatchNote[]          @relation("DispatchNoteCreatedBy")
+  transfers                     EmployeeTransfer[]
+  lockedPeriods                 FiscalPeriod[]          @relation("LockedPeriods")
+  receivedGRN                   GoodsReceiptNote[]      @relation("ReceivedByGRN")
+  interviews                    Interview[]             @relation("Interviewer")
+  leaveAllocations              LeaveAllocation[]
+  leaveRequests                 LeaveRequest[]
+  notifications                 Notification[]
+  createdPayments               Payment[]
+  payrollRecords                Payroll[]
+  givenEvaluations              PerformanceEvaluation[] @relation("Evaluator")
+  evaluations                   PerformanceEvaluation[] @relation("Evaluatee")
+  goals                         Goal[]
+  approvedPurchaseOrders        PurchaseOrder[]         @relation("ApprovedByPO")
+  requestedPurchaseOrders       PurchaseOrder[]         @relation("RequestedByPO")
+  approvedPurchaseRequisitions  PurchaseRequisition[]   @relation("ApprovedByRequisition")
+  requestedPurchaseRequisitions PurchaseRequisition[]   @relation("RequestedByRequisition")
+  approvedExpenseReports        ExpenseReport[]         @relation("ApprovedByExpenseReport")
+  submittedExpenseReports       ExpenseReport[]         @relation("SubmittedByExpenseReport")
+  approvalSteps                 ApprovalStep[]
+  approvedSalesDocuments        SalesDocument[]         @relation("ApprovedBySD")
+  invoicedSalesDocuments        SalesDocument[]         @relation("InvoicedBySD")
+  closedSalesDocuments          SalesDocument[]         @relation("ClosedBySD")
+  createdSalesDocuments         SalesDocument[]         @relation("CreatedBySD")
+  createdSalesOrders            SalesOrder[]
+  approvedTransfers             StockTransfer[]         @relation("ApprovedTransfers")
+  createdTransfers              StockTransfer[]         @relation("CreatedTransfers")
+  driverTransfers               StockTransfer[]         @relation("DriverTransfers")
+  receivedTransfers             StockTransfer[]         @relation("ReceivedTransfers")
+  pickedTransfers               StockTransfer[]         @relation("PickedTransfers")
+  verifiedTransfers             StockTransfer[]         @relation("VerifiedTransfers")
+  raisedTransferIssues          TransferIssue[]         @relation("RaisedTransferIssues")
+  resolvedTransferIssues        TransferIssue[]         @relation("ResolvedTransferIssues")
+  roles                         RoleAssignment[]
+  branch                        Branch?                 @relation(fields: [branchId], references: [id])
+  department                    Department?             @relation(fields: [departmentId], references: [id])
 
   @@index([branchId])
   @@index([departmentId])
@@ -78,29 +78,29 @@ model User {
 
 /// Branches/Locations
 model Branch {
-  id                String                @id @default(cuid())
-  code              String                @unique
-  name              String
-  city              String
-  address           String?
-  phone             String?
-  isActive          Boolean               @default(true)
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
-  branchInventory   BranchInventory[]
-  cashierSessions   CashierSession[]
-  documentSequences DocumentSequence[]
-  transfersFrom     EmployeeTransfer[]    @relation("TransfersFrom")
-  transfersTo       EmployeeTransfer[]    @relation("TransfersTo")
-  journal_headers   JournalHeader[]
-  purchaseOrders    PurchaseOrder[]
+  id                   String                @id @default(cuid())
+  code                 String                @unique
+  name                 String
+  city                 String
+  address              String?
+  phone                String?
+  isActive             Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  branchInventory      BranchInventory[]
+  cashierSessions      CashierSession[]
+  documentSequences    DocumentSequence[]
+  transfersFrom        EmployeeTransfer[]    @relation("TransfersFrom")
+  transfersTo          EmployeeTransfer[]    @relation("TransfersTo")
+  journal_headers      JournalHeader[]
+  purchaseOrders       PurchaseOrder[]
   purchaseRequisitions PurchaseRequisition[]
-  expenseReports    ExpenseReport[]
-  salesDocuments    SalesDocument[]
-  salesOrders       SalesOrder[]
-  users             User[]
-  vat_transactions  VATTransaction[]
-  warehouses        Warehouse[]
+  expenseReports       ExpenseReport[]
+  salesDocuments       SalesDocument[]
+  salesOrders          SalesOrder[]
+  users                User[]
+  vat_transactions     VATTransaction[]
+  warehouses           Warehouse[]
 
   @@index([code])
   @@index([isActive])
@@ -161,45 +161,45 @@ model Warehouse {
 
 /// Products
 model Product {
-  id                   String              @id @default(cuid())
-  sku                  String              @unique
-  barcode              String?
-  name                 String
-  description          String?
-  category             String?
-  unit_price           Float
-  cost_price           Float
-  tax_rate             Float               @default(0.16)
-  isActive             Boolean             @default(true)
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @updatedAt
-  dimension_unit       String?             @default("cm")
-  height               Float?
-  image_url            String?
-  lead_time_days       Int?
-  length               Float?
-  product_type         ProductType         @default(physical)
-  status               ProductStatus       @default(active)
-  subcategory          String?
-  supplier_part_number String?
-  unit_of_measurement  String              @default("pcs")
-  upc                  String?             @unique
-  weight               Float?
-  weight_unit          String?             @default("kg")
-  width                Float?
-  vendorId             String?
-  branchInventory      BranchInventory[]
-  dispatchItems        DispatchItem[]      @relation("DispatchItemToProduct")
-  grnItems             GRNItem[]           @relation("GRNItemToProduct")
-  inventory            Inventory[]
-  vendor               Vendor?             @relation(fields: [vendorId], references: [id])
-  purchaseOrderItems   PurchaseOrderItem[]
+  id                       String                    @id @default(cuid())
+  sku                      String                    @unique
+  barcode                  String?
+  name                     String
+  description              String?
+  category                 String?
+  unit_price               Float
+  cost_price               Float
+  tax_rate                 Float                     @default(0.16)
+  isActive                 Boolean                   @default(true)
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+  dimension_unit           String?                   @default("cm")
+  height                   Float?
+  image_url                String?
+  lead_time_days           Int?
+  length                   Float?
+  product_type             ProductType               @default(physical)
+  status                   ProductStatus             @default(active)
+  subcategory              String?
+  supplier_part_number     String?
+  unit_of_measurement      String                    @default("pcs")
+  upc                      String?                   @unique
+  weight                   Float?
+  weight_unit              String?                   @default("kg")
+  width                    Float?
+  vendorId                 String?
+  branchInventory          BranchInventory[]
+  dispatchItems            DispatchItem[]            @relation("DispatchItemToProduct")
+  grnItems                 GRNItem[]                 @relation("GRNItemToProduct")
+  inventory                Inventory[]
+  vendor                   Vendor?                   @relation(fields: [vendorId], references: [id])
+  purchaseOrderItems       PurchaseOrderItem[]
   purchaseRequisitionItems PurchaseRequisitionItem[]
-  salesDocumentItems   SalesDocumentItem[]
-  soItems              SOItem[]            @relation("SOItemToProduct")
-  stockBatches         StockBatch[]        @relation("StockBatchToProduct")
-  stockMovements       StockMovement[]
-  transferItems        TransferItem[]
+  salesDocumentItems       SalesDocumentItem[]
+  soItems                  SOItem[]                  @relation("SOItemToProduct")
+  stockBatches             StockBatch[]              @relation("StockBatchToProduct")
+  stockMovements           StockMovement[]
+  transferItems            TransferItem[]
 
   @@index([sku])
   @@index([upc])
