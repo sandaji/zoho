@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { RbacController } from "./rbac.controller";
+import { RbacController } from "../controllers/rbac.controller";
 import { authMiddleware } from '@core/middleware/auth';
-import { requirePermission } from "../../middleware/rbac.middleware";
+import { requirePermission } from "../../../middleware/rbac.middleware";
 
 const router = Router();
 const controller = new RbacController();

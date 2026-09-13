@@ -4,15 +4,15 @@
  */
 
 import { logger } from '@core/utils/logger';
-import { salesRepository, SalesRepository } from "../sales/repositories/sales.repository";
-import { inventoryRepository, InventoryRepository } from "../inventory/repositories/inventory.repository";
-import { financeRepository, FinanceRepository } from "./repositories/finance.repository";
-import { dashboardMetricsService, DashboardMetricsService } from "../../services/dashboard-metrics.service";
-import { getFinancialYear, getMonthRange } from "../../utils/date";
-import { sum, subtract, multiply, percentage, roundCurrency } from "../../utils/money";
-import { ReceivablesService } from "./services/receivables.service";
-import { PayablesService } from "./services/payables.service";
-import { FinanceAnalyticsService } from "./services/finance-analytics.service";
+import { salesRepository, SalesRepository } from "../../sales/repositories/sales.repository";
+import { inventoryRepository, InventoryRepository } from "../../inventory/repositories/inventory.repository";
+import { financeRepository, FinanceRepository } from "../repositories/finance.repository";
+import { dashboardMetricsService, DashboardMetricsService } from "../../../services/dashboard-metrics.service";
+import { getFinancialYear, getMonthRange } from "../../../utils/date";
+import { sum, subtract, multiply, percentage, roundCurrency } from "../../../utils/money";
+import { ReceivablesService } from "./receivables.service";
+import { PayablesService } from "./payables.service";
+import { FinanceAnalyticsService } from "./finance-analytics.service";
 
 export class FinanceService {
   private salesRepo: SalesRepository;

@@ -1,8 +1,8 @@
 // backend/src/modules/customers/customers.routes.ts
 import { Router } from "express";
-import { CustomersController } from "./customers.controller";
+import { CustomersController } from "../controllers/customers.controller";
 import { authMiddleware } from '@core/middleware/auth';
-import { requirePermission, hasAnyPermission } from "../../middleware/rbac.middleware";
+import { requirePermission, hasAnyPermission } from "../../../middleware/rbac.middleware";
 
 const router = Router();
 

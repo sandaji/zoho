@@ -4,7 +4,7 @@
  */
 
 import { Router } from "express";
-import { BranchController } from "../branch.controller";
+import { BranchController } from "../controllers/branch.controller";
 import { authMiddleware } from '@core/middleware/auth';
 import { requirePermission } from "../../../middleware/rbac.middleware";
 

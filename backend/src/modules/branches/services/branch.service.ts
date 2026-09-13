@@ -10,7 +10,7 @@ import {
   CreateBranchDTO,
   UpdateBranchDTO,
   BranchListFilters,
-} from "./branch.dto";
+} from "../dtos/branch.dto";
 
 export class BranchService {
   /**

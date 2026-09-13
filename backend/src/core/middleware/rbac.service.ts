@@ -22,7 +22,7 @@ import {
   PermissionService,
   type ResolvedPermission,
 } from "../../modules/auth/services/permission.service";
-import { RbacService } from "../../modules/rbac/rbac.service";
+import { RbacService } from "../../modules/rbac/services/rbac.service";
 import { type AccessScope } from "../../generated";
 
 // Re-export the underlying types so callers only need this one import

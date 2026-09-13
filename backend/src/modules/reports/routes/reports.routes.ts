@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getFinancialReport } from './reports.controller';
+import { getFinancialReport } from '../controllers/reports.controller';
 import { authMiddleware as authenticate } from '@core/middleware/auth';
-import { hasAnyPermission } from '../../middleware/rbac.middleware';
+import { hasAnyPermission } from '../../../middleware/rbac.middleware';
 
 const router = Router();
 

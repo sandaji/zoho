@@ -1,12 +1,12 @@
 import { Router } from "express";
-import financeController from "./finance.controller";
-import expenseReportController from "./controllers/expense-report.controller";
+import financeController from "../controllers/finance.controller";
+import expenseReportController from "../controllers/expense-report.controller";
 import { authMiddleware } from "@core/middleware/auth";
 import {
   requirePermission,
   hasAnyPermission,
-} from "../../middleware/rbac.middleware";
-import { validateFiscalPeriod } from "../../middleware/fiscal-period.middleware";
+} from "../../../middleware/rbac.middleware";
+import { validateFiscalPeriod } from "../../../middleware/fiscal-period.middleware";
 
 const router = Router();
 

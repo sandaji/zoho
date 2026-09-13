@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { PurchasingService } from "./purchasing.service";
+import { PurchasingService } from "../services/purchasing.service";
 import { AppError, ErrorCode } from "@core/errors/errors";
-import { PurchaseOrderStatus } from "../../generated/enums.js";
-import { PermissionService } from "../auth/services/permission.service";
+import { PurchaseOrderStatus } from "../../../generated/enums.js";
+import { PermissionService } from "../../auth/services/permission.service";
 
 // TokenPayload (backend/src/types/index.ts) never carries a `permissions`
 // field — auth.service.ts computes permissions at login/refresh but only
@@ -407,7 +407,7 @@ export class PurchasingController {
       }
 
       const { getPendingApprovalsForUser } =
-        await import("./services/approval.service");
+        await import("../services/approval.service");
       const pendingApprovals = await getPendingApprovalsForUser(userId);
 
       res.json({
@@ -443,7 +443,7 @@ export class PurchasingController {
       }
 
       const { approvePurchaseOrder } =
-        await import("./services/approval.service");
+        await import("../services/approval.service");
       const result = await approvePurchaseOrder(approvalId, userId, comments);
 
       res.json({
@@ -479,7 +479,7 @@ export class PurchasingController {
       }
 
       const { rejectPurchaseOrder } =
-        await import("./services/approval.service");
+        await import("../services/approval.service");
       const result = await rejectPurchaseOrder(approvalId, userId, reason);
 
       res.json({
@@ -508,7 +508,7 @@ export class PurchasingController {
       }
 
       const { getApprovalHistory } =
-        await import("./services/approval.service");
+        await import("../services/approval.service");
       const history = await getApprovalHistory(poId);
 
       res.json({

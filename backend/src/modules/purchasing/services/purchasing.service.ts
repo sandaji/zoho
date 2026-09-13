@@ -1,8 +1,8 @@
 import { prisma } from "@core/database/db";
 import { AppError, ErrorCode } from "@core/errors/errors";
-import { Prisma } from "../../../src/generated";
-import { PurchaseOrderStatus } from "../../../src/generated/enums.js";
-import { InventoryService } from "../inventory/services/inventory.service";
+import { Prisma } from "../../../generated";
+import { PurchaseOrderStatus } from "../../../generated/enums.js";
+import { InventoryService } from "../../inventory/services/inventory.service";
 import PDFDocument from "pdfkit";
 
 // ============================================================================

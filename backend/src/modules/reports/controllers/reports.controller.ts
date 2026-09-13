@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '@core/database/prisma';
-import { Prisma } from '../../generated';
+import { Prisma } from '../../../generated';
 import { AppError, ErrorCode } from '@core/errors/errors';
-import { dashboardMetricsService } from '../../services/dashboard-metrics.service';
-import { inventoryRepository } from '../inventory/repositories/inventory.repository';
-import { getMonthRange } from '../../utils/date';
-import { sum, subtract, multiply, roundCurrency } from '../../utils/money';
+import { dashboardMetricsService } from '../../../services/dashboard-metrics.service';
+import { inventoryRepository } from '../../inventory/repositories/inventory.repository';
+import { getMonthRange } from '../../../utils/date';
+import { sum, subtract, multiply, roundCurrency } from '../../../utils/money';
 
 /**
  * Financial Report Types

@@ -1,9 +1,9 @@
 import { prisma } from '@core/database/db';
 import { AppError, ErrorCode } from '@core/errors/errors';
-import { Prisma } from "../../generated";
+import { Prisma } from "../../../generated";
 import {
   PurchaseOrderStatus,
-} from "../../generated/enums";
+} from "../../../generated/enums";
 
 // Define enum values since Prisma is not generating them
 const PurchaseRequisitionStatus = {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { RbacService } from "./rbac.service";
+import { RbacService } from "../services/rbac.service";
 
 export class RbacController {
   private rbacService: RbacService;

@@ -5,10 +5,10 @@
 
 import { Request, Response, NextFunction } from "express";
 import { AppError, ErrorCode } from "@core/errors/errors";
-import { BranchService } from "./branch.service";
-import { BranchService as FinanceBranchService } from "../finance/services/branch.service";
-import { AuthService } from "../auth/services/auth.service";
-import { CreateBranchDTO, UpdateBranchDTO } from "./branch.dto";
+import { BranchService } from "../services/branch.service";
+import { BranchService as FinanceBranchService } from "../../finance/services/branch.service";
+import { AuthService } from "../../auth/services/auth.service";
+import { CreateBranchDTO, UpdateBranchDTO } from "../dtos/branch.dto";
 
 export class BranchController {
   private branchService = new BranchService();

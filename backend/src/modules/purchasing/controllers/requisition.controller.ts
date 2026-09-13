@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { PurchaseRequisitionService } from "./requisition.service";
-import { PurchaseRequisitionStatus } from "../../generated/index.js";
-import { PermissionService } from "../auth/services/permission.service";
+import { PurchaseRequisitionService } from "../services/requisition.service";
+import { PurchaseRequisitionStatus } from "../../../generated/index.js";
+import { PermissionService } from "../../auth/services/permission.service";
 
 // Same reasoning as purchasing.controller.ts's identical helper: the JWT
 // doesn't carry permissions (auth.service.ts only puts them in the login/

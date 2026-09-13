@@ -4,7 +4,7 @@
  */
 
 import { Router } from "express";
-import { EmployeeController } from "../employee.controller";
+import { EmployeeController } from "../controllers/employee.controller";
 import { authMiddleware } from '@core/middleware/auth';
 import { requirePermission } from "../../../middleware/rbac.middleware";
 

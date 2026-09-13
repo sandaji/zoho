@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { PurchasingController } from "./purchasing.controller";
-import { RequisitionController } from "./requisition.controller";
+import { PurchasingController } from "../controllers/purchasing.controller";
+import { RequisitionController } from "../controllers/requisition.controller";
 import { authMiddleware } from '@core/middleware/auth';
 import {
   requirePermission,
   hasAnyPermission,
-} from "../../middleware/rbac.middleware";
+} from "../../../middleware/rbac.middleware";
 
 const router = Router();
 const controller = new PurchasingController();

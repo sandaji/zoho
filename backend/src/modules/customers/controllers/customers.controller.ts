@@ -1,7 +1,7 @@
 // backend/src/modules/customers/customers.controller.ts
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
-import { CustomersService } from "./customers.service";
+import { CustomersService } from "../services/customers.service";
 
 // Validation schemas
 const createCustomerSchema = z.object({

@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import { FinanceService } from "./finance.service";
-import { AccountingService } from "./services/accounting.service";
-import { BankService } from "./services/bank.service";
-import { GeneralLedgerService } from "./services/gl.service";
-import { ReceivablesService } from "./services/receivables.service";
-import { PayablesService } from "./services/payables.service";
-import { PeriodService } from "./services/period.service";
-import { DashboardFinanceService } from "./services/dashboard.service";
-import { AlertsService } from "./services/alerts.service";
-import { BudgetService } from "./services/budget.service";
+import { FinanceService } from "../services/finance.service";
+import { AccountingService } from "../services/accounting.service";
+import { BankService } from "../services/bank.service";
+import { GeneralLedgerService } from "../services/gl.service";
+import { ReceivablesService } from "../services/receivables.service";
+import { PayablesService } from "../services/payables.service";
+import { PeriodService } from "../services/period.service";
+import { DashboardFinanceService } from "../services/dashboard.service";
+import { AlertsService } from "../services/alerts.service";
+import { BudgetService } from "../services/budget.service";
 import { validationError, AppError, ErrorCode } from "@core/errors/errors";
 import { logger } from "@core/utils/logger";
 import { prisma } from "@core/database/db";
-import { FinanceAnalyticsService } from "./services/finance-analytics.service";
-import { PermissionService } from "../auth/services/permission.service";
+import { FinanceAnalyticsService } from "../services/finance-analytics.service";
+import { PermissionService } from "../../auth/services/permission.service";
 
 // Same KSH tier used for PO/requisition/expense "executive" approval
 // elsewhere (see purchasing.service.ts, requisition.service.ts,
