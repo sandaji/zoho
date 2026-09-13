@@ -26,12 +26,12 @@ A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, Ty
 3. **Set up environment variables**
    ```bash
    # Backend
-   cp backend/.env.example backend/.env
-   # Edit backend/.env with your database credentials
+   cp apps/api/.env.example apps/api/.env
+   # Edit apps/api/.env with your database credentials
    
    # Frontend
-   cp frontend/.env.local.example frontend/.env.local
-   # Edit frontend/.env.local if needed
+   cp apps/web-portal/.env.local.example apps/web-portal/.env.local
+   # Edit apps/web-portal/.env.local if needed
    ```
 
 4. **Set up the database**
@@ -78,18 +78,20 @@ A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, Ty
 
 ```
 zoho/
-├── frontend/          # Next.js frontend application
-│   ├── components/    # React components
-│   ├── app/          # Next.js app router pages
-│   ├── lib/          # Utility functions and API clients
-│   └── tests/        # Frontend tests
-├── backend/           # Node.js/Express backend API
-│   ├── src/
-│   │   ├── modules/  # Feature modules
-│   │   ├── middleware/ # Express middleware
-│   │   └── lib/      # Utility functions
-│   ├── prisma/       # Database schema and migrations
-│   └── tests/        # Backend tests
+├── apps/
+│   ├── web-portal/     # Next.js frontend application
+│   │   ├── components/    # React components
+│   │   ├── app/          # Next.js app router pages
+│   │   ├── lib/          # Utility functions and API clients
+│   │   └── tests/        # Frontend tests
+│   └── api/            # Node.js/Express backend API
+│       ├── src/
+│       │   ├── modules/  # Feature modules
+│       │   ├── middleware/ # Express middleware
+│       │   └── core/      # Core infrastructure
+│       ├── prisma/       # Database schema and migrations
+│       └── tests/        # Backend tests
+├── packages/           # Shared workspace packages (ui, types, config)
 └── docker-compose.yml # Docker configuration
 ```
 
@@ -113,10 +115,10 @@ npm run test
 ### Test Coverage
 ```bash
 # Backend
-cd backend && npm run test -- --coverage
+cd apps/api && npm run test -- --coverage
 
 # Frontend
-cd frontend && npm run test -- --coverage
+cd apps/web-portal && npm run test -- --coverage
 ```
 
 ## 🔧 Available Scripts
