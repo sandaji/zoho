@@ -52,7 +52,7 @@ import { useHasPermission } from "@/hooks/use-permissions";
 import { useStoredStringList } from "@/hooks/use-sidebar-preferences";
 import { API_BASE_URL, API_ENDPOINTS } from "@/lib/api-config";
 import { NAVIGATION_MODULES, canAccessNavigationItem } from "@/lib/navigation";
-import type { Branch } from "@/lib/types/admin";
+import type { Branch } from "@zoho-erp/types";
 import { ROLE_LABELS, ROLE_COLORS, APP_VERSION, isActivePath } from "./constants";
 import { CommandPalette } from "./CommandPalette";
 import { SettingsDialog } from "./SettingsDialog";

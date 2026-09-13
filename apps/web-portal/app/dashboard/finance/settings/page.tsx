@@ -23,7 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
-import { FiscalPeriod } from "@/types/admin";
+import { FiscalPeriod } from "@zoho-erp/types";
 import { showSuccessToast, showErrorToast } from "@/components/ui/toast";
 
 export default function PeriodManagementPage() {

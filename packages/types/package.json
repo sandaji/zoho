@@ -1,0 +1,9 @@
+{
+  "name": "@zoho-erp/types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types for the Zoho ERP monorepo",
+  "license": "ISC",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts"
+}

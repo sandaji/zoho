@@ -19,7 +19,7 @@ import type {
   DailySummary,
   ApiResponse,
   PaginatedResponse,
-} from "@/lib/types/admin";
+} from "@zoho-erp/types";
 
 const API_BASE_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 

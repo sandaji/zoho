@@ -1,4 +1,4 @@
-import type { User, Branch } from "@/lib/types/admin";
+import type { User, Branch } from "@zoho-erp/types";
 import type { NavigationModule, NavigationPage, NavigationStats } from "@/lib/navigation";
 
 export interface SwitcherBranch {

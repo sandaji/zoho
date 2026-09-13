@@ -1,4 +1,4 @@
-import type { UserRole } from "@/lib/types/admin";
+import type { UserRole } from "@zoho-erp/types";
 
 export const ROLE_LABELS: Record<UserRole | string, string> = {
   admin: "Admin",

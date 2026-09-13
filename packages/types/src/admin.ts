@@ -1,7 +1,19 @@
 /**
  * Admin Dashboard Types
- * Based on backend DTOs and Prisma schema
+ * Based on backend DTOs and Prisma schema.
+ *
+ * Merged from the two previously-separate copies that existed in the
+ * frontend: types/admin.ts and lib/types/admin.ts.
  */
+
+// Named unions (previously only exported from lib/types/admin.ts) kept
+// as standalone types so any existing import of these names still works.
+export type UserRole = "cashier" | "warehouse_staff" | "driver" | "manager" | "admin";
+export type SalesStatus = "draft" | "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "returned";
+export type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
+export type DeliveryStatus = "pending" | "assigned" | "in_transit" | "delivered" | "failed" | "rescheduled";
+export type TransactionType = "income" | "expense" | "transfer" | "adjustment";
+export type PayrollStatus = "draft" | "submitted" | "approved" | "paid" | "reversed";
 
 // Branch
 export interface Branch {
@@ -30,6 +42,9 @@ export interface Warehouse {
   updatedAt: string;
   inventoryCount?: number;
   totalStock?: number;
+  _count?: {
+    inventory: number;
+  };
 }
 
 // User
@@ -38,7 +53,7 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
-  role: "cashier" | "warehouse_staff" | "driver" | "manager" | "admin";
+  role: UserRole;
   branchId?: string;
   branch?: Branch;
   isActive: boolean;
@@ -68,8 +83,8 @@ export interface Product {
 export interface Sales {
   id: string;
   invoice_no: string;
-  status: "draft" | "pending" | "confirmed" | "shipped" | "delivered" | "cancelled" | "returned";
-  payment_method: "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
+  status: SalesStatus;
+  payment_method: PaymentMethod;
   branchId: string;
   branch?: Branch;
   userId: string;
@@ -107,7 +122,7 @@ export interface SalesItem {
 export interface Delivery {
   id: string;
   delivery_no: string;
-  status: "pending" | "assigned" | "in_transit" | "delivered" | "failed" | "rescheduled";
+  status: DeliveryStatus;
   salesId: string;
   sales?: Sales;
   driverId: string;
@@ -132,12 +147,14 @@ export interface Truck {
   capacity: number;
   license_plate?: string;
   isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Finance Transaction
 export interface FinanceTransaction {
   id: string;
-  type: "income" | "expense" | "transfer" | "adjustment";
+  type: TransactionType;
   reference_no: string;
   description: string;
   amount: number;
@@ -156,7 +173,7 @@ export interface FinanceTransaction {
 export interface Payroll {
   id: string;
   payroll_no: string;
-  status: "draft" | "submitted" | "approved" | "paid" | "reversed";
+  status: PayrollStatus;
   userId: string;
   user?: User;
   base_salary: number;
@@ -200,11 +217,22 @@ export interface DailySummary {
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
+  message?: string;
   error?: {
     code: string;
     message: string;
   };
   pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data: T[];
+  pagination: {
     total: number;
     page: number;
     limit: number;

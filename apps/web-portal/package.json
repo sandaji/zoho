@@ -12,6 +12,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@zoho-erp/types": "*",
     "@hookform/resolvers": "^5.9.1",
     "@radix-ui/react-alert-dialog": "^1.1.23",
     "@radix-ui/react-avatar": "^1.2.6",
