@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { fetchVendors } from "@/lib/admin-api";

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 
 interface Product {
   id: string;

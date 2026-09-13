@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/providers/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import {
   Card,

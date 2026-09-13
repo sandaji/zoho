@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { Clock, Users } from "lucide-react";
-import { PendingOrder, StaffPerformance } from "@/lib/dashboard.service";
+import { PendingOrder, StaffPerformance } from "@/services/dashboard.service";
 
 interface OperationsProps {
   pendingOrders: PendingOrder[];

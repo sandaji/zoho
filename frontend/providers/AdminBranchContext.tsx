@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { fetchBranches } from "@/lib/admin-api";
 import { resolveGlobalPermissions } from "@/lib/admin-global-api";
 

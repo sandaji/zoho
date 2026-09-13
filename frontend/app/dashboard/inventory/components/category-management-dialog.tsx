@@ -22,7 +22,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Plus, Trash2, Edit2, Folder, FolderOpen } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { toast } from "sonner";
 import { frontendEnv } from "@/lib/env";
 

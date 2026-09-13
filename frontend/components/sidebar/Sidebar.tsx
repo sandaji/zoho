@@ -47,7 +47,7 @@ import {
   Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { useStoredStringList } from "@/hooks/use-sidebar-preferences";
 import { API_BASE_URL, API_ENDPOINTS } from "@/lib/api-config";

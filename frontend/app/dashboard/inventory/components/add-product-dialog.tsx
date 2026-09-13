@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";
 import { VendorSelect } from "@/components/ui/vendor-select";
 import { BranchSelect } from "@/components/ui/branch-select";

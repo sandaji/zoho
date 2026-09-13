@@ -20,8 +20,8 @@ import {
   RefreshCw,
   AlertCircle,
 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { useAdminBranch } from "@/lib/AdminBranchContext";
+import { useAuth } from "@/providers/auth-context";
+import { useAdminBranch } from "@/providers/AdminBranchContext";
 import { fetchGlobalFinancials, GlobalFinancialsData } from "@/lib/admin-global-api";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";

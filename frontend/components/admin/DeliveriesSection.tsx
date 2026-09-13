@@ -20,7 +20,7 @@ import {
 } from "@/lib/admin-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { Button } from "../ui/button";
 import { DeliveryStatus } from "@/lib/types";
 import { Input } from "../ui/input";

@@ -1,12 +1,12 @@
 // backend/src/modules/sales/sales.routes.ts
 import { Router } from "express";
-import { SalesController } from "../modules/pos/controllers/sales.controller";
-import { PDFController } from "../modules/pos/controllers/pdf.controller";
+import { SalesController } from "../../pos/controllers/sales.controller";
+import { PDFController } from "../../pos/controllers/pdf.controller";
 import { authMiddleware } from "@core/middleware/auth";
-import { requirePermission } from "../middleware/rbac.middleware";
-import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
-import { PrefixedDocumentController } from "../modules/pos/controllers/prefixed-document.controller";
-import { SalesPerformanceController } from "../modules/pos/controllers/sales-performance.controller";
+import { requirePermission } from "../../../middleware/rbac.middleware";
+import { validateFiscalPeriod } from "../../../middleware/fiscal-period.middleware";
+import { PrefixedDocumentController } from "../../pos/controllers/prefixed-document.controller";
+import { SalesPerformanceController } from "../../pos/controllers/sales-performance.controller";
 
 const router = Router();
 

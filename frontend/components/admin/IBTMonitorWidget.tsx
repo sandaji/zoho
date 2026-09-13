@@ -22,9 +22,9 @@ import {
   AlertCircle,
   ArrowRight,
 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { fetchIBTMonitor, IBTMonitorData, IBTTransfer } from "@/lib/admin-global-api";
-import { useAdminBranch } from "@/lib/AdminBranchContext";
+import { useAdminBranch } from "@/providers/AdminBranchContext";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 

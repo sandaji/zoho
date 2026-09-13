@@ -29,8 +29,8 @@ import { formatCurrency, safeFormatDate } from "@/lib/utils";
 import { frontendEnv } from "@/lib/env";
 import { getApiUrl } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
-import { useAuth } from "@/lib/auth-context";
-import { useToast } from "@/lib/toast-context";
+import { useAuth } from "@/providers/auth-context";
+import { useToast } from "@/providers/toast-context";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;

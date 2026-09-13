@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { frontendEnv } from "@/lib/env";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,7 +27,7 @@ import { useTable, createColumnHelper, type SortingState } from "@tanstack/react
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
-import { warehouseService } from "@/lib/warehouse.service";
+import { warehouseService } from "@/services/warehouse.service";
 
 function getStockStatusColor(available: number, reorderLevel: number) {
   if (available === 0) return "text-red-600 bg-red-100";

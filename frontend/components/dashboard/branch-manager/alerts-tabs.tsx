@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { AlertTriangle, Package, Users } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { LowStockItem, TopProduct, StaffPerformance } from "@/lib/dashboard.service";
+import { LowStockItem, TopProduct, StaffPerformance } from "@/services/dashboard.service";
 
 // ── Stock-status badge variant (yellow accent for warnings) ─────────────────
 const alertBadge = cva(

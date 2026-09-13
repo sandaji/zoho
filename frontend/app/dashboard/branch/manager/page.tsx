@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { toast } from "sonner";
 import {
@@ -12,7 +12,7 @@ import {
   LowStockItem,
   PendingOrder,
   StaffPerformance,
-} from "@/lib/dashboard.service";
+} from "@/services/dashboard.service";
 
 // ── Sub-components (all data hooks 100% preserved) ──────────────────────────
 import { DashboardHeader } from "@/components/dashboard/branch-manager/header";

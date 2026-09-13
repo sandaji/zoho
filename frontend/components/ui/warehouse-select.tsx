@@ -8,11 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Warehouse } from "@/lib/admin-api";
-import { warehouseService } from "@/lib/warehouse.service";
+import { warehouseService } from "@/services/warehouse.service";
 
 interface WarehouseSelectProps {
   value?: string;

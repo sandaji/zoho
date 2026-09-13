@@ -7,9 +7,9 @@ import {
   EmployeeFormData,
   EmployeeTransfer,
   Department,
-} from "@/lib/employee.service";
-import { branchService, Branch } from "@/lib/branch.service";
-import { useAuth } from "@/lib/auth-context";
+} from "@/services/employee.service";
+import { branchService, Branch } from "@/services/branch.service";
+import { useAuth } from "@/providers/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { BranchSelect } from "@/components/ui/branch-select";
 import { VendorSelect } from "@/components/ui/vendor-select";
 import {

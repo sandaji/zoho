@@ -21,8 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Search, Eye, Loader2 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { expenseReportService, type ExpenseReport } from "@/lib/expense-report.service";
+import { useAuth } from "@/providers/auth-context";
+import { expenseReportService, type ExpenseReport } from "@/services/expense-report.service";
 import { toast } from "sonner";
 
 type Status = ExpenseReport["status"];

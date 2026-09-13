@@ -33,8 +33,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { User, Branch, fetchBranches, updateUser, UpdateUserPayload } from "@/lib/admin-api";
 import { Role, fetchRoles, assignUserRoles } from "@/lib/rbac-api";
-import { useToast } from "@/lib/toast-context";
-import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/providers/toast-context";
+import { useAuth } from "@/providers/auth-context";
 
 const editUserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),

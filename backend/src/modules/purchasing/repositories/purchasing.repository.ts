@@ -1,6 +1,6 @@
-import { PurchaseOrderStatus } from "../generated/enums.js";
+import { PurchaseOrderStatus } from "../../../generated/enums.js";
 import { prisma as defaultPrisma } from "@core/database/db";
-import { sum } from "../utils/money";
+import { sum } from "../../../utils/money";
 
 type PurchasingDbClient = typeof defaultPrisma;
 

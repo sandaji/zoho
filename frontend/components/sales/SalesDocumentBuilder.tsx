@@ -11,7 +11,7 @@ import { DocumentItemTable } from "./DocumentItemTable";
 import { DocumentTotals } from "./DocumentTotals";
 import { DocumentActions } from "./DocumentActions";
 import { Toaster, toast } from "sonner";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 
 // Define schema
 const salesDocumentSchema = z.object({

@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2, TrendingUp, TrendingDown } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { toast } from "sonner";
 import { frontendEnv } from "@/lib/env";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";

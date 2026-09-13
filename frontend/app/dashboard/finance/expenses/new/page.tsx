@@ -28,8 +28,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, Plus, Trash2, Loader2, Paperclip } from "lucide-react";
-import { expenseReportService } from "@/lib/expense-report.service";
-import { departmentService, type Department } from "@/lib/department.service";
+import { expenseReportService } from "@/services/expense-report.service";
+import { departmentService, type Department } from "@/services/department.service";
 import { toast } from "sonner";
 
 interface LineItem {

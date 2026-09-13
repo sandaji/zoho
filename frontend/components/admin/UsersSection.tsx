@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
 import { User, fetchUsers } from "@/lib/admin-api";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { Button } from "../ui/button";
 import { EditUserDialog } from "./EditUserDialog";
 import { GrantAccessDialog } from "./GrantAccessDialog";

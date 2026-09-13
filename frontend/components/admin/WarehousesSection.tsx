@@ -5,7 +5,7 @@ import { AdminTable, Column } from "./AdminTable";
 import { Warehouse, fetchWarehouses } from "@/lib/admin-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { Button } from "../ui/button";
 
 export default function WarehousesSection() {

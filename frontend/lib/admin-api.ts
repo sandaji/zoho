@@ -8,7 +8,7 @@ import {
 } from "./types";
 import { API_BASE_URL, API_ENDPOINTS, getApiUrl } from "./api-config";
 import { getAuthHeadersWithToken } from "./api-utils";
-import { UserRole } from "./auth-context";
+import { UserRole } from "../providers/auth-context";
 
 // ============================================================================
 // TYPE DEFINITIONS

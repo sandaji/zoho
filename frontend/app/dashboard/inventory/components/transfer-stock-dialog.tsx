@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { toast } from "sonner";
 import { frontendEnv } from "@/lib/env";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";

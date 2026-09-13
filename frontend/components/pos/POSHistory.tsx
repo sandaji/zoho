@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
 import { hasAuthToken } from "@/lib/api-utils";
-import { useToast } from "@/lib/toast-context";
+import { useToast } from "@/providers/toast-context";
 import { formatCurrency, safeFormatDate } from "@/lib/utils";
 
 interface POSHistoryProps {

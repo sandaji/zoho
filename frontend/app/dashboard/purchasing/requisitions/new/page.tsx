@@ -28,9 +28,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ArrowLeft, Plus, Trash2, Loader2 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { requisitionService } from "@/lib/requisition.service";
-import { departmentService, type Department } from "@/lib/department.service";
+import { useAuth } from "@/providers/auth-context";
+import { requisitionService } from "@/services/requisition.service";
+import { departmentService, type Department } from "@/services/department.service";
 import { toast } from "sonner";
 
 interface LineItem {

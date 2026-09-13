@@ -1,6 +1,6 @@
-import { TransactionType } from "../generated/enums.js";
+import { TransactionType } from "../../../generated/enums.js";
 import { prisma as defaultPrisma } from '@core/database/db';
-import { sum } from "../utils/money";
+import { sum } from "../../../utils/money";
 
 type FinanceDbClient = typeof defaultPrisma;
 

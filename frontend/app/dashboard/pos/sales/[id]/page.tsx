@@ -3,8 +3,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
-import { useToast } from "@/lib/toast-context";
+import { useAuth } from "@/providers/auth-context";
+import { useToast } from "@/providers/toast-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Printer, ArrowLeft } from "lucide-react";

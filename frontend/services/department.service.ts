@@ -6,7 +6,7 @@
  * people to type department IDs.
  */
 
-import { apiClient } from "./api-client";
+import { apiClient } from "@/lib/api-client";
 
 export interface Department {
   id: string;

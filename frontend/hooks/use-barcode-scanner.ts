@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { getApiUrl, getAuthHeaders } from "@/lib/api-config";
-import { useToast } from "@/lib/toast-context";
+import { useToast } from "@/providers/toast-context";
 
 interface ScannedProduct {
   id: string;

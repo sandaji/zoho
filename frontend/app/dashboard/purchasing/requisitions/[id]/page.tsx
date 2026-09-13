@@ -35,9 +35,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ArrowLeft, Loader2, CheckCircle2, XCircle, Send, ArrowRightLeft } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { requisitionService, type Requisition } from "@/lib/requisition.service";
-import { purchasingService } from "@/lib/purchasing.service";
+import { useAuth } from "@/providers/auth-context";
+import { requisitionService, type Requisition } from "@/services/requisition.service";
+import { purchasingService } from "@/services/purchasing.service";
 import { toast } from "sonner";
 
 const STATUS_COLOR_MAP: Record<Requisition["status"], string> = {

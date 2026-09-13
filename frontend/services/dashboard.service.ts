@@ -58,7 +58,7 @@ export interface StaffPerformance {
   conversionRate: number | null;
 }
 
-import { frontendEnv } from "./env";
+import { frontendEnv } from "@/lib/env";
 
 const API_URL = `${frontendEnv.NEXT_PUBLIC_API_URL}/v1`;
 

@@ -12,8 +12,8 @@ import {
   Percent,
   DollarSign,
 } from "lucide-react";
-import { getStatusColor } from "../../lib/statusColors";
-import { getModuleAccent } from "../../lib/moduleColors";
+import { getStatusColor } from "../../config/statusColors";
+import { getModuleAccent } from "../../config/moduleColors";
 import { StatCard as StatCardData } from "../../lib/utils/stat-card";
 import { formatCurrency } from "../../lib/utils/money";
 

@@ -11,7 +11,7 @@ import {
   Cell,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { SalesData } from "@/lib/dashboard.service";
+import { SalesData } from "@/services/dashboard.service";
 
 // Payment-type proxy data (static until payment-type API is available)
 const paymentData = [

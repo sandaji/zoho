@@ -19,8 +19,8 @@ import {
   ReceiveStockTransferPayload,
   RaiseTransferIssuePayload,
   ResolveTransferIssuePayload,
-} from "./admin-api";
-import { frontendEnv } from "./env";
+} from "@/lib/admin-api";
+import { frontendEnv } from "@/lib/env";
 
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 

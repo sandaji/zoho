@@ -3,7 +3,7 @@
  * Provides consistent navigation paths for different user roles
  */
 
-import { UserRole } from "./auth-context";
+import { UserRole } from "../providers/auth-context";
 
 /**
  * Role-based dashboard routes mapping

@@ -4,7 +4,7 @@
  * Phase 1/2 — see erp-finance-gap-analysis.md §1.1).
  */
 
-import { apiClient } from "./api-client";
+import { apiClient } from "@/lib/api-client";
 
 export interface ExpenseItem {
   id?: string;

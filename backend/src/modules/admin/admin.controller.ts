@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { inventoryRepository } from "../../repositories/inventory.repository";
-import { purchasingRepository } from "../../repositories/purchasing.repository";
+import { inventoryRepository } from "../inventory/repositories/inventory.repository";
+import { purchasingRepository } from "../purchasing/repositories/purchasing.repository";
 import { StatCardBuilder } from "../../utils/stat-card.builder";
 import * as bcrypt from "bcrypt";
 import { prisma } from "@/core/database/db";

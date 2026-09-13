@@ -1,6 +1,6 @@
-import { Prisma } from "../generated";
+import { Prisma } from "../../../generated";
 import { prisma as defaultPrisma } from '@core/database/db';
-import { sum, multiply } from "../utils/money";
+import { sum, multiply } from "../../../utils/money";
 
 type InventoryDbClient = typeof defaultPrisma;
 

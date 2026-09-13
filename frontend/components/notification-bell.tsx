@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { Bell, Check, CheckCheck, ExternalLink, Loader2 } from "lucide-react";
 import {
   fetchNotifications,

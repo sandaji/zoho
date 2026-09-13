@@ -19,9 +19,9 @@ import {
   Database,
   Wifi,
 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { fetchSystemHealth, SystemHealthData } from "@/lib/admin-global-api";
-import { useAdminBranch } from "@/lib/AdminBranchContext";
+import { useAdminBranch } from "@/providers/AdminBranchContext";
 import { cn } from "@/lib/utils";
 
 // ============================================================================

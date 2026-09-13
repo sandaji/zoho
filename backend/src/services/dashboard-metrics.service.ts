@@ -3,10 +3,10 @@
  * Centralized Service for computing enterprise KPI metrics without duplicating queries across controllers.
  */
 
-import { SalesRepository, salesRepository } from "../repositories/sales.repository";
-import { InventoryRepository, inventoryRepository } from "../repositories/inventory.repository";
-import { FinanceRepository, financeRepository } from "../repositories/finance.repository";
-import { PurchasingRepository, purchasingRepository } from "../repositories/purchasing.repository";
+import { SalesRepository, salesRepository } from "../modules/sales/repositories/sales.repository";
+import { InventoryRepository, inventoryRepository } from "../modules/inventory/repositories/inventory.repository";
+import { FinanceRepository, financeRepository } from "../modules/finance/repositories/finance.repository";
+import { PurchasingRepository, purchasingRepository } from "../modules/purchasing/repositories/purchasing.repository";
 import { getFinancialYear, getDateRange, DateRange } from "../utils/date";
 import { sum, subtract, roundCurrency } from "../utils/money";
 import { StatCardBuilder, StatCard } from "../utils/stat-card.builder";

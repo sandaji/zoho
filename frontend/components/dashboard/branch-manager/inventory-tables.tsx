@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { Package, AlertCircle } from "lucide-react";
-import { TopProduct, LowStockItem } from "@/lib/dashboard.service";
+import { TopProduct, LowStockItem } from "@/services/dashboard.service";
 
 export function InventoryTables({ topProducts, lowStockItems, loading }: { topProducts: TopProduct[], lowStockItems: LowStockItem[], loading: boolean }) {
   if (loading) return <div className="h-64 bg-gray-100 animate-pulse rounded-lg" />;

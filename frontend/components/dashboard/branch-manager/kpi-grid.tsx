@@ -2,7 +2,7 @@ import { DollarSign, ShoppingCart, Users, Activity } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { BranchMetrics } from "@/lib/dashboard.service";
+import { BranchMetrics } from "@/services/dashboard.service";
 
 // ── CVA variant for the icon badge ──────────────────────────────────────────
 const iconBadge = cva("flex h-10 w-10 items-center justify-center rounded-full", {

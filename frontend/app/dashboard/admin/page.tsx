@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { Crown, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AdminBranchProvider } from "@/lib/AdminBranchContext";
+import { AdminBranchProvider } from "@/providers/AdminBranchContext";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { ADMIN_SECTION_PERMISSIONS } from "@/lib/navigation";
 

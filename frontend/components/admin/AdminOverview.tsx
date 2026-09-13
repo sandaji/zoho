@@ -26,7 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useEffect, useState } from "react";
 import { fetchDailySummary } from "@/lib/admin-api";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ import { GlobalFinancialsWidget } from "./GlobalFinancialsWidget";
 import { IBTMonitorWidget } from "./IBTMonitorWidget";
 import { GlobalAuditFeed } from "./GlobalAuditFeed";
 import { SystemHealthWidget } from "./SystemHealthWidget";
-import { useAdminBranch } from "@/lib/AdminBranchContext";
+import { useAdminBranch } from "@/providers/AdminBranchContext";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 const safeNumber = (value: any, defaultValue = 0): number => {

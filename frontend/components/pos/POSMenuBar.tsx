@@ -57,12 +57,12 @@ import {
 } from "lucide-react";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
-import { useToast } from "@/lib/toast-context";
+import { useToast } from "@/providers/toast-context";
 import { formatCurrency, safeFormatDate, cn } from "@/lib/utils";
 import { AddCustomerDialog } from "@/components/pos/AddCustomerDialog";
 import { AutocompleteProductSearch } from "@/components/pos/AutocompleteProductSearch";
 import type { Customer } from "@/components/pos/POSCustomerSelect";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

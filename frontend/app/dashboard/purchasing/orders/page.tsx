@@ -22,8 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/lib/auth-context";
-import { purchasingService } from "@/lib/purchasing.service";
+import { useAuth } from "@/providers/auth-context";
+import { purchasingService } from "@/services/purchasing.service";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 

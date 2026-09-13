@@ -7,7 +7,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Clock, ShoppingBag, CheckCircle2, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { PendingOrder } from "@/lib/dashboard.service";
+import { PendingOrder } from "@/services/dashboard.service";
 
 // ── Status badge variant ─────────────────────────────────────────────────────
 const statusBadge = cva(

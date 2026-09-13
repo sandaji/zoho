@@ -2,8 +2,8 @@
 // frontend/app/dashboard/pos/page.tsx
 import React, { useEffect, useMemo, useState, useRef, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
-import { useToast } from "@/lib/toast-context";
+import { useAuth } from "@/providers/auth-context";
+import { useToast } from "@/providers/toast-context";
 import { AutocompleteProductSearch } from "@/components/pos/AutocompleteProductSearch";
 import { POSCart } from "@/components/pos/POSCart";
 import { POSPayment } from "@/components/pos/POSPayment";

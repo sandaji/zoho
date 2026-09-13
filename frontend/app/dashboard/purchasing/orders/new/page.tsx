@@ -28,9 +28,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ArrowLeft, Plus, Trash2, Loader2, Search } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { purchasingService } from "@/lib/purchasing.service";
-import { warehouseService } from "@/lib/warehouse.service";
+import { useAuth } from "@/providers/auth-context";
+import { purchasingService } from "@/services/purchasing.service";
+import { warehouseService } from "@/services/warehouse.service";
 import { toast } from "sonner";
 
 interface Vendor {

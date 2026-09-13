@@ -4,7 +4,7 @@ import { AdminTable, Column } from "./AdminTable";
 import { Product, fetchProducts, updateProduct } from "@/lib/admin-api";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";

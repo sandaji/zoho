@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";

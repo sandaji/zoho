@@ -30,8 +30,8 @@ import {
   BookCheck,
   Paperclip,
 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
-import { expenseReportService, type ExpenseReport } from "@/lib/expense-report.service";
+import { useAuth } from "@/providers/auth-context";
+import { expenseReportService, type ExpenseReport } from "@/services/expense-report.service";
 import { toast } from "sonner";
 
 const STATUS_COLOR_MAP: Record<ExpenseReport["status"], string> = {

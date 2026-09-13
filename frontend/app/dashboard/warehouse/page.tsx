@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/lib/auth-context";
-import { warehouseService } from "@/lib/warehouse.service";
+import { useAuth } from "@/providers/auth-context";
+import { warehouseService } from "@/services/warehouse.service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, AlertTriangle, ArrowRight, PackagePlus, ArrowRightLeft, Layers, Truck, ClipboardList } from "lucide-react";
 import Link from "next/link";

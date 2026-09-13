@@ -17,8 +17,8 @@ import { EnhancedInventoryTable } from "./components/enhanced-inventory-table";
 import { StockTransferModal } from "./components/stock-transfer-modal";
 import { AdjustStockModal } from "./components/adjust-stock-modal";
 import { useInventory } from "@/hooks/use-inventory";
-import { useAuth } from "@/lib/auth-context";
-import { warehouseService } from "@/lib/warehouse.service";
+import { useAuth } from "@/providers/auth-context";
+import { warehouseService } from "@/services/warehouse.service";
 import { toast } from "sonner";
 
 interface SelectedItemForTransfer {

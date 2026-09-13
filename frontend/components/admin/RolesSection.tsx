@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
 import { Role, fetchRoles, deleteRole, createRole } from "@/lib/rbac-api";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/lib/toast-context";
+import { useToast } from "@/providers/toast-context";
 import { RolePermissionsDialog } from "./RolePermissionsDialog";
 import { Plus, Shield, Trash2, Key } from "lucide-react";
 import {

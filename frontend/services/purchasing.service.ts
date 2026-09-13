@@ -3,7 +3,7 @@
  * Handles all purchasing-related API calls (purchase orders, vendors, etc.)
  */
 
-import { frontendEnv } from "./env";
+import { frontendEnv } from "@/lib/env";
 
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 

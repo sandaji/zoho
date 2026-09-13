@@ -4,9 +4,9 @@
  */
 
 import { Router } from "express";
-import { EmployeeController } from "../modules/employees/employee.controller";
+import { EmployeeController } from "../employee.controller";
 import { authMiddleware } from '@core/middleware/auth';
-import { requirePermission } from "../middleware/rbac.middleware";
+import { requirePermission } from "../../../middleware/rbac.middleware";
 
 const router = Router();
 const employeeController = new EmployeeController();

@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth, type User } from "@/lib/auth-context";
+import { useAuth, type User } from "@/providers/auth-context";
 import { apiClient } from "@/lib/api-client";
 import { getRoleDashboardRoute } from "@/lib/role-routing";
 

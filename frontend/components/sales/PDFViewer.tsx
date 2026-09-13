@@ -14,7 +14,7 @@ import { Download, Eye, Printer, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useReactToPrint } from "react-to-print";
 
 interface PDFViewerProps {

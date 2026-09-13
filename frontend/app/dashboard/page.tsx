@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { getRoleDashboardRoute } from "@/lib/role-routing";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

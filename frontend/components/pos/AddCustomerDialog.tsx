@@ -14,7 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
-import { useToast } from "@/lib/toast-context";
+import { useToast } from "@/providers/toast-context";
 
 interface Customer {
   id: string;

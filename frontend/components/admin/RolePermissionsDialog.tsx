@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAuth } from "@/lib/auth-context";
-import { useToast } from "@/lib/toast-context";
+import { useAuth } from "@/providers/auth-context";
+import { useToast } from "@/providers/toast-context";
 import { ShieldCheck, Loader2, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";

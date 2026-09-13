@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { frontendEnv } from "@/lib/env";
 
 const API_BASE = () => frontendEnv.NEXT_PUBLIC_API_URL;

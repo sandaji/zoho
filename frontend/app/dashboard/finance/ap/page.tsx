@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useAuth } from "@/lib/auth-context";
-import { useToast } from "@/lib/toast-context";
+import { useAuth } from "@/providers/auth-context";
+import { useToast } from "@/providers/toast-context";
 import { getApiUrl } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import {

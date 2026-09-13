@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/lib/toast-context";
+import { useToast } from "@/providers/toast-context";
 
 interface BankAccount {
   id: string;

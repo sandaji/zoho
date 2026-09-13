@@ -18,9 +18,9 @@ import {
   Trash2,
   Edit,
 } from "lucide-react";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { fetchAuditLogs, AuditLogsResponse } from "@/lib/admin-global-api";
-import { useAdminBranch } from "@/lib/AdminBranchContext";
+import { useAdminBranch } from "@/providers/AdminBranchContext";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 

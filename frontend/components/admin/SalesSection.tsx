@@ -6,7 +6,7 @@ import { Sales, fetchSales } from "@/lib/admin-api";
 import CreateCreditNoteDialog from "./CreateCreditNoteDialog";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { SalesStatus, PaymentMethod } from "@/lib/types";

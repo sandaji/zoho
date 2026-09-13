@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/providers/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Download, Eye, CheckCircle, Loader2 } from "lucide-react";
 import ReceiveGoodsModal from "./receive-goods-modal";

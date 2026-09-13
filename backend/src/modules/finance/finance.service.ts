@@ -4,9 +4,9 @@
  */
 
 import { logger } from '@core/utils/logger';
-import { salesRepository, SalesRepository } from "../../repositories/sales.repository";
-import { inventoryRepository, InventoryRepository } from "../../repositories/inventory.repository";
-import { financeRepository, FinanceRepository } from "../../repositories/finance.repository";
+import { salesRepository, SalesRepository } from "../sales/repositories/sales.repository";
+import { inventoryRepository, InventoryRepository } from "../inventory/repositories/inventory.repository";
+import { financeRepository, FinanceRepository } from "./repositories/finance.repository";
 import { dashboardMetricsService, DashboardMetricsService } from "../../services/dashboard-metrics.service";
 import { getFinancialYear, getMonthRange } from "../../utils/date";
 import { sum, subtract, multiply, percentage, roundCurrency } from "../../utils/money";

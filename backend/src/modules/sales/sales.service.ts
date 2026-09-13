@@ -4,7 +4,7 @@ import { InventoryService } from "../inventory/services/inventory.service";
 import { getRequestContext, setBusinessAction } from "@core/async-context";
 import { eventBus } from "@core/events/events";
 import { SALES_EVENTS } from "@core/events/domain-events";
-import { salesRepository } from "../../repositories/sales.repository";
+import { salesRepository } from "./repositories/sales.repository";
 import { sum, multiply, vat } from "../../utils/money";
 
 /**

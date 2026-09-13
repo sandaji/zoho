@@ -32,8 +32,8 @@ import {
 } from "@/components/ui/select";
 import { User, getEligibleEmployees, grantSystemAccess } from "@/lib/admin-api";
 import { fetchRoles, Role } from "@/lib/rbac-api";
-import { useToast } from "@/lib/toast-context";
-import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/providers/toast-context";
+import { useAuth } from "@/providers/auth-context";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
