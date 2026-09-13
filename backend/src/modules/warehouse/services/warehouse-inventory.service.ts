@@ -34,7 +34,7 @@ import type {
   GetTransfersInput,
   UpdateTransferStatusInput,
   FulfillTransferInput,
-} from "../warehouse.schema";
+} from "../schemas/warehouse.schema";
 
 export class WarehouseInventoryService {
   private inventoryService = new InventoryService();

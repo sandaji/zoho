@@ -13,7 +13,7 @@ import {
   getStockMovementsSchema,
   getTransfersSchema,
   updateTransferStatusSchema,
-} from "../warehouse.schema";
+} from "../schemas/warehouse.schema";
 import { AppError, ErrorCode, validationError } from "@core/errors/errors";
 import type {
   CreateWarehouseDTO,
