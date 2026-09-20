@@ -59,7 +59,6 @@ export class FleetController {
    * POST /deliveries - Create new delivery
    * Request body:
    * {
-   *   salesId: string,
    *   driverId: string,
    *   truckId: string,
    *   destination: string,
@@ -77,10 +76,6 @@ export class FleetController {
       const dto: CreateDeliveryDTO = req.body;
 
       // Validate required fields
-      if (!dto.salesId || !dto.salesId.trim()) {
-        throw validationError("salesId is required");
-      }
-
       if (!dto.driverId || !dto.driverId.trim()) {
         throw validationError("driverId is required");
       }
@@ -100,7 +95,6 @@ export class FleetController {
 
       logger.debug(
         {
-          salesId: dto.salesId,
           driverId: dto.driverId,
           truckId: dto.truckId,
         },

@@ -99,11 +99,6 @@ export class FleetService {
   ): Promise<DeliveryDetailResponseDTO> {
     try {
       // Validate input
-      if (!dto.salesDocumentId && !dto.stockTransferId) {
-        throw new Error(
-          "A delivery must be linked to a sales document or a stock transfer.",
-        );
-      }
       if (!dto.driverId || !dto.truckId) {
         throw new Error("Missing required fields: driverId, truckId");
       }
@@ -118,52 +113,9 @@ export class FleetService {
         // const isDriverAvailable = await tx.user.findFirst(...);
         // if (!isDriverAvailable) throw new Error("Driver is not available");
 
-        if (dto.salesDocumentId) {
-          const salesDocument = await tx.salesDocument.findUnique({
-            where: { id: dto.salesDocumentId },
-            select: { id: true, status: true },
-          });
-
-          if (!salesDocument) {
-            throw new Error(`Sales document ${dto.salesDocumentId} not found`);
-          }
-
-          if (
-            salesDocument.status !== "PAID" &&
-            salesDocument.status !== "SENT"
-          ) {
-            throw new Error(
-              `Sales document must be paid or sent before delivery (current: ${salesDocument.status})`,
-            );
-          }
-
-          const existingDelivery = await tx.delivery.findFirst({
-            where: { salesDocumentId: dto.salesDocumentId },
-          });
-
-          if (existingDelivery) {
-            throw new Error("Sales order already has an associated delivery");
-          }
-        } else if (dto.stockTransferId) {
-          // TODO: Add validation for stock transfer status
-          const stockTransfer = await tx.stockTransfer.findUnique({
-            where: { id: dto.stockTransferId },
-          });
-
-          if (!stockTransfer) {
-            throw new Error(`Stock transfer ${dto.stockTransferId} not found`);
-          }
-
-          const existingDelivery = await tx.delivery.findFirst({
-            where: { stockTransferId: dto.stockTransferId },
-          });
-
-          if (existingDelivery) {
-            throw new Error(
-              "Stock transfer already has an associated delivery",
-            );
-          }
-        }
+        // NOTE: Delivery has no salesDocument/stockTransfer link in the schema
+        // (fulfilment linkage goes through DeliveryDispatchNote), so there is
+        // nothing to validate or update on that side here.
 
         // Verify driver exists
         const driver = await tx.user.findUnique({
@@ -196,23 +148,18 @@ export class FleetService {
 
         const newDelivery = await tx.delivery.create({
           data: {
-            delivery_no: deliveryNo,
+            deliveryNo,
             status: "pending",
-            salesDocumentId: dto.salesDocumentId,
-            stockTransferId: dto.stockTransferId,
             driverId: dto.driverId,
             truckId: dto.truckId,
             destination: dto.destination,
-            estimated_km: dto.estimated_km,
-            scheduled_date: dto.scheduled_date
+            estimatedKm: dto.estimated_km,
+            scheduledDate: dto.scheduled_date
               ? new Date(dto.scheduled_date)
               : null,
             notes: dto.notes,
           },
           include: {
-            salesDocument: {
-              select: { id: true, documentId: true, total: true },
-            },
             driver: { select: { id: true, name: true, phone: true } },
             truck: {
               include: {
@@ -227,25 +174,13 @@ export class FleetService {
           },
         });
 
-        // Update sales status to shipped if applicable
-        if (newDelivery.salesDocumentId) {
-          await tx.salesDocument.update({
-            where: { id: newDelivery.salesDocumentId },
-            data: { status: "SHIPPED" },
-          });
-        }
-        // TODO: Update stock transfer status if applicable
-        // if (newDelivery.stockTransferId) { ... }
-
         return newDelivery;
       });
 
       logger.info(
         {
           id: delivery.id,
-          delivery_no: delivery.delivery_no,
-          sales_id: delivery.salesDocumentId,
-          stock_transfer_id: delivery.stockTransferId,
+          delivery_no: delivery.deliveryNo,
         },
         "Delivery created",
       );
@@ -283,8 +218,8 @@ export class FleetService {
           select: {
             id: true,
             status: true,
-            salesDocumentId: true,
-            stockTransferId: true,
+            pickedUpAt: true,
+            deliveredAt: true,
           },
         });
 
@@ -313,17 +248,17 @@ export class FleetService {
         // Set timestamps based on status
         const timestamps: any = {};
 
-        if (dto.status === "in_transit" && !current.picked_up_at) {
-          timestamps.picked_up_at = dto.picked_up_at
+        if (dto.status === "in_transit" && !current.pickedUpAt) {
+          timestamps.pickedUpAt = dto.picked_up_at
             ? new Date(dto.picked_up_at)
             : new Date();
         }
 
         if (
           dto.status === "delivered" &&
-          (dto.delivered_at || !current.delivered_at)
+          (dto.delivered_at || !current.deliveredAt)
         ) {
-          timestamps.delivered_at = dto.delivered_at
+          timestamps.deliveredAt = dto.delivered_at
             ? new Date(dto.delivered_at)
             : new Date();
         }
@@ -333,16 +268,13 @@ export class FleetService {
           where: { id },
           data: {
             status: dto.status as any,
-            actual_km: dto.actual_km,
+            actualKm: dto.actual_km,
             notes: dto.notes ?? undefined,
             podSignatureUrl: dto.podSignature, // Assuming you handle saving it
             podPhotoUrl: dto.podPhotoUrl,
             ...timestamps,
           },
           include: {
-            salesDocument: {
-              select: { id: true, documentId: true, total: true },
-            },
             driver: { select: { id: true, name: true, phone: true } },
             truck: {
               include: {
@@ -356,15 +288,6 @@ export class FleetService {
             },
           },
         });
-
-        // If delivered, update sales status
-        if (dto.status === "delivered" && updated.salesDocumentId) {
-          // 3. FIX BUG: Use tx.salesDocument.update
-          await tx.salesDocument.update({
-            where: { id: updated.salesDocumentId },
-            data: { status: "DELIVERED" },
-          });
-        }
 
         // 4. IMPLEMENT RTO/FAILED WORKFLOW
         if (dto.status === "failed" || dto.status === "returned_to_base") {
@@ -398,11 +321,11 @@ export class FleetService {
         where: { id },
         select: {
           id: true,
-          delivery_no: true,
+          deliveryNo: true,
           status: true,
           createdAt: true,
-          picked_up_at: true,
-          delivered_at: true,
+          pickedUpAt: true,
+          deliveredAt: true,
         },
       });
 
@@ -420,27 +343,27 @@ export class FleetService {
         },
       ];
 
-      if (delivery.picked_up_at) {
+      if (delivery.pickedUpAt) {
         events.push({
           id: "picked_up",
           status: "in_transit",
-          timestamp: delivery.picked_up_at.toISOString(),
+          timestamp: delivery.pickedUpAt.toISOString(),
           notes: "Order picked up",
         });
       }
 
-      if (delivery.delivered_at) {
+      if (delivery.deliveredAt) {
         events.push({
           id: "delivered",
           status: "delivered",
-          timestamp: delivery.delivered_at.toISOString(),
+          timestamp: delivery.deliveredAt.toISOString(),
           notes: "Order delivered",
         });
       }
 
       return {
         deliveryId: delivery.id,
-        delivery_no: delivery.delivery_no,
+        delivery_no: delivery.deliveryNo,
         status: delivery.status,
         events,
       };
@@ -466,12 +389,12 @@ export class FleetService {
       if (query.truckId) where.truckId = query.truckId;
 
       if (query.startDate || query.endDate) {
-        where.scheduled_date = {};
+        where.scheduledDate = {};
         if (query.startDate) {
-          where.scheduled_date.gte = new Date(query.startDate);
+          where.scheduledDate.gte = new Date(query.startDate);
         }
         if (query.endDate) {
-          where.scheduled_date.lte = new Date(query.endDate);
+          where.scheduledDate.lte = new Date(query.endDate);
         }
       }
 
@@ -545,7 +468,7 @@ export class FleetService {
   ): DeliveryDetailResponseDTO {
     return {
       id: delivery.id,
-      delivery_no: delivery.delivery_no,
+      delivery_no: delivery.deliveryNo,
       status: delivery.status,
       // sales relation removed from Delivery schema
       sales: undefined,
@@ -558,11 +481,11 @@ export class FleetService {
         : undefined,
       truck: this.formatTruckResponse(delivery.truck),
       destination: delivery.destination,
-      estimated_km: delivery.estimated_km,
-      actual_km: delivery.actual_km,
-      scheduled_date: delivery.scheduled_date?.toISOString(),
-      picked_up_at: delivery.picked_up_at?.toISOString(),
-      delivered_at: delivery.delivered_at?.toISOString(),
+      estimated_km: delivery.estimatedKm,
+      actual_km: delivery.actualKm,
+      scheduled_date: delivery.scheduledDate?.toISOString(),
+      picked_up_at: delivery.pickedUpAt?.toISOString(),
+      delivered_at: delivery.deliveredAt?.toISOString(),
       notes: delivery.notes,
       createdAt: delivery.createdAt.toISOString(),
       updatedAt: delivery.updatedAt.toISOString(),
@@ -673,17 +596,17 @@ export class FleetService {
 
     return {
       id: delivery.id,
-      delivery_no: delivery.delivery_no,
+      delivery_no: delivery.deliveryNo,
       status: delivery.status,
       driverId: delivery.driverId,
 
       truckId: delivery.truckId,
       destination: delivery.destination,
-      estimated_km: delivery.estimated_km,
-      actual_km: delivery.actual_km,
-      scheduled_date: delivery.scheduled_date?.toISOString(),
-      picked_up_at: delivery.picked_up_at?.toISOString(),
-      delivered_at: delivery.delivered_at?.toISOString(),
+      estimated_km: delivery.estimatedKm,
+      actual_km: delivery.actualKm,
+      scheduled_date: delivery.scheduledDate?.toISOString(),
+      picked_up_at: delivery.pickedUpAt?.toISOString(),
+      delivered_at: delivery.deliveredAt?.toISOString(),
       notes: delivery.notes,
       createdAt: delivery.createdAt.toISOString(),
       updatedAt: delivery.updatedAt.toISOString(),
@@ -705,11 +628,11 @@ export class FleetService {
       data: {
         status: data.status as any,
         destination: data.destination ?? delivery.destination,
-        actual_km: data.actual_km,
-        picked_up_at: data.picked_up_at
+        actualKm: data.actual_km,
+        pickedUpAt: data.picked_up_at
           ? new Date(data.picked_up_at)
           : undefined,
-        delivered_at: data.delivered_at
+        deliveredAt: data.delivered_at
           ? new Date(data.delivered_at)
           : undefined,
         notes: data.notes ?? delivery.notes,
@@ -720,17 +643,17 @@ export class FleetService {
 
     return {
       id: updated.id,
-      delivery_no: updated.delivery_no,
+      delivery_no: updated.deliveryNo,
       status: updated.status,
       driverId: updated.driverId,
 
       truckId: updated.truckId,
       destination: updated.destination,
-      estimated_km: updated.estimated_km,
-      actual_km: updated.actual_km,
-      scheduled_date: updated.scheduled_date?.toISOString(),
-      picked_up_at: updated.picked_up_at?.toISOString(),
-      delivered_at: updated.delivered_at?.toISOString(),
+      estimated_km: updated.estimatedKm,
+      actual_km: updated.actualKm,
+      scheduled_date: updated.scheduledDate?.toISOString(),
+      picked_up_at: updated.pickedUpAt?.toISOString(),
+      delivered_at: updated.deliveredAt?.toISOString(),
       notes: updated.notes,
       createdAt: updated.createdAt.toISOString(),
       updatedAt: updated.updatedAt.toISOString(),

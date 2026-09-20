@@ -37,17 +37,14 @@ export function getCompanyInfo(branch?: {
   phone?: string | null;
 }): CompanyInfo {
   const primaryPhone =
-    branch?.phone ||
-    process.env.COMPANY_PHONE_PRIMARY ||
-    "+254 711 611 971";
+    branch?.phone || process.env.COMPANY_PHONE_PRIMARY || "+254 711 611 971";
 
-  const secondaryPhone = process.env.COMPANY_PHONE_SECONDARY || "+254 738 382 930";
+  const secondaryPhone =
+    process.env.COMPANY_PHONE_SECONDARY || "+254 738 382 930";
 
   return {
     name:
-      branch?.name ||
-      process.env.COMPANY_NAME ||
-      "Zoho Corporation Ltd",
+      branch?.name || process.env.COMPANY_NAME || "swiftpos Corporation Ltd",
 
     address:
       branch?.address ||
@@ -60,22 +57,20 @@ export function getCompanyInfo(branch?: {
         ? [primaryPhone]
         : [primaryPhone, secondaryPhone],
 
-    email: process.env.COMPANY_EMAIL || "info@zoho.co.ke",
+    email: process.env.COMPANY_EMAIL || "info@swiftpos.co.ke",
 
     pin: process.env.COMPANY_PIN || "P123456789X",
 
     bankDetails: {
-      bankName:
-        process.env.COMPANY_BANK_NAME || "KENYA COMMERCIAL BANK",
+      bankName: process.env.COMPANY_BANK_NAME || "KENYA COMMERCIAL BANK",
       accountName:
-        process.env.COMPANY_BANK_ACCOUNT_NAME || "ZOHO CORPORATION LTD",
+        process.env.COMPANY_BANK_ACCOUNT_NAME || "swiftpos CORPORATION LTD",
       accountNumber:
         process.env.COMPANY_BANK_ACCOUNT_NUMBER || "00600877812636",
       bankCode: process.env.COMPANY_BANK_CODE || "57",
       branchCode: process.env.COMPANY_BANK_BRANCH_CODE || "057",
       paybillNo: process.env.COMPANY_BANK_PAYBILL || "542542",
-      paybillAccount:
-        process.env.COMPANY_BANK_PAYBILL_ACCOUNT || "999000",
+      paybillAccount: process.env.COMPANY_BANK_PAYBILL_ACCOUNT || "999000",
     },
   };
 }

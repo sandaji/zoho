@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jimi ERP - Management System",
+  title: "SwiftPos ERP - Management System",
   description: "Complete ERP system for business management",
 };
 

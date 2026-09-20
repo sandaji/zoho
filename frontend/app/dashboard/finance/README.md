@@ -11,6 +11,7 @@ This is a modern, production-ready Finance Dashboard implementing the **Coinest 
 ## ✨ Features
 
 ### Core Functionality
+
 - ✅ **Real-time Financial Summary** - Income, Expenses, Savings at a glance
 - ✅ **Cashflow Visualization** - Monthly income vs expense bar charts
 - ✅ **Expense Breakdown** - Category-wise donut chart with percentages
@@ -20,6 +21,7 @@ This is a modern, production-ready Finance Dashboard implementing the **Coinest 
 - ✅ **Responsive Design** - Works on desktop, tablet, and mobile
 
 ### Technical Features
+
 - ✅ **Type-Safe** - Full TypeScript coverage
 - ✅ **Error Handling** - Graceful fallbacks and error states
 - ✅ **Loading States** - Smooth loading experience
@@ -62,17 +64,20 @@ frontend/app/dashboard/finance/
 ## 🚀 Quick Start
 
 ### 1. Install Dependencies
+
 ```bash
 cd frontend
 npm install
 ```
 
 ### 2. Start Development Server
+
 ```bash
 npm run dev
 ```
 
 ### 3. Access Dashboard
+
 ```
 http://localhost:3000/dashboard/finance
 ```
@@ -85,25 +90,21 @@ http://localhost:3000/dashboard/finance
 
 The dashboard requires these API endpoints to function:
 
-| Endpoint | Status | Description |
-|----------|--------|-------------|
-| `GET /v1/finance/summary` | ✅ Implemented | Financial overview stats |
-| `GET /v1/finance/revenue-expense-chart` | ✅ Implemented | Monthly cashflow data |
-| `GET /v1/finance/transactions` | 🆕 **NEEDS IMPLEMENTATION** | Recent transactions |
-| `GET /v1/finance/expense-categories` | 🆕 **NEEDS IMPLEMENTATION** | Expense breakdown |
-| `GET /v1/finance/daily-spending` | 🆕 **NEEDS IMPLEMENTATION** | Daily spending tracker |
-| `GET /v1/finance/savings-goals` | 🆕 **NEEDS IMPLEMENTATION** | Savings goals |
+| Endpoint                                | Status                      | Description              |
+| --------------------------------------- | --------------------------- | ------------------------ |
+| `GET /v1/finance/summary`               | ✅ Implemented              | Financial overview stats |
+| `GET /v1/finance/revenue-expense-chart` | ✅ Implemented              | Monthly cashflow data    |
+| `GET /v1/finance/transactions`          | 🆕 **NEEDS IMPLEMENTATION** | Recent transactions      |
+| `GET /v1/finance/expense-categories`    | 🆕 **NEEDS IMPLEMENTATION** | Expense breakdown        |
+| `GET /v1/finance/daily-spending`        | 🆕 **NEEDS IMPLEMENTATION** | Daily spending tracker   |
+| `GET /v1/finance/savings-goals`         | 🆕 **NEEDS IMPLEMENTATION** | Savings goals            |
 
 See [`docs/API_REQUIREMENTS.md`](./docs/API_REQUIREMENTS.md) for detailed specifications.
 
 ### Using the API Client
 
 ```typescript
-import { 
-  fetchFinancialSummary,
-  fetchTransactions,
-  fetchAllDashboardData 
-} from './lib/api';
+import { fetchFinancialSummary, fetchTransactions, fetchAllDashboardData } from "./lib/api";
 
 // Fetch single endpoint
 const summary = await fetchFinancialSummary();
@@ -120,43 +121,47 @@ const allData = await fetchAllDashboardData();
 
 ```css
 /* Primary Colors */
---primary-green: #104f38;      /* Deep emerald green */
---primary-lime: #cff07d;       /* Light lime accent */
+--primary-green: #104f38; /* Deep emerald green */
+--primary-lime: #cff07d; /* Light lime accent */
 
 /* Background Colors */
---bg-main: #f8f9fa;            /* Light gray background */
---bg-card: #ffffff;            /* White cards */
+--bg-main: #f8f9fa; /* Light gray background */
+--bg-card: #ffffff; /* White cards */
 
 /* Status Colors */
---success: #10b981;            /* Green for income */
---danger: #ef4444;             /* Red for expenses */
---warning: #f59e0b;            /* Yellow for warnings */
---info: #3b82f6;               /* Blue for savings */
+--success: #10b981; /* Green for income */
+--danger: #ef4444; /* Red for expenses */
+--warning: #f59e0b; /* Yellow for warnings */
+--info: #3b82f6; /* Blue for savings */
 ```
 
 ### Typography
 
 ```css
 /* Font Family */
-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+font-family:
+  system-ui,
+  -apple-system,
+  "Segoe UI",
+  sans-serif;
 
 /* Font Sizes */
---text-3xl: 1.875rem;          /* Page title */
---text-2xl: 1.5rem;            /* Card titles */
---text-lg: 1.125rem;           /* Subheadings */
---text-base: 1rem;             /* Body text */
---text-sm: 0.875rem;           /* Small text */
---text-xs: 0.75rem;            /* Tiny text */
+--text-3xl: 1.875rem; /* Page title */
+--text-2xl: 1.5rem; /* Card titles */
+--text-lg: 1.125rem; /* Subheadings */
+--text-base: 1rem; /* Body text */
+--text-sm: 0.875rem; /* Small text */
+--text-xs: 0.75rem; /* Tiny text */
 ```
 
 ### Spacing
 
 ```css
 /* Gap between elements */
---gap-6: 1.5rem;               /* Main grid gap */
---gap-4: 1rem;                 /* Card sections */
---gap-3: 0.75rem;              /* List items */
---gap-2: 0.5rem;               /* Small gaps */
+--gap-6: 1.5rem; /* Main grid gap */
+--gap-4: 1rem; /* Card sections */
+--gap-3: 0.75rem; /* List items */
+--gap-2: 0.5rem; /* Small gaps */
 ```
 
 ---
@@ -166,33 +171,33 @@ font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 ### Credit Card Widget
 
 ```tsx
-import { CreditCardWidget } from './components/credit-card-widget';
+import { CreditCardWidget } from "./components/credit-card-widget";
 
 <CreditCardWidget
   balance={450000}
   holderName="Business Account"
   cardNumber="•••• •••• •••• 4291"
   expiryDate="12/26"
-/>
+/>;
 ```
 
 ### Cashflow Chart
 
 ```tsx
-import { CashflowChart } from './components/cashflow-chart';
+import { CashflowChart } from "./components/cashflow-chart";
 
 <CashflowChart
   data={[
     { name: "Jan", revenue: 120000, expenses: 80000 },
     { name: "Feb", revenue: 150000, expenses: 90000 },
   ]}
-/>
+/>;
 ```
 
 ### Recent Transactions
 
 ```tsx
-import { RecentTransactions } from './components/recent-transactions';
+import { RecentTransactions } from "./components/recent-transactions";
 
 <RecentTransactions
   transactions={[
@@ -206,7 +211,7 @@ import { RecentTransactions } from './components/recent-transactions';
     },
   ]}
   onViewAll={() => console.log("View all clicked")}
-/>
+/>;
 ```
 
 ---
@@ -214,6 +219,7 @@ import { RecentTransactions } from './components/recent-transactions';
 ## 🧪 Testing
 
 ### Run Tests
+
 ```bash
 # Unit tests
 npm test
@@ -226,6 +232,7 @@ npm run test:coverage
 ```
 
 ### Manual Testing
+
 Follow the comprehensive checklist in [`docs/TESTING_GUIDE.md`](./docs/TESTING_GUIDE.md)
 
 ---
@@ -249,10 +256,11 @@ Follow the comprehensive checklist in [`docs/TESTING_GUIDE.md`](./docs/TESTING_G
 ### Customizing Colors
 
 Edit Tailwind classes in components:
+
 ```tsx
 // Change primary green
-className="bg-[#104f38]"  // Old
-className="bg-[#your-color]"  // New
+className = "bg-[#104f38]"; // Old
+className = "bg-[#your-color]"; // New
 ```
 
 ---
@@ -269,11 +277,11 @@ className="bg-[#your-color]"  // New
 
 ### Performance Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| First Contentful Paint | < 1.5s | TBD |
-| Time to Interactive | < 3.0s | TBD |
-| Lighthouse Score | > 90 | TBD |
+| Metric                 | Target | Current |
+| ---------------------- | ------ | ------- |
+| First Contentful Paint | < 1.5s | TBD     |
+| Time to Interactive    | < 3.0s | TBD     |
+| Lighthouse Score       | > 90   | TBD     |
 
 ---
 
@@ -352,24 +360,28 @@ test: Add unit tests for API client
 ### Common Issues
 
 **Problem:** Charts not displaying
+
 ```
 Solution: Ensure chartData is an array, even when empty
 const [chartData, setChartData] = useState<ChartData[]>([]);
 ```
 
 **Problem:** API calls return 404
+
 ```
-Solution: Backend endpoints not implemented yet. 
+Solution: Backend endpoints not implemented yet.
 Check docs/API_REQUIREMENTS.md and coordinate with backend team.
 ```
 
 **Problem:** Type errors in components
+
 ```
 Solution: Import types from types/index.ts
 import type { Transaction } from '../types';
 ```
 
 **Problem:** Slow page load
+
 ```
 Solution: Check Network tab. API calls should be < 500ms.
 If slow, optimize backend or add caching.
@@ -390,13 +402,14 @@ For questions or issues:
 
 ## 📜 License
 
-Copyright © 2026 Zoho ERP. All rights reserved.
+Copyright © 2026 swiftpos ERP. All rights reserved.
 
 ---
 
 ## 🎉 Changelog
 
 ### v2.0.0 (2026-02-07)
+
 - ✨ Complete redesign with Coinest UI
 - ✨ New component architecture
 - ✨ TypeScript type system
@@ -405,10 +418,11 @@ Copyright © 2026 Zoho ERP. All rights reserved.
 - 📚 Comprehensive documentation
 
 ### v1.0.0 (Original)
+
 - Basic dashboard with charts
 - Tab-based navigation
 - Simple data display
 
 ---
 
-**Built with ❤️ by the Zoho ERP Team**
+**Built with ❤️ by the swiftpos ERP Team**

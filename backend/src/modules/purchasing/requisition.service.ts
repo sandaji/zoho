@@ -1,21 +1,10 @@
 import { prisma } from '@core/database/db';
 import { AppError, ErrorCode } from '@core/errors/errors';
-import { Prisma } from "../../generated";
 import {
+  Prisma,
   PurchaseOrderStatus,
-} from "../../generated/enums";
-
-// Define enum values since Prisma is not generating them
-const PurchaseRequisitionStatus = {
-  DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED',
-  CANCELLED: 'CANCELLED',
-  CONVERTED: 'CONVERTED'
-} as const;
-
-type PurchaseRequisitionStatus = (typeof PurchaseRequisitionStatus)[keyof typeof PurchaseRequisitionStatus];
+  PurchaseRequisitionStatus,
+} from "../../generated";
 
 // ============================================================================
 // APPROVAL THRESHOLDS (KSH) — mirrors purchasing.service.ts's PO thresholds.
@@ -272,7 +261,7 @@ export class PurchaseRequisitionService {
    * PurchasingService.listPurchaseOrders.
    */
   async listRequisitions(query: {
-    status?: string;
+    status?: PurchaseRequisitionStatus;
     branchId?: string;
     departmentId?: string;
     skip?: number;
@@ -338,7 +327,7 @@ export class PurchaseRequisitionService {
    */
   async updateStatus(
     id: string,
-    status: string,
+    status: PurchaseRequisitionStatus,
     userId: string,
     userPermissions: string[] = [],
     rejectionReason?: string,

@@ -41,7 +41,7 @@ export class RequisitionController {
   ) => {
     try {
       const requisition = await this.service.updateRequisition(
-        req.params.id,
+        req.params.id as string,
         req.body,
       );
       res.status(200).json({ success: true, data: requisition });
@@ -52,7 +52,9 @@ export class RequisitionController {
 
   getRequisition = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const requisition = await this.service.getRequisition(req.params.id);
+      const requisition = await this.service.getRequisition(
+        req.params.id as string,
+      );
       res.status(200).json({ success: true, data: requisition });
     } catch (error) {
       next(error);
@@ -91,7 +93,7 @@ export class RequisitionController {
       const { status, rejectionReason } = req.body;
 
       const requisition = await this.service.updateStatus(
-        req.params.id,
+        req.params.id as string,
         status,
         userId,
         userPermissions,
@@ -111,7 +113,7 @@ export class RequisitionController {
     try {
       const userId = (req as any).user?.userId;
       const po = await this.service.convertToPurchaseOrder(
-        req.params.id,
+        req.params.id as string,
         userId,
         req.body,
       );

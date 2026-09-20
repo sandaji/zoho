@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { SalesService } from './sales.service';
 import { AppError, ErrorCode } from '@core/errors/errors';
-import { prisma } from '@core/database/prisma';
+import { prisma } from '@core/database/db';
 
 const salesService = new SalesService(prisma);
 

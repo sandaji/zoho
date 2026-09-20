@@ -1,7 +1,6 @@
 // backend/src/modules/sequences/sequence.service.ts
 import { prisma } from '@core/database/db';
-import { SalesDocumentType } from "../../generated/enums.js";
-import { Prisma } from "../../generated/index.js";
+import { Prisma, SalesDocumentType } from "../../generated/index.js";
 
 const DOCUMENT_PREFIX_MAP: Record<SalesDocumentType, string> = {
   DRAFT: "DRF",

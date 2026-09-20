@@ -140,18 +140,30 @@ export class AdminController {
 
   async listUsers(req: Request, res: Response, next: NextFunction) {
     try {
-      const { role, branchId } = req.query;
+      const { role, branchId, includeDrivers } = req.query;
       const roleStr = Array.isArray(role)
         ? (role[0] as string)
         : (role as string | undefined);
       const branchIdStr = Array.isArray(branchId)
         ? (branchId[0] as string)
         : (branchId as string | undefined);
+      // ?includeDrivers=true → also return employees whose role is "driver" even
+      // if they have no system login. Used by the transfer dispatch dialog:
+      // a driver is assigned to a dispatch, he doesn't need to sign in.
+      const includeDriversFlag = includeDrivers === "true";
 
       const users = await prisma.user.findMany({
         where: {
           isActive: true,
-          hasSystemAccess: true, // Only return system users
+          // Only system users by default
+          ...(includeDriversFlag
+            ? {
+                OR: [
+                  { hasSystemAccess: true },
+                  { role: { equals: "driver", mode: "insensitive" as const } },
+                ],
+              }
+            : { hasSystemAccess: true }),
           ...(roleStr ? { role: roleStr } : {}),
           ...(branchIdStr ? { branchId: branchIdStr } : {}),
         },
@@ -240,7 +252,8 @@ export class AdminController {
         where: { id },
         data: {
           hasSystemAccess: true,
-          password: passwordHash,
+          // Prisma field is passwordHash (mapped to the "password" column)
+          passwordHash,
           role,
         },
         select: {

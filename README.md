@@ -1,4 +1,4 @@
-# Zoho ERP
+# swiftpos ERP
 
 A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, TypeScript, and PostgreSQL.
 
@@ -6,35 +6,39 @@ A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, Ty
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL 15+
 - npm 9+
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
-   git clone https://github.com/sandaji/zoho.git
-   cd zoho
+   git clone https://github.com/sandaji/swiftpos.git
+   cd swiftpos
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm run install:all
    ```
 
 3. **Set up environment variables**
+
    ```bash
    # Backend
    cp backend/.env.example backend/.env
    # Edit backend/.env with your database credentials
-   
+
    # Frontend
    cp frontend/.env.local.example frontend/.env.local
    # Edit frontend/.env.local if needed
    ```
 
 4. **Set up the database**
+
    ```bash
    npm run db:generate
    npm run db:migrate
@@ -42,6 +46,7 @@ A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, Ty
    ```
 
 5. **Start development servers**
+
    ```bash
    npm run dev
    ```
@@ -53,11 +58,13 @@ A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, Ty
 ### Using Docker Compose
 
 1. **Start all services**
+
    ```bash
    docker-compose -f docker-compose.dev.yml up -d
    ```
 
 2. **Stop all services**
+
    ```bash
    docker-compose -f docker-compose.dev.yml down
    ```
@@ -77,7 +84,7 @@ A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, Ty
 ## 📁 Project Structure
 
 ```
-zoho/
+swiftpos/
 ├── frontend/          # Next.js frontend application
 │   ├── components/    # React components
 │   ├── app/          # Next.js app router pages
@@ -96,21 +103,25 @@ zoho/
 ## 🧪 Testing
 
 ### Backend Tests
+
 ```bash
 npm run test:backend
 ```
 
 ### Frontend Tests
+
 ```bash
 npm run test:frontend
 ```
 
 ### All Tests
+
 ```bash
 npm run test
 ```
 
 ### Test Coverage
+
 ```bash
 # Backend
 cd backend && npm run test -- --coverage
@@ -122,6 +133,7 @@ cd frontend && npm run test -- --coverage
 ## 🔧 Available Scripts
 
 ### Root Level
+
 - `npm run dev` - Start both frontend and backend in development
 - `npm run build` - Build both frontend and backend
 - `npm run test` - Run all tests
@@ -129,6 +141,7 @@ cd frontend && npm run test -- --coverage
 - `npm run type-check` - Type check all code
 
 ### Backend
+
 - `npm run dev:backend` - Start backend development server
 - `npm run build:backend` - Build backend
 - `npm run db:generate` - Generate Prisma client
@@ -137,12 +150,14 @@ cd frontend && npm run test -- --coverage
 - `npm run db:studio` - Open Prisma Studio
 
 ### Frontend
+
 - `npm run dev:frontend` - Start frontend development server
 - `npm run build:frontend` - Build frontend
 
 ## 📝 Environment Variables
 
 ### Backend (.env)
+
 - `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - JWT signing secret (min 32 characters)
 - `JWT_REFRESH_SECRET` - JWT refresh token secret
@@ -151,6 +166,7 @@ cd frontend && npm run test -- --coverage
 - `CORS_ORIGIN` - Allowed CORS origin
 
 ### Frontend (.env.local)
+
 - `NEXT_PUBLIC_API_URL` - Backend API URL
 - `NEXT_PUBLIC_APP_URL` - Frontend URL
 - `NEXT_PUBLIC_API_BASE_URL` - API base URL
@@ -166,11 +182,13 @@ cd frontend && npm run test -- --coverage
 ## 🚀 Deployment
 
 ### Manual Deployment
+
 1. Build the application: `npm run build`
 2. Set production environment variables
 3. Start the services: `npm run start`
 
 ### Docker Deployment
+
 1. Build images: `docker-compose build`
 2. Start services: `docker-compose up -d`
 

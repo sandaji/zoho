@@ -62,8 +62,10 @@ export function SettingsDialog({ isOpen, onOpenChange }: SettingsDialogProps) {
           <Separator />
           <div className="space-y-2">
             <Label>About</Label>
-            <p className="text-sm text-muted-foreground">Jimi ERP v{APP_VERSION}</p>
-            <p className="text-sm text-muted-foreground">© 2024 Jimi ERP. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">SwiftPos ERP v{APP_VERSION}</p>
+            <p className="text-sm text-muted-foreground">
+              © 2024 SwiftPos ERP. All rights reserved.
+            </p>
           </div>
         </div>
         <DialogFooter>

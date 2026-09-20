@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   // App Configuration
-  NEXT_PUBLIC_APP_NAME: z.string().default("Zoho ERP"),
+  NEXT_PUBLIC_APP_NAME: z.string().default("swiftpos ERP"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
   NEXT_PUBLIC_API_URL: z.string().url().default("http://localhost:5000"),
   NEXT_PUBLIC_API_VERSION: z.string().default("v1"),
@@ -10,7 +10,7 @@ const envSchema = z.object({
   // API Configuration
   NEXT_PUBLIC_API_BASE_URL: z.string().url().default("http://localhost:5000/v1"),
   NEXT_PUBLIC_AUTH_TOKEN_KEY: z.string().default("auth_token"),
-  NEXT_PUBLIC_REFRESH_TOKEN_KEY: z.string().default("zoho-erp-refresh-token"),
+  NEXT_PUBLIC_REFRESH_TOKEN_KEY: z.string().default("swiftpos-erp-refresh-token"),
 
   // Features
   NEXT_PUBLIC_ENABLE_ANALYTICS: z
@@ -58,11 +58,11 @@ const envSchema = z.object({
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
 
   // Company defaults (shown on receipts/PDFs — branch DB data takes priority)
-  NEXT_PUBLIC_COMPANY_NAME: z.string().default('Zoho Corporation Ltd'),
-  NEXT_PUBLIC_COMPANY_ADDRESS: z.string().default('Enterprise Road 32, Nairobi, Kenya'),
-  NEXT_PUBLIC_COMPANY_PHONE: z.string().default('+254 711 611 971'),
-  NEXT_PUBLIC_COMPANY_EMAIL: z.string().default('info@zoho.co.ke'),
-  NEXT_PUBLIC_COMPANY_PIN: z.string().default('P123456789X'),
+  NEXT_PUBLIC_COMPANY_NAME: z.string().default("swiftpos Corporation Ltd"),
+  NEXT_PUBLIC_COMPANY_ADDRESS: z.string().default("Enterprise Road 32, Nairobi, Kenya"),
+  NEXT_PUBLIC_COMPANY_PHONE: z.string().default("+254 711 611 971"),
+  NEXT_PUBLIC_COMPANY_EMAIL: z.string().default("info@swiftpos.co.ke"),
+  NEXT_PUBLIC_COMPANY_PIN: z.string().default("P123456789X"),
 });
 
 export type FrontendEnvConfig = z.infer<typeof envSchema>;

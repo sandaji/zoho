@@ -80,9 +80,9 @@ function SidebarContentInternal() {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   // Preferences
-  const favorites = useStoredStringList("zoho.sidebar.favorites");
-  const recents = useStoredStringList("zoho.sidebar.recents", 8);
-  const pinnedModules = useStoredStringList("zoho.sidebar.pinned-modules");
+  const favorites = useStoredStringList("swiftpos.sidebar.favorites");
+  const recents = useStoredStringList("swiftpos.sidebar.recents", 8);
+  const pinnedModules = useStoredStringList("swiftpos.sidebar.pinned-modules");
 
   // Derived state
   const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
@@ -363,7 +363,7 @@ function SidebarContentInternal() {
         {/* Show app name when collapsed and no branch switcher */}
         {isCollapsed && !(isAdminUser && switcherBranches.length > 0) && (
           <div className="flex justify-center">
-            <span className="text-xs font-bold">Jimi</span>
+            <span className="text-xs font-bold">SwiftPos</span>
           </div>
         )}
       </SidebarHeader>
@@ -381,7 +381,9 @@ function SidebarContentInternal() {
           {!isCollapsed && (
             <>
               <span className="flex-1 text-left">Search or run a command</span>
-              <kbd className="rounded bg-sidebar-accent px-1.5 py-0.5 font-mono text-[10px] text-sidebar-foreground/80">⌘K</kbd>
+              <kbd className="rounded bg-sidebar-accent px-1.5 py-0.5 font-mono text-[10px] text-sidebar-foreground/80">
+                ⌘K
+              </kbd>
             </>
           )}
         </SidebarMenuButton>
@@ -641,7 +643,9 @@ function SidebarContentInternal() {
                     >
                       {roleLabel}
                     </Badge>
-                    <span className="truncate text-[10px] text-sidebar-foreground/60">{branchName}</span>
+                    <span className="truncate text-[10px] text-sidebar-foreground/60">
+                      {branchName}
+                    </span>
                   </div>
                 </div>
               </SidebarMenuButton>
@@ -725,7 +729,7 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-y-auto">
         <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-background px-4 lg:hidden">
           <SidebarTrigger />
-          <span className="ml-2 font-semibold">Jimi ERP</span>
+          <span className="ml-2 font-semibold">SwiftPos ERP</span>
         </div>
         {children}
       </main>

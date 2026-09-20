@@ -129,7 +129,12 @@ function buildEmployeeColumns(
             <Button variant="destructive" size="sm" onClick={() => onDelete(employee)}>
               <Trash2 className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="sm" onClick={() => onHistory(employee)} className="gap-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onHistory(employee)}
+              className="gap-1"
+            >
               <History className="w-4 h-4" />
               History
             </Button>
@@ -374,7 +379,11 @@ export default function EmployeeManagement() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowDepartmentsDialog(true)} className="gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setShowDepartmentsDialog(true)}
+            className="gap-2"
+          >
             <Settings className="w-4 h-4" />
             Departments
           </Button>
@@ -472,7 +481,7 @@ export default function EmployeeManagement() {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="employee@zoho.com"
+                placeholder="employee@swiftpos.com"
                 disabled={isEditing}
                 className="mt-1"
               />
@@ -498,11 +507,8 @@ export default function EmployeeManagement() {
               />
             </div>
 
-
             <div>
-              <label className="text-sm font-medium">
-                Department {!isEditing && "*"}
-              </label>
+              <label className="text-sm font-medium">Department {!isEditing && "*"}</label>
               <select
                 value={formData.departmentId || ""}
                 onChange={(e) =>
@@ -512,15 +518,18 @@ export default function EmployeeManagement() {
                 className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
               >
                 <option value="">-- Select Department --</option>
-                {departments.filter((d) => d.isActive).map((department) => (
-                  <option key={department.id} value={department.id}>
-                    {department.name} ({department.prefix}) — next: {department.nextCode}
-                  </option>
-                ))}
+                {departments
+                  .filter((d) => d.isActive)
+                  .map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.name} ({department.prefix}) — next: {department.nextCode}
+                    </option>
+                  ))}
               </select>
               {isEditing && selectedEmployee?.employeeCode && (
                 <p className="text-xs text-muted-foreground mt-1">
-                  Code {selectedEmployee.employeeCode} already assigned — department can't be changed here.
+                  Code {selectedEmployee.employeeCode} already assigned — department can't be
+                  changed here.
                 </p>
               )}
               {departments.length === 0 && (
@@ -710,9 +719,9 @@ export default function EmployeeManagement() {
 
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Each department has its own 2-letter code prefix. New staff hired
-              into a department get the next number in that department's own
-              sequence, e.g. Junior Staff ("JS") → JS001, JS002...
+              Each department has its own 2-letter code prefix. New staff hired into a department
+              get the next number in that department's own sequence, e.g. Junior Staff ("JS") →
+              JS001, JS002...
             </p>
 
             <div className="border rounded-lg divide-y max-h-[260px] overflow-y-auto">
@@ -768,7 +777,8 @@ export default function EmployeeManagement() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Prefix must be exactly 2 letters and unique across departments (e.g. "JS", "SS", "SA").
+                Prefix must be exactly 2 letters and unique across departments (e.g. "JS", "SS",
+                "SA").
               </p>
               <div className="flex justify-end">
                 <Button onClick={handleCreateDepartment} disabled={isSavingDepartment}>

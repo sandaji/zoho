@@ -277,7 +277,7 @@ class FinanceController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const { id } = req.params;
+      const id = req.params.id as string;
       const { name, category, is_active } = req.body;
       const account = await prisma.chartOfAccount.update({
         where: { id },

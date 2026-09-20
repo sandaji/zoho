@@ -5,7 +5,7 @@ import {
   SalesDocumentStatus,
   PaymentStatus,
   PaymentMethod,
-} from "../../../generated/enums.js";
+} from "../../../generated/index.js";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { BankTreasuryService } from "../../finance/services/bank-treasury.service";

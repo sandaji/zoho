@@ -370,8 +370,14 @@ export const fetchVendors = async (token: string): Promise<any[]> => {
   return data.vendors || [];
 };
 
-export const fetchUsers = async (token: string): Promise<User[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/users`, {
+export const fetchUsers = async (
+  token: string,
+  options: { includeDrivers?: boolean } = {},
+): Promise<User[]> => {
+  // includeDrivers: also return employees with the "driver" role who have no
+  // system login (needed by the transfer dispatch dialog's driver picker).
+  const query = options.includeDrivers ? "?includeDrivers=true" : "";
+  const response = await fetch(`${API_BASE_URL}/v1/admin/users${query}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {

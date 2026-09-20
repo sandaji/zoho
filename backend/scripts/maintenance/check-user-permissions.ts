@@ -6,16 +6,25 @@ async function checkUserRole() {
 
   try {
     const user = await prisma.user.findUnique({
-      where: { email: "maldrine@zoho.co.ke" },
+      where: { email: "maldrine@swiftpos.co.ke" },
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
-        permissions: {
+        roles: {
           select: {
-            permission: {
-              select: { code: true, name: true },
+            role: {
+              select: {
+                code: true,
+                permissions: {
+                  select: {
+                    permission: {
+                      select: { code: true, name: true },
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -32,10 +41,20 @@ async function checkUserRole() {
     console.log(`   Email: ${user.email}`);
     console.log(`   Role: ${user.role || "None"}\n`);
 
-    if (user.permissions && user.permissions.length > 0) {
-      console.log(`📋 Current Permissions (${user.permissions.length}):`);
-      user.permissions.forEach((p) => {
-        console.log(`   • ${p.permission.code}: ${p.permission.name}`);
+    // Permissions live on roles (User -> RoleAssignment -> Role -> RolePermission
+    // -> Permission); flatten and de-duplicate across all assigned roles.
+    const permissions = Array.from(
+      new Map(
+        user.roles
+          .flatMap((ra) => ra.role.permissions)
+          .map((rp) => [rp.permission.code, rp.permission] as const),
+      ).values(),
+    );
+
+    if (permissions.length > 0) {
+      console.log(`📋 Current Permissions (${permissions.length}):`);
+      permissions.forEach((p) => {
+        console.log(`   • ${p.code}: ${p.name}`);
       });
     } else {
       console.log("⚠️  No permissions assigned");

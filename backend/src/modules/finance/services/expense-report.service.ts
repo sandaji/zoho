@@ -1,21 +1,6 @@
 import { prisma } from '@core/database/db';
 import { AppError, ErrorCode } from '@core/errors/errors';
-import { Prisma } from "../../../generated";
-import {
-  TransactionType,
-} from "../../../generated/enums";
-
-// Define enum values since Prisma is not generating them
-const ExpenseReportStatus = {
-  DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED',
-  POSTED: 'POSTED',
-  CANCELLED: 'CANCELLED'
-} as const;
-
-type ExpenseReportStatus = (typeof ExpenseReportStatus)[keyof typeof ExpenseReportStatus];
+import { Prisma, TransactionType, ExpenseReportStatus } from "../../../generated";
 
 // ============================================================================
 // APPROVAL THRESHOLDS (KSH) — same three-tier structure as
@@ -276,7 +261,7 @@ export class ExpenseReportService {
    * the caller to only ask for their own.
    */
   async listExpenseReports(query: {
-    status?: string;
+    status?: ExpenseReportStatus;
     departmentId?: string;
     skip?: number;
     take?: number;
@@ -326,7 +311,7 @@ export class ExpenseReportService {
    */
   async updateStatus(
     id: string,
-    status: string,
+    status: ExpenseReportStatus,
     userId: string,
     userPermissions: string[] = [],
     rejectionReason?: string,

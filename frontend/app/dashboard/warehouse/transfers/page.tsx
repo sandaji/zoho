@@ -102,7 +102,8 @@ const verifyItemColumns = verifyItemColumnHelper.columns([
     cell: (ctx) => <div className="text-right text-slate-500">{ctx.getValue()}</div>,
     sortFn: "alphanumeric",
   }),
-  verifyItemColumnHelper.accessor((row) => row.picked_qty ?? 0, {
+  // Prisma returns this field as pickedQty (model field; column is picked_qty).
+  verifyItemColumnHelper.accessor((row) => row.pickedQty ?? 0, {
     id: "picked",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Picked" className="w-full justify-end" />
@@ -217,7 +218,7 @@ export default function TransfersPage() {
         warehouseService.getTransfers(params, token!),
         warehouseService.getWarehouses(token!),
         warehouseService.getProducts(token!),
-        fetchUsers(token!).catch(() => []),
+        fetchUsers(token!, { includeDrivers: true }).catch(() => []),
         fetchTrucks(token!).catch(() => []),
         warehouseService.getTransferAnalytics(token!).catch(() => null),
       ]);
@@ -785,7 +786,7 @@ function CompletePickingModal({isOpen, onClose, transfer, onSuccess}: any) {
                   productId: i.productId,
                   productName: i.product?.name || i.productId,
                   requested_qty: i.requested_qty,
-                  picked_qty: i.picked_qty ?? i.requested_qty,
+                  picked_qty: i.pickedQty ?? i.requested_qty,
                 })),
                 notes: '',
             })
@@ -1167,7 +1168,7 @@ function ReceiveModal({isOpen, onClose, transfer, onSuccess}: any) {
      useEffect(() => {
         if (transfer) {
             setForm({
-                items: transfer.items.map((i: any) => ({ productId: i.productId, received_qty: i.dispatched_qty, damaged_qty: 0 })),
+                items: transfer.items.map((i: any) => ({ productId: i.productId, productName: i.product?.name || i.productId, sku: i.product?.sku, dispatched_qty: i.dispatched_qty, received_qty: i.dispatched_qty, damaged_qty: 0 })),
                 notes: '',
             })
         }
@@ -1183,7 +1184,10 @@ function ReceiveModal({isOpen, onClose, transfer, onSuccess}: any) {
     const handleSubmit = async () => {
         try {
             setSubmitting(true);
-            await warehouseService.receiveTransfer(transfer.id, form, token!);
+            await warehouseService.receiveTransfer(transfer.id, {
+                items: form.items.map((i: any) => ({ productId: i.productId, received_qty: i.received_qty, damaged_qty: i.damaged_qty })),
+                notes: form.notes,
+            }, token!);
             toast.success("Transfer received");
             onSuccess();
             onClose();
@@ -1198,10 +1202,18 @@ function ReceiveModal({isOpen, onClose, transfer, onSuccess}: any) {
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="max-w-2xl">
                 <DialogHeader><DialogTitle>Receive Transfer {transfer.documentId}</DialogTitle></DialogHeader>
+                <div className="grid grid-cols-3 gap-2 px-1 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    <span>Product</span>
+                    <span>Received</span>
+                    <span>Damaged</span>
+                </div>
                 <div>
                      {form.items.map((item: any) => (
                          <div key={item.productId} className="grid grid-cols-3 gap-2 items-center">
-                            <p>{item.productId}</p>
+                            <div>
+                                <p className="text-sm font-medium text-slate-900">{item.productName}</p>
+                                <p className="text-xs text-slate-500">{item.sku ? `${item.sku} · ` : ""}Dispatched: {item.dispatched_qty ?? "—"}</p>
+                            </div>
                             <Input type="number" value={item.received_qty} onChange={e => handleItemChange(item.productId, 'received_qty', +e.target.value)} />
                              <Input type="number" value={item.damaged_qty} onChange={e => handleItemChange(item.productId, 'damaged_qty', +e.target.value)} />
                          </div>

@@ -12,7 +12,7 @@ import { TokenPayload } from "../../../types";
 import { logger } from "@core/utils/logger";
 import { PermissionService } from "./permission.service";
 
-const DEFAULT_ADMIN_EMAIL = "admin@zoho.co.ke";
+const DEFAULT_ADMIN_EMAIL = "admin@swiftpos.co.ke";
 const DEFAULT_ADMIN_PASSWORD = "password123";
 
 export class AuthService {

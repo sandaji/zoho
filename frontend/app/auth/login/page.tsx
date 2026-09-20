@@ -60,7 +60,8 @@ export default function LoginPage() {
 
       // Redirect based on role
       // Prefer roles array if available, fall back to single role
-      const userRoles = user.roles && user.roles.length > 0 ? user.roles : (user.role ? [user.role] : []);
+      const userRoles =
+        user.roles && user.roles.length > 0 ? user.roles : user.role ? [user.role] : [];
       const redirectPath = getRoleDashboardRoute(userRoles);
       router.push(redirectPath);
     } catch (err) {
@@ -77,7 +78,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-            <p className="text-slate-600">Sign in to your Zoho ERP account</p>
+            <p className="text-slate-600">Sign in to your swiftpos ERP account</p>
           </div>
 
           {error && (

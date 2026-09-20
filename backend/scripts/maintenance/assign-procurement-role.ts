@@ -7,12 +7,12 @@ async function assignProcurementRole() {
   try {
     // Find the user
     const user = await prisma.user.findUnique({
-      where: { email: "maldrine@zoho.co.ke" },
+      where: { email: "maldrine@swiftpos.co.ke" },
       select: { id: true, name: true, email: true, role: true },
     });
 
     if (!user) {
-      console.log("❌ User not found with email: maldrine@zoho.co.ke");
+      console.log("❌ User not found with email: maldrine@swiftpos.co.ke");
       process.exit(1);
     }
 

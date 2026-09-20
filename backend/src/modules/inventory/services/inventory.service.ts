@@ -1258,7 +1258,9 @@ export class InventoryService {
           }
           await tx.transferItem.update({
             where: { id: originalItem.id },
-            data: { picked_qty: item.picked_qty },
+            // DTO field is picked_qty (API contract); the Prisma model field is
+            // pickedQty (mapped to the picked_qty column).
+            data: { pickedQty: item.picked_qty },
           });
         }
 

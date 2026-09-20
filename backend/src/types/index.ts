@@ -1,5 +1,5 @@
 /**
- * TypeScript type definitions and interfaces for the Zoho ERP system
+ * TypeScript type definitions and interfaces for the swiftpos ERP system
  * Extends Prisma-generated types with custom interfaces
  *
  * Generated from: backend/prisma/schema.prisma
@@ -39,7 +39,7 @@ import {
   ApprovalType,
   ApprovalStatus,
   PurchaseOrderStatus,
-} from "../generated/enums.js";
+} from "../generated/index.js";
 
 // ============================================================================
 // USER ROLE TYPE
@@ -411,6 +411,7 @@ export const DELIVERY_STATUS_LABELS: Record<DeliveryStatus, string> = {
   delivered: "Delivered",
   failed: "Failed",
   rescheduled: "Rescheduled",
+  returned_to_base: "Returned to Base",
 };
 
 export const CASHIER_SESSION_STATUS_LABELS: Record<

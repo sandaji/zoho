@@ -94,7 +94,9 @@ export class BankTreasuryService {
       if (!amount || amount <= 0) return null;
 
       const account = await this.resolveAccount(paymentMethod, tx);
-      const isIncome = type === "income" || type === TransactionType.income;
+      // TransactionType.income === "income" at runtime, so one check covers both
+      // the plain-string and enum forms of the input.
+      const isIncome = type === TransactionType.income;
       const transactionType: TransactionType = isIncome
         ? TransactionType.income
         : TransactionType.expense;

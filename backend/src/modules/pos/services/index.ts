@@ -13,6 +13,7 @@ import {
   ProductSearchDTO,
   ApproveDiscountDTO,
 } from "../dtos";
+import type { ReceiptDTO as DocumentReceiptDTO } from "@shared/document.service";
 import { AppError, ErrorCode, validationError } from "@core/errors/errors";
 
 export class PosService {
@@ -489,10 +490,14 @@ export class PosService {
   /**
    * Generate receipt
    * @deprecated Use DocumentService.generateReceipt (lib/document.service.ts).
+   *
+   * Returns DocumentService's ReceiptDTO — the shape it actually produces.
+   * (This used to cast to the POS module's ReceiptDTO, which describes a
+   * different, fuller SalesResponseDTO-based shape that was never returned.)
    */
-  async generateReceipt(saleId: string): Promise<ReceiptDTO> {
+  async generateReceipt(saleId: string): Promise<DocumentReceiptDTO> {
     const { DocumentService } = await import("@shared/document.service");
-    return DocumentService.generateReceipt(saleId) as Promise<ReceiptDTO>;
+    return DocumentService.generateReceipt(saleId);
   }
 
   /**

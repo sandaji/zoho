@@ -6,14 +6,20 @@ import { eventBus } from "@core/events/events";
 import { SALES_EVENTS } from "@core/events/domain-events";
 import { salesRepository } from "../../repositories/sales.repository";
 import { sum, multiply, vat } from "../../utils/money";
+import { prisma as defaultPrisma } from "@core/database/db";
+
+// The app's client is the extended/wrapped one from db.ts (branch isolation +
+// audit middleware), whose type is not assignable to the bare generated
+// PrismaClient.
+type SalesDbClient = typeof defaultPrisma;
 
 /**
  * Sales Service - Handles sales order and dispatch operations
  */
 export class SalesService {
-  private prisma: PrismaClient;
+  private prisma: SalesDbClient;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: SalesDbClient = defaultPrisma) {
     this.prisma = prisma;
   }
 

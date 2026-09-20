@@ -38,9 +38,7 @@ export function AdminSidebar({ userName }: AdminSidebarProps) {
           </div>
           <div>
             <p className="text-sm font-bold leading-none text-white">Super Admin</p>
-            {userName && (
-              <p className="mt-0.5 text-[11px] text-emerald-300">{userName}</p>
-            )}
+            {userName && <p className="mt-0.5 text-[11px] text-emerald-300">{userName}</p>}
           </div>
         </div>
       </div>
@@ -67,7 +65,9 @@ export function AdminSidebar({ userName }: AdminSidebarProps) {
                         : "text-emerald-200 hover:bg-emerald-800/50 hover:text-white"
                     )}
                   >
-                    <Icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-emerald-400")} />
+                    <Icon
+                      className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-emerald-400")}
+                    />
                     <span className="flex-1 text-left">{label}</span>
                     {active && <ChevronRight className="h-3.5 w-3.5 opacity-70" />}
                   </Link>
@@ -80,7 +80,7 @@ export function AdminSidebar({ userName }: AdminSidebarProps) {
 
       {/* Footer */}
       <div className="border-t border-emerald-800/30 px-5 py-4">
-        <p className="text-[10px] text-emerald-500">Zoho ERP · Admin Console</p>
+        <p className="text-[10px] text-emerald-500">swiftpos ERP · Admin Console</p>
       </div>
     </aside>
   );

@@ -17,8 +17,7 @@
  */
 
 import { prisma } from "../core/database/db";
-import { SalesDocumentType } from "../generated/enums.js";
-import { Prisma } from "../generated/index.js";
+import { Prisma, SalesDocumentType } from "../generated/index.js";
 import { AppError, ErrorCode } from "../core/errors/errors";
 import { logger } from "../core/utils/logger";
 
@@ -28,6 +27,8 @@ const DOCUMENT_TYPE_PREFIX: Record<SalesDocumentType, string> = {
   DRAFT: "DRF",
   QUOTE: "QTN",
   INVOICE: "INV",
+  OPEN_INVOICE: "INV",
+  CLOSED_INVOICE: "INV",
   CREDIT_NOTE: "CRN",
 };
 

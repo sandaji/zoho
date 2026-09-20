@@ -12,7 +12,7 @@
 
 import { prisma } from "@core/database/db";
 import { AppError, ErrorCode } from "@core/errors/errors";
-import { MovementType, TransferStatus } from "../../generated/enums.js";
+import { MovementType, TransferStatus } from "../../generated/index.js";
 import { synchronizeBranchInventoryForWarehouse } from "@shared/inventory-sync";
 import { InventoryService } from "../inventory/services/inventory.service";
 import type {

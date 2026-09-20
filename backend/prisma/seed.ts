@@ -422,6 +422,40 @@ async function main() {
     },
   });
 
+  // NEW ROLES
+  const hrManagerRole = await prisma.role.create({
+    data: {
+      code: "hr_manager",
+      name: "HR Manager",
+      isSystem: true,
+      description: "Human Resources access",
+    },
+  });
+  const financeControllerRole = await prisma.role.create({
+    data: {
+      code: "finance_controller",
+      name: "Finance Controller",
+      isSystem: true,
+      description: "Financial operations access",
+    },
+  });
+  const salesRepRole = await prisma.role.create({
+    data: {
+      code: "sales_rep",
+      name: "Sales Representative",
+      isSystem: true,
+      description: "Sales pipeline and orders",
+    },
+  });
+  const procurementOfficerRole = await prisma.role.create({
+    data: {
+      code: "procurement_officer",
+      name: "Procurement Officer",
+      isSystem: true,
+      description: "Purchasing and vendor management",
+    },
+  });
+
   console.log("🔗 Assigning role permissions...");
   // Super Admin: all permissions
   for (const permId of permissionMap.values()) {
@@ -434,7 +468,7 @@ async function main() {
     });
   }
 
-  // Branch Manager - manually assign permissions (bypassing blueprint sync due to Prisma Cloud transaction issues)
+  // Branch Manager
   const branchManagerPerms = [
     "hr.employee.view",
     "hr.payroll.view",
@@ -454,7 +488,11 @@ async function main() {
     const id = permissionMap.get(code);
     if (id)
       await prisma.rolePermission.create({
-        data: { roleId: branchManagerRole.id, permissionId: id, scope: "BRANCH" },
+        data: {
+          roleId: branchManagerRole.id,
+          permissionId: id,
+          scope: "BRANCH",
+        },
       });
   }
 
@@ -469,7 +507,12 @@ async function main() {
   }
 
   // Warehouse
-  const warehousePerms = ["sales.order.view_all"];
+  const warehousePerms = [
+    "sales.order.view_all",
+    "inventory.stock.view",
+    "inventory.stock.adjust",
+    "inventory.product.view",
+  ];
   for (const code of warehousePerms) {
     const id = permissionMap.get(code);
     if (id)
@@ -478,13 +521,91 @@ async function main() {
       });
   }
 
+  // HR Manager
+  const hrManagerPerms = [
+    "hr.employee.view",
+    "hr.employee.manage",
+    "hr.payroll.view",
+    "hr.payroll.manage",
+    "hr.recruitment.view",
+    "hr.recruitment.manage",
+  ];
+  for (const code of hrManagerPerms) {
+    const id = permissionMap.get(code);
+    if (id)
+      await prisma.rolePermission.create({
+        data: { roleId: hrManagerRole.id, permissionId: id, scope: "GLOBAL" },
+      });
+  }
+
+  // Finance Controller
+  const financeControllerPerms = [
+    "finance.invoice.create",
+    "finance.invoice.view",
+    "finance.invoice.approve",
+    "finance.payment.create",
+    "finance.payment.view",
+    "finance.reports.view",
+    "finance.gl.view",
+    "finance.gl.manage",
+    "sales.order.view_all",
+  ];
+  for (const code of financeControllerPerms) {
+    const id = permissionMap.get(code);
+    if (id)
+      await prisma.rolePermission.create({
+        data: {
+          roleId: financeControllerRole.id,
+          permissionId: id,
+          scope: "GLOBAL",
+        },
+      });
+  }
+
+  // Sales Representative
+  const salesRepPerms = [
+    "sales.order.create",
+    "sales.order.view",
+    "sales.customer.view",
+    "inventory.product.view",
+    "inventory.stock.view",
+  ];
+  for (const code of salesRepPerms) {
+    const id = permissionMap.get(code);
+    if (id)
+      await prisma.rolePermission.create({
+        data: { roleId: salesRepRole.id, permissionId: id, scope: "OWN" },
+      });
+  }
+
+  // Procurement Officer
+  const procurementOfficerPerms = [
+    "procurement.vendor.view",
+    "procurement.vendor.manage",
+    "procurement.order.create",
+    "procurement.order.view",
+    "inventory.product.view",
+    "inventory.stock.view",
+  ];
+  for (const code of procurementOfficerPerms) {
+    const id = permissionMap.get(code);
+    if (id)
+      await prisma.rolePermission.create({
+        data: {
+          roleId: procurementOfficerRole.id,
+          permissionId: id,
+          scope: "GLOBAL",
+        },
+      });
+  }
+
   console.log("👤 Creating users...");
-  const hashedPassword = await bcrypt.hash("password123", 10);
+  const hashedPassword = await bcrypt.hash("123456", 10);
 
   const admin = await prisma.user.create({
     data: {
-      email: "admin@zoho.co.ke",
-      name: "Admin User",
+      email: "admin@swiftpos.com",
+      name: "Ijamy Vincent",
       role: "admin",
       passwordHash: hashedPassword,
       branchId: mainWarehouse.id,
@@ -496,8 +617,8 @@ async function main() {
 
   const manager = await prisma.user.create({
     data: {
-      email: "manager@zoho.co.ke",
-      name: "Jane Smith",
+      email: "manager@swiftpos.com",
+      name: "SwiftPos Sandaji",
       role: "manager",
       passwordHash: hashedPassword,
       branchId: westlandsBranch.id,
@@ -509,8 +630,8 @@ async function main() {
 
   const warehouseStaff = await prisma.user.create({
     data: {
-      email: "warehouse@zoho.co.ke",
-      name: "Bob Wilson",
+      email: "max@swiftpos.com",
+      name: "maxwell Omenya",
       role: "warehouse_staff",
       passwordHash: hashedPassword,
       branchId: mainWarehouse.id,
@@ -522,7 +643,7 @@ async function main() {
 
   const cashier = await prisma.user.create({
     data: {
-      email: "cashier@zoho.co.ke",
+      email: "cashier@swiftpos.co.ke",
       name: "Alice Mideva",
       role: "cashier",
       passwordHash: hashedPassword,
@@ -535,12 +656,65 @@ async function main() {
 
   const driver = await prisma.user.create({
     data: {
-      email: "driver@zoho.co.ke",
+      email: "driver@swiftpos.co.ke",
       name: "Michael Brown",
       role: "driver",
       passwordHash: hashedPassword,
       branchId: westlandsBranch.id,
     },
+  });
+
+  // NEW USERS
+  const hrManagerUser = await prisma.user.create({
+    data: {
+      email: "hr@swiftpos.co.ke",
+      name: "Sarah Jenkins",
+      role: "hr_manager",
+      passwordHash: hashedPassword,
+      branchId: mainWarehouse.id,
+    },
+  });
+  await prisma.roleAssignment.create({
+    data: { userId: hrManagerUser.id, roleId: hrManagerRole.id },
+  });
+
+  const financeUser = await prisma.user.create({
+    data: {
+      email: "finance@swiftpos.co.ke",
+      name: "James Donovan",
+      role: "finance_controller",
+      passwordHash: hashedPassword,
+      branchId: mainWarehouse.id,
+    },
+  });
+  await prisma.roleAssignment.create({
+    data: { userId: financeUser.id, roleId: financeControllerRole.id },
+  });
+
+  const salesUser = await prisma.user.create({
+    data: {
+      email: "sales@swiftpos.co.ke",
+      name: "David Rodriguez",
+      role: "sales_rep",
+      passwordHash: hashedPassword,
+      branchId: westlandsBranch.id,
+    },
+  });
+  await prisma.roleAssignment.create({
+    data: { userId: salesUser.id, roleId: salesRepRole.id },
+  });
+
+  const procurementUser = await prisma.user.create({
+    data: {
+      email: "procurement@swiftpos.co.ke",
+      name: "Priya Patel",
+      role: "procurement_officer",
+      passwordHash: hashedPassword,
+      branchId: mainWarehouse.id,
+    },
+  });
+  await prisma.roleAssignment.create({
+    data: { userId: procurementUser.id, roleId: procurementOfficerRole.id },
   });
 
   console.log("🏭 Creating vendors...");
@@ -686,6 +860,79 @@ async function main() {
       tax_rate: 0.16,
       quantity: 58000,
       reorder_level: 500,
+    },
+    // NEW PRODUCTS
+    {
+      sku: "PHL 9W-E27",
+      barcode: "8718696482121",
+      name: "PHILIPS LED Bulb 9W",
+      description: "9W E27 Cool Daylight LED Bulb",
+      category: "LIGHTING",
+      unit_price: 450,
+      cost_price: 280,
+      tax_rate: 0.16,
+      quantity: 12000,
+      reorder_level: 1000,
+    },
+    {
+      sku: "TRK 45A-DP",
+      barcode: "1234125789111",
+      name: "TRONIC 45A DP SWITCH",
+      description: "45A Double Pole Switch for Water Heaters/Cookers",
+      category: "ACCESSORIES",
+      unit_price: 850,
+      cost_price: 520,
+      tax_rate: 0.16,
+      quantity: 3500,
+      reorder_level: 300,
+    },
+    {
+      sku: "PHL 12W-DL",
+      barcode: "8718696482122",
+      name: "PHILIPS Downlight 12W",
+      description: "12W Recessed LED Downlight 6500K",
+      category: "LIGHTING",
+      unit_price: 1100,
+      cost_price: 700,
+      tax_rate: 0.16,
+      quantity: 4200,
+      reorder_level: 400,
+    },
+    {
+      sku: "TRK EXT-5M",
+      barcode: "1234125789222",
+      name: "TRONIC Extension Cable 5M",
+      description: "4-Way Extension Reel with 5-Meter Cable",
+      category: "Extensions & Adaptors",
+      unit_price: 2100,
+      cost_price: 1250,
+      tax_rate: 0.16,
+      quantity: 850,
+      reorder_level: 150,
+    },
+    {
+      sku: "TRK JB-30",
+      barcode: "1234125789333",
+      name: "TRONIC Junction Box 30A",
+      description: "Heavy Duty 30A Junction Box 3 Terminal",
+      category: "ACCESSORIES",
+      unit_price: 180,
+      cost_price: 110,
+      tax_rate: 0.16,
+      quantity: 8000,
+      reorder_level: 1000,
+    },
+    {
+      sku: "PHL IRN-100",
+      barcode: "8718696482123",
+      name: "PHILIPS Dry Iron 1000W",
+      description: "Classic Dry Iron Box with Non-Stick Soleplate",
+      category: "APPLIANCES",
+      unit_price: 2800,
+      cost_price: 1850,
+      tax_rate: 0.16,
+      quantity: 300,
+      reorder_level: 50,
     },
   ];
 

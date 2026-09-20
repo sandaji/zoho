@@ -26,8 +26,6 @@ export interface TruckResponseDTO {
 }
 
 export interface CreateDeliveryDTO {
-  salesDocumentId?: string;
-  stockTransferId?: string;
   driverId: string;
   truckId: string;
   destination: string;

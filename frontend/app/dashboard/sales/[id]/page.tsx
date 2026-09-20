@@ -1,4 +1,4 @@
-// c:/Projects/zoho/frontend/app/dashboard/sales/[id]/page.tsx
+// c:/Projects/swiftpos/frontend/app/dashboard/sales/[id]/page.tsx
 import { SalesDocumentBuilder } from "@/components/sales/SalesDocumentBuilder";
 import { notFound } from "next/navigation";
 

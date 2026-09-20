@@ -43,7 +43,7 @@ export class BranchService {
     const skip = (page - 1) * limit;
 
     const [branches, total] = await Promise.all([
-      prisma.branches.findMany({
+      prisma.branch.findMany({
         where,
         orderBy: { name: "asc" },
         skip,
@@ -57,7 +57,7 @@ export class BranchService {
           },
         },
       }),
-      prisma.branches.count({ where }),
+      prisma.branch.count({ where }),
     ]);
 
     const data = branches.map((b) => ({
@@ -89,7 +89,7 @@ export class BranchService {
    * Get single branch with users and warehouses
    */
   async getBranch(id: string) {
-    const branch = await prisma.branches.findUnique({
+    const branch = await prisma.branch.findUnique({
       where: { id },
       include: {
         users: {
@@ -141,7 +141,7 @@ export class BranchService {
     }
 
     // Check if code already exists
-    const existingBranch = await prisma.branches.findUnique({
+    const existingBranch = await prisma.branch.findUnique({
       where: { code: dto.code },
     });
 
@@ -154,7 +154,7 @@ export class BranchService {
     }
 
     const branch = await prisma.$transaction(async (tx) => {
-      const newBranch = await tx.branches.create({
+      const newBranch = await tx.branch.create({
         data: {
           code: dto.code,
           name: dto.name,
@@ -166,7 +166,7 @@ export class BranchService {
 
       // Optional: Assign manager
       if (dto.managerId) {
-        await tx.users.update({
+        await tx.user.update({
           where: { id: dto.managerId },
           data: { branchId: newBranch.id, role: "manager" },
         });
@@ -184,14 +184,14 @@ export class BranchService {
    * Update an existing branch
    */
   async updateBranch(id: string, dto: UpdateBranchDTO) {
-    const branch = await prisma.branches.findUnique({ where: { id } });
+    const branch = await prisma.branch.findUnique({ where: { id } });
 
     if (!branch) {
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Branch not found");
     }
 
     const updatedBranch = await prisma.$transaction(async (tx) => {
-      const updated = await tx.branches.update({
+      const updated = await tx.branch.update({
         where: { id },
         data: {
           name: dto.name ?? branch.name,
@@ -204,7 +204,7 @@ export class BranchService {
 
       // Optional: Update manager
       if (dto.managerId) {
-        await tx.users.update({
+        await tx.user.update({
           where: { id: dto.managerId },
           data: { branchId: id, role: "manager" },
         });
@@ -222,7 +222,7 @@ export class BranchService {
    * Delete a branch (with dependency checks)
    */
   async deleteBranch(id: string) {
-    const branch = await prisma.branches.findUnique({
+    const branch = await prisma.branch.findUnique({
       where: { id },
       include: {
         users: { select: { id: true } },
@@ -253,7 +253,7 @@ export class BranchService {
       );
     }
 
-    await prisma.branches.delete({ where: { id } });
+    await prisma.branch.delete({ where: { id } });
 
     logger.info({ branchId: id, code: branch.code }, "Branch deleted");
   }

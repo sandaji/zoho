@@ -505,9 +505,13 @@ router.post(
 );
 
 // Legacy endpoints for backwards compatibility
+// Same guards as POST /inventory/adjust — this alias performs the same stock
+// adjustment, so it must not be reachable with just a valid login.
 router.patch(
   "/inventory/:productId/:warehouseId",
   authMiddleware,
+  requirePermission("inventory.stock.adjust"),
+  validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.updateInventory(req, res, next),
 );

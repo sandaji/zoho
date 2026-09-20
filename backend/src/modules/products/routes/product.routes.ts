@@ -77,6 +77,33 @@ router.get("/", authenticate, requirePermission('inventory.product.view'), async
   }
 });
 
+// Get all categories
+// NOTE: must be registered BEFORE router.get("/:id") below. Express matches routes
+// in registration order, so if "/:id" comes first it swallows "/categories"
+// (id = "categories") and this handler is never reached.
+router.get("/categories", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
+  try {
+    const { prisma } = await import('@core/database/db');
+
+    // Get all categories with their subcategories
+    const categories = await prisma.category.findMany({
+      include: {
+        subcategories: {
+          orderBy: { name: 'asc' }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+
+    res.json({
+      success: true,
+      data: { categories }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get product by ID
 router.get("/:id", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
   try {
@@ -162,30 +189,6 @@ router.delete("/:id", authenticate, requirePermission('inventory.product.manage'
   }
 });
 
-// Get all categories
-router.get("/categories", authenticate, requirePermission('inventory.product.view'), async (req, res, next) => {
-  try {
-    const { prisma } = await import('@core/database/db');
-    
-    // Get all categories with their subcategories
-    const categories = await prisma.category.findMany({
-      include: {
-        subcategories: {
-          orderBy: { name: 'asc' }
-        }
-      },
-      orderBy: { name: 'asc' }
-    });
-
-    res.json({
-      success: true,
-      data: { categories }
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
 // Create category
 router.post("/categories", authenticate, requirePermission('inventory.product.manage'), async (req, res, next) => {
   try {
@@ -216,12 +219,12 @@ router.delete("/categories/:id", authenticate, requirePermission('inventory.prod
     
     // Delete subcategories first
     await prisma.subcategory.deleteMany({
-      where: { categoryId: req.params.id }
+      where: { categoryId: req.params.id as string }
     });
 
     // Delete category
     await prisma.category.delete({
-      where: { id: req.params.id }
+      where: { id: req.params.id as string }
     });
 
     res.json({
@@ -238,7 +241,7 @@ router.post("/categories/:categoryId/subcategories", authenticate, requirePermis
   try {
     const { prisma } = await import('@core/database/db');
     const { name } = req.body;
-    const { categoryId } = req.params;
+    const categoryId = req.params.categoryId as string;
 
     if (!name) {
       throw new AppError(ErrorCode.BAD_REQUEST, 400, "Subcategory name is required");
@@ -266,7 +269,7 @@ router.delete("/categories/:categoryId/subcategories/:subcategoryId", authentica
     const { prisma } = await import('@core/database/db');
     
     await prisma.subcategory.delete({
-      where: { id: req.params.subcategoryId }
+      where: { id: req.params.subcategoryId as string }
     });
 
     res.json({

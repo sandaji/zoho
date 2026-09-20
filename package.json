@@ -1,22 +1,22 @@
 {
-  "name": "zoho",
+  "name": "swiftpos",
   "version": "1.0.0",
   "description": "A comprehensive Enterprise Resource Planning (ERP) system built with Next.js, TypeScript, and PostgreSQL.",
   "keywords": [
-    "zoho",
+    "swiftpos",
     "erp",
     "nextjs",
     "typescript",
     "prisma",
     "postgresql"
   ],
-  "homepage": "https://github.com/sandaji/zoho#readme",
+  "homepage": "https://github.com/sandaji/swiftpos#readme",
   "bugs": {
-    "url": "https://github.com/sandaji/zoho/issues"
+    "url": "https://github.com/sandaji/swiftpos/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sandaji/zoho.git"
+    "url": "git+https://github.com/sandaji/swiftpos.git"
   },
   "license": "ISC",
   "author": "ijamy vincent",
@@ -61,7 +61,7 @@
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
   },
   "devDependencies": {
-    "@next/swc-win32-x64-msvc": "16.3.3",
+    "@next/swc-win32-x64-msvc": "16.3.5",
     "concurrently": "^10.0.5"
   },
   "engines": {

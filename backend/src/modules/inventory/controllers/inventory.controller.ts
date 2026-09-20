@@ -692,26 +692,29 @@ export class InventoryController {
 
   /**
    * Alias for legacy PATCH /inventory/:productId/:warehouseId
+   *
+   * Same contract as POST /inventory/adjust, with productId/warehouseId
+   * taken from the URL (URL wins over any ids in the body). Delegates to
+   * adjustInventory so it gets the same validation and response shape.
+   *
+   * This alias previously called the service directly with only
+   * { productId, warehouseId, quantity, reason }. Once adjustInventory
+   * started requiring `adjustmentType`, that call fell into the service's
+   * "decrease" branch for every request (and skipped controller-side
+   * validation), so a legacy PATCH always removed stock. Clients must now
+   * send adjustmentType ("increase" | "decrease") and a valid reason.
    */
   async updateInventory(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    try {
-      const productId = req.params.productId as string;
-      const warehouseId = req.params.warehouseId as string;
-      const quantity = Number(req.body.quantity);
-      const reason = req.body.reason || "Stock update";
-      const userId = req.user?.userId;
-      const result = await this.service.adjustInventory(
-        { productId, warehouseId, quantity, reason },
-        userId,
-      );
-      res.json({ success: true, data: result });
-    } catch (error) {
-      next(error);
-    }
+    req.body = {
+      ...req.body,
+      productId: req.params.productId as string,
+      warehouseId: req.params.warehouseId as string,
+    };
+    return this.adjustInventory(req, res, next);
   }
 
   /**
