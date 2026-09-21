@@ -50,7 +50,7 @@ export const THEME_COLORS = {
 } as const;
 
 export const CHART_PALETTE = [
-  "#10b981", // Emerald - Revenue/Positive
+  "#047857", // Emerald - Revenue/Positive
   "#3b82f6", // Blue - Primary/Sales
   "#f59e0b", // Amber - Pending/Warning
   "#ef4444", // Red - Expense/Negative
