@@ -36,35 +36,46 @@ export class NotificationService {
   }
 
   /**
-   * Create notifications for all users with a specific role code or permission
+   * Create notifications for all users with a specific role code or permission.
+   *
+   * Recipients are looked up through RoleAssignment rather than User on purpose:
+   * User is branch-isolated, so a query started from a branch user's request
+   * could only ever find users in THAT branch and would silently never reach
+   * head-office approvers.
    */
   async notifyRoleOrPermission(data: {
     roleCode?: string;
+    permissionCode?: string;
     title: string;
     message: string;
     type: string;
     link?: string;
   }): Promise<void> {
     try {
-      const users = await this.prisma.user.findMany({
+      const assignments = await this.prisma.roleAssignment.findMany({
         where: {
-          isActive: true,
-          ...(data.roleCode
+          user: { isActive: true },
+          ...(data.roleCode || data.permissionCode
             ? {
-                roles: {
-                  some: {
-                    role: {
-                      code: data.roleCode,
-                    },
-                  },
+                role: {
+                  ...(data.roleCode ? { code: data.roleCode } : {}),
+                  ...(data.permissionCode
+                    ? {
+                        permissions: {
+                          some: {
+                            permission: { code: data.permissionCode },
+                          },
+                        },
+                      }
+                    : {}),
                 },
               }
             : {}),
         },
-        select: { id: true },
+        select: { userId: true },
       });
 
-      const userIds = Array.from(new Set(users.map((u) => u.id)));
+      const userIds = Array.from(new Set(assignments.map((a) => a.userId)));
 
       if (userIds.length > 0) {
         await this.prisma.notification.createMany({

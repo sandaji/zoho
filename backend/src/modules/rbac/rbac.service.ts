@@ -102,21 +102,38 @@ export class RbacService {
 
   /**
    * Sync permissions for a role
-   * Replaces existing permissions with the new list
+   * Replaces existing permissions with the new list.
+   *
+   * The roles UI only sends permission IDs, not scopes. Recreating every row
+   * without a scope reset them all to the column default (BRANCH) on each save:
+   * GLOBAL grants (HR, finance, purchasing...) silently narrowed, and OWN grants
+   * (cashier, sales rep) silently widened. So remember each currently-granted
+   * permission's scope and keep it; only newly-added permissions get the
+   * default (BRANCH, the narrower of the two non-OWN scopes).
    */
   async syncRolePermissions(roleId: string, permissionIds: string[]) {
     return prisma.$transaction(async (tx) => {
+      // 0. Remember the scope of everything currently granted
+      const existing = await tx.rolePermission.findMany({
+        where: { roleId },
+        select: { permissionId: true, scope: true },
+      });
+      const scopeByPermission = new Map(
+        existing.map((rp) => [rp.permissionId, rp.scope] as const),
+      );
+
       // 1. Remove all existing permissions for this role
       await tx.rolePermission.deleteMany({
         where: { roleId },
       });
 
-      // 2. Add new permissions
+      // 2. Add new permissions, preserving scope where the grant already existed
       if (permissionIds.length > 0) {
         await tx.rolePermission.createMany({
           data: permissionIds.map((permissionId) => ({
             roleId,
             permissionId,
+            scope: scopeByPermission.get(permissionId) ?? "BRANCH",
           })),
         });
       }

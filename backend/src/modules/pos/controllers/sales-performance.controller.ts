@@ -93,6 +93,18 @@ export class SalesPerformanceController {
         ...(branchId ? { branchId } : {}),
       };
 
+      // Non-admins are always confined to their own branch, whatever ?branchId
+      // says. db.ts isolation already does this for salesDocument queries, but
+      // the per-item query filters through a relation and was only getting the
+      // branch filter because it happened to share this object by reference with
+      // the salesDocument query (which db.ts mutates asynchronously). Making it
+      // explicit removes that dependency.
+      const isAdmin =
+        req.user.role === "admin" || req.user.role === "super_admin";
+      if (!isAdmin && req.user.branchId) {
+        baseWhere.branchId = req.user.branchId;
+      }
+
       // ── Parallel queries ──
       const [documents, itemAggRaw, salespersonRaw] = await Promise.all([
         // 1. All matching documents for day aggregation

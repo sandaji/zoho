@@ -37,17 +37,17 @@ interface PosFeedProps {
 
 export function PosFeed({ orders, loading }: PosFeedProps) {
   return (
-    <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
+    <Card className="rounded-xl border border-border bg-card shadow-sm">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-emerald-900">Live POS Feed</CardTitle>
-            <CardDescription className="text-emerald-500">Active transactions</CardDescription>
+            <CardTitle className="text-foreground">Live POS Feed</CardTitle>
+            <CardDescription className="text-muted-foreground">Active transactions</CardDescription>
           </div>
-          <span className="flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white">
+          <span className="flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground">
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-foreground opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary-foreground" />
             </span>
             Live
           </span>
@@ -57,7 +57,7 @@ export function PosFeed({ orders, loading }: PosFeedProps) {
         {loading ? (
           <div className="space-y-3 p-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-14 animate-pulse rounded-lg bg-emerald-50" />
+              <div key={i} className="h-14 animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
         ) : (

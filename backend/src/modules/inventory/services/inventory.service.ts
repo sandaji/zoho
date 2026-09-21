@@ -1030,7 +1030,9 @@ export class InventoryService {
 
         notificationService
           .notifyRoleOrPermission({
-            roleCode: "branch_manager",
+            // Whoever can actually approve it (head-office Manager etc.), not
+            // every branch manager — branch managers only request transfers.
+            permissionCode: "inventory.transfer.approve",
             title: "New Transfer Request",
             message: `Stock Transfer ${documentId} requested and requires approval.`,
             type: "TRANSFER_APPROVAL_REQUIRED",

@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { PermissionService } from "../modules/auth/services/permission.service";
 import { AppError, ErrorCode } from "@core/errors/errors";
+import { userHasCrossBranchAccess } from "@core/database/db";
 
 /**
  * Middleware to enforce a specific permission
@@ -45,8 +46,11 @@ export const requirePermission = (permissionCode: string) => {
         );
       }
 
-      // Record-level isolation: Inject resolved scopes into request object
-      if (scope === "BRANCH") {
+      // Record-level isolation: Inject resolved scopes into request object.
+      // Head-office roles (org.branches.view_all) see every branch even where the
+      // grant itself is BRANCH-scoped — the Roles screen can't set a scope, so
+      // grants ticked there default to BRANCH.
+      if (scope === "BRANCH" && !(await userHasCrossBranchAccess(userId))) {
         if (!req.user.branchId) {
           // If user is supposed to be restricted to a branch but doesn't have one,
           // this is a configuration error or they are a global user with wrong role.

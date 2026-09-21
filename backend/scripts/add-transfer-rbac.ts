@@ -67,26 +67,102 @@ async function main() {
     console.log("  ⏭ Role super_admin not found, skipping");
   }
 
-  // Grant to branch_manager and warehouse_staff at BRANCH scope — both
-  // already handle physical stock day-to-day in this ERP.
-  for (const roleCode of ["branch_manager", "warehouse_staff"]) {
-    const role = await prisma.role.findUnique({ where: { code: roleCode } });
+  // Per-role grants. Design (see ERP role definitions):
+  //   Branch Manager  -> REQUESTS transfers and receives them; does NOT approve
+  //   Warehouse staff -> physical handling: pick, verify, dispatch, receive
+  //   Manager (head office) -> requests/approves, verifies, resolves issues
+  // Roles that don't exist yet (e.g. `manager` before update-rbac.ts has been
+  // run) are skipped with a message.
+  const P = (name: string) => `inventory.transfer.${name}`;
+  const GRANTS: {
+    role: string;
+    scope: "GLOBAL" | "BRANCH";
+    codes: string[];
+  }[] = [
+    {
+      role: "branch_manager",
+      scope: "BRANCH",
+      codes: [P("request"), P("receive"), P("issue")],
+    },
+    {
+      role: "warehouse_staff",
+      scope: "BRANCH",
+      codes: [
+        P("pick"),
+        P("verify"),
+        P("dispatch"),
+        P("receive"),
+        P("issue"),
+      ],
+    },
+    {
+      role: "manager",
+      scope: "GLOBAL",
+      codes: [
+        P("request"),
+        P("approve"),
+        P("verify"),
+        P("issue"),
+        P("resolve_issue"),
+      ],
+    },
+  ];
+
+  const idByCode = new Map(
+    (
+      await prisma.permission.findMany({
+        where: { code: { in: newPermissions.map((p) => p.code) } },
+        select: { id: true, code: true },
+      })
+    ).map((p) => [p.code, p.id]),
+  );
+
+  for (const grant of GRANTS) {
+    const role = await prisma.role.findUnique({ where: { code: grant.role } });
     if (!role) {
-      console.log(`  ⏭ Role ${roleCode} not found, skipping`);
+      console.log(`  ⏭ Role ${grant.role} not found, skipping`);
       continue;
     }
-    for (const permissionId of permissionIds) {
+    for (const code of grant.codes) {
+      const permissionId = idByCode.get(code);
+      if (!permissionId) continue;
       await prisma.rolePermission.upsert({
         where: { roleId_permissionId: { roleId: role.id, permissionId } },
-        update: { scope: "BRANCH" },
-        create: { roleId: role.id, permissionId, scope: "BRANCH" },
+        update: { scope: grant.scope },
+        create: { roleId: role.id, permissionId, scope: grant.scope },
       });
     }
-    console.log(`  ✓ Granted to ${roleCode} (BRANCH)`);
+    console.log(`  ✓ ${grant.role}: ${grant.codes.length} transfer permissions (${grant.scope})`);
+  }
+
+  // Revoke what earlier versions of this script over-granted. Upserts can't
+  // remove anything, so without this a database that already ran the old
+  // version would keep letting branch managers approve transfers.
+  const REVOKE: { role: string; codes: string[] }[] = [
+    {
+      role: "branch_manager",
+      codes: [
+        P("approve"),
+        P("pick"),
+        P("verify"),
+        P("dispatch"),
+        P("resolve_issue"),
+      ],
+    },
+    { role: "warehouse_staff", codes: [P("approve"), P("resolve_issue")] },
+  ];
+  for (const r of REVOKE) {
+    const { count } = await prisma.rolePermission.deleteMany({
+      where: {
+        role: { code: r.role },
+        permission: { code: { in: r.codes } },
+      },
+    });
+    if (count > 0) console.log(`  ✗ Revoked ${count} from ${r.role}`);
   }
 
   console.log(
-    "\n✅ Done. The existing blanket inventory.stock.adjust permission was left untouched \u2014 routes now check the new granular permissions in addition to it.",
+    "\n✅ Done. The existing blanket inventory.stock.adjust permission was left untouched \u2014 the pick/verify/dispatch/receive/issue routes still accept it as an override, but the APPROVE route does not.",
   );
 }
 

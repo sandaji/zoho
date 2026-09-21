@@ -254,3 +254,19 @@ export interface PaginatedResponse<T> {
     limit: number;
   };
 }
+
+// Fiscal Period Types
+export interface FiscalPeriod {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  status: "open" | "closed" | "locked";
+  isLocked: boolean;
+  lockedAt?: string;
+  lockedBy?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}

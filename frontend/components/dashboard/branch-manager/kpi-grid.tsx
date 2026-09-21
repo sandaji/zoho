@@ -22,8 +22,16 @@ interface KpiGridProps {
   loading: boolean;
 }
 
+// "—" = not available (request failed, no permission, or no data source).
+// Never show a fabricated 0.
+const money = (n?: number | null) => (n == null ? "—" : `KES ${n.toLocaleString()}`);
+const count = (n?: number | null) => (n == null ? "—" : n.toLocaleString());
+
 export function KpiGrid({ metrics, loading }: KpiGridProps) {
-  if (loading || !metrics) {
+  // Skeleton only while the FIRST load is in flight. Previously a null
+  // `metrics` (request failed or was denied) kept the skeleton up forever, and
+  // every background refresh flashed it again.
+  if (loading && !metrics) {
     return (
       <div className="grid gap-4 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
@@ -36,25 +44,25 @@ export function KpiGrid({ metrics, loading }: KpiGridProps) {
   const kpis = [
     {
       title: "Gross Revenue",
-      value: `KES ${metrics.totalRevenue.toLocaleString()}`,
+      value: money(metrics?.totalRevenue),
       icon: DollarSign,
       color: "emerald" as const,
     },
     {
       title: "Transaction Volume",
-      value: metrics.totalSales.toLocaleString(),
+      value: count(metrics?.totalSales),
       icon: ShoppingCart,
       color: "yellow" as const,
     },
     {
       title: "Customer Count",
-      value: metrics.customerCount.toLocaleString(),
+      value: count(metrics?.customerCount),
       icon: Users,
       color: "teal" as const,
     },
     {
       title: "Avg Transaction",
-      value: `KES ${metrics.averageTransaction.toLocaleString()}`,
+      value: money(metrics?.averageTransaction),
       icon: Activity,
       color: "sky" as const,
     },
@@ -67,16 +75,16 @@ export function KpiGrid({ metrics, loading }: KpiGridProps) {
         return (
           <Card
             key={kpi.title}
-            className="rounded-xl border border-emerald-100 bg-white shadow-sm transition-shadow hover:shadow-md"
+            className="rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
           >
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-emerald-700">{kpi.title}</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+              <CardTitle className="text-xs font-medium text-muted-foreground">{kpi.title}</CardTitle>
               <div className={cn(iconBadge({ color: kpi.color }))}>
                 <Icon className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold text-emerald-900">{kpi.value}</p>
+              <p className="text-xl font-bold text-foreground">{kpi.value}</p>
             </CardContent>
           </Card>
         );

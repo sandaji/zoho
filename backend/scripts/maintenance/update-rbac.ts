@@ -56,6 +56,44 @@ async function main() {
       name: "Manage System Settings",
       module: "admin",
     },
+    // Read-only admin endpoints (routes/index.ts). Catalog only: grant these to
+    // roles from the admin Roles screen — none are assigned in this script.
+    { code: "admin.user.view", name: "View Users", module: "admin" },
+    {
+      code: "admin.warehouse.view",
+      name: "View Warehouses (Admin)",
+      module: "admin",
+    },
+    {
+      code: "admin.product.view",
+      name: "View Products (Admin)",
+      module: "admin",
+    },
+    {
+      code: "admin.delivery.view",
+      name: "View Deliveries (Admin)",
+      module: "admin",
+    },
+    {
+      code: "admin.finance.view",
+      name: "View Finance Transactions (Admin)",
+      module: "admin",
+    },
+    {
+      code: "admin.payroll.view",
+      name: "View Payroll (Admin)",
+      module: "admin",
+    },
+
+    // Head-office oversight switch. A role holding this is exempt from branch
+    // isolation (db.ts) and from BRANCH-scoping in requirePermission: it sees
+    // every branch's data. Tick it on head-office roles from the Roles screen;
+    // leave it OFF for anything that belongs to a single branch.
+    {
+      code: "org.branches.view_all",
+      name: "Access All Branches (Head Office Oversight)",
+      module: "admin",
+    },
 
     // HR
     { code: "hr.employee.view", name: "View Employees", module: "hr" },
@@ -103,6 +141,11 @@ async function main() {
       module: "finance",
     },
     { code: "finance.payment.view", name: "View Payments", module: "finance" },
+    {
+      code: "finance.payment.record",
+      name: "Record Payments on Sales Documents",
+      module: "finance",
+    },
     {
       code: "finance.settings.periods",
       name: "Manage Fiscal Periods",
@@ -166,6 +209,11 @@ async function main() {
     {
       code: "sales.customer.manage",
       name: "Manage Customers",
+      module: "sales",
+    },
+    {
+      code: "pos.session.view",
+      name: "View POS Sessions / Daily Summary",
       module: "sales",
     },
 
@@ -350,7 +398,27 @@ async function main() {
       code: "branch_manager",
       name: "Branch Manager",
       isSystem: true,
-      description: "Manage specific branch",
+      description:
+        "Runs ONE branch (single-branch scope). Requests stock transfers but cannot approve them.",
+    },
+    // --- Organisation structure ------------------------------------------
+    //   Head office (all branches):  manager, finance_manager, director, ...
+    //   Each branch (one branch):    branch_manager + branch_finance_manager
+    // Branch finance managers report to finance_manager (the main finance
+    // officer at head office); branch managers report to manager.
+    {
+      code: "manager",
+      name: "Manager (Head Office / Operations)",
+      isSystem: true,
+      description:
+        "Oversees all branches: supervises branch managers, approves stock transfers and high-value transactions. Not a system administrator.",
+    },
+    {
+      code: "branch_finance_manager",
+      name: "Branch Finance Manager (Head Accountant)",
+      isSystem: true,
+      description:
+        "Runs one branch's finances independently (ledger, payments, expenses, branch reports). Reports to the head-office Finance Manager.",
     },
     // --- Finance seniority tiers (finance-department roadmap Phase 1, see
     // erp-finance-gap-analysis.md §3.1). The requirement asked for four
@@ -382,9 +450,10 @@ async function main() {
     },
     {
       code: "finance_manager",
-      name: "Finance Manager",
+      name: "Finance Manager (Head Office)",
       isSystem: true,
-      description: "Head of Finance",
+      description:
+        "Main finance officer at head office: oversees every branch's finances; branch finance managers report to this role",
     },
     {
       code: "accountant",
@@ -716,6 +785,10 @@ async function main() {
   );
 
   // Finance Manager (Approve standard & high-value, receive goods)
+  // Head-office role: GLOBAL. This block previously re-assigned these at BRANCH
+  // scope, which (assign() upserts) silently downgraded the finance.* approvals
+  // the block above had just granted GLOBAL — leaving the main finance officer
+  // unable to approve other branches' items.
   await assignAll(
     "finance_manager",
     [
@@ -733,7 +806,7 @@ async function main() {
       "finance.expense.approve_high_value",
       "finance.gl.approve",
     ],
-    AccessScope.BRANCH,
+    AccessScope.GLOBAL,
   );
 
   // Director (Approve all including executive, full purchasing oversight)
@@ -760,7 +833,7 @@ async function main() {
       "finance.expense.approve_executive",
       "finance.gl.approve",
     ],
-    AccessScope.BRANCH,
+    AccessScope.GLOBAL, // head-office executive approver
   );
 
   // HR Manager
@@ -776,6 +849,103 @@ async function main() {
     "hr.recruitment.manage",
   ];
   await assignAll("hr_officer", hrOfficerPerms, AccessScope.BRANCH);
+
+  // ==========================================================================
+  // Organisation structure: head office oversees; each branch is independent
+  // ==========================================================================
+
+  // Manager (head-office operations) — oversees every branch. Can supervise
+  // branch managers and approve up to the high-value tier, but is deliberately
+  // NOT a system admin: no admin.user.manage / admin.role.manage /
+  // admin.branch.manage / admin.system.manage. Stock-transfer permissions
+  // (request/approve/verify/...) are granted in scripts/add-transfer-rbac.ts.
+  await assignAll(
+    "manager",
+    [
+      "hr.employee.view",
+      "hr.employee.manage", // create/manage branch managers
+      "hr.leave.approve",
+      "hr.payroll.view",
+      "sales.order.view_all",
+      "sales.order.manage",
+      "sales.customer.view",
+      "sales.customer.manage",
+      "pos.session.view",
+      "inventory.product.view",
+      "inventory.stock.view",
+      "inventory.stock.adjust",
+      "finance.gl.view",
+      "finance.report.aging",
+      "finance.invoice.view",
+      "finance.payment.view",
+      "finance.expense.view_all",
+      "finance.expense.approve_standard",
+      "finance.expense.approve_high_value",
+      "purchasing.order.view_all",
+      "purchasing.vendor.view",
+      "purchasing.order.approve_standard",
+      "purchasing.order.approve_high_value",
+      "purchasing.requisition.view",
+      "purchasing.requisition.approve_standard",
+      "purchasing.requisition.approve_high_value",
+      "admin.system.view",
+      "admin.user.view",
+      "admin.warehouse.view",
+      "admin.product.view",
+      "admin.delivery.view",
+    ],
+    AccessScope.GLOBAL,
+  );
+
+  // Branch Finance Manager (Head Accountant) — runs ONE branch's finances
+  // independently. Everything BRANCH-scoped. Approves only the standard tier;
+  // high-value and above escalate to head office (finance_manager / manager),
+  // and period locking / GL approval stay at head office.
+  await assignAll(
+    "branch_finance_manager",
+    [
+      "finance.gl.view",
+      "finance.gl.create",
+      "finance.report.aging",
+      "finance.invoice.create",
+      "finance.invoice.view",
+      "finance.payment.create",
+      "finance.payment.view",
+      "finance.payment.record",
+      "finance.expense.view_all",
+      "finance.expense.create",
+      "finance.expense.post",
+      "finance.expense.approve_standard",
+      "purchasing.requisition.view",
+      "purchasing.requisition.create",
+      "purchasing.requisition.approve_standard",
+      "purchasing.order.view_all",
+      "purchasing.vendor.view",
+      "hr.payroll.view",
+      "sales.order.view_all",
+      "sales.customer.view",
+      "pos.session.view",
+      "inventory.stock.view",
+    ],
+    AccessScope.BRANCH,
+  );
+
+  // Head-office oversight switch (org.branches.view_all). super_admin and
+  // erp_admin already get it via allPerms, and auditor/ceo via readOnlyPerms
+  // (the code contains "view"). These are the other head-of-function roles that
+  // already hold GLOBAL grants above — the switch just makes that intent real at
+  // the data layer. Branch-level roles (branch_manager, branch_finance_manager,
+  // cashier, ...) deliberately do NOT get it.
+  for (const roleCode of [
+    "manager",
+    "finance_manager",
+    "director",
+    "hr_manager",
+    "purchasing_manager",
+    "sales_manager",
+  ]) {
+    await assign(roleCode, "org.branches.view_all", AccessScope.GLOBAL);
+  }
 
   console.log("✅ Role Assignments completed");
   console.log("🎉 RBAC Update Finished Successfully");

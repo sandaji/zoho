@@ -85,12 +85,12 @@ export function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 md:w-96 rounded-xl bg-white border border-slate-200 shadow-xl z-50 overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-b border-slate-200">
+        <div className="absolute right-0 mt-2 w-80 md:w-96 rounded-xl bg-popover text-popover-foreground border border-border shadow-xl z-50 overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 bg-muted/40 border-b border-border">
             <div className="flex items-center gap-2">
-              <h3 className="font-bold text-sm text-slate-800">Notifications</h3>
+              <h3 className="font-bold text-xs text-foreground">Notifications</h3>
               {unreadCount > 0 && (
-                <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-semibold">
+                <span className="bg-primary/15 text-primary text-[10px] px-2 py-0.5 rounded-full font-semibold">
                   {unreadCount} new
                 </span>
               )}
@@ -98,46 +98,46 @@ export function NotificationBell() {
             {unreadCount > 0 && (
               <button
                 onClick={handleMarkAllRead}
-                className="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition-colors"
+                className="text-xs text-primary hover:underline font-medium flex items-center gap-1 transition-colors"
               >
                 <CheckCheck size={14} /> Mark all read
               </button>
             )}
           </div>
 
-          <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+          <div className="max-h-80 overflow-y-auto divide-y divide-border">
             {loading && notifications.length === 0 ? (
-              <div className="py-8 text-center text-slate-400 flex items-center justify-center gap-2">
+              <div className="py-8 text-center text-muted-foreground flex items-center justify-center gap-2">
                 <Loader2 className="animate-spin" size={16} /> Loading notifications...
               </div>
             ) : notifications.length === 0 ? (
-              <div className="py-8 text-center text-slate-400 text-sm">
+              <div className="py-8 text-center text-muted-foreground text-xs">
                 No notifications yet
               </div>
             ) : (
               notifications.map((n) => (
                 <div
                   key={n.id}
-                  className={`p-3.5 hover:bg-slate-50 transition-colors flex gap-3 ${
-                    !n.isRead ? "bg-emerald-50/40" : ""
+                  className={`p-3.5 hover:bg-muted/50 transition-colors flex gap-3 ${
+                    !n.isRead ? "bg-primary/5" : ""
                   }`}
                 >
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="font-semibold text-xs text-slate-900">{n.title}</p>
-                      <span className="text-[10px] text-slate-400">
+                      <p className="font-semibold text-xs text-foreground">{n.title}</p>
+                      <span className="text-[10px] text-muted-foreground">
                         {new Date(n.createdAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-600 mt-1 leading-snug">{n.message}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-snug">{n.message}</p>
                     {n.link && (
                       <Link
                         href={n.link}
                         onClick={() => setIsOpen(false)}
-                        className="mt-2 inline-flex items-center text-[11px] font-semibold text-emerald-600 hover:text-emerald-800 gap-1"
+                        className="mt-2 inline-flex items-center text-[11px] font-semibold text-primary hover:underline gap-1"
                       >
                         View details <ExternalLink size={10} />
                       </Link>
@@ -148,7 +148,7 @@ export function NotificationBell() {
                     <button
                       onClick={(e) => handleMarkRead(n.id, e)}
                       title="Mark as read"
-                      className="text-slate-400 hover:text-emerald-600 self-start p-1 rounded hover:bg-emerald-100 transition-colors"
+                      className="text-muted-foreground hover:text-primary self-start p-1 rounded hover:bg-primary/10 transition-colors"
                     >
                       <Check size={14} />
                     </button>

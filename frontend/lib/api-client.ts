@@ -132,8 +132,17 @@ class ApiClient {
 
       const response = await fetch(url, options);
 
+      // Auth endpoints answer 401 for *bad credentials*, not for an expired
+      // session. Running the refresh flow for them made a wrong email/password
+      // look like "Your session has expired" (and reloaded the login page),
+      // hiding the server's real message (e.g. "Invalid email or password").
+      const isAuthEndpoint =
+        endpoint === "/v1/auth/login" ||
+        endpoint === "/v1/auth/register" ||
+        endpoint === "/v1/auth/refresh";
+
       // Handle 401 - try to refresh token and retry
-      if (response.status === 401 && retryCount === 0) {
+      if (response.status === 401 && retryCount === 0 && !isAuthEndpoint) {
         // If already refreshing, queue this request
         if (this.isRefreshing) {
           return new Promise((resolve) => {

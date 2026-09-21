@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
@@ -21,6 +21,9 @@ import { SalesAnalytics } from "@/components/dashboard/branch-manager/sales-anal
 import { PosFeed } from "@/components/dashboard/branch-manager/pos-feed";
 import { AlertsTabs } from "@/components/dashboard/branch-manager/alerts-tabs";
 
+// The login page lives at /auth/login (there is no /login route).
+const LOGIN_PATH = "/auth/login";
+
 export default function BranchManagerDashboard() {
   const { user, token } = useAuth();
   const { hasPermission } = useHasPermission();
@@ -29,7 +32,12 @@ export default function BranchManagerDashboard() {
   const [timeRange, setTimeRange] = useState("week");
   const [exporting, setExporting] = useState(false);
 
-  // ── Data state (unchanged) ─────────────────────────────────────────────────
+  // The 60s poll below is created once per login, so its closure would keep
+  // using the FIRST timeRange forever. Read the current one through a ref.
+  const timeRangeRef = useRef(timeRange);
+  timeRangeRef.current = timeRange;
+
+  // ── Data state ─────────────────────────────────────────────────────────────
   const [metrics, setMetrics] = useState<BranchMetrics | null>(null);
   const [salesData, setSalesData] = useState<SalesData[]>([]);
   const [topProducts, setTopProducts] = useState<TopProduct[]>([]);
@@ -37,10 +45,10 @@ export default function BranchManagerDashboard() {
   const [pendingOrders, setPendingOrders] = useState<PendingOrder[]>([]);
   const [staffPerformance, setStaffPerformance] = useState<StaffPerformance[]>([]);
 
-  // ── Auth & initial load (unchanged) ────────────────────────────────────────
+  // ── Auth & initial load ────────────────────────────────────────────────────
   useEffect(() => {
     if (!token) {
-      router.push("/login");
+      router.push(LOGIN_PATH);
       return;
     }
     if (user && !hasPermission("hr.employee.view") && user.role !== "admin") {
@@ -49,32 +57,39 @@ export default function BranchManagerDashboard() {
       return;
     }
 
-    loadDashboardData();
-    const pollInterval = setInterval(loadDashboardData, 60000);
+    // First load reports problems; the background poll stays quiet.
+    loadDashboardData({ notify: true });
+    const pollInterval = setInterval(() => loadDashboardData({ notify: false }), 60000);
     return () => clearInterval(pollInterval);
   }, [token, user, router]);
 
-  // ── Data fetching (unchanged) ───────────────────────────────────────────────
-  const loadDashboardData = async () => {
+  // ── Data fetching ──────────────────────────────────────────────────────────
+  /**
+   * @param notify  true for the first load and manual refresh: show the loading
+   *                state and report failures. false for the background poll,
+   *                which must not flash skeletons or toast every minute.
+   */
+  const loadDashboardData = async ({ notify }: { notify: boolean } = { notify: false }) => {
     if (!token) return;
+    const range = timeRangeRef.current;
     try {
-      setLoading(true);
+      if (notify) setLoading(true);
 
       const [metricsRes, salesRes] = await Promise.all([
-        dashboardService.getBranchMetrics(token),
-        dashboardService.getSalesData(token, timeRange),
+        dashboardService.getBranchMetrics(token, range),
+        dashboardService.getSalesData(token, range),
       ]);
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       const [productsRes, stockRes] = await Promise.all([
-        dashboardService.getTopProducts(token),
+        dashboardService.getTopProducts(token, range),
         dashboardService.getLowStockItems(token),
       ]);
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       const [ordersRes, staffRes] = await Promise.all([
         dashboardService.getPendingOrders(token),
-        dashboardService.getStaffPerformance(token),
+        dashboardService.getStaffPerformance(token, range),
       ]);
 
       const responses = [metricsRes, salesRes, productsRes, stockRes, ordersRes, staffRes];
@@ -83,38 +98,68 @@ export default function BranchManagerDashboard() {
       );
       if (hasTokenExpired) {
         toast.error("Your session has expired. Please log in again.");
-        router.push("/login");
+        router.push(LOGIN_PATH);
         return;
       }
 
-      setMetrics(metricsRes.data || null);
-      setSalesData(salesRes.data || []);
-      setTopProducts(productsRes.data || []);
-      setLowStockItems(stockRes.data || []);
-      setPendingOrders(ordersRes.data || []);
-      setStaffPerformance(staffRes.data || []);
+      // Only overwrite a widget when its request worked, so one failed
+      // background refresh can't blank out data that was already showing.
+      if (metricsRes.success) setMetrics(metricsRes.data);
+      if (salesRes.success) setSalesData(salesRes.data);
+      if (productsRes.success) setTopProducts(productsRes.data);
+      if (stockRes.success) setLowStockItems(stockRes.data);
+      if (ordersRes.success) setPendingOrders(ordersRes.data);
+      if (staffRes.success) setStaffPerformance(staffRes.data);
 
-      if (!metricsRes.success) toast.error(`Metrics: ${(metricsRes as any).error}`);
-      if (!salesRes.success)   toast.error(`Sales: ${(salesRes as any).error}`);
-      if (!productsRes.success) toast.error(`Products: ${(productsRes as any).error}`);
-      if (!stockRes.success)   toast.error(`Stock: ${(stockRes as any).error}`);
-      if (!ordersRes.success)  toast.error(`Orders: ${(ordersRes as any).error}`);
-      if (!staffRes.success)   toast.error(`Staff: ${(staffRes as any).error}`);
+      if (notify) {
+        const failures = [
+          { label: "Sales & KPIs", res: metricsRes },
+          { label: "Sales trend", res: salesRes },
+          { label: "Top products", res: productsRes },
+          { label: "Stock alerts", res: stockRes },
+          { label: "Pending deliveries", res: ordersRes },
+          { label: "Staff", res: staffRes },
+        ].filter(({ res }) => !res.success) as { label: string; res: any }[];
+
+        if (failures.length > 0) {
+          // One toast, with the server's own reason (e.g. "Permission denied:
+          // sales.order.view_all"), instead of up to six generic ones. The
+          // sales-based widgets share one request, so de-duplicate identical
+          // reasons.
+          const reasons = Array.from(
+            new Set(failures.map(({ label, res }) => `${label}: ${res.error}`))
+          );
+          toast.error("Some dashboard data couldn't be loaded", {
+            description: reasons.join("\n"),
+          });
+        }
+      }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to load dashboard data");
+      if (notify) toast.error("Failed to load dashboard data");
     } finally {
-      setLoading(false);
+      if (notify) setLoading(false);
     }
   };
 
   const handleTimeRangeChange = async (range: string) => {
     setTimeRange(range);
-    try {
-      const salesRes = await dashboardService.getSalesData(token!, range);
-      setSalesData(salesRes.data || []);
-    } catch {
-      toast.error("Could not update range");
+    if (!token) return;
+
+    const [metricsRes, salesRes, productsRes, staffRes] = await Promise.all([
+      dashboardService.getBranchMetrics(token, range),
+      dashboardService.getSalesData(token, range),
+      dashboardService.getTopProducts(token, range),
+      dashboardService.getStaffPerformance(token, range),
+    ]);
+
+    if (metricsRes.success) setMetrics(metricsRes.data);
+    if (salesRes.success) setSalesData(salesRes.data);
+    if (productsRes.success) setTopProducts(productsRes.data);
+    if (staffRes.success) setStaffPerformance(staffRes.data);
+
+    if (!salesRes.success) {
+      toast.error("Could not update range", { description: salesRes.error });
     }
   };
 
@@ -148,7 +193,7 @@ export default function BranchManagerDashboard() {
           user={user}
           timeRange={timeRange}
           onTimeRangeChange={handleTimeRangeChange}
-          onRefresh={loadDashboardData}
+          onRefresh={() => loadDashboardData({ notify: true })}
           onExport={handleExport}
           loading={loading}
           exporting={exporting}

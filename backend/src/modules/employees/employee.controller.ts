@@ -168,7 +168,11 @@ export class EmployeeController {
    */
   async createEmployee(req: Request, res: Response, next: NextFunction) {
     try {
-      const { email, name, phone, password, role, branchId, departmentId } = req.body;
+      const { email: rawEmail, name, phone, password, role, branchId, departmentId } = req.body;
+      // Store emails trimmed + lowercase. Login lowercases its input, so an email
+      // saved with capitals here could never be matched at sign-in.
+      const email =
+        typeof rawEmail === "string" ? rawEmail.trim().toLowerCase() : rawEmail;
 
       // Validate required fields
       if (!email || !name) {
@@ -187,9 +191,9 @@ export class EmployeeController {
         );
       }
 
-      // Check if email already exists
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
+      // Check if email already exists (case-insensitive)
+      const existingUser = await prisma.user.findFirst({
+        where: { email: { equals: email, mode: "insensitive" } },
       });
 
       if (existingUser) {

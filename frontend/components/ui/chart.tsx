@@ -60,8 +60,8 @@ export function LineChart({
 
   return (
     <div className={`w-full ${className}`}>
-      {title && <h3 className="text-sm font-semibold mb-2 text-gray-700">{title}</h3>}
-      <svg width="100%" height={height} className="border border-gray-200 rounded bg-white">
+      {title && <h3 className="text-sm font-semibold mb-2 text-foreground">{title}</h3>}
+      <svg width="100%" height={height} className="border border-border rounded-lg bg-card">
         {/* Grid lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
           <line
@@ -147,8 +147,8 @@ export function BarChart({
 
   return (
     <div className={`w-full ${className}`}>
-      {title && <h3 className="text-sm font-semibold mb-2 text-gray-700">{title}</h3>}
-      <svg width="100%" height={height} className="border border-gray-200 rounded bg-white">
+      {title && <h3 className="text-sm font-semibold mb-2 text-foreground">{title}</h3>}
+      <svg width="100%" height={height} className="border border-border rounded-lg bg-card">
         {/* Grid lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
           <line

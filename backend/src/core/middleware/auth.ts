@@ -9,6 +9,7 @@ export { verifyToken };
 
 import { AppError, ErrorCode } from "../errors/errors";
 import { logger } from "../utils/logger";
+import { asyncContext } from "../async-context";
 
 // TokenPayload and Express Request extension now in types/index.ts
 
@@ -45,7 +46,26 @@ export function authMiddleware(
     const payload = verifyToken(token);
     req.user = payload;
     logger.debug({ userId: payload.userId }, "User authenticated");
-    next();
+
+    // Bind the authenticated user to the async request context that db.ts reads
+    // (branch isolation, audit-log user).
+    //
+    // This has to happen HERE. The global contextMiddleware in app.ts runs before
+    // any route authenticates, so it captured an empty user (branch isolation
+    // silently never applied), and it also runs before express.json(), where
+    // AsyncLocalStorage context is commonly lost across the body-stream callbacks
+    // on POST/PATCH requests. authMiddleware runs after body parsing, so a context
+    // created here survives into the route handlers and their queries.
+    asyncContext.run(
+      {
+        userId: payload.userId,
+        branchId: payload.branchId ?? undefined,
+        role: payload.role,
+        ipAddress: (req.headers["x-forwarded-for"] as string) || req.ip,
+        userAgent: req.headers["user-agent"],
+      },
+      () => next(),
+    );
   } catch (error) {
     if (error instanceof AppError) {
       next(error);

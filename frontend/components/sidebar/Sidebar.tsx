@@ -32,7 +32,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Building2,
   Check,
@@ -40,6 +39,8 @@ import {
   Search,
   Settings,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
   Wifi,
   WifiOff,
   ChevronDown,
@@ -55,7 +56,6 @@ import { NAVIGATION_MODULES, canAccessNavigationItem } from "@/lib/navigation";
 import type { Branch } from "@/lib/types/admin";
 import { ROLE_LABELS, ROLE_COLORS, APP_VERSION, isActivePath } from "./constants";
 import { CommandPalette } from "./CommandPalette";
-import { SettingsDialog } from "./SettingsDialog";
 import type { SwitcherBranch, SearchResult } from "./types";
 
 // Internal component that uses the sidebar context
@@ -64,7 +64,7 @@ function SidebarContentInternal() {
   const pathname = usePathname();
   const { user, logout, switchBranch } = useAuth();
   const { hasAnyPermission, hasPermission } = useHasPermission();
-  const { state } = useSidebar();
+  const { state, toggleSidebar } = useSidebar();
   const isCollapsed = state === "collapsed";
 
   // UI State
@@ -77,7 +77,6 @@ function SidebarContentInternal() {
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
-  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
   // Preferences
   const favorites = useStoredStringList("swiftpos.sidebar.favorites");
@@ -328,42 +327,67 @@ function SidebarContentInternal() {
     <>
       {/* Sidebar Header */}
       <SidebarHeader className="border-b border-sidebar-border p-3">
-        {isAdminUser && switcherBranches.length > 0 && (
-          <DropdownMenu open={switcherOpen} onOpenChange={setSwitcherOpen}>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton className="w-full justify-start text-xs" disabled={isSwitching}>
-                <Building2 className={cn("h-4 w-4", isCollapsed ? "mr-0" : "mr-2")} />
-                {!isCollapsed && (
-                  <>
-                    <span className="flex-1 truncate text-left">
-                      {isSwitching ? "Switching…" : (currentBranch?.name ?? "All Branches")}
-                    </span>
-                    <ChevronsUpDown className="ml-2 h-3.5 w-3.5" />
-                  </>
-                )}
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-56">
-              <DropdownMenuLabel>Switch Branch</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {switcherBranches.map((branch) => (
-                <DropdownMenuItem
-                  key={branch.id}
-                  onClick={() => handleBranchSwitch(branch.id)}
-                  className="flex items-center gap-2"
+        <div className="flex items-center justify-between gap-2.5">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground shadow-sm">
+              SP
+            </div>
+            {!isCollapsed && (
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate text-sm font-bold tracking-tight text-foreground">
+                  SwiftPos ERP
+                </span>
+                <span className="truncate text-[10px] text-muted-foreground">
+                  {currentBranch?.name ?? "Enterprise Management"}
+                </span>
+              </div>
+            )}
+          </div>
+          <SidebarMenuButton
+            onClick={toggleSidebar}
+            className="h-8 w-8 shrink-0 justify-center p-0"
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            {isCollapsed ? (
+              <PanelLeftOpen className="h-4 w-4" />
+            ) : (
+              <PanelLeftClose className="h-4 w-4" />
+            )}
+          </SidebarMenuButton>
+        </div>
+
+        {isAdminUser && switcherBranches.length > 0 && !isCollapsed && (
+          <div className="mt-2">
+            <DropdownMenu open={switcherOpen} onOpenChange={setSwitcherOpen}>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  className="w-full justify-start text-xs rounded-md border border-sidebar-border/70 bg-sidebar-accent/30 hover:bg-sidebar-accent"
+                  disabled={isSwitching}
                 >
-                  <Building2 className="h-3.5 w-3.5" />
-                  <span className="flex-1">{branch.name}</span>
-                  {user.branchId === branch.id && <Check className="h-3.5 w-3.5 text-primary" />}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-        {/* Show app name when collapsed and no branch switcher */}
-        {isCollapsed && !(isAdminUser && switcherBranches.length > 0) && (
-          <div className="flex justify-center">
-            <span className="text-xs font-bold">SwiftPos</span>
+                  <Building2 className="h-3.5 w-3.5 mr-2 text-primary" />
+                  <span className="flex-1 truncate text-left font-medium">
+                    {isSwitching ? "Switching…" : (currentBranch?.name ?? "All Branches")}
+                  </span>
+                  <ChevronsUpDown className="ml-1 h-3.5 w-3.5 opacity-50" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuLabel>Switch Branch</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {switcherBranches.map((branch) => (
+                  <DropdownMenuItem
+                    key={branch.id}
+                    onClick={() => handleBranchSwitch(branch.id)}
+                    className="flex items-center gap-2"
+                  >
+                    <Building2 className="h-3.5 w-3.5" />
+                    <span className="flex-1">{branch.name}</span>
+                    {user.branchId === branch.id && <Check className="h-3.5 w-3.5 text-primary" />}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </SidebarHeader>
@@ -373,15 +397,15 @@ function SidebarContentInternal() {
         <SidebarMenuButton
           onClick={() => setIsPaletteOpen(true)}
           className={cn(
-            "w-full justify-start text-sidebar-foreground/60",
-            isCollapsed && "justify-center"
+            "w-full justify-start rounded-md border border-sidebar-border/70 bg-sidebar-accent/40 text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
+            isCollapsed && "justify-center border-transparent bg-transparent"
           )}
         >
           <Search className="h-4 w-4" />
           {!isCollapsed && (
             <>
-              <span className="flex-1 text-left">Search or run a command</span>
-              <kbd className="rounded bg-sidebar-accent px-1.5 py-0.5 font-mono text-[10px] text-sidebar-foreground/80">
+              <span className="flex-1 text-left text-xs">Search or run a command…</span>
+              <kbd className="rounded border border-sidebar-border/80 bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
                 ⌘K
               </kbd>
             </>
@@ -390,205 +414,195 @@ function SidebarContentInternal() {
       </div>
 
       {/* Navigation Content */}
-      <SidebarContent>
-        <ScrollArea className="h-full">
-          {/* Group modules by section */}
-          {(() => {
-            const sections = {
-              operations: visibleModules.filter((m: any) => m.section === "operations"),
-              reports: visibleModules.filter((m: any) => m.section === "reports"),
-              system: visibleModules.filter((m: any) => m.section === "system"),
-              settings: visibleModules.filter((m: any) => m.section === "settings"),
-            };
+      <SidebarContent className="p-2 gap-1 overflow-y-auto">
+        {/* Group modules by section */}
+        {(() => {
+          const sections = {
+            operations: visibleModules.filter((m: any) => m.section === "operations"),
+            reports: visibleModules.filter((m: any) => m.section === "reports"),
+            system: visibleModules.filter((m: any) => m.section === "system"),
+            settings: visibleModules.filter((m: any) => m.section === "settings"),
+          };
 
-            const sectionLabels = {
-              operations: "Operations",
-              reports: "Reports",
-              system: "System",
-              settings: "Settings",
-            };
+          const sectionLabels = {
+            operations: "Operations",
+            reports: "Reports",
+            system: "System",
+            settings: "Settings",
+          };
 
-            // Get favorite and recent pages
-            const favoritePages = allPages.filter((page: any) =>
-              favorites.value.includes(page.href)
-            );
-            const recentPages = recents.value
-              .map((href) => allPages.find((page: any) => page.href === href))
-              .filter(Boolean);
+          // Get favorite and recent pages
+          const favoritePages = allPages.filter((page: any) => favorites.value.includes(page.href));
+          const recentPages = recents.value
+            .map((href) => allPages.find((page: any) => page.href === href))
+            .filter(Boolean);
 
-            return (
-              <>
-                {/* Favorites Section */}
-                {!isCollapsed && favoritePages.length > 0 && (
-                  <SidebarGroup>
-                    <SidebarGroupLabel>Favorites</SidebarGroupLabel>
-                    <SidebarMenu>
-                      {favoritePages.map((page: any) => (
-                        <SidebarMenuItem key={page.href}>
-                          <SidebarMenuButton asChild isActive={isActivePath(pathname, page.href)}>
-                            <a
-                              href={page.href}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                navigate(page.href);
-                              }}
-                            >
-                              <page.icon className="h-4 w-4" />
-                              <span>{page.label}</span>
-                            </a>
-                          </SidebarMenuButton>
-                          <SidebarMenuAction
-                            onClick={() => favorites.toggle(page.href)}
-                            className="text-amber-500"
+          return (
+            <>
+              {/* Favorites Section */}
+              {!isCollapsed && favoritePages.length > 0 && (
+                <SidebarGroup>
+                  <SidebarGroupLabel>Favorites</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {favoritePages.map((page: any) => (
+                      <SidebarMenuItem key={page.href}>
+                        <SidebarMenuButton asChild isActive={isActivePath(pathname, page.href)}>
+                          <a
+                            href={page.href}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(page.href);
+                            }}
                           >
-                            <Star className="h-3 w-3 fill-current" />
-                          </SidebarMenuAction>
-                        </SidebarMenuItem>
-                      ))}
-                    </SidebarMenu>
-                  </SidebarGroup>
-                )}
+                            <page.icon className="h-4 w-4" />
+                            <span>{page.label}</span>
+                          </a>
+                        </SidebarMenuButton>
+                        <SidebarMenuAction
+                          onClick={() => favorites.toggle(page.href)}
+                          className="text-amber-500"
+                        >
+                          <Star className="h-3 w-3 fill-current" />
+                        </SidebarMenuAction>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+              )}
 
-                {/* Recent Section */}
-                {!isCollapsed && recentPages.length > 0 && (
-                  <SidebarGroup>
-                    <SidebarGroupLabel>Recent</SidebarGroupLabel>
+              {/* Recent Section */}
+              {!isCollapsed && recentPages.length > 0 && (
+                <SidebarGroup>
+                  <SidebarGroupLabel>Recent</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {recentPages.slice(0, 3).map((page: any) => (
+                      <SidebarMenuItem key={page.href}>
+                        <SidebarMenuButton asChild isActive={isActivePath(pathname, page.href)}>
+                          <a
+                            href={page.href}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate(page.href);
+                            }}
+                          >
+                            <page.icon className="h-4 w-4" />
+                            <span>{page.label}</span>
+                          </a>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+              )}
+
+              {/* Main Navigation Sections */}
+              {Object.entries(sections).map(([sectionKey, sectionModules]) => {
+                if (!sectionModules.length) return null;
+
+                return (
+                  <SidebarGroup key={sectionKey}>
+                    {!isCollapsed && (
+                      <SidebarGroupLabel>
+                        {sectionLabels[sectionKey as keyof typeof sectionLabels]}
+                      </SidebarGroupLabel>
+                    )}
                     <SidebarMenu>
-                      {recentPages.slice(0, 3).map((page: any) => (
-                        <SidebarMenuItem key={page.href}>
-                          <SidebarMenuButton asChild isActive={isActivePath(pathname, page.href)}>
-                            <a
-                              href={page.href}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                navigate(page.href);
-                              }}
+                      {sectionModules.map((module: any) => {
+                        const Icon = module.icon;
+                        const isOpen = openModule === module.id;
+                        const isPinned = pinnedModules.value.includes(module.id);
+                        const isActive = module.pages.some((page: any) =>
+                          isActivePath(pathname, page.href)
+                        );
+
+                        return (
+                          <SidebarMenuItem key={module.id}>
+                            <SidebarMenuButton
+                              isActive={isActive}
+                              onClick={() => setOpenModule(isOpen ? null : module.id)}
+                              className="w-full"
                             >
-                              <page.icon className="h-4 w-4" />
-                              <span>{page.label}</span>
-                            </a>
-                          </SidebarMenuButton>
-                        </SidebarMenuItem>
-                      ))}
-                    </SidebarMenu>
-                  </SidebarGroup>
-                )}
-
-                {/* Main Navigation Sections */}
-                {Object.entries(sections).map(([sectionKey, sectionModules]) => {
-                  if (!sectionModules.length) return null;
-
-                  return (
-                    <SidebarGroup key={sectionKey}>
-                      {!isCollapsed && (
-                        <SidebarGroupLabel>
-                          {sectionLabels[sectionKey as keyof typeof sectionLabels]}
-                        </SidebarGroupLabel>
-                      )}
-                      <SidebarMenu>
-                        {sectionModules.map((module: any) => {
-                          const Icon = module.icon;
-                          const isOpen = openModule === module.id;
-                          const isPinned = pinnedModules.value.includes(module.id);
-                          const isActive = module.pages.some((page: any) =>
-                            isActivePath(pathname, page.href)
-                          );
-
-                          return (
-                            <SidebarMenuItem key={module.id}>
-                              <SidebarMenuButton
-                                isActive={isActive}
-                                onClick={() => setOpenModule(isOpen ? null : module.id)}
-                                className="w-full"
-                              >
-                                <Icon
-                                  className={cn(
-                                    "h-4 w-4",
-                                    isActive ? "text-primary" : "text-sidebar-foreground/50"
-                                  )}
-                                />
-                                {!isCollapsed && (
-                                  <>
-                                    <span className="flex-1">{module.label}</span>
-                                    {module.summary?.(stats) && (
-                                      <Badge
-                                        variant="secondary"
-                                        className="text-[10px] font-medium"
-                                      >
-                                        {module.summary(stats)}
-                                      </Badge>
-                                    )}
-                                    <ChevronDown
-                                      className={cn(
-                                        "h-3.5 w-3.5 transition-transform duration-200",
-                                        isOpen && "rotate-180"
-                                      )}
-                                    />
-                                  </>
+                              <Icon
+                                className={cn(
+                                  "h-4 w-4",
+                                  isActive ? "text-primary" : "text-sidebar-foreground/50"
                                 )}
-                              </SidebarMenuButton>
+                              />
                               {!isCollapsed && (
-                                <SidebarMenuAction onClick={() => pinnedModules.toggle(module.id)}>
-                                  <Pin
+                                <>
+                                  <span className="flex-1">{module.label}</span>
+                                  {module.summary?.(stats) && (
+                                    <Badge variant="secondary" className="text-[10px] font-medium">
+                                      {module.summary(stats)}
+                                    </Badge>
+                                  )}
+                                  <ChevronDown
                                     className={cn(
-                                      "h-3 w-3",
-                                      isPinned && "fill-current text-primary"
+                                      "h-3.5 w-3.5 transition-transform duration-200",
+                                      isOpen && "rotate-180"
                                     )}
                                   />
-                                </SidebarMenuAction>
+                                </>
                               )}
-                              {isOpen && !isCollapsed && (
-                                <SidebarMenuSub>
-                                  {module.pages.map((page: any) => {
-                                    const PageIcon = page.icon;
-                                    const isPageActive = isActivePath(pathname, page.href);
-                                    const isFavorite = favorites.value.includes(page.href);
+                            </SidebarMenuButton>
+                            {!isCollapsed && (
+                              <SidebarMenuAction onClick={() => pinnedModules.toggle(module.id)}>
+                                <Pin
+                                  className={cn("h-3 w-3", isPinned && "fill-current text-primary")}
+                                />
+                              </SidebarMenuAction>
+                            )}
+                            {isOpen && !isCollapsed && (
+                              <SidebarMenuSub>
+                                {module.pages.map((page: any) => {
+                                  const PageIcon = page.icon;
+                                  const isPageActive = isActivePath(pathname, page.href);
+                                  const isFavorite = favorites.value.includes(page.href);
 
-                                    return (
-                                      <SidebarMenuSubItem key={page.href}>
-                                        <SidebarMenuSubButton asChild isActive={isPageActive}>
-                                          <a
-                                            href={page.href}
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              navigate(page.href);
-                                            }}
-                                          >
-                                            <PageIcon
-                                              className={cn(
-                                                "h-4 w-4",
-                                                isPageActive
-                                                  ? "text-primary"
-                                                  : "text-sidebar-foreground/50"
-                                              )}
-                                            />
-                                            <span>{page.label}</span>
-                                          </a>
-                                        </SidebarMenuSubButton>
-                                        <SidebarMenuAction
-                                          onClick={() => favorites.toggle(page.href)}
-                                          className={cn(isFavorite && "text-amber-500")}
+                                  return (
+                                    <SidebarMenuSubItem key={page.href}>
+                                      <SidebarMenuSubButton asChild isActive={isPageActive}>
+                                        <a
+                                          href={page.href}
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            navigate(page.href);
+                                          }}
                                         >
-                                          <Star
-                                            className={cn("h-3 w-3", isFavorite && "fill-current")}
+                                          <PageIcon
+                                            className={cn(
+                                              "h-4 w-4",
+                                              isPageActive
+                                                ? "text-primary"
+                                                : "text-sidebar-foreground/50"
+                                            )}
                                           />
-                                        </SidebarMenuAction>
-                                      </SidebarMenuSubItem>
-                                    );
-                                  })}
-                                </SidebarMenuSub>
-                              )}
-                            </SidebarMenuItem>
-                          );
-                        })}
-                      </SidebarMenu>
-                    </SidebarGroup>
-                  );
-                })}
-              </>
-            );
-          })()}
-        </ScrollArea>
+                                          <span>{page.label}</span>
+                                        </a>
+                                      </SidebarMenuSubButton>
+                                      <SidebarMenuAction
+                                        onClick={() => favorites.toggle(page.href)}
+                                        className={cn(isFavorite && "text-amber-500")}
+                                      >
+                                        <Star
+                                          className={cn("h-3 w-3", isFavorite && "fill-current")}
+                                        />
+                                      </SidebarMenuAction>
+                                    </SidebarMenuSubItem>
+                                  );
+                                })}
+                              </SidebarMenuSub>
+                            )}
+                          </SidebarMenuItem>
+                        );
+                      })}
+                    </SidebarMenu>
+                  </SidebarGroup>
+                );
+              })}
+            </>
+          );
+        })()}
       </SidebarContent>
 
       {/* Sidebar Footer */}
@@ -656,15 +670,27 @@ function SidebarContentInternal() {
           <div className="flex items-center gap-1">
             <SidebarMenu className="w-full">
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => setShowSettingsDialog(true)} className="w-full">
-                  <Settings className="h-4 w-4" />
-                  {!isCollapsed && <span>Settings</span>}
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActivePath(pathname, "/dashboard/settings")}
+                  className="w-full"
+                >
+                  <a
+                    href="/dashboard/settings"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/dashboard/settings");
+                    }}
+                  >
+                    <Settings className="h-4 w-4" />
+                    {!isCollapsed && <span>Settings</span>}
+                  </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={handleLogout}
-                  className="w-full text-destructive hover:text-destructive"
+                  className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                   <LogOut className="h-4 w-4" />
                   {!isCollapsed && <span>Logout</span>}
@@ -705,9 +731,6 @@ function SidebarContentInternal() {
           setSwitcherOpen(true);
         }}
       />
-
-      {/* Settings Dialog - rendered outside sidebar */}
-      <SettingsDialog isOpen={showSettingsDialog} onOpenChange={setShowSettingsDialog} />
     </>
   );
 }

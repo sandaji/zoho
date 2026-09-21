@@ -63,8 +63,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Home",
     icon: LayoutDashboard,
     section: "operations",
-    accent: sharedAccent("text-slate-200", "text-slate-300", "bg-slate-700 text-white", "bg-slate-300"),
-    roles: ["branch_manager", "manager", "accountant", "hr", "warehouse_staff", "driver", "procurement", "user"],
+    accent: sharedAccent("text-slate-700 dark:text-slate-200", "text-slate-600 dark:text-slate-400", "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white", "bg-slate-400 dark:bg-slate-300"),
     pages: [{ id: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard }],
   },
   {
@@ -72,7 +71,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Sales",
     icon: ShoppingCart,
     section: "operations",
-    accent: sharedAccent("text-emerald-300", "text-emerald-400", "bg-emerald-500/15 text-emerald-200", "bg-emerald-400"),
+    accent: sharedAccent("text-emerald-700 dark:text-emerald-300", "text-emerald-600 dark:text-emerald-400", "bg-emerald-50 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200", "bg-emerald-500 dark:bg-emerald-400"),
     permissions: ["sales.order.create", "sales.order.view_all"],
     pages: [
       { id: "pos", label: "Point of Sale", href: "/dashboard/pos", icon: ShoppingCart },
@@ -84,7 +83,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Inventory",
     icon: Package,
     section: "operations",
-    accent: sharedAccent("text-sky-300", "text-sky-400", "bg-sky-500/15 text-sky-200", "bg-sky-400"),
+    accent: sharedAccent("text-sky-700 dark:text-sky-300", "text-sky-600 dark:text-sky-400", "bg-sky-50 text-sky-900 dark:bg-sky-500/20 dark:text-sky-200", "bg-sky-500 dark:bg-sky-400"),
     permissions: ["inventory.product.view", "inventory.stock.adjust", "inventory.product.manage"],
     summary: (stats) => stats.lowStockItems ? `${stats.lowStockItems} low stock` : undefined,
     pages: [
@@ -113,18 +112,12 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Procurement",
     icon: BookOpen,
     section: "operations",
-    accent: sharedAccent("text-violet-300", "text-violet-400", "bg-violet-500/15 text-violet-200", "bg-violet-400"),
+    accent: sharedAccent("text-violet-700 dark:text-violet-300", "text-violet-600 dark:text-violet-400", "bg-violet-50 text-violet-900 dark:bg-violet-500/20 dark:text-violet-200", "bg-violet-500 dark:bg-violet-400"),
     permissions: ["procurement.vendor.view", "procurement.order.view", "admin.branch.manage"],
     pages: [
       { id: "purchasing", label: "Purchasing Overview", href: "/dashboard/purchasing", icon: BookOpen },
       { id: "vendors", label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users, permissions: ["procurement.vendor.view", "admin.branch.manage"] },
       { id: "purchase-orders", label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen, permissions: ["procurement.order.view", "admin.branch.manage"] },
-      // NOTE: this module's other entries gate on "procurement.*" permission
-      // codes that don't exist in the actual RBAC seed (backend uses
-      // "purchasing.*" — see backend/prisma/update-rbac.ts). Left as-is here
-      // since fixing it is outside this pass's scope, but the new
-      // requisitions entry below uses the real codes rather than repeating
-      // that mismatch.
       {
         id: "purchase-requisitions",
         label: "Requisitions",
@@ -147,7 +140,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Finance",
     icon: DollarSign,
     section: "operations",
-    accent: sharedAccent("text-amber-300", "text-amber-400", "bg-amber-400/15 text-amber-200", "bg-amber-400"),
+    accent: sharedAccent("text-amber-700 dark:text-amber-300", "text-amber-600 dark:text-amber-400", "bg-amber-50 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200", "bg-amber-500 dark:bg-amber-400"),
     permissions: ["finance.gl.view"],
     pages: [
       { id: "finance-overview", label: "Finance Overview", href: "/dashboard/finance", icon: LayoutDashboard },
@@ -176,7 +169,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Human Resources",
     icon: Users,
     section: "operations",
-    accent: sharedAccent("text-fuchsia-300", "text-fuchsia-400", "bg-fuchsia-500/15 text-fuchsia-200", "bg-fuchsia-400"),
+    accent: sharedAccent("text-rose-700 dark:text-rose-300", "text-rose-600 dark:text-rose-400", "bg-rose-50 text-rose-900 dark:bg-rose-500/20 dark:text-rose-200", "bg-rose-500 dark:bg-rose-400"),
     permissions: ["hr.employee.view", "hr.employee.manage", "hr.payroll.view", "hr.payroll.manage"],
     pages: [
       { id: "employees", label: "Employees", href: "/dashboard/employees", icon: Users, permissions: ["hr.employee.view", "hr.employee.manage"] },
@@ -189,7 +182,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Fleet & Logistics",
     icon: Truck,
     section: "operations",
-    accent: sharedAccent("text-orange-300", "text-orange-400", "bg-orange-500/15 text-orange-200", "bg-orange-400"),
+    accent: sharedAccent("text-orange-700 dark:text-orange-300", "text-orange-600 dark:text-orange-400", "bg-orange-50 text-orange-900 dark:bg-orange-500/20 dark:text-orange-200", "bg-orange-500 dark:bg-orange-400"),
     permissions: ["sales.order.view_all", "sales.order.manage"],
     roles: ["driver"],
     summary: (stats) => stats.pendingDeliveries ? `${stats.pendingDeliveries} pending deliveries` : undefined,
@@ -200,7 +193,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Reports",
     icon: BarChart3,
     section: "reports",
-    accent: sharedAccent("text-cyan-300", "text-cyan-400", "bg-cyan-500/15 text-cyan-200", "bg-cyan-400"),
+    accent: sharedAccent("text-cyan-700 dark:text-cyan-300", "text-cyan-600 dark:text-cyan-400", "bg-cyan-50 text-cyan-900 dark:bg-cyan-500/20 dark:text-cyan-200", "bg-cyan-500 dark:bg-cyan-400"),
     permissions: ["finance.reports.view", "admin.branch.manage"],
     pages: [{ id: "reports-overview", label: "Reports", href: "/dashboard/reports", icon: BarChart3 }],
   },
@@ -209,7 +202,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "System Administration",
     icon: Crown,
     section: "system",
-    accent: sharedAccent("text-yellow-200", "text-yellow-400", "bg-yellow-400/15 text-yellow-200", "bg-yellow-400"),
+    accent: sharedAccent("text-yellow-700 dark:text-yellow-300", "text-yellow-600 dark:text-yellow-400", "bg-yellow-50 text-yellow-900 dark:bg-yellow-500/20 dark:text-yellow-200", "bg-yellow-500 dark:bg-yellow-400"),
     // No module-level roles/permissions restriction — visibility is decided
     // per-page below so each person only sees the admin sections their
     // permissions actually grant. The module itself only disappears once
@@ -299,7 +292,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     label: "Settings",
     icon: Settings,
     section: "settings",
-    accent: sharedAccent("text-slate-300", "text-slate-400", "bg-slate-700 text-white", "bg-slate-400"),
+    accent: sharedAccent("text-slate-700 dark:text-slate-200", "text-slate-600 dark:text-slate-400", "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white", "bg-slate-400 dark:bg-slate-300"),
     roles: ["admin", "super_admin", "branch_manager", "manager", "accountant", "hr", "warehouse_staff", "driver", "procurement", "user"],
     pages: [{ id: "settings", label: "Settings", href: "/dashboard/settings", icon: Settings }],
   },
@@ -332,6 +325,7 @@ export function canAccessNavigationItem(
   role: string,
   hasAnyPermission: (permissions: string[]) => boolean,
 ) {
+  if (role === "admin" || role === "super_admin") return true;
   return (!item.permissions?.length || hasAnyPermission(item.permissions))
     && (!item.roles?.length || item.roles.includes(role));
 }

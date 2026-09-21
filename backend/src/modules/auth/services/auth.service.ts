@@ -31,11 +31,14 @@ export class AuthService {
       );
     }
 
-    const normalizedEmail = email.toLowerCase();
+    const normalizedEmail = email.trim().toLowerCase();
 
-    // Find user by email
-    let user = await prisma.user.findUnique({
-      where: { email: normalizedEmail },
+    // Find user by email. Case-insensitive on purpose: emails saved by other
+    // code paths (e.g. createEmployee, before it normalised them) may contain
+    // uppercase letters, and lowercasing only the input made those accounts
+    // impossible to find ("Invalid email or password").
+    let user = await prisma.user.findFirst({
+      where: { email: { equals: normalizedEmail, mode: "insensitive" } },
       include: {
         branch: true,
       },

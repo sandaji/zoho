@@ -32,20 +32,20 @@ export function DashboardHeader({
   exporting,
 }: HeaderProps) {
   return (
-    <div className="rounded-xl border border-emerald-100 bg-white px-5 py-4 shadow-sm">
+    <div className="rounded-xl border border-border bg-card px-5 py-4 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         {/* Left: identity */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-            <Store className="h-5 w-5 text-emerald-700" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+            <Store className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-lg font-bold leading-none text-emerald-900">
+            <h1 className="text-lg font-bold leading-none text-foreground">
               Branch Manager Dashboard
             </h1>
-            <p className="mt-0.5 text-sm text-emerald-600">
+            <p className="mt-0.5 text-sm text-muted-foreground">
               Welcome back,{" "}
-              <span className="font-semibold text-emerald-800">{user?.name}</span>
+              <span className="font-semibold text-foreground">{user?.name}</span>
             </p>
           </div>
         </div>
@@ -53,7 +53,7 @@ export function DashboardHeader({
         {/* Right: controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Branch selector (static label – extend when branch API is available) */}
-          <div className="flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700">
+          <div className="flex items-center gap-1.5 rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary">
             <Store className="h-3.5 w-3.5" />
             <span>Main Branch</span>
             <ChevronDown className="h-3.5 w-3.5 opacity-60" />

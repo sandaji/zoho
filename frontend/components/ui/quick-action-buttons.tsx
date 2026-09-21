@@ -21,15 +21,15 @@ export function QuickActionButtons({ actions }: QuickActionButtonsProps) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium text-foreground bg-background border border-input rounded-md hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring transition-colors shadow-sm"
           aria-label="Quick actions"
         >
-          <MoreVertical size={20} />
+          <MoreVertical size={16} />
           <span>Actions</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-2">
-        <div className="space-y-1">
+      <PopoverContent className="w-56 p-1 bg-popover text-popover-foreground border-border">
+        <div className="space-y-0.5">
           {actions.map((action, index) => (
             <button
               key={index}
@@ -37,7 +37,7 @@ export function QuickActionButtons({ actions }: QuickActionButtonsProps) {
                 action.onClick();
                 setOpen(false);
               }}
-              className="flex items-center gap-3 w-full px-3 py-2 text-sm text-left text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
+              className="flex items-center gap-2.5 w-full px-2.5 py-1.5 text-xs text-left text-foreground rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors"
             >
               {action.icon}
               <span>{action.label}</span>

@@ -31,9 +31,9 @@ interface SalesAnalyticsProps {
 function AreaTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border border-emerald-100 bg-white px-3 py-2 text-xs shadow-lg">
-      <p className="font-semibold text-emerald-800">{label}</p>
-      <p className="text-emerald-600">
+    <div className="rounded-lg border border-border bg-popover text-popover-foreground px-3 py-2 text-xs shadow-lg">
+      <p className="font-semibold text-foreground">{label}</p>
+      <p className="text-primary font-medium">
         KES {Number(payload[0].value).toLocaleString()}
       </p>
     </div>
@@ -44,8 +44,8 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
   if (loading) {
     return (
       <div className="grid gap-6 lg:grid-cols-12">
-        <div className="h-72 animate-pulse rounded-xl bg-emerald-50 lg:col-span-8" />
-        <div className="h-72 animate-pulse rounded-xl bg-emerald-50 lg:col-span-4" />
+        <div className="h-72 animate-pulse rounded-xl bg-muted lg:col-span-8" />
+        <div className="h-72 animate-pulse rounded-xl bg-muted lg:col-span-4" />
       </div>
     );
   }
@@ -53,10 +53,10 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
   return (
     <div className="grid gap-6 lg:grid-cols-12">
       {/* ── Row 3 Left: Area Chart (8 cols) ─────────────────────────── */}
-      <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm lg:col-span-8">
+      <Card className="rounded-xl border border-border bg-card shadow-sm lg:col-span-8">
         <CardHeader>
-          <CardTitle className="text-emerald-900">Sales Trend</CardTitle>
-          <CardDescription className="text-emerald-500 capitalize">
+          <CardTitle className="text-foreground">Sales Trend</CardTitle>
+          <CardDescription className="text-muted-foreground capitalize">
             Performance over {timeRange}
           </CardDescription>
         </CardHeader>
@@ -66,26 +66,26 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
               <AreaChart data={salesData} margin={{ top: 4, right: 16, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#059669" stopOpacity={0.25} />
-                    <stop offset="95%" stopColor="#059669" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis
                   dataKey="date"
-                  stroke="#6ee7b7"
-                  tick={{ fill: "#065f46", fontSize: 11 }}
+                  className="text-xs text-muted-foreground"
+                  tick={{ fontSize: 11 }}
                 />
                 <YAxis
-                  stroke="#6ee7b7"
-                  tick={{ fill: "#065f46", fontSize: 11 }}
+                  className="text-xs text-muted-foreground"
+                  tick={{ fontSize: 11 }}
                   tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
                 />
                 <Tooltip content={<AreaTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="amount"
-                  stroke="#059669"
+                  stroke="#10b981"
                   strokeWidth={2.5}
                   fill="url(#salesGradient)"
                 />
@@ -96,10 +96,10 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
       </Card>
 
       {/* ── Row 3 Right: Donut Chart (4 cols) ────────────────────────── */}
-      <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm lg:col-span-4">
+      <Card className="rounded-xl border border-border bg-card shadow-sm lg:col-span-4">
         <CardHeader>
-          <CardTitle className="text-emerald-900">Payment Types</CardTitle>
-          <CardDescription className="text-emerald-500">By transaction share</CardDescription>
+          <CardTitle className="text-foreground">Payment Types</CardTitle>
+          <CardDescription className="text-muted-foreground">By transaction share</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center">
           <div className="h-48 w-full">

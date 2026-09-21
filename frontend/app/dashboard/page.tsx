@@ -97,9 +97,9 @@ export default function DashboardPage() {
     <div className="p-6">
       <div className="mx-auto max-w-screen-xl space-y-6">
         {/* Header */}
-        <div className="rounded-xl border border-emerald-100 bg-white px-6 py-5 shadow-sm">
-          <h1 className="text-2xl font-bold text-emerald-900">Welcome back, {user?.name}!</h1>
-          <p className="mt-1 text-sm text-emerald-600">
+        <div className="rounded-xl border border-border bg-card px-6 py-5 shadow-sm">
+          <h1 className="text-2xl font-bold text-foreground">Welcome back, {user?.name}!</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Here's what's happening with your business today.
           </p>
         </div>
@@ -111,19 +111,19 @@ export default function DashboardPage() {
             return (
               <Card
                 key={stat.title}
-                className="rounded-xl border border-emerald-100 bg-white shadow-sm transition-shadow hover:shadow-md"
+                className="rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
               >
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-emerald-700">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+                  <CardTitle className="text-xs font-medium text-muted-foreground">
                     {stat.title}
                   </CardTitle>
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100">
-                    <Icon className="h-4 w-4 text-emerald-700" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <Icon className="h-4 w-4 text-primary" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-emerald-900">{stat.value}</p>
-                  <p className="mt-1 flex items-center gap-1 text-xs text-emerald-600">
+                  <p className="text-xl font-bold text-foreground">{stat.value}</p>
+                  <p className="mt-1 flex items-center gap-1 text-xs font-medium text-primary">
                     <TrendingUp className="h-3 w-3" />
                     {stat.trend} from last month
                   </p>
@@ -136,9 +136,9 @@ export default function DashboardPage() {
         {/* Bottom row */}
         <div className="grid gap-5 lg:grid-cols-2">
           {/* Recent Activity */}
-          <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
+          <Card className="rounded-xl border border-border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-emerald-900">Recent Activity</CardTitle>
+              <CardTitle className="text-foreground">Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
@@ -153,12 +153,12 @@ export default function DashboardPage() {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="flex items-center gap-3 border-b border-emerald-50 pb-3 last:border-0"
+                    className="flex items-center gap-3 border-b border-border pb-3 last:border-0"
                   >
                     <span className={`h-2.5 w-2.5 rounded-full ${item.color}`} />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-emerald-900">{item.label}</p>
-                      <p className="text-xs text-emerald-400">{item.time}</p>
+                      <p className="text-sm font-medium text-foreground">{item.label}</p>
+                      <p className="text-xs text-muted-foreground">{item.time}</p>
                     </div>
                   </div>
                 ))}
@@ -167,9 +167,9 @@ export default function DashboardPage() {
           </Card>
 
           {/* Quick Actions */}
-          <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
+          <Card className="rounded-xl border border-border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle className="text-emerald-900">Quick Actions</CardTitle>
+              <CardTitle className="text-foreground">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
@@ -180,9 +180,9 @@ export default function DashboardPage() {
                     <button
                       key={action.label}
                       onClick={() => router.push(action.route)}
-                      className="flex w-full items-center gap-3 rounded-lg border border-emerald-100 px-4 py-2.5 text-sm font-medium text-emerald-700 transition-colors hover:border-emerald-300 hover:bg-emerald-50"
+                      className="flex w-full items-center gap-3 rounded-lg border border-border px-4 py-2 text-xs font-medium text-foreground transition-colors hover:border-primary/40 hover:bg-accent hover:text-accent-foreground"
                     >
-                      <Icon className="h-4 w-4 text-emerald-600" />
+                      <Icon className="h-4 w-4 text-primary" />
                       {action.label}
                     </button>
                   );

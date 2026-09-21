@@ -384,10 +384,15 @@ router.post(
 );
 
 // POST /inventory/transfers/:id/approve - Stage 2: Approve a transfer
+// Approval is a segregation-of-duties control: ONLY inventory.transfer.approve
+// qualifies. The blanket inventory.stock.adjust override that the other stages
+// accept is deliberately not honoured here — branch managers hold stock.adjust
+// for day-to-day work but must not be able to approve their own branch's
+// transfer requests.
 router.post(
   "/inventory/transfers/:id/approve",
   authMiddleware,
-  hasAnyPermission(["inventory.transfer.approve", "inventory.stock.adjust"]),
+  hasAnyPermission(["inventory.transfer.approve"]),
   validateFiscalPeriod(),
   (req: Request, res: Response, next: NextFunction) =>
     inventoryController.approveTransfer(req, res, next),

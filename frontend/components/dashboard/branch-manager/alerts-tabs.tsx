@@ -39,22 +39,22 @@ export function AlertsTabs({
   loading,
 }: AlertsTabsProps) {
   return (
-    <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
+    <Card className="rounded-xl border border-border bg-card shadow-sm">
       <CardHeader className="pb-2">
-        <CardTitle className="text-emerald-900">Exceptions &amp; Alerts</CardTitle>
-        <CardDescription className="text-emerald-500">Items needing attention</CardDescription>
+        <CardTitle className="text-foreground">Exceptions &amp; Alerts</CardTitle>
+        <CardDescription className="text-muted-foreground">Items needing attention</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
         {loading ? (
           <div className="space-y-3 p-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-10 animate-pulse rounded-lg bg-emerald-50" />
+              <div key={i} className="h-10 animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
         ) : (
           <Tabs.Root defaultValue="alerts" className="flex flex-col">
             {/* Tab list */}
-            <Tabs.List className="flex border-b border-emerald-100 px-4">
+            <Tabs.List className="flex border-b border-border px-4">
               {[
                 { value: "alerts", label: "Alerts", Icon: AlertTriangle, count: lowStockItems.length },
                 { value: "products", label: "Products", Icon: Package, count: topProducts.length },
