@@ -342,7 +342,9 @@ export const fetchBranches = async (token: string): Promise<Branch[]> => {
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "");
     console.error(`fetchBranches failed with status ${response.status}:`, errorBody);
-    throw new Error(`Failed to fetch branches (${response.status}): ${errorBody || response.statusText}`);
+    throw new Error(
+      `Failed to fetch branches (${response.status}): ${errorBody || response.statusText}`
+    );
   }
   const { data } = await response.json();
   return data.branches || [];
@@ -372,7 +374,7 @@ export const fetchVendors = async (token: string): Promise<any[]> => {
 
 export const fetchUsers = async (
   token: string,
-  options: { includeDrivers?: boolean } = {},
+  options: { includeDrivers?: boolean } = {}
 ): Promise<User[]> => {
   // includeDrivers: also return employees with the "driver" role who have no
   // system login (needed by the transfer dispatch dialog's driver picker).
@@ -382,8 +384,12 @@ export const fetchUsers = async (
   });
   if (!response.ok) {
     const errorBody = await response.text().catch(() => "");
-    console.error(`fetchUsers failed with status ${response.status}:`, errorBody);
-    throw new Error(`Failed to fetch users (${response.status}): ${errorBody || response.statusText}`);
+    if (response.status !== 403) {
+      console.error(`fetchUsers failed with status ${response.status}:`, errorBody);
+    }
+    throw new Error(
+      `Failed to fetch users (${response.status}): ${errorBody || response.statusText}`
+    );
   }
   const { data } = await response.json();
   return data;
@@ -479,7 +485,12 @@ export interface DeliveryTimelineEvent {
 export const fetchDeliveryTimeline = async (
   token: string,
   deliveryId: string
-): Promise<{ deliveryId: string; delivery_no: string; status: string; events: DeliveryTimelineEvent[] }> => {
+): Promise<{
+  deliveryId: string;
+  delivery_no: string;
+  status: string;
+  events: DeliveryTimelineEvent[];
+}> => {
   const response = await fetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/timeline`, {
     headers: getAuthHeadersWithToken(token),
   });
@@ -549,11 +560,14 @@ export const startPickingStockTransfer = async (
   transferId: string,
   payload: StartPickingPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/start-picking`, {
-    method: "POST",
-    headers: getAuthHeadersWithToken(token),
-    body: JSON.stringify(payload),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/v1/inventory/transfers/${transferId}/start-picking`,
+    {
+      method: "POST",
+      headers: getAuthHeadersWithToken(token),
+      body: JSON.stringify(payload),
+    }
+  );
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to start picking");
@@ -567,11 +581,14 @@ export const completePickingStockTransfer = async (
   transferId: string,
   payload: CompletePickingPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/complete-picking`, {
-    method: "POST",
-    headers: getAuthHeadersWithToken(token),
-    body: JSON.stringify(payload),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/v1/inventory/transfers/${transferId}/complete-picking`,
+    {
+      method: "POST",
+      headers: getAuthHeadersWithToken(token),
+      body: JSON.stringify(payload),
+    }
+  );
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.error?.message || "Failed to complete picking");
@@ -680,10 +697,7 @@ export const resolveTransferIssue = async (
   return data;
 };
 
-export const fetchTransferAuditLogs = async (
-  token: string,
-  transferId: string
-): Promise<any[]> => {
+export const fetchTransferAuditLogs = async (token: string, transferId: string): Promise<any[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/audit-logs`, {
     headers: getAuthHeadersWithToken(token),
   });
@@ -694,9 +708,7 @@ export const fetchTransferAuditLogs = async (
   return data;
 };
 
-export const fetchTransferAnalytics = async (
-  token: string
-): Promise<any> => {
+export const fetchTransferAnalytics = async (token: string): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/analytics`, {
     headers: getAuthHeadersWithToken(token),
   });
@@ -708,7 +720,7 @@ export const fetchTransferAnalytics = async (
 };
 
 export const fetchNotifications = async (
-  token: string,
+  token: string
 ): Promise<{ notifications: any[]; unreadCount: number }> => {
   const response = await fetch(`${API_BASE_URL}/v1/notifications`, {
     headers: getAuthHeadersWithToken(token),
@@ -720,10 +732,7 @@ export const fetchNotifications = async (
   return data;
 };
 
-export const markNotificationRead = async (
-  token: string,
-  notificationId: string,
-): Promise<any> => {
+export const markNotificationRead = async (token: string, notificationId: string): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/v1/notifications/${notificationId}/read`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
@@ -734,9 +743,7 @@ export const markNotificationRead = async (
   return response.json();
 };
 
-export const markAllNotificationsRead = async (
-  token: string,
-): Promise<any> => {
+export const markAllNotificationsRead = async (token: string): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/v1/notifications/read-all`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),

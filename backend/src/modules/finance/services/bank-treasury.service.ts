@@ -3,6 +3,7 @@ import { prisma } from '@core/database/db';
 import { Prisma } from "../../../generated";
 import { TransactionType, BankAccountType } from "../../../generated/enums.js";
 import { logger } from '@core/utils/logger';
+import { getRequestContext } from '@core/async-context';
 
 export interface RecordTreasuryTransactionInput {
   paymentMethod?: string;
@@ -15,7 +16,10 @@ export interface RecordTreasuryTransactionInput {
 
 export class BankTreasuryService {
   /**
-   * Resolve or create a default bank/treasury account for a given payment method
+   * Resolve or create a branch-scoped bank/treasury account for a given
+   * payment method. Each branch gets its own Cash/M-Pesa/Operating account;
+   * a request with no branch in context (background jobs, HQ-level actions)
+   * resolves/creates against the branchId=null head-office account instead.
    */
   static async resolveAccount(
     paymentMethod?: string,
@@ -23,46 +27,46 @@ export class BankTreasuryService {
   ) {
     const client = tx || prisma;
     const method = (paymentMethod || "").toUpperCase();
+    const branchId = getRequestContext().branchId ?? null;
 
     // Determine account search criteria based on payment method
     let accountNamePattern = "Operating Account";
     let bankName = "Primary Commercial Bank";
-    let accountNumber = "BANK-001";
+    let accountNumberBase = "BANK-001";
 
     if (method.includes("CASH")) {
       accountNamePattern = "Cash Account";
       bankName = "Cash in Vault / Drawer";
-      accountNumber = "CASH-001";
+      accountNumberBase = "CASH-001";
     } else if (method.includes("MPESA") || method.includes("MOBILE")) {
       accountNamePattern = "M-Pesa / Mobile Money";
       bankName = "Safaricom M-Pesa";
-      accountNumber = "MPESA-001";
+      accountNumberBase = "MPESA-001";
     }
 
-    // Try finding matching account by name keyword
+    // Try finding the matching account for this branch (or the head-office
+    // account when there's no branch in context) by name keyword.
     const keyword = accountNamePattern.split(" ")[0];
     let account = await client.bankAccount.findFirst({
       where: {
         is_active: true,
+        branchId,
         account_name: { contains: keyword, mode: "insensitive" },
       },
     });
 
-    // Fallback: any active bank account
+    // Fallback: create the account for this branch if none exists yet.
+    // account_number is qualified per-branch (unique on [account_number,
+    // branchId]) so each branch's auto-provisioned account gets its own row
+    // instead of colliding with another branch's CASH-001/MPESA-001/BANK-001.
     if (!account) {
-      account = await client.bankAccount.findFirst({
-        where: { is_active: true },
-        orderBy: { createdAt: "asc" },
-      });
-    }
-
-    // Fallback: create default account if none exists in DB
-    if (!account) {
+      const suffix = branchId ?? "HQ";
       account = await client.bankAccount.create({
         data: {
           account_name: accountNamePattern,
-          account_number: accountNumber,
+          account_number: `${accountNumberBase}-${suffix}`,
           bank_name: bankName,
+          branchId,
           account_type: BankAccountType.checking,
           currency: "KES",
           current_balance: 0,
@@ -94,6 +98,7 @@ export class BankTreasuryService {
       if (!amount || amount <= 0) return null;
 
       const account = await this.resolveAccount(paymentMethod, tx);
+      const branchId = getRequestContext().branchId ?? account.branchId ?? null;
       // TransactionType.income === "income" at runtime, so one check covers both
       // the plain-string and enum forms of the input.
       const isIncome = type === TransactionType.income;
@@ -110,6 +115,7 @@ export class BankTreasuryService {
         data: {
           transaction_no: txnNo,
           bank_account_id: account.id,
+          branchId,
           transaction_type: transactionType,
           amount,
           balance_after: newBalance,

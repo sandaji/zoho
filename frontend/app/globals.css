@@ -66,6 +66,8 @@ html {
 }
 
 :root {
+  --radius: 0.5rem;
+
   /* Backgrounds - Clean, modern canvas */
   --background: hsl(0, 0%, 97%);
   --foreground: hsl(160, 15%, 12%);
@@ -142,21 +144,21 @@ html {
   --foreground: hsl(200, 20%, 92%);
 
   /* Borders & Inputs */
-  --border: hsl(210, 25%, 20%);
-  --input: hsl(210, 25%, 20%);
-  --ring: hsl(160, 64%, 52%);
+  --border: hsl(210, 20%, 16%);
+  --input: hsl(210, 20%, 16%);
+  --ring: hsl(160, 58%, 44%);
 
   /* Card */
-  --card: hsl(210, 30%, 11%);
+  --card: hsl(210, 28%, 10%);
   --card-foreground: hsl(200, 20%, 92%);
 
   /* Popover */
   --popover: hsl(210, 30%, 11%);
   --popover-foreground: hsl(200, 20%, 92%);
 
-  /* Primary - Bright Emerald with dark text for contrast */
-  --primary: hsl(160, 64%, 52%);
-  --primary-foreground: hsl(160, 30%, 10%);
+  /* Primary - Calm Emerald for dark surfaces */
+  --primary: hsl(160, 58%, 42%);
+  --primary-foreground: hsl(0, 0%, 100%);
 
   /* Secondary */
   --secondary: hsl(160, 30%, 16%);
@@ -171,7 +173,7 @@ html {
   --muted-foreground: hsl(200, 15%, 60%);
 
   /* Semantic Colors */
-  --success: hsl(152, 60%, 40%);
+  --success: hsl(152, 55%, 40%);
   --success-foreground: hsl(0, 0%, 100%);
   --success-muted: hsl(152, 60%, 20%);
   --success-border: hsl(152, 60%, 30%);
@@ -193,11 +195,60 @@ html {
   --sidebar: hsl(210, 35%, 8%);
   --sidebar-foreground: hsl(200, 20%, 92%);
   --sidebar-accent: hsl(160, 30%, 16%);
-  --sidebar-border: hsl(210, 25%, 18%);
-  --sidebar-primary: hsl(160, 64%, 52%);
-  --sidebar-primary-foreground: hsl(160, 30%, 10%);
+  --sidebar-border: hsl(210, 20%, 15%);
+  --sidebar-primary: hsl(160, 58%, 42%);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
   --sidebar-accent-foreground: hsl(155, 75%, 85%);
-  --sidebar-ring: hsl(160, 64%, 52%);
+  --sidebar-ring: hsl(160, 58%, 42%);
+}
+
+/* Keep older utility-heavy screens readable when the shadcn theme is dark. */
+@layer utilities {
+  .dark .bg-white {
+    background-color: var(--card);
+  }
+
+  .dark .bg-white\/80,
+  .dark .bg-white\/95 {
+    background-color: color-mix(in srgb, var(--card) 80%, transparent);
+  }
+
+  .dark .bg-gray-50,
+  .dark .bg-slate-50 {
+    background-color: var(--muted);
+  }
+
+  .dark .bg-gray-100,
+  .dark .bg-slate-100 {
+    background-color: var(--accent);
+  }
+
+  .dark .bg-slate-50\/30,
+  .dark .bg-slate-50\/50,
+  .dark .bg-slate-50\/70 {
+    background-color: color-mix(in srgb, var(--muted) 70%, transparent);
+  }
+
+  .dark .text-slate-900,
+  .dark .text-slate-800,
+  .dark .text-slate-700 {
+    color: var(--foreground);
+  }
+
+  .dark .text-slate-600,
+  .dark .text-slate-500,
+  .dark .text-slate-400 {
+    color: var(--muted-foreground);
+  }
+
+  .dark .border-gray-100,
+  .dark .border-gray-200,
+  .dark .border-slate-100,
+  .dark .border-slate-200,
+  .dark .border-emerald-100,
+  .dark .border-red-100 {
+    border-color: var(--border);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

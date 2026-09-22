@@ -159,20 +159,20 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminBranchProvider>
-      <div className="flex min-h-full flex-col bg-emerald-50/20">
+      <div className="flex min-h-full flex-col bg-background">
         {/* ── Page heading strip ──────────────────────────────────────────── */}
-        <div className="sticky top-0 z-10 border-b border-emerald-100 bg-white/95 backdrop-blur-sm px-6 py-4 shadow-sm">
+        <div className="sticky top-0 z-10 border-b border-border bg-background/95 px-6 py-4 shadow-sm backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 "flex h-8 w-8 items-center justify-center rounded-lg",
-                section === "overview" ? "bg-yellow-400" : "bg-emerald-100"
+                section === "overview" ? "bg-yellow-400" : "bg-accent"
               )}
             >
               <MetaIcon
                 className={cn(
                   "h-4 w-4",
-                  section === "overview" ? "text-emerald-900" : "text-emerald-700"
+                  section === "overview" ? "text-emerald-900" : "text-foreground"
                 )}
               />
             </div>

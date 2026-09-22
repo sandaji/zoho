@@ -18,6 +18,9 @@ import {
   Mail,
   Smartphone,
   Sparkles,
+  PanelLeft,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,11 +32,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ROLE_LABELS, ROLE_COLORS, APP_VERSION } from "@/components/sidebar/constants";
 import { cn } from "@/lib/utils";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { user } = useAuth();
+  const { open: sidebarOpen, toggleSidebar } = useSidebar();
   const [mounted, setMounted] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   // Notification Preferences state
   const [notifications, setNotifications] = useState({
@@ -58,6 +64,18 @@ export default function SettingsPage() {
     }
   }, []);
 
+   // Online/offline status
+    useEffect(() => {
+      const updateConnection = () => setIsOnline(navigator.onLine);
+      updateConnection();
+      window.addEventListener("online", updateConnection);
+      window.addEventListener("offline", updateConnection);
+      return () => {
+        window.removeEventListener("online", updateConnection);
+        window.removeEventListener("offline", updateConnection);
+      };
+    }, []);
+
   const handleSavePreferences = () => {
     setSaving(true);
     localStorage.setItem("swiftpos_notification_prefs", JSON.stringify(notifications));
@@ -77,12 +95,19 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between rounded-xl border border-border bg-card p-6 shadow-sm">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings &amp; Preferences</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              Settings &amp; Preferences
+            </h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Customize your workspace appearance, notification preferences, and system configurations.
+              Customize your workspace appearance, notification preferences, and system
+              configurations.
             </p>
           </div>
-          <Button onClick={handleSavePreferences} disabled={saving} className="gap-2 self-start md:self-auto">
+          <Button
+            onClick={handleSavePreferences}
+            disabled={saving}
+            className="gap-2 self-start md:self-auto"
+          >
             <Save className="h-4 w-4" />
             {saving ? "Saving…" : "Save Changes"}
           </Button>
@@ -118,7 +143,8 @@ export default function SettingsPage() {
                   Theme &amp; Interface
                 </CardTitle>
                 <CardDescription>
-                  Select how SwiftPos ERP looks to you. Choose a light, dark, or system-synced theme.
+                  Select how SwiftPos ERP looks to you. Choose a light, dark, or system-synced
+                  theme.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -140,9 +166,7 @@ export default function SettingsPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-sm text-foreground">Light Mode</span>
-                        {mounted && theme === "light" && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
+                        {mounted && theme === "light" && <Check className="h-4 w-4 text-primary" />}
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         Crisp, high-contrast light surfaces with emerald accents.
@@ -167,9 +191,7 @@ export default function SettingsPage() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-sm text-foreground">Dark Mode</span>
-                        {mounted && theme === "dark" && (
-                          <Check className="h-4 w-4 text-primary" />
-                        )}
+                        {mounted && theme === "dark" && <Check className="h-4 w-4 text-primary" />}
                       </div>
                       <p className="text-xs text-muted-foreground mt-0.5">
                         Sleek dark slate surfaces designed for low-light environments.
@@ -203,6 +225,29 @@ export default function SettingsPage() {
                       </p>
                     </div>
                   </button>
+                </div>
+
+                <Separator />
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <PanelLeft className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <Label htmlFor="sidebar-visibility" className="text-sm font-semibold">
+                        Sidebar
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        Keep the navigation expanded for quick access to modules.
+                      </p>
+                    </div>
+                  </div>
+                  <Switch
+                    id="sidebar-visibility"
+                    checked={sidebarOpen}
+                    onCheckedChange={toggleSidebar}
+                  />
                 </div>
 
                 <Separator />
@@ -361,11 +406,15 @@ export default function SettingsPage() {
 
                   <div className="rounded-lg border border-border bg-muted/20 p-4 space-y-1">
                     <span className="text-xs text-muted-foreground font-medium">Email Address</span>
-                    <p className="font-semibold text-foreground">{user?.email ?? "user@example.com"}</p>
+                    <p className="font-semibold text-foreground">
+                      {user?.email ?? "user@example.com"}
+                    </p>
                   </div>
 
                   <div className="rounded-lg border border-border bg-muted/20 p-4 space-y-1">
-                    <span className="text-xs text-muted-foreground font-medium">Role &amp; Security Level</span>
+                    <span className="text-xs text-muted-foreground font-medium">
+                      Role &amp; Security Level
+                    </span>
                     <div className="flex items-center gap-2 pt-0.5">
                       <Badge
                         variant="outline"
@@ -381,7 +430,9 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="rounded-lg border border-border bg-muted/20 p-4 space-y-1">
-                    <span className="text-xs text-muted-foreground font-medium">Current Branch Location</span>
+                    <span className="text-xs text-muted-foreground font-medium">
+                      Current Branch Location
+                    </span>
                     <div className="flex items-center gap-1.5 pt-0.5 text-foreground font-semibold text-sm">
                       <Building2 className="h-4 w-4 text-primary" />
                       <span>{branchName}</span>
@@ -407,8 +458,12 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2 border-b border-border">
-                    <span className="text-xs font-medium text-muted-foreground">Application Name</span>
-                    <span className="text-xs font-semibold text-foreground">SwiftPos ERP - Management System</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Application Name
+                    </span>
+                    <span className="text-xs font-semibold text-foreground">
+                      SwiftPos ERP - Management System
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between py-2 border-b border-border">
@@ -423,6 +478,19 @@ export default function SettingsPage() {
                     <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                       Production / Active
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2 border-b border-border">
+                    <span className="text-xs font-medium text-muted-foreground">Status</span>
+                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      {isOnline ? (
+                        <Wifi className="h-3 w-3 text-emerald-500" />
+                      ) : (
+                        <WifiOff className="h-3 w-3 text-red-500" />
+                      )}
+                      <span>{isOnline ? "Connected" : "Offline"}</span>
                     </span>
                   </div>
 

@@ -1,22 +1,19 @@
 "use client";
 
 import { useInventory } from "@/hooks/use-inventory";
-import { 
-  Plus, 
-  Search, 
-  Download, 
+import {
+  Plus,
+  Search,
+  Download,
   Upload,
-  RefreshCw, 
+  RefreshCw,
   AlertCircle,
   Package,
-  SlidersHorizontal
+  SlidersHorizontal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InventoryTable } from "../inventory/components/inventory-table";
 import { AddProductDialog } from "../inventory/components/add-product-dialog";
@@ -53,9 +50,7 @@ export default function ProductsPage() {
   const getBranchInventoryData = (product: any) => {
     if (filters.branchId && product.branchInventory) {
       // Branch selected — use that branch's inventory
-      const branchInv = product.branchInventory.find(
-        (bi: any) => bi.branchId === filters.branchId
-      );
+      const branchInv = product.branchInventory.find((bi: any) => bi.branchId === filters.branchId);
       if (branchInv) {
         return { ...branchInv, branch: branchInv.branch?.name || "Unassigned" };
       }
@@ -64,9 +59,16 @@ export default function ProductsPage() {
 
     // No branch selected — aggregate across all branch inventories
     if (product.branchInventory && product.branchInventory.length > 0) {
-      const totalQty = product.branchInventory.reduce((sum: number, bi: any) => sum + (bi.quantity || 0), 0);
-      const maxReorder = Math.max(...product.branchInventory.map((bi: any) => bi.reorder_level || 10));
-      const maxReorderQty = Math.max(...product.branchInventory.map((bi: any) => bi.reorder_quantity || 20));
+      const totalQty = product.branchInventory.reduce(
+        (sum: number, bi: any) => sum + (bi.quantity || 0),
+        0
+      );
+      const maxReorder = Math.max(
+        ...product.branchInventory.map((bi: any) => bi.reorder_level || 10)
+      );
+      const maxReorderQty = Math.max(
+        ...product.branchInventory.map((bi: any) => bi.reorder_quantity || 20)
+      );
       return {
         quantity: totalQty,
         reorder_level: maxReorder,
@@ -92,23 +94,26 @@ export default function ProductsPage() {
       unit: product.unit_of_measurement,
       costPrice: product.cost_price,
       sellingPrice: product.unit_price,
-      status: (branchInv.quantity <= branchInv.reorder_level)
-        ? (branchInv.quantity === 0 ? "out_of_stock" : "low_stock")
-        : "in_stock" as any,
+      status:
+        branchInv.quantity <= branchInv.reorder_level
+          ? branchInv.quantity === 0
+            ? "out_of_stock"
+            : "low_stock"
+          : ("in_stock" as any),
       lastRestocked: product.updatedAt,
       branch: branchInv.branch,
-      _raw: product, 
+      _raw: product,
     };
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50/30 via-white to-emerald-50/20 p-6 space-y-6">
+    <div className="min-h-screen space-y-6 bg-background p-6">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-4xl font-bold text-emerald-900 dark:text-emerald-50 flex items-center gap-3">
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg">
-              <Package className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+          <h1 className="flex items-center gap-3 text-3xl font-bold text-foreground">
+            <div className="rounded-lg bg-primary/10 p-2">
+              <Package className="h-8 w-8 text-primary" />
             </div>
             Product Catalogue
           </h1>
@@ -116,7 +121,7 @@ export default function ProductsPage() {
             Manage your master product data, pricing, and inventory levels.
           </p>
         </div>
-        
+
         {/* Action Buttons */}
         <div className="flex items-center gap-2 flex-wrap">
           <Button
@@ -152,10 +157,7 @@ export default function ProductsPage() {
             <SlidersHorizontal className="h-4 w-4 mr-2" />
             Manage Categories
           </Button>
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
-            onClick={() => setIsAddDialogOpen(true)}
-          >
+          <Button className="shadow-sm" onClick={() => setIsAddDialogOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Add Product
           </Button>
@@ -164,21 +166,24 @@ export default function ProductsPage() {
 
       {/* Error Alert */}
       {error && (
-        <Alert variant="destructive" className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30">
+        <Alert
+          variant="destructive"
+          className="border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/30"
+        >
           <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
           <AlertDescription className="text-red-700 dark:text-red-300">{error}</AlertDescription>
         </Alert>
       )}
 
       {/* Search and Filters Card */}
-      <Card className="bg-white dark:bg-slate-800 border-emerald-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow">
+      <Card className="border-border/50 bg-card shadow-sm">
         <CardContent className="p-5">
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Branch Select */}
             <select
               value={filters.branchId}
               onChange={(e) => setBranch(e.target.value)}
-              className="px-4 py-2 border border-emerald-100 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-emerald-500 hover:border-emerald-200 dark:hover:border-slate-500 transition-colors cursor-pointer font-medium"
+              className="cursor-pointer rounded-md border border-border/70 bg-background px-4 py-2 font-medium text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:border-primary/50"
             >
               <option value="">Select Branch</option>
               {branches.map((branch) => (
@@ -195,15 +200,15 @@ export default function ProductsPage() {
                 placeholder="Search by name, SKU, or category..."
                 value={filters.search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 border-emerald-100 dark:border-slate-600 focus-visible:ring-emerald-500 dark:focus-visible:ring-emerald-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                className="border-border/70 bg-background pl-10 text-foreground placeholder:text-muted-foreground focus-visible:ring-ring"
               />
             </div>
-            
+
             {/* Category Select */}
             <select
               value={filters.category}
               onChange={(e) => setCategory(e.target.value)}
-              className="px-4 py-2 border border-emerald-100 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:focus-visible:ring-emerald-500 hover:border-emerald-200 dark:hover:border-slate-500 transition-colors cursor-pointer"
+              className="cursor-pointer rounded-md border border-border/70 bg-background px-4 py-2 text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:border-primary/50"
             >
               <option value="all">All Categories</option>
               {categories.map((cat) => (
@@ -212,11 +217,11 @@ export default function ProductsPage() {
                 </option>
               ))}
             </select>
-            
+
             {/* More Filters Button */}
-            <Button 
-              variant="outline" 
-              className="border-emerald-100 dark:border-slate-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-slate-700 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-400 hover:border-emerald-300"
+            <Button
+              variant="outline"
+              className="border-border/70 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
             >
               More Filters
             </Button>
@@ -225,9 +230,9 @@ export default function ProductsPage() {
       </Card>
 
       {/* Products Table Section */}
-      <Card className="bg-white dark:bg-slate-800 border-emerald-100 dark:border-slate-700 shadow-sm overflow-hidden">
-        <InventoryTable 
-          items={transformedProducts} 
+      <Card className="overflow-hidden border-border/50 bg-card shadow-sm">
+        <InventoryTable
+          items={transformedProducts}
           isLoading={isLoading}
           pagination={pagination}
           onSort={setSort}
@@ -236,7 +241,7 @@ export default function ProductsPage() {
           onAdjustStock={(item) => setStockAdjustProduct(item)}
           currentSort={{
             sortBy: filters.sortBy,
-            sortOrder: filters.sortOrder
+            sortOrder: filters.sortOrder,
           }}
         />
       </Card>

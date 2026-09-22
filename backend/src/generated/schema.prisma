@@ -87,9 +87,15 @@ model Branch {
   isActive             Boolean               @default(true)
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
+  bankAccounts         BankAccount[]
   branchInventory      BranchInventory[]
+  budgets              Budget[]
   cashierSessions      CashierSession[]
   documentSequences    DocumentSequence[]
+  financeTransactions  FinanceTransaction[]
+  accountsReceivable   AccountReceivable[]
+  accountsPayable      AccountPayable[]
+  taxRecords           TaxRecord[]
   transfersFrom        EmployeeTransfer[]    @relation("TransfersFrom")
   transfersTo          EmployeeTransfer[]    @relation("TransfersTo")
   journal_headers      JournalHeader[]
@@ -986,6 +992,7 @@ model FinanceTransaction {
   description     String
   amount          Float
   payrollId       String?
+  branchId        String?         @map("branch_id")
   payment_method  String?
   reference_doc   String?
   notes           String?
@@ -993,6 +1000,7 @@ model FinanceTransaction {
   updatedAt       DateTime        @updatedAt
   category        String?
   transactionDate DateTime        @default(now())
+  branch          Branch?         @relation(fields: [branchId], references: [id])
   payroll         Payroll?        @relation(fields: [payrollId], references: [id])
 
   @@index([type])
@@ -1000,6 +1008,7 @@ model FinanceTransaction {
   @@index([transactionDate])
   @@index([reference_no])
   @@index([payrollId])
+  @@index([branchId])
   @@map("finance_transactions")
 }
 
@@ -1231,6 +1240,7 @@ model Budget {
   budget_name      String
   fiscal_year      Int
   account_id       String
+  branch_id        String?
   period_type      PeriodType     @default(monthly)
   period_start     DateTime
   period_end       DateTime
@@ -1246,11 +1256,13 @@ model Budget {
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
   account          ChartOfAccount @relation(fields: [account_id], references: [id])
+  branch           Branch?        @relation(fields: [branch_id], references: [id])
 
   @@unique([account_id, fiscal_year, period_start])
   @@index([account_id])
   @@index([fiscal_year])
   @@index([status])
+  @@index([branch_id])
   @@map("budgets")
 }
 
@@ -1300,6 +1312,7 @@ model AccountReceivable {
   customer_name  String
   customer_email String?
   customer_phone String?
+  branch_id      String?
   total_amount   Float
   paid_amount    Float       @default(0)
   balance        Float
@@ -1311,12 +1324,14 @@ model AccountReceivable {
   notes          String?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
+  branch         Branch?     @relation(fields: [branch_id], references: [id])
   payments       ARPayment[]
 
   @@index([invoice_no])
   @@index([customer_name])
   @@index([status])
   @@index([due_date])
+  @@index([branch_id])
   @@map("accounts_receivable")
 }
 
@@ -1349,6 +1364,7 @@ model AccountPayable {
   vendor_name  String
   vendor_email String?
   vendor_phone String?
+  branch_id    String?
   total_amount Float
   paid_amount  Float       @default(0)
   balance      Float
@@ -1360,12 +1376,14 @@ model AccountPayable {
   notes        String?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
+  branch       Branch?     @relation(fields: [branch_id], references: [id])
   payments     APPayment[]
 
   @@index([bill_no])
   @@index([vendor_name])
   @@index([status])
   @@index([due_date])
+  @@index([branch_id])
   @@map("accounts_payable")
 }
 
@@ -1395,9 +1413,12 @@ model APPayment {
 model BankAccount {
   id                String            @id @default(cuid())
   account_name      String
-  account_number    String            @unique
+  account_number    String
   bank_name         String
   branch            String?
+  // Internal branch this account belongs to. Null = head-office / shared
+  // account (e.g. resolved when there's no branch in the request context).
+  branchId          String?           @map("branch_id")
   account_type      BankAccountType   @default(checking)
   currency          String            @default("KES")
   current_balance   Float             @default(0)
@@ -1407,10 +1428,13 @@ model BankAccount {
   notes             String?
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
+  branchRef         Branch?           @relation(fields: [branchId], references: [id])
   transactions      BankTransaction[]
 
+  @@unique([account_number, branchId])
   @@index([account_number])
   @@index([bank_name])
+  @@index([branchId])
   @@map("bank_accounts")
 }
 
@@ -1419,6 +1443,9 @@ model BankTransaction {
   id               String          @id @default(cuid())
   transaction_no   String          @unique
   bank_account_id  String
+  // Denormalized from bank_account.branchId at write time, so isolation can
+  // filter this model directly without joining through BankAccount.
+  branchId         String?         @map("branch_id")
   transaction_type TransactionType
   amount           Float
   balance_after    Float
@@ -1435,6 +1462,7 @@ model BankTransaction {
   @@index([bank_account_id])
   @@index([transaction_no])
   @@index([transaction_date])
+  @@index([branchId])
   @@map("bank_transactions")
 }
 
@@ -1493,6 +1521,7 @@ model TaxRecord {
   id             String    @id @default(cuid())
   tax_type       TaxType
   tax_period     String
+  branch_id      String?
   taxable_amount Float
   tax_rate       Float
   tax_amount     Float
@@ -1505,11 +1534,13 @@ model TaxRecord {
   notes          String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  branch         Branch?   @relation(fields: [branch_id], references: [id])
 
   @@index([tax_type])
   @@index([tax_period])
   @@index([status])
   @@index([due_date])
+  @@index([branch_id])
   @@map("tax_records")
 }
 

@@ -9367,9 +9367,15 @@ export namespace Prisma {
    */
 
   export type BranchCountOutputType = {
+    bankAccounts: number
     branchInventory: number
+    budgets: number
     cashierSessions: number
     documentSequences: number
+    financeTransactions: number
+    accountsReceivable: number
+    accountsPayable: number
+    taxRecords: number
     transfersFrom: number
     transfersTo: number
     journal_headers: number
@@ -9384,9 +9390,15 @@ export namespace Prisma {
   }
 
   export type BranchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bankAccounts?: boolean | BranchCountOutputTypeCountBankAccountsArgs
     branchInventory?: boolean | BranchCountOutputTypeCountBranchInventoryArgs
+    budgets?: boolean | BranchCountOutputTypeCountBudgetsArgs
     cashierSessions?: boolean | BranchCountOutputTypeCountCashierSessionsArgs
     documentSequences?: boolean | BranchCountOutputTypeCountDocumentSequencesArgs
+    financeTransactions?: boolean | BranchCountOutputTypeCountFinanceTransactionsArgs
+    accountsReceivable?: boolean | BranchCountOutputTypeCountAccountsReceivableArgs
+    accountsPayable?: boolean | BranchCountOutputTypeCountAccountsPayableArgs
+    taxRecords?: boolean | BranchCountOutputTypeCountTaxRecordsArgs
     transfersFrom?: boolean | BranchCountOutputTypeCountTransfersFromArgs
     transfersTo?: boolean | BranchCountOutputTypeCountTransfersToArgs
     journal_headers?: boolean | BranchCountOutputTypeCountJournal_headersArgs
@@ -9414,8 +9426,22 @@ export namespace Prisma {
   /**
    * BranchCountOutputType without action
    */
+  export type BranchCountOutputTypeCountBankAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BankAccountWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
   export type BranchCountOutputTypeCountBranchInventoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: BranchInventoryWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountBudgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: BudgetWhereInput
   }
 
   /**
@@ -9430,6 +9456,34 @@ export namespace Prisma {
    */
   export type BranchCountOutputTypeCountDocumentSequencesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DocumentSequenceWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountFinanceTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FinanceTransactionWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountAccountsReceivableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountReceivableWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountAccountsPayableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountPayableWhereInput
+  }
+
+  /**
+   * BranchCountOutputType without action
+   */
+  export type BranchCountOutputTypeCountTaxRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaxRecordWhereInput
   }
 
   /**
@@ -13622,9 +13676,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    bankAccounts?: boolean | Branch$bankAccountsArgs<ExtArgs>
     branchInventory?: boolean | Branch$branchInventoryArgs<ExtArgs>
+    budgets?: boolean | Branch$budgetsArgs<ExtArgs>
     cashierSessions?: boolean | Branch$cashierSessionsArgs<ExtArgs>
     documentSequences?: boolean | Branch$documentSequencesArgs<ExtArgs>
+    financeTransactions?: boolean | Branch$financeTransactionsArgs<ExtArgs>
+    accountsReceivable?: boolean | Branch$accountsReceivableArgs<ExtArgs>
+    accountsPayable?: boolean | Branch$accountsPayableArgs<ExtArgs>
+    taxRecords?: boolean | Branch$taxRecordsArgs<ExtArgs>
     transfersFrom?: boolean | Branch$transfersFromArgs<ExtArgs>
     transfersTo?: boolean | Branch$transfersToArgs<ExtArgs>
     journal_headers?: boolean | Branch$journal_headersArgs<ExtArgs>
@@ -13677,9 +13737,15 @@ export namespace Prisma {
 
   export type BranchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "city" | "address" | "phone" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["branch"]>
   export type BranchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bankAccounts?: boolean | Branch$bankAccountsArgs<ExtArgs>
     branchInventory?: boolean | Branch$branchInventoryArgs<ExtArgs>
+    budgets?: boolean | Branch$budgetsArgs<ExtArgs>
     cashierSessions?: boolean | Branch$cashierSessionsArgs<ExtArgs>
     documentSequences?: boolean | Branch$documentSequencesArgs<ExtArgs>
+    financeTransactions?: boolean | Branch$financeTransactionsArgs<ExtArgs>
+    accountsReceivable?: boolean | Branch$accountsReceivableArgs<ExtArgs>
+    accountsPayable?: boolean | Branch$accountsPayableArgs<ExtArgs>
+    taxRecords?: boolean | Branch$taxRecordsArgs<ExtArgs>
     transfersFrom?: boolean | Branch$transfersFromArgs<ExtArgs>
     transfersTo?: boolean | Branch$transfersToArgs<ExtArgs>
     journal_headers?: boolean | Branch$journal_headersArgs<ExtArgs>
@@ -13699,9 +13765,15 @@ export namespace Prisma {
   export type $BranchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Branch"
     objects: {
+      bankAccounts: Prisma.$BankAccountPayload<ExtArgs>[]
       branchInventory: Prisma.$BranchInventoryPayload<ExtArgs>[]
+      budgets: Prisma.$BudgetPayload<ExtArgs>[]
       cashierSessions: Prisma.$CashierSessionPayload<ExtArgs>[]
       documentSequences: Prisma.$DocumentSequencePayload<ExtArgs>[]
+      financeTransactions: Prisma.$FinanceTransactionPayload<ExtArgs>[]
+      accountsReceivable: Prisma.$AccountReceivablePayload<ExtArgs>[]
+      accountsPayable: Prisma.$AccountPayablePayload<ExtArgs>[]
+      taxRecords: Prisma.$TaxRecordPayload<ExtArgs>[]
       transfersFrom: Prisma.$EmployeeTransferPayload<ExtArgs>[]
       transfersTo: Prisma.$EmployeeTransferPayload<ExtArgs>[]
       journal_headers: Prisma.$JournalHeaderPayload<ExtArgs>[]
@@ -14118,9 +14190,15 @@ export namespace Prisma {
    */
   export interface Prisma__BranchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    bankAccounts<T extends Branch$bankAccountsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$bankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     branchInventory<T extends Branch$branchInventoryArgs<ExtArgs> = {}>(args?: Subset<T, Branch$branchInventoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BranchInventoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    budgets<T extends Branch$budgetsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cashierSessions<T extends Branch$cashierSessionsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$cashierSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashierSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     documentSequences<T extends Branch$documentSequencesArgs<ExtArgs> = {}>(args?: Subset<T, Branch$documentSequencesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentSequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    financeTransactions<T extends Branch$financeTransactionsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$financeTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FinanceTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accountsReceivable<T extends Branch$accountsReceivableArgs<ExtArgs> = {}>(args?: Subset<T, Branch$accountsReceivableArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountReceivablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accountsPayable<T extends Branch$accountsPayableArgs<ExtArgs> = {}>(args?: Subset<T, Branch$accountsPayableArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    taxRecords<T extends Branch$taxRecordsArgs<ExtArgs> = {}>(args?: Subset<T, Branch$taxRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaxRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transfersFrom<T extends Branch$transfersFromArgs<ExtArgs> = {}>(args?: Subset<T, Branch$transfersFromArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     transfersTo<T extends Branch$transfersToArgs<ExtArgs> = {}>(args?: Subset<T, Branch$transfersToArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmployeeTransferPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     journal_headers<T extends Branch$journal_headersArgs<ExtArgs> = {}>(args?: Subset<T, Branch$journal_headersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JournalHeaderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14563,6 +14641,30 @@ export namespace Prisma {
   }
 
   /**
+   * Branch.bankAccounts
+   */
+  export type Branch$bankAccountsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BankAccount
+     */
+    select?: BankAccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the BankAccount
+     */
+    omit?: BankAccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BankAccountInclude<ExtArgs> | null
+    where?: BankAccountWhereInput
+    orderBy?: BankAccountOrderByWithRelationInput | BankAccountOrderByWithRelationInput[]
+    cursor?: BankAccountWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BankAccountScalarFieldEnum | BankAccountScalarFieldEnum[]
+  }
+
+  /**
    * Branch.branchInventory
    */
   export type Branch$branchInventoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14584,6 +14686,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: BranchInventoryScalarFieldEnum | BranchInventoryScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.budgets
+   */
+  export type Branch$budgetsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Budget
+     */
+    select?: BudgetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Budget
+     */
+    omit?: BudgetOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BudgetInclude<ExtArgs> | null
+    where?: BudgetWhereInput
+    orderBy?: BudgetOrderByWithRelationInput | BudgetOrderByWithRelationInput[]
+    cursor?: BudgetWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: BudgetScalarFieldEnum | BudgetScalarFieldEnum[]
   }
 
   /**
@@ -14632,6 +14758,102 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DocumentSequenceScalarFieldEnum | DocumentSequenceScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.financeTransactions
+   */
+  export type Branch$financeTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FinanceTransaction
+     */
+    select?: FinanceTransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the FinanceTransaction
+     */
+    omit?: FinanceTransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FinanceTransactionInclude<ExtArgs> | null
+    where?: FinanceTransactionWhereInput
+    orderBy?: FinanceTransactionOrderByWithRelationInput | FinanceTransactionOrderByWithRelationInput[]
+    cursor?: FinanceTransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FinanceTransactionScalarFieldEnum | FinanceTransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.accountsReceivable
+   */
+  export type Branch$accountsReceivableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountReceivable
+     */
+    select?: AccountReceivableSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountReceivable
+     */
+    omit?: AccountReceivableOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountReceivableInclude<ExtArgs> | null
+    where?: AccountReceivableWhereInput
+    orderBy?: AccountReceivableOrderByWithRelationInput | AccountReceivableOrderByWithRelationInput[]
+    cursor?: AccountReceivableWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountReceivableScalarFieldEnum | AccountReceivableScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.accountsPayable
+   */
+  export type Branch$accountsPayableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountPayable
+     */
+    select?: AccountPayableSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountPayable
+     */
+    omit?: AccountPayableOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountPayableInclude<ExtArgs> | null
+    where?: AccountPayableWhereInput
+    orderBy?: AccountPayableOrderByWithRelationInput | AccountPayableOrderByWithRelationInput[]
+    cursor?: AccountPayableWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountPayableScalarFieldEnum | AccountPayableScalarFieldEnum[]
+  }
+
+  /**
+   * Branch.taxRecords
+   */
+  export type Branch$taxRecordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TaxRecord
+     */
+    select?: TaxRecordSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TaxRecord
+     */
+    omit?: TaxRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
+    where?: TaxRecordWhereInput
+    orderBy?: TaxRecordOrderByWithRelationInput | TaxRecordOrderByWithRelationInput[]
+    cursor?: TaxRecordWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaxRecordScalarFieldEnum | TaxRecordScalarFieldEnum[]
   }
 
   /**
@@ -58429,6 +58651,7 @@ export namespace Prisma {
     description: string | null
     amount: number | null
     payrollId: string | null
+    branchId: string | null
     payment_method: string | null
     reference_doc: string | null
     notes: string | null
@@ -58445,6 +58668,7 @@ export namespace Prisma {
     description: string | null
     amount: number | null
     payrollId: string | null
+    branchId: string | null
     payment_method: string | null
     reference_doc: string | null
     notes: string | null
@@ -58461,6 +58685,7 @@ export namespace Prisma {
     description: number
     amount: number
     payrollId: number
+    branchId: number
     payment_method: number
     reference_doc: number
     notes: number
@@ -58487,6 +58712,7 @@ export namespace Prisma {
     description?: true
     amount?: true
     payrollId?: true
+    branchId?: true
     payment_method?: true
     reference_doc?: true
     notes?: true
@@ -58503,6 +58729,7 @@ export namespace Prisma {
     description?: true
     amount?: true
     payrollId?: true
+    branchId?: true
     payment_method?: true
     reference_doc?: true
     notes?: true
@@ -58519,6 +58746,7 @@ export namespace Prisma {
     description?: true
     amount?: true
     payrollId?: true
+    branchId?: true
     payment_method?: true
     reference_doc?: true
     notes?: true
@@ -58622,6 +58850,7 @@ export namespace Prisma {
     description: string
     amount: number
     payrollId: string | null
+    branchId: string | null
     payment_method: string | null
     reference_doc: string | null
     notes: string | null
@@ -58657,6 +58886,7 @@ export namespace Prisma {
     description?: boolean
     amount?: boolean
     payrollId?: boolean
+    branchId?: boolean
     payment_method?: boolean
     reference_doc?: boolean
     notes?: boolean
@@ -58664,6 +58894,7 @@ export namespace Prisma {
     updatedAt?: boolean
     category?: boolean
     transactionDate?: boolean
+    branch?: boolean | FinanceTransaction$branchArgs<ExtArgs>
     payroll?: boolean | FinanceTransaction$payrollArgs<ExtArgs>
   }, ExtArgs["result"]["financeTransaction"]>
 
@@ -58674,6 +58905,7 @@ export namespace Prisma {
     description?: boolean
     amount?: boolean
     payrollId?: boolean
+    branchId?: boolean
     payment_method?: boolean
     reference_doc?: boolean
     notes?: boolean
@@ -58681,6 +58913,7 @@ export namespace Prisma {
     updatedAt?: boolean
     category?: boolean
     transactionDate?: boolean
+    branch?: boolean | FinanceTransaction$branchArgs<ExtArgs>
     payroll?: boolean | FinanceTransaction$payrollArgs<ExtArgs>
   }, ExtArgs["result"]["financeTransaction"]>
 
@@ -58691,6 +58924,7 @@ export namespace Prisma {
     description?: boolean
     amount?: boolean
     payrollId?: boolean
+    branchId?: boolean
     payment_method?: boolean
     reference_doc?: boolean
     notes?: boolean
@@ -58698,6 +58932,7 @@ export namespace Prisma {
     updatedAt?: boolean
     category?: boolean
     transactionDate?: boolean
+    branch?: boolean | FinanceTransaction$branchArgs<ExtArgs>
     payroll?: boolean | FinanceTransaction$payrollArgs<ExtArgs>
   }, ExtArgs["result"]["financeTransaction"]>
 
@@ -58708,6 +58943,7 @@ export namespace Prisma {
     description?: boolean
     amount?: boolean
     payrollId?: boolean
+    branchId?: boolean
     payment_method?: boolean
     reference_doc?: boolean
     notes?: boolean
@@ -58717,20 +58953,24 @@ export namespace Prisma {
     transactionDate?: boolean
   }
 
-  export type FinanceTransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "reference_no" | "description" | "amount" | "payrollId" | "payment_method" | "reference_doc" | "notes" | "createdAt" | "updatedAt" | "category" | "transactionDate", ExtArgs["result"]["financeTransaction"]>
+  export type FinanceTransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "reference_no" | "description" | "amount" | "payrollId" | "branchId" | "payment_method" | "reference_doc" | "notes" | "createdAt" | "updatedAt" | "category" | "transactionDate", ExtArgs["result"]["financeTransaction"]>
   export type FinanceTransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | FinanceTransaction$branchArgs<ExtArgs>
     payroll?: boolean | FinanceTransaction$payrollArgs<ExtArgs>
   }
   export type FinanceTransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | FinanceTransaction$branchArgs<ExtArgs>
     payroll?: boolean | FinanceTransaction$payrollArgs<ExtArgs>
   }
   export type FinanceTransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | FinanceTransaction$branchArgs<ExtArgs>
     payroll?: boolean | FinanceTransaction$payrollArgs<ExtArgs>
   }
 
   export type $FinanceTransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "FinanceTransaction"
     objects: {
+      branch: Prisma.$BranchPayload<ExtArgs> | null
       payroll: Prisma.$PayrollPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -58740,6 +58980,7 @@ export namespace Prisma {
       description: string
       amount: number
       payrollId: string | null
+      branchId: string | null
       payment_method: string | null
       reference_doc: string | null
       notes: string | null
@@ -59141,6 +59382,7 @@ export namespace Prisma {
    */
   export interface Prisma__FinanceTransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    branch<T extends FinanceTransaction$branchArgs<ExtArgs> = {}>(args?: Subset<T, FinanceTransaction$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payroll<T extends FinanceTransaction$payrollArgs<ExtArgs> = {}>(args?: Subset<T, FinanceTransaction$payrollArgs<ExtArgs>>): Prisma__PayrollClient<$Result.GetResult<Prisma.$PayrollPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -59177,6 +59419,7 @@ export namespace Prisma {
     readonly description: FieldRef<"FinanceTransaction", 'String'>
     readonly amount: FieldRef<"FinanceTransaction", 'Float'>
     readonly payrollId: FieldRef<"FinanceTransaction", 'String'>
+    readonly branchId: FieldRef<"FinanceTransaction", 'String'>
     readonly payment_method: FieldRef<"FinanceTransaction", 'String'>
     readonly reference_doc: FieldRef<"FinanceTransaction", 'String'>
     readonly notes: FieldRef<"FinanceTransaction", 'String'>
@@ -59582,6 +59825,25 @@ export namespace Prisma {
      * Limit how many FinanceTransactions to delete.
      */
     limit?: number
+  }
+
+  /**
+   * FinanceTransaction.branch
+   */
+  export type FinanceTransaction$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -71756,6 +72018,7 @@ export namespace Prisma {
     budget_name: string | null
     fiscal_year: number | null
     account_id: string | null
+    branch_id: string | null
     period_type: $Enums.PeriodType | null
     period_start: Date | null
     period_end: Date | null
@@ -71777,6 +72040,7 @@ export namespace Prisma {
     budget_name: string | null
     fiscal_year: number | null
     account_id: string | null
+    branch_id: string | null
     period_type: $Enums.PeriodType | null
     period_start: Date | null
     period_end: Date | null
@@ -71798,6 +72062,7 @@ export namespace Prisma {
     budget_name: number
     fiscal_year: number
     account_id: number
+    branch_id: number
     period_type: number
     period_start: number
     period_end: number
@@ -71837,6 +72102,7 @@ export namespace Prisma {
     budget_name?: true
     fiscal_year?: true
     account_id?: true
+    branch_id?: true
     period_type?: true
     period_start?: true
     period_end?: true
@@ -71858,6 +72124,7 @@ export namespace Prisma {
     budget_name?: true
     fiscal_year?: true
     account_id?: true
+    branch_id?: true
     period_type?: true
     period_start?: true
     period_end?: true
@@ -71879,6 +72146,7 @@ export namespace Prisma {
     budget_name?: true
     fiscal_year?: true
     account_id?: true
+    branch_id?: true
     period_type?: true
     period_start?: true
     period_end?: true
@@ -71987,6 +72255,7 @@ export namespace Prisma {
     budget_name: string
     fiscal_year: number
     account_id: string
+    branch_id: string | null
     period_type: $Enums.PeriodType
     period_start: Date
     period_end: Date
@@ -72027,6 +72296,7 @@ export namespace Prisma {
     budget_name?: boolean
     fiscal_year?: boolean
     account_id?: boolean
+    branch_id?: boolean
     period_type?: boolean
     period_start?: boolean
     period_end?: boolean
@@ -72042,6 +72312,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+    branch?: boolean | Budget$branchArgs<ExtArgs>
   }, ExtArgs["result"]["budget"]>
 
   export type BudgetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -72049,6 +72320,7 @@ export namespace Prisma {
     budget_name?: boolean
     fiscal_year?: boolean
     account_id?: boolean
+    branch_id?: boolean
     period_type?: boolean
     period_start?: boolean
     period_end?: boolean
@@ -72064,6 +72336,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+    branch?: boolean | Budget$branchArgs<ExtArgs>
   }, ExtArgs["result"]["budget"]>
 
   export type BudgetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -72071,6 +72344,7 @@ export namespace Prisma {
     budget_name?: boolean
     fiscal_year?: boolean
     account_id?: boolean
+    branch_id?: boolean
     period_type?: boolean
     period_start?: boolean
     period_end?: boolean
@@ -72086,6 +72360,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+    branch?: boolean | Budget$branchArgs<ExtArgs>
   }, ExtArgs["result"]["budget"]>
 
   export type BudgetSelectScalar = {
@@ -72093,6 +72368,7 @@ export namespace Prisma {
     budget_name?: boolean
     fiscal_year?: boolean
     account_id?: boolean
+    branch_id?: boolean
     period_type?: boolean
     period_start?: boolean
     period_end?: boolean
@@ -72109,27 +72385,32 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BudgetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "budget_name" | "fiscal_year" | "account_id" | "period_type" | "period_start" | "period_end" | "budgeted_amount" | "actual_amount" | "variance" | "variance_percent" | "status" | "created_by" | "approved_by" | "approved_date" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["budget"]>
+  export type BudgetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "budget_name" | "fiscal_year" | "account_id" | "branch_id" | "period_type" | "period_start" | "period_end" | "budgeted_amount" | "actual_amount" | "variance" | "variance_percent" | "status" | "created_by" | "approved_by" | "approved_date" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["budget"]>
   export type BudgetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+    branch?: boolean | Budget$branchArgs<ExtArgs>
   }
   export type BudgetIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+    branch?: boolean | Budget$branchArgs<ExtArgs>
   }
   export type BudgetIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     account?: boolean | ChartOfAccountDefaultArgs<ExtArgs>
+    branch?: boolean | Budget$branchArgs<ExtArgs>
   }
 
   export type $BudgetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Budget"
     objects: {
       account: Prisma.$ChartOfAccountPayload<ExtArgs>
+      branch: Prisma.$BranchPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       budget_name: string
       fiscal_year: number
       account_id: string
+      branch_id: string | null
       period_type: $Enums.PeriodType
       period_start: Date
       period_end: Date
@@ -72539,6 +72820,7 @@ export namespace Prisma {
   export interface Prisma__BudgetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     account<T extends ChartOfAccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChartOfAccountDefaultArgs<ExtArgs>>): Prisma__ChartOfAccountClient<$Result.GetResult<Prisma.$ChartOfAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    branch<T extends Budget$branchArgs<ExtArgs> = {}>(args?: Subset<T, Budget$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -72572,6 +72854,7 @@ export namespace Prisma {
     readonly budget_name: FieldRef<"Budget", 'String'>
     readonly fiscal_year: FieldRef<"Budget", 'Int'>
     readonly account_id: FieldRef<"Budget", 'String'>
+    readonly branch_id: FieldRef<"Budget", 'String'>
     readonly period_type: FieldRef<"Budget", 'PeriodType'>
     readonly period_start: FieldRef<"Budget", 'DateTime'>
     readonly period_end: FieldRef<"Budget", 'DateTime'>
@@ -72984,6 +73267,25 @@ export namespace Prisma {
      * Limit how many Budgets to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Budget.branch
+   */
+  export type Budget$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -75397,6 +75699,7 @@ export namespace Prisma {
     customer_name: string | null
     customer_email: string | null
     customer_phone: string | null
+    branch_id: string | null
     total_amount: number | null
     paid_amount: number | null
     balance: number | null
@@ -75416,6 +75719,7 @@ export namespace Prisma {
     customer_name: string | null
     customer_email: string | null
     customer_phone: string | null
+    branch_id: string | null
     total_amount: number | null
     paid_amount: number | null
     balance: number | null
@@ -75435,6 +75739,7 @@ export namespace Prisma {
     customer_name: number
     customer_email: number
     customer_phone: number
+    branch_id: number
     total_amount: number
     paid_amount: number
     balance: number
@@ -75470,6 +75775,7 @@ export namespace Prisma {
     customer_name?: true
     customer_email?: true
     customer_phone?: true
+    branch_id?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -75489,6 +75795,7 @@ export namespace Prisma {
     customer_name?: true
     customer_email?: true
     customer_phone?: true
+    branch_id?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -75508,6 +75815,7 @@ export namespace Prisma {
     customer_name?: true
     customer_email?: true
     customer_phone?: true
+    branch_id?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -75614,6 +75922,7 @@ export namespace Prisma {
     customer_name: string
     customer_email: string | null
     customer_phone: string | null
+    branch_id: string | null
     total_amount: number
     paid_amount: number
     balance: number
@@ -75652,6 +75961,7 @@ export namespace Prisma {
     customer_name?: boolean
     customer_email?: boolean
     customer_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -75663,6 +75973,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | AccountReceivable$branchArgs<ExtArgs>
     payments?: boolean | AccountReceivable$paymentsArgs<ExtArgs>
     _count?: boolean | AccountReceivableCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["accountReceivable"]>
@@ -75673,6 +75984,7 @@ export namespace Prisma {
     customer_name?: boolean
     customer_email?: boolean
     customer_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -75684,6 +75996,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | AccountReceivable$branchArgs<ExtArgs>
   }, ExtArgs["result"]["accountReceivable"]>
 
   export type AccountReceivableSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -75692,6 +76005,7 @@ export namespace Prisma {
     customer_name?: boolean
     customer_email?: boolean
     customer_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -75703,6 +76017,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | AccountReceivable$branchArgs<ExtArgs>
   }, ExtArgs["result"]["accountReceivable"]>
 
   export type AccountReceivableSelectScalar = {
@@ -75711,6 +76026,7 @@ export namespace Prisma {
     customer_name?: boolean
     customer_email?: boolean
     customer_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -75724,17 +76040,23 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type AccountReceivableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoice_no" | "customer_name" | "customer_email" | "customer_phone" | "total_amount" | "paid_amount" | "balance" | "invoice_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountReceivable"]>
+  export type AccountReceivableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoice_no" | "customer_name" | "customer_email" | "customer_phone" | "branch_id" | "total_amount" | "paid_amount" | "balance" | "invoice_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountReceivable"]>
   export type AccountReceivableInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | AccountReceivable$branchArgs<ExtArgs>
     payments?: boolean | AccountReceivable$paymentsArgs<ExtArgs>
     _count?: boolean | AccountReceivableCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type AccountReceivableIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type AccountReceivableIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AccountReceivableIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | AccountReceivable$branchArgs<ExtArgs>
+  }
+  export type AccountReceivableIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | AccountReceivable$branchArgs<ExtArgs>
+  }
 
   export type $AccountReceivablePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AccountReceivable"
     objects: {
+      branch: Prisma.$BranchPayload<ExtArgs> | null
       payments: Prisma.$ARPaymentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -75743,6 +76065,7 @@ export namespace Prisma {
       customer_name: string
       customer_email: string | null
       customer_phone: string | null
+      branch_id: string | null
       total_amount: number
       paid_amount: number
       balance: number
@@ -76148,6 +76471,7 @@ export namespace Prisma {
    */
   export interface Prisma__AccountReceivableClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    branch<T extends AccountReceivable$branchArgs<ExtArgs> = {}>(args?: Subset<T, AccountReceivable$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends AccountReceivable$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, AccountReceivable$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ARPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -76183,6 +76507,7 @@ export namespace Prisma {
     readonly customer_name: FieldRef<"AccountReceivable", 'String'>
     readonly customer_email: FieldRef<"AccountReceivable", 'String'>
     readonly customer_phone: FieldRef<"AccountReceivable", 'String'>
+    readonly branch_id: FieldRef<"AccountReceivable", 'String'>
     readonly total_amount: FieldRef<"AccountReceivable", 'Float'>
     readonly paid_amount: FieldRef<"AccountReceivable", 'Float'>
     readonly balance: FieldRef<"AccountReceivable", 'Float'>
@@ -76448,6 +76773,10 @@ export namespace Prisma {
      */
     data: AccountReceivableCreateManyInput | AccountReceivableCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountReceivableIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -76518,6 +76847,10 @@ export namespace Prisma {
      * Limit how many AccountReceivables to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountReceivableIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -76584,6 +76917,25 @@ export namespace Prisma {
      * Limit how many AccountReceivables to delete.
      */
     limit?: number
+  }
+
+  /**
+   * AccountReceivable.branch
+   */
+  export type AccountReceivable$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -77849,6 +78201,7 @@ export namespace Prisma {
     vendor_name: string | null
     vendor_email: string | null
     vendor_phone: string | null
+    branch_id: string | null
     total_amount: number | null
     paid_amount: number | null
     balance: number | null
@@ -77868,6 +78221,7 @@ export namespace Prisma {
     vendor_name: string | null
     vendor_email: string | null
     vendor_phone: string | null
+    branch_id: string | null
     total_amount: number | null
     paid_amount: number | null
     balance: number | null
@@ -77887,6 +78241,7 @@ export namespace Prisma {
     vendor_name: number
     vendor_email: number
     vendor_phone: number
+    branch_id: number
     total_amount: number
     paid_amount: number
     balance: number
@@ -77922,6 +78277,7 @@ export namespace Prisma {
     vendor_name?: true
     vendor_email?: true
     vendor_phone?: true
+    branch_id?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -77941,6 +78297,7 @@ export namespace Prisma {
     vendor_name?: true
     vendor_email?: true
     vendor_phone?: true
+    branch_id?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -77960,6 +78317,7 @@ export namespace Prisma {
     vendor_name?: true
     vendor_email?: true
     vendor_phone?: true
+    branch_id?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -78066,6 +78424,7 @@ export namespace Prisma {
     vendor_name: string
     vendor_email: string | null
     vendor_phone: string | null
+    branch_id: string | null
     total_amount: number
     paid_amount: number
     balance: number
@@ -78104,6 +78463,7 @@ export namespace Prisma {
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78115,6 +78475,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | AccountPayable$branchArgs<ExtArgs>
     payments?: boolean | AccountPayable$paymentsArgs<ExtArgs>
     _count?: boolean | AccountPayableCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["accountPayable"]>
@@ -78125,6 +78486,7 @@ export namespace Prisma {
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78136,6 +78498,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | AccountPayable$branchArgs<ExtArgs>
   }, ExtArgs["result"]["accountPayable"]>
 
   export type AccountPayableSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -78144,6 +78507,7 @@ export namespace Prisma {
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78155,6 +78519,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | AccountPayable$branchArgs<ExtArgs>
   }, ExtArgs["result"]["accountPayable"]>
 
   export type AccountPayableSelectScalar = {
@@ -78163,6 +78528,7 @@ export namespace Prisma {
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
+    branch_id?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78176,17 +78542,23 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type AccountPayableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bill_no" | "vendor_name" | "vendor_email" | "vendor_phone" | "total_amount" | "paid_amount" | "balance" | "bill_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountPayable"]>
+  export type AccountPayableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bill_no" | "vendor_name" | "vendor_email" | "vendor_phone" | "branch_id" | "total_amount" | "paid_amount" | "balance" | "bill_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountPayable"]>
   export type AccountPayableInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | AccountPayable$branchArgs<ExtArgs>
     payments?: boolean | AccountPayable$paymentsArgs<ExtArgs>
     _count?: boolean | AccountPayableCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type AccountPayableIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type AccountPayableIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AccountPayableIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+  }
+  export type AccountPayableIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+  }
 
   export type $AccountPayablePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AccountPayable"
     objects: {
+      branch: Prisma.$BranchPayload<ExtArgs> | null
       payments: Prisma.$APPaymentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -78195,6 +78567,7 @@ export namespace Prisma {
       vendor_name: string
       vendor_email: string | null
       vendor_phone: string | null
+      branch_id: string | null
       total_amount: number
       paid_amount: number
       balance: number
@@ -78600,6 +78973,7 @@ export namespace Prisma {
    */
   export interface Prisma__AccountPayableClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    branch<T extends AccountPayable$branchArgs<ExtArgs> = {}>(args?: Subset<T, AccountPayable$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends AccountPayable$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, AccountPayable$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$APPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -78635,6 +79009,7 @@ export namespace Prisma {
     readonly vendor_name: FieldRef<"AccountPayable", 'String'>
     readonly vendor_email: FieldRef<"AccountPayable", 'String'>
     readonly vendor_phone: FieldRef<"AccountPayable", 'String'>
+    readonly branch_id: FieldRef<"AccountPayable", 'String'>
     readonly total_amount: FieldRef<"AccountPayable", 'Float'>
     readonly paid_amount: FieldRef<"AccountPayable", 'Float'>
     readonly balance: FieldRef<"AccountPayable", 'Float'>
@@ -78900,6 +79275,10 @@ export namespace Prisma {
      */
     data: AccountPayableCreateManyInput | AccountPayableCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountPayableIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -78970,6 +79349,10 @@ export namespace Prisma {
      * Limit how many AccountPayables to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountPayableIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -79036,6 +79419,25 @@ export namespace Prisma {
      * Limit how many AccountPayables to delete.
      */
     limit?: number
+  }
+
+  /**
+   * AccountPayable.branch
+   */
+  export type AccountPayable$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -80299,6 +80701,7 @@ export namespace Prisma {
     account_number: string | null
     bank_name: string | null
     branch: string | null
+    branchId: string | null
     account_type: $Enums.BankAccountType | null
     currency: string | null
     current_balance: number | null
@@ -80316,6 +80719,7 @@ export namespace Prisma {
     account_number: string | null
     bank_name: string | null
     branch: string | null
+    branchId: string | null
     account_type: $Enums.BankAccountType | null
     currency: string | null
     current_balance: number | null
@@ -80333,6 +80737,7 @@ export namespace Prisma {
     account_number: number
     bank_name: number
     branch: number
+    branchId: number
     account_type: number
     currency: number
     current_balance: number
@@ -80364,6 +80769,7 @@ export namespace Prisma {
     account_number?: true
     bank_name?: true
     branch?: true
+    branchId?: true
     account_type?: true
     currency?: true
     current_balance?: true
@@ -80381,6 +80787,7 @@ export namespace Prisma {
     account_number?: true
     bank_name?: true
     branch?: true
+    branchId?: true
     account_type?: true
     currency?: true
     current_balance?: true
@@ -80398,6 +80805,7 @@ export namespace Prisma {
     account_number?: true
     bank_name?: true
     branch?: true
+    branchId?: true
     account_type?: true
     currency?: true
     current_balance?: true
@@ -80502,6 +80910,7 @@ export namespace Prisma {
     account_number: string
     bank_name: string
     branch: string | null
+    branchId: string | null
     account_type: $Enums.BankAccountType
     currency: string
     current_balance: number
@@ -80538,6 +80947,7 @@ export namespace Prisma {
     account_number?: boolean
     bank_name?: boolean
     branch?: boolean
+    branchId?: boolean
     account_type?: boolean
     currency?: boolean
     current_balance?: boolean
@@ -80547,6 +80957,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branchRef?: boolean | BankAccount$branchRefArgs<ExtArgs>
     transactions?: boolean | BankAccount$transactionsArgs<ExtArgs>
     _count?: boolean | BankAccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["bankAccount"]>
@@ -80557,6 +80968,7 @@ export namespace Prisma {
     account_number?: boolean
     bank_name?: boolean
     branch?: boolean
+    branchId?: boolean
     account_type?: boolean
     currency?: boolean
     current_balance?: boolean
@@ -80566,6 +80978,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branchRef?: boolean | BankAccount$branchRefArgs<ExtArgs>
   }, ExtArgs["result"]["bankAccount"]>
 
   export type BankAccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -80574,6 +80987,7 @@ export namespace Prisma {
     account_number?: boolean
     bank_name?: boolean
     branch?: boolean
+    branchId?: boolean
     account_type?: boolean
     currency?: boolean
     current_balance?: boolean
@@ -80583,6 +80997,7 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branchRef?: boolean | BankAccount$branchRefArgs<ExtArgs>
   }, ExtArgs["result"]["bankAccount"]>
 
   export type BankAccountSelectScalar = {
@@ -80591,6 +81006,7 @@ export namespace Prisma {
     account_number?: boolean
     bank_name?: boolean
     branch?: boolean
+    branchId?: boolean
     account_type?: boolean
     currency?: boolean
     current_balance?: boolean
@@ -80602,17 +81018,23 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BankAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "account_name" | "account_number" | "bank_name" | "branch" | "account_type" | "currency" | "current_balance" | "available_balance" | "overdraft_limit" | "is_active" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["bankAccount"]>
+  export type BankAccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "account_name" | "account_number" | "bank_name" | "branch" | "branchId" | "account_type" | "currency" | "current_balance" | "available_balance" | "overdraft_limit" | "is_active" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["bankAccount"]>
   export type BankAccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branchRef?: boolean | BankAccount$branchRefArgs<ExtArgs>
     transactions?: boolean | BankAccount$transactionsArgs<ExtArgs>
     _count?: boolean | BankAccountCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type BankAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type BankAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type BankAccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branchRef?: boolean | BankAccount$branchRefArgs<ExtArgs>
+  }
+  export type BankAccountIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branchRef?: boolean | BankAccount$branchRefArgs<ExtArgs>
+  }
 
   export type $BankAccountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "BankAccount"
     objects: {
+      branchRef: Prisma.$BranchPayload<ExtArgs> | null
       transactions: Prisma.$BankTransactionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -80621,6 +81043,7 @@ export namespace Prisma {
       account_number: string
       bank_name: string
       branch: string | null
+      branchId: string | null
       account_type: $Enums.BankAccountType
       currency: string
       current_balance: number
@@ -81024,6 +81447,7 @@ export namespace Prisma {
    */
   export interface Prisma__BankAccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    branchRef<T extends BankAccount$branchRefArgs<ExtArgs> = {}>(args?: Subset<T, BankAccount$branchRefArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     transactions<T extends BankAccount$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, BankAccount$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BankTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -81059,6 +81483,7 @@ export namespace Prisma {
     readonly account_number: FieldRef<"BankAccount", 'String'>
     readonly bank_name: FieldRef<"BankAccount", 'String'>
     readonly branch: FieldRef<"BankAccount", 'String'>
+    readonly branchId: FieldRef<"BankAccount", 'String'>
     readonly account_type: FieldRef<"BankAccount", 'BankAccountType'>
     readonly currency: FieldRef<"BankAccount", 'String'>
     readonly current_balance: FieldRef<"BankAccount", 'Float'>
@@ -81322,6 +81747,10 @@ export namespace Prisma {
      */
     data: BankAccountCreateManyInput | BankAccountCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BankAccountIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -81392,6 +81821,10 @@ export namespace Prisma {
      * Limit how many BankAccounts to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BankAccountIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -81458,6 +81891,25 @@ export namespace Prisma {
      * Limit how many BankAccounts to delete.
      */
     limit?: number
+  }
+
+  /**
+   * BankAccount.branchRef
+   */
+  export type BankAccount$branchRefArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
   }
 
   /**
@@ -81529,6 +81981,7 @@ export namespace Prisma {
     id: string | null
     transaction_no: string | null
     bank_account_id: string | null
+    branchId: string | null
     transaction_type: $Enums.TransactionType | null
     amount: number | null
     balance_after: number | null
@@ -81546,6 +81999,7 @@ export namespace Prisma {
     id: string | null
     transaction_no: string | null
     bank_account_id: string | null
+    branchId: string | null
     transaction_type: $Enums.TransactionType | null
     amount: number | null
     balance_after: number | null
@@ -81563,6 +82017,7 @@ export namespace Prisma {
     id: number
     transaction_no: number
     bank_account_id: number
+    branchId: number
     transaction_type: number
     amount: number
     balance_after: number
@@ -81592,6 +82047,7 @@ export namespace Prisma {
     id?: true
     transaction_no?: true
     bank_account_id?: true
+    branchId?: true
     transaction_type?: true
     amount?: true
     balance_after?: true
@@ -81609,6 +82065,7 @@ export namespace Prisma {
     id?: true
     transaction_no?: true
     bank_account_id?: true
+    branchId?: true
     transaction_type?: true
     amount?: true
     balance_after?: true
@@ -81626,6 +82083,7 @@ export namespace Prisma {
     id?: true
     transaction_no?: true
     bank_account_id?: true
+    branchId?: true
     transaction_type?: true
     amount?: true
     balance_after?: true
@@ -81730,6 +82188,7 @@ export namespace Prisma {
     id: string
     transaction_no: string
     bank_account_id: string
+    branchId: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -81766,6 +82225,7 @@ export namespace Prisma {
     id?: boolean
     transaction_no?: boolean
     bank_account_id?: boolean
+    branchId?: boolean
     transaction_type?: boolean
     amount?: boolean
     balance_after?: boolean
@@ -81784,6 +82244,7 @@ export namespace Prisma {
     id?: boolean
     transaction_no?: boolean
     bank_account_id?: boolean
+    branchId?: boolean
     transaction_type?: boolean
     amount?: boolean
     balance_after?: boolean
@@ -81802,6 +82263,7 @@ export namespace Prisma {
     id?: boolean
     transaction_no?: boolean
     bank_account_id?: boolean
+    branchId?: boolean
     transaction_type?: boolean
     amount?: boolean
     balance_after?: boolean
@@ -81820,6 +82282,7 @@ export namespace Prisma {
     id?: boolean
     transaction_no?: boolean
     bank_account_id?: boolean
+    branchId?: boolean
     transaction_type?: boolean
     amount?: boolean
     balance_after?: boolean
@@ -81833,7 +82296,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BankTransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transaction_no" | "bank_account_id" | "transaction_type" | "amount" | "balance_after" | "description" | "reference_no" | "category" | "is_reconciled" | "reconciled_date" | "transaction_date" | "createdAt" | "updatedAt", ExtArgs["result"]["bankTransaction"]>
+  export type BankTransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transaction_no" | "bank_account_id" | "branchId" | "transaction_type" | "amount" | "balance_after" | "description" | "reference_no" | "category" | "is_reconciled" | "reconciled_date" | "transaction_date" | "createdAt" | "updatedAt", ExtArgs["result"]["bankTransaction"]>
   export type BankTransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     bank_account?: boolean | BankAccountDefaultArgs<ExtArgs>
   }
@@ -81853,6 +82316,7 @@ export namespace Prisma {
       id: string
       transaction_no: string
       bank_account_id: string
+      branchId: string | null
       transaction_type: $Enums.TransactionType
       amount: number
       balance_after: number
@@ -82291,6 +82755,7 @@ export namespace Prisma {
     readonly id: FieldRef<"BankTransaction", 'String'>
     readonly transaction_no: FieldRef<"BankTransaction", 'String'>
     readonly bank_account_id: FieldRef<"BankTransaction", 'String'>
+    readonly branchId: FieldRef<"BankTransaction", 'String'>
     readonly transaction_type: FieldRef<"BankTransaction", 'TransactionType'>
     readonly amount: FieldRef<"BankTransaction", 'Float'>
     readonly balance_after: FieldRef<"BankTransaction", 'Float'>
@@ -85097,6 +85562,7 @@ export namespace Prisma {
     id: string | null
     tax_type: $Enums.TaxType | null
     tax_period: string | null
+    branch_id: string | null
     taxable_amount: number | null
     tax_rate: number | null
     tax_amount: number | null
@@ -85115,6 +85581,7 @@ export namespace Prisma {
     id: string | null
     tax_type: $Enums.TaxType | null
     tax_period: string | null
+    branch_id: string | null
     taxable_amount: number | null
     tax_rate: number | null
     tax_amount: number | null
@@ -85133,6 +85600,7 @@ export namespace Prisma {
     id: number
     tax_type: number
     tax_period: number
+    branch_id: number
     taxable_amount: number
     tax_rate: number
     tax_amount: number
@@ -85167,6 +85635,7 @@ export namespace Prisma {
     id?: true
     tax_type?: true
     tax_period?: true
+    branch_id?: true
     taxable_amount?: true
     tax_rate?: true
     tax_amount?: true
@@ -85185,6 +85654,7 @@ export namespace Prisma {
     id?: true
     tax_type?: true
     tax_period?: true
+    branch_id?: true
     taxable_amount?: true
     tax_rate?: true
     tax_amount?: true
@@ -85203,6 +85673,7 @@ export namespace Prisma {
     id?: true
     tax_type?: true
     tax_period?: true
+    branch_id?: true
     taxable_amount?: true
     tax_rate?: true
     tax_amount?: true
@@ -85308,6 +85779,7 @@ export namespace Prisma {
     id: string
     tax_type: $Enums.TaxType
     tax_period: string
+    branch_id: string | null
     taxable_amount: number
     tax_rate: number
     tax_amount: number
@@ -85345,6 +85817,7 @@ export namespace Prisma {
     id?: boolean
     tax_type?: boolean
     tax_period?: boolean
+    branch_id?: boolean
     taxable_amount?: boolean
     tax_rate?: boolean
     tax_amount?: boolean
@@ -85357,12 +85830,14 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | TaxRecord$branchArgs<ExtArgs>
   }, ExtArgs["result"]["taxRecord"]>
 
   export type TaxRecordSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tax_type?: boolean
     tax_period?: boolean
+    branch_id?: boolean
     taxable_amount?: boolean
     tax_rate?: boolean
     tax_amount?: boolean
@@ -85375,12 +85850,14 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | TaxRecord$branchArgs<ExtArgs>
   }, ExtArgs["result"]["taxRecord"]>
 
   export type TaxRecordSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tax_type?: boolean
     tax_period?: boolean
+    branch_id?: boolean
     taxable_amount?: boolean
     tax_rate?: boolean
     tax_amount?: boolean
@@ -85393,12 +85870,14 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    branch?: boolean | TaxRecord$branchArgs<ExtArgs>
   }, ExtArgs["result"]["taxRecord"]>
 
   export type TaxRecordSelectScalar = {
     id?: boolean
     tax_type?: boolean
     tax_period?: boolean
+    branch_id?: boolean
     taxable_amount?: boolean
     tax_rate?: boolean
     tax_amount?: boolean
@@ -85413,15 +85892,27 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type TaxRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tax_type" | "tax_period" | "taxable_amount" | "tax_rate" | "tax_amount" | "status" | "filing_date" | "due_date" | "filed_by" | "payment_status" | "paid_amount" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["taxRecord"]>
+  export type TaxRecordOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tax_type" | "tax_period" | "branch_id" | "taxable_amount" | "tax_rate" | "tax_amount" | "status" | "filing_date" | "due_date" | "filed_by" | "payment_status" | "paid_amount" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["taxRecord"]>
+  export type TaxRecordInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | TaxRecord$branchArgs<ExtArgs>
+  }
+  export type TaxRecordIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | TaxRecord$branchArgs<ExtArgs>
+  }
+  export type TaxRecordIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    branch?: boolean | TaxRecord$branchArgs<ExtArgs>
+  }
 
   export type $TaxRecordPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "TaxRecord"
-    objects: {}
+    objects: {
+      branch: Prisma.$BranchPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       tax_type: $Enums.TaxType
       tax_period: string
+      branch_id: string | null
       taxable_amount: number
       tax_rate: number
       tax_amount: number
@@ -85828,6 +86319,7 @@ export namespace Prisma {
    */
   export interface Prisma__TaxRecordClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    branch<T extends TaxRecord$branchArgs<ExtArgs> = {}>(args?: Subset<T, TaxRecord$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -85860,6 +86352,7 @@ export namespace Prisma {
     readonly id: FieldRef<"TaxRecord", 'String'>
     readonly tax_type: FieldRef<"TaxRecord", 'TaxType'>
     readonly tax_period: FieldRef<"TaxRecord", 'String'>
+    readonly branch_id: FieldRef<"TaxRecord", 'String'>
     readonly taxable_amount: FieldRef<"TaxRecord", 'Float'>
     readonly tax_rate: FieldRef<"TaxRecord", 'Float'>
     readonly tax_amount: FieldRef<"TaxRecord", 'Float'>
@@ -85889,6 +86382,10 @@ export namespace Prisma {
      */
     omit?: TaxRecordOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
+    /**
      * Filter, which TaxRecord to fetch.
      */
     where: TaxRecordWhereUniqueInput
@@ -85907,6 +86404,10 @@ export namespace Prisma {
      */
     omit?: TaxRecordOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
+    /**
      * Filter, which TaxRecord to fetch.
      */
     where: TaxRecordWhereUniqueInput
@@ -85924,6 +86425,10 @@ export namespace Prisma {
      * Omit specific fields from the TaxRecord
      */
     omit?: TaxRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
     /**
      * Filter, which TaxRecord to fetch.
      */
@@ -85973,6 +86478,10 @@ export namespace Prisma {
      */
     omit?: TaxRecordOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
+    /**
      * Filter, which TaxRecord to fetch.
      */
     where?: TaxRecordWhereInput
@@ -86020,6 +86529,10 @@ export namespace Prisma {
      * Omit specific fields from the TaxRecord
      */
     omit?: TaxRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
     /**
      * Filter, which TaxRecords to fetch.
      */
@@ -86069,6 +86582,10 @@ export namespace Prisma {
      */
     omit?: TaxRecordOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
+    /**
      * The data needed to create a TaxRecord.
      */
     data: XOR<TaxRecordCreateInput, TaxRecordUncheckedCreateInput>
@@ -86102,6 +86619,10 @@ export namespace Prisma {
      */
     data: TaxRecordCreateManyInput | TaxRecordCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -86116,6 +86637,10 @@ export namespace Prisma {
      * Omit specific fields from the TaxRecord
      */
     omit?: TaxRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
     /**
      * The data needed to update a TaxRecord.
      */
@@ -86168,6 +86693,10 @@ export namespace Prisma {
      * Limit how many TaxRecords to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -86182,6 +86711,10 @@ export namespace Prisma {
      * Omit specific fields from the TaxRecord
      */
     omit?: TaxRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
     /**
      * The filter to search for the TaxRecord to update in case it exists.
      */
@@ -86209,6 +86742,10 @@ export namespace Prisma {
      */
     omit?: TaxRecordOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
+    /**
      * Filter which TaxRecord to delete.
      */
     where: TaxRecordWhereUniqueInput
@@ -86229,6 +86766,25 @@ export namespace Prisma {
   }
 
   /**
+   * TaxRecord.branch
+   */
+  export type TaxRecord$branchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Branch
+     */
+    select?: BranchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Branch
+     */
+    omit?: BranchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: BranchInclude<ExtArgs> | null
+    where?: BranchWhereInput
+  }
+
+  /**
    * TaxRecord without action
    */
   export type TaxRecordDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -86240,6 +86796,10 @@ export namespace Prisma {
      * Omit specific fields from the TaxRecord
      */
     omit?: TaxRecordOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaxRecordInclude<ExtArgs> | null
   }
 
 
@@ -112088,6 +112648,7 @@ export namespace Prisma {
     description: 'description',
     amount: 'amount',
     payrollId: 'payrollId',
+    branchId: 'branchId',
     payment_method: 'payment_method',
     reference_doc: 'reference_doc',
     notes: 'notes',
@@ -112278,6 +112839,7 @@ export namespace Prisma {
     budget_name: 'budget_name',
     fiscal_year: 'fiscal_year',
     account_id: 'account_id',
+    branch_id: 'branch_id',
     period_type: 'period_type',
     period_start: 'period_start',
     period_end: 'period_end',
@@ -112336,6 +112898,7 @@ export namespace Prisma {
     customer_name: 'customer_name',
     customer_email: 'customer_email',
     customer_phone: 'customer_phone',
+    branch_id: 'branch_id',
     total_amount: 'total_amount',
     paid_amount: 'paid_amount',
     balance: 'balance',
@@ -112376,6 +112939,7 @@ export namespace Prisma {
     vendor_name: 'vendor_name',
     vendor_email: 'vendor_email',
     vendor_phone: 'vendor_phone',
+    branch_id: 'branch_id',
     total_amount: 'total_amount',
     paid_amount: 'paid_amount',
     balance: 'balance',
@@ -112416,6 +112980,7 @@ export namespace Prisma {
     account_number: 'account_number',
     bank_name: 'bank_name',
     branch: 'branch',
+    branchId: 'branchId',
     account_type: 'account_type',
     currency: 'currency',
     current_balance: 'current_balance',
@@ -112434,6 +112999,7 @@ export namespace Prisma {
     id: 'id',
     transaction_no: 'transaction_no',
     bank_account_id: 'bank_account_id',
+    branchId: 'branchId',
     transaction_type: 'transaction_type',
     amount: 'amount',
     balance_after: 'balance_after',
@@ -112498,6 +113064,7 @@ export namespace Prisma {
     id: 'id',
     tax_type: 'tax_type',
     tax_period: 'tax_period',
+    branch_id: 'branch_id',
     taxable_amount: 'taxable_amount',
     tax_rate: 'tax_rate',
     tax_amount: 'tax_amount',
@@ -113882,9 +114449,15 @@ export namespace Prisma {
     isActive?: BoolFilter<"Branch"> | boolean
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
+    bankAccounts?: BankAccountListRelationFilter
     branchInventory?: BranchInventoryListRelationFilter
+    budgets?: BudgetListRelationFilter
     cashierSessions?: CashierSessionListRelationFilter
     documentSequences?: DocumentSequenceListRelationFilter
+    financeTransactions?: FinanceTransactionListRelationFilter
+    accountsReceivable?: AccountReceivableListRelationFilter
+    accountsPayable?: AccountPayableListRelationFilter
+    taxRecords?: TaxRecordListRelationFilter
     transfersFrom?: EmployeeTransferListRelationFilter
     transfersTo?: EmployeeTransferListRelationFilter
     journal_headers?: JournalHeaderListRelationFilter
@@ -113908,9 +114481,15 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    bankAccounts?: BankAccountOrderByRelationAggregateInput
     branchInventory?: BranchInventoryOrderByRelationAggregateInput
+    budgets?: BudgetOrderByRelationAggregateInput
     cashierSessions?: CashierSessionOrderByRelationAggregateInput
     documentSequences?: DocumentSequenceOrderByRelationAggregateInput
+    financeTransactions?: FinanceTransactionOrderByRelationAggregateInput
+    accountsReceivable?: AccountReceivableOrderByRelationAggregateInput
+    accountsPayable?: AccountPayableOrderByRelationAggregateInput
+    taxRecords?: TaxRecordOrderByRelationAggregateInput
     transfersFrom?: EmployeeTransferOrderByRelationAggregateInput
     transfersTo?: EmployeeTransferOrderByRelationAggregateInput
     journal_headers?: JournalHeaderOrderByRelationAggregateInput
@@ -113937,9 +114516,15 @@ export namespace Prisma {
     isActive?: BoolFilter<"Branch"> | boolean
     createdAt?: DateTimeFilter<"Branch"> | Date | string
     updatedAt?: DateTimeFilter<"Branch"> | Date | string
+    bankAccounts?: BankAccountListRelationFilter
     branchInventory?: BranchInventoryListRelationFilter
+    budgets?: BudgetListRelationFilter
     cashierSessions?: CashierSessionListRelationFilter
     documentSequences?: DocumentSequenceListRelationFilter
+    financeTransactions?: FinanceTransactionListRelationFilter
+    accountsReceivable?: AccountReceivableListRelationFilter
+    accountsPayable?: AccountPayableListRelationFilter
+    taxRecords?: TaxRecordListRelationFilter
     transfersFrom?: EmployeeTransferListRelationFilter
     transfersTo?: EmployeeTransferListRelationFilter
     journal_headers?: JournalHeaderListRelationFilter
@@ -117445,6 +118030,7 @@ export namespace Prisma {
     description?: StringFilter<"FinanceTransaction"> | string
     amount?: FloatFilter<"FinanceTransaction"> | number
     payrollId?: StringNullableFilter<"FinanceTransaction"> | string | null
+    branchId?: StringNullableFilter<"FinanceTransaction"> | string | null
     payment_method?: StringNullableFilter<"FinanceTransaction"> | string | null
     reference_doc?: StringNullableFilter<"FinanceTransaction"> | string | null
     notes?: StringNullableFilter<"FinanceTransaction"> | string | null
@@ -117452,6 +118038,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FinanceTransaction"> | Date | string
     category?: StringNullableFilter<"FinanceTransaction"> | string | null
     transactionDate?: DateTimeFilter<"FinanceTransaction"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     payroll?: XOR<PayrollNullableScalarRelationFilter, PayrollWhereInput> | null
   }
 
@@ -117462,6 +118049,7 @@ export namespace Prisma {
     description?: SortOrder
     amount?: SortOrder
     payrollId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
     payment_method?: SortOrderInput | SortOrder
     reference_doc?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
@@ -117469,6 +118057,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     category?: SortOrderInput | SortOrder
     transactionDate?: SortOrder
+    branch?: BranchOrderByWithRelationInput
     payroll?: PayrollOrderByWithRelationInput
   }
 
@@ -117482,6 +118071,7 @@ export namespace Prisma {
     description?: StringFilter<"FinanceTransaction"> | string
     amount?: FloatFilter<"FinanceTransaction"> | number
     payrollId?: StringNullableFilter<"FinanceTransaction"> | string | null
+    branchId?: StringNullableFilter<"FinanceTransaction"> | string | null
     payment_method?: StringNullableFilter<"FinanceTransaction"> | string | null
     reference_doc?: StringNullableFilter<"FinanceTransaction"> | string | null
     notes?: StringNullableFilter<"FinanceTransaction"> | string | null
@@ -117489,6 +118079,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"FinanceTransaction"> | Date | string
     category?: StringNullableFilter<"FinanceTransaction"> | string | null
     transactionDate?: DateTimeFilter<"FinanceTransaction"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     payroll?: XOR<PayrollNullableScalarRelationFilter, PayrollWhereInput> | null
   }, "id" | "reference_no">
 
@@ -117499,6 +118090,7 @@ export namespace Prisma {
     description?: SortOrder
     amount?: SortOrder
     payrollId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
     payment_method?: SortOrderInput | SortOrder
     reference_doc?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
@@ -117523,6 +118115,7 @@ export namespace Prisma {
     description?: StringWithAggregatesFilter<"FinanceTransaction"> | string
     amount?: FloatWithAggregatesFilter<"FinanceTransaction"> | number
     payrollId?: StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
     payment_method?: StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
     reference_doc?: StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
     notes?: StringNullableWithAggregatesFilter<"FinanceTransaction"> | string | null
@@ -118464,6 +119057,7 @@ export namespace Prisma {
     budget_name?: StringFilter<"Budget"> | string
     fiscal_year?: IntFilter<"Budget"> | number
     account_id?: StringFilter<"Budget"> | string
+    branch_id?: StringNullableFilter<"Budget"> | string | null
     period_type?: EnumPeriodTypeFilter<"Budget"> | $Enums.PeriodType
     period_start?: DateTimeFilter<"Budget"> | Date | string
     period_end?: DateTimeFilter<"Budget"> | Date | string
@@ -118479,6 +119073,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Budget"> | Date | string
     updatedAt?: DateTimeFilter<"Budget"> | Date | string
     account?: XOR<ChartOfAccountScalarRelationFilter, ChartOfAccountWhereInput>
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }
 
   export type BudgetOrderByWithRelationInput = {
@@ -118486,6 +119081,7 @@ export namespace Prisma {
     budget_name?: SortOrder
     fiscal_year?: SortOrder
     account_id?: SortOrder
+    branch_id?: SortOrderInput | SortOrder
     period_type?: SortOrder
     period_start?: SortOrder
     period_end?: SortOrder
@@ -118501,6 +119097,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     account?: ChartOfAccountOrderByWithRelationInput
+    branch?: BranchOrderByWithRelationInput
   }
 
   export type BudgetWhereUniqueInput = Prisma.AtLeast<{
@@ -118512,6 +119109,7 @@ export namespace Prisma {
     budget_name?: StringFilter<"Budget"> | string
     fiscal_year?: IntFilter<"Budget"> | number
     account_id?: StringFilter<"Budget"> | string
+    branch_id?: StringNullableFilter<"Budget"> | string | null
     period_type?: EnumPeriodTypeFilter<"Budget"> | $Enums.PeriodType
     period_start?: DateTimeFilter<"Budget"> | Date | string
     period_end?: DateTimeFilter<"Budget"> | Date | string
@@ -118527,6 +119125,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Budget"> | Date | string
     updatedAt?: DateTimeFilter<"Budget"> | Date | string
     account?: XOR<ChartOfAccountScalarRelationFilter, ChartOfAccountWhereInput>
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }, "id" | "account_id_fiscal_year_period_start">
 
   export type BudgetOrderByWithAggregationInput = {
@@ -118534,6 +119133,7 @@ export namespace Prisma {
     budget_name?: SortOrder
     fiscal_year?: SortOrder
     account_id?: SortOrder
+    branch_id?: SortOrderInput | SortOrder
     period_type?: SortOrder
     period_start?: SortOrder
     period_end?: SortOrder
@@ -118563,6 +119163,7 @@ export namespace Prisma {
     budget_name?: StringWithAggregatesFilter<"Budget"> | string
     fiscal_year?: IntWithAggregatesFilter<"Budget"> | number
     account_id?: StringWithAggregatesFilter<"Budget"> | string
+    branch_id?: StringNullableWithAggregatesFilter<"Budget"> | string | null
     period_type?: EnumPeriodTypeWithAggregatesFilter<"Budget"> | $Enums.PeriodType
     period_start?: DateTimeWithAggregatesFilter<"Budget"> | Date | string
     period_end?: DateTimeWithAggregatesFilter<"Budget"> | Date | string
@@ -118761,6 +119362,7 @@ export namespace Prisma {
     customer_name?: StringFilter<"AccountReceivable"> | string
     customer_email?: StringNullableFilter<"AccountReceivable"> | string | null
     customer_phone?: StringNullableFilter<"AccountReceivable"> | string | null
+    branch_id?: StringNullableFilter<"AccountReceivable"> | string | null
     total_amount?: FloatFilter<"AccountReceivable"> | number
     paid_amount?: FloatFilter<"AccountReceivable"> | number
     balance?: FloatFilter<"AccountReceivable"> | number
@@ -118772,6 +119374,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"AccountReceivable"> | string | null
     createdAt?: DateTimeFilter<"AccountReceivable"> | Date | string
     updatedAt?: DateTimeFilter<"AccountReceivable"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     payments?: ARPaymentListRelationFilter
   }
 
@@ -118781,6 +119384,7 @@ export namespace Prisma {
     customer_name?: SortOrder
     customer_email?: SortOrderInput | SortOrder
     customer_phone?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -118792,6 +119396,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    branch?: BranchOrderByWithRelationInput
     payments?: ARPaymentOrderByRelationAggregateInput
   }
 
@@ -118804,6 +119409,7 @@ export namespace Prisma {
     customer_name?: StringFilter<"AccountReceivable"> | string
     customer_email?: StringNullableFilter<"AccountReceivable"> | string | null
     customer_phone?: StringNullableFilter<"AccountReceivable"> | string | null
+    branch_id?: StringNullableFilter<"AccountReceivable"> | string | null
     total_amount?: FloatFilter<"AccountReceivable"> | number
     paid_amount?: FloatFilter<"AccountReceivable"> | number
     balance?: FloatFilter<"AccountReceivable"> | number
@@ -118815,6 +119421,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"AccountReceivable"> | string | null
     createdAt?: DateTimeFilter<"AccountReceivable"> | Date | string
     updatedAt?: DateTimeFilter<"AccountReceivable"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     payments?: ARPaymentListRelationFilter
   }, "id" | "invoice_no">
 
@@ -118824,6 +119431,7 @@ export namespace Prisma {
     customer_name?: SortOrder
     customer_email?: SortOrderInput | SortOrder
     customer_phone?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -118851,6 +119459,7 @@ export namespace Prisma {
     customer_name?: StringWithAggregatesFilter<"AccountReceivable"> | string
     customer_email?: StringNullableWithAggregatesFilter<"AccountReceivable"> | string | null
     customer_phone?: StringNullableWithAggregatesFilter<"AccountReceivable"> | string | null
+    branch_id?: StringNullableWithAggregatesFilter<"AccountReceivable"> | string | null
     total_amount?: FloatWithAggregatesFilter<"AccountReceivable"> | number
     paid_amount?: FloatWithAggregatesFilter<"AccountReceivable"> | number
     balance?: FloatWithAggregatesFilter<"AccountReceivable"> | number
@@ -118965,6 +119574,7 @@ export namespace Prisma {
     vendor_name?: StringFilter<"AccountPayable"> | string
     vendor_email?: StringNullableFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableFilter<"AccountPayable"> | string | null
+    branch_id?: StringNullableFilter<"AccountPayable"> | string | null
     total_amount?: FloatFilter<"AccountPayable"> | number
     paid_amount?: FloatFilter<"AccountPayable"> | number
     balance?: FloatFilter<"AccountPayable"> | number
@@ -118976,6 +119586,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"AccountPayable"> | string | null
     createdAt?: DateTimeFilter<"AccountPayable"> | Date | string
     updatedAt?: DateTimeFilter<"AccountPayable"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     payments?: APPaymentListRelationFilter
   }
 
@@ -118985,6 +119596,7 @@ export namespace Prisma {
     vendor_name?: SortOrder
     vendor_email?: SortOrderInput | SortOrder
     vendor_phone?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -118996,6 +119608,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    branch?: BranchOrderByWithRelationInput
     payments?: APPaymentOrderByRelationAggregateInput
   }
 
@@ -119008,6 +119621,7 @@ export namespace Prisma {
     vendor_name?: StringFilter<"AccountPayable"> | string
     vendor_email?: StringNullableFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableFilter<"AccountPayable"> | string | null
+    branch_id?: StringNullableFilter<"AccountPayable"> | string | null
     total_amount?: FloatFilter<"AccountPayable"> | number
     paid_amount?: FloatFilter<"AccountPayable"> | number
     balance?: FloatFilter<"AccountPayable"> | number
@@ -119019,6 +119633,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"AccountPayable"> | string | null
     createdAt?: DateTimeFilter<"AccountPayable"> | Date | string
     updatedAt?: DateTimeFilter<"AccountPayable"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     payments?: APPaymentListRelationFilter
   }, "id" | "bill_no">
 
@@ -119028,6 +119643,7 @@ export namespace Prisma {
     vendor_name?: SortOrder
     vendor_email?: SortOrderInput | SortOrder
     vendor_phone?: SortOrderInput | SortOrder
+    branch_id?: SortOrderInput | SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -119055,6 +119671,7 @@ export namespace Prisma {
     vendor_name?: StringWithAggregatesFilter<"AccountPayable"> | string
     vendor_email?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
+    branch_id?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
     total_amount?: FloatWithAggregatesFilter<"AccountPayable"> | number
     paid_amount?: FloatWithAggregatesFilter<"AccountPayable"> | number
     balance?: FloatWithAggregatesFilter<"AccountPayable"> | number
@@ -119169,6 +119786,7 @@ export namespace Prisma {
     account_number?: StringFilter<"BankAccount"> | string
     bank_name?: StringFilter<"BankAccount"> | string
     branch?: StringNullableFilter<"BankAccount"> | string | null
+    branchId?: StringNullableFilter<"BankAccount"> | string | null
     account_type?: EnumBankAccountTypeFilter<"BankAccount"> | $Enums.BankAccountType
     currency?: StringFilter<"BankAccount"> | string
     current_balance?: FloatFilter<"BankAccount"> | number
@@ -119178,6 +119796,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"BankAccount"> | string | null
     createdAt?: DateTimeFilter<"BankAccount"> | Date | string
     updatedAt?: DateTimeFilter<"BankAccount"> | Date | string
+    branchRef?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     transactions?: BankTransactionListRelationFilter
   }
 
@@ -119187,6 +119806,7 @@ export namespace Prisma {
     account_number?: SortOrder
     bank_name?: SortOrder
     branch?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
     account_type?: SortOrder
     currency?: SortOrder
     current_balance?: SortOrder
@@ -119196,18 +119816,21 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    branchRef?: BranchOrderByWithRelationInput
     transactions?: BankTransactionOrderByRelationAggregateInput
   }
 
   export type BankAccountWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    account_number?: string
+    account_number_branchId?: BankAccountAccount_numberBranchIdCompoundUniqueInput
     AND?: BankAccountWhereInput | BankAccountWhereInput[]
     OR?: BankAccountWhereInput[]
     NOT?: BankAccountWhereInput | BankAccountWhereInput[]
     account_name?: StringFilter<"BankAccount"> | string
+    account_number?: StringFilter<"BankAccount"> | string
     bank_name?: StringFilter<"BankAccount"> | string
     branch?: StringNullableFilter<"BankAccount"> | string | null
+    branchId?: StringNullableFilter<"BankAccount"> | string | null
     account_type?: EnumBankAccountTypeFilter<"BankAccount"> | $Enums.BankAccountType
     currency?: StringFilter<"BankAccount"> | string
     current_balance?: FloatFilter<"BankAccount"> | number
@@ -119217,8 +119840,9 @@ export namespace Prisma {
     notes?: StringNullableFilter<"BankAccount"> | string | null
     createdAt?: DateTimeFilter<"BankAccount"> | Date | string
     updatedAt?: DateTimeFilter<"BankAccount"> | Date | string
+    branchRef?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
     transactions?: BankTransactionListRelationFilter
-  }, "id" | "account_number">
+  }, "id" | "account_number_branchId">
 
   export type BankAccountOrderByWithAggregationInput = {
     id?: SortOrder
@@ -119226,6 +119850,7 @@ export namespace Prisma {
     account_number?: SortOrder
     bank_name?: SortOrder
     branch?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
     account_type?: SortOrder
     currency?: SortOrder
     current_balance?: SortOrder
@@ -119251,6 +119876,7 @@ export namespace Prisma {
     account_number?: StringWithAggregatesFilter<"BankAccount"> | string
     bank_name?: StringWithAggregatesFilter<"BankAccount"> | string
     branch?: StringNullableWithAggregatesFilter<"BankAccount"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"BankAccount"> | string | null
     account_type?: EnumBankAccountTypeWithAggregatesFilter<"BankAccount"> | $Enums.BankAccountType
     currency?: StringWithAggregatesFilter<"BankAccount"> | string
     current_balance?: FloatWithAggregatesFilter<"BankAccount"> | number
@@ -119269,6 +119895,7 @@ export namespace Prisma {
     id?: StringFilter<"BankTransaction"> | string
     transaction_no?: StringFilter<"BankTransaction"> | string
     bank_account_id?: StringFilter<"BankTransaction"> | string
+    branchId?: StringNullableFilter<"BankTransaction"> | string | null
     transaction_type?: EnumTransactionTypeFilter<"BankTransaction"> | $Enums.TransactionType
     amount?: FloatFilter<"BankTransaction"> | number
     balance_after?: FloatFilter<"BankTransaction"> | number
@@ -119287,6 +119914,7 @@ export namespace Prisma {
     id?: SortOrder
     transaction_no?: SortOrder
     bank_account_id?: SortOrder
+    branchId?: SortOrderInput | SortOrder
     transaction_type?: SortOrder
     amount?: SortOrder
     balance_after?: SortOrder
@@ -119308,6 +119936,7 @@ export namespace Prisma {
     OR?: BankTransactionWhereInput[]
     NOT?: BankTransactionWhereInput | BankTransactionWhereInput[]
     bank_account_id?: StringFilter<"BankTransaction"> | string
+    branchId?: StringNullableFilter<"BankTransaction"> | string | null
     transaction_type?: EnumTransactionTypeFilter<"BankTransaction"> | $Enums.TransactionType
     amount?: FloatFilter<"BankTransaction"> | number
     balance_after?: FloatFilter<"BankTransaction"> | number
@@ -119326,6 +119955,7 @@ export namespace Prisma {
     id?: SortOrder
     transaction_no?: SortOrder
     bank_account_id?: SortOrder
+    branchId?: SortOrderInput | SortOrder
     transaction_type?: SortOrder
     amount?: SortOrder
     balance_after?: SortOrder
@@ -119351,6 +119981,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"BankTransaction"> | string
     transaction_no?: StringWithAggregatesFilter<"BankTransaction"> | string
     bank_account_id?: StringWithAggregatesFilter<"BankTransaction"> | string
+    branchId?: StringNullableWithAggregatesFilter<"BankTransaction"> | string | null
     transaction_type?: EnumTransactionTypeWithAggregatesFilter<"BankTransaction"> | $Enums.TransactionType
     amount?: FloatWithAggregatesFilter<"BankTransaction"> | number
     balance_after?: FloatWithAggregatesFilter<"BankTransaction"> | number
@@ -119589,6 +120220,7 @@ export namespace Prisma {
     id?: StringFilter<"TaxRecord"> | string
     tax_type?: EnumTaxTypeFilter<"TaxRecord"> | $Enums.TaxType
     tax_period?: StringFilter<"TaxRecord"> | string
+    branch_id?: StringNullableFilter<"TaxRecord"> | string | null
     taxable_amount?: FloatFilter<"TaxRecord"> | number
     tax_rate?: FloatFilter<"TaxRecord"> | number
     tax_amount?: FloatFilter<"TaxRecord"> | number
@@ -119601,12 +120233,14 @@ export namespace Prisma {
     notes?: StringNullableFilter<"TaxRecord"> | string | null
     createdAt?: DateTimeFilter<"TaxRecord"> | Date | string
     updatedAt?: DateTimeFilter<"TaxRecord"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }
 
   export type TaxRecordOrderByWithRelationInput = {
     id?: SortOrder
     tax_type?: SortOrder
     tax_period?: SortOrder
+    branch_id?: SortOrderInput | SortOrder
     taxable_amount?: SortOrder
     tax_rate?: SortOrder
     tax_amount?: SortOrder
@@ -119619,6 +120253,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    branch?: BranchOrderByWithRelationInput
   }
 
   export type TaxRecordWhereUniqueInput = Prisma.AtLeast<{
@@ -119628,6 +120263,7 @@ export namespace Prisma {
     NOT?: TaxRecordWhereInput | TaxRecordWhereInput[]
     tax_type?: EnumTaxTypeFilter<"TaxRecord"> | $Enums.TaxType
     tax_period?: StringFilter<"TaxRecord"> | string
+    branch_id?: StringNullableFilter<"TaxRecord"> | string | null
     taxable_amount?: FloatFilter<"TaxRecord"> | number
     tax_rate?: FloatFilter<"TaxRecord"> | number
     tax_amount?: FloatFilter<"TaxRecord"> | number
@@ -119640,12 +120276,14 @@ export namespace Prisma {
     notes?: StringNullableFilter<"TaxRecord"> | string | null
     createdAt?: DateTimeFilter<"TaxRecord"> | Date | string
     updatedAt?: DateTimeFilter<"TaxRecord"> | Date | string
+    branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
   }, "id">
 
   export type TaxRecordOrderByWithAggregationInput = {
     id?: SortOrder
     tax_type?: SortOrder
     tax_period?: SortOrder
+    branch_id?: SortOrderInput | SortOrder
     taxable_amount?: SortOrder
     tax_rate?: SortOrder
     tax_amount?: SortOrder
@@ -119672,6 +120310,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"TaxRecord"> | string
     tax_type?: EnumTaxTypeWithAggregatesFilter<"TaxRecord"> | $Enums.TaxType
     tax_period?: StringWithAggregatesFilter<"TaxRecord"> | string
+    branch_id?: StringNullableWithAggregatesFilter<"TaxRecord"> | string | null
     taxable_amount?: FloatWithAggregatesFilter<"TaxRecord"> | number
     tax_rate?: FloatWithAggregatesFilter<"TaxRecord"> | number
     tax_amount?: FloatWithAggregatesFilter<"TaxRecord"> | number
@@ -121643,9 +122282,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -121669,9 +122314,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -121695,9 +122346,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -121721,9 +122378,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -125505,6 +126168,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     category?: string | null
     transactionDate?: Date | string
+    branch?: BranchCreateNestedOneWithoutFinanceTransactionsInput
     payroll?: PayrollCreateNestedOneWithoutTransactionsInput
   }
 
@@ -125515,6 +126179,7 @@ export namespace Prisma {
     description: string
     amount: number
     payrollId?: string | null
+    branchId?: string | null
     payment_method?: string | null
     reference_doc?: string | null
     notes?: string | null
@@ -125537,6 +126202,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: NullableStringFieldUpdateOperationsInput | string | null
     transactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutFinanceTransactionsNestedInput
     payroll?: PayrollUpdateOneWithoutTransactionsNestedInput
   }
 
@@ -125547,6 +126213,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     amount?: FloatFieldUpdateOperationsInput | number
     payrollId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
     reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125563,6 +126230,7 @@ export namespace Prisma {
     description: string
     amount: number
     payrollId?: string | null
+    branchId?: string | null
     payment_method?: string | null
     reference_doc?: string | null
     notes?: string | null
@@ -125594,6 +126262,7 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     amount?: FloatFieldUpdateOperationsInput | number
     payrollId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
     reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -126663,6 +127332,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     account: ChartOfAccountCreateNestedOneWithoutBudgetsInput
+    branch?: BranchCreateNestedOneWithoutBudgetsInput
   }
 
   export type BudgetUncheckedCreateInput = {
@@ -126670,6 +127340,7 @@ export namespace Prisma {
     budget_name: string
     fiscal_year: number
     account_id: string
+    branch_id?: string | null
     period_type?: $Enums.PeriodType
     period_start: Date | string
     period_end: Date | string
@@ -126705,6 +127376,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: ChartOfAccountUpdateOneRequiredWithoutBudgetsNestedInput
+    branch?: BranchUpdateOneWithoutBudgetsNestedInput
   }
 
   export type BudgetUncheckedUpdateInput = {
@@ -126712,6 +127384,7 @@ export namespace Prisma {
     budget_name?: StringFieldUpdateOperationsInput | string
     fiscal_year?: IntFieldUpdateOperationsInput | number
     account_id?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
     period_start?: DateTimeFieldUpdateOperationsInput | Date | string
     period_end?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -126733,6 +127406,7 @@ export namespace Prisma {
     budget_name: string
     fiscal_year: number
     account_id: string
+    branch_id?: string | null
     period_type?: $Enums.PeriodType
     period_start: Date | string
     period_end: Date | string
@@ -126774,6 +127448,7 @@ export namespace Prisma {
     budget_name?: StringFieldUpdateOperationsInput | string
     fiscal_year?: IntFieldUpdateOperationsInput | number
     account_id?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
     period_start?: DateTimeFieldUpdateOperationsInput | Date | string
     period_end?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -126997,6 +127672,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutAccountsReceivableInput
     payments?: ARPaymentCreateNestedManyWithoutAccount_receivableInput
   }
 
@@ -127006,6 +127682,7 @@ export namespace Prisma {
     customer_name: string
     customer_email?: string | null
     customer_phone?: string | null
+    branch_id?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -127037,6 +127714,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAccountsReceivableNestedInput
     payments?: ARPaymentUpdateManyWithoutAccount_receivableNestedInput
   }
 
@@ -127046,6 +127724,7 @@ export namespace Prisma {
     customer_name?: StringFieldUpdateOperationsInput | string
     customer_email?: NullableStringFieldUpdateOperationsInput | string | null
     customer_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -127066,6 +127745,7 @@ export namespace Prisma {
     customer_name: string
     customer_email?: string | null
     customer_phone?: string | null
+    branch_id?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -127104,6 +127784,7 @@ export namespace Prisma {
     customer_name?: StringFieldUpdateOperationsInput | string
     customer_email?: NullableStringFieldUpdateOperationsInput | string | null
     customer_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -127238,6 +127919,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutAccountsPayableInput
     payments?: APPaymentCreateNestedManyWithoutAccount_payableInput
   }
 
@@ -127247,6 +127929,7 @@ export namespace Prisma {
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
+    branch_id?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -127278,6 +127961,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAccountsPayableNestedInput
     payments?: APPaymentUpdateManyWithoutAccount_payableNestedInput
   }
 
@@ -127287,6 +127971,7 @@ export namespace Prisma {
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -127307,6 +127992,7 @@ export namespace Prisma {
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
+    branch_id?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -127345,6 +128031,7 @@ export namespace Prisma {
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -127477,6 +128164,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branchRef?: BranchCreateNestedOneWithoutBankAccountsInput
     transactions?: BankTransactionCreateNestedManyWithoutBank_accountInput
   }
 
@@ -127486,6 +128174,7 @@ export namespace Prisma {
     account_number: string
     bank_name: string
     branch?: string | null
+    branchId?: string | null
     account_type?: $Enums.BankAccountType
     currency?: string
     current_balance?: number
@@ -127513,6 +128202,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchRef?: BranchUpdateOneWithoutBankAccountsNestedInput
     transactions?: BankTransactionUpdateManyWithoutBank_accountNestedInput
   }
 
@@ -127522,6 +128212,7 @@ export namespace Prisma {
     account_number?: StringFieldUpdateOperationsInput | string
     bank_name?: StringFieldUpdateOperationsInput | string
     branch?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     account_type?: EnumBankAccountTypeFieldUpdateOperationsInput | $Enums.BankAccountType
     currency?: StringFieldUpdateOperationsInput | string
     current_balance?: FloatFieldUpdateOperationsInput | number
@@ -127540,6 +128231,7 @@ export namespace Prisma {
     account_number: string
     bank_name: string
     branch?: string | null
+    branchId?: string | null
     account_type?: $Enums.BankAccountType
     currency?: string
     current_balance?: number
@@ -127574,6 +128266,7 @@ export namespace Prisma {
     account_number?: StringFieldUpdateOperationsInput | string
     bank_name?: StringFieldUpdateOperationsInput | string
     branch?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     account_type?: EnumBankAccountTypeFieldUpdateOperationsInput | $Enums.BankAccountType
     currency?: StringFieldUpdateOperationsInput | string
     current_balance?: FloatFieldUpdateOperationsInput | number
@@ -127588,6 +128281,7 @@ export namespace Prisma {
   export type BankTransactionCreateInput = {
     id?: string
     transaction_no: string
+    branchId?: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -127606,6 +128300,7 @@ export namespace Prisma {
     id?: string
     transaction_no: string
     bank_account_id: string
+    branchId?: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -127622,6 +128317,7 @@ export namespace Prisma {
   export type BankTransactionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number
@@ -127640,6 +128336,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
     bank_account_id?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number
@@ -127657,6 +128354,7 @@ export namespace Prisma {
     id?: string
     transaction_no: string
     bank_account_id: string
+    branchId?: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -127673,6 +128371,7 @@ export namespace Prisma {
   export type BankTransactionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number
@@ -127690,6 +128389,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
     bank_account_id?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number
@@ -127985,12 +128685,14 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutTaxRecordsInput
   }
 
   export type TaxRecordUncheckedCreateInput = {
     id?: string
     tax_type: $Enums.TaxType
     tax_period: string
+    branch_id?: string | null
     taxable_amount: number
     tax_rate: number
     tax_amount: number
@@ -128021,12 +128723,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutTaxRecordsNestedInput
   }
 
   export type TaxRecordUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     tax_type?: EnumTaxTypeFieldUpdateOperationsInput | $Enums.TaxType
     tax_period?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     taxable_amount?: FloatFieldUpdateOperationsInput | number
     tax_rate?: FloatFieldUpdateOperationsInput | number
     tax_amount?: FloatFieldUpdateOperationsInput | number
@@ -128045,6 +128749,7 @@ export namespace Prisma {
     id?: string
     tax_type: $Enums.TaxType
     tax_period: string
+    branch_id?: string | null
     taxable_amount: number
     tax_rate: number
     tax_amount: number
@@ -128081,6 +128786,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tax_type?: EnumTaxTypeFieldUpdateOperationsInput | $Enums.TaxType
     tax_period?: StringFieldUpdateOperationsInput | string
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     taxable_amount?: FloatFieldUpdateOperationsInput | number
     tax_rate?: FloatFieldUpdateOperationsInput | number
     tax_amount?: FloatFieldUpdateOperationsInput | number
@@ -130354,16 +131060,52 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
+  export type BankAccountListRelationFilter = {
+    every?: BankAccountWhereInput
+    some?: BankAccountWhereInput
+    none?: BankAccountWhereInput
+  }
+
   export type BranchInventoryListRelationFilter = {
     every?: BranchInventoryWhereInput
     some?: BranchInventoryWhereInput
     none?: BranchInventoryWhereInput
   }
 
+  export type BudgetListRelationFilter = {
+    every?: BudgetWhereInput
+    some?: BudgetWhereInput
+    none?: BudgetWhereInput
+  }
+
   export type DocumentSequenceListRelationFilter = {
     every?: DocumentSequenceWhereInput
     some?: DocumentSequenceWhereInput
     none?: DocumentSequenceWhereInput
+  }
+
+  export type FinanceTransactionListRelationFilter = {
+    every?: FinanceTransactionWhereInput
+    some?: FinanceTransactionWhereInput
+    none?: FinanceTransactionWhereInput
+  }
+
+  export type AccountReceivableListRelationFilter = {
+    every?: AccountReceivableWhereInput
+    some?: AccountReceivableWhereInput
+    none?: AccountReceivableWhereInput
+  }
+
+  export type AccountPayableListRelationFilter = {
+    every?: AccountPayableWhereInput
+    some?: AccountPayableWhereInput
+    none?: AccountPayableWhereInput
+  }
+
+  export type TaxRecordListRelationFilter = {
+    every?: TaxRecordWhereInput
+    some?: TaxRecordWhereInput
+    none?: TaxRecordWhereInput
   }
 
   export type JournalHeaderListRelationFilter = {
@@ -130390,11 +131132,35 @@ export namespace Prisma {
     none?: WarehouseWhereInput
   }
 
+  export type BankAccountOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type BranchInventoryOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
+  export type BudgetOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type DocumentSequenceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FinanceTransactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccountReceivableOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AccountPayableOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type TaxRecordOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -133177,6 +133943,7 @@ export namespace Prisma {
     description?: SortOrder
     amount?: SortOrder
     payrollId?: SortOrder
+    branchId?: SortOrder
     payment_method?: SortOrder
     reference_doc?: SortOrder
     notes?: SortOrder
@@ -133197,6 +133964,7 @@ export namespace Prisma {
     description?: SortOrder
     amount?: SortOrder
     payrollId?: SortOrder
+    branchId?: SortOrder
     payment_method?: SortOrder
     reference_doc?: SortOrder
     notes?: SortOrder
@@ -133213,6 +133981,7 @@ export namespace Prisma {
     description?: SortOrder
     amount?: SortOrder
     payrollId?: SortOrder
+    branchId?: SortOrder
     payment_method?: SortOrder
     reference_doc?: SortOrder
     notes?: SortOrder
@@ -133470,16 +134239,6 @@ export namespace Prisma {
     not?: NestedEnumPayrollStatusFilter<$PrismaModel> | $Enums.PayrollStatus
   }
 
-  export type FinanceTransactionListRelationFilter = {
-    every?: FinanceTransactionWhereInput
-    some?: FinanceTransactionWhereInput
-    none?: FinanceTransactionWhereInput
-  }
-
-  export type FinanceTransactionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type PayrollCountOrderByAggregateInput = {
     id?: SortOrder
     payroll_no?: SortOrder
@@ -133568,12 +134327,6 @@ export namespace Prisma {
     none?: BankStatementWhereInput
   }
 
-  export type BudgetListRelationFilter = {
-    every?: BudgetWhereInput
-    some?: BudgetWhereInput
-    none?: BudgetWhereInput
-  }
-
   export type ChartOfAccountNullableScalarRelationFilter = {
     is?: ChartOfAccountWhereInput | null
     isNot?: ChartOfAccountWhereInput | null
@@ -133598,10 +134351,6 @@ export namespace Prisma {
   }
 
   export type BankStatementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type BudgetOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -133948,6 +134697,7 @@ export namespace Prisma {
     budget_name?: SortOrder
     fiscal_year?: SortOrder
     account_id?: SortOrder
+    branch_id?: SortOrder
     period_type?: SortOrder
     period_start?: SortOrder
     period_end?: SortOrder
@@ -133977,6 +134727,7 @@ export namespace Prisma {
     budget_name?: SortOrder
     fiscal_year?: SortOrder
     account_id?: SortOrder
+    branch_id?: SortOrder
     period_type?: SortOrder
     period_start?: SortOrder
     period_end?: SortOrder
@@ -133998,6 +134749,7 @@ export namespace Prisma {
     budget_name?: SortOrder
     fiscal_year?: SortOrder
     account_id?: SortOrder
+    branch_id?: SortOrder
     period_type?: SortOrder
     period_start?: SortOrder
     period_end?: SortOrder
@@ -134174,6 +134926,7 @@ export namespace Prisma {
     customer_name?: SortOrder
     customer_email?: SortOrder
     customer_phone?: SortOrder
+    branch_id?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -134200,6 +134953,7 @@ export namespace Prisma {
     customer_name?: SortOrder
     customer_email?: SortOrder
     customer_phone?: SortOrder
+    branch_id?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -134219,6 +134973,7 @@ export namespace Prisma {
     customer_name?: SortOrder
     customer_email?: SortOrder
     customer_phone?: SortOrder
+    branch_id?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -134330,6 +135085,7 @@ export namespace Prisma {
     vendor_name?: SortOrder
     vendor_email?: SortOrder
     vendor_phone?: SortOrder
+    branch_id?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -134356,6 +135112,7 @@ export namespace Prisma {
     vendor_name?: SortOrder
     vendor_email?: SortOrder
     vendor_phone?: SortOrder
+    branch_id?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -134375,6 +135132,7 @@ export namespace Prisma {
     vendor_name?: SortOrder
     vendor_email?: SortOrder
     vendor_phone?: SortOrder
+    branch_id?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -134480,12 +135238,18 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type BankAccountAccount_numberBranchIdCompoundUniqueInput = {
+    account_number: string
+    branchId: string
+  }
+
   export type BankAccountCountOrderByAggregateInput = {
     id?: SortOrder
     account_name?: SortOrder
     account_number?: SortOrder
     bank_name?: SortOrder
     branch?: SortOrder
+    branchId?: SortOrder
     account_type?: SortOrder
     currency?: SortOrder
     current_balance?: SortOrder
@@ -134509,6 +135273,7 @@ export namespace Prisma {
     account_number?: SortOrder
     bank_name?: SortOrder
     branch?: SortOrder
+    branchId?: SortOrder
     account_type?: SortOrder
     currency?: SortOrder
     current_balance?: SortOrder
@@ -134526,6 +135291,7 @@ export namespace Prisma {
     account_number?: SortOrder
     bank_name?: SortOrder
     branch?: SortOrder
+    branchId?: SortOrder
     account_type?: SortOrder
     currency?: SortOrder
     current_balance?: SortOrder
@@ -134562,6 +135328,7 @@ export namespace Prisma {
     id?: SortOrder
     transaction_no?: SortOrder
     bank_account_id?: SortOrder
+    branchId?: SortOrder
     transaction_type?: SortOrder
     amount?: SortOrder
     balance_after?: SortOrder
@@ -134584,6 +135351,7 @@ export namespace Prisma {
     id?: SortOrder
     transaction_no?: SortOrder
     bank_account_id?: SortOrder
+    branchId?: SortOrder
     transaction_type?: SortOrder
     amount?: SortOrder
     balance_after?: SortOrder
@@ -134601,6 +135369,7 @@ export namespace Prisma {
     id?: SortOrder
     transaction_no?: SortOrder
     bank_account_id?: SortOrder
+    branchId?: SortOrder
     transaction_type?: SortOrder
     amount?: SortOrder
     balance_after?: SortOrder
@@ -134897,6 +135666,7 @@ export namespace Prisma {
     id?: SortOrder
     tax_type?: SortOrder
     tax_period?: SortOrder
+    branch_id?: SortOrder
     taxable_amount?: SortOrder
     tax_rate?: SortOrder
     tax_amount?: SortOrder
@@ -134922,6 +135692,7 @@ export namespace Prisma {
     id?: SortOrder
     tax_type?: SortOrder
     tax_period?: SortOrder
+    branch_id?: SortOrder
     taxable_amount?: SortOrder
     tax_rate?: SortOrder
     tax_amount?: SortOrder
@@ -134940,6 +135711,7 @@ export namespace Prisma {
     id?: SortOrder
     tax_type?: SortOrder
     tax_period?: SortOrder
+    branch_id?: SortOrder
     taxable_amount?: SortOrder
     tax_rate?: SortOrder
     tax_amount?: SortOrder
@@ -137871,11 +138643,25 @@ export namespace Prisma {
     deleteMany?: RoleAssignmentScalarWhereInput | RoleAssignmentScalarWhereInput[]
   }
 
+  export type BankAccountCreateNestedManyWithoutBranchRefInput = {
+    create?: XOR<BankAccountCreateWithoutBranchRefInput, BankAccountUncheckedCreateWithoutBranchRefInput> | BankAccountCreateWithoutBranchRefInput[] | BankAccountUncheckedCreateWithoutBranchRefInput[]
+    connectOrCreate?: BankAccountCreateOrConnectWithoutBranchRefInput | BankAccountCreateOrConnectWithoutBranchRefInput[]
+    createMany?: BankAccountCreateManyBranchRefInputEnvelope
+    connect?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+  }
+
   export type BranchInventoryCreateNestedManyWithoutBranchInput = {
     create?: XOR<BranchInventoryCreateWithoutBranchInput, BranchInventoryUncheckedCreateWithoutBranchInput> | BranchInventoryCreateWithoutBranchInput[] | BranchInventoryUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: BranchInventoryCreateOrConnectWithoutBranchInput | BranchInventoryCreateOrConnectWithoutBranchInput[]
     createMany?: BranchInventoryCreateManyBranchInputEnvelope
     connect?: BranchInventoryWhereUniqueInput | BranchInventoryWhereUniqueInput[]
+  }
+
+  export type BudgetCreateNestedManyWithoutBranchInput = {
+    create?: XOR<BudgetCreateWithoutBranchInput, BudgetUncheckedCreateWithoutBranchInput> | BudgetCreateWithoutBranchInput[] | BudgetUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutBranchInput | BudgetCreateOrConnectWithoutBranchInput[]
+    createMany?: BudgetCreateManyBranchInputEnvelope
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
   }
 
   export type CashierSessionCreateNestedManyWithoutBranchInput = {
@@ -137890,6 +138676,34 @@ export namespace Prisma {
     connectOrCreate?: DocumentSequenceCreateOrConnectWithoutBranchInput | DocumentSequenceCreateOrConnectWithoutBranchInput[]
     createMany?: DocumentSequenceCreateManyBranchInputEnvelope
     connect?: DocumentSequenceWhereUniqueInput | DocumentSequenceWhereUniqueInput[]
+  }
+
+  export type FinanceTransactionCreateNestedManyWithoutBranchInput = {
+    create?: XOR<FinanceTransactionCreateWithoutBranchInput, FinanceTransactionUncheckedCreateWithoutBranchInput> | FinanceTransactionCreateWithoutBranchInput[] | FinanceTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FinanceTransactionCreateOrConnectWithoutBranchInput | FinanceTransactionCreateOrConnectWithoutBranchInput[]
+    createMany?: FinanceTransactionCreateManyBranchInputEnvelope
+    connect?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+  }
+
+  export type AccountReceivableCreateNestedManyWithoutBranchInput = {
+    create?: XOR<AccountReceivableCreateWithoutBranchInput, AccountReceivableUncheckedCreateWithoutBranchInput> | AccountReceivableCreateWithoutBranchInput[] | AccountReceivableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountReceivableCreateOrConnectWithoutBranchInput | AccountReceivableCreateOrConnectWithoutBranchInput[]
+    createMany?: AccountReceivableCreateManyBranchInputEnvelope
+    connect?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+  }
+
+  export type AccountPayableCreateNestedManyWithoutBranchInput = {
+    create?: XOR<AccountPayableCreateWithoutBranchInput, AccountPayableUncheckedCreateWithoutBranchInput> | AccountPayableCreateWithoutBranchInput[] | AccountPayableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutBranchInput | AccountPayableCreateOrConnectWithoutBranchInput[]
+    createMany?: AccountPayableCreateManyBranchInputEnvelope
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+  }
+
+  export type TaxRecordCreateNestedManyWithoutBranchInput = {
+    create?: XOR<TaxRecordCreateWithoutBranchInput, TaxRecordUncheckedCreateWithoutBranchInput> | TaxRecordCreateWithoutBranchInput[] | TaxRecordUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: TaxRecordCreateOrConnectWithoutBranchInput | TaxRecordCreateOrConnectWithoutBranchInput[]
+    createMany?: TaxRecordCreateManyBranchInputEnvelope
+    connect?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
   }
 
   export type EmployeeTransferCreateNestedManyWithoutFromBranchInput = {
@@ -137969,11 +138783,25 @@ export namespace Prisma {
     connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
   }
 
+  export type BankAccountUncheckedCreateNestedManyWithoutBranchRefInput = {
+    create?: XOR<BankAccountCreateWithoutBranchRefInput, BankAccountUncheckedCreateWithoutBranchRefInput> | BankAccountCreateWithoutBranchRefInput[] | BankAccountUncheckedCreateWithoutBranchRefInput[]
+    connectOrCreate?: BankAccountCreateOrConnectWithoutBranchRefInput | BankAccountCreateOrConnectWithoutBranchRefInput[]
+    createMany?: BankAccountCreateManyBranchRefInputEnvelope
+    connect?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+  }
+
   export type BranchInventoryUncheckedCreateNestedManyWithoutBranchInput = {
     create?: XOR<BranchInventoryCreateWithoutBranchInput, BranchInventoryUncheckedCreateWithoutBranchInput> | BranchInventoryCreateWithoutBranchInput[] | BranchInventoryUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: BranchInventoryCreateOrConnectWithoutBranchInput | BranchInventoryCreateOrConnectWithoutBranchInput[]
     createMany?: BranchInventoryCreateManyBranchInputEnvelope
     connect?: BranchInventoryWhereUniqueInput | BranchInventoryWhereUniqueInput[]
+  }
+
+  export type BudgetUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<BudgetCreateWithoutBranchInput, BudgetUncheckedCreateWithoutBranchInput> | BudgetCreateWithoutBranchInput[] | BudgetUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutBranchInput | BudgetCreateOrConnectWithoutBranchInput[]
+    createMany?: BudgetCreateManyBranchInputEnvelope
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
   }
 
   export type CashierSessionUncheckedCreateNestedManyWithoutBranchInput = {
@@ -137988,6 +138816,34 @@ export namespace Prisma {
     connectOrCreate?: DocumentSequenceCreateOrConnectWithoutBranchInput | DocumentSequenceCreateOrConnectWithoutBranchInput[]
     createMany?: DocumentSequenceCreateManyBranchInputEnvelope
     connect?: DocumentSequenceWhereUniqueInput | DocumentSequenceWhereUniqueInput[]
+  }
+
+  export type FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<FinanceTransactionCreateWithoutBranchInput, FinanceTransactionUncheckedCreateWithoutBranchInput> | FinanceTransactionCreateWithoutBranchInput[] | FinanceTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FinanceTransactionCreateOrConnectWithoutBranchInput | FinanceTransactionCreateOrConnectWithoutBranchInput[]
+    createMany?: FinanceTransactionCreateManyBranchInputEnvelope
+    connect?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+  }
+
+  export type AccountReceivableUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<AccountReceivableCreateWithoutBranchInput, AccountReceivableUncheckedCreateWithoutBranchInput> | AccountReceivableCreateWithoutBranchInput[] | AccountReceivableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountReceivableCreateOrConnectWithoutBranchInput | AccountReceivableCreateOrConnectWithoutBranchInput[]
+    createMany?: AccountReceivableCreateManyBranchInputEnvelope
+    connect?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+  }
+
+  export type AccountPayableUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<AccountPayableCreateWithoutBranchInput, AccountPayableUncheckedCreateWithoutBranchInput> | AccountPayableCreateWithoutBranchInput[] | AccountPayableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutBranchInput | AccountPayableCreateOrConnectWithoutBranchInput[]
+    createMany?: AccountPayableCreateManyBranchInputEnvelope
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+  }
+
+  export type TaxRecordUncheckedCreateNestedManyWithoutBranchInput = {
+    create?: XOR<TaxRecordCreateWithoutBranchInput, TaxRecordUncheckedCreateWithoutBranchInput> | TaxRecordCreateWithoutBranchInput[] | TaxRecordUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: TaxRecordCreateOrConnectWithoutBranchInput | TaxRecordCreateOrConnectWithoutBranchInput[]
+    createMany?: TaxRecordCreateManyBranchInputEnvelope
+    connect?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
   }
 
   export type EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput = {
@@ -138067,6 +138923,20 @@ export namespace Prisma {
     connect?: WarehouseWhereUniqueInput | WarehouseWhereUniqueInput[]
   }
 
+  export type BankAccountUpdateManyWithoutBranchRefNestedInput = {
+    create?: XOR<BankAccountCreateWithoutBranchRefInput, BankAccountUncheckedCreateWithoutBranchRefInput> | BankAccountCreateWithoutBranchRefInput[] | BankAccountUncheckedCreateWithoutBranchRefInput[]
+    connectOrCreate?: BankAccountCreateOrConnectWithoutBranchRefInput | BankAccountCreateOrConnectWithoutBranchRefInput[]
+    upsert?: BankAccountUpsertWithWhereUniqueWithoutBranchRefInput | BankAccountUpsertWithWhereUniqueWithoutBranchRefInput[]
+    createMany?: BankAccountCreateManyBranchRefInputEnvelope
+    set?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    disconnect?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    delete?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    connect?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    update?: BankAccountUpdateWithWhereUniqueWithoutBranchRefInput | BankAccountUpdateWithWhereUniqueWithoutBranchRefInput[]
+    updateMany?: BankAccountUpdateManyWithWhereWithoutBranchRefInput | BankAccountUpdateManyWithWhereWithoutBranchRefInput[]
+    deleteMany?: BankAccountScalarWhereInput | BankAccountScalarWhereInput[]
+  }
+
   export type BranchInventoryUpdateManyWithoutBranchNestedInput = {
     create?: XOR<BranchInventoryCreateWithoutBranchInput, BranchInventoryUncheckedCreateWithoutBranchInput> | BranchInventoryCreateWithoutBranchInput[] | BranchInventoryUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: BranchInventoryCreateOrConnectWithoutBranchInput | BranchInventoryCreateOrConnectWithoutBranchInput[]
@@ -138079,6 +138949,20 @@ export namespace Prisma {
     update?: BranchInventoryUpdateWithWhereUniqueWithoutBranchInput | BranchInventoryUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: BranchInventoryUpdateManyWithWhereWithoutBranchInput | BranchInventoryUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: BranchInventoryScalarWhereInput | BranchInventoryScalarWhereInput[]
+  }
+
+  export type BudgetUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<BudgetCreateWithoutBranchInput, BudgetUncheckedCreateWithoutBranchInput> | BudgetCreateWithoutBranchInput[] | BudgetUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutBranchInput | BudgetCreateOrConnectWithoutBranchInput[]
+    upsert?: BudgetUpsertWithWhereUniqueWithoutBranchInput | BudgetUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: BudgetCreateManyBranchInputEnvelope
+    set?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    disconnect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    delete?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    update?: BudgetUpdateWithWhereUniqueWithoutBranchInput | BudgetUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: BudgetUpdateManyWithWhereWithoutBranchInput | BudgetUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
   }
 
   export type CashierSessionUpdateManyWithoutBranchNestedInput = {
@@ -138107,6 +138991,62 @@ export namespace Prisma {
     update?: DocumentSequenceUpdateWithWhereUniqueWithoutBranchInput | DocumentSequenceUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: DocumentSequenceUpdateManyWithWhereWithoutBranchInput | DocumentSequenceUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: DocumentSequenceScalarWhereInput | DocumentSequenceScalarWhereInput[]
+  }
+
+  export type FinanceTransactionUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<FinanceTransactionCreateWithoutBranchInput, FinanceTransactionUncheckedCreateWithoutBranchInput> | FinanceTransactionCreateWithoutBranchInput[] | FinanceTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FinanceTransactionCreateOrConnectWithoutBranchInput | FinanceTransactionCreateOrConnectWithoutBranchInput[]
+    upsert?: FinanceTransactionUpsertWithWhereUniqueWithoutBranchInput | FinanceTransactionUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: FinanceTransactionCreateManyBranchInputEnvelope
+    set?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    disconnect?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    delete?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    connect?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    update?: FinanceTransactionUpdateWithWhereUniqueWithoutBranchInput | FinanceTransactionUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: FinanceTransactionUpdateManyWithWhereWithoutBranchInput | FinanceTransactionUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: FinanceTransactionScalarWhereInput | FinanceTransactionScalarWhereInput[]
+  }
+
+  export type AccountReceivableUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<AccountReceivableCreateWithoutBranchInput, AccountReceivableUncheckedCreateWithoutBranchInput> | AccountReceivableCreateWithoutBranchInput[] | AccountReceivableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountReceivableCreateOrConnectWithoutBranchInput | AccountReceivableCreateOrConnectWithoutBranchInput[]
+    upsert?: AccountReceivableUpsertWithWhereUniqueWithoutBranchInput | AccountReceivableUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: AccountReceivableCreateManyBranchInputEnvelope
+    set?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    disconnect?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    delete?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    connect?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    update?: AccountReceivableUpdateWithWhereUniqueWithoutBranchInput | AccountReceivableUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: AccountReceivableUpdateManyWithWhereWithoutBranchInput | AccountReceivableUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: AccountReceivableScalarWhereInput | AccountReceivableScalarWhereInput[]
+  }
+
+  export type AccountPayableUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<AccountPayableCreateWithoutBranchInput, AccountPayableUncheckedCreateWithoutBranchInput> | AccountPayableCreateWithoutBranchInput[] | AccountPayableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutBranchInput | AccountPayableCreateOrConnectWithoutBranchInput[]
+    upsert?: AccountPayableUpsertWithWhereUniqueWithoutBranchInput | AccountPayableUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: AccountPayableCreateManyBranchInputEnvelope
+    set?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    disconnect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    delete?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    update?: AccountPayableUpdateWithWhereUniqueWithoutBranchInput | AccountPayableUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: AccountPayableUpdateManyWithWhereWithoutBranchInput | AccountPayableUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
+  }
+
+  export type TaxRecordUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<TaxRecordCreateWithoutBranchInput, TaxRecordUncheckedCreateWithoutBranchInput> | TaxRecordCreateWithoutBranchInput[] | TaxRecordUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: TaxRecordCreateOrConnectWithoutBranchInput | TaxRecordCreateOrConnectWithoutBranchInput[]
+    upsert?: TaxRecordUpsertWithWhereUniqueWithoutBranchInput | TaxRecordUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: TaxRecordCreateManyBranchInputEnvelope
+    set?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    disconnect?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    delete?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    connect?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    update?: TaxRecordUpdateWithWhereUniqueWithoutBranchInput | TaxRecordUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: TaxRecordUpdateManyWithWhereWithoutBranchInput | TaxRecordUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: TaxRecordScalarWhereInput | TaxRecordScalarWhereInput[]
   }
 
   export type EmployeeTransferUpdateManyWithoutFromBranchNestedInput = {
@@ -138263,6 +139203,20 @@ export namespace Prisma {
     deleteMany?: WarehouseScalarWhereInput | WarehouseScalarWhereInput[]
   }
 
+  export type BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput = {
+    create?: XOR<BankAccountCreateWithoutBranchRefInput, BankAccountUncheckedCreateWithoutBranchRefInput> | BankAccountCreateWithoutBranchRefInput[] | BankAccountUncheckedCreateWithoutBranchRefInput[]
+    connectOrCreate?: BankAccountCreateOrConnectWithoutBranchRefInput | BankAccountCreateOrConnectWithoutBranchRefInput[]
+    upsert?: BankAccountUpsertWithWhereUniqueWithoutBranchRefInput | BankAccountUpsertWithWhereUniqueWithoutBranchRefInput[]
+    createMany?: BankAccountCreateManyBranchRefInputEnvelope
+    set?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    disconnect?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    delete?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    connect?: BankAccountWhereUniqueInput | BankAccountWhereUniqueInput[]
+    update?: BankAccountUpdateWithWhereUniqueWithoutBranchRefInput | BankAccountUpdateWithWhereUniqueWithoutBranchRefInput[]
+    updateMany?: BankAccountUpdateManyWithWhereWithoutBranchRefInput | BankAccountUpdateManyWithWhereWithoutBranchRefInput[]
+    deleteMany?: BankAccountScalarWhereInput | BankAccountScalarWhereInput[]
+  }
+
   export type BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput = {
     create?: XOR<BranchInventoryCreateWithoutBranchInput, BranchInventoryUncheckedCreateWithoutBranchInput> | BranchInventoryCreateWithoutBranchInput[] | BranchInventoryUncheckedCreateWithoutBranchInput[]
     connectOrCreate?: BranchInventoryCreateOrConnectWithoutBranchInput | BranchInventoryCreateOrConnectWithoutBranchInput[]
@@ -138275,6 +139229,20 @@ export namespace Prisma {
     update?: BranchInventoryUpdateWithWhereUniqueWithoutBranchInput | BranchInventoryUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: BranchInventoryUpdateManyWithWhereWithoutBranchInput | BranchInventoryUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: BranchInventoryScalarWhereInput | BranchInventoryScalarWhereInput[]
+  }
+
+  export type BudgetUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<BudgetCreateWithoutBranchInput, BudgetUncheckedCreateWithoutBranchInput> | BudgetCreateWithoutBranchInput[] | BudgetUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: BudgetCreateOrConnectWithoutBranchInput | BudgetCreateOrConnectWithoutBranchInput[]
+    upsert?: BudgetUpsertWithWhereUniqueWithoutBranchInput | BudgetUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: BudgetCreateManyBranchInputEnvelope
+    set?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    disconnect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    delete?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    connect?: BudgetWhereUniqueInput | BudgetWhereUniqueInput[]
+    update?: BudgetUpdateWithWhereUniqueWithoutBranchInput | BudgetUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: BudgetUpdateManyWithWhereWithoutBranchInput | BudgetUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
   }
 
   export type CashierSessionUncheckedUpdateManyWithoutBranchNestedInput = {
@@ -138303,6 +139271,62 @@ export namespace Prisma {
     update?: DocumentSequenceUpdateWithWhereUniqueWithoutBranchInput | DocumentSequenceUpdateWithWhereUniqueWithoutBranchInput[]
     updateMany?: DocumentSequenceUpdateManyWithWhereWithoutBranchInput | DocumentSequenceUpdateManyWithWhereWithoutBranchInput[]
     deleteMany?: DocumentSequenceScalarWhereInput | DocumentSequenceScalarWhereInput[]
+  }
+
+  export type FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<FinanceTransactionCreateWithoutBranchInput, FinanceTransactionUncheckedCreateWithoutBranchInput> | FinanceTransactionCreateWithoutBranchInput[] | FinanceTransactionUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: FinanceTransactionCreateOrConnectWithoutBranchInput | FinanceTransactionCreateOrConnectWithoutBranchInput[]
+    upsert?: FinanceTransactionUpsertWithWhereUniqueWithoutBranchInput | FinanceTransactionUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: FinanceTransactionCreateManyBranchInputEnvelope
+    set?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    disconnect?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    delete?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    connect?: FinanceTransactionWhereUniqueInput | FinanceTransactionWhereUniqueInput[]
+    update?: FinanceTransactionUpdateWithWhereUniqueWithoutBranchInput | FinanceTransactionUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: FinanceTransactionUpdateManyWithWhereWithoutBranchInput | FinanceTransactionUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: FinanceTransactionScalarWhereInput | FinanceTransactionScalarWhereInput[]
+  }
+
+  export type AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<AccountReceivableCreateWithoutBranchInput, AccountReceivableUncheckedCreateWithoutBranchInput> | AccountReceivableCreateWithoutBranchInput[] | AccountReceivableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountReceivableCreateOrConnectWithoutBranchInput | AccountReceivableCreateOrConnectWithoutBranchInput[]
+    upsert?: AccountReceivableUpsertWithWhereUniqueWithoutBranchInput | AccountReceivableUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: AccountReceivableCreateManyBranchInputEnvelope
+    set?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    disconnect?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    delete?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    connect?: AccountReceivableWhereUniqueInput | AccountReceivableWhereUniqueInput[]
+    update?: AccountReceivableUpdateWithWhereUniqueWithoutBranchInput | AccountReceivableUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: AccountReceivableUpdateManyWithWhereWithoutBranchInput | AccountReceivableUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: AccountReceivableScalarWhereInput | AccountReceivableScalarWhereInput[]
+  }
+
+  export type AccountPayableUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<AccountPayableCreateWithoutBranchInput, AccountPayableUncheckedCreateWithoutBranchInput> | AccountPayableCreateWithoutBranchInput[] | AccountPayableUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutBranchInput | AccountPayableCreateOrConnectWithoutBranchInput[]
+    upsert?: AccountPayableUpsertWithWhereUniqueWithoutBranchInput | AccountPayableUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: AccountPayableCreateManyBranchInputEnvelope
+    set?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    disconnect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    delete?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    update?: AccountPayableUpdateWithWhereUniqueWithoutBranchInput | AccountPayableUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: AccountPayableUpdateManyWithWhereWithoutBranchInput | AccountPayableUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
+  }
+
+  export type TaxRecordUncheckedUpdateManyWithoutBranchNestedInput = {
+    create?: XOR<TaxRecordCreateWithoutBranchInput, TaxRecordUncheckedCreateWithoutBranchInput> | TaxRecordCreateWithoutBranchInput[] | TaxRecordUncheckedCreateWithoutBranchInput[]
+    connectOrCreate?: TaxRecordCreateOrConnectWithoutBranchInput | TaxRecordCreateOrConnectWithoutBranchInput[]
+    upsert?: TaxRecordUpsertWithWhereUniqueWithoutBranchInput | TaxRecordUpsertWithWhereUniqueWithoutBranchInput[]
+    createMany?: TaxRecordCreateManyBranchInputEnvelope
+    set?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    disconnect?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    delete?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    connect?: TaxRecordWhereUniqueInput | TaxRecordWhereUniqueInput[]
+    update?: TaxRecordUpdateWithWhereUniqueWithoutBranchInput | TaxRecordUpdateWithWhereUniqueWithoutBranchInput[]
+    updateMany?: TaxRecordUpdateManyWithWhereWithoutBranchInput | TaxRecordUpdateManyWithWhereWithoutBranchInput[]
+    deleteMany?: TaxRecordScalarWhereInput | TaxRecordScalarWhereInput[]
   }
 
   export type EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput = {
@@ -141731,6 +142755,12 @@ export namespace Prisma {
     update?: XOR<XOR<DispatchNoteUpdateToOneWithWhereWithoutDeliveryItemsInput, DispatchNoteUpdateWithoutDeliveryItemsInput>, DispatchNoteUncheckedUpdateWithoutDeliveryItemsInput>
   }
 
+  export type BranchCreateNestedOneWithoutFinanceTransactionsInput = {
+    create?: XOR<BranchCreateWithoutFinanceTransactionsInput, BranchUncheckedCreateWithoutFinanceTransactionsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutFinanceTransactionsInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type PayrollCreateNestedOneWithoutTransactionsInput = {
     create?: XOR<PayrollCreateWithoutTransactionsInput, PayrollUncheckedCreateWithoutTransactionsInput>
     connectOrCreate?: PayrollCreateOrConnectWithoutTransactionsInput
@@ -141739,6 +142769,16 @@ export namespace Prisma {
 
   export type EnumTransactionTypeFieldUpdateOperationsInput = {
     set?: $Enums.TransactionType
+  }
+
+  export type BranchUpdateOneWithoutFinanceTransactionsNestedInput = {
+    create?: XOR<BranchCreateWithoutFinanceTransactionsInput, BranchUncheckedCreateWithoutFinanceTransactionsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutFinanceTransactionsInput
+    upsert?: BranchUpsertWithoutFinanceTransactionsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutFinanceTransactionsInput, BranchUpdateWithoutFinanceTransactionsInput>, BranchUncheckedUpdateWithoutFinanceTransactionsInput>
   }
 
   export type PayrollUpdateOneWithoutTransactionsNestedInput = {
@@ -142495,6 +143535,12 @@ export namespace Prisma {
     connect?: ChartOfAccountWhereUniqueInput
   }
 
+  export type BranchCreateNestedOneWithoutBudgetsInput = {
+    create?: XOR<BranchCreateWithoutBudgetsInput, BranchUncheckedCreateWithoutBudgetsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutBudgetsInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type EnumPeriodTypeFieldUpdateOperationsInput = {
     set?: $Enums.PeriodType
   }
@@ -142509,6 +143555,16 @@ export namespace Prisma {
     upsert?: ChartOfAccountUpsertWithoutBudgetsInput
     connect?: ChartOfAccountWhereUniqueInput
     update?: XOR<XOR<ChartOfAccountUpdateToOneWithWhereWithoutBudgetsInput, ChartOfAccountUpdateWithoutBudgetsInput>, ChartOfAccountUncheckedUpdateWithoutBudgetsInput>
+  }
+
+  export type BranchUpdateOneWithoutBudgetsNestedInput = {
+    create?: XOR<BranchCreateWithoutBudgetsInput, BranchUncheckedCreateWithoutBudgetsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutBudgetsInput
+    upsert?: BranchUpsertWithoutBudgetsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutBudgetsInput, BranchUpdateWithoutBudgetsInput>, BranchUncheckedUpdateWithoutBudgetsInput>
   }
 
   export type BankStatementLineCreateNestedManyWithoutStatementInput = {
@@ -142597,6 +143653,12 @@ export namespace Prisma {
     update?: XOR<XOR<BankStatementUpdateToOneWithWhereWithoutTransactionsInput, BankStatementUpdateWithoutTransactionsInput>, BankStatementUncheckedUpdateWithoutTransactionsInput>
   }
 
+  export type BranchCreateNestedOneWithoutAccountsReceivableInput = {
+    create?: XOR<BranchCreateWithoutAccountsReceivableInput, BranchUncheckedCreateWithoutAccountsReceivableInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutAccountsReceivableInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type ARPaymentCreateNestedManyWithoutAccount_receivableInput = {
     create?: XOR<ARPaymentCreateWithoutAccount_receivableInput, ARPaymentUncheckedCreateWithoutAccount_receivableInput> | ARPaymentCreateWithoutAccount_receivableInput[] | ARPaymentUncheckedCreateWithoutAccount_receivableInput[]
     connectOrCreate?: ARPaymentCreateOrConnectWithoutAccount_receivableInput | ARPaymentCreateOrConnectWithoutAccount_receivableInput[]
@@ -142613,6 +143675,16 @@ export namespace Prisma {
 
   export type EnumARStatusFieldUpdateOperationsInput = {
     set?: $Enums.ARStatus
+  }
+
+  export type BranchUpdateOneWithoutAccountsReceivableNestedInput = {
+    create?: XOR<BranchCreateWithoutAccountsReceivableInput, BranchUncheckedCreateWithoutAccountsReceivableInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutAccountsReceivableInput
+    upsert?: BranchUpsertWithoutAccountsReceivableInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutAccountsReceivableInput, BranchUpdateWithoutAccountsReceivableInput>, BranchUncheckedUpdateWithoutAccountsReceivableInput>
   }
 
   export type ARPaymentUpdateManyWithoutAccount_receivableNestedInput = {
@@ -142657,6 +143729,12 @@ export namespace Prisma {
     update?: XOR<XOR<AccountReceivableUpdateToOneWithWhereWithoutPaymentsInput, AccountReceivableUpdateWithoutPaymentsInput>, AccountReceivableUncheckedUpdateWithoutPaymentsInput>
   }
 
+  export type BranchCreateNestedOneWithoutAccountsPayableInput = {
+    create?: XOR<BranchCreateWithoutAccountsPayableInput, BranchUncheckedCreateWithoutAccountsPayableInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutAccountsPayableInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type APPaymentCreateNestedManyWithoutAccount_payableInput = {
     create?: XOR<APPaymentCreateWithoutAccount_payableInput, APPaymentUncheckedCreateWithoutAccount_payableInput> | APPaymentCreateWithoutAccount_payableInput[] | APPaymentUncheckedCreateWithoutAccount_payableInput[]
     connectOrCreate?: APPaymentCreateOrConnectWithoutAccount_payableInput | APPaymentCreateOrConnectWithoutAccount_payableInput[]
@@ -142673,6 +143751,16 @@ export namespace Prisma {
 
   export type EnumAPStatusFieldUpdateOperationsInput = {
     set?: $Enums.APStatus
+  }
+
+  export type BranchUpdateOneWithoutAccountsPayableNestedInput = {
+    create?: XOR<BranchCreateWithoutAccountsPayableInput, BranchUncheckedCreateWithoutAccountsPayableInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutAccountsPayableInput
+    upsert?: BranchUpsertWithoutAccountsPayableInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutAccountsPayableInput, BranchUpdateWithoutAccountsPayableInput>, BranchUncheckedUpdateWithoutAccountsPayableInput>
   }
 
   export type APPaymentUpdateManyWithoutAccount_payableNestedInput = {
@@ -142717,6 +143805,12 @@ export namespace Prisma {
     update?: XOR<XOR<AccountPayableUpdateToOneWithWhereWithoutPaymentsInput, AccountPayableUpdateWithoutPaymentsInput>, AccountPayableUncheckedUpdateWithoutPaymentsInput>
   }
 
+  export type BranchCreateNestedOneWithoutBankAccountsInput = {
+    create?: XOR<BranchCreateWithoutBankAccountsInput, BranchUncheckedCreateWithoutBankAccountsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutBankAccountsInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type BankTransactionCreateNestedManyWithoutBank_accountInput = {
     create?: XOR<BankTransactionCreateWithoutBank_accountInput, BankTransactionUncheckedCreateWithoutBank_accountInput> | BankTransactionCreateWithoutBank_accountInput[] | BankTransactionUncheckedCreateWithoutBank_accountInput[]
     connectOrCreate?: BankTransactionCreateOrConnectWithoutBank_accountInput | BankTransactionCreateOrConnectWithoutBank_accountInput[]
@@ -142733,6 +143827,16 @@ export namespace Prisma {
 
   export type EnumBankAccountTypeFieldUpdateOperationsInput = {
     set?: $Enums.BankAccountType
+  }
+
+  export type BranchUpdateOneWithoutBankAccountsNestedInput = {
+    create?: XOR<BranchCreateWithoutBankAccountsInput, BranchUncheckedCreateWithoutBankAccountsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutBankAccountsInput
+    upsert?: BranchUpsertWithoutBankAccountsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutBankAccountsInput, BranchUpdateWithoutBankAccountsInput>, BranchUncheckedUpdateWithoutBankAccountsInput>
   }
 
   export type BankTransactionUpdateManyWithoutBank_accountNestedInput = {
@@ -142797,12 +143901,28 @@ export namespace Prisma {
     set?: $Enums.AlertStatus
   }
 
+  export type BranchCreateNestedOneWithoutTaxRecordsInput = {
+    create?: XOR<BranchCreateWithoutTaxRecordsInput, BranchUncheckedCreateWithoutTaxRecordsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutTaxRecordsInput
+    connect?: BranchWhereUniqueInput
+  }
+
   export type EnumTaxTypeFieldUpdateOperationsInput = {
     set?: $Enums.TaxType
   }
 
   export type EnumTaxStatusFieldUpdateOperationsInput = {
     set?: $Enums.TaxStatus
+  }
+
+  export type BranchUpdateOneWithoutTaxRecordsNestedInput = {
+    create?: XOR<BranchCreateWithoutTaxRecordsInput, BranchUncheckedCreateWithoutTaxRecordsInput>
+    connectOrCreate?: BranchCreateOrConnectWithoutTaxRecordsInput
+    upsert?: BranchUpsertWithoutTaxRecordsInput
+    disconnect?: BranchWhereInput | boolean
+    delete?: BranchWhereInput | boolean
+    connect?: BranchWhereUniqueInput
+    update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutTaxRecordsInput, BranchUpdateWithoutTaxRecordsInput>, BranchUncheckedUpdateWithoutTaxRecordsInput>
   }
 
   export type LeaveAllocationCreateNestedManyWithoutLeaveTypeInput = {
@@ -146869,9 +147989,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -146894,9 +148020,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -148117,9 +149249,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -148142,9 +149280,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -148194,6 +149338,52 @@ export namespace Prisma {
     expenseReports?: ExpenseReportUncheckedUpdateManyWithoutDepartmentNestedInput
   }
 
+  export type BankAccountCreateWithoutBranchRefInput = {
+    id?: string
+    account_name: string
+    account_number: string
+    bank_name: string
+    branch?: string | null
+    account_type?: $Enums.BankAccountType
+    currency?: string
+    current_balance?: number
+    available_balance?: number
+    overdraft_limit?: number
+    is_active?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transactions?: BankTransactionCreateNestedManyWithoutBank_accountInput
+  }
+
+  export type BankAccountUncheckedCreateWithoutBranchRefInput = {
+    id?: string
+    account_name: string
+    account_number: string
+    bank_name: string
+    branch?: string | null
+    account_type?: $Enums.BankAccountType
+    currency?: string
+    current_balance?: number
+    available_balance?: number
+    overdraft_limit?: number
+    is_active?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    transactions?: BankTransactionUncheckedCreateNestedManyWithoutBank_accountInput
+  }
+
+  export type BankAccountCreateOrConnectWithoutBranchRefInput = {
+    where: BankAccountWhereUniqueInput
+    create: XOR<BankAccountCreateWithoutBranchRefInput, BankAccountUncheckedCreateWithoutBranchRefInput>
+  }
+
+  export type BankAccountCreateManyBranchRefInputEnvelope = {
+    data: BankAccountCreateManyBranchRefInput | BankAccountCreateManyBranchRefInput[]
+    skipDuplicates?: boolean
+  }
+
   export type BranchInventoryCreateWithoutBranchInput = {
     id?: string
     quantity?: number
@@ -148233,6 +149423,58 @@ export namespace Prisma {
 
   export type BranchInventoryCreateManyBranchInputEnvelope = {
     data: BranchInventoryCreateManyBranchInput | BranchInventoryCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type BudgetCreateWithoutBranchInput = {
+    id?: string
+    budget_name: string
+    fiscal_year: number
+    period_type?: $Enums.PeriodType
+    period_start: Date | string
+    period_end: Date | string
+    budgeted_amount: number
+    actual_amount?: number
+    variance?: number
+    variance_percent?: number
+    status?: $Enums.BudgetStatus
+    created_by: string
+    approved_by?: string | null
+    approved_date?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    account: ChartOfAccountCreateNestedOneWithoutBudgetsInput
+  }
+
+  export type BudgetUncheckedCreateWithoutBranchInput = {
+    id?: string
+    budget_name: string
+    fiscal_year: number
+    account_id: string
+    period_type?: $Enums.PeriodType
+    period_start: Date | string
+    period_end: Date | string
+    budgeted_amount: number
+    actual_amount?: number
+    variance?: number
+    variance_percent?: number
+    status?: $Enums.BudgetStatus
+    created_by: string
+    approved_by?: string | null
+    approved_date?: Date | string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BudgetCreateOrConnectWithoutBranchInput = {
+    where: BudgetWhereUniqueInput
+    create: XOR<BudgetCreateWithoutBranchInput, BudgetUncheckedCreateWithoutBranchInput>
+  }
+
+  export type BudgetCreateManyBranchInputEnvelope = {
+    data: BudgetCreateManyBranchInput | BudgetCreateManyBranchInput[]
     skipDuplicates?: boolean
   }
 
@@ -148317,6 +149559,194 @@ export namespace Prisma {
 
   export type DocumentSequenceCreateManyBranchInputEnvelope = {
     data: DocumentSequenceCreateManyBranchInput | DocumentSequenceCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type FinanceTransactionCreateWithoutBranchInput = {
+    id?: string
+    type: $Enums.TransactionType
+    reference_no: string
+    description: string
+    amount: number
+    payment_method?: string | null
+    reference_doc?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category?: string | null
+    transactionDate?: Date | string
+    payroll?: PayrollCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type FinanceTransactionUncheckedCreateWithoutBranchInput = {
+    id?: string
+    type: $Enums.TransactionType
+    reference_no: string
+    description: string
+    amount: number
+    payrollId?: string | null
+    payment_method?: string | null
+    reference_doc?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category?: string | null
+    transactionDate?: Date | string
+  }
+
+  export type FinanceTransactionCreateOrConnectWithoutBranchInput = {
+    where: FinanceTransactionWhereUniqueInput
+    create: XOR<FinanceTransactionCreateWithoutBranchInput, FinanceTransactionUncheckedCreateWithoutBranchInput>
+  }
+
+  export type FinanceTransactionCreateManyBranchInputEnvelope = {
+    data: FinanceTransactionCreateManyBranchInput | FinanceTransactionCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AccountReceivableCreateWithoutBranchInput = {
+    id?: string
+    invoice_no: string
+    customer_name: string
+    customer_email?: string | null
+    customer_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    invoice_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.ARStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: ARPaymentCreateNestedManyWithoutAccount_receivableInput
+  }
+
+  export type AccountReceivableUncheckedCreateWithoutBranchInput = {
+    id?: string
+    invoice_no: string
+    customer_name: string
+    customer_email?: string | null
+    customer_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    invoice_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.ARStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: ARPaymentUncheckedCreateNestedManyWithoutAccount_receivableInput
+  }
+
+  export type AccountReceivableCreateOrConnectWithoutBranchInput = {
+    where: AccountReceivableWhereUniqueInput
+    create: XOR<AccountReceivableCreateWithoutBranchInput, AccountReceivableUncheckedCreateWithoutBranchInput>
+  }
+
+  export type AccountReceivableCreateManyBranchInputEnvelope = {
+    data: AccountReceivableCreateManyBranchInput | AccountReceivableCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AccountPayableCreateWithoutBranchInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: APPaymentCreateNestedManyWithoutAccount_payableInput
+  }
+
+  export type AccountPayableUncheckedCreateWithoutBranchInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: APPaymentUncheckedCreateNestedManyWithoutAccount_payableInput
+  }
+
+  export type AccountPayableCreateOrConnectWithoutBranchInput = {
+    where: AccountPayableWhereUniqueInput
+    create: XOR<AccountPayableCreateWithoutBranchInput, AccountPayableUncheckedCreateWithoutBranchInput>
+  }
+
+  export type AccountPayableCreateManyBranchInputEnvelope = {
+    data: AccountPayableCreateManyBranchInput | AccountPayableCreateManyBranchInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TaxRecordCreateWithoutBranchInput = {
+    id?: string
+    tax_type: $Enums.TaxType
+    tax_period: string
+    taxable_amount: number
+    tax_rate: number
+    tax_amount: number
+    status?: $Enums.TaxStatus
+    filing_date?: Date | string | null
+    due_date: Date | string
+    filed_by?: string | null
+    payment_status?: string
+    paid_amount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaxRecordUncheckedCreateWithoutBranchInput = {
+    id?: string
+    tax_type: $Enums.TaxType
+    tax_period: string
+    taxable_amount: number
+    tax_rate: number
+    tax_amount: number
+    status?: $Enums.TaxStatus
+    filing_date?: Date | string | null
+    due_date: Date | string
+    filed_by?: string | null
+    payment_status?: string
+    paid_amount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaxRecordCreateOrConnectWithoutBranchInput = {
+    where: TaxRecordWhereUniqueInput
+    create: XOR<TaxRecordCreateWithoutBranchInput, TaxRecordUncheckedCreateWithoutBranchInput>
+  }
+
+  export type TaxRecordCreateManyBranchInputEnvelope = {
+    data: TaxRecordCreateManyBranchInput | TaxRecordCreateManyBranchInput[]
     skipDuplicates?: boolean
   }
 
@@ -148952,6 +150382,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type BankAccountUpsertWithWhereUniqueWithoutBranchRefInput = {
+    where: BankAccountWhereUniqueInput
+    update: XOR<BankAccountUpdateWithoutBranchRefInput, BankAccountUncheckedUpdateWithoutBranchRefInput>
+    create: XOR<BankAccountCreateWithoutBranchRefInput, BankAccountUncheckedCreateWithoutBranchRefInput>
+  }
+
+  export type BankAccountUpdateWithWhereUniqueWithoutBranchRefInput = {
+    where: BankAccountWhereUniqueInput
+    data: XOR<BankAccountUpdateWithoutBranchRefInput, BankAccountUncheckedUpdateWithoutBranchRefInput>
+  }
+
+  export type BankAccountUpdateManyWithWhereWithoutBranchRefInput = {
+    where: BankAccountScalarWhereInput
+    data: XOR<BankAccountUpdateManyMutationInput, BankAccountUncheckedUpdateManyWithoutBranchRefInput>
+  }
+
+  export type BankAccountScalarWhereInput = {
+    AND?: BankAccountScalarWhereInput | BankAccountScalarWhereInput[]
+    OR?: BankAccountScalarWhereInput[]
+    NOT?: BankAccountScalarWhereInput | BankAccountScalarWhereInput[]
+    id?: StringFilter<"BankAccount"> | string
+    account_name?: StringFilter<"BankAccount"> | string
+    account_number?: StringFilter<"BankAccount"> | string
+    bank_name?: StringFilter<"BankAccount"> | string
+    branch?: StringNullableFilter<"BankAccount"> | string | null
+    branchId?: StringNullableFilter<"BankAccount"> | string | null
+    account_type?: EnumBankAccountTypeFilter<"BankAccount"> | $Enums.BankAccountType
+    currency?: StringFilter<"BankAccount"> | string
+    current_balance?: FloatFilter<"BankAccount"> | number
+    available_balance?: FloatFilter<"BankAccount"> | number
+    overdraft_limit?: FloatFilter<"BankAccount"> | number
+    is_active?: BoolFilter<"BankAccount"> | boolean
+    notes?: StringNullableFilter<"BankAccount"> | string | null
+    createdAt?: DateTimeFilter<"BankAccount"> | Date | string
+    updatedAt?: DateTimeFilter<"BankAccount"> | Date | string
+  }
+
   export type BranchInventoryUpsertWithWhereUniqueWithoutBranchInput = {
     where: BranchInventoryWhereUniqueInput
     update: XOR<BranchInventoryUpdateWithoutBranchInput, BranchInventoryUncheckedUpdateWithoutBranchInput>
@@ -148986,6 +150453,47 @@ export namespace Prisma {
     last_counted?: DateTimeNullableFilter<"BranchInventory"> | Date | string | null
     createdAt?: DateTimeFilter<"BranchInventory"> | Date | string
     updatedAt?: DateTimeFilter<"BranchInventory"> | Date | string
+  }
+
+  export type BudgetUpsertWithWhereUniqueWithoutBranchInput = {
+    where: BudgetWhereUniqueInput
+    update: XOR<BudgetUpdateWithoutBranchInput, BudgetUncheckedUpdateWithoutBranchInput>
+    create: XOR<BudgetCreateWithoutBranchInput, BudgetUncheckedCreateWithoutBranchInput>
+  }
+
+  export type BudgetUpdateWithWhereUniqueWithoutBranchInput = {
+    where: BudgetWhereUniqueInput
+    data: XOR<BudgetUpdateWithoutBranchInput, BudgetUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type BudgetUpdateManyWithWhereWithoutBranchInput = {
+    where: BudgetScalarWhereInput
+    data: XOR<BudgetUpdateManyMutationInput, BudgetUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type BudgetScalarWhereInput = {
+    AND?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+    OR?: BudgetScalarWhereInput[]
+    NOT?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
+    id?: StringFilter<"Budget"> | string
+    budget_name?: StringFilter<"Budget"> | string
+    fiscal_year?: IntFilter<"Budget"> | number
+    account_id?: StringFilter<"Budget"> | string
+    branch_id?: StringNullableFilter<"Budget"> | string | null
+    period_type?: EnumPeriodTypeFilter<"Budget"> | $Enums.PeriodType
+    period_start?: DateTimeFilter<"Budget"> | Date | string
+    period_end?: DateTimeFilter<"Budget"> | Date | string
+    budgeted_amount?: FloatFilter<"Budget"> | number
+    actual_amount?: FloatFilter<"Budget"> | number
+    variance?: FloatFilter<"Budget"> | number
+    variance_percent?: FloatFilter<"Budget"> | number
+    status?: EnumBudgetStatusFilter<"Budget"> | $Enums.BudgetStatus
+    created_by?: StringFilter<"Budget"> | string
+    approved_by?: StringNullableFilter<"Budget"> | string | null
+    approved_date?: DateTimeNullableFilter<"Budget"> | Date | string | null
+    notes?: StringNullableFilter<"Budget"> | string | null
+    createdAt?: DateTimeFilter<"Budget"> | Date | string
+    updatedAt?: DateTimeFilter<"Budget"> | Date | string
   }
 
   export type CashierSessionUpsertWithWhereUniqueWithoutBranchInput = {
@@ -149029,6 +150537,158 @@ export namespace Prisma {
     type?: EnumSalesDocumentTypeFilter<"DocumentSequence"> | $Enums.SalesDocumentType
     prefix?: StringFilter<"DocumentSequence"> | string
     nextNumber?: IntFilter<"DocumentSequence"> | number
+  }
+
+  export type FinanceTransactionUpsertWithWhereUniqueWithoutBranchInput = {
+    where: FinanceTransactionWhereUniqueInput
+    update: XOR<FinanceTransactionUpdateWithoutBranchInput, FinanceTransactionUncheckedUpdateWithoutBranchInput>
+    create: XOR<FinanceTransactionCreateWithoutBranchInput, FinanceTransactionUncheckedCreateWithoutBranchInput>
+  }
+
+  export type FinanceTransactionUpdateWithWhereUniqueWithoutBranchInput = {
+    where: FinanceTransactionWhereUniqueInput
+    data: XOR<FinanceTransactionUpdateWithoutBranchInput, FinanceTransactionUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type FinanceTransactionUpdateManyWithWhereWithoutBranchInput = {
+    where: FinanceTransactionScalarWhereInput
+    data: XOR<FinanceTransactionUpdateManyMutationInput, FinanceTransactionUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type FinanceTransactionScalarWhereInput = {
+    AND?: FinanceTransactionScalarWhereInput | FinanceTransactionScalarWhereInput[]
+    OR?: FinanceTransactionScalarWhereInput[]
+    NOT?: FinanceTransactionScalarWhereInput | FinanceTransactionScalarWhereInput[]
+    id?: StringFilter<"FinanceTransaction"> | string
+    type?: EnumTransactionTypeFilter<"FinanceTransaction"> | $Enums.TransactionType
+    reference_no?: StringFilter<"FinanceTransaction"> | string
+    description?: StringFilter<"FinanceTransaction"> | string
+    amount?: FloatFilter<"FinanceTransaction"> | number
+    payrollId?: StringNullableFilter<"FinanceTransaction"> | string | null
+    branchId?: StringNullableFilter<"FinanceTransaction"> | string | null
+    payment_method?: StringNullableFilter<"FinanceTransaction"> | string | null
+    reference_doc?: StringNullableFilter<"FinanceTransaction"> | string | null
+    notes?: StringNullableFilter<"FinanceTransaction"> | string | null
+    createdAt?: DateTimeFilter<"FinanceTransaction"> | Date | string
+    updatedAt?: DateTimeFilter<"FinanceTransaction"> | Date | string
+    category?: StringNullableFilter<"FinanceTransaction"> | string | null
+    transactionDate?: DateTimeFilter<"FinanceTransaction"> | Date | string
+  }
+
+  export type AccountReceivableUpsertWithWhereUniqueWithoutBranchInput = {
+    where: AccountReceivableWhereUniqueInput
+    update: XOR<AccountReceivableUpdateWithoutBranchInput, AccountReceivableUncheckedUpdateWithoutBranchInput>
+    create: XOR<AccountReceivableCreateWithoutBranchInput, AccountReceivableUncheckedCreateWithoutBranchInput>
+  }
+
+  export type AccountReceivableUpdateWithWhereUniqueWithoutBranchInput = {
+    where: AccountReceivableWhereUniqueInput
+    data: XOR<AccountReceivableUpdateWithoutBranchInput, AccountReceivableUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type AccountReceivableUpdateManyWithWhereWithoutBranchInput = {
+    where: AccountReceivableScalarWhereInput
+    data: XOR<AccountReceivableUpdateManyMutationInput, AccountReceivableUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type AccountReceivableScalarWhereInput = {
+    AND?: AccountReceivableScalarWhereInput | AccountReceivableScalarWhereInput[]
+    OR?: AccountReceivableScalarWhereInput[]
+    NOT?: AccountReceivableScalarWhereInput | AccountReceivableScalarWhereInput[]
+    id?: StringFilter<"AccountReceivable"> | string
+    invoice_no?: StringFilter<"AccountReceivable"> | string
+    customer_name?: StringFilter<"AccountReceivable"> | string
+    customer_email?: StringNullableFilter<"AccountReceivable"> | string | null
+    customer_phone?: StringNullableFilter<"AccountReceivable"> | string | null
+    branch_id?: StringNullableFilter<"AccountReceivable"> | string | null
+    total_amount?: FloatFilter<"AccountReceivable"> | number
+    paid_amount?: FloatFilter<"AccountReceivable"> | number
+    balance?: FloatFilter<"AccountReceivable"> | number
+    invoice_date?: DateTimeFilter<"AccountReceivable"> | Date | string
+    due_date?: DateTimeFilter<"AccountReceivable"> | Date | string
+    paid_date?: DateTimeNullableFilter<"AccountReceivable"> | Date | string | null
+    status?: EnumARStatusFilter<"AccountReceivable"> | $Enums.ARStatus
+    aging_days?: IntFilter<"AccountReceivable"> | number
+    notes?: StringNullableFilter<"AccountReceivable"> | string | null
+    createdAt?: DateTimeFilter<"AccountReceivable"> | Date | string
+    updatedAt?: DateTimeFilter<"AccountReceivable"> | Date | string
+  }
+
+  export type AccountPayableUpsertWithWhereUniqueWithoutBranchInput = {
+    where: AccountPayableWhereUniqueInput
+    update: XOR<AccountPayableUpdateWithoutBranchInput, AccountPayableUncheckedUpdateWithoutBranchInput>
+    create: XOR<AccountPayableCreateWithoutBranchInput, AccountPayableUncheckedCreateWithoutBranchInput>
+  }
+
+  export type AccountPayableUpdateWithWhereUniqueWithoutBranchInput = {
+    where: AccountPayableWhereUniqueInput
+    data: XOR<AccountPayableUpdateWithoutBranchInput, AccountPayableUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type AccountPayableUpdateManyWithWhereWithoutBranchInput = {
+    where: AccountPayableScalarWhereInput
+    data: XOR<AccountPayableUpdateManyMutationInput, AccountPayableUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type AccountPayableScalarWhereInput = {
+    AND?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
+    OR?: AccountPayableScalarWhereInput[]
+    NOT?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
+    id?: StringFilter<"AccountPayable"> | string
+    bill_no?: StringFilter<"AccountPayable"> | string
+    vendor_name?: StringFilter<"AccountPayable"> | string
+    vendor_email?: StringNullableFilter<"AccountPayable"> | string | null
+    vendor_phone?: StringNullableFilter<"AccountPayable"> | string | null
+    branch_id?: StringNullableFilter<"AccountPayable"> | string | null
+    total_amount?: FloatFilter<"AccountPayable"> | number
+    paid_amount?: FloatFilter<"AccountPayable"> | number
+    balance?: FloatFilter<"AccountPayable"> | number
+    bill_date?: DateTimeFilter<"AccountPayable"> | Date | string
+    due_date?: DateTimeFilter<"AccountPayable"> | Date | string
+    paid_date?: DateTimeNullableFilter<"AccountPayable"> | Date | string | null
+    status?: EnumAPStatusFilter<"AccountPayable"> | $Enums.APStatus
+    aging_days?: IntFilter<"AccountPayable"> | number
+    notes?: StringNullableFilter<"AccountPayable"> | string | null
+    createdAt?: DateTimeFilter<"AccountPayable"> | Date | string
+    updatedAt?: DateTimeFilter<"AccountPayable"> | Date | string
+  }
+
+  export type TaxRecordUpsertWithWhereUniqueWithoutBranchInput = {
+    where: TaxRecordWhereUniqueInput
+    update: XOR<TaxRecordUpdateWithoutBranchInput, TaxRecordUncheckedUpdateWithoutBranchInput>
+    create: XOR<TaxRecordCreateWithoutBranchInput, TaxRecordUncheckedCreateWithoutBranchInput>
+  }
+
+  export type TaxRecordUpdateWithWhereUniqueWithoutBranchInput = {
+    where: TaxRecordWhereUniqueInput
+    data: XOR<TaxRecordUpdateWithoutBranchInput, TaxRecordUncheckedUpdateWithoutBranchInput>
+  }
+
+  export type TaxRecordUpdateManyWithWhereWithoutBranchInput = {
+    where: TaxRecordScalarWhereInput
+    data: XOR<TaxRecordUpdateManyMutationInput, TaxRecordUncheckedUpdateManyWithoutBranchInput>
+  }
+
+  export type TaxRecordScalarWhereInput = {
+    AND?: TaxRecordScalarWhereInput | TaxRecordScalarWhereInput[]
+    OR?: TaxRecordScalarWhereInput[]
+    NOT?: TaxRecordScalarWhereInput | TaxRecordScalarWhereInput[]
+    id?: StringFilter<"TaxRecord"> | string
+    tax_type?: EnumTaxTypeFilter<"TaxRecord"> | $Enums.TaxType
+    tax_period?: StringFilter<"TaxRecord"> | string
+    branch_id?: StringNullableFilter<"TaxRecord"> | string | null
+    taxable_amount?: FloatFilter<"TaxRecord"> | number
+    tax_rate?: FloatFilter<"TaxRecord"> | number
+    tax_amount?: FloatFilter<"TaxRecord"> | number
+    status?: EnumTaxStatusFilter<"TaxRecord"> | $Enums.TaxStatus
+    filing_date?: DateTimeNullableFilter<"TaxRecord"> | Date | string | null
+    due_date?: DateTimeFilter<"TaxRecord"> | Date | string
+    filed_by?: StringNullableFilter<"TaxRecord"> | string | null
+    payment_status?: StringFilter<"TaxRecord"> | string
+    paid_amount?: FloatFilter<"TaxRecord"> | number
+    notes?: StringNullableFilter<"TaxRecord"> | string | null
+    createdAt?: DateTimeFilter<"TaxRecord"> | Date | string
+    updatedAt?: DateTimeFilter<"TaxRecord"> | Date | string
   }
 
   export type EmployeeTransferUpsertWithWhereUniqueWithoutFromBranchInput = {
@@ -149299,9 +150959,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -149324,9 +150990,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -149354,9 +151026,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -149379,9 +151057,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -149541,9 +151225,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -149566,9 +151256,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -149602,9 +151298,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -149627,9 +151329,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -150075,9 +151783,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -150100,9 +151814,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -150286,9 +152006,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -150311,9 +152037,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -151175,8 +152907,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -151200,8 +152938,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -151326,8 +153070,14 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -151351,8 +153101,14 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -156290,9 +158046,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -156315,9 +158077,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -157179,9 +158947,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -157204,9 +158978,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -158411,8 +160191,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -158436,8 +160222,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -158477,8 +160269,14 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -158502,8 +160300,14 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -158559,9 +160363,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -158584,9 +160394,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -158835,9 +160651,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -158860,9 +160682,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -160092,8 +161920,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -160117,8 +161951,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -160361,8 +162201,14 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -160386,8 +162232,14 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -160958,9 +162810,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -160983,9 +162841,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -161456,9 +163320,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -161481,9 +163351,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -162083,9 +163959,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -162108,9 +163990,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -162505,9 +164393,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -162530,9 +164424,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -165167,6 +167067,73 @@ export namespace Prisma {
     items?: DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
+  export type BranchCreateWithoutFinanceTransactionsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutFinanceTransactionsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutFinanceTransactionsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutFinanceTransactionsInput, BranchUncheckedCreateWithoutFinanceTransactionsInput>
+  }
+
   export type PayrollCreateWithoutTransactionsInput = {
     id?: string
     payroll_no: string
@@ -165204,6 +167171,79 @@ export namespace Prisma {
   export type PayrollCreateOrConnectWithoutTransactionsInput = {
     where: PayrollWhereUniqueInput
     create: XOR<PayrollCreateWithoutTransactionsInput, PayrollUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type BranchUpsertWithoutFinanceTransactionsInput = {
+    update: XOR<BranchUpdateWithoutFinanceTransactionsInput, BranchUncheckedUpdateWithoutFinanceTransactionsInput>
+    create: XOR<BranchCreateWithoutFinanceTransactionsInput, BranchUncheckedCreateWithoutFinanceTransactionsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutFinanceTransactionsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutFinanceTransactionsInput, BranchUncheckedUpdateWithoutFinanceTransactionsInput>
+  }
+
+  export type BranchUpdateWithoutFinanceTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutFinanceTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type PayrollUpsertWithoutTransactionsInput = {
@@ -165537,9 +167577,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -165562,9 +167608,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -165920,9 +167972,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -165945,9 +168003,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -166102,6 +168166,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     category?: string | null
     transactionDate?: Date | string
+    branch?: BranchCreateNestedOneWithoutFinanceTransactionsInput
   }
 
   export type FinanceTransactionUncheckedCreateWithoutPayrollInput = {
@@ -166110,6 +168175,7 @@ export namespace Prisma {
     reference_no: string
     description: string
     amount: number
+    branchId?: string | null
     payment_method?: string | null
     reference_doc?: string | null
     notes?: string | null
@@ -166264,25 +168330,6 @@ export namespace Prisma {
   export type FinanceTransactionUpdateManyWithWhereWithoutPayrollInput = {
     where: FinanceTransactionScalarWhereInput
     data: XOR<FinanceTransactionUpdateManyMutationInput, FinanceTransactionUncheckedUpdateManyWithoutPayrollInput>
-  }
-
-  export type FinanceTransactionScalarWhereInput = {
-    AND?: FinanceTransactionScalarWhereInput | FinanceTransactionScalarWhereInput[]
-    OR?: FinanceTransactionScalarWhereInput[]
-    NOT?: FinanceTransactionScalarWhereInput | FinanceTransactionScalarWhereInput[]
-    id?: StringFilter<"FinanceTransaction"> | string
-    type?: EnumTransactionTypeFilter<"FinanceTransaction"> | $Enums.TransactionType
-    reference_no?: StringFilter<"FinanceTransaction"> | string
-    description?: StringFilter<"FinanceTransaction"> | string
-    amount?: FloatFilter<"FinanceTransaction"> | number
-    payrollId?: StringNullableFilter<"FinanceTransaction"> | string | null
-    payment_method?: StringNullableFilter<"FinanceTransaction"> | string | null
-    reference_doc?: StringNullableFilter<"FinanceTransaction"> | string | null
-    notes?: StringNullableFilter<"FinanceTransaction"> | string | null
-    createdAt?: DateTimeFilter<"FinanceTransaction"> | Date | string
-    updatedAt?: DateTimeFilter<"FinanceTransaction"> | Date | string
-    category?: StringNullableFilter<"FinanceTransaction"> | string | null
-    transactionDate?: DateTimeFilter<"FinanceTransaction"> | Date | string
   }
 
   export type UserUpsertWithoutPayrollRecordsInput = {
@@ -166466,12 +168513,14 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutBudgetsInput
   }
 
   export type BudgetUncheckedCreateWithoutAccountInput = {
     id?: string
     budget_name: string
     fiscal_year: number
+    branch_id?: string | null
     period_type?: $Enums.PeriodType
     period_start: Date | string
     period_end: Date | string
@@ -166723,30 +168772,6 @@ export namespace Prisma {
   export type BudgetUpdateManyWithWhereWithoutAccountInput = {
     where: BudgetScalarWhereInput
     data: XOR<BudgetUpdateManyMutationInput, BudgetUncheckedUpdateManyWithoutAccountInput>
-  }
-
-  export type BudgetScalarWhereInput = {
-    AND?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
-    OR?: BudgetScalarWhereInput[]
-    NOT?: BudgetScalarWhereInput | BudgetScalarWhereInput[]
-    id?: StringFilter<"Budget"> | string
-    budget_name?: StringFilter<"Budget"> | string
-    fiscal_year?: IntFilter<"Budget"> | number
-    account_id?: StringFilter<"Budget"> | string
-    period_type?: EnumPeriodTypeFilter<"Budget"> | $Enums.PeriodType
-    period_start?: DateTimeFilter<"Budget"> | Date | string
-    period_end?: DateTimeFilter<"Budget"> | Date | string
-    budgeted_amount?: FloatFilter<"Budget"> | number
-    actual_amount?: FloatFilter<"Budget"> | number
-    variance?: FloatFilter<"Budget"> | number
-    variance_percent?: FloatFilter<"Budget"> | number
-    status?: EnumBudgetStatusFilter<"Budget"> | $Enums.BudgetStatus
-    created_by?: StringFilter<"Budget"> | string
-    approved_by?: StringNullableFilter<"Budget"> | string | null
-    approved_date?: DateTimeNullableFilter<"Budget"> | Date | string | null
-    notes?: StringNullableFilter<"Budget"> | string | null
-    createdAt?: DateTimeFilter<"Budget"> | Date | string
-    updatedAt?: DateTimeFilter<"Budget"> | Date | string
   }
 
   export type ChartOfAccountUpsertWithoutChildrenInput = {
@@ -167871,6 +169896,73 @@ export namespace Prisma {
     create: XOR<ChartOfAccountCreateWithoutBudgetsInput, ChartOfAccountUncheckedCreateWithoutBudgetsInput>
   }
 
+  export type BranchCreateWithoutBudgetsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutBudgetsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutBudgetsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutBudgetsInput, BranchUncheckedCreateWithoutBudgetsInput>
+  }
+
   export type ChartOfAccountUpsertWithoutBudgetsInput = {
     update: XOR<ChartOfAccountUpdateWithoutBudgetsInput, ChartOfAccountUncheckedUpdateWithoutBudgetsInput>
     create: XOR<ChartOfAccountCreateWithoutBudgetsInput, ChartOfAccountUncheckedCreateWithoutBudgetsInput>
@@ -167920,6 +170012,79 @@ export namespace Prisma {
     children?: ChartOfAccountUncheckedUpdateManyWithoutParentNestedInput
     journal_entries?: JournalEntryUncheckedUpdateManyWithoutAccountNestedInput
     journal_lines?: JournalLineUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type BranchUpsertWithoutBudgetsInput = {
+    update: XOR<BranchUpdateWithoutBudgetsInput, BranchUncheckedUpdateWithoutBudgetsInput>
+    create: XOR<BranchCreateWithoutBudgetsInput, BranchUncheckedCreateWithoutBudgetsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutBudgetsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutBudgetsInput, BranchUncheckedUpdateWithoutBudgetsInput>
+  }
+
+  export type BranchUpdateWithoutBudgetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutBudgetsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BankStatementLineCreateWithoutStatementInput = {
@@ -168263,6 +170428,73 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BranchCreateWithoutAccountsReceivableInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutAccountsReceivableInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutAccountsReceivableInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutAccountsReceivableInput, BranchUncheckedCreateWithoutAccountsReceivableInput>
+  }
+
   export type ARPaymentCreateWithoutAccount_receivableInput = {
     id?: string
     payment_no: string
@@ -168299,6 +170531,79 @@ export namespace Prisma {
   export type ARPaymentCreateManyAccount_receivableInputEnvelope = {
     data: ARPaymentCreateManyAccount_receivableInput | ARPaymentCreateManyAccount_receivableInput[]
     skipDuplicates?: boolean
+  }
+
+  export type BranchUpsertWithoutAccountsReceivableInput = {
+    update: XOR<BranchUpdateWithoutAccountsReceivableInput, BranchUncheckedUpdateWithoutAccountsReceivableInput>
+    create: XOR<BranchCreateWithoutAccountsReceivableInput, BranchUncheckedCreateWithoutAccountsReceivableInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutAccountsReceivableInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutAccountsReceivableInput, BranchUncheckedUpdateWithoutAccountsReceivableInput>
+  }
+
+  export type BranchUpdateWithoutAccountsReceivableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutAccountsReceivableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type ARPaymentUpsertWithWhereUniqueWithoutAccount_receivableInput = {
@@ -168352,6 +170657,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutAccountsReceivableInput
   }
 
   export type AccountReceivableUncheckedCreateWithoutPaymentsInput = {
@@ -168360,6 +170666,7 @@ export namespace Prisma {
     customer_name: string
     customer_email?: string | null
     customer_phone?: string | null
+    branch_id?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -168406,6 +170713,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAccountsReceivableNestedInput
   }
 
   export type AccountReceivableUncheckedUpdateWithoutPaymentsInput = {
@@ -168414,6 +170722,7 @@ export namespace Prisma {
     customer_name?: StringFieldUpdateOperationsInput | string
     customer_email?: NullableStringFieldUpdateOperationsInput | string | null
     customer_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -168425,6 +170734,73 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BranchCreateWithoutAccountsPayableInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutAccountsPayableInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutAccountsPayableInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutAccountsPayableInput, BranchUncheckedCreateWithoutAccountsPayableInput>
   }
 
   export type APPaymentCreateWithoutAccount_payableInput = {
@@ -168463,6 +170839,79 @@ export namespace Prisma {
   export type APPaymentCreateManyAccount_payableInputEnvelope = {
     data: APPaymentCreateManyAccount_payableInput | APPaymentCreateManyAccount_payableInput[]
     skipDuplicates?: boolean
+  }
+
+  export type BranchUpsertWithoutAccountsPayableInput = {
+    update: XOR<BranchUpdateWithoutAccountsPayableInput, BranchUncheckedUpdateWithoutAccountsPayableInput>
+    create: XOR<BranchCreateWithoutAccountsPayableInput, BranchUncheckedCreateWithoutAccountsPayableInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutAccountsPayableInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutAccountsPayableInput, BranchUncheckedUpdateWithoutAccountsPayableInput>
+  }
+
+  export type BranchUpdateWithoutAccountsPayableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutAccountsPayableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type APPaymentUpsertWithWhereUniqueWithoutAccount_payableInput = {
@@ -168516,6 +170965,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutAccountsPayableInput
   }
 
   export type AccountPayableUncheckedCreateWithoutPaymentsInput = {
@@ -168524,6 +170974,7 @@ export namespace Prisma {
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
+    branch_id?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -168570,6 +171021,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAccountsPayableNestedInput
   }
 
   export type AccountPayableUncheckedUpdateWithoutPaymentsInput = {
@@ -168578,6 +171030,7 @@ export namespace Prisma {
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -168591,9 +171044,77 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type BranchCreateWithoutBankAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutBankAccountsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutBankAccountsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutBankAccountsInput, BranchUncheckedCreateWithoutBankAccountsInput>
+  }
+
   export type BankTransactionCreateWithoutBank_accountInput = {
     id?: string
     transaction_no: string
+    branchId?: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -168610,6 +171131,7 @@ export namespace Prisma {
   export type BankTransactionUncheckedCreateWithoutBank_accountInput = {
     id?: string
     transaction_no: string
+    branchId?: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -168631,6 +171153,79 @@ export namespace Prisma {
   export type BankTransactionCreateManyBank_accountInputEnvelope = {
     data: BankTransactionCreateManyBank_accountInput | BankTransactionCreateManyBank_accountInput[]
     skipDuplicates?: boolean
+  }
+
+  export type BranchUpsertWithoutBankAccountsInput = {
+    update: XOR<BranchUpdateWithoutBankAccountsInput, BranchUncheckedUpdateWithoutBankAccountsInput>
+    create: XOR<BranchCreateWithoutBankAccountsInput, BranchUncheckedCreateWithoutBankAccountsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutBankAccountsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutBankAccountsInput, BranchUncheckedUpdateWithoutBankAccountsInput>
+  }
+
+  export type BranchUpdateWithoutBankAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutBankAccountsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type BankTransactionUpsertWithWhereUniqueWithoutBank_accountInput = {
@@ -168656,6 +171251,7 @@ export namespace Prisma {
     id?: StringFilter<"BankTransaction"> | string
     transaction_no?: StringFilter<"BankTransaction"> | string
     bank_account_id?: StringFilter<"BankTransaction"> | string
+    branchId?: StringNullableFilter<"BankTransaction"> | string | null
     transaction_type?: EnumTransactionTypeFilter<"BankTransaction"> | $Enums.TransactionType
     amount?: FloatFilter<"BankTransaction"> | number
     balance_after?: FloatFilter<"BankTransaction"> | number
@@ -168684,6 +171280,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    branchRef?: BranchCreateNestedOneWithoutBankAccountsInput
   }
 
   export type BankAccountUncheckedCreateWithoutTransactionsInput = {
@@ -168692,6 +171289,7 @@ export namespace Prisma {
     account_number: string
     bank_name: string
     branch?: string | null
+    branchId?: string | null
     account_type?: $Enums.BankAccountType
     currency?: string
     current_balance?: number
@@ -168734,6 +171332,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branchRef?: BranchUpdateOneWithoutBankAccountsNestedInput
   }
 
   export type BankAccountUncheckedUpdateWithoutTransactionsInput = {
@@ -168742,6 +171341,7 @@ export namespace Prisma {
     account_number?: StringFieldUpdateOperationsInput | string
     bank_name?: StringFieldUpdateOperationsInput | string
     branch?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     account_type?: EnumBankAccountTypeFieldUpdateOperationsInput | $Enums.BankAccountType
     currency?: StringFieldUpdateOperationsInput | string
     current_balance?: FloatFieldUpdateOperationsInput | number
@@ -168751,6 +171351,146 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BranchCreateWithoutTaxRecordsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderCreateNestedManyWithoutBranchInput
+    users?: UserCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchUncheckedCreateWithoutTaxRecordsInput = {
+    id?: string
+    code: string
+    name: string
+    city: string
+    address?: string | null
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
+    branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
+    documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
+    transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
+    journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutBranchInput
+    expenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutBranchInput
+    salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutBranchInput
+    salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutBranchInput
+    users?: UserUncheckedCreateNestedManyWithoutBranchInput
+    vat_transactions?: VATTransactionUncheckedCreateNestedManyWithoutBranchInput
+    warehouses?: WarehouseUncheckedCreateNestedManyWithoutBranchInput
+  }
+
+  export type BranchCreateOrConnectWithoutTaxRecordsInput = {
+    where: BranchWhereUniqueInput
+    create: XOR<BranchCreateWithoutTaxRecordsInput, BranchUncheckedCreateWithoutTaxRecordsInput>
+  }
+
+  export type BranchUpsertWithoutTaxRecordsInput = {
+    update: XOR<BranchUpdateWithoutTaxRecordsInput, BranchUncheckedUpdateWithoutTaxRecordsInput>
+    create: XOR<BranchCreateWithoutTaxRecordsInput, BranchUncheckedCreateWithoutTaxRecordsInput>
+    where?: BranchWhereInput
+  }
+
+  export type BranchUpdateToOneWithWhereWithoutTaxRecordsInput = {
+    where?: BranchWhereInput
+    data: XOR<BranchUpdateWithoutTaxRecordsInput, BranchUncheckedUpdateWithoutTaxRecordsInput>
+  }
+
+  export type BranchUpdateWithoutTaxRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUpdateManyWithoutBranchNestedInput
+    users?: UserUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUpdateManyWithoutBranchNestedInput
+  }
+
+  export type BranchUncheckedUpdateWithoutTaxRecordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
+    branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
+    documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
+    transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
+    journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
+    purchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutBranchNestedInput
+    expenseReports?: ExpenseReportUncheckedUpdateManyWithoutBranchNestedInput
+    salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutBranchNestedInput
+    salesOrders?: SalesOrderUncheckedUpdateManyWithoutBranchNestedInput
+    users?: UserUncheckedUpdateManyWithoutBranchNestedInput
+    vat_transactions?: VATTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
   export type LeaveAllocationCreateWithoutLeaveTypeInput = {
@@ -172202,9 +174942,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutBranchInput
@@ -172227,9 +174973,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutBranchInput
@@ -172358,9 +175110,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutBranchNestedInput
@@ -172383,9 +175141,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutBranchNestedInput
@@ -172674,9 +175438,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryCreateNestedManyWithoutBranchInput
+    budgets?: BudgetCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderCreateNestedManyWithoutBranchInput
@@ -172699,9 +175469,15 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bankAccounts?: BankAccountUncheckedCreateNestedManyWithoutBranchRefInput
     branchInventory?: BranchInventoryUncheckedCreateNestedManyWithoutBranchInput
+    budgets?: BudgetUncheckedCreateNestedManyWithoutBranchInput
     cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutBranchInput
     documentSequences?: DocumentSequenceUncheckedCreateNestedManyWithoutBranchInput
+    financeTransactions?: FinanceTransactionUncheckedCreateNestedManyWithoutBranchInput
+    accountsReceivable?: AccountReceivableUncheckedCreateNestedManyWithoutBranchInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutBranchInput
+    taxRecords?: TaxRecordUncheckedCreateNestedManyWithoutBranchInput
     transfersFrom?: EmployeeTransferUncheckedCreateNestedManyWithoutFromBranchInput
     transfersTo?: EmployeeTransferUncheckedCreateNestedManyWithoutToBranchInput
     journal_headers?: JournalHeaderUncheckedCreateNestedManyWithoutBranchInput
@@ -172740,9 +175516,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUpdateManyWithoutBranchNestedInput
@@ -172765,9 +175547,15 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bankAccounts?: BankAccountUncheckedUpdateManyWithoutBranchRefNestedInput
     branchInventory?: BranchInventoryUncheckedUpdateManyWithoutBranchNestedInput
+    budgets?: BudgetUncheckedUpdateManyWithoutBranchNestedInput
     cashierSessions?: CashierSessionUncheckedUpdateManyWithoutBranchNestedInput
     documentSequences?: DocumentSequenceUncheckedUpdateManyWithoutBranchNestedInput
+    financeTransactions?: FinanceTransactionUncheckedUpdateManyWithoutBranchNestedInput
+    accountsReceivable?: AccountReceivableUncheckedUpdateManyWithoutBranchNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutBranchNestedInput
+    taxRecords?: TaxRecordUncheckedUpdateManyWithoutBranchNestedInput
     transfersFrom?: EmployeeTransferUncheckedUpdateManyWithoutFromBranchNestedInput
     transfersTo?: EmployeeTransferUncheckedUpdateManyWithoutToBranchNestedInput
     journal_headers?: JournalHeaderUncheckedUpdateManyWithoutBranchNestedInput
@@ -176290,6 +179078,23 @@ export namespace Prisma {
     roleId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type BankAccountCreateManyBranchRefInput = {
+    id?: string
+    account_name: string
+    account_number: string
+    bank_name: string
+    branch?: string | null
+    account_type?: $Enums.BankAccountType
+    currency?: string
+    current_balance?: number
+    available_balance?: number
+    overdraft_limit?: number
+    is_active?: boolean
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type BranchInventoryCreateManyBranchInput = {
     id?: string
     productId: string
@@ -176302,6 +179107,27 @@ export namespace Prisma {
     local_price?: number | null
     bin_location?: string | null
     last_counted?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type BudgetCreateManyBranchInput = {
+    id?: string
+    budget_name: string
+    fiscal_year: number
+    account_id: string
+    period_type?: $Enums.PeriodType
+    period_start: Date | string
+    period_end: Date | string
+    budgeted_amount: number
+    actual_amount?: number
+    variance?: number
+    variance_percent?: number
+    status?: $Enums.BudgetStatus
+    created_by: string
+    approved_by?: string | null
+    approved_date?: Date | string | null
+    notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -176335,6 +179161,78 @@ export namespace Prisma {
     type: $Enums.SalesDocumentType
     prefix: string
     nextNumber?: number
+  }
+
+  export type FinanceTransactionCreateManyBranchInput = {
+    id?: string
+    type: $Enums.TransactionType
+    reference_no: string
+    description: string
+    amount: number
+    payrollId?: string | null
+    payment_method?: string | null
+    reference_doc?: string | null
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    category?: string | null
+    transactionDate?: Date | string
+  }
+
+  export type AccountReceivableCreateManyBranchInput = {
+    id?: string
+    invoice_no: string
+    customer_name: string
+    customer_email?: string | null
+    customer_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    invoice_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.ARStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AccountPayableCreateManyBranchInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TaxRecordCreateManyBranchInput = {
+    id?: string
+    tax_type: $Enums.TaxType
+    tax_period: string
+    taxable_amount: number
+    tax_rate: number
+    tax_amount: number
+    status?: $Enums.TaxStatus
+    filing_date?: Date | string | null
+    due_date: Date | string
+    filed_by?: string | null
+    payment_status?: string
+    paid_amount?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EmployeeTransferCreateManyFromBranchInput = {
@@ -176539,6 +179437,59 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type BankAccountUpdateWithoutBranchRefInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_name?: StringFieldUpdateOperationsInput | string
+    account_number?: StringFieldUpdateOperationsInput | string
+    bank_name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    account_type?: EnumBankAccountTypeFieldUpdateOperationsInput | $Enums.BankAccountType
+    currency?: StringFieldUpdateOperationsInput | string
+    current_balance?: FloatFieldUpdateOperationsInput | number
+    available_balance?: FloatFieldUpdateOperationsInput | number
+    overdraft_limit?: FloatFieldUpdateOperationsInput | number
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: BankTransactionUpdateManyWithoutBank_accountNestedInput
+  }
+
+  export type BankAccountUncheckedUpdateWithoutBranchRefInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_name?: StringFieldUpdateOperationsInput | string
+    account_number?: StringFieldUpdateOperationsInput | string
+    bank_name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    account_type?: EnumBankAccountTypeFieldUpdateOperationsInput | $Enums.BankAccountType
+    currency?: StringFieldUpdateOperationsInput | string
+    current_balance?: FloatFieldUpdateOperationsInput | number
+    available_balance?: FloatFieldUpdateOperationsInput | number
+    overdraft_limit?: FloatFieldUpdateOperationsInput | number
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: BankTransactionUncheckedUpdateManyWithoutBank_accountNestedInput
+  }
+
+  export type BankAccountUncheckedUpdateManyWithoutBranchRefInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    account_name?: StringFieldUpdateOperationsInput | string
+    account_number?: StringFieldUpdateOperationsInput | string
+    bank_name?: StringFieldUpdateOperationsInput | string
+    branch?: NullableStringFieldUpdateOperationsInput | string | null
+    account_type?: EnumBankAccountTypeFieldUpdateOperationsInput | $Enums.BankAccountType
+    currency?: StringFieldUpdateOperationsInput | string
+    current_balance?: FloatFieldUpdateOperationsInput | number
+    available_balance?: FloatFieldUpdateOperationsInput | number
+    overdraft_limit?: FloatFieldUpdateOperationsInput | number
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BranchInventoryUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
@@ -176583,6 +179534,69 @@ export namespace Prisma {
     local_price?: NullableFloatFieldUpdateOperationsInput | number | null
     bin_location?: NullableStringFieldUpdateOperationsInput | string | null
     last_counted?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BudgetUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    budget_name?: StringFieldUpdateOperationsInput | string
+    fiscal_year?: IntFieldUpdateOperationsInput | number
+    period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
+    period_start?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_end?: DateTimeFieldUpdateOperationsInput | Date | string
+    budgeted_amount?: FloatFieldUpdateOperationsInput | number
+    actual_amount?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    variance_percent?: FloatFieldUpdateOperationsInput | number
+    status?: EnumBudgetStatusFieldUpdateOperationsInput | $Enums.BudgetStatus
+    created_by?: StringFieldUpdateOperationsInput | string
+    approved_by?: NullableStringFieldUpdateOperationsInput | string | null
+    approved_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: ChartOfAccountUpdateOneRequiredWithoutBudgetsNestedInput
+  }
+
+  export type BudgetUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    budget_name?: StringFieldUpdateOperationsInput | string
+    fiscal_year?: IntFieldUpdateOperationsInput | number
+    account_id?: StringFieldUpdateOperationsInput | string
+    period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
+    period_start?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_end?: DateTimeFieldUpdateOperationsInput | Date | string
+    budgeted_amount?: FloatFieldUpdateOperationsInput | number
+    actual_amount?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    variance_percent?: FloatFieldUpdateOperationsInput | number
+    status?: EnumBudgetStatusFieldUpdateOperationsInput | $Enums.BudgetStatus
+    created_by?: StringFieldUpdateOperationsInput | string
+    approved_by?: NullableStringFieldUpdateOperationsInput | string | null
+    approved_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type BudgetUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    budget_name?: StringFieldUpdateOperationsInput | string
+    fiscal_year?: IntFieldUpdateOperationsInput | number
+    account_id?: StringFieldUpdateOperationsInput | string
+    period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
+    period_start?: DateTimeFieldUpdateOperationsInput | Date | string
+    period_end?: DateTimeFieldUpdateOperationsInput | Date | string
+    budgeted_amount?: FloatFieldUpdateOperationsInput | number
+    actual_amount?: FloatFieldUpdateOperationsInput | number
+    variance?: FloatFieldUpdateOperationsInput | number
+    variance_percent?: FloatFieldUpdateOperationsInput | number
+    status?: EnumBudgetStatusFieldUpdateOperationsInput | $Enums.BudgetStatus
+    created_by?: StringFieldUpdateOperationsInput | string
+    approved_by?: NullableStringFieldUpdateOperationsInput | string | null
+    approved_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -176680,6 +179694,226 @@ export namespace Prisma {
     type?: EnumSalesDocumentTypeFieldUpdateOperationsInput | $Enums.SalesDocumentType
     prefix?: StringFieldUpdateOperationsInput | string
     nextNumber?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type FinanceTransactionUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    reference_no?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    payment_method?: NullableStringFieldUpdateOperationsInput | string | null
+    reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    payroll?: PayrollUpdateOneWithoutTransactionsNestedInput
+  }
+
+  export type FinanceTransactionUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    reference_no?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    payrollId?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_method?: NullableStringFieldUpdateOperationsInput | string | null
+    reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FinanceTransactionUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
+    reference_no?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    payrollId?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_method?: NullableStringFieldUpdateOperationsInput | string | null
+    reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    transactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountReceivableUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoice_no?: StringFieldUpdateOperationsInput | string
+    customer_name?: StringFieldUpdateOperationsInput | string
+    customer_email?: NullableStringFieldUpdateOperationsInput | string | null
+    customer_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    invoice_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: ARPaymentUpdateManyWithoutAccount_receivableNestedInput
+  }
+
+  export type AccountReceivableUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoice_no?: StringFieldUpdateOperationsInput | string
+    customer_name?: StringFieldUpdateOperationsInput | string
+    customer_email?: NullableStringFieldUpdateOperationsInput | string | null
+    customer_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    invoice_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: ARPaymentUncheckedUpdateManyWithoutAccount_receivableNestedInput
+  }
+
+  export type AccountReceivableUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoice_no?: StringFieldUpdateOperationsInput | string
+    customer_name?: StringFieldUpdateOperationsInput | string
+    customer_email?: NullableStringFieldUpdateOperationsInput | string | null
+    customer_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    invoice_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumARStatusFieldUpdateOperationsInput | $Enums.ARStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountPayableUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: APPaymentUpdateManyWithoutAccount_payableNestedInput
+  }
+
+  export type AccountPayableUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: APPaymentUncheckedUpdateManyWithoutAccount_payableNestedInput
+  }
+
+  export type AccountPayableUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaxRecordUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tax_type?: EnumTaxTypeFieldUpdateOperationsInput | $Enums.TaxType
+    tax_period?: StringFieldUpdateOperationsInput | string
+    taxable_amount?: FloatFieldUpdateOperationsInput | number
+    tax_rate?: FloatFieldUpdateOperationsInput | number
+    tax_amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTaxStatusFieldUpdateOperationsInput | $Enums.TaxStatus
+    filing_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    filed_by?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_status?: StringFieldUpdateOperationsInput | string
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaxRecordUncheckedUpdateWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tax_type?: EnumTaxTypeFieldUpdateOperationsInput | $Enums.TaxType
+    tax_period?: StringFieldUpdateOperationsInput | string
+    taxable_amount?: FloatFieldUpdateOperationsInput | number
+    tax_rate?: FloatFieldUpdateOperationsInput | number
+    tax_amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTaxStatusFieldUpdateOperationsInput | $Enums.TaxStatus
+    filing_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    filed_by?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_status?: StringFieldUpdateOperationsInput | string
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TaxRecordUncheckedUpdateManyWithoutBranchInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tax_type?: EnumTaxTypeFieldUpdateOperationsInput | $Enums.TaxType
+    tax_period?: StringFieldUpdateOperationsInput | string
+    taxable_amount?: FloatFieldUpdateOperationsInput | number
+    tax_rate?: FloatFieldUpdateOperationsInput | number
+    tax_amount?: FloatFieldUpdateOperationsInput | number
+    status?: EnumTaxStatusFieldUpdateOperationsInput | $Enums.TaxStatus
+    filing_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    filed_by?: NullableStringFieldUpdateOperationsInput | string | null
+    payment_status?: StringFieldUpdateOperationsInput | string
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EmployeeTransferUpdateWithoutFromBranchInput = {
@@ -180186,6 +183420,7 @@ export namespace Prisma {
     reference_no: string
     description: string
     amount: number
+    branchId?: string | null
     payment_method?: string | null
     reference_doc?: string | null
     notes?: string | null
@@ -180208,6 +183443,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: NullableStringFieldUpdateOperationsInput | string | null
     transactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutFinanceTransactionsNestedInput
   }
 
   export type FinanceTransactionUncheckedUpdateWithoutPayrollInput = {
@@ -180216,6 +183452,7 @@ export namespace Prisma {
     reference_no?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     amount?: FloatFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
     reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180231,6 +183468,7 @@ export namespace Prisma {
     reference_no?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     amount?: FloatFieldUpdateOperationsInput | number
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     payment_method?: NullableStringFieldUpdateOperationsInput | string | null
     reference_doc?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180256,6 +183494,7 @@ export namespace Prisma {
     id?: string
     budget_name: string
     fiscal_year: number
+    branch_id?: string | null
     period_type?: $Enums.PeriodType
     period_start: Date | string
     period_end: Date | string
@@ -180374,12 +183613,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutBudgetsNestedInput
   }
 
   export type BudgetUncheckedUpdateWithoutAccountInput = {
     id?: StringFieldUpdateOperationsInput | string
     budget_name?: StringFieldUpdateOperationsInput | string
     fiscal_year?: IntFieldUpdateOperationsInput | number
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
     period_start?: DateTimeFieldUpdateOperationsInput | Date | string
     period_end?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -180400,6 +183641,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     budget_name?: StringFieldUpdateOperationsInput | string
     fiscal_year?: IntFieldUpdateOperationsInput | number
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
     period_type?: EnumPeriodTypeFieldUpdateOperationsInput | $Enums.PeriodType
     period_start?: DateTimeFieldUpdateOperationsInput | Date | string
     period_end?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -181093,6 +184335,7 @@ export namespace Prisma {
   export type BankTransactionCreateManyBank_accountInput = {
     id?: string
     transaction_no: string
+    branchId?: string | null
     transaction_type: $Enums.TransactionType
     amount: number
     balance_after: number
@@ -181109,6 +184352,7 @@ export namespace Prisma {
   export type BankTransactionUpdateWithoutBank_accountInput = {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number
@@ -181125,6 +184369,7 @@ export namespace Prisma {
   export type BankTransactionUncheckedUpdateWithoutBank_accountInput = {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number
@@ -181141,6 +184386,7 @@ export namespace Prisma {
   export type BankTransactionUncheckedUpdateManyWithoutBank_accountInput = {
     id?: StringFieldUpdateOperationsInput | string
     transaction_no?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
     transaction_type?: EnumTransactionTypeFieldUpdateOperationsInput | $Enums.TransactionType
     amount?: FloatFieldUpdateOperationsInput | number
     balance_after?: FloatFieldUpdateOperationsInput | number

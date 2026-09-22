@@ -138,6 +138,7 @@ export class PayrollService {
                 description: `Payroll - ${employee.name} (${dto.month}/${dto.year})`,
                 amount: netSalary,
                 payrollId: payroll.id,
+                branchId: (employee as any).branchId ?? null,
                 payment_method: "bank_transfer",
                 reference_doc: `Payroll Run ${batchId}`,
                 notes: dto.notes || `Payroll batch ${batchId}`,

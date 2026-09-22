@@ -596,8 +596,8 @@ export default function POSPage() {
 
   // ------------------ UI ------------------
   return (
-    <div className="min-h-screen bg-background ml-3">
-      <div className="mx-auto max-w-[1700px] px-1 py-1 space-y-4">
+    <div className="min-h-screen bg-muted/30 px-1 py-1">
+      <div className="mx-auto max-w-[1700px] space-y-4">
         {/* ================= MENU BAR ================= */}
         <Suspense fallback={null}>
           <POSMenuBar
@@ -612,13 +612,13 @@ export default function POSPage() {
 
         {/* ================= SESSION WARNING ================= */}
         {!sessionLoading && !session && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-center justify-between">
-            <div className="text-sm text-amber-800">
+          <div className="flex items-center justify-between rounded-xl border border-warning-border/60 bg-warning-muted/45 p-4">
+            <div className="text-sm text-warning-foreground">
               No active cashier session. Open a session to start selling.
             </div>
             <button
               onClick={() => setShowOpenDialog(true)}
-              className="px-4 py-2 rounded-md bg-amber-600 text-white text-sm font-medium hover:bg-amber-700 transition"
+              className="rounded-md bg-warning px-4 py-2 text-sm font-medium text-warning-foreground transition hover:opacity-90"
             >
               Open Session
             </button>
@@ -626,13 +626,13 @@ export default function POSPage() {
         )}
 
         {/* ================= DOCUMENT MODE BANNER ================= */}
-       {/*  {docMode !== "SALE" && (
+        {/*  {docMode !== "SALE" && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
             <div className="text-sm text-blue-800">
               <span className="font-semibold">Sales {docMode === "DRAFT" ? "Draft" : "Quote"}</span>
               {editingDocId && ` - Editing: ${editingDocId}`}
             </div> */}
-            {/* <div className="flex gap-2">
+        {/* <div className="flex gap-2">
               <button
                 onClick={handleSaveDocument}
                 disabled={loading}
@@ -655,7 +655,7 @@ export default function POSPage() {
           {/* ================= LEFT SIDE (70% - 7 Cols out of 10) ================= */}
           <div className="lg:col-span-7 space-y-4">
             {/* Product Search - Blue tint */}
-            <div className="bg-blue-50/50 border border-blue-100 rounded-lg px-4 py-2 space-y-4">
+            <div className="space-y-4 rounded-xl border border-border/50 bg-card/80 px-4 py-3 shadow-sm">
               <div className="flex items-center justify-between gap-4">
                 <POSQuickActions
                   onPark={handleParkSale}
@@ -680,7 +680,7 @@ export default function POSPage() {
             </div>
 
             {/* Cart - Neutral */}
-            <div className="bg-white border border-slate-200 rounded-lg p-4">
+            <div className="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
               <POSCart
                 cart={cart}
                 onUpdateQuantity={updateQuantity}
@@ -696,7 +696,7 @@ export default function POSPage() {
           {/* ================= RIGHT SIDE (30% - 3 Cols out of 10) ================= */}
           <div className="lg:col-span-3 space-y-4">
             {/* Payment - Emerald tint */}
-            <div className="bg-emerald-50/50 border border-emerald-100 rounded-lg p-4 space-y-4">
+            <div className="space-y-4 rounded-xl border border-primary/15 bg-card p-4 shadow-sm">
               <POSPayment
                 subtotal={subtotal}
                 tax={tax}

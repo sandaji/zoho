@@ -426,6 +426,7 @@ export class ExpenseReportService {
           amount: report.totalAmount,
           category: categorySummary,
           reference_doc: report.expenseNumber,
+          branchId: report.branchId,
         },
       });
 

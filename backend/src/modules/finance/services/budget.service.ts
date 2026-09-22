@@ -6,6 +6,7 @@ export class BudgetService {
     budgetName: string;
     fiscalYear: number;
     accountId: string;
+    branchId?: string;
     budgetedAmount: number;
     actualAmount?: number;
     periodStart: string;
@@ -34,6 +35,7 @@ export class BudgetService {
           budget_name: input.budgetName,
           fiscal_year: input.fiscalYear,
           account_id: input.accountId,
+          branch_id: input.branchId,
           period_type: input.periodType ?? "monthly",
           period_start: new Date(input.periodStart),
           period_end: new Date(input.periodEnd),

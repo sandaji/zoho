@@ -218,14 +218,14 @@ export function POSMenuBar({
   const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
-   const [currentTime, setCurrentTime] = React.useState(new Date());
-     React.useEffect(() => {
-       const timer = setInterval(() => {
-         setCurrentTime(new Date());
-       }, 1000);
+  const [currentTime, setCurrentTime] = React.useState(new Date());
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
 
-       return () => clearInterval(timer);
-     }, []);
+    return () => clearInterval(timer);
+  }, []);
 
   // ── Master: new customer dialog ──
   const [showAddCustomer, setShowAddCustomer] = useState(false);
@@ -257,7 +257,9 @@ export function POSMenuBar({
   const [creditNoteOpen, setCreditNoteOpen] = useState(false);
   const [creditNoteInvoice, setCreditNoteInvoice] = useState<SalesDocument | null>(null);
   const [creditNoteReturnQty, setCreditNoteReturnQty] = useState<Record<string, number>>({});
-  const [creditNoteAlreadyCredited, setCreditNoteAlreadyCredited] = useState<Record<string, number>>({});
+  const [creditNoteAlreadyCredited, setCreditNoteAlreadyCredited] = useState<
+    Record<string, number>
+  >({});
   const [creditNoteReason, setCreditNoteReason] = useState("");
   const [creditNoteLoading, setCreditNoteLoading] = useState(false);
   const [creditNoteSubmitting, setCreditNoteSubmitting] = useState(false);
@@ -511,15 +513,18 @@ export function POSMenuBar({
     setPaymentSubmitting(true);
     try {
       for (const line of validLines) {
-        const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PAYMENT(paymentInvoice.id)), {
-          method: "POST",
-          headers: getAuthHeadersWithToken(token),
-          body: JSON.stringify({
-            amount: line.amount,
-            payment_method: line.method,
-            reference: line.reference || undefined,
-          }),
-        });
+        const res = await fetch(
+          getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PAYMENT(paymentInvoice.id)),
+          {
+            method: "POST",
+            headers: getAuthHeadersWithToken(token),
+            body: JSON.stringify({
+              amount: line.amount,
+              payment_method: line.method,
+              reference: line.reference || undefined,
+            }),
+          }
+        );
         const json = await res.json();
         if (!res.ok || !json.success) {
           toast(json.error?.message || json.message || "Failed to record a payment", "error");
@@ -597,7 +602,7 @@ export function POSMenuBar({
   return (
     <>
       {/* ── MENU BAR ── */}
-      <div className="flex flex-wrap items-center  rounded-lg border bg-white px-4 py-2 shadow-sm">
+      <div className="flex flex-wrap items-center rounded-xl border border-border/50 bg-card px-4 py-2 shadow-sm">
         <div className="flex flex-3 gap-2 items  ">
           {/* 1 — Master */}
           <DropdownMenu>
@@ -761,7 +766,7 @@ export function POSMenuBar({
       {txPanelOpen && (
         <div className="fixed inset-0 z-40" onClick={() => setTxPanelOpen(false)}>
           <div
-            className="absolute right-0 top-0 h-full w-full max-w-3xl bg-white shadow-2xl flex flex-col"
+            className="absolute right-0 top-0 flex h-full w-full max-w-3xl flex-col bg-card shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Panel header */}
@@ -821,7 +826,10 @@ export function POSMenuBar({
                           )}
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className={cn("capitalize text-[10px]", docTypeBadgeClass(doc))}>
+                          <Badge
+                            variant="outline"
+                            className={cn("capitalize text-[10px]", docTypeBadgeClass(doc))}
+                          >
                             {docTypeBadgeLabel(doc)}
                           </Badge>
                         </TableCell>
@@ -947,8 +955,8 @@ export function POSMenuBar({
             <DialogTitle>New Document</DialogTitle>
           </DialogHeader>
           <p className="text-xs text-slate-500 -mt-2">
-            Choose what you're creating. Invoices are never created directly here — save a
-            Draft or Quote first, then convert it to an Invoice when it's ready.
+            Choose what you're creating. Invoices are never created directly here — save a Draft or
+            Quote first, then convert it to an Invoice when it's ready.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
             {NEW_DOC_CHOICES.map((choice) => {
@@ -1022,14 +1030,16 @@ export function POSMenuBar({
             ) : creditNoteInvoice ? (
               <>
                 <p className="text-xs text-slate-500">
-                  Select which products and quantities are being returned. Returns can be
-                  partial or cover the full invoice.
+                  Select which products and quantities are being returned. Returns can be partial or
+                  cover the full invoice.
                 </p>
                 <div className="rounded-lg border overflow-hidden">
                   <table className="w-full text-xs">
                     <thead className="bg-slate-50 border-b">
                       <tr>
-                        <th className="text-left px-3 py-2 font-semibold text-slate-600">Product</th>
+                        <th className="text-left px-3 py-2 font-semibold text-slate-600">
+                          Product
+                        </th>
                         <th className="text-right px-3 py-2 font-semibold text-slate-600 w-24">
                           Invoiced
                         </th>
@@ -1052,7 +1062,9 @@ export function POSMenuBar({
                         return (
                           <tr key={item.id} className="border-b last:border-0">
                             <td className="px-3 py-2">
-                              <p className="font-medium">{item.product?.name || item.description}</p>
+                              <p className="font-medium">
+                                {item.product?.name || item.description}
+                              </p>
                               {item.product?.sku && (
                                 <p className="text-[11px] text-slate-400 font-mono">
                                   {item.product.sku}
@@ -1060,7 +1072,9 @@ export function POSMenuBar({
                               )}
                             </td>
                             <td className="px-3 py-2 text-right">{item.quantity}</td>
-                            <td className="px-3 py-2 text-right text-slate-500">{alreadyCredited}</td>
+                            <td className="px-3 py-2 text-right text-slate-500">
+                              {alreadyCredited}
+                            </td>
                             <td className="px-3 py-2 text-right">
                               <Input
                                 type="number"
@@ -1069,7 +1083,10 @@ export function POSMenuBar({
                                 value={returnQty}
                                 disabled={remaining === 0}
                                 onChange={(e) => {
-                                  const v = Math.max(0, Math.min(remaining, Number(e.target.value)));
+                                  const v = Math.max(
+                                    0,
+                                    Math.min(remaining, Number(e.target.value))
+                                  );
                                   setCreditNoteReturnQty((prev) => ({ ...prev, [item.id]: v }));
                                 }}
                                 className="h-7 w-20 text-xs text-right ml-auto"
@@ -1098,7 +1115,11 @@ export function POSMenuBar({
           </div>
 
           <DialogFooter className="flex-none border-t px-6 py-4 bg-slate-50">
-            <Button variant="outline" onClick={() => setCreditNoteOpen(false)} disabled={creditNoteSubmitting}>
+            <Button
+              variant="outline"
+              onClick={() => setCreditNoteOpen(false)}
+              disabled={creditNoteSubmitting}
+            >
               Cancel
             </Button>
             <Button
@@ -1129,7 +1150,10 @@ export function POSMenuBar({
           setPaymentDialogOpen(open);
         }}
       >
-        <DialogContent className="max-w-lg w-full flex flex-col gap-0 p-0 overflow-hidden" showCloseButton={false}>
+        <DialogContent
+          className="max-w-lg w-full flex flex-col gap-0 p-0 overflow-hidden"
+          showCloseButton={false}
+        >
           <DialogHeader className="flex-none px-6 py-4 border-b bg-slate-50">
             <div className="flex items-center justify-between">
               <DialogTitle className="text-base font-semibold">
@@ -1159,7 +1183,9 @@ export function POSMenuBar({
                 </div>
                 <div className="text-right">
                   <p className="text-slate-500 text-xs">Balance Due</p>
-                  <p className="font-bold text-rose-600">{formatCurrency(paymentInvoice.balance)}</p>
+                  <p className="font-bold text-rose-600">
+                    {formatCurrency(paymentInvoice.balance)}
+                  </p>
                 </div>
               </div>
 
@@ -1176,7 +1202,9 @@ export function POSMenuBar({
                   <div key={line._key} className="flex items-center gap-2">
                     <Select
                       value={line.method}
-                      onValueChange={(v) => updatePaymentLine(line._key, { method: v as PaymentMethod })}
+                      onValueChange={(v) =>
+                        updatePaymentLine(line._key, { method: v as PaymentMethod })
+                      }
                     >
                       <SelectTrigger className="h-9 w-32 shrink-0">
                         <SelectValue />
@@ -1223,8 +1251,14 @@ export function POSMenuBar({
                 const remaining = paymentInvoice.balance - totalEntered;
                 return (
                   <div className="flex justify-between text-xs px-1">
-                    <span className="text-slate-500">Total entered: {formatCurrency(totalEntered)}</span>
-                    <span className={remaining < -0.01 ? "text-red-600 font-semibold" : "text-slate-500"}>
+                    <span className="text-slate-500">
+                      Total entered: {formatCurrency(totalEntered)}
+                    </span>
+                    <span
+                      className={
+                        remaining < -0.01 ? "text-red-600 font-semibold" : "text-slate-500"
+                      }
+                    >
                       {remaining > 0.01
                         ? `Remaining after this: ${formatCurrency(remaining)}`
                         : remaining < -0.01
@@ -1238,7 +1272,11 @@ export function POSMenuBar({
           )}
 
           <DialogFooter className="flex-none border-t px-6 py-4 bg-slate-50 mt-4">
-            <Button variant="outline" onClick={() => setPaymentDialogOpen(false)} disabled={paymentSubmitting}>
+            <Button
+              variant="outline"
+              onClick={() => setPaymentDialogOpen(false)}
+              disabled={paymentSubmitting}
+            >
               Cancel
             </Button>
             <Button
@@ -1257,7 +1295,6 @@ export function POSMenuBar({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </>
   );
 }

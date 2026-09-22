@@ -46,10 +46,18 @@ const ISOLATION_CONFIGS: Record<string, string> = {
   JournalHeader: "branch_id",
   JournalLine: "header.branch_id",
   VATTransaction: "branch_id",
-  // NOTE: FinanceTransaction has no branch column, so this only matches rows
-  // that came from payroll — everything else is hidden from branch users
-  // (fails closed). It needs a real branchId column; see the branch-finance plan.
-  FinanceTransaction: "payroll.user.branchId",
+  BankAccount: "branchId",
+  BankTransaction: "branchId",
+  Budget: "branch_id",
+  AccountReceivable: "branch_id",
+  AccountPayable: "branch_id",
+  TaxRecord: "branch_id",
+  // FinanceTransaction now has a real branchId column, stamped at write time
+  // by payroll.service.ts and expense-report.service.ts. Existing rows from
+  // before this migration may still have branchId=null even though they came
+  // from a branch payroll run — those stay invisible to branch users until
+  // backfilled (fails closed, same as before).
+  FinanceTransaction: "branchId",
 };
 
 // Models whose branch link can't be expressed as one path.

@@ -17,7 +17,15 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
 
@@ -87,43 +95,43 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-2 pb-3 border-b border-emerald-200">
-        <CreditCard className="h-5 w-5 text-emerald-700" />
-        <h3 className="font-semibold text-emerald-900">Payment & Checkout</h3>
+      <div className="flex items-center gap-2 border-b border-border/50 pb-3">
+        <CreditCard className="h-5 w-5 text-primary" />
+        <h3 className="font-semibold text-foreground">Payment & Checkout</h3>
       </div>
 
       {/* Order Summary - Strong Emerald */}
-      <div className="space-y-2 rounded-lg bg-emerald-100 border border-emerald-200 p-4">
+      <div className="space-y-2 rounded-xl border border-primary/15 bg-primary/5 p-4">
         <div className="flex justify-between text-sm">
-          <span className="text-emerald-800">Subtotal</span>
-          <span className="font-medium text-emerald-900">{formatCurrency(subtotal)}</span>
+          <span className="text-muted-foreground">Subtotal</span>
+          <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
         </div>
         {totalDiscount > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-emerald-800">Item Discounts</span>
-            <span className="font-medium text-emerald-600">-{formatCurrency(totalDiscount)}</span>
+            <span className="text-muted-foreground">Item Discounts</span>
+            <span className="font-medium text-success">-{formatCurrency(totalDiscount)}</span>
           </div>
         )}
         {orderDiscount > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-emerald-800">Order Discount</span>
-            <span className="font-medium text-emerald-600">-{formatCurrency(orderDiscount)}</span>
+            <span className="text-muted-foreground">Order Discount</span>
+            <span className="font-medium text-success">-{formatCurrency(orderDiscount)}</span>
           </div>
         )}
         <div className="flex justify-between text-sm">
-          <span className="text-emerald-800">Tax (16%)</span>
-          <span className="font-medium text-emerald-900">{formatCurrency(tax)}</span>
+          <span className="text-muted-foreground">Tax (16%)</span>
+          <span className="font-medium text-foreground">{formatCurrency(tax)}</span>
         </div>
-        <Separator className="my-2 bg-emerald-300" />
+        <Separator className="my-2 bg-primary/20" />
         <div className="flex justify-between text-lg font-bold">
-          <span className="text-emerald-900">Total</span>
-          <span className="text-2xl text-emerald-900">{formatCurrency(grandTotal)}</span>
+          <span className="text-foreground">Total</span>
+          <span className="text-2xl text-primary">{formatCurrency(grandTotal)}</span>
         </div>
       </div>
 
       {/* Whole-Order Discount — separate from per-item discounts above */}
       <div className="space-y-2">
-        <Label htmlFor="orderDiscount" className="text-sm font-semibold text-emerald-900">
+        <Label htmlFor="orderDiscount" className="text-sm font-semibold text-foreground">
           Order Discount (KES)
         </Label>
         <Input
@@ -132,7 +140,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           value={orderDiscount || ""}
           onChange={(e) => setOrderDiscount(Math.max(0, parseFloat(e.target.value) || 0))}
           placeholder="0"
-          className="border-emerald-200"
+          className="border-border/70 bg-background/70"
           min="0"
           step="1"
         />
@@ -140,16 +148,22 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
 
       {/* Payment Method */}
       <div className="space-y-2">
-        <Label className="text-sm font-semibold text-emerald-900">Payment Method</Label>
+        <Label className="text-sm font-semibold text-foreground">Payment Method</Label>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-start border-emerald-200">
-              {paymentMethods.find(m => m.value === paymentMethod)?.label || "Select Payment Method"}
+            <Button
+              variant="outline"
+              className="w-full justify-start border-border/70 bg-background/70"
+            >
+              {paymentMethods.find((m) => m.value === paymentMethod)?.label ||
+                "Select Payment Method"}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="min-w-56">
             <DropdownMenuGroup>
-              <DropdownMenuLabel className="text-sm font-semibold">Select Payment Method</DropdownMenuLabel>
+              <DropdownMenuLabel className="text-sm font-semibold">
+                Select Payment Method
+              </DropdownMenuLabel>
               <DropdownMenuRadioGroup
                 value={paymentMethod}
                 onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
@@ -157,7 +171,11 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                 {paymentMethods.map((method) => {
                   const Icon = method.icon;
                   return (
-                    <DropdownMenuRadioItem value={method.value} key={method.value} className="flex items-center gap-2">
+                    <DropdownMenuRadioItem
+                      value={method.value}
+                      key={method.value}
+                      className="flex items-center gap-2"
+                    >
                       <Icon className="h-4 w-4" />
                       <span>{method.label}</span>
                     </DropdownMenuRadioItem>
@@ -171,9 +189,9 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
 
       {/* Cash Payment Details */}
       {paymentMethod === "cash" && (
-        <div className="space-y-3 rounded-lg border border-emerald-300 bg-emerald-50 p-4">
+        <div className="space-y-3 rounded-xl border border-border/60 bg-muted/35 p-4">
           <div>
-            <Label htmlFor="amountTendered" className="text-sm font-semibold text-emerald-900">
+            <Label htmlFor="amountTendered" className="text-sm font-semibold text-foreground">
               Amount Tendered
             </Label>
             <Input
@@ -182,7 +200,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
               value={amountTendered || ""}
               onChange={(e) => setAmountTendered(parseFloat(e.target.value) || 0)}
               placeholder="0.00"
-              className="mt-2 text-lg font-bold border-emerald-300"
+              className="mt-2 border-border/70 bg-background/70 text-lg font-bold"
               min="0"
               step="0.01"
             />
@@ -197,7 +215,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => setAmountTendered(amount.value)}
-                className="text-xs border-emerald-200 hover:bg-emerald-100"
+                className="border-border/70 text-xs hover:bg-primary/10"
               >
                 {amount.label}
               </Button>
@@ -206,12 +224,13 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
 
           {/* Change Amount */}
           {amountTendered > 0 && (
-            <div className="rounded-lg bg-white p-3 border border-emerald-300">
+            <div className="rounded-lg border border-border/50 bg-card p-3">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-emerald-800">Change Due</span>
+                <span className="text-sm font-medium text-muted-foreground">Change Due</span>
                 <span
-                  className={`text-2xl font-bold ${changeAmount < 0 ? "text-red-600" : "text-emerald-600"
-                    }`}
+                  className={`text-2xl font-bold ${
+                    changeAmount < 0 ? "text-destructive" : "text-success"
+                  }`}
                 >
                   {formatCurrency(changeAmount)}
                 </span>
@@ -234,7 +253,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Add sale notes..."
-          className="mt-1 resize-none border-emerald-200"
+          className="mt-1 resize-none border-border/70 bg-background/70"
           rows={2}
         />
       </div>
@@ -246,7 +265,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           disabled={
             loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
           }
-          className="w-full h-14 text-lg font-bold bg-emerald-600 hover:bg-emerald-700"
+          className="h-14 w-full text-lg font-bold"
           size="lg"
         >
           {loading ? (

@@ -32,16 +32,18 @@ export const POSCart: React.FC<POSCartProps> = ({
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+      <div className="flex items-center justify-between border-b border-border/50 pb-3">
         {docMode !== "SALE" && (
-          <div className="text-lg text-blue-800">
-            <span className="font-semibold">Sales {docMode === "DRAFT" ? "Draft" : "Quotation"}</span>
+          <div className="text-lg text-primary">
+            <span className="font-semibold">
+              Sales {docMode === "DRAFT" ? "Draft" : "Quotation"}
+            </span>
             {editingDocId && ` - Editing: ${editingDocId}`}
           </div>
         )}
         <div className="flex items-center gap-5">
-          <ShoppingCart className="h-5 w-5 text-slate-700" />
-          <h3 className="font-semibold text-slate-900">Shopping Cart</h3>
+          <ShoppingCart className="h-5 w-5 text-primary" />
+          <h3 className="font-semibold text-foreground">Shopping Cart</h3>
           <Badge variant="secondary" className="ml-2">
             {cart.length} {cart.length === 1 ? "item" : "items"}
           </Badge>
@@ -52,7 +54,7 @@ export const POSCart: React.FC<POSCartProps> = ({
             variant="ghost"
             size="sm"
             onClick={onClear}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="text-destructive hover:bg-destructive/10"
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Clear Cart
@@ -63,14 +65,16 @@ export const POSCart: React.FC<POSCartProps> = ({
       {/* Cart Content */}
       {cart.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <ShoppingCart className="h-16 w-16 text-slate-300 mb-4" />
-          <p className="text-slate-500 text-lg font-medium">Cart is empty</p>
-          <p className="text-slate-400 text-sm mt-1">Search and add products to get started</p>
+          <ShoppingCart className="mb-4 h-16 w-16 text-muted-foreground/30" />
+          <p className="text-lg font-medium text-muted-foreground">Cart is empty</p>
+          <p className="mt-1 text-sm text-muted-foreground/70">
+            Search and add products to get started
+          </p>
         </div>
       ) : (
         <div className="max-h-[500px] overflow-auto table-auto">
           <Table>
-            <TableHeader className="sticky top-0 bg-green-500/20 z-10">
+            <TableHeader className="sticky top-0 z-10 bg-muted/80 backdrop-blur-sm">
               <TableRow>
                 <TableHead className="w-[20%]">Item Code</TableHead>
                 <TableHead className="w-[30%]">Name</TableHead>

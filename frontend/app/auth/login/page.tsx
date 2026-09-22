@@ -75,14 +75,14 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 to-slate-800 p-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="rounded-xl border border-border/60 bg-card p-8 shadow-lg">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
             <p className="text-slate-600">Sign in to your swiftpos ERP account</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}

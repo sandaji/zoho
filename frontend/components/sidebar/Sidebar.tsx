@@ -76,7 +76,6 @@ function SidebarContentInternal() {
   const [switcherBranches, setSwitcherBranches] = useState<SwitcherBranch[]>([]);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
 
   // Preferences
   const favorites = useStoredStringList("swiftpos.sidebar.favorites");
@@ -85,18 +84,6 @@ function SidebarContentInternal() {
 
   // Derived state
   const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
-
-  // Online/offline status
-  useEffect(() => {
-    const updateConnection = () => setIsOnline(navigator.onLine);
-    updateConnection();
-    window.addEventListener("online", updateConnection);
-    window.addEventListener("offline", updateConnection);
-    return () => {
-      window.removeEventListener("online", updateConnection);
-      window.removeEventListener("offline", updateConnection);
-    };
-  }, []);
 
   // Load branches for admin users
   useEffect(() => {
@@ -421,14 +408,14 @@ function SidebarContentInternal() {
             operations: visibleModules.filter((m: any) => m.section === "operations"),
             reports: visibleModules.filter((m: any) => m.section === "reports"),
             system: visibleModules.filter((m: any) => m.section === "system"),
-            settings: visibleModules.filter((m: any) => m.section === "settings"),
+            // settings: visibleModules.filter((m: any) => m.section === "settings"),
           };
 
           const sectionLabels = {
             operations: "Operations",
             reports: "Reports",
             system: "System",
-            settings: "Settings",
+            // settings: "Settings",
           };
 
           // Get favorite and recent pages
@@ -608,72 +595,15 @@ function SidebarContentInternal() {
       {/* Sidebar Footer */}
       <SidebarFooter className="border-t border-sidebar-border p-3">
         <div className="space-y-3">
-          {/* User Profile */}
-          {(() => {
-            const avatarFallback = user.name?.charAt(0).toUpperCase() || "U";
-            const roleLabel = ROLE_LABELS[user.role] ?? user.role;
-            const branchName = user.branch?.name ?? "All branches";
-
-            if (isCollapsed) {
-              return (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <SidebarMenuButton className="justify-center">
-                        <Avatar className="h-9 w-9 ring-2 ring-primary/20">
-                          <AvatarFallback className="bg-primary/10 text-sm text-primary">
-                            {avatarFallback}
-                          </AvatarFallback>
-                        </Avatar>
-                      </SidebarMenuButton>
-                    </TooltipTrigger>
-                    <TooltipContent side="right">
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {roleLabel} · {branchName}
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              );
-            }
-
-            return (
-              <SidebarMenuButton className="w-full justify-start gap-3">
-                <Avatar className="h-9 w-9 ring-2 ring-primary/20">
-                  <AvatarFallback className="bg-primary/10 text-sm text-primary">
-                    {avatarFallback}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{user.name}</p>
-                  <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "px-1.5 py-0 text-[10px]",
-                        ROLE_COLORS[user.role] || "bg-sidebar-accent text-sidebar-foreground"
-                      )}
-                    >
-                      {roleLabel}
-                    </Badge>
-                    <span className="truncate text-[10px] text-sidebar-foreground/60">
-                      {branchName}
-                    </span>
-                  </div>
-                </div>
-              </SidebarMenuButton>
-            );
-          })()}
-
           {/* Actions */}
-          <div className="flex items-center gap-1">
-            <SidebarMenu className="w-full">
+          <div className="flex gap-1">
+            <SidebarMenu className="flex flex-row items-center justify-between">
+              {/* Settings - Left side */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
                   isActive={isActivePath(pathname, "/dashboard/settings")}
-                  className="w-full"
+                  tooltip="Settings"
                 >
                   <a
                     href="/dashboard/settings"
@@ -681,16 +611,20 @@ function SidebarContentInternal() {
                       e.preventDefault();
                       navigate("/dashboard/settings");
                     }}
+                    className="flex items-center gap-2"
                   >
                     <Settings className="h-4 w-4" />
                     {!isCollapsed && <span>Settings</span>}
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+
+              {/* Logout - Right side */}
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={handleLogout}
-                  className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  tooltip="Logout"
+                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                 >
                   <LogOut className="h-4 w-4" />
                   {!isCollapsed && <span>Logout</span>}
@@ -698,20 +632,6 @@ function SidebarContentInternal() {
               </SidebarMenuItem>
             </SidebarMenu>
           </div>
-
-          {/* Status */}
-          {!isCollapsed && (
-            <div className="flex items-center gap-1.5 px-1 text-xs text-sidebar-foreground/60">
-              {isOnline ? (
-                <Wifi className="h-3 w-3 text-emerald-500" />
-              ) : (
-                <WifiOff className="h-3 w-3 text-red-500" />
-              )}
-              <span>{isOnline ? "Connected" : "Offline"}</span>
-              <Separator orientation="vertical" className="h-3 bg-sidebar-border" />
-              <span>v{APP_VERSION}</span>
-            </div>
-          )}
         </div>
       </SidebarFooter>
 
