@@ -23,7 +23,7 @@ export const QuickActions = ({ onActionClick }: QuickActionsProps) => {
       id: "create-invoice",
       label: "Create Invoice",
       icon: <FileText className="h-5 w-5" />,
-      href: "/dashboard/sales/new",
+      href: "/dashboard/pos",
       description: "Create a new sales invoice",
     },
     {

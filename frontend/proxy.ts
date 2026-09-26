@@ -20,15 +20,15 @@ const PROTECTED_ROUTES: { path: string; allowedRoles: string[] }[] = [
 ];
 
 const ROLE_FALLBACK: Record<string, string> = {
-  procurement:     "/dashboard/purchasing",
-  cashier:         "/dashboard/pos",
+  procurement: "/dashboard/purchasing",
+  cashier: "/dashboard/pos",
   warehouse_staff: "/dashboard/inventory",
-  driver:          "/dashboard/fleet",
-  hr:              "/dashboard/employees",
-  accountant:      "/dashboard/finance",
-  manager:         "/dashboard",
-  branch_manager:  "/dashboard",
-  user:            "/dashboard",
+  driver: "/dashboard/fleet",
+  hr: "/dashboard/employees",
+  accountant: "/dashboard/finance",
+  manager: "/dashboard/branch/manager",
+  branch_manager: "/dashboard/branch/manager",
+  user: "/dashboard",
 };
 
 export function proxy(request: NextRequest) {

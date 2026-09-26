@@ -20,9 +20,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +29,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Building2,
   Check,
@@ -41,8 +38,6 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
-  Wifi,
-  WifiOff,
   ChevronDown,
   Pin,
   Star,
@@ -54,7 +49,7 @@ import { useStoredStringList } from "@/hooks/use-sidebar-preferences";
 import { API_BASE_URL, API_ENDPOINTS } from "@/lib/api-config";
 import { NAVIGATION_MODULES, canAccessNavigationItem } from "@/lib/navigation";
 import type { Branch } from "@/lib/types/admin";
-import { ROLE_LABELS, ROLE_COLORS, APP_VERSION, isActivePath } from "./constants";
+import { isActivePath } from "./constants";
 import { CommandPalette } from "./CommandPalette";
 import type { SwitcherBranch, SearchResult } from "./types";
 
@@ -408,14 +403,14 @@ function SidebarContentInternal() {
             operations: visibleModules.filter((m: any) => m.section === "operations"),
             reports: visibleModules.filter((m: any) => m.section === "reports"),
             system: visibleModules.filter((m: any) => m.section === "system"),
-            // settings: visibleModules.filter((m: any) => m.section === "settings"),
+            //  settings: visibleModules.filter((m: any) => m.section === "settings"),
           };
 
           const sectionLabels = {
             operations: "Operations",
             reports: "Reports",
             system: "System",
-            // settings: "Settings",
+            //  settings: "Settings",
           };
 
           // Get favorite and recent pages

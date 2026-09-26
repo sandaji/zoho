@@ -249,6 +249,58 @@ html {
   .dark .border-red-100 {
     border-color: var(--border);
   }
+
+  .dark .admin-dashboard .text-emerald-900,
+  .dark .admin-dashboard .text-emerald-800,
+  .dark .admin-dashboard .text-yellow-900,
+  .dark .admin-dashboard .text-yellow-800,
+  .dark .admin-dashboard .text-red-900,
+  .dark .admin-dashboard .text-red-800 {
+    color: var(--foreground);
+  }
+
+  .dark .admin-dashboard .text-emerald-700,
+  .dark .admin-dashboard .text-emerald-600 {
+    color: color-mix(in srgb, var(--success) 65%, white);
+  }
+
+  .dark .admin-dashboard .text-yellow-700,
+  .dark .admin-dashboard .text-yellow-600 {
+    color: color-mix(in srgb, var(--warning) 70%, white);
+  }
+
+  .dark .admin-dashboard .text-red-700,
+  .dark .admin-dashboard .text-red-600 {
+    color: color-mix(in srgb, var(--destructive) 70%, white);
+  }
+
+  .dark .admin-dashboard .bg-emerald-50,
+  .dark .admin-dashboard .bg-emerald-100,
+  .dark .admin-dashboard .bg-emerald-50\/50 {
+    background-color: color-mix(in srgb, var(--success) 16%, var(--card));
+  }
+
+  .dark .admin-dashboard .bg-yellow-50,
+  .dark .admin-dashboard .bg-yellow-100 {
+    background-color: color-mix(in srgb, var(--warning) 16%, var(--card));
+  }
+
+  .dark .admin-dashboard .bg-red-50,
+  .dark .admin-dashboard .bg-red-100 {
+    background-color: color-mix(in srgb, var(--destructive) 16%, var(--card));
+  }
+
+  .dark .admin-dashboard .border-emerald-50,
+  .dark .admin-dashboard .border-emerald-100,
+  .dark .admin-dashboard .border-emerald-200,
+  .dark .admin-dashboard .border-yellow-200,
+  .dark .admin-dashboard .border-red-200 {
+    border-color: var(--border);
+  }
+
+  .dark .admin-dashboard .hover\:bg-emerald-50\/50:hover {
+    background-color: color-mix(in srgb, var(--success) 16%, var(--card));
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

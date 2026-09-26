@@ -77,6 +77,12 @@ export class PayablesService {
         },
       });
 
+      // 2b. Decrement how much is owed to the vendor
+      await tx.vendor.update({
+        where: { id: ap.vendorId },
+        data: { currentBalance: { decrement: data.amount } },
+      });
+
       // 3. Post to General Ledger: DR Accounts Payable / CR Cash (Bank/Mobile Money)
       const apAccount = await AccountingService.getEnsureAccount(
         DEFAULT_ACCOUNTS.ACCOUNTS_PAYABLE,

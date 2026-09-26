@@ -738,8 +738,13 @@ model Vendor {
   isActive       Boolean         @default(true)
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  // Amount currently owed to this vendor across open bills (AccountPayable
+  // rows). Mirrors Customer.currentBalance on the AR side: incremented when
+  // a bill is recorded (receiveGoods), decremented as payments post.
+  currentBalance Decimal         @default(0.00)
   products       Product[]
   purchaseOrders PurchaseOrder[]
+  accountsPayable AccountPayable[]
 
   @@index([code])
   @@index([name])
@@ -896,6 +901,7 @@ model GoodsReceiptNote {
   purchaseOrder   PurchaseOrder @relation("GRNToPO", fields: [purchaseOrderId], references: [id])
   receivedBy      User          @relation("ReceivedByGRN", fields: [receivedById], references: [id])
   items           GRNItem[]
+  accountPayable  AccountPayable?
 
   @@index([grnNumber])
   @@index([purchaseOrderId])
@@ -1357,14 +1363,17 @@ model ARPayment {
   @@map("ar_payments")
 }
 
-/// Accounts Payable
+/// Accounts Payable — one bill per GoodsReceiptNote, created when goods are
+/// received (see PurchasingService.receiveGoods).
 model AccountPayable {
   id           String      @id @default(cuid())
   bill_no      String      @unique
+  vendorId     String
   vendor_name  String
   vendor_email String?
   vendor_phone String?
   branch_id    String?
+  grnId        String?     @unique
   total_amount Float
   paid_amount  Float       @default(0)
   balance      Float
@@ -1377,10 +1386,13 @@ model AccountPayable {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   branch       Branch?     @relation(fields: [branch_id], references: [id])
+  vendor       Vendor      @relation(fields: [vendorId], references: [id])
+  grn          GoodsReceiptNote? @relation(fields: [grnId], references: [id])
   payments     APPayment[]
 
   @@index([bill_no])
   @@index([vendor_name])
+  @@index([vendorId])
   @@index([status])
   @@index([due_date])
   @@index([branch_id])
@@ -2033,6 +2045,7 @@ enum PaymentMethod {
   mpesa
   cheque
   bank_transfer
+  credit
 
   @@map("payment_method")
 }

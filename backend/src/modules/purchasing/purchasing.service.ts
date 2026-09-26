@@ -5,6 +5,14 @@ import { PurchaseOrderStatus } from "../../../src/generated/enums.js";
 import { InventoryService } from "../inventory/services/inventory.service";
 import PDFDocument from "pdfkit";
 
+// Vendor.paymentTerms is a free-text field ("NET_30", "NET_15", "COD", ...).
+// Parse the NET_n convention into a day count for AccountPayable.due_date;
+// anything unrecognized (including "COD") defaults to due-on-receipt.
+function parsePaymentTermsDays(terms: string | null | undefined): number {
+  const match = /NET[_\s-]?(\d+)/i.exec(terms || "");
+  return match ? parseInt(match[1], 10) : 0;
+}
+
 // ============================================================================
 // APPROVAL THRESHOLDS (KSH - Kenyan Shilling)
 // ============================================================================
@@ -851,7 +859,7 @@ export class PurchasingService {
     return prisma.$transaction(async (tx) => {
       const po = await tx.purchaseOrder.findUnique({
         where: { id },
-        include: { items: { include: { product: true } }, branch: true },
+        include: { items: { include: { product: true } }, branch: true, vendor: true },
       });
 
       if (!po) throw new AppError(ErrorCode.NOT_FOUND, 404, "PO not found");
@@ -908,6 +916,7 @@ export class PurchasingService {
       const grnItems = [];
       let totalReceivedQty = 0;
       let totalOrderedQty = 0;
+      let billAmount = 0;
 
       for (const receivedItem of data.items) {
         if (receivedItem.quantity <= 0) continue;
@@ -975,6 +984,7 @@ export class PurchasingService {
 
         totalReceivedQty += newReceivedQty;
         totalOrderedQty += poItem.quantity;
+        billAmount += receivedItem.quantity * poItem.unitPrice;
       }
 
       // 4. Update PO Status
@@ -1005,6 +1015,36 @@ export class PurchasingService {
           },
         },
       });
+
+      // 5. Record the vendor bill for the goods actually received in this
+      // GRN and update how much is owed to the vendor. Mirrors the AR side
+      // (SalesDocument invoice -> Customer.currentBalance): one bill per
+      // GRN, due date derived from the vendor's payment terms.
+      if (billAmount > 0) {
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + parsePaymentTermsDays(po.vendor.paymentTerms));
+
+        await tx.accountPayable.create({
+          data: {
+            bill_no: grnNumber,
+            vendorId: po.vendorId,
+            vendor_name: po.vendor.name,
+            vendor_email: po.vendor.email,
+            vendor_phone: po.vendor.phone,
+            branch_id: po.branchId,
+            grnId: grn.id,
+            total_amount: billAmount,
+            balance: billAmount,
+            due_date: dueDate,
+            notes: `Goods received against PO ${po.poNumber}`,
+          },
+        });
+
+        await tx.vendor.update({
+          where: { id: po.vendorId },
+          data: { currentBalance: { increment: billAmount } },
+        });
+      }
 
       return {
         grn,

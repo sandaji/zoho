@@ -148,6 +148,7 @@ export class SalesController {
       const query = listDocumentsQuerySchema.parse(req.query);
       const authReq = req as AuthenticatedRequest;
       const userBranchId = authReq.user?.branchId;
+      const salespersonId = authReq.user?.userId;
 
       let branchIdFilter = query.branchId || userBranchId;
 
@@ -174,6 +175,7 @@ export class SalesController {
       const documents = await SalesService.listDocuments({
         ...query,
         branchId: (branchIdFilter || undefined) as string | undefined,
+        salespersonId: query.salespersonOnly ? salespersonId : undefined,
       });
       res.status(200).json({ success: true, data: documents });
     } catch (error) {
@@ -226,8 +228,8 @@ export class SalesController {
         return;
       }
 
-      // Parse but ignore the type since convertToInvoice always creates an invoice
-      convertDocumentSchema.parse(req.body);
+      // Validate conversion options; conversion always creates an invoice.
+      const conversion = convertDocumentSchema.parse(req.body);
       const authReq = req as AuthenticatedRequest;
       const branchId = authReq.user?.branchId;
       const userId = authReq.user?.userId;
@@ -266,6 +268,7 @@ export class SalesController {
         id,
         branchId as string,
         userId,
+        conversion,
       );
       res.status(201).json({ success: true, data: convertedDocument });
     } catch (error) {

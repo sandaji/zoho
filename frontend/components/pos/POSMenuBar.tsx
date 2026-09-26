@@ -121,11 +121,11 @@ function todayISO(): string {
 }
 
 const DOC_TYPE_LABELS: Record<DocType, string> = {
-  ALL: "All",
+  ALL: "All Transactions",
   DRAFT: "Sales Drafts",
-  QUOTE: "Quotations",
-  CREDIT_NOTE: "Credit Notes / Sales Return",
-  INVOICE: "Sales Invoices",
+  QUOTE: "Quotations (Unconverted)",
+  CREDIT_NOTE: "Credit Notes",
+  INVOICE: "Closed Invoices",
 };
 
 // Unique colour per document type, for fast visual scanning in the
@@ -310,6 +310,8 @@ export function POSMenuBar({
       setTxLoading(true);
       try {
         const params = new URLSearchParams({ branchId });
+        params.set("salespersonOnly", "true");
+        params.set("limit", "500");
         if (docType !== "ALL") params.set("type", docType);
         if (from) params.set("startDate", from);
         if (to) params.set("endDate", to);
@@ -627,7 +629,7 @@ export function POSMenuBar({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
-              {(["ALL", "DRAFT", "QUOTE", "CREDIT_NOTE", "INVOICE"] as DocType[]).map((t, i) => (
+              {(["INVOICE", "CREDIT_NOTE", "QUOTE", "DRAFT", "ALL"] as DocType[]).map((t, i) => (
                 <React.Fragment key={t}>
                   {i === 1 && <DropdownMenuSeparator />}
                   <DropdownMenuItem onClick={() => openTransactions(t)}>
@@ -854,7 +856,10 @@ export function POSMenuBar({
                                   size="icon-sm"
                                   title="Convert to Invoice"
                                   disabled={convertingId === doc.id}
-                                  onClick={() => handleConvertToInvoice(doc)}
+                                  onClick={() => {
+                                    setTxPanelOpen(false);
+                                    onEditDocument(doc.id);
+                                  }}
                                 >
                                   {convertingId === doc.id ? (
                                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -905,7 +910,9 @@ export function POSMenuBar({
                                   onEditDocument(doc.id);
                                 } else {
                                   setTxPanelOpen(false);
-                                  router.push(`/dashboard/pos/sales/${doc.id}`);
+                                  router.push(doc.type === "INVOICE"
+                                    ? `/dashboard/pos/documents/${doc.id}`
+                                    : `/dashboard/pos/sales/${doc.id}`);
                                 }
                               }}
                             >

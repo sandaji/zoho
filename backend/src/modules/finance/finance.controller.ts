@@ -421,11 +421,11 @@ class FinanceController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const accountId = req.query.accountId as string;
+      const accountId = req.params.accountId as string;
       if (!accountId) {
         res.status(400).json({
           status: "error",
-          message: "accountId query parameter is required",
+          message: "accountId path parameter is required",
         });
         return;
       }

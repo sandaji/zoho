@@ -41,6 +41,7 @@ export const createSalesDocumentSchema = z.object({
 // List documents query schema
 export const listDocumentsQuerySchema = z.object({
   branchId: z.string().optional(),
+  salespersonOnly: z.coerce.boolean().optional(),
   type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]).optional(),
   status: z
     .enum(["DRAFT", "SENT", "PARTIALLY_PAID", "PAID", "CONVERTED", "VOID", "CLOSED"])
@@ -58,6 +59,10 @@ export const listDocumentsQuerySchema = z.object({
 // always produces an INVOICE); the frontend calls this with an empty body.
 export const convertDocumentSchema = z.object({
   type: z.enum(["DRAFT", "QUOTE", "INVOICE", "CREDIT_NOTE"]).optional(),
+  customerId: z.string().nullable().optional(),
+  notes: z.string().optional(),
+  amountPaid: z.number().nonnegative().optional(),
+  paymentMethod: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer", "credit"]).optional(),
 });
 
 // Update document items schema (edit a saved Draft/Quote)

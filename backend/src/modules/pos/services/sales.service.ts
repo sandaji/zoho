@@ -257,6 +257,7 @@ export class SalesService {
     sourceId: string,
     branchId: string,
     userId: string,
+    options: { customerId?: string | null; notes?: string; amountPaid?: number; paymentMethod?: string } = {},
   ) {
     const source = await prisma.salesDocument.findUnique({
       where: { id: sourceId },
@@ -297,18 +298,19 @@ export class SalesService {
           data: {
             documentId,
             type: SalesDocumentType.INVOICE,
-            status: SalesDocumentStatus.SENT,
-            paymentStatus: PaymentStatus.UNPAID,
+            status: (options.amountPaid || 0) >= source.total ? SalesDocumentStatus.PAID : (options.amountPaid || 0) > 0 ? SalesDocumentStatus.PARTIALLY_PAID : SalesDocumentStatus.SENT,
+            paymentStatus: (options.amountPaid || 0) >= source.total ? PaymentStatus.PAID : (options.amountPaid || 0) > 0 ? PaymentStatus.PARTIALLY_PAID : PaymentStatus.UNPAID,
             branchId,
-            customerId: source.customerId,
+            customerId: options.customerId === undefined ? source.customerId : options.customerId,
             issueDate: new Date(),
             dueDate: source.dueDate,
             subtotal: source.subtotal,
             tax: source.tax,
             discount: source.discount,
             total: source.total,
-            balance: source.total,
-            notes: source.notes,
+            balance: Math.max(0, source.total - Math.min(options.amountPaid || 0, source.total)),
+            paidAmount: Math.min(options.amountPaid || 0, source.total),
+            notes: [options.notes ?? source.notes, (options.amountPaid || 0) < source.total && (options.amountPaid || 0) > 0 ? `Payment short by ${Math.floor(source.total - (options.amountPaid || 0))}; balance remains on account.` : null, (options.amountPaid || 0) > source.total ? `Overpayment of ${Math.floor((options.amountPaid || 0) - source.total)} recorded as change.` : null].filter(Boolean).join("\n") || null,
             // sourceDocumentId is a self-referencing FK with onDelete: NoAction.
             // For a QUOTE we keep the source (marked CONVERTED below), so the
             // reference is valid. For a DRAFT we delete the source right after
@@ -333,6 +335,20 @@ export class SalesService {
           },
           include: { items: true },
         });
+
+        const received = Math.min(Math.max(0, options.amountPaid || 0), invoice.total);
+        if (received > 0 || options.paymentMethod === "credit") {
+          await tx.payment.create({
+            data: {
+              salesDocumentId: invoice.id,
+              customerId: invoice.customerId,
+              amount: Math.floor(received),
+              method: (options.paymentMethod || "cash") as PaymentMethod,
+              reference: (options.amountPaid || 0) > invoice.total ? `Overpayment ${Math.floor((options.amountPaid || 0) - invoice.total)} recorded as change` : null,
+              createdById: userId,
+            },
+          });
+        }
 
         // REQUIREMENT 5: Deduct stock when invoice is created
         const warehouse = await tx.warehouse.findFirst({
@@ -743,6 +759,7 @@ export class SalesService {
   // REQUIREMENT 6: Enhanced filtering
   // =============================
   static async listDocuments(query: {
+    salespersonId?: string;
     branchId?: string;
     type?: string;
     status?: string;
@@ -756,8 +773,10 @@ export class SalesService {
   }) {
     const where: any = {};
 
+    if (query.salespersonId) where.createdById = query.salespersonId;
     if (query.branchId) where.branchId = query.branchId;
     if (query.type) where.type = query.type;
+    if (query.type === "QUOTE") where.status = { not: SalesDocumentStatus.CONVERTED };
     if (query.status) where.status = query.status;
     if (query.customerId) where.customerId = query.customerId;
     if (query.sourceDocumentId) where.sourceDocumentId = query.sourceDocumentId;

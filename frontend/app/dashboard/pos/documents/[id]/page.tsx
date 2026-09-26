@@ -100,27 +100,18 @@ export default function DocumentDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="mx-auto max-w-5xl space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.back()}
-              className="gap-2"
-            >
+            <Button variant="ghost" size="sm" onClick={() => router.back()} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                {document.type} Details
-              </h1>
-              <p className="text-sm text-slate-600">
-                Document: {document.documentId}
-              </p>
+              <h1 className="text-2xl font-bold text-foreground">{document.type} Details</h1>
+              <p className="text-sm text-muted-foreground">Document: {document.documentId}</p>
             </div>
           </div>
 
@@ -142,33 +133,21 @@ export default function DocumentDetailPage() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Type
-                </label>
+                <label className="text-sm font-medium text-muted-foreground">Type</label>
                 <div className="mt-1 font-semibold">{document.type}</div>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Status
-                </label>
+                <label className="text-sm font-medium text-muted-foreground">Status</label>
                 <div className="mt-1">{getStatusBadge(document.status)}</div>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">
-                  Issue Date
-                </label>
-                <div className="mt-1">
-                  {format(new Date(document.issueDate), "MMM dd, yyyy")}
-                </div>
+                <label className="text-sm font-medium text-muted-foreground">Issue Date</label>
+                <div className="mt-1">{format(new Date(document.issueDate), "MMM dd, yyyy")}</div>
               </div>
               {document.dueDate && (
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Due Date
-                  </label>
-                  <div className="mt-1">
-                    {format(new Date(document.dueDate), "MMM dd, yyyy")}
-                  </div>
+                  <label className="text-sm font-medium text-muted-foreground">Due Date</label>
+                  <div className="mt-1">{format(new Date(document.dueDate), "MMM dd, yyyy")}</div>
                 </div>
               )}
             </div>
@@ -184,32 +163,24 @@ export default function DocumentDetailPage() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Name
-                  </label>
+                  <label className="text-sm font-medium text-muted-foreground">Name</label>
                   <div className="mt-1">{document.customer.name}</div>
                 </div>
                 {document.customer.email && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Email
-                    </label>
+                    <label className="text-sm font-medium text-muted-foreground">Email</label>
                     <div className="mt-1">{document.customer.email}</div>
                   </div>
                 )}
                 {document.customer.phone && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Phone
-                    </label>
+                    <label className="text-sm font-medium text-muted-foreground">Phone</label>
                     <div className="mt-1">{document.customer.phone}</div>
                   </div>
                 )}
                 {document.customer.address && (
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Address
-                    </label>
+                    <label className="text-sm font-medium text-muted-foreground">Address</label>
                     <div className="mt-1">{document.customer.address}</div>
                   </div>
                 )}
@@ -224,36 +195,34 @@ export default function DocumentDetailPage() {
             <CardTitle>Items</CardTitle>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>S.No</TableHead>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead className="text-right">Quantity</TableHead>
-                  <TableHead className="text-right">Unit Price</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {document.items.map((item: any, index: number) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell className="font-mono">
-                      {item.product?.sku || "N/A"}
-                    </TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell className="text-right">{item.quantity}</TableCell>
-                    <TableCell className="text-right">
-                      KES {item.unitPrice.toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-right font-semibold">
-                      KES {item.total.toFixed(2)}
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>S.No</TableHead>
+                    <TableHead>Code</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="text-right">Quantity</TableHead>
+                    <TableHead className="text-right">Unit Price</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {document.items.map((item: any, index: number) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell className="font-mono">{item.product?.sku || "N/A"}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell className="text-right">{item.quantity}</TableCell>
+                      <TableCell className="text-right">KES {item.unitPrice.toFixed(2)}</TableCell>
+                      <TableCell className="text-right font-semibold">
+                        KES {item.total.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
 
@@ -269,7 +238,7 @@ export default function DocumentDetailPage() {
                 <span>KES {document.subtotal.toFixed(2)}</span>
               </div>
               {document.discount > 0 && (
-                <div className="flex justify-between text-red-600">
+                <div className="flex justify-between text-destructive">
                   <span>Discount:</span>
                   <span>- KES {document.discount.toFixed(2)}</span>
                 </div>
@@ -284,11 +253,11 @@ export default function DocumentDetailPage() {
               </div>
               {document.type === "INVOICE" && (
                 <>
-                  <div className="flex justify-between text-green-600">
+                  <div className="flex justify-between text-success">
                     <span>Paid:</span>
                     <span>KES {(document.paidAmount || 0).toFixed(2)}</span>
                   </div>
-                  <div className="flex justify-between text-red-600 font-semibold">
+                  <div className="flex justify-between font-semibold text-destructive">
                     <span>Balance:</span>
                     <span>KES {document.balance.toFixed(2)}</span>
                   </div>

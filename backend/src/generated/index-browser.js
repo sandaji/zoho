@@ -525,7 +525,8 @@ exports.Prisma.VendorScalarFieldEnum = {
   leadTimeDays: 'leadTimeDays',
   isActive: 'isActive',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  currentBalance: 'currentBalance'
 };
 
 exports.Prisma.PurchaseOrderScalarFieldEnum = {
@@ -914,10 +915,12 @@ exports.Prisma.ARPaymentScalarFieldEnum = {
 exports.Prisma.AccountPayableScalarFieldEnum = {
   id: 'id',
   bill_no: 'bill_no',
+  vendorId: 'vendorId',
   vendor_name: 'vendor_name',
   vendor_email: 'vendor_email',
   vendor_phone: 'vendor_phone',
   branch_id: 'branch_id',
+  grnId: 'grnId',
   total_amount: 'total_amount',
   paid_amount: 'paid_amount',
   balance: 'balance',
@@ -1405,7 +1408,8 @@ exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   card: 'card',
   mpesa: 'mpesa',
   cheque: 'cheque',
-  bank_transfer: 'bank_transfer'
+  bank_transfer: 'bank_transfer',
+  credit: 'credit'
 };
 
 exports.SalesOrderStatus = exports.$Enums.SalesOrderStatus = {

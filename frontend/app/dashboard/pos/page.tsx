@@ -8,20 +8,19 @@ import { AutocompleteProductSearch } from "@/components/pos/AutocompleteProductS
 import { POSCart } from "@/components/pos/POSCart";
 import { POSPayment } from "@/components/pos/POSPayment";
 import { POSSaleSuccess } from "@/components/pos/POSSaleSuccess";
-import { POSQuickActions } from "@/components/pos/POSQuickActions";
 import { POSCustomerSelect, Customer } from "@/components/pos/POSCustomerSelect";
 import type { POSCustomerSelectHandle } from "@/components/pos/POSCustomerSelect";
 import { useCashierSession } from "@/hooks/cashier/useCashierSession";
 import { SessionOpenDialog } from "@/components/cashier/SessionOpenDialog";
-import { SessionStatusCard } from "@/components/cashier/SessionStatusCard";
 import { CloseSessionDialog } from "@/components/pos/CloseSessionDialog";
 
 import { POSMenuBar } from "@/components/pos/POSMenuBar";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { POSCashier } from "@/components/pos/POSCashier";
 
 // ------------------ Types ------------------
-type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
+type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer" | "credit";
 
 export interface CartItem {
   productId: string;
@@ -80,8 +79,6 @@ export default function POSPage() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
-  // Whole-order discount (section 7B) — a cashier-entered amount off the
-  // entire cart, separate from any per-item discounts on individual lines.
   const [orderDiscount, setOrderDiscount] = useState<number>(0);
 
   // Document mode state
@@ -358,6 +355,8 @@ export default function POSPage() {
       const doc = json.data;
       setDocMode(doc.type === "DRAFT" ? "DRAFT" : "QUOTE");
       setEditingDocId(docId);
+      setAmountTendered(0);
+      setPaymentMethod("cash");
 
       // Populate cart from document items
       const cartItems: CartItem[] = doc.items.map((item: any) => ({
@@ -459,6 +458,58 @@ export default function POSPage() {
     }
   };
 
+  const handleConvertDocument = async () => {
+    if (!editingDocId || !cart.length) return;
+    setLoading(true);
+    try {
+      const items = cart.map((c) => ({
+        productId: c.productId,
+        quantity: c.quantity,
+        unitPrice: c.unit_price,
+        taxRate: c.tax_rate,
+        discount: c.discount,
+      }));
+      const headers = getAuthHeadersWithToken(token || "");
+      const saved = await fetch(
+        getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_UPDATE_ITEMS(editingDocId)),
+        {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({ items, customerId: selectedCustomer?.id || null, notes }),
+        }
+      );
+      const savedJson = await saved.json();
+      if (!saved.ok || !savedJson.success) {
+        toast(savedJson.message || "Unable to save invoice changes", "error");
+        return;
+      }
+      const converted = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(editingDocId)), {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          customerId: selectedCustomer?.id || null,
+          notes,
+          amountPaid: paymentMethod === "credit" ? 0 : Math.max(0, amountTendered),
+          paymentMethod,
+        }),
+      });
+      const convertedJson = await converted.json();
+      if (!converted.ok || !convertedJson.success) {
+        toast(convertedJson.message || "Unable to convert to invoice", "error");
+        return;
+      }
+      toast(`Invoice created: ${convertedJson.data.documentId}`, "success");
+      setDocMode("SALE");
+      setEditingDocId(null);
+      clearCart();
+      router.push(`/dashboard/pos/documents/${convertedJson.data.id}`);
+    } catch (error) {
+      toast("Unable to convert to invoice", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleCancelDocumentMode = () => {
     setDocMode("SALE");
     setEditingDocId(null);
@@ -466,106 +517,13 @@ export default function POSPage() {
     toast("Cancelled document mode", "info");
   };
 
-  // ------------------ Quick Actions ------------------
-  const handleParkSale = async () => {
-    if (!cart.length) {
-      toast("Cart is empty", "warning");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await fetch(getApiUrl("/v1/sales-documents/sales/park"), {
-        method: "POST",
-        headers: getAuthHeadersWithToken(token || ""),
-        body: JSON.stringify({
-          branchId: user.branchId,
-          userId: user.id,
-          items: cart.map((c) => ({
-            productId: c.productId,
-            quantity: c.quantity,
-            unit_price: c.unit_price,
-            tax_rate: c.tax_rate,
-            discount: c.discount,
-            discount_percent: c.discount_percent,
-          })),
-          discount: clampedOrderDiscount,
-          payment_method: paymentMethod,
-          customerId: selectedCustomer?.id || undefined,
-          notes: notes || undefined,
-        }),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        toast(json.message || "Failed to park sale", "error");
-        return;
-      }
-
-      toast("Sale parked successfully", "success");
-      clearCart();
-    } catch (error) {
-      toast("Failed to park sale", "error");
-      console.error("Park sale error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleHoldSale = async () => {
-    if (!cart.length) {
-      toast("Cart is empty", "warning");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await fetch(getApiUrl("/v1/sales-documents/sales/hold"), {
-        method: "POST",
-        headers: getAuthHeadersWithToken(token || ""),
-        body: JSON.stringify({
-          branchId: user.branchId,
-          userId: user.id,
-          items: cart.map((c) => ({
-            productId: c.productId,
-            quantity: c.quantity,
-            unit_price: c.unit_price,
-            tax_rate: c.tax_rate,
-            discount: c.discount,
-            discount_percent: c.discount_percent,
-          })),
-          discount: clampedOrderDiscount,
-          payment_method: paymentMethod,
-          customerId: selectedCustomer?.id || undefined,
-          notes: notes || undefined,
-        }),
-      });
-
-      const json = await res.json();
-
-      if (!res.ok || !json.success) {
-        toast(json.message || "Failed to hold sale", "error");
-        return;
-      }
-
-      toast("Sale held successfully", "success");
-      clearCart();
-    } catch (error) {
-      toast("Failed to hold sale", "error");
-      console.error("Hold sale error:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // ------------------ Keyboard Shortcuts ------------------
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      // F9: Complete Sale
-      if (e.key === "F9" && !loading && cart.length > 0) {
+      // F9: Convert the loaded quote/draft to an invoice only when conversion is available.
+      if (e.key === "F9" && editingDocId && !loading && cart.length > 0) {
         e.preventDefault();
-        handleCheckout();
+        handleConvertDocument();
       }
       // F4: Clear Cart
       if (e.key === "F4" && cart.length > 0) {
@@ -592,7 +550,7 @@ export default function POSPage() {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [cart, loading, grandTotal, activeTab]);
+  }, [cart, loading, grandTotal, activeTab, editingDocId]);
 
   // ------------------ UI ------------------
   return (
@@ -611,45 +569,7 @@ export default function POSPage() {
         </Suspense>
 
         {/* ================= SESSION WARNING ================= */}
-        {!sessionLoading && !session && (
-          <div className="flex items-center justify-between rounded-xl border border-warning-border/60 bg-warning-muted/45 p-4">
-            <div className="text-sm text-warning-foreground">
-              No active cashier session. Open a session to start selling.
-            </div>
-            <button
-              onClick={() => setShowOpenDialog(true)}
-              className="rounded-md bg-warning px-4 py-2 text-sm font-medium text-warning-foreground transition hover:opacity-90"
-            >
-              Open Session
-            </button>
-          </div>
-        )}
 
-        {/* ================= DOCUMENT MODE BANNER ================= */}
-        {/*  {docMode !== "SALE" && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
-            <div className="text-sm text-blue-800">
-              <span className="font-semibold">Sales {docMode === "DRAFT" ? "Draft" : "Quote"}</span>
-              {editingDocId && ` - Editing: ${editingDocId}`}
-            </div> */}
-        {/* <div className="flex gap-2">
-              <button
-                onClick={handleSaveDocument}
-                disabled={loading}
-                className="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
-              >
-                {loading ? "Saving..." : `Save ${docMode === "DRAFT" ? "Draft" : "Quote"}`}
-              </button>
-              <button
-                onClick={handleCancelDocumentMode}
-                className="px-4 py-2 rounded-md bg-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-300 transition"
-              >
-                Cancel
-              </button>
-            </div> 
-          </div>
-        )}
-*/}
         {/* ================= MAIN RESPONSIVE GRID LAYOUT ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-10  gap-4 items-start">
           {/* ================= LEFT SIDE (70% - 7 Cols out of 10) ================= */}
@@ -657,12 +577,14 @@ export default function POSPage() {
             {/* Product Search - Blue tint */}
             <div className="space-y-4 rounded-xl border border-border/50 bg-card/80 px-4 py-3 shadow-sm">
               <div className="flex items-center justify-between gap-4">
-                <POSQuickActions
-                  onPark={handleParkSale}
-                  onHold={handleHoldSale}
-                  onClear={clearCart}
-                  hasItems={cart.length > 0}
-                />
+                {docMode !== "SALE" && (
+                  <div className="text-lg text-primary">
+                    <span className="font-semibold">
+                      Sales {docMode === "DRAFT" ? "Draft" : "Quotation"}
+                    </span>
+                    {/* {editingDocId && ` - Editting: ${editingDocId}`} */}
+                  </div>
+                )}
                 <POSCustomerSelect
                   ref={customerSelectRef}
                   token={token || ""}
@@ -716,9 +638,33 @@ export default function POSPage() {
                 setNotes={setNotes}
                 docMode={docMode}
                 onSaveDocument={handleSaveDocument}
+                onConvertDocument={handleConvertDocument}
+                canConvertDocument={!!editingDocId && docMode !== "SALE"}
               />
             </div>
-
+            {!sessionLoading && !session && (
+              <div className="flex items-center justify-between rounded-xl border border-warning-border/60 bg-warning-muted/45 p-4">
+                <div className="text-sm text-warning-foreground">
+                  No active cashier session. Open a session to start selling.
+                </div>
+                <button
+                  onClick={() => setShowOpenDialog(true)}
+                  className="rounded-md bg-warning px-4 py-2 text-sm font-medium text-warning-foreground transition hover:opacity-90"
+                >
+                  Open Session
+                </button>
+              </div>
+            )}
+            {!sessionLoading && session && (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => setShowCloseDialog(true)}
+                  className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
+                >
+                  Close cashier session
+                </button>
+              </div>
+            )}
             {/* <POSCashier user={user} /> */}
           </div>
         </div>
@@ -769,13 +715,6 @@ export default function POSPage() {
           }}
         />
       )}
-
-      <SessionStatusCard
-        session={session}
-        isLoading={sessionLoading}
-        onCloseClick={() => setShowCloseDialog(true)}
-        onReconcileClick={() => toast("Reconciliation can only be done by managers", "info")}
-      />
     </div>
   );
 }

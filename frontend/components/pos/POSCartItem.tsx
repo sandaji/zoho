@@ -56,10 +56,10 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
   };
 
   return (
-    <TableRow className="odd:bg-emerald-50/20 even:bg-slate-50/500 border-b border-default hover:bg-slate-50 text-">
+    <TableRow className="odd:bg-muted/25 even:bg-transparent border-b border-border/50 hover:bg-accent/70">
       <TableCell>
         <div>
-          <p className="text-xs text-slate-900 font-bold">{item.sku}</p>
+          <p className="text-xs font-bold text-foreground">{item.sku}</p>
           {/*   <Badge
              variant="success"
             className="mt-1 text-xs bg-green-400/10 px-1 py-1 text-green-400"
@@ -70,7 +70,7 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
       </TableCell>
       <TableCell>
         <div>
-          <p className="font-medium text-slate-900">{item.name}</p>
+          <p className="font-medium text-foreground">{item.name}</p>
         </div>
       </TableCell>
       <TableCell>
@@ -96,9 +96,9 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
               onClick={handleOpenDiscountDialog}
             >
               {item.discount > 0 ? (
-                <span className="text-green-600 font-medium">{item.discount}</span>
+                <span className="font-medium text-success">{item.discount}</span>
               ) : (
-                <span className="text-slate-400">0</span>
+                <span className="text-muted-foreground">0</span>
               )}
             </Button>
           </DialogTrigger>
@@ -152,12 +152,12 @@ export const POSCartItem: React.FC<POSCartItemProps> = ({
           </DialogContent>
         </Dialog>
       </TableCell>
-      <TableCell className="text-center font-medium text-">{(lineTotal)}</TableCell>
+      <TableCell className="text-center font-medium text-foreground">{lineTotal}</TableCell>
       <TableCell className="text-center">
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+          className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
           onClick={() => onRemove(item.productId)}
         >
           <Trash2 className="h-4 w-4" />

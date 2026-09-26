@@ -159,7 +159,7 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminBranchProvider>
-      <div className="flex min-h-full flex-col bg-background">
+      <div className="admin-dashboard flex min-h-full flex-col bg-background">
         {/* ── Page heading strip ──────────────────────────────────────────── */}
         <div className="sticky top-0 z-10 border-b border-border bg-background/95 px-6 py-4 shadow-sm backdrop-blur-sm">
           <div className="flex items-center gap-3">

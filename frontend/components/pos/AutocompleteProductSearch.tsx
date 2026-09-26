@@ -259,11 +259,11 @@ export function AutocompleteProductSearch({
       </div>
 
       {/* Keyboard shortcut hint */}
-      {!query && !isOpen && (
+      {/* {!query && !isOpen && (
         <p className="mt-1 text-xs text-muted-foreground">
           Press <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono">/ </kbd> to focus search
         </p>
-      )}
+      )} */}
 
       {/* Error message */}
       {error && (

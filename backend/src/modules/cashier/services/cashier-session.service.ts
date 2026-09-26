@@ -2,20 +2,9 @@ import { prisma } from '@core/database/db';
 import { AppError, ErrorCode } from '@core/errors/errors';
 import { CashierSessionStatus } from '@/types';
 
-/**
- * CashierSessionService
- * Handles all cashier session management operations including:
- * - Opening and closing sessions
- * - Reconciliation with variance detection
- * - Financial summaries and reporting
- * - Atomic transaction management
- */
 export class CashierSessionService {
   /**
    * STEP 4.1: Open a new cashier session
-   *
-   * Creates a new CashierSession record with opening balance.
-   * Ensures user has no other OPEN sessions in the branch.
    *
    * @param input.userId - User opening the session
    * @param input.branchId - Branch where session is opened

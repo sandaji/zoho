@@ -725,21 +725,26 @@ model CashierSession {
 
 /// Vendors/Suppliers
 model Vendor {
-  id             String          @id @default(cuid())
-  code           String          @unique
-  name           String
-  email          String?
-  phone          String?
-  address        String?
-  taxId          String?         @map("tax_id")
-  website        String?
-  paymentTerms   String          @default("NET_30")
-  leadTimeDays   Int             @default(7)
-  isActive       Boolean         @default(true)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  products       Product[]
-  purchaseOrders PurchaseOrder[]
+  id              String           @id @default(cuid())
+  code            String           @unique
+  name            String
+  email           String?
+  phone           String?
+  address         String?
+  taxId           String?          @map("tax_id")
+  website         String?
+  paymentTerms    String           @default("NET_30")
+  leadTimeDays    Int              @default(7)
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  // Amount currently owed to this vendor across open bills (AccountPayable
+  // rows). Mirrors Customer.currentBalance on the AR side: incremented when
+  // a bill is recorded (receiveGoods), decremented as payments post.
+  currentBalance  Decimal          @default(0.00)
+  products        Product[]
+  purchaseOrders  PurchaseOrder[]
+  accountsPayable AccountPayable[]
 
   @@index([code])
   @@index([name])
@@ -884,18 +889,19 @@ model PurchaseOrderItem {
 
 /// Goods Receipt Note (GRN) - Created when goods are received
 model GoodsReceiptNote {
-  id              String        @id @default(cuid())
-  grnNumber       String        @unique @map("grn_number")
+  id              String          @id @default(cuid())
+  grnNumber       String          @unique @map("grn_number")
   purchaseOrderId String
   receivedById    String
-  status          GRNStatus     @default(COMPLETED)
-  receivedAt      DateTime      @default(now())
+  status          GRNStatus       @default(COMPLETED)
+  receivedAt      DateTime        @default(now())
   notes           String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  purchaseOrder   PurchaseOrder @relation("GRNToPO", fields: [purchaseOrderId], references: [id])
-  receivedBy      User          @relation("ReceivedByGRN", fields: [receivedById], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  purchaseOrder   PurchaseOrder   @relation("GRNToPO", fields: [purchaseOrderId], references: [id])
+  receivedBy      User            @relation("ReceivedByGRN", fields: [receivedById], references: [id])
   items           GRNItem[]
+  accountPayable  AccountPayable?
 
   @@index([grnNumber])
   @@index([purchaseOrderId])
@@ -1357,30 +1363,36 @@ model ARPayment {
   @@map("ar_payments")
 }
 
-/// Accounts Payable
+/// Accounts Payable — one bill per GoodsReceiptNote, created when goods are
+/// received (see PurchasingService.receiveGoods).
 model AccountPayable {
-  id           String      @id @default(cuid())
-  bill_no      String      @unique
+  id           String            @id @default(cuid())
+  bill_no      String            @unique
+  vendorId     String
   vendor_name  String
   vendor_email String?
   vendor_phone String?
   branch_id    String?
+  grnId        String?           @unique
   total_amount Float
-  paid_amount  Float       @default(0)
+  paid_amount  Float             @default(0)
   balance      Float
-  bill_date    DateTime    @default(now())
+  bill_date    DateTime          @default(now())
   due_date     DateTime
   paid_date    DateTime?
-  status       APStatus    @default(outstanding)
-  aging_days   Int         @default(0)
+  status       APStatus          @default(outstanding)
+  aging_days   Int               @default(0)
   notes        String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  branch       Branch?     @relation(fields: [branch_id], references: [id])
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  branch       Branch?           @relation(fields: [branch_id], references: [id])
+  vendor       Vendor            @relation(fields: [vendorId], references: [id])
+  grn          GoodsReceiptNote? @relation(fields: [grnId], references: [id])
   payments     APPayment[]
 
   @@index([bill_no])
   @@index([vendor_name])
+  @@index([vendorId])
   @@index([status])
   @@index([due_date])
   @@index([branch_id])
@@ -2033,6 +2045,7 @@ enum PaymentMethod {
   mpesa
   cheque
   bank_transfer
+  credit
 
   @@map("payment_method")
 }

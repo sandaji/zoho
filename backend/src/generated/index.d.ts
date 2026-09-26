@@ -282,7 +282,8 @@ export type AccountReceivable = $Result.DefaultSelection<Prisma.$AccountReceivab
 export type ARPayment = $Result.DefaultSelection<Prisma.$ARPaymentPayload>
 /**
  * Model AccountPayable
- * Accounts Payable
+ * Accounts Payable — one bill per GoodsReceiptNote, created when goods are
+ * received (see PurchasingService.receiveGoods).
  */
 export type AccountPayable = $Result.DefaultSelection<Prisma.$AccountPayablePayload>
 /**
@@ -553,7 +554,8 @@ export const PaymentMethod: {
   card: 'card',
   mpesa: 'mpesa',
   cheque: 'cheque',
-  bank_transfer: 'bank_transfer'
+  bank_transfer: 'bank_transfer',
+  credit: 'credit'
 };
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
@@ -10097,11 +10099,13 @@ export namespace Prisma {
   export type VendorCountOutputType = {
     products: number
     purchaseOrders: number
+    accountsPayable: number
   }
 
   export type VendorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | VendorCountOutputTypeCountProductsArgs
     purchaseOrders?: boolean | VendorCountOutputTypeCountPurchaseOrdersArgs
+    accountsPayable?: boolean | VendorCountOutputTypeCountAccountsPayableArgs
   }
 
   // Custom InputTypes
@@ -10127,6 +10131,13 @@ export namespace Prisma {
    */
   export type VendorCountOutputTypeCountPurchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PurchaseOrderWhereInput
+  }
+
+  /**
+   * VendorCountOutputType without action
+   */
+  export type VendorCountOutputTypeCountAccountsPayableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AccountPayableWhereInput
   }
 
 
@@ -45175,10 +45186,12 @@ export namespace Prisma {
 
   export type VendorAvgAggregateOutputType = {
     leadTimeDays: number | null
+    currentBalance: Decimal | null
   }
 
   export type VendorSumAggregateOutputType = {
     leadTimeDays: number | null
+    currentBalance: Decimal | null
   }
 
   export type VendorMinAggregateOutputType = {
@@ -45195,6 +45208,7 @@ export namespace Prisma {
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    currentBalance: Decimal | null
   }
 
   export type VendorMaxAggregateOutputType = {
@@ -45211,6 +45225,7 @@ export namespace Prisma {
     isActive: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    currentBalance: Decimal | null
   }
 
   export type VendorCountAggregateOutputType = {
@@ -45227,16 +45242,19 @@ export namespace Prisma {
     isActive: number
     createdAt: number
     updatedAt: number
+    currentBalance: number
     _all: number
   }
 
 
   export type VendorAvgAggregateInputType = {
     leadTimeDays?: true
+    currentBalance?: true
   }
 
   export type VendorSumAggregateInputType = {
     leadTimeDays?: true
+    currentBalance?: true
   }
 
   export type VendorMinAggregateInputType = {
@@ -45253,6 +45271,7 @@ export namespace Prisma {
     isActive?: true
     createdAt?: true
     updatedAt?: true
+    currentBalance?: true
   }
 
   export type VendorMaxAggregateInputType = {
@@ -45269,6 +45288,7 @@ export namespace Prisma {
     isActive?: true
     createdAt?: true
     updatedAt?: true
+    currentBalance?: true
   }
 
   export type VendorCountAggregateInputType = {
@@ -45285,6 +45305,7 @@ export namespace Prisma {
     isActive?: true
     createdAt?: true
     updatedAt?: true
+    currentBalance?: true
     _all?: true
   }
 
@@ -45388,6 +45409,7 @@ export namespace Prisma {
     isActive: boolean
     createdAt: Date
     updatedAt: Date
+    currentBalance: Decimal
     _count: VendorCountAggregateOutputType | null
     _avg: VendorAvgAggregateOutputType | null
     _sum: VendorSumAggregateOutputType | null
@@ -45423,8 +45445,10 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentBalance?: boolean
     products?: boolean | Vendor$productsArgs<ExtArgs>
     purchaseOrders?: boolean | Vendor$purchaseOrdersArgs<ExtArgs>
+    accountsPayable?: boolean | Vendor$accountsPayableArgs<ExtArgs>
     _count?: boolean | VendorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["vendor"]>
 
@@ -45442,6 +45466,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentBalance?: boolean
   }, ExtArgs["result"]["vendor"]>
 
   export type VendorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -45458,6 +45483,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentBalance?: boolean
   }, ExtArgs["result"]["vendor"]>
 
   export type VendorSelectScalar = {
@@ -45474,12 +45500,14 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    currentBalance?: boolean
   }
 
-  export type VendorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "email" | "phone" | "address" | "taxId" | "website" | "paymentTerms" | "leadTimeDays" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["vendor"]>
+  export type VendorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "email" | "phone" | "address" | "taxId" | "website" | "paymentTerms" | "leadTimeDays" | "isActive" | "createdAt" | "updatedAt" | "currentBalance", ExtArgs["result"]["vendor"]>
   export type VendorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     products?: boolean | Vendor$productsArgs<ExtArgs>
     purchaseOrders?: boolean | Vendor$purchaseOrdersArgs<ExtArgs>
+    accountsPayable?: boolean | Vendor$accountsPayableArgs<ExtArgs>
     _count?: boolean | VendorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type VendorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -45490,6 +45518,7 @@ export namespace Prisma {
     objects: {
       products: Prisma.$ProductPayload<ExtArgs>[]
       purchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
+      accountsPayable: Prisma.$AccountPayablePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -45505,6 +45534,7 @@ export namespace Prisma {
       isActive: boolean
       createdAt: Date
       updatedAt: Date
+      currentBalance: Prisma.Decimal
     }, ExtArgs["result"]["vendor"]>
     composites: {}
   }
@@ -45901,6 +45931,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     products<T extends Vendor$productsArgs<ExtArgs> = {}>(args?: Subset<T, Vendor$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     purchaseOrders<T extends Vendor$purchaseOrdersArgs<ExtArgs> = {}>(args?: Subset<T, Vendor$purchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accountsPayable<T extends Vendor$accountsPayableArgs<ExtArgs> = {}>(args?: Subset<T, Vendor$accountsPayableArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayablePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -45943,6 +45974,7 @@ export namespace Prisma {
     readonly isActive: FieldRef<"Vendor", 'Boolean'>
     readonly createdAt: FieldRef<"Vendor", 'DateTime'>
     readonly updatedAt: FieldRef<"Vendor", 'DateTime'>
+    readonly currentBalance: FieldRef<"Vendor", 'Decimal'>
   }
     
 
@@ -46381,6 +46413,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PurchaseOrderScalarFieldEnum | PurchaseOrderScalarFieldEnum[]
+  }
+
+  /**
+   * Vendor.accountsPayable
+   */
+  export type Vendor$accountsPayableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountPayable
+     */
+    select?: AccountPayableSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountPayable
+     */
+    omit?: AccountPayableOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountPayableInclude<ExtArgs> | null
+    where?: AccountPayableWhereInput
+    orderBy?: AccountPayableOrderByWithRelationInput | AccountPayableOrderByWithRelationInput[]
+    cursor?: AccountPayableWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AccountPayableScalarFieldEnum | AccountPayableScalarFieldEnum[]
   }
 
   /**
@@ -52972,6 +53028,7 @@ export namespace Prisma {
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
     receivedBy?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | GoodsReceiptNote$itemsArgs<ExtArgs>
+    accountPayable?: boolean | GoodsReceiptNote$accountPayableArgs<ExtArgs>
     _count?: boolean | GoodsReceiptNoteCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["goodsReceiptNote"]>
 
@@ -53020,6 +53077,7 @@ export namespace Prisma {
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
     receivedBy?: boolean | UserDefaultArgs<ExtArgs>
     items?: boolean | GoodsReceiptNote$itemsArgs<ExtArgs>
+    accountPayable?: boolean | GoodsReceiptNote$accountPayableArgs<ExtArgs>
     _count?: boolean | GoodsReceiptNoteCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GoodsReceiptNoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -53037,6 +53095,7 @@ export namespace Prisma {
       purchaseOrder: Prisma.$PurchaseOrderPayload<ExtArgs>
       receivedBy: Prisma.$UserPayload<ExtArgs>
       items: Prisma.$GRNItemPayload<ExtArgs>[]
+      accountPayable: Prisma.$AccountPayablePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -53445,6 +53504,7 @@ export namespace Prisma {
     purchaseOrder<T extends PurchaseOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrderDefaultArgs<ExtArgs>>): Prisma__PurchaseOrderClient<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     receivedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     items<T extends GoodsReceiptNote$itemsArgs<ExtArgs> = {}>(args?: Subset<T, GoodsReceiptNote$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GRNItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    accountPayable<T extends GoodsReceiptNote$accountPayableArgs<ExtArgs> = {}>(args?: Subset<T, GoodsReceiptNote$accountPayableArgs<ExtArgs>>): Prisma__AccountPayableClient<$Result.GetResult<Prisma.$AccountPayablePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -53905,6 +53965,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GRNItemScalarFieldEnum | GRNItemScalarFieldEnum[]
+  }
+
+  /**
+   * GoodsReceiptNote.accountPayable
+   */
+  export type GoodsReceiptNote$accountPayableArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AccountPayable
+     */
+    select?: AccountPayableSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AccountPayable
+     */
+    omit?: AccountPayableOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountPayableInclude<ExtArgs> | null
+    where?: AccountPayableWhereInput
   }
 
   /**
@@ -78198,10 +78277,12 @@ export namespace Prisma {
   export type AccountPayableMinAggregateOutputType = {
     id: string | null
     bill_no: string | null
+    vendorId: string | null
     vendor_name: string | null
     vendor_email: string | null
     vendor_phone: string | null
     branch_id: string | null
+    grnId: string | null
     total_amount: number | null
     paid_amount: number | null
     balance: number | null
@@ -78218,10 +78299,12 @@ export namespace Prisma {
   export type AccountPayableMaxAggregateOutputType = {
     id: string | null
     bill_no: string | null
+    vendorId: string | null
     vendor_name: string | null
     vendor_email: string | null
     vendor_phone: string | null
     branch_id: string | null
+    grnId: string | null
     total_amount: number | null
     paid_amount: number | null
     balance: number | null
@@ -78238,10 +78321,12 @@ export namespace Prisma {
   export type AccountPayableCountAggregateOutputType = {
     id: number
     bill_no: number
+    vendorId: number
     vendor_name: number
     vendor_email: number
     vendor_phone: number
     branch_id: number
+    grnId: number
     total_amount: number
     paid_amount: number
     balance: number
@@ -78274,10 +78359,12 @@ export namespace Prisma {
   export type AccountPayableMinAggregateInputType = {
     id?: true
     bill_no?: true
+    vendorId?: true
     vendor_name?: true
     vendor_email?: true
     vendor_phone?: true
     branch_id?: true
+    grnId?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -78294,10 +78381,12 @@ export namespace Prisma {
   export type AccountPayableMaxAggregateInputType = {
     id?: true
     bill_no?: true
+    vendorId?: true
     vendor_name?: true
     vendor_email?: true
     vendor_phone?: true
     branch_id?: true
+    grnId?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -78314,10 +78403,12 @@ export namespace Prisma {
   export type AccountPayableCountAggregateInputType = {
     id?: true
     bill_no?: true
+    vendorId?: true
     vendor_name?: true
     vendor_email?: true
     vendor_phone?: true
     branch_id?: true
+    grnId?: true
     total_amount?: true
     paid_amount?: true
     balance?: true
@@ -78421,10 +78512,12 @@ export namespace Prisma {
   export type AccountPayableGroupByOutputType = {
     id: string
     bill_no: string
+    vendorId: string
     vendor_name: string
     vendor_email: string | null
     vendor_phone: string | null
     branch_id: string | null
+    grnId: string | null
     total_amount: number
     paid_amount: number
     balance: number
@@ -78460,10 +78553,12 @@ export namespace Prisma {
   export type AccountPayableSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     bill_no?: boolean
+    vendorId?: boolean
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
     branch_id?: boolean
+    grnId?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78476,6 +78571,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+    vendor?: boolean | VendorDefaultArgs<ExtArgs>
+    grn?: boolean | AccountPayable$grnArgs<ExtArgs>
     payments?: boolean | AccountPayable$paymentsArgs<ExtArgs>
     _count?: boolean | AccountPayableCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["accountPayable"]>
@@ -78483,10 +78580,12 @@ export namespace Prisma {
   export type AccountPayableSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     bill_no?: boolean
+    vendorId?: boolean
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
     branch_id?: boolean
+    grnId?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78499,15 +78598,19 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+    vendor?: boolean | VendorDefaultArgs<ExtArgs>
+    grn?: boolean | AccountPayable$grnArgs<ExtArgs>
   }, ExtArgs["result"]["accountPayable"]>
 
   export type AccountPayableSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     bill_no?: boolean
+    vendorId?: boolean
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
     branch_id?: boolean
+    grnId?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78520,15 +78623,19 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+    vendor?: boolean | VendorDefaultArgs<ExtArgs>
+    grn?: boolean | AccountPayable$grnArgs<ExtArgs>
   }, ExtArgs["result"]["accountPayable"]>
 
   export type AccountPayableSelectScalar = {
     id?: boolean
     bill_no?: boolean
+    vendorId?: boolean
     vendor_name?: boolean
     vendor_email?: boolean
     vendor_phone?: boolean
     branch_id?: boolean
+    grnId?: boolean
     total_amount?: boolean
     paid_amount?: boolean
     balance?: boolean
@@ -78542,32 +78649,42 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type AccountPayableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bill_no" | "vendor_name" | "vendor_email" | "vendor_phone" | "branch_id" | "total_amount" | "paid_amount" | "balance" | "bill_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountPayable"]>
+  export type AccountPayableOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "bill_no" | "vendorId" | "vendor_name" | "vendor_email" | "vendor_phone" | "branch_id" | "grnId" | "total_amount" | "paid_amount" | "balance" | "bill_date" | "due_date" | "paid_date" | "status" | "aging_days" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["accountPayable"]>
   export type AccountPayableInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+    vendor?: boolean | VendorDefaultArgs<ExtArgs>
+    grn?: boolean | AccountPayable$grnArgs<ExtArgs>
     payments?: boolean | AccountPayable$paymentsArgs<ExtArgs>
     _count?: boolean | AccountPayableCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AccountPayableIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+    vendor?: boolean | VendorDefaultArgs<ExtArgs>
+    grn?: boolean | AccountPayable$grnArgs<ExtArgs>
   }
   export type AccountPayableIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     branch?: boolean | AccountPayable$branchArgs<ExtArgs>
+    vendor?: boolean | VendorDefaultArgs<ExtArgs>
+    grn?: boolean | AccountPayable$grnArgs<ExtArgs>
   }
 
   export type $AccountPayablePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AccountPayable"
     objects: {
       branch: Prisma.$BranchPayload<ExtArgs> | null
+      vendor: Prisma.$VendorPayload<ExtArgs>
+      grn: Prisma.$GoodsReceiptNotePayload<ExtArgs> | null
       payments: Prisma.$APPaymentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       bill_no: string
+      vendorId: string
       vendor_name: string
       vendor_email: string | null
       vendor_phone: string | null
       branch_id: string | null
+      grnId: string | null
       total_amount: number
       paid_amount: number
       balance: number
@@ -78974,6 +79091,8 @@ export namespace Prisma {
   export interface Prisma__AccountPayableClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     branch<T extends AccountPayable$branchArgs<ExtArgs> = {}>(args?: Subset<T, AccountPayable$branchArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    vendor<T extends VendorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, VendorDefaultArgs<ExtArgs>>): Prisma__VendorClient<$Result.GetResult<Prisma.$VendorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    grn<T extends AccountPayable$grnArgs<ExtArgs> = {}>(args?: Subset<T, AccountPayable$grnArgs<ExtArgs>>): Prisma__GoodsReceiptNoteClient<$Result.GetResult<Prisma.$GoodsReceiptNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     payments<T extends AccountPayable$paymentsArgs<ExtArgs> = {}>(args?: Subset<T, AccountPayable$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$APPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -79006,10 +79125,12 @@ export namespace Prisma {
   interface AccountPayableFieldRefs {
     readonly id: FieldRef<"AccountPayable", 'String'>
     readonly bill_no: FieldRef<"AccountPayable", 'String'>
+    readonly vendorId: FieldRef<"AccountPayable", 'String'>
     readonly vendor_name: FieldRef<"AccountPayable", 'String'>
     readonly vendor_email: FieldRef<"AccountPayable", 'String'>
     readonly vendor_phone: FieldRef<"AccountPayable", 'String'>
     readonly branch_id: FieldRef<"AccountPayable", 'String'>
+    readonly grnId: FieldRef<"AccountPayable", 'String'>
     readonly total_amount: FieldRef<"AccountPayable", 'Float'>
     readonly paid_amount: FieldRef<"AccountPayable", 'Float'>
     readonly balance: FieldRef<"AccountPayable", 'Float'>
@@ -79438,6 +79559,25 @@ export namespace Prisma {
      */
     include?: BranchInclude<ExtArgs> | null
     where?: BranchWhereInput
+  }
+
+  /**
+   * AccountPayable.grn
+   */
+  export type AccountPayable$grnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GoodsReceiptNote
+     */
+    select?: GoodsReceiptNoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GoodsReceiptNote
+     */
+    omit?: GoodsReceiptNoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GoodsReceiptNoteInclude<ExtArgs> | null
+    where?: GoodsReceiptNoteWhereInput
   }
 
   /**
@@ -112466,7 +112606,8 @@ export namespace Prisma {
     leadTimeDays: 'leadTimeDays',
     isActive: 'isActive',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    currentBalance: 'currentBalance'
   };
 
   export type VendorScalarFieldEnum = (typeof VendorScalarFieldEnum)[keyof typeof VendorScalarFieldEnum]
@@ -112936,10 +113077,12 @@ export namespace Prisma {
   export const AccountPayableScalarFieldEnum: {
     id: 'id',
     bill_no: 'bill_no',
+    vendorId: 'vendorId',
     vendor_name: 'vendor_name',
     vendor_email: 'vendor_email',
     vendor_phone: 'vendor_phone',
     branch_id: 'branch_id',
+    grnId: 'grnId',
     total_amount: 'total_amount',
     paid_amount: 'paid_amount',
     balance: 'balance',
@@ -116999,8 +117142,10 @@ export namespace Prisma {
     isActive?: BoolFilter<"Vendor"> | boolean
     createdAt?: DateTimeFilter<"Vendor"> | Date | string
     updatedAt?: DateTimeFilter<"Vendor"> | Date | string
+    currentBalance?: DecimalFilter<"Vendor"> | Decimal | DecimalJsLike | number | string
     products?: ProductListRelationFilter
     purchaseOrders?: PurchaseOrderListRelationFilter
+    accountsPayable?: AccountPayableListRelationFilter
   }
 
   export type VendorOrderByWithRelationInput = {
@@ -117017,8 +117162,10 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    currentBalance?: SortOrder
     products?: ProductOrderByRelationAggregateInput
     purchaseOrders?: PurchaseOrderOrderByRelationAggregateInput
+    accountsPayable?: AccountPayableOrderByRelationAggregateInput
   }
 
   export type VendorWhereUniqueInput = Prisma.AtLeast<{
@@ -117038,8 +117185,10 @@ export namespace Prisma {
     isActive?: BoolFilter<"Vendor"> | boolean
     createdAt?: DateTimeFilter<"Vendor"> | Date | string
     updatedAt?: DateTimeFilter<"Vendor"> | Date | string
+    currentBalance?: DecimalFilter<"Vendor"> | Decimal | DecimalJsLike | number | string
     products?: ProductListRelationFilter
     purchaseOrders?: PurchaseOrderListRelationFilter
+    accountsPayable?: AccountPayableListRelationFilter
   }, "id" | "code">
 
   export type VendorOrderByWithAggregationInput = {
@@ -117056,6 +117205,7 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    currentBalance?: SortOrder
     _count?: VendorCountOrderByAggregateInput
     _avg?: VendorAvgOrderByAggregateInput
     _max?: VendorMaxOrderByAggregateInput
@@ -117080,6 +117230,7 @@ export namespace Prisma {
     isActive?: BoolWithAggregatesFilter<"Vendor"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Vendor"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Vendor"> | Date | string
+    currentBalance?: DecimalWithAggregatesFilter<"Vendor"> | Decimal | DecimalJsLike | number | string
   }
 
   export type PurchaseOrderWhereInput = {
@@ -117627,6 +117778,7 @@ export namespace Prisma {
     purchaseOrder?: XOR<PurchaseOrderScalarRelationFilter, PurchaseOrderWhereInput>
     receivedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     items?: GRNItemListRelationFilter
+    accountPayable?: XOR<AccountPayableNullableScalarRelationFilter, AccountPayableWhereInput> | null
   }
 
   export type GoodsReceiptNoteOrderByWithRelationInput = {
@@ -117642,6 +117794,7 @@ export namespace Prisma {
     purchaseOrder?: PurchaseOrderOrderByWithRelationInput
     receivedBy?: UserOrderByWithRelationInput
     items?: GRNItemOrderByRelationAggregateInput
+    accountPayable?: AccountPayableOrderByWithRelationInput
   }
 
   export type GoodsReceiptNoteWhereUniqueInput = Prisma.AtLeast<{
@@ -117660,6 +117813,7 @@ export namespace Prisma {
     purchaseOrder?: XOR<PurchaseOrderScalarRelationFilter, PurchaseOrderWhereInput>
     receivedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
     items?: GRNItemListRelationFilter
+    accountPayable?: XOR<AccountPayableNullableScalarRelationFilter, AccountPayableWhereInput> | null
   }, "id" | "grnNumber">
 
   export type GoodsReceiptNoteOrderByWithAggregationInput = {
@@ -119571,10 +119725,12 @@ export namespace Prisma {
     NOT?: AccountPayableWhereInput | AccountPayableWhereInput[]
     id?: StringFilter<"AccountPayable"> | string
     bill_no?: StringFilter<"AccountPayable"> | string
+    vendorId?: StringFilter<"AccountPayable"> | string
     vendor_name?: StringFilter<"AccountPayable"> | string
     vendor_email?: StringNullableFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableFilter<"AccountPayable"> | string | null
     branch_id?: StringNullableFilter<"AccountPayable"> | string | null
+    grnId?: StringNullableFilter<"AccountPayable"> | string | null
     total_amount?: FloatFilter<"AccountPayable"> | number
     paid_amount?: FloatFilter<"AccountPayable"> | number
     balance?: FloatFilter<"AccountPayable"> | number
@@ -119587,16 +119743,20 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AccountPayable"> | Date | string
     updatedAt?: DateTimeFilter<"AccountPayable"> | Date | string
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    vendor?: XOR<VendorScalarRelationFilter, VendorWhereInput>
+    grn?: XOR<GoodsReceiptNoteNullableScalarRelationFilter, GoodsReceiptNoteWhereInput> | null
     payments?: APPaymentListRelationFilter
   }
 
   export type AccountPayableOrderByWithRelationInput = {
     id?: SortOrder
     bill_no?: SortOrder
+    vendorId?: SortOrder
     vendor_name?: SortOrder
     vendor_email?: SortOrderInput | SortOrder
     vendor_phone?: SortOrderInput | SortOrder
     branch_id?: SortOrderInput | SortOrder
+    grnId?: SortOrderInput | SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -119609,15 +119769,19 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     branch?: BranchOrderByWithRelationInput
+    vendor?: VendorOrderByWithRelationInput
+    grn?: GoodsReceiptNoteOrderByWithRelationInput
     payments?: APPaymentOrderByRelationAggregateInput
   }
 
   export type AccountPayableWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     bill_no?: string
+    grnId?: string
     AND?: AccountPayableWhereInput | AccountPayableWhereInput[]
     OR?: AccountPayableWhereInput[]
     NOT?: AccountPayableWhereInput | AccountPayableWhereInput[]
+    vendorId?: StringFilter<"AccountPayable"> | string
     vendor_name?: StringFilter<"AccountPayable"> | string
     vendor_email?: StringNullableFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableFilter<"AccountPayable"> | string | null
@@ -119634,16 +119798,20 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AccountPayable"> | Date | string
     updatedAt?: DateTimeFilter<"AccountPayable"> | Date | string
     branch?: XOR<BranchNullableScalarRelationFilter, BranchWhereInput> | null
+    vendor?: XOR<VendorScalarRelationFilter, VendorWhereInput>
+    grn?: XOR<GoodsReceiptNoteNullableScalarRelationFilter, GoodsReceiptNoteWhereInput> | null
     payments?: APPaymentListRelationFilter
-  }, "id" | "bill_no">
+  }, "id" | "bill_no" | "grnId">
 
   export type AccountPayableOrderByWithAggregationInput = {
     id?: SortOrder
     bill_no?: SortOrder
+    vendorId?: SortOrder
     vendor_name?: SortOrder
     vendor_email?: SortOrderInput | SortOrder
     vendor_phone?: SortOrderInput | SortOrder
     branch_id?: SortOrderInput | SortOrder
+    grnId?: SortOrderInput | SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -119668,10 +119836,12 @@ export namespace Prisma {
     NOT?: AccountPayableScalarWhereWithAggregatesInput | AccountPayableScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"AccountPayable"> | string
     bill_no?: StringWithAggregatesFilter<"AccountPayable"> | string
+    vendorId?: StringWithAggregatesFilter<"AccountPayable"> | string
     vendor_name?: StringWithAggregatesFilter<"AccountPayable"> | string
     vendor_email?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
     branch_id?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
+    grnId?: StringNullableWithAggregatesFilter<"AccountPayable"> | string | null
     total_amount?: FloatWithAggregatesFilter<"AccountPayable"> | number
     paid_amount?: FloatWithAggregatesFilter<"AccountPayable"> | number
     balance?: FloatWithAggregatesFilter<"AccountPayable"> | number
@@ -125062,8 +125232,10 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
     products?: ProductCreateNestedManyWithoutVendorInput
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutVendorInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutVendorInput
   }
 
   export type VendorUncheckedCreateInput = {
@@ -125080,8 +125252,10 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
     products?: ProductUncheckedCreateNestedManyWithoutVendorInput
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutVendorInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutVendorInput
   }
 
   export type VendorUpdateInput = {
@@ -125098,8 +125272,10 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     products?: ProductUpdateManyWithoutVendorNestedInput
     purchaseOrders?: PurchaseOrderUpdateManyWithoutVendorNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutVendorNestedInput
   }
 
   export type VendorUncheckedUpdateInput = {
@@ -125116,8 +125292,10 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     products?: ProductUncheckedUpdateManyWithoutVendorNestedInput
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutVendorNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutVendorNestedInput
   }
 
   export type VendorCreateManyInput = {
@@ -125134,6 +125312,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
   }
 
   export type VendorUpdateManyMutationInput = {
@@ -125150,6 +125329,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type VendorUncheckedUpdateManyInput = {
@@ -125166,6 +125346,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
   }
 
   export type PurchaseOrderCreateInput = {
@@ -125735,6 +125916,7 @@ export namespace Prisma {
     purchaseOrder: PurchaseOrderCreateNestedOneWithoutGrnsInput
     receivedBy: UserCreateNestedOneWithoutReceivedGRNInput
     items?: GRNItemCreateNestedManyWithoutGoodsReceiptNoteInput
+    accountPayable?: AccountPayableCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteUncheckedCreateInput = {
@@ -125748,6 +125930,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: GRNItemUncheckedCreateNestedManyWithoutGoodsReceiptNoteInput
+    accountPayable?: AccountPayableUncheckedCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteUpdateInput = {
@@ -125761,6 +125944,7 @@ export namespace Prisma {
     purchaseOrder?: PurchaseOrderUpdateOneRequiredWithoutGrnsNestedInput
     receivedBy?: UserUpdateOneRequiredWithoutReceivedGRNNestedInput
     items?: GRNItemUpdateManyWithoutGoodsReceiptNoteNestedInput
+    accountPayable?: AccountPayableUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteUncheckedUpdateInput = {
@@ -125774,6 +125958,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteNestedInput
+    accountPayable?: AccountPayableUncheckedUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteCreateManyInput = {
@@ -127920,16 +128105,20 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutAccountsPayableInput
+    vendor: VendorCreateNestedOneWithoutAccountsPayableInput
+    grn?: GoodsReceiptNoteCreateNestedOneWithoutAccountPayableInput
     payments?: APPaymentCreateNestedManyWithoutAccount_payableInput
   }
 
   export type AccountPayableUncheckedCreateInput = {
     id?: string
     bill_no: string
+    vendorId: string
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
     branch_id?: string | null
+    grnId?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -127962,16 +128151,20 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutAccountsPayableNestedInput
+    vendor?: VendorUpdateOneRequiredWithoutAccountsPayableNestedInput
+    grn?: GoodsReceiptNoteUpdateOneWithoutAccountPayableNestedInput
     payments?: APPaymentUpdateManyWithoutAccount_payableNestedInput
   }
 
   export type AccountPayableUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     bill_no?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
     branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -127989,10 +128182,12 @@ export namespace Prisma {
   export type AccountPayableCreateManyInput = {
     id?: string
     bill_no: string
+    vendorId: string
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
     branch_id?: string | null
+    grnId?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -128028,10 +128223,12 @@ export namespace Prisma {
   export type AccountPayableUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     bill_no?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
     branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -133184,10 +133381,12 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    currentBalance?: SortOrder
   }
 
   export type VendorAvgOrderByAggregateInput = {
     leadTimeDays?: SortOrder
+    currentBalance?: SortOrder
   }
 
   export type VendorMaxOrderByAggregateInput = {
@@ -133204,6 +133403,7 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    currentBalance?: SortOrder
   }
 
   export type VendorMinOrderByAggregateInput = {
@@ -133220,10 +133420,12 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    currentBalance?: SortOrder
   }
 
   export type VendorSumOrderByAggregateInput = {
     leadTimeDays?: SortOrder
+    currentBalance?: SortOrder
   }
 
   export type EnumPurchaseOrderStatusFilter<$PrismaModel = never> = {
@@ -133664,6 +133866,11 @@ export namespace Prisma {
     in?: $Enums.GRNStatus[] | ListEnumGRNStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.GRNStatus[] | ListEnumGRNStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumGRNStatusFilter<$PrismaModel> | $Enums.GRNStatus
+  }
+
+  export type AccountPayableNullableScalarRelationFilter = {
+    is?: AccountPayableWhereInput | null
+    isNot?: AccountPayableWhereInput | null
   }
 
   export type GoodsReceiptNoteCountOrderByAggregateInput = {
@@ -135069,6 +135276,11 @@ export namespace Prisma {
     not?: NestedEnumAPStatusFilter<$PrismaModel> | $Enums.APStatus
   }
 
+  export type GoodsReceiptNoteNullableScalarRelationFilter = {
+    is?: GoodsReceiptNoteWhereInput | null
+    isNot?: GoodsReceiptNoteWhereInput | null
+  }
+
   export type APPaymentListRelationFilter = {
     every?: APPaymentWhereInput
     some?: APPaymentWhereInput
@@ -135082,10 +135294,12 @@ export namespace Prisma {
   export type AccountPayableCountOrderByAggregateInput = {
     id?: SortOrder
     bill_no?: SortOrder
+    vendorId?: SortOrder
     vendor_name?: SortOrder
     vendor_email?: SortOrder
     vendor_phone?: SortOrder
     branch_id?: SortOrder
+    grnId?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -135109,10 +135323,12 @@ export namespace Prisma {
   export type AccountPayableMaxOrderByAggregateInput = {
     id?: SortOrder
     bill_no?: SortOrder
+    vendorId?: SortOrder
     vendor_name?: SortOrder
     vendor_email?: SortOrder
     vendor_phone?: SortOrder
     branch_id?: SortOrder
+    grnId?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -135129,10 +135345,12 @@ export namespace Prisma {
   export type AccountPayableMinOrderByAggregateInput = {
     id?: SortOrder
     bill_no?: SortOrder
+    vendorId?: SortOrder
     vendor_name?: SortOrder
     vendor_email?: SortOrder
     vendor_phone?: SortOrder
     branch_id?: SortOrder
+    grnId?: SortOrder
     total_amount?: SortOrder
     paid_amount?: SortOrder
     balance?: SortOrder
@@ -141871,6 +142089,13 @@ export namespace Prisma {
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
   }
 
+  export type AccountPayableCreateNestedManyWithoutVendorInput = {
+    create?: XOR<AccountPayableCreateWithoutVendorInput, AccountPayableUncheckedCreateWithoutVendorInput> | AccountPayableCreateWithoutVendorInput[] | AccountPayableUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutVendorInput | AccountPayableCreateOrConnectWithoutVendorInput[]
+    createMany?: AccountPayableCreateManyVendorInputEnvelope
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+  }
+
   export type ProductUncheckedCreateNestedManyWithoutVendorInput = {
     create?: XOR<ProductCreateWithoutVendorInput, ProductUncheckedCreateWithoutVendorInput> | ProductCreateWithoutVendorInput[] | ProductUncheckedCreateWithoutVendorInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutVendorInput | ProductCreateOrConnectWithoutVendorInput[]
@@ -141883,6 +142108,13 @@ export namespace Prisma {
     connectOrCreate?: PurchaseOrderCreateOrConnectWithoutVendorInput | PurchaseOrderCreateOrConnectWithoutVendorInput[]
     createMany?: PurchaseOrderCreateManyVendorInputEnvelope
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+  }
+
+  export type AccountPayableUncheckedCreateNestedManyWithoutVendorInput = {
+    create?: XOR<AccountPayableCreateWithoutVendorInput, AccountPayableUncheckedCreateWithoutVendorInput> | AccountPayableCreateWithoutVendorInput[] | AccountPayableUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutVendorInput | AccountPayableCreateOrConnectWithoutVendorInput[]
+    createMany?: AccountPayableCreateManyVendorInputEnvelope
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
   }
 
   export type ProductUpdateManyWithoutVendorNestedInput = {
@@ -141913,6 +142145,20 @@ export namespace Prisma {
     deleteMany?: PurchaseOrderScalarWhereInput | PurchaseOrderScalarWhereInput[]
   }
 
+  export type AccountPayableUpdateManyWithoutVendorNestedInput = {
+    create?: XOR<AccountPayableCreateWithoutVendorInput, AccountPayableUncheckedCreateWithoutVendorInput> | AccountPayableCreateWithoutVendorInput[] | AccountPayableUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutVendorInput | AccountPayableCreateOrConnectWithoutVendorInput[]
+    upsert?: AccountPayableUpsertWithWhereUniqueWithoutVendorInput | AccountPayableUpsertWithWhereUniqueWithoutVendorInput[]
+    createMany?: AccountPayableCreateManyVendorInputEnvelope
+    set?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    disconnect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    delete?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    update?: AccountPayableUpdateWithWhereUniqueWithoutVendorInput | AccountPayableUpdateWithWhereUniqueWithoutVendorInput[]
+    updateMany?: AccountPayableUpdateManyWithWhereWithoutVendorInput | AccountPayableUpdateManyWithWhereWithoutVendorInput[]
+    deleteMany?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
+  }
+
   export type ProductUncheckedUpdateManyWithoutVendorNestedInput = {
     create?: XOR<ProductCreateWithoutVendorInput, ProductUncheckedCreateWithoutVendorInput> | ProductCreateWithoutVendorInput[] | ProductUncheckedCreateWithoutVendorInput[]
     connectOrCreate?: ProductCreateOrConnectWithoutVendorInput | ProductCreateOrConnectWithoutVendorInput[]
@@ -141939,6 +142185,20 @@ export namespace Prisma {
     update?: PurchaseOrderUpdateWithWhereUniqueWithoutVendorInput | PurchaseOrderUpdateWithWhereUniqueWithoutVendorInput[]
     updateMany?: PurchaseOrderUpdateManyWithWhereWithoutVendorInput | PurchaseOrderUpdateManyWithWhereWithoutVendorInput[]
     deleteMany?: PurchaseOrderScalarWhereInput | PurchaseOrderScalarWhereInput[]
+  }
+
+  export type AccountPayableUncheckedUpdateManyWithoutVendorNestedInput = {
+    create?: XOR<AccountPayableCreateWithoutVendorInput, AccountPayableUncheckedCreateWithoutVendorInput> | AccountPayableCreateWithoutVendorInput[] | AccountPayableUncheckedCreateWithoutVendorInput[]
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutVendorInput | AccountPayableCreateOrConnectWithoutVendorInput[]
+    upsert?: AccountPayableUpsertWithWhereUniqueWithoutVendorInput | AccountPayableUpsertWithWhereUniqueWithoutVendorInput[]
+    createMany?: AccountPayableCreateManyVendorInputEnvelope
+    set?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    disconnect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    delete?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    connect?: AccountPayableWhereUniqueInput | AccountPayableWhereUniqueInput[]
+    update?: AccountPayableUpdateWithWhereUniqueWithoutVendorInput | AccountPayableUpdateWithWhereUniqueWithoutVendorInput[]
+    updateMany?: AccountPayableUpdateManyWithWhereWithoutVendorInput | AccountPayableUpdateManyWithWhereWithoutVendorInput[]
+    deleteMany?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
   }
 
   export type GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput = {
@@ -142430,11 +142690,23 @@ export namespace Prisma {
     connect?: GRNItemWhereUniqueInput | GRNItemWhereUniqueInput[]
   }
 
+  export type AccountPayableCreateNestedOneWithoutGrnInput = {
+    create?: XOR<AccountPayableCreateWithoutGrnInput, AccountPayableUncheckedCreateWithoutGrnInput>
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutGrnInput
+    connect?: AccountPayableWhereUniqueInput
+  }
+
   export type GRNItemUncheckedCreateNestedManyWithoutGoodsReceiptNoteInput = {
     create?: XOR<GRNItemCreateWithoutGoodsReceiptNoteInput, GRNItemUncheckedCreateWithoutGoodsReceiptNoteInput> | GRNItemCreateWithoutGoodsReceiptNoteInput[] | GRNItemUncheckedCreateWithoutGoodsReceiptNoteInput[]
     connectOrCreate?: GRNItemCreateOrConnectWithoutGoodsReceiptNoteInput | GRNItemCreateOrConnectWithoutGoodsReceiptNoteInput[]
     createMany?: GRNItemCreateManyGoodsReceiptNoteInputEnvelope
     connect?: GRNItemWhereUniqueInput | GRNItemWhereUniqueInput[]
+  }
+
+  export type AccountPayableUncheckedCreateNestedOneWithoutGrnInput = {
+    create?: XOR<AccountPayableCreateWithoutGrnInput, AccountPayableUncheckedCreateWithoutGrnInput>
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutGrnInput
+    connect?: AccountPayableWhereUniqueInput
   }
 
   export type EnumGRNStatusFieldUpdateOperationsInput = {
@@ -142471,6 +142743,16 @@ export namespace Prisma {
     deleteMany?: GRNItemScalarWhereInput | GRNItemScalarWhereInput[]
   }
 
+  export type AccountPayableUpdateOneWithoutGrnNestedInput = {
+    create?: XOR<AccountPayableCreateWithoutGrnInput, AccountPayableUncheckedCreateWithoutGrnInput>
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutGrnInput
+    upsert?: AccountPayableUpsertWithoutGrnInput
+    disconnect?: AccountPayableWhereInput | boolean
+    delete?: AccountPayableWhereInput | boolean
+    connect?: AccountPayableWhereUniqueInput
+    update?: XOR<XOR<AccountPayableUpdateToOneWithWhereWithoutGrnInput, AccountPayableUpdateWithoutGrnInput>, AccountPayableUncheckedUpdateWithoutGrnInput>
+  }
+
   export type GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteNestedInput = {
     create?: XOR<GRNItemCreateWithoutGoodsReceiptNoteInput, GRNItemUncheckedCreateWithoutGoodsReceiptNoteInput> | GRNItemCreateWithoutGoodsReceiptNoteInput[] | GRNItemUncheckedCreateWithoutGoodsReceiptNoteInput[]
     connectOrCreate?: GRNItemCreateOrConnectWithoutGoodsReceiptNoteInput | GRNItemCreateOrConnectWithoutGoodsReceiptNoteInput[]
@@ -142483,6 +142765,16 @@ export namespace Prisma {
     update?: GRNItemUpdateWithWhereUniqueWithoutGoodsReceiptNoteInput | GRNItemUpdateWithWhereUniqueWithoutGoodsReceiptNoteInput[]
     updateMany?: GRNItemUpdateManyWithWhereWithoutGoodsReceiptNoteInput | GRNItemUpdateManyWithWhereWithoutGoodsReceiptNoteInput[]
     deleteMany?: GRNItemScalarWhereInput | GRNItemScalarWhereInput[]
+  }
+
+  export type AccountPayableUncheckedUpdateOneWithoutGrnNestedInput = {
+    create?: XOR<AccountPayableCreateWithoutGrnInput, AccountPayableUncheckedCreateWithoutGrnInput>
+    connectOrCreate?: AccountPayableCreateOrConnectWithoutGrnInput
+    upsert?: AccountPayableUpsertWithoutGrnInput
+    disconnect?: AccountPayableWhereInput | boolean
+    delete?: AccountPayableWhereInput | boolean
+    connect?: AccountPayableWhereUniqueInput
+    update?: XOR<XOR<AccountPayableUpdateToOneWithWhereWithoutGrnInput, AccountPayableUpdateWithoutGrnInput>, AccountPayableUncheckedUpdateWithoutGrnInput>
   }
 
   export type GoodsReceiptNoteCreateNestedOneWithoutItemsInput = {
@@ -143735,6 +144027,18 @@ export namespace Prisma {
     connect?: BranchWhereUniqueInput
   }
 
+  export type VendorCreateNestedOneWithoutAccountsPayableInput = {
+    create?: XOR<VendorCreateWithoutAccountsPayableInput, VendorUncheckedCreateWithoutAccountsPayableInput>
+    connectOrCreate?: VendorCreateOrConnectWithoutAccountsPayableInput
+    connect?: VendorWhereUniqueInput
+  }
+
+  export type GoodsReceiptNoteCreateNestedOneWithoutAccountPayableInput = {
+    create?: XOR<GoodsReceiptNoteCreateWithoutAccountPayableInput, GoodsReceiptNoteUncheckedCreateWithoutAccountPayableInput>
+    connectOrCreate?: GoodsReceiptNoteCreateOrConnectWithoutAccountPayableInput
+    connect?: GoodsReceiptNoteWhereUniqueInput
+  }
+
   export type APPaymentCreateNestedManyWithoutAccount_payableInput = {
     create?: XOR<APPaymentCreateWithoutAccount_payableInput, APPaymentUncheckedCreateWithoutAccount_payableInput> | APPaymentCreateWithoutAccount_payableInput[] | APPaymentUncheckedCreateWithoutAccount_payableInput[]
     connectOrCreate?: APPaymentCreateOrConnectWithoutAccount_payableInput | APPaymentCreateOrConnectWithoutAccount_payableInput[]
@@ -143761,6 +144065,24 @@ export namespace Prisma {
     delete?: BranchWhereInput | boolean
     connect?: BranchWhereUniqueInput
     update?: XOR<XOR<BranchUpdateToOneWithWhereWithoutAccountsPayableInput, BranchUpdateWithoutAccountsPayableInput>, BranchUncheckedUpdateWithoutAccountsPayableInput>
+  }
+
+  export type VendorUpdateOneRequiredWithoutAccountsPayableNestedInput = {
+    create?: XOR<VendorCreateWithoutAccountsPayableInput, VendorUncheckedCreateWithoutAccountsPayableInput>
+    connectOrCreate?: VendorCreateOrConnectWithoutAccountsPayableInput
+    upsert?: VendorUpsertWithoutAccountsPayableInput
+    connect?: VendorWhereUniqueInput
+    update?: XOR<XOR<VendorUpdateToOneWithWhereWithoutAccountsPayableInput, VendorUpdateWithoutAccountsPayableInput>, VendorUncheckedUpdateWithoutAccountsPayableInput>
+  }
+
+  export type GoodsReceiptNoteUpdateOneWithoutAccountPayableNestedInput = {
+    create?: XOR<GoodsReceiptNoteCreateWithoutAccountPayableInput, GoodsReceiptNoteUncheckedCreateWithoutAccountPayableInput>
+    connectOrCreate?: GoodsReceiptNoteCreateOrConnectWithoutAccountPayableInput
+    upsert?: GoodsReceiptNoteUpsertWithoutAccountPayableInput
+    disconnect?: GoodsReceiptNoteWhereInput | boolean
+    delete?: GoodsReceiptNoteWhereInput | boolean
+    connect?: GoodsReceiptNoteWhereUniqueInput
+    update?: XOR<XOR<GoodsReceiptNoteUpdateToOneWithWhereWithoutAccountPayableInput, GoodsReceiptNoteUpdateWithoutAccountPayableInput>, GoodsReceiptNoteUncheckedUpdateWithoutAccountPayableInput>
   }
 
   export type APPaymentUpdateManyWithoutAccount_payableNestedInput = {
@@ -146445,6 +146767,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     purchaseOrder: PurchaseOrderCreateNestedOneWithoutGrnsInput
     items?: GRNItemCreateNestedManyWithoutGoodsReceiptNoteInput
+    accountPayable?: AccountPayableCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteUncheckedCreateWithoutReceivedByInput = {
@@ -146457,6 +146780,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: GRNItemUncheckedCreateNestedManyWithoutGoodsReceiptNoteInput
+    accountPayable?: AccountPayableUncheckedCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteCreateOrConnectWithoutReceivedByInput = {
@@ -149671,15 +149995,19 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    vendor: VendorCreateNestedOneWithoutAccountsPayableInput
+    grn?: GoodsReceiptNoteCreateNestedOneWithoutAccountPayableInput
     payments?: APPaymentCreateNestedManyWithoutAccount_payableInput
   }
 
   export type AccountPayableUncheckedCreateWithoutBranchInput = {
     id?: string
     bill_no: string
+    vendorId: string
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
+    grnId?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -150636,10 +150964,12 @@ export namespace Prisma {
     NOT?: AccountPayableScalarWhereInput | AccountPayableScalarWhereInput[]
     id?: StringFilter<"AccountPayable"> | string
     bill_no?: StringFilter<"AccountPayable"> | string
+    vendorId?: StringFilter<"AccountPayable"> | string
     vendor_name?: StringFilter<"AccountPayable"> | string
     vendor_email?: StringNullableFilter<"AccountPayable"> | string | null
     vendor_phone?: StringNullableFilter<"AccountPayable"> | string | null
     branch_id?: StringNullableFilter<"AccountPayable"> | string | null
+    grnId?: StringNullableFilter<"AccountPayable"> | string | null
     total_amount?: FloatFilter<"AccountPayable"> | number
     paid_amount?: FloatFilter<"AccountPayable"> | number
     balance?: FloatFilter<"AccountPayable"> | number
@@ -152208,7 +152538,9 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
     purchaseOrders?: PurchaseOrderCreateNestedManyWithoutVendorInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutVendorInput
   }
 
   export type VendorUncheckedCreateWithoutProductsInput = {
@@ -152225,7 +152557,9 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
     purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutVendorInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutVendorInput
   }
 
   export type VendorCreateOrConnectWithoutProductsInput = {
@@ -152591,7 +152925,9 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     purchaseOrders?: PurchaseOrderUpdateManyWithoutVendorNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutVendorNestedInput
   }
 
   export type VendorUncheckedUpdateWithoutProductsInput = {
@@ -152608,7 +152944,9 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutVendorNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutVendorNestedInput
   }
 
   export type PurchaseOrderItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -162546,6 +162884,60 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AccountPayableCreateWithoutVendorInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutAccountsPayableInput
+    grn?: GoodsReceiptNoteCreateNestedOneWithoutAccountPayableInput
+    payments?: APPaymentCreateNestedManyWithoutAccount_payableInput
+  }
+
+  export type AccountPayableUncheckedCreateWithoutVendorInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    branch_id?: string | null
+    grnId?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: APPaymentUncheckedCreateNestedManyWithoutAccount_payableInput
+  }
+
+  export type AccountPayableCreateOrConnectWithoutVendorInput = {
+    where: AccountPayableWhereUniqueInput
+    create: XOR<AccountPayableCreateWithoutVendorInput, AccountPayableUncheckedCreateWithoutVendorInput>
+  }
+
+  export type AccountPayableCreateManyVendorInputEnvelope = {
+    data: AccountPayableCreateManyVendorInput | AccountPayableCreateManyVendorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ProductUpsertWithWhereUniqueWithoutVendorInput = {
     where: ProductWhereUniqueInput
     update: XOR<ProductUpdateWithoutVendorInput, ProductUncheckedUpdateWithoutVendorInput>
@@ -162611,6 +163003,22 @@ export namespace Prisma {
     data: XOR<PurchaseOrderUpdateManyMutationInput, PurchaseOrderUncheckedUpdateManyWithoutVendorInput>
   }
 
+  export type AccountPayableUpsertWithWhereUniqueWithoutVendorInput = {
+    where: AccountPayableWhereUniqueInput
+    update: XOR<AccountPayableUpdateWithoutVendorInput, AccountPayableUncheckedUpdateWithoutVendorInput>
+    create: XOR<AccountPayableCreateWithoutVendorInput, AccountPayableUncheckedCreateWithoutVendorInput>
+  }
+
+  export type AccountPayableUpdateWithWhereUniqueWithoutVendorInput = {
+    where: AccountPayableWhereUniqueInput
+    data: XOR<AccountPayableUpdateWithoutVendorInput, AccountPayableUncheckedUpdateWithoutVendorInput>
+  }
+
+  export type AccountPayableUpdateManyWithWhereWithoutVendorInput = {
+    where: AccountPayableScalarWhereInput
+    data: XOR<AccountPayableUpdateManyMutationInput, AccountPayableUncheckedUpdateManyWithoutVendorInput>
+  }
+
   export type GoodsReceiptNoteCreateWithoutPurchaseOrderInput = {
     id?: string
     grnNumber: string
@@ -162621,6 +163029,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     receivedBy: UserCreateNestedOneWithoutReceivedGRNInput
     items?: GRNItemCreateNestedManyWithoutGoodsReceiptNoteInput
+    accountPayable?: AccountPayableCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteUncheckedCreateWithoutPurchaseOrderInput = {
@@ -162633,6 +163042,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: GRNItemUncheckedCreateNestedManyWithoutGoodsReceiptNoteInput
+    accountPayable?: AccountPayableUncheckedCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteCreateOrConnectWithoutPurchaseOrderInput = {
@@ -163041,7 +163451,9 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
     products?: ProductCreateNestedManyWithoutVendorInput
+    accountsPayable?: AccountPayableCreateNestedManyWithoutVendorInput
   }
 
   export type VendorUncheckedCreateWithoutPurchaseOrdersInput = {
@@ -163058,7 +163470,9 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
     products?: ProductUncheckedCreateNestedManyWithoutVendorInput
+    accountsPayable?: AccountPayableUncheckedCreateNestedManyWithoutVendorInput
   }
 
   export type VendorCreateOrConnectWithoutPurchaseOrdersInput = {
@@ -163569,7 +163983,9 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     products?: ProductUpdateManyWithoutVendorNestedInput
+    accountsPayable?: AccountPayableUpdateManyWithoutVendorNestedInput
   }
 
   export type VendorUncheckedUpdateWithoutPurchaseOrdersInput = {
@@ -163586,7 +164002,9 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     products?: ProductUncheckedUpdateManyWithoutVendorNestedInput
+    accountsPayable?: AccountPayableUncheckedUpdateManyWithoutVendorNestedInput
   }
 
   export type DepartmentUpsertWithoutPurchaseOrdersInput = {
@@ -165851,6 +166269,55 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type AccountPayableCreateWithoutGrnInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    branch?: BranchCreateNestedOneWithoutAccountsPayableInput
+    vendor: VendorCreateNestedOneWithoutAccountsPayableInput
+    payments?: APPaymentCreateNestedManyWithoutAccount_payableInput
+  }
+
+  export type AccountPayableUncheckedCreateWithoutGrnInput = {
+    id?: string
+    bill_no: string
+    vendorId: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    branch_id?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    payments?: APPaymentUncheckedCreateNestedManyWithoutAccount_payableInput
+  }
+
+  export type AccountPayableCreateOrConnectWithoutGrnInput = {
+    where: AccountPayableWhereUniqueInput
+    create: XOR<AccountPayableCreateWithoutGrnInput, AccountPayableUncheckedCreateWithoutGrnInput>
+  }
+
   export type PurchaseOrderUpsertWithoutGrnsInput = {
     update: XOR<PurchaseOrderUpdateWithoutGrnsInput, PurchaseOrderUncheckedUpdateWithoutGrnsInput>
     create: XOR<PurchaseOrderCreateWithoutGrnsInput, PurchaseOrderUncheckedCreateWithoutGrnsInput>
@@ -166055,6 +166522,61 @@ export namespace Prisma {
     data: XOR<GRNItemUpdateManyMutationInput, GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteInput>
   }
 
+  export type AccountPayableUpsertWithoutGrnInput = {
+    update: XOR<AccountPayableUpdateWithoutGrnInput, AccountPayableUncheckedUpdateWithoutGrnInput>
+    create: XOR<AccountPayableCreateWithoutGrnInput, AccountPayableUncheckedCreateWithoutGrnInput>
+    where?: AccountPayableWhereInput
+  }
+
+  export type AccountPayableUpdateToOneWithWhereWithoutGrnInput = {
+    where?: AccountPayableWhereInput
+    data: XOR<AccountPayableUpdateWithoutGrnInput, AccountPayableUncheckedUpdateWithoutGrnInput>
+  }
+
+  export type AccountPayableUpdateWithoutGrnInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAccountsPayableNestedInput
+    vendor?: VendorUpdateOneRequiredWithoutAccountsPayableNestedInput
+    payments?: APPaymentUpdateManyWithoutAccount_payableNestedInput
+  }
+
+  export type AccountPayableUncheckedUpdateWithoutGrnInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: APPaymentUncheckedUpdateManyWithoutAccount_payableNestedInput
+  }
+
   export type GoodsReceiptNoteCreateWithoutItemsInput = {
     id?: string
     grnNumber: string
@@ -166065,6 +166587,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     purchaseOrder: PurchaseOrderCreateNestedOneWithoutGrnsInput
     receivedBy: UserCreateNestedOneWithoutReceivedGRNInput
+    accountPayable?: AccountPayableCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteUncheckedCreateWithoutItemsInput = {
@@ -166077,6 +166600,7 @@ export namespace Prisma {
     notes?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    accountPayable?: AccountPayableUncheckedCreateNestedOneWithoutGrnInput
   }
 
   export type GoodsReceiptNoteCreateOrConnectWithoutItemsInput = {
@@ -166255,6 +166779,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     purchaseOrder?: PurchaseOrderUpdateOneRequiredWithoutGrnsNestedInput
     receivedBy?: UserUpdateOneRequiredWithoutReceivedGRNNestedInput
+    accountPayable?: AccountPayableUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteUncheckedUpdateWithoutItemsInput = {
@@ -166267,6 +166792,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountPayable?: AccountPayableUncheckedUpdateOneWithoutGrnNestedInput
   }
 
   export type PurchaseOrderItemUpsertWithoutGrnItemsInput = {
@@ -170803,6 +171329,80 @@ export namespace Prisma {
     create: XOR<BranchCreateWithoutAccountsPayableInput, BranchUncheckedCreateWithoutAccountsPayableInput>
   }
 
+  export type VendorCreateWithoutAccountsPayableInput = {
+    id?: string
+    code: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxId?: string | null
+    website?: string | null
+    paymentTerms?: string
+    leadTimeDays?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
+    products?: ProductCreateNestedManyWithoutVendorInput
+    purchaseOrders?: PurchaseOrderCreateNestedManyWithoutVendorInput
+  }
+
+  export type VendorUncheckedCreateWithoutAccountsPayableInput = {
+    id?: string
+    code: string
+    name: string
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    taxId?: string | null
+    website?: string | null
+    paymentTerms?: string
+    leadTimeDays?: number
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    currentBalance?: Decimal | DecimalJsLike | number | string
+    products?: ProductUncheckedCreateNestedManyWithoutVendorInput
+    purchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutVendorInput
+  }
+
+  export type VendorCreateOrConnectWithoutAccountsPayableInput = {
+    where: VendorWhereUniqueInput
+    create: XOR<VendorCreateWithoutAccountsPayableInput, VendorUncheckedCreateWithoutAccountsPayableInput>
+  }
+
+  export type GoodsReceiptNoteCreateWithoutAccountPayableInput = {
+    id?: string
+    grnNumber: string
+    status?: $Enums.GRNStatus
+    receivedAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    purchaseOrder: PurchaseOrderCreateNestedOneWithoutGrnsInput
+    receivedBy: UserCreateNestedOneWithoutReceivedGRNInput
+    items?: GRNItemCreateNestedManyWithoutGoodsReceiptNoteInput
+  }
+
+  export type GoodsReceiptNoteUncheckedCreateWithoutAccountPayableInput = {
+    id?: string
+    grnNumber: string
+    purchaseOrderId: string
+    receivedById: string
+    status?: $Enums.GRNStatus
+    receivedAt?: Date | string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: GRNItemUncheckedCreateNestedManyWithoutGoodsReceiptNoteInput
+  }
+
+  export type GoodsReceiptNoteCreateOrConnectWithoutAccountPayableInput = {
+    where: GoodsReceiptNoteWhereUniqueInput
+    create: XOR<GoodsReceiptNoteCreateWithoutAccountPayableInput, GoodsReceiptNoteUncheckedCreateWithoutAccountPayableInput>
+  }
+
   export type APPaymentCreateWithoutAccount_payableInput = {
     id?: string
     payment_no: string
@@ -170914,6 +171514,92 @@ export namespace Prisma {
     warehouses?: WarehouseUncheckedUpdateManyWithoutBranchNestedInput
   }
 
+  export type VendorUpsertWithoutAccountsPayableInput = {
+    update: XOR<VendorUpdateWithoutAccountsPayableInput, VendorUncheckedUpdateWithoutAccountsPayableInput>
+    create: XOR<VendorCreateWithoutAccountsPayableInput, VendorUncheckedCreateWithoutAccountsPayableInput>
+    where?: VendorWhereInput
+  }
+
+  export type VendorUpdateToOneWithWhereWithoutAccountsPayableInput = {
+    where?: VendorWhereInput
+    data: XOR<VendorUpdateWithoutAccountsPayableInput, VendorUncheckedUpdateWithoutAccountsPayableInput>
+  }
+
+  export type VendorUpdateWithoutAccountsPayableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    leadTimeDays?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    products?: ProductUpdateManyWithoutVendorNestedInput
+    purchaseOrders?: PurchaseOrderUpdateManyWithoutVendorNestedInput
+  }
+
+  export type VendorUncheckedUpdateWithoutAccountsPayableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    taxId?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    leadTimeDays?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    currentBalance?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    products?: ProductUncheckedUpdateManyWithoutVendorNestedInput
+    purchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutVendorNestedInput
+  }
+
+  export type GoodsReceiptNoteUpsertWithoutAccountPayableInput = {
+    update: XOR<GoodsReceiptNoteUpdateWithoutAccountPayableInput, GoodsReceiptNoteUncheckedUpdateWithoutAccountPayableInput>
+    create: XOR<GoodsReceiptNoteCreateWithoutAccountPayableInput, GoodsReceiptNoteUncheckedCreateWithoutAccountPayableInput>
+    where?: GoodsReceiptNoteWhereInput
+  }
+
+  export type GoodsReceiptNoteUpdateToOneWithWhereWithoutAccountPayableInput = {
+    where?: GoodsReceiptNoteWhereInput
+    data: XOR<GoodsReceiptNoteUpdateWithoutAccountPayableInput, GoodsReceiptNoteUncheckedUpdateWithoutAccountPayableInput>
+  }
+
+  export type GoodsReceiptNoteUpdateWithoutAccountPayableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grnNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumGRNStatusFieldUpdateOperationsInput | $Enums.GRNStatus
+    receivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    purchaseOrder?: PurchaseOrderUpdateOneRequiredWithoutGrnsNestedInput
+    receivedBy?: UserUpdateOneRequiredWithoutReceivedGRNNestedInput
+    items?: GRNItemUpdateManyWithoutGoodsReceiptNoteNestedInput
+  }
+
+  export type GoodsReceiptNoteUncheckedUpdateWithoutAccountPayableInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grnNumber?: StringFieldUpdateOperationsInput | string
+    purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    receivedById?: StringFieldUpdateOperationsInput | string
+    status?: EnumGRNStatusFieldUpdateOperationsInput | $Enums.GRNStatus
+    receivedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteNestedInput
+  }
+
   export type APPaymentUpsertWithWhereUniqueWithoutAccount_payableInput = {
     where: APPaymentWhereUniqueInput
     update: XOR<APPaymentUpdateWithoutAccount_payableInput, APPaymentUncheckedUpdateWithoutAccount_payableInput>
@@ -170966,15 +171652,19 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     branch?: BranchCreateNestedOneWithoutAccountsPayableInput
+    vendor: VendorCreateNestedOneWithoutAccountsPayableInput
+    grn?: GoodsReceiptNoteCreateNestedOneWithoutAccountPayableInput
   }
 
   export type AccountPayableUncheckedCreateWithoutPaymentsInput = {
     id?: string
     bill_no: string
+    vendorId: string
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
     branch_id?: string | null
+    grnId?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -171022,15 +171712,19 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     branch?: BranchUpdateOneWithoutAccountsPayableNestedInput
+    vendor?: VendorUpdateOneRequiredWithoutAccountsPayableNestedInput
+    grn?: GoodsReceiptNoteUpdateOneWithoutAccountPayableNestedInput
   }
 
   export type AccountPayableUncheckedUpdateWithoutPaymentsInput = {
     id?: StringFieldUpdateOperationsInput | string
     bill_no?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
     branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -177285,6 +177979,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     purchaseOrder?: PurchaseOrderUpdateOneRequiredWithoutGrnsNestedInput
     items?: GRNItemUpdateManyWithoutGoodsReceiptNoteNestedInput
+    accountPayable?: AccountPayableUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteUncheckedUpdateWithoutReceivedByInput = {
@@ -177297,6 +177992,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteNestedInput
+    accountPayable?: AccountPayableUncheckedUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByInput = {
@@ -179201,9 +179897,11 @@ export namespace Prisma {
   export type AccountPayableCreateManyBranchInput = {
     id?: string
     bill_no: string
+    vendorId: string
     vendor_name: string
     vendor_email?: string | null
     vendor_phone?: string | null
+    grnId?: string | null
     total_amount: number
     paid_amount?: number
     balance: number
@@ -179820,15 +180518,19 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    vendor?: VendorUpdateOneRequiredWithoutAccountsPayableNestedInput
+    grn?: GoodsReceiptNoteUpdateOneWithoutAccountPayableNestedInput
     payments?: APPaymentUpdateManyWithoutAccount_payableNestedInput
   }
 
   export type AccountPayableUncheckedUpdateWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     bill_no?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -179846,9 +180548,11 @@ export namespace Prisma {
   export type AccountPayableUncheckedUpdateManyWithoutBranchInput = {
     id?: StringFieldUpdateOperationsInput | string
     bill_no?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
     vendor_name?: StringFieldUpdateOperationsInput | string
     vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
     vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
     total_amount?: FloatFieldUpdateOperationsInput | number
     paid_amount?: FloatFieldUpdateOperationsInput | number
     balance?: FloatFieldUpdateOperationsInput | number
@@ -182716,6 +183420,27 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type AccountPayableCreateManyVendorInput = {
+    id?: string
+    bill_no: string
+    vendor_name: string
+    vendor_email?: string | null
+    vendor_phone?: string | null
+    branch_id?: string | null
+    grnId?: string | null
+    total_amount: number
+    paid_amount?: number
+    balance: number
+    bill_date?: Date | string
+    due_date: Date | string
+    paid_date?: Date | string | null
+    status?: $Enums.APStatus
+    aging_days?: number
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type ProductUpdateWithoutVendorInput = {
     id?: StringFieldUpdateOperationsInput | string
     sku?: StringFieldUpdateOperationsInput | string
@@ -182898,6 +183623,71 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AccountPayableUpdateWithoutVendorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    branch?: BranchUpdateOneWithoutAccountsPayableNestedInput
+    grn?: GoodsReceiptNoteUpdateOneWithoutAccountPayableNestedInput
+    payments?: APPaymentUpdateManyWithoutAccount_payableNestedInput
+  }
+
+  export type AccountPayableUncheckedUpdateWithoutVendorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    payments?: APPaymentUncheckedUpdateManyWithoutAccount_payableNestedInput
+  }
+
+  export type AccountPayableUncheckedUpdateManyWithoutVendorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    bill_no?: StringFieldUpdateOperationsInput | string
+    vendor_name?: StringFieldUpdateOperationsInput | string
+    vendor_email?: NullableStringFieldUpdateOperationsInput | string | null
+    vendor_phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branch_id?: NullableStringFieldUpdateOperationsInput | string | null
+    grnId?: NullableStringFieldUpdateOperationsInput | string | null
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    paid_amount?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    bill_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    due_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    paid_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumAPStatusFieldUpdateOperationsInput | $Enums.APStatus
+    aging_days?: IntFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type GoodsReceiptNoteCreateManyPurchaseOrderInput = {
     id?: string
     grnNumber: string
@@ -182930,6 +183720,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     receivedBy?: UserUpdateOneRequiredWithoutReceivedGRNNestedInput
     items?: GRNItemUpdateManyWithoutGoodsReceiptNoteNestedInput
+    accountPayable?: AccountPayableUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteUncheckedUpdateWithoutPurchaseOrderInput = {
@@ -182942,6 +183733,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteNestedInput
+    accountPayable?: AccountPayableUncheckedUpdateOneWithoutGrnNestedInput
   }
 
   export type GoodsReceiptNoteUncheckedUpdateManyWithoutPurchaseOrderInput = {

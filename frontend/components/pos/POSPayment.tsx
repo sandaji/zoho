@@ -27,7 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 
-type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
+type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer" | "credit";
 
 interface POSPaymentProps {
   subtotal: number;
@@ -50,6 +50,8 @@ interface POSPaymentProps {
   setNotes: (notes: string) => void;
   docMode?: "SALE" | "DRAFT" | "QUOTE";
   onSaveDocument?: () => void;
+  onConvertDocument?: () => void;
+  canConvertDocument?: boolean;
 }
 
 export const POSPayment: React.FC<POSPaymentProps> = ({
@@ -71,6 +73,8 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   setNotes,
   docMode = "SALE",
   onSaveDocument,
+  onConvertDocument,
+  canConvertDocument = false,
 }) => {
   const paymentMethods = [
     { value: "cash", label: "Cash", icon: Banknote, color: "bg-green-100 text-green-700" },
@@ -83,6 +87,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
       icon: Building2,
       color: "bg-indigo-100 text-indigo-700",
     },
+    { value: "credit", label: "Credit", icon: FileText, color: "bg-amber-100 text-amber-700" },
   ];
 
   const quickAmounts = [
@@ -106,23 +111,23 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           <span className="text-muted-foreground">Subtotal</span>
           <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
         </div>
-        {totalDiscount > 0 && (
+        {canConvertDocument && totalDiscount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Item Discounts</span>
             <span className="font-medium text-success">-{formatCurrency(totalDiscount)}</span>
           </div>
         )}
-        {orderDiscount > 0 && (
+        {canConvertDocument && orderDiscount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Order Discount</span>
             <span className="font-medium text-success">-{formatCurrency(orderDiscount)}</span>
           </div>
         )}
-        <div className="flex justify-between text-sm">
+        {canConvertDocument && <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Tax (16%)</span>
           <span className="font-medium text-foreground">{formatCurrency(tax)}</span>
-        </div>
-        <Separator className="my-2 bg-primary/20" />
+        </div>}
+        {canConvertDocument && <Separator className="my-2 bg-primary/20" />}
         <div className="flex justify-between text-lg font-bold">
           <span className="text-foreground">Total</span>
           <span className="text-2xl text-primary">{formatCurrency(grandTotal)}</span>
@@ -130,7 +135,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
       </div>
 
       {/* Whole-Order Discount — separate from per-item discounts above */}
-      <div className="space-y-2">
+      {canConvertDocument && <div className="space-y-2">
         <Label htmlFor="orderDiscount" className="text-sm font-semibold text-foreground">
           Order Discount (KES)
         </Label>
@@ -144,10 +149,10 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           min="0"
           step="1"
         />
-      </div>
+      </div>}
 
       {/* Payment Method */}
-      <div className="space-y-2">
+      {canConvertDocument && <div className="space-y-2">
         <Label className="text-sm font-semibold text-foreground">Payment Method</Label>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -185,10 +190,10 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      </div>}
 
       {/* Cash Payment Details */}
-      {paymentMethod === "cash" && (
+      {canConvertDocument && paymentMethod === "cash" && docMode === "SALE" && (
         <div className="space-y-3 rounded-xl border border-border/60 bg-muted/35 p-4">
           <div>
             <Label htmlFor="amountTendered" className="text-sm font-semibold text-foreground">
@@ -243,8 +248,16 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
         </div>
       )}
 
+      {canConvertDocument && docMode !== "SALE" && (
+        <div className="space-y-2 rounded-lg border border-border/60 bg-muted/30 p-3">
+          <Label htmlFor="invoiceAmountPaid">Amount received (KES)</Label>
+          <Input id="invoiceAmountPaid" type="number" min="0" step="1" value={amountTendered || ""} onChange={(e) => setAmountTendered(Math.max(0, Number(e.target.value) || 0))} placeholder="0" />
+          <p className="text-xs text-muted-foreground">Outstanding balance and any change are calculated automatically.</p>
+        </div>
+      )}
+
       {/* Notes */}
-      <div>
+      {docMode !== "SALE" && <div>
         <Label htmlFor="notes" className="text-xs text-emerald-700">
           Notes (Optional)
         </Label>
@@ -256,10 +269,11 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           className="mt-1 resize-none border-border/70 bg-background/70"
           rows={2}
         />
-      </div>
+      </div>}
 
       {/* Checkout Button - changes based on document mode */}
       {docMode === "SALE" ? (
+        canConvertDocument ? (
         <Button
           onClick={onCheckout}
           disabled={
@@ -280,7 +294,9 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
             </>
           )}
         </Button>
+        ) : null
       ) : (
+        <>
         <Button
           onClick={onSaveDocument}
           disabled={loading || cartCount === 0}
@@ -299,12 +315,20 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
             </>
           )}
         </Button>
+        {canConvertDocument && (
+          <Button onClick={onConvertDocument} disabled={loading || cartCount === 0} variant="outline" className="w-full h-12">
+            Convert to Invoice
+          </Button>
+        )}
+        </>
       )}
 
       {/* Keyboard Shortcut Hints */}
       <div className="text-xs text-center text-emerald-700 space-y-1">
-        {docMode === "SALE" ? (
-          <p>F9: Complete Sale • F4: Clear Cart • ESC: Focus Search</p>
+        {canConvertDocument ? (
+          <p>F9: Convert to Invoice • F4: Clear Cart • ESC: Focus Search</p>
+        ) : docMode === "SALE" ? (
+          <p>F4: Clear Cart • ESC: Focus Search</p>
         ) : (
           <p>F4: Clear Cart • ESC: Focus Search</p>
         )}
