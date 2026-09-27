@@ -65,7 +65,7 @@ export function DashboardHeader({
               <Button
                 variant="outline"
                 size="sm"
-                className="gap-1.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                className="gap-1.5 border-primary/20 text-primary hover:bg-primary/10"
               >
                 <Calendar className="h-3.5 w-3.5" />
                 <span className="capitalize">{timeRange}</span>
@@ -79,7 +79,7 @@ export function DashboardHeader({
                   onClick={() => onTimeRangeChange(r)}
                   className={cn(
                     "capitalize",
-                    r === timeRange && "bg-emerald-50 font-semibold text-emerald-700"
+                    r === timeRange && "bg-primary/10 font-semibold text-primary"
                   )}
                 >
                   {r.charAt(0).toUpperCase() + r.slice(1)}
@@ -95,7 +95,7 @@ export function DashboardHeader({
             onClick={onRefresh}
             disabled={loading}
             className={cn(
-              "gap-1.5 border-emerald-200 text-emerald-700 hover:bg-emerald-50",
+              "gap-1.5 border-primary/20 text-primary hover:bg-primary/10",
               loading && "opacity-70"
             )}
           >
@@ -106,7 +106,7 @@ export function DashboardHeader({
               </>
             ) : (
               <>
-                <Wifi className="h-3.5 w-3.5 text-emerald-500" />
+                <Wifi className="h-3.5 w-3.5 text-success" />
                 <span className="text-xs">Live</span>
               </>
             )}
@@ -118,7 +118,7 @@ export function DashboardHeader({
               <Button
                 size="sm"
                 disabled={exporting || loading}
-                className="gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700"
+                className="gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90"
               >
                 <Download className="h-3.5 w-3.5" />
                 {exporting ? "Exporting…" : "Export"}

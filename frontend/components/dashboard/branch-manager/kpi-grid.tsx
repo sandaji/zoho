@@ -8,10 +8,10 @@ import { BranchMetrics } from "@/lib/dashboard.service";
 const iconBadge = cva("flex h-10 w-10 items-center justify-center rounded-full", {
   variants: {
     color: {
-      emerald: "bg-emerald-100 text-emerald-700",
-      yellow: "bg-yellow-100 text-yellow-700",
-      teal: "bg-teal-100 text-teal-700",
-      sky: "bg-sky-100 text-sky-700",
+      emerald: "bg-success-muted text-success",
+      yellow: "bg-warning-muted text-warning",
+      teal: "bg-info-muted text-info",
+      sky: "bg-primary/10 text-primary",
     },
   },
   defaultVariants: { color: "emerald" },
@@ -35,7 +35,7 @@ export function KpiGrid({ metrics, loading }: KpiGridProps) {
     return (
       <div className="grid gap-4 md:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-28 animate-pulse rounded-xl bg-emerald-50" />
+          <div key={i} className="h-28 animate-pulse rounded-xl bg-muted" />
         ))}
       </div>
     );

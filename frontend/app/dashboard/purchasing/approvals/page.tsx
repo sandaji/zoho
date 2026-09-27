@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { PendingApprovalsCard } from "@/components/purchasing/pending-approvals";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Lightbulb, ShieldCheck } from "lucide-react";
 
 export default function ApprovalsPage() {
   const { user } = useAuth();
@@ -29,10 +29,17 @@ export default function ApprovalsPage() {
 
   if (!hasPermission) {
     return (
-      <div className="space-y-4">
-        <div>
-          <h1 className="text-3xl font-bold">Purchase Order Approvals</h1>
-          <p className="text-gray-600">Manage pending purchase order approvals</p>
+      <div className="space-y-5">
+        <div className="flex items-start gap-3">
+          <div className="mt-0.5 rounded-md bg-primary/10 p-2 text-primary">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold">Purchase Order Approvals</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Manage pending purchase order approvals
+            </p>
+          </div>
         </div>
 
         <Alert variant="destructive">
@@ -47,12 +54,17 @@ export default function ApprovalsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-3xl font-bold">Purchase Order Approvals</h1>
-        <p className="text-gray-600">
-          Approve or reject pending purchase orders based on your approval level
-        </p>
+    <div className="space-y-5">
+      <div className="flex items-start gap-3">
+        <div className="mt-0.5 rounded-md bg-primary/10 p-2 text-primary">
+          <ShieldCheck className="h-5 w-5" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold">Purchase Order Approvals</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Approve or reject pending purchase orders based on your approval level
+          </p>
+        </div>
       </div>
 
       <div className="grid gap-4">
@@ -62,31 +74,41 @@ export default function ApprovalsPage() {
             <CardTitle>Approval Guidelines</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <h3 className="font-semibold mb-2">Approval Levels:</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <strong>STANDARD</strong> (KSH &lt; 10,000): Requires Branch Manager/Manager
-                  approval
-                </li>
-                <li>
-                  <strong>HIGH_VALUE</strong> (KSH 10,000 - 100,000): Requires Manager/Admin
-                  approval
-                </li>
-                <li>
-                  <strong>EXECUTIVE</strong> (KSH &gt; 100,000): Requires Super Admin/CEO approval
-                </li>
-              </ul>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-md border border-border/70 bg-muted/30 p-3">
+                <span className="inline-flex rounded-sm bg-info-muted px-2 py-1 text-xs font-semibold text-info">
+                  STANDARD
+                </span>
+                <p className="mt-2 text-sm font-medium">Under KSH 10,000</p>
+                <p className="mt-1 text-xs text-muted-foreground">Branch Manager or Manager</p>
+              </div>
+              <div className="rounded-md border border-border/70 bg-muted/30 p-3">
+                <span className="inline-flex rounded-sm bg-warning-muted px-2 py-1 text-xs font-semibold text-foreground">
+                  HIGH VALUE
+                </span>
+                <p className="mt-2 text-sm font-medium">KSH 10,000 - 100,000</p>
+                <p className="mt-1 text-xs text-muted-foreground">Manager or Admin</p>
+              </div>
+              <div className="rounded-md border border-border/70 bg-muted/30 p-3">
+                <span className="inline-flex rounded-sm bg-destructive/10 px-2 py-1 text-xs font-semibold text-destructive">
+                  EXECUTIVE
+                </span>
+                <p className="mt-2 text-sm font-medium">Over KSH 100,000</p>
+                <p className="mt-1 text-xs text-muted-foreground">Super Admin or CEO</p>
+              </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold mb-2">Your Role:</h3>
-              <p className="text-sm text-gray-600">{user?.role || "Unknown"}</p>
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-border/70 pt-3 text-sm">
+              <span className="font-medium">Your role</span>
+              <span className="text-muted-foreground">{user?.role || "Unknown"}</span>
             </div>
 
-            <div className="bg-blue-50 p-3 rounded text-sm">
-              💡 <strong>Tip:</strong> Review the PO details carefully before approving. Once
-              approved, it will move to the next approval level or be marked as APPROVED.
+            <div className="flex items-start gap-2 rounded-md border border-info-border bg-info-muted/50 p-3 text-sm">
+              <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-info" />
+              <p>
+                <strong>Review each order carefully.</strong> Approved orders move to the next
+                approval level or are marked as approved.
+              </p>
             </div>
           </CardContent>
         </Card>

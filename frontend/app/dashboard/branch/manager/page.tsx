@@ -186,7 +186,7 @@ export default function BranchManagerDashboard() {
   if (!token || !user) return null;
 
   return (
-    <div className="min-h-screen bg-emerald-50/30 p-5">
+    <div className="min-h-screen bg-background p-4 sm:p-5">
       <div className="mx-auto max-w-screen-2xl space-y-5">
         {/* ── Row 1: Global Context Bar ──────────────────────────────────── */}
         <DashboardHeader

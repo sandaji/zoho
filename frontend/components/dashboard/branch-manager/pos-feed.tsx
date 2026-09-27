@@ -15,9 +15,9 @@ const statusBadge = cva(
   {
     variants: {
       status: {
-        pending:    "bg-yellow-100 text-yellow-800",
-        processing: "bg-emerald-100 text-emerald-800",
-        ready:      "bg-emerald-600 text-white",
+        pending:    "bg-warning-muted text-warning",
+        processing: "bg-success-muted text-success",
+        ready:      "bg-success text-success-foreground",
       },
     },
     defaultVariants: { status: "pending" },
@@ -64,7 +64,7 @@ export function PosFeed({ orders, loading }: PosFeedProps) {
           <ScrollArea.Root className="h-72 overflow-hidden">
             <ScrollArea.Viewport className="h-full w-full px-4 pb-4">
               {orders.length === 0 ? (
-                <div className="flex h-full items-center justify-center py-12 text-sm text-emerald-400">
+                <div className="flex h-full items-center justify-center py-12 text-sm text-muted-foreground">
                   No active orders
                 </div>
               ) : (
@@ -72,23 +72,23 @@ export function PosFeed({ orders, loading }: PosFeedProps) {
                   {orders.map((order) => (
                     <div
                       key={order.id}
-                      className="flex items-center justify-between rounded-lg border border-emerald-50 bg-emerald-50/40 px-3 py-2.5 transition-colors hover:bg-emerald-50"
+                      className="flex items-center justify-between rounded-lg border border-border/60 bg-muted/30 px-3 py-2.5 transition-colors hover:bg-muted/70"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100">
-                          <ShoppingBag className="h-4 w-4 text-emerald-700" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success-muted">
+                          <ShoppingBag className="h-4 w-4 text-success" />
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-emerald-900">{order.id}</p>
-                          <p className="text-xs text-emerald-600">
+                          <p className="text-sm font-semibold text-foreground">{order.id}</p>
+                          <p className="text-xs text-muted-foreground">
                             {order.customer}
                             {order.items != null && ` · ${order.items} item${order.items !== 1 ? "s" : ""}`} ·{" "}
-                            <span className="text-emerald-400">{order.timeElapsed}m ago</span>
+                            <span>{order.timeElapsed}m ago</span>
                           </p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-emerald-800">
+                        <p className="text-sm font-bold text-foreground">
                           {order.amount != null ? `KES ${order.amount.toLocaleString()}` : "—"}
                         </p>
                         <span
@@ -107,7 +107,7 @@ export function PosFeed({ orders, loading }: PosFeedProps) {
               orientation="vertical"
               className="flex touch-none select-none p-0.5 transition-colors data-[orientation=vertical]:w-2"
             >
-              <ScrollArea.Thumb className="relative flex-1 rounded-full bg-emerald-200" />
+              <ScrollArea.Thumb className="relative flex-1 rounded-full bg-border" />
             </ScrollArea.Scrollbar>
           </ScrollArea.Root>
         )}

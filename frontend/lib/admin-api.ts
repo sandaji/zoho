@@ -350,6 +350,57 @@ export const fetchBranches = async (token: string): Promise<Branch[]> => {
   return data.branches || [];
 };
 
+export interface CreateBranchPayload {
+  code: string;
+  name: string;
+  city: string;
+  address?: string;
+  phone?: string;
+}
+
+export interface UpdateBranchPayload {
+  name?: string;
+  city?: string;
+  address?: string;
+  phone?: string;
+  isActive?: boolean;
+}
+
+export const createBranch = async (
+  token: string,
+  payload: CreateBranchPayload
+): Promise<Branch> => {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/branches`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to create branch");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const updateBranch = async (
+  token: string,
+  branchId: string,
+  payload: UpdateBranchPayload
+): Promise<Branch> => {
+  const response = await fetch(`${API_BASE_URL}/v1/admin/branches/${branchId}`, {
+    method: "PATCH",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || "Failed to update branch");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
 export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/admin/warehouses`, {
     headers: getAuthHeadersWithToken(token),

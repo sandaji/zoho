@@ -16,9 +16,9 @@ const alertBadge = cva(
   {
     variants: {
       level: {
-        critical: "bg-red-100 text-red-700",
-        low:      "bg-yellow-100 text-yellow-800",
-        warning:  "bg-yellow-50 text-yellow-700",
+        critical: "bg-destructive/10 text-destructive",
+        low:      "bg-warning-muted text-warning",
+        warning:  "bg-warning-muted/70 text-warning",
       },
     },
     defaultVariants: { level: "warning" },
@@ -64,14 +64,14 @@ export function AlertsTabs({
                   key={value}
                   value={value}
                   className={cn(
-                    "flex items-center gap-1.5 border-b-2 border-transparent px-3 py-2.5 text-xs font-medium text-emerald-500 transition-colors",
-                    "hover:text-emerald-700",
-                    "data-[state=active]:border-emerald-600 data-[state=active]:text-emerald-900"
+                    "flex items-center gap-1.5 border-b-2 border-transparent px-3 py-2.5 text-xs font-medium text-muted-foreground transition-colors",
+                    "hover:text-foreground",
+                    "data-[state=active]:border-primary data-[state=active]:text-foreground"
                   )}
                 >
                   <Icon className="h-3.5 w-3.5" />
                   {label}
-                  <span className="ml-0.5 rounded-full bg-emerald-100 px-1.5 py-px text-[10px] font-semibold text-emerald-700">
+                  <span className="ml-0.5 rounded-full bg-muted px-1.5 py-px text-[10px] font-semibold text-muted-foreground">
                     {count}
                   </span>
                 </Tabs.Trigger>
@@ -81,17 +81,17 @@ export function AlertsTabs({
             {/* ── Alerts Tab ──────────────────────────────────────────────── */}
             <Tabs.Content value="alerts" className="h-64 overflow-y-auto p-4">
               {lowStockItems.length === 0 ? (
-                <p className="py-8 text-center text-sm text-emerald-400">No alerts</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">No alerts</p>
               ) : (
                 <div className="space-y-2">
                   {lowStockItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between rounded-lg border border-yellow-100 bg-yellow-50/50 px-3 py-2"
+                      className="flex items-center justify-between rounded-lg border border-warning-border/50 bg-warning-muted/40 px-3 py-2"
                     >
                       <div>
-                        <p className="text-sm font-semibold text-emerald-900">{item.name}</p>
-                        <p className="text-xs text-emerald-500">
+                        <p className="text-sm font-semibold text-foreground">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">
                           Stock: {item.currentStock} / min {item.minStock}
                         </p>
                       </div>
@@ -108,22 +108,22 @@ export function AlertsTabs({
             {/* ── Products Tab ─────────────────────────────────────────────── */}
             <Tabs.Content value="products" className="h-64 overflow-y-auto p-4">
               {topProducts.length === 0 ? (
-                <p className="py-8 text-center text-sm text-emerald-400">No product data</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">No product data</p>
               ) : (
                 <div className="space-y-3">
                   {topProducts.map((p) => (
                     <div key={p.id} className="space-y-1">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-medium text-emerald-900">{p.name}</span>
-                        <span className="font-semibold text-emerald-700">
+                        <span className="font-medium text-foreground">{p.name}</span>
+                        <span className="font-semibold text-success">
                           KES {p.revenue.toLocaleString()}
                         </span>
                       </div>
                       <Progress
                         value={p.stockLevel}
-                        className="h-1.5 bg-emerald-100 [&>div]:bg-emerald-500"
+                        className="h-1.5 bg-muted [&>div]:bg-primary"
                       />
-                      <p className="text-[10px] text-emerald-400">
+                      <p className="text-[10px] text-muted-foreground">
                         Stock level: {p.stockLevel}% · {p.category}
                       </p>
                     </div>
@@ -135,18 +135,18 @@ export function AlertsTabs({
             {/* ── Staff Tab ────────────────────────────────────────────────── */}
             <Tabs.Content value="staff" className="h-64 overflow-y-auto p-4">
               {staffPerformance.length === 0 ? (
-                <p className="py-8 text-center text-sm text-emerald-400">No staff data</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">No staff data</p>
               ) : (
                 <div className="space-y-3">
                   {staffPerformance.map((s) => (
                     <div key={s.id} className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                         {s.name.charAt(0).toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <p className="truncate text-sm font-semibold text-emerald-900">{s.name}</p>
-                          <span className="ml-2 shrink-0 text-xs font-semibold text-emerald-700">
+                          <p className="truncate text-sm font-semibold text-foreground">{s.name}</p>
+                          <span className="ml-2 shrink-0 text-xs font-semibold text-success">
                             KES {s.sales.toLocaleString()}
                           </span>
                         </div>
@@ -155,14 +155,14 @@ export function AlertsTabs({
                             <>
                               <Progress
                                 value={s.conversionRate * 100}
-                                className="h-1.5 flex-1 bg-emerald-100 [&>div]:bg-yellow-400"
+                                className="h-1.5 flex-1 bg-muted [&>div]:bg-warning"
                               />
-                              <span className="shrink-0 text-[10px] text-emerald-500">
+                              <span className="shrink-0 text-[10px] text-muted-foreground">
                                 {(s.conversionRate * 100).toFixed(0)}%
                               </span>
                             </>
                           ) : (
-                            <span className="shrink-0 text-[10px] text-emerald-300">
+                            <span className="shrink-0 text-[10px] text-muted-foreground">
                               {s.transactions} order{s.transactions !== 1 ? "s" : ""}
                             </span>
                           )}

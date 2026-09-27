@@ -21,10 +21,15 @@ export const validateFiscalPeriod = (dateFieldName?: string) => {
         where: {
           startDate: { lte: transactionDate },
           endDate: { gte: transactionDate },
+          status: "open",
         },
       });
 
-      if (fiscalPeriod && fiscalPeriod.isLocked) {
+      if (!fiscalPeriod) {
+        return res.status(400).json({ message: 'No open fiscal period found for the specified date' });
+      }
+
+      if (fiscalPeriod.isLocked) {
         return res.status(403).json({ message: 'Cannot post to locked period' });
       }
 

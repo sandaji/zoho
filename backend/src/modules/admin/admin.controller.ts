@@ -118,6 +118,78 @@ export class AdminController {
     }
   }
 
+  /**
+   * Create a new branch. `code` must be unique (it's used as the branch's
+   * document-sequence/reporting key elsewhere in the app).
+   */
+  async createBranch(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { code, name, city, address, phone } = req.body;
+
+      if (!code || !name || !city) {
+        res.status(400).json({
+          success: false,
+          error: "code, name and city are required",
+        });
+        return;
+      }
+
+      const existing = await prisma.branch.findUnique({ where: { code } });
+      if (existing) {
+        res.status(409).json({
+          success: false,
+          error: `A branch with code "${code}" already exists`,
+        });
+        return;
+      }
+
+      const branch = await prisma.branch.create({
+        data: {
+          code,
+          name,
+          city,
+          address: address || null,
+          phone: phone || null,
+        },
+      });
+
+      res.status(201).json({ success: true, data: branch });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Update an existing branch's details, or toggle isActive.
+   */
+  async updateBranch(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.params.id as string;
+      const { name, city, address, phone, isActive } = req.body;
+
+      const existing = await prisma.branch.findUnique({ where: { id } });
+      if (!existing) {
+        res.status(404).json({ success: false, error: "Branch not found" });
+        return;
+      }
+
+      const branch = await prisma.branch.update({
+        where: { id },
+        data: {
+          ...(name !== undefined ? { name } : {}),
+          ...(city !== undefined ? { city } : {}),
+          ...(address !== undefined ? { address } : {}),
+          ...(phone !== undefined ? { phone } : {}),
+          ...(isActive !== undefined ? { isActive } : {}),
+        },
+      });
+
+      res.status(200).json({ success: true, data: branch });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async listWarehouses(req: Request, res: Response, next: NextFunction) {
     try {
       const { branchId } = req.query;

@@ -130,13 +130,13 @@ export function PendingApprovalsCard() {
   const getLevelBadgeColor = (level: string) => {
     switch (level?.toLowerCase()) {
       case "standard":
-        return "bg-blue-100 text-blue-800";
+        return "border-info-border bg-info-muted text-info";
       case "high_value":
-        return "bg-orange-100 text-orange-800";
+        return "border-warning-border bg-warning-muted text-foreground";
       case "executive":
-        return "bg-red-100 text-red-800";
+        return "border-destructive/20 bg-destructive/10 text-destructive";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "border-border bg-muted text-muted-foreground";
     }
   };
 
@@ -144,7 +144,7 @@ export function PendingApprovalsCard() {
     <>
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
+          <div className="flex items-start justify-between gap-3">
             <div>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
@@ -161,8 +161,8 @@ export function PendingApprovalsCard() {
           {isLoading ? (
             <div className="text-center py-8">Loading approvals...</div>
           ) : approvals.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <CheckCircle2 className="mx-auto h-12 w-12 text-green-400 mb-4" />
+            <div className="py-10 text-center text-muted-foreground">
+              <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-success" />
               <p>No pending approvals</p>
             </div>
           ) : (
@@ -170,28 +170,38 @@ export function PendingApprovalsCard() {
               {approvals.map((approval) => (
                 <div
                   key={approval.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
+                  className="flex flex-col gap-4 rounded-md border border-border/70 p-4 transition-colors hover:bg-muted/40 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-medium">{approval.purchaseOrder.poNumber}</h4>
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <h4 className="font-semibold">{approval.purchaseOrder.poNumber}</h4>
                       <Badge className={getLevelBadgeColor(approval.currentLevel)}>
                         {approval.currentLevel?.replace("_", " ").toUpperCase()}
                       </Badge>
                     </div>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p>Vendor: {approval.purchaseOrder.vendor.name}</p>
-                      <p>Amount: KSH {approval.purchaseOrder.totalAmount.toLocaleString()}</p>
-                      <p className="text-xs text-gray-500">
+                    <div className="space-y-1 text-sm text-muted-foreground">
+                      <p>
+                        Vendor:{" "}
+                        <span className="text-foreground">
+                          {approval.purchaseOrder.vendor.name}
+                        </span>
+                      </p>
+                      <p>
+                        Amount:{" "}
+                        <span className="font-medium text-foreground">
+                          KSH {approval.purchaseOrder.totalAmount.toLocaleString()}
+                        </span>
+                      </p>
+                      <p className="text-xs">
                         Submitted: {format(new Date(approval.createdAt), "MMM dd, yyyy HH:mm")}
                       </p>
                     </div>
                   </div>
-                  <div className="ml-4 flex gap-2">
+                  <div className="grid grid-cols-2 gap-2 sm:ml-4 sm:flex sm:shrink-0">
                     <Button
                       onClick={() => openApprovalDialog(approval, "approve")}
                       size="sm"
-                      className="bg-green-600 hover:bg-green-700"
+                      className="bg-success text-success-foreground hover:bg-success/90"
                     >
                       <CheckCircle2 className="mr-2 h-4 w-4" />
                       Approve
@@ -200,7 +210,7 @@ export function PendingApprovalsCard() {
                       onClick={() => openApprovalDialog(approval, "reject")}
                       size="sm"
                       variant="outline"
-                      className="border-red-300 text-red-700 hover:bg-red-50"
+                      className="border-destructive/30 text-destructive hover:bg-destructive/10"
                     >
                       <XCircle className="mr-2 h-4 w-4" />
                       Reject
@@ -226,11 +236,13 @@ export function PendingApprovalsCard() {
           <div className="space-y-4 py-4">
             <div>
               <p className="text-sm font-medium">Vendor:</p>
-              <p className="text-sm text-gray-600">{selectedApproval?.purchaseOrder.vendor.name}</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedApproval?.purchaseOrder.vendor.name}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium">Amount:</p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 KSH {selectedApproval?.purchaseOrder.totalAmount.toLocaleString()}
               </p>
             </div>
@@ -242,7 +254,7 @@ export function PendingApprovalsCard() {
                   value={comments}
                   onChange={(e) => setComments(e.target.value)}
                   placeholder="Add any approval comments..."
-                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   rows={3}
                 />
               </div>
@@ -253,7 +265,7 @@ export function PendingApprovalsCard() {
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   placeholder="Please provide a reason for rejection..."
-                  className="w-full px-3 py-2 border rounded-md text-sm"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   rows={3}
                   required
                 />
@@ -274,8 +286,8 @@ export function PendingApprovalsCard() {
               disabled={isSubmitting || (approvalAction === "reject" && !rejectionReason.trim())}
               className={
                 approvalAction === "approve"
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-red-600 hover:bg-red-700"
+                  ? "bg-success text-success-foreground hover:bg-success/90"
+                  : "bg-destructive text-destructive-foreground hover:bg-destructive/90"
               }
             >
               {isSubmitting ? "Processing..." : approvalAction === "approve" ? "Approve" : "Reject"}

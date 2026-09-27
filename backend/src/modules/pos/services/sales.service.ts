@@ -6,6 +6,7 @@ import {
   PaymentStatus,
   PaymentMethod,
 } from "../../../generated/index.js";
+import type { Prisma } from "../../../generated/index.js";
 import { SequenceService } from "../../sequences/sequence.service";
 import { AccountingService } from "../../finance/services/accounting.service";
 import { BankTreasuryService } from "../../finance/services/bank-treasury.service";
@@ -1273,18 +1274,18 @@ export class SalesService {
     paymentMethod: string;
     reference?: string;
     userId: string;
-  }) {
+  }, transaction?: Prisma.TransactionClient) {
     const { documentId, amount, paymentMethod, reference, userId } = input;
 
-    const document = await prisma.salesDocument.findUnique({
+    const client = transaction || prisma;
+    const document = await client.salesDocument.findUnique({
       where: { id: documentId },
     });
 
     if (!document)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
     // Use transaction: create payment, update document, and update customer balance if any
-    return prisma.$transaction(
-      async (tx) => {
+    const applyPayment = async (tx: Prisma.TransactionClient) => {
         const payment = await tx.payment.create({
           data: {
             salesDocumentId: documentId,
@@ -1333,9 +1334,10 @@ export class SalesService {
         });
 
         return payment;
-      },
-      { timeout: 30000 },
-    );
+    };
+
+    if (transaction) return applyPayment(transaction);
+    return prisma.$transaction(applyPayment, { maxWait: 10000, timeout: 60000 });
   }
 
   // =============================

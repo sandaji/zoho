@@ -131,6 +131,20 @@ router.get(
   (req: Request, res: Response, next: NextFunction) =>
     adminController.listBranches(req, res, next),
 );
+router.post(
+  "/admin/branches",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.createBranch(req, res, next),
+);
+router.patch(
+  "/admin/branches/:id",
+  authMiddleware,
+  requirePermission("admin.branch.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    adminController.updateBranch(req, res, next),
+);
 
 // Warehouses - Allow managers to view
 router.get(

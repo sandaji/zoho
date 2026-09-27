@@ -73,12 +73,10 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis
                   dataKey="date"
-                  className="text-xs text-muted-foreground"
-                  tick={{ fontSize: 11 }}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
                 />
                 <YAxis
-                  className="text-xs text-muted-foreground"
-                  tick={{ fontSize: 11 }}
+                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
                   tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
                 />
                 <Tooltip content={<AreaTooltip />} />
@@ -122,7 +120,9 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
                   formatter={(value: any, name: any) => [`${value}%`, name]}
                   contentStyle={{
                     borderRadius: 8,
-                    border: "1px solid #d1fae5",
+                    border: "1px solid var(--border)",
+                    backgroundColor: "var(--popover)",
+                    color: "var(--popover-foreground)",
                     fontSize: 12,
                   }}
                 />
@@ -138,9 +138,9 @@ export function SalesAnalytics({ salesData, timeRange, loading }: SalesAnalytics
                   className="inline-block h-2.5 w-2.5 rounded-full"
                   style={{ backgroundColor: d.color }}
                 />
-                <span className="text-emerald-700">
+                <span className="text-muted-foreground">
                   {d.name}{" "}
-                  <span className="font-semibold text-emerald-900">{d.value}%</span>
+                  <span className="font-semibold text-foreground">{d.value}%</span>
                 </span>
               </div>
             ))}

@@ -16,6 +16,7 @@ import {
 import { AppError, ErrorCode } from '@core/errors/errors';
 import { AccountingService, DEFAULT_ACCOUNTS } from "./accounting.service";
 import { JournalEntryService } from "./journal-entry.service";
+import { PeriodService } from "./period.service";
 import { SalesService } from "../../pos/services/sales.service";
 
 // A "receivable" is an issued invoice that hasn't been fully paid or voided.
@@ -99,72 +100,66 @@ export class ReceivablesService {
     referenceNo: string;
     userId: string;
   }) {
-    const invoice = await prisma.salesDocument.findUnique({
-      where: { id: data.receivableId },
-    });
+    const entryDate = new Date();
+    // Fail before changing the invoice if accounting has no open period.
+    const period = await PeriodService.getActivePeriod(entryDate);
 
-    if (!invoice || invoice.type !== SalesDocumentType.INVOICE) {
-      throw new AppError(
-        ErrorCode.NOT_FOUND as any,
-        404,
-        "Receivable not found",
+    return prisma.$transaction(async (tx) => {
+      const invoice = await tx.salesDocument.findUnique({
+        where: { id: data.receivableId },
+      });
+      if (!invoice || invoice.type !== SalesDocumentType.INVOICE) {
+        throw new AppError(ErrorCode.NOT_FOUND as any, 404, "Receivable not found");
+      }
+      if (data.amount > invoice.balance) {
+        throw new AppError(ErrorCode.VALIDATION_ERROR as any, 400, "Payment amount exceeds balance");
+      }
+
+      const payment = await SalesService.recordPayment({
+        documentId: data.receivableId,
+        amount: data.amount,
+        paymentMethod: data.paymentMethod,
+        reference: data.referenceNo,
+        userId: data.userId,
+      }, tx);
+
+      const arAccount = await AccountingService.getEnsureAccount(
+        DEFAULT_ACCOUNTS.ACCOUNTS_RECEIVABLE,
+        tx,
       );
-    }
-    if (data.amount > invoice.balance) {
-      throw new AppError(
-        ErrorCode.VALIDATION_ERROR as any,
-        400,
-        "Payment amount exceeds balance",
-      );
-    }
+      let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
+      if (data.paymentMethod === "mpesa") assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
+      else if (data.paymentMethod === "card" || data.paymentMethod === "bank_transfer") {
+        assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
+      }
+      const assetAccount = await AccountingService.getEnsureAccount(assetAccountDef, tx);
 
-    const payment = await SalesService.recordPayment({
-      documentId: data.receivableId,
-      amount: data.amount,
-      paymentMethod: data.paymentMethod,
-      reference: data.referenceNo,
-      userId: data.userId,
-    });
+      await JournalEntryService.createJournalEntry({
+        entryDate,
+        periodId: period.id,
+        branchId: invoice.branchId,
+        description: `AR Payment Collection for Invoice #${invoice.documentId} (${payment.id})`,
+        lines: [
+          {
+            accountId: assetAccount.id,
+            debit: new Prisma.Decimal(data.amount),
+            credit: new Prisma.Decimal(0),
+            description: `Collection via ${data.paymentMethod}`,
+          },
+          {
+            accountId: arAccount.id,
+            debit: new Prisma.Decimal(0),
+            credit: new Prisma.Decimal(data.amount),
+            description: `Clear AR Invoice #${invoice.documentId}`,
+          },
+        ],
+        sourceType: "AR_PAYMENT",
+        sourceId: payment.id,
+        createdBy: data.userId,
+      }, tx);
 
-    // Post to General Ledger: DR Cash (Bank/Mobile Money) / CR Accounts Receivable
-    const arAccount = await AccountingService.getEnsureAccount(
-      DEFAULT_ACCOUNTS.ACCOUNTS_RECEIVABLE,
-    );
-
-    let assetAccountDef = DEFAULT_ACCOUNTS.CASH_ON_HAND;
-    if (data.paymentMethod === "mpesa")
-      assetAccountDef = DEFAULT_ACCOUNTS.MOBILE_MONEY;
-    else if (
-      data.paymentMethod === "card" ||
-      data.paymentMethod === "bank_transfer"
-    )
-      assetAccountDef = DEFAULT_ACCOUNTS.BANK_ACCOUNT;
-
-    const assetAccount = await AccountingService.getEnsureAccount(assetAccountDef);
-
-    await JournalEntryService.createJournalEntry({
-      entryDate: new Date(),
-      description: `AR Payment Collection for Invoice #${invoice.documentId} (${payment.id})`,
-      lines: [
-        {
-          accountId: assetAccount.id,
-          debit: new Prisma.Decimal(data.amount),
-          credit: new Prisma.Decimal(0),
-          description: `Collection via ${data.paymentMethod}`,
-        },
-        {
-          accountId: arAccount.id,
-          debit: new Prisma.Decimal(0),
-          credit: new Prisma.Decimal(data.amount),
-          description: `Clear AR Invoice #${invoice.documentId}`,
-        },
-      ],
-      sourceType: "AR_PAYMENT",
-      sourceId: payment.id,
-      createdBy: data.userId,
-    });
-
-    return payment;
+      return payment;
+    }, { maxWait: 10000, timeout: 60000 });
   }
 
   /**
