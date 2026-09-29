@@ -40,5 +40,5 @@ export function isActivePath(pathname: string | null, href: string): boolean {
     );
   }
   if (path === "/dashboard") return pathname === path;
-  return Boolean(pathname?.startsWith(path));
+  return pathname === path || Boolean(pathname?.startsWith(`${path}/`));
 }

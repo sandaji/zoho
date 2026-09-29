@@ -705,26 +705,28 @@ router.patch(
 router.post(
   "/hr/payroll",
   authMiddleware,
-  requirePermission("hr.payroll.run"),
+  requirePermission("hr.payroll.manage"),
   (req: Request, res: Response, next: NextFunction) =>
     hrController.createPayroll(req, res, next),
 );
 router.get(
   "/hr/payroll/:id",
   authMiddleware,
+  requirePermission("hr.payroll.view"),
   (req: Request, res: Response, next: NextFunction) =>
     hrController.getPayroll(req, res, next),
 );
 router.get(
   "/hr/payroll",
   authMiddleware,
+  requirePermission("hr.payroll.view"),
   (req: Request, res: Response, next: NextFunction) =>
     hrController.listPayroll(req, res, next),
 );
 router.patch(
   "/hr/payroll/:id",
   authMiddleware,
-  requirePermission("hr.payroll.run"),
+  requirePermission("hr.payroll.manage"),
   (req: Request, res: Response, next: NextFunction) =>
     hrController.updatePayroll(req, res, next),
 );
@@ -790,34 +792,35 @@ router.get(
 router.post(
   "/payroll/run",
   authMiddleware,
-  requirePermission("hr.payroll.run"),
+  requirePermission("hr.payroll.manage"),
   (req: Request, res: Response, next: NextFunction) =>
     payrollController.runPayroll(req, res, next),
 );
 router.get(
   "/payroll/:id",
   authMiddleware,
+  requirePermission("hr.payroll.view"),
   (req: Request, res: Response, next: NextFunction) =>
     payrollController.getPayroll(req, res, next),
 );
 router.patch(
   "/payroll/:id/status",
   authMiddleware,
-  requirePermission("hr.payroll.run"),
+  requirePermission("hr.payroll.manage"),
   (req: Request, res: Response, next: NextFunction) =>
     payrollController.updatePayrollStatus(req, res, next),
 );
 router.get(
   "/payroll/reports/summary",
   authMiddleware,
-  requirePermission("hr.payroll.run"),
+  requirePermission("hr.payroll.view"),
   (req: Request, res: Response, next: NextFunction) =>
     payrollController.getPayrollReport(req, res, next),
 );
 router.get(
   "/payroll/analytics/trends",
   authMiddleware,
-  requirePermission("hr.payroll.run"),
+  requirePermission("hr.payroll.view"),
   (req: Request, res: Response, next: NextFunction) =>
     payrollController.getPayrollAnalytics(req, res, next),
 );

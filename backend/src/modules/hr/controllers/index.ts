@@ -126,7 +126,11 @@ export class HrController {
         );
       }
 
-      const result = await this.service.createPayroll(dto);
+      const result = await this.service.createPayroll(dto, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.status(201).json({
         success: true,
@@ -149,7 +153,11 @@ export class HrController {
         throw validationError("ID is required");
       }
 
-      const result = await this.service.getPayroll(id);
+      const result = await this.service.getPayroll(id, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.json({
         success: true,
@@ -166,7 +174,12 @@ export class HrController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const query: PayrollListQueryDTO = req.query as any;
+      const query: PayrollListQueryDTO = {
+        ...(req.query as any),
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        requestUserId: req.user?.userId,
+      };
 
       const result = await this.service.listPayroll(query);
 
@@ -197,7 +210,11 @@ export class HrController {
         throw validationError("ID is required");
       }
 
-      const result = await this.service.updatePayroll(id, dto);
+      const result = await this.service.updatePayroll(id, dto, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.json({
         success: true,

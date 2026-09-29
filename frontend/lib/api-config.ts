@@ -104,6 +104,8 @@ export const API_ENDPOINTS = {
   // Payroll
   PAYROLL: "/v1/payroll",
   PAYROLL_BY_ID: (id: string) => `/v1/payroll/${id}`,
+  HR_PAYROLL: "/v1/hr/payroll",
+  HR_PAYROLL_BY_ID: (id: string) => `/v1/hr/payroll/${id}`,
 
   // Trucks
   TRUCKS: "/v1/trucks",

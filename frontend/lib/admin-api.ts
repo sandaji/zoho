@@ -292,11 +292,21 @@ export interface Payroll {
   payroll_no: string;
   status: PayrollStatus;
   userId: string;
+  base_salary: number;
+  allowances: number;
+  deductions: number;
   user: {
+    id?: string;
     name: string;
     email: string;
+    branchId?: string | null;
+    department?: { name: string } | null;
   };
   net_salary: number;
+  period_start: string;
+  period_end: string;
+  paid_date?: string;
+  notes?: string;
   createdAt: string;
 }
 
@@ -997,21 +1007,88 @@ export const listFinanceTransactions = async (token: string): Promise<FinanceTra
   return data;
 };
 
-export const listPayroll = async (token: string): Promise<Payroll[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll`, {
+export interface PayrollPageResult {
+  records: Payroll[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export const listPayrollPage = async (
+  token: string,
+  filters: { page?: number; limit?: number; status?: string; startDate?: string; endDate?: string } = {},
+): Promise<PayrollPageResult> => {
+  const query = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  const queryString = query.toString();
+  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll${queryString ? `?${queryString}` : ""}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
-    throw new Error("Failed to list payroll");
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error?.message || "Failed to list payroll");
+  }
+  const payload = await response.json();
+  return {
+    records: payload.data || [],
+    total: payload.pagination?.total ?? payload.data?.length ?? 0,
+    page: payload.pagination?.page ?? filters.page ?? 1,
+    limit: payload.pagination?.limit ?? filters.limit ?? 20,
+  };
+};
+
+export const listPayroll = async (
+  token: string,
+  filters: { page?: number; limit?: number; status?: string; startDate?: string; endDate?: string } = {},
+): Promise<Payroll[]> => {
+  return (await listPayrollPage(token, filters)).records;
+};
+
+export const createPayrollRecord = async (
+  token: string,
+  payload: { userId: string; base_salary: number; allowances: number; deductions: number; period_start: string; period_end: string; notes?: string },
+): Promise<Payroll> => {
+  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error?.message || "Failed to create payroll record");
   }
   const { data } = await response.json();
   return data;
 };
 
-export const runPayroll = async (token: string): Promise<any> => {
+export const updatePayrollRecord = async (
+  token: string,
+  id: string,
+  payload: { status?: PayrollStatus; base_salary?: number; allowances?: number; deductions?: number; paid_date?: string; payment_method?: string; notes?: string },
+): Promise<Payroll> => {
+  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll/${id}`, {
+    method: "PATCH",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.error?.message || "Failed to update payroll record");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const runPayroll = async (
+  token: string,
+  payload: { period_start: string; period_end: string; month: number; year: number },
+): Promise<any> => {
   const response = await fetch(`${API_BASE_URL}/v1/payroll/run`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
   });
   if (!response.ok) {
     const errorData = await response.json();

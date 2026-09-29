@@ -59,7 +59,7 @@ function SidebarContentInternal() {
   const pathname = usePathname();
   const { user, logout, switchBranch } = useAuth();
   const { hasAnyPermission, hasPermission } = useHasPermission();
-  const { state, toggleSidebar } = useSidebar();
+  const { state, toggleSidebar, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
 
   // UI State
@@ -192,6 +192,11 @@ function SidebarContentInternal() {
     [allPages, pathname]
   );
 
+  useEffect(() => {
+    const activeModuleId = currentPage?.module?.id;
+    if (activeModuleId) setOpenModule(activeModuleId);
+  }, [currentPage?.module?.id]);
+
   // Track recent pages
   useEffect(() => {
     if (currentPage) {
@@ -277,10 +282,11 @@ function SidebarContentInternal() {
   const navigate = useCallback(
     (href: string) => {
       router.push(href);
+      if (isMobile) setOpenMobile(false);
       setIsPaletteOpen(false);
       setSearchQuery("");
     },
-    [router]
+    [isMobile, router, setOpenMobile]
   );
 
   const handleBranchSwitch = async (branchId: string) => {
@@ -308,18 +314,18 @@ function SidebarContentInternal() {
   return (
     <>
       {/* Sidebar Header */}
-      <SidebarHeader className="border-b border-sidebar-border p-3">
-        <div className="flex items-center justify-between gap-2.5">
+      <SidebarHeader className={cn("border-b border-sidebar-border", isCollapsed ? "items-center p-2" : "p-3")}>
+        <div className={cn("flex", isCollapsed ? "flex-col items-center gap-2" : "items-center justify-between gap-2.5")}>
           <div className="flex min-w-0 items-center gap-2.5">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-bold text-primary-foreground shadow-sm">
               SP
             </div>
             {!isCollapsed && (
               <div className="flex min-w-0 flex-1 flex-col">
-                <span className="truncate text-sm font-bold tracking-tight text-foreground">
+                <span className="truncate text-sm font-bold tracking-tight text-sidebar-foreground">
                   SwiftPos ERP
                 </span>
-                <span className="truncate text-[10px] text-muted-foreground">
+                <span className="truncate text-[10px] text-sidebar-foreground/65">
                   {currentBranch?.name ?? "Enterprise Management"}
                 </span>
               </div>
@@ -344,27 +350,27 @@ function SidebarContentInternal() {
             <DropdownMenu open={switcherOpen} onOpenChange={setSwitcherOpen}>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  className="w-full justify-start text-xs rounded-md border border-sidebar-border/70 bg-sidebar-accent/30 hover:bg-sidebar-accent"
+                  className="h-9 w-full justify-start rounded-md border border-sidebar-border/70 bg-sidebar-accent/30 px-2.5 text-xs text-sidebar-foreground hover:bg-sidebar-accent"
                   disabled={isSwitching}
                 >
-                  <Building2 className="h-3.5 w-3.5 mr-2 text-primary" />
+                  <Building2 className="mr-2 h-3.5 w-3.5 text-sidebar-foreground/80" />
                   <span className="flex-1 truncate text-left font-medium">
                     {isSwitching ? "Switching…" : (currentBranch?.name ?? "All Branches")}
                   </span>
                   <ChevronsUpDown className="ml-1 h-3.5 w-3.5 opacity-50" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuLabel>Switch Branch</DropdownMenuLabel>
+              <DropdownMenuContent align="start" className="max-h-[var(--radix-dropdown-menu-content-available-height)] w-[var(--radix-dropdown-menu-trigger-width)] min-w-56">
+                <DropdownMenuLabel className="px-2.5 py-2 text-xs uppercase tracking-wide text-muted-foreground">Switch Branch</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {switcherBranches.map((branch) => (
                   <DropdownMenuItem
                     key={branch.id}
                     onClick={() => handleBranchSwitch(branch.id)}
-                    className="flex items-center gap-2"
+                    className="min-h-9 gap-2 rounded-md px-2.5"
                   >
                     <Building2 className="h-3.5 w-3.5" />
-                    <span className="flex-1">{branch.name}</span>
+                    <span className="min-w-0 flex-1 truncate">{branch.name}</span>
                     {user.branchId === branch.id && <Check className="h-3.5 w-3.5 text-primary" />}
                   </DropdownMenuItem>
                 ))}
@@ -375,11 +381,11 @@ function SidebarContentInternal() {
       </SidebarHeader>
 
       {/* Search / Command Palette Trigger */}
-      <div className="border-b border-sidebar-border p-3">
+      <div className="border-b border-sidebar-border p-2.5">
         <SidebarMenuButton
           onClick={() => setIsPaletteOpen(true)}
           className={cn(
-            "w-full justify-start rounded-md border border-sidebar-border/70 bg-sidebar-accent/40 text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
+            "h-9 w-full justify-start rounded-md border border-sidebar-border/70 bg-sidebar-accent/40 text-sidebar-foreground/75 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground",
             isCollapsed && "justify-center border-transparent bg-transparent"
           )}
         >
@@ -396,7 +402,7 @@ function SidebarContentInternal() {
       </div>
 
       {/* Navigation Content */}
-      <SidebarContent className="p-2 gap-1 overflow-y-auto">
+      <SidebarContent className={cn("gap-0 overflow-x-hidden", isCollapsed ? "p-0" : "p-1.5")}>
         {/* Group modules by section */}
         {(() => {
           const sections = {
@@ -423,7 +429,7 @@ function SidebarContentInternal() {
             <>
               {/* Favorites Section */}
               {!isCollapsed && favoritePages.length > 0 && (
-                <SidebarGroup>
+                  <SidebarGroup className={isCollapsed ? "p-0" : "p-1"}>
                   <SidebarGroupLabel>Favorites</SidebarGroupLabel>
                   <SidebarMenu>
                     {favoritePages.map((page: any) => (
@@ -454,7 +460,7 @@ function SidebarContentInternal() {
 
               {/* Recent Section */}
               {!isCollapsed && recentPages.length > 0 && (
-                <SidebarGroup>
+                  <SidebarGroup className={isCollapsed ? "p-0" : "p-1"}>
                   <SidebarGroupLabel>Recent</SidebarGroupLabel>
                   <SidebarMenu>
                     {recentPages.slice(0, 3).map((page: any) => (
@@ -482,7 +488,7 @@ function SidebarContentInternal() {
                 if (!sectionModules.length) return null;
 
                 return (
-                  <SidebarGroup key={sectionKey}>
+                  <SidebarGroup key={sectionKey} className={isCollapsed ? "p-0" : "p-1"}>
                     {!isCollapsed && (
                       <SidebarGroupLabel>
                         {sectionLabels[sectionKey as keyof typeof sectionLabels]}
@@ -501,20 +507,28 @@ function SidebarContentInternal() {
                           <SidebarMenuItem key={module.id}>
                             <SidebarMenuButton
                               isActive={isActive}
-                              onClick={() => setOpenModule(isOpen ? null : module.id)}
-                              className="w-full"
+                              onClick={() => {
+                                if (isCollapsed) {
+                                  navigate(module.pages[0].href);
+                                  return;
+                                }
+                                setOpenModule(isOpen ? null : module.id);
+                              }}
+                              tooltip={module.label}
+                              aria-expanded={isCollapsed ? undefined : isOpen}
+                              className="w-full pr-16"
                             >
                               <Icon
                                 className={cn(
                                   "h-4 w-4",
-                                  isActive ? "text-primary" : "text-sidebar-foreground/50"
+                                  isActive ? "text-sidebar-accent-foreground" : "text-sidebar-foreground/60"
                                 )}
                               />
                               {!isCollapsed && (
                                 <>
                                   <span className="flex-1">{module.label}</span>
                                   {module.summary?.(stats) && (
-                                    <Badge variant="secondary" className="text-[10px] font-medium">
+                                      <Badge variant="secondary" className="border-0 bg-sidebar-accent px-1.5 text-[10px] font-medium text-sidebar-foreground">
                                       {module.summary(stats)}
                                     </Badge>
                                   )}
@@ -528,9 +542,15 @@ function SidebarContentInternal() {
                               )}
                             </SidebarMenuButton>
                             {!isCollapsed && (
-                              <SidebarMenuAction onClick={() => pinnedModules.toggle(module.id)}>
+                              <SidebarMenuAction
+                                onClick={() => pinnedModules.toggle(module.id)}
+                                aria-label={`${isPinned ? "Unpin" : "Pin"} ${module.label}`}
+                                title={`${isPinned ? "Unpin" : "Pin"} ${module.label}`}
+                                showOnHover
+                                className="right-0"
+                              >
                                 <Pin
-                                  className={cn("h-3 w-3", isPinned && "fill-current text-primary")}
+                                  className={cn("h-3 w-3", isPinned && "fill-current text-sidebar-accent-foreground")}
                                 />
                               </SidebarMenuAction>
                             )}
@@ -555,8 +575,8 @@ function SidebarContentInternal() {
                                             className={cn(
                                               "h-4 w-4",
                                               isPageActive
-                                                ? "text-primary"
-                                                : "text-sidebar-foreground/50"
+                                                ? "text-sidebar-accent-foreground"
+                                                : "text-sidebar-foreground/60"
                                             )}
                                           />
                                           <span>{page.label}</span>
@@ -565,6 +585,9 @@ function SidebarContentInternal() {
                                       <SidebarMenuAction
                                         onClick={() => favorites.toggle(page.href)}
                                         className={cn(isFavorite && "text-amber-500")}
+                                        aria-label={`${isFavorite ? "Remove" : "Add"} ${page.label} ${isFavorite ? "from" : "to"} favorites`}
+                                        title={`${isFavorite ? "Remove from" : "Add to"} favorites`}
+                                        showOnHover
                                       >
                                         <Star
                                           className={cn("h-3 w-3", isFavorite && "fill-current")}
@@ -588,13 +611,10 @@ function SidebarContentInternal() {
       </SidebarContent>
 
       {/* Sidebar Footer */}
-      <SidebarFooter className="border-t border-sidebar-border p-3">
-        <div className="space-y-3">
-          {/* Actions */}
-          <div className="flex gap-1">
-            <SidebarMenu className="flex flex-row items-center justify-between">
+      <SidebarFooter className="border-t border-sidebar-border p-2">
+        <SidebarMenu className={cn("items-stretch gap-1", isCollapsed ? "flex-col" : "flex-row")}>
               {/* Settings - Left side */}
-              <SidebarMenuItem>
+              <SidebarMenuItem className={!isCollapsed ? "min-w-0 flex-1" : undefined}>
                 <SidebarMenuButton
                   asChild
                   isActive={isActivePath(pathname, "/dashboard/settings")}
@@ -615,7 +635,7 @@ function SidebarContentInternal() {
               </SidebarMenuItem>
 
               {/* Logout - Right side */}
-              <SidebarMenuItem>
+              <SidebarMenuItem className={!isCollapsed ? "min-w-0 flex-1" : undefined}>
                 <SidebarMenuButton
                   onClick={handleLogout}
                   tooltip="Logout"
@@ -625,9 +645,7 @@ function SidebarContentInternal() {
                   {!isCollapsed && <span>Logout</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
-          </div>
-        </div>
+        </SidebarMenu>
       </SidebarFooter>
 
       {/* Command Palette - rendered outside sidebar */}

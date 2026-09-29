@@ -7,12 +7,14 @@ import { Request, Response, NextFunction } from "express";
 import { PayrollService } from "../services/payroll.service";
 import { PayrollRunDTO } from "../dtos";
 import { validationError } from "@core/errors/errors";
+import { HrService } from "../../hr/services";
 
 export class PayrollController {
   private service = new PayrollService();
+  private hrService = new HrService();
 
   /**
-   * Run payroll for employees in a given period
+   * Submit draft payroll records for review in a given period
    */
   async runPayroll(
     req: Request,
@@ -38,16 +40,20 @@ export class PayrollController {
       const startDate = new Date(dto.period_start);
       const endDate = new Date(dto.period_end);
 
-      if (startDate >= endDate) {
-        throw validationError("period_start must be before period_end");
+      if (!Number.isFinite(startDate.getTime()) || !Number.isFinite(endDate.getTime()) || startDate > endDate) {
+        throw validationError("A valid payroll period is required");
       }
 
-      const result = await this.service.runPayroll(dto);
+      const result = await this.service.runPayroll(dto, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.status(201).json({
         success: true,
         data: result,
-        message: `Payroll run completed for ${result.payroll_count} employees`,
+        message: `${result.payroll_count} draft payroll record(s) submitted for review`,
       });
     } catch (error) {
       next(error);
@@ -71,10 +77,11 @@ export class PayrollController {
         );
       }
 
-      const result = await this.service.getPayrollReport(
-        startDate as string,
-        endDate as string,
-      );
+      const result = await this.service.getPayrollReport(startDate as string, endDate as string, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.json({
         success: true,
@@ -102,10 +109,11 @@ export class PayrollController {
         );
       }
 
-      const result = await this.service.getPayrollAnalytics(
-        startDate as string,
-        endDate as string,
-      );
+      const result = await this.service.getPayrollAnalytics(startDate as string, endDate as string, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.json({
         success: true,
@@ -131,7 +139,11 @@ export class PayrollController {
         throw validationError("ID is required");
       }
 
-      const result = await this.service.getPayroll(id);
+      const result = await this.service.getPayroll(id, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.json({
         success: true,
@@ -162,11 +174,11 @@ export class PayrollController {
         throw validationError("status is required");
       }
 
-      const result = await this.service.updatePayrollStatus(
-        id,
-        status,
-        paid_date,
-      );
+      const result = await this.hrService.updatePayroll(id, { status, paid_date, payment_method: req.body.payment_method }, {
+        authorizedBranchIds: req.authorizedBranchIds,
+        onlyOwnedRecords: req.onlyOwnedRecords,
+        userId: req.user?.userId,
+      });
 
       res.json({
         success: true,

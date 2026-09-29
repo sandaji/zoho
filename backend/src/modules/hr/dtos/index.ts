@@ -47,6 +47,7 @@ export interface UpdatePayrollDTO {
   allowances?: number;
   deductions?: number;
   paid_date?: string;
+  payment_method?: string;
   notes?: string;
 }
 
@@ -63,6 +64,13 @@ export interface PayrollResponseDTO {
   period_end: string;
   paid_date?: string;
   notes?: string;
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    branchId?: string | null;
+    department?: { name: string } | null;
+  };
 }
 
 export interface PayrollListQueryDTO {
@@ -72,6 +80,9 @@ export interface PayrollListQueryDTO {
   userId?: string;
   startDate?: string;
   endDate?: string;
+  authorizedBranchIds?: string[];
+  onlyOwnedRecords?: boolean;
+  requestUserId?: string;
 }
 
 export interface PayrollCalculationDTO {

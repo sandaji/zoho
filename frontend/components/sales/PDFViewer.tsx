@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +16,7 @@ import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { useAuth } from "@/lib/auth-context";
 import { useReactToPrint } from "react-to-print";
+import { cn } from "@/lib/utils";
 
 interface PDFViewerProps {
   documentId: string;
@@ -36,32 +37,28 @@ export function PDFViewer({
   const { token } = useAuth();
   const printRef = useRef<HTMLDivElement>(null);
 
-  const fetchHTML = async () => {
+  const fetchHTML = useCallback(async (): Promise<string | null> => {
     setLoading(true);
     try {
       const response = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)), {
         headers: getAuthHeadersWithToken(token || ""),
       });
-      
-      if (!response.ok) {
-        throw new Error("Failed to generate PDF");
-      }
-
+      if (!response.ok) throw new Error("Failed to generate document");
       const html = await response.text();
       setHtmlContent(html);
+      return html;
     } catch (error: any) {
       console.error("Error fetching PDF:", error);
-      toast.error(error.message || "Failed to generate PDF");
+      toast.error(error.message || "Failed to generate document");
+      return null;
     } finally {
       setLoading(false);
     }
-  };
+  }, [documentId, token]);
 
   const handlePreview = async () => {
     setPreviewOpen(true);
-    if (!htmlContent) {
-      await fetchHTML();
-    }
+    if (!htmlContent) await fetchHTML();
   };
 
   const handlePrint = useReactToPrint({
@@ -69,11 +66,13 @@ export function PDFViewer({
     documentTitle: `${documentType}-${documentNumber}`,
     onBeforePrint: async () => {
       if (!htmlContent) {
-        await fetchHTML();
+        const html = await fetchHTML();
+        if (!html) throw new Error("No content to print");
+        await new Promise((r) => setTimeout(r, 50));
       }
     },
-    onPrintError: (error) => {
-      console.error("Print error:", error);
+    onPrintError: (loc, err) => {
+      console.error("Print error:", loc, err);
       toast.error("Failed to print");
     },
   });
@@ -81,33 +80,39 @@ export function PDFViewer({
   const handleDownload = async () => {
     setLoading(true);
     try {
-      // Try to download from backend if we have a PDF endpoint
-      const response = await fetch(getApiUrl(`${API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)}?format=pdf`), {
-        headers: getAuthHeadersWithToken(token || ""),
-      });
+      const response = await fetch(
+        getApiUrl(`${API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)}?format=pdf`),
+        { headers: getAuthHeadersWithToken(token || "") }
+      );
+      const contentType = response.headers.get("content-type") || "";
+      const isRealPdf = response.ok && contentType.includes("application/pdf");
 
-      if (response.ok) {
-        // Download file if backend provides PDF
+      if (isRealPdf) {
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
         a.download = `${documentType}-${documentNumber}.pdf`;
+        document.body.appendChild(a);
         a.click();
+        a.remove();
         URL.revokeObjectURL(url);
         toast.success("PDF downloaded successfully");
-      } else {
-        // Fallback to print dialog for saving as PDF
-        if (!htmlContent) {
-          await fetchHTML();
-        }
-        handlePrint();
+        return;
       }
+
+      if (!htmlContent) {
+        const html = await fetchHTML();
+        if (!html) return;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      handlePrint();
     } catch (error: any) {
       console.error("Error downloading PDF:", error);
-      // Fallback to print
       if (!htmlContent) {
-        await fetchHTML();
+        const html = await fetchHTML();
+        if (!html) return;
+        await new Promise((r) => setTimeout(r, 50));
       }
       handlePrint();
     } finally {
@@ -115,14 +120,22 @@ export function PDFViewer({
     }
   };
 
+  const isStack = layout === "stack";
+
   return (
-    <div className={layout === "stack" ? "flex w-full flex-col gap-2" : "flex flex-wrap gap-2"}>
-      {/* Hidden div for react-to-print */}
-      <div style={{ display: "none" }}>
+    <div
+      className={cn(
+        "flex gap-2",
+        // For row: force single line (no wrap) + center vertically
+        isStack ? "flex-col w-full" : "flex-nowrap items-center"
+      )}
+    >
+      {/* Hidden print target */}
+      <div className="hidden" aria-hidden="true">
         <div ref={printRef} dangerouslySetInnerHTML={{ __html: htmlContent }} />
       </div>
-      
-      {/* Preview Button */}
+
+      {/* Preview */}
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogTrigger asChild>
           <Button
@@ -130,70 +143,61 @@ export function PDFViewer({
             size="sm"
             onClick={handlePreview}
             disabled={loading}
-            className={layout === "stack" ? "w-full justify-start" : undefined}
+            className={cn("shrink-0", isStack && "w-full justify-start")}
           >
-            {loading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Eye className="h-4 w-4" />
-            )}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Eye className="h-4 w-4" />}
             <span className="ml-2">Preview</span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle>
-              {documentType === "quote" ? "Quotation" : "Invoice"} Preview
-            </DialogTitle>
-            <DialogDescription>
-              Document: {documentNumber}
-            </DialogDescription>
+            <DialogTitle>{documentType === "quote" ? "Quotation" : "Invoice"} Preview</DialogTitle>
+            <DialogDescription>Document: {documentNumber}</DialogDescription>
           </DialogHeader>
-          
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          )}
-          
-          {!loading && htmlContent && (
-            <div
-              className="border rounded-lg p-4 bg-white"
-              dangerouslySetInnerHTML={{ __html: htmlContent }}
-            />
-          )}
+
+          <div className="flex-1 overflow-y-auto">
+            {loading && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            )}
+            {!loading && htmlContent && (
+              <div
+                className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white p-4"
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+              />
+            )}
+            {!loading && !htmlContent && (
+              <div className="py-12 text-center text-sm text-muted-foreground">
+                No preview available.
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
 
-      {/* Download Button */}
+      {/* Download */}
       <Button
         variant="outline"
         size="sm"
         onClick={handleDownload}
         disabled={loading}
-        className={layout === "stack" ? "w-full justify-start" : undefined}
+        className={cn("shrink-0", isStack && "w-full justify-start")}
       >
-        {loading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Download className="h-4 w-4" />
-        )}
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
         <span className="ml-2">Download PDF</span>
       </Button>
 
-      {/* Print Button */}
+      {/* Print */}
       <Button
         variant="outline"
         size="sm"
         onClick={handlePrint}
         disabled={loading}
-        className={layout === "stack" ? "w-full justify-start" : undefined}
+        className={cn("shrink-0", isStack && "w-full justify-start")}
       >
-        {loading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Printer className="h-4 w-4" />
-        )}
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Printer className="h-4 w-4" />}
         <span className="ml-2">Print</span>
       </Button>
     </div>

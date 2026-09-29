@@ -158,7 +158,7 @@ class AdminApiClient {
     if (params?.status) queryParams.append("status", params.status);
     if (params?.userId) queryParams.append("userId", params.userId);
 
-    const response = await this.request<Payroll[]>(`/v1/payroll?${queryParams.toString()}`);
+    const response = await this.request<Payroll[]>(`/v1/hr/payroll?${queryParams.toString()}`);
     return response.data || [];
   }
 }

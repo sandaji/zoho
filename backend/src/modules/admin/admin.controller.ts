@@ -431,10 +431,15 @@ export class AdminController {
   async listPayroll(req: Request, res: Response, next: NextFunction) {
     try {
       const { branchId, status } = req.query;
+      const branchFilter = req.authorizedBranchIds?.length
+        ? { in: req.authorizedBranchIds }
+        : branchId
+          ? (branchId as string)
+          : undefined;
       const payrolls = await prisma.payroll.findMany({
         where: {
           ...(status ? { status: status as any } : {}),
-          ...(branchId ? { user: { branchId: branchId as string } } : {}),
+          ...(branchFilter ? { user: { branchId: branchFilter } } : {}),
         },
         include: {
           user: {

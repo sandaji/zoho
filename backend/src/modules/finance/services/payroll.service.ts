@@ -21,10 +21,12 @@ export class PayrollService {
   private prisma = prisma;
 
   /**
-   * Run payroll batch - process all employees for given period
-   * Uses atomic transaction to ensure all-or-nothing processing
+   * Submit draft payroll records for a period for review.
    */
-  async runPayroll(dto: PayrollRunDTO): Promise<PayrollRunResponseDTO> {
+  async runPayroll(
+    dto: PayrollRunDTO,
+    scope: { authorizedBranchIds?: string[]; onlyOwnedRecords?: boolean; userId?: string } = {},
+  ): Promise<PayrollRunResponseDTO> {
     try {
       logger.info(
         {
@@ -38,171 +40,82 @@ export class PayrollService {
       const startDate = new Date(dto.period_start);
       const endDate = new Date(dto.period_end);
 
-      if (startDate >= endDate) {
-        throw validationError("period_start must be before period_end");
+      if (!Number.isFinite(startDate.getTime()) || !Number.isFinite(endDate.getTime()) || startDate > endDate) {
+        throw validationError("A valid payroll period is required");
       }
 
-      if (dto.month < 1 || dto.month > 12) {
-        throw validationError("month must be between 1 and 12");
+      if (!Number.isInteger(dto.month) || dto.month < 1 || dto.month > 12 || !Number.isInteger(dto.year)) {
+        throw validationError("A valid payroll month and year are required");
+      }
+      if (startDate.getUTCFullYear() !== dto.year || startDate.getUTCMonth() + 1 !== dto.month) {
+        throw validationError("The selected month and year must match the payroll period start date");
       }
 
-      // Get all active employees with payroll info
-      const employees = await this.prisma.user.findMany({
-        where: {
-          role: "EMPLOYEE" as any,
-          isActive: true,
-        },
-      });
-
-      if (employees.length === 0) {
-        throw validationError("No active employees found for payroll");
-      }
-
-      // Process payroll in atomic transaction
       const batchId = `PAY-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const details: PayrollDetailResponseDTO[] = [];
       let totalAmount = 0;
+      const payrollWhere: any = {
+        period_start: { lte: endDate },
+        period_end: { gte: startDate },
+        status: "draft",
+        ...(scope.authorizedBranchIds?.length ? { user: { branchId: { in: scope.authorizedBranchIds } } } : {}),
+        ...(scope.onlyOwnedRecords && scope.userId ? { userId: scope.userId } : {}),
+      };
+      const payrolls = await this.prisma.payroll.findMany({
+        where: payrollWhere,
+        include: { user: { select: { id: true, name: true } } },
+        orderBy: { payroll_no: "asc" },
+      });
 
-      const result = await this.prisma.$transaction(async (tx: any) => {
-        for (const employee of employees) {
-          try {
-            // Get or create payroll record
-            const payrollNo = `PAY-${employee.id}-${dto.year}-${String(dto.month).padStart(2, "0")}`;
+      if (payrolls.length === 0) {
+        throw validationError("Create draft payroll records for this period before submitting the payroll run");
+      }
 
-            const existingPayroll = await tx.payroll.findUnique({
-              where: { payroll_no: payrollNo },
-            });
-
-            if (existingPayroll && existingPayroll.status === "paid") {
-              logger.warn(
-                {
-                  employeeId: employee.id,
-                  payrollNo,
-                },
-                "Payroll already paid for employee",
-              );
-              details.push({
-                payroll_id: existingPayroll.id,
-                payroll_no: payrollNo,
-                user_id: employee.id,
-                user_name: employee.name || "Unknown",
-                base_salary: existingPayroll.base_salary,
-                allowances: existingPayroll.allowances,
-                deductions: existingPayroll.deductions,
-                net_salary: existingPayroll.net_salary,
-                status: "skipped",
-                paid_date: existingPayroll.paid_date?.toISOString(),
-              });
-              continue;
-            }
-
-            // Calculate payroll amounts
-            const baseSalary = (employee as any).salary || 0;
-            const allowances = dto.include_allowances ? baseSalary * 0.15 : 0; // 15% allowances
-            const deductions = dto.include_deductions ? baseSalary * 0.1 : 0; // 10% deductions (PF, tax, etc)
-            const netSalary = baseSalary + allowances - deductions;
-
-            // Create or update payroll record
-            const payroll = existingPayroll
-              ? await tx.payroll.update({
-                  where: { payroll_no: payrollNo },
-                  data: {
-                    base_salary: baseSalary,
-                    allowances: allowances,
-                    deductions: deductions,
-                    net_salary: netSalary,
-                    period_start: startDate,
-                    period_end: endDate,
-                    status: "processed",
-                  },
-                })
-              : await tx.payroll.create({
-                  data: {
-                    payroll_no: payrollNo,
-                    userId: employee.id,
-                    base_salary: baseSalary,
-                    allowances: allowances,
-                    deductions: deductions,
-                    net_salary: netSalary,
-                    period_start: startDate,
-                    period_end: endDate,
-                    status: "processed",
-                  },
-                });
-
-            // Create finance transaction for payroll
-            const transaction = await tx.financeTransaction.create({
-              data: {
-                type: "payroll",
-                reference_no: payrollNo,
-                description: `Payroll - ${employee.name} (${dto.month}/${dto.year})`,
-                amount: netSalary,
-                payrollId: payroll.id,
-                branchId: (employee as any).branchId ?? null,
-                payment_method: "bank_transfer",
-                reference_doc: `Payroll Run ${batchId}`,
-                notes: dto.notes || `Payroll batch ${batchId}`,
-              },
-            });
-
-            totalAmount += netSalary;
-
-            details.push({
-              payroll_id: payroll.id,
-              payroll_no: payrollNo,
-              user_id: employee.id,
-              user_name: employee.name || "Unknown",
-              base_salary: baseSalary,
-              allowances: allowances,
-              deductions: deductions,
-              net_salary: netSalary,
-              status: "processed",
-              transaction_id: transaction.id,
-            });
-
-            logger.debug(
-              {
-                employeeId: employee.id,
-                netSalary,
-              },
-              "Payroll processed",
-            );
-          } catch (error) {
-            logger.error(
-              error as Error,
-              "Error processing payroll for employee",
-            );
-            throw error;
-          }
+      // A payroll run submits existing draft records for review. It never
+      // invents salary values or creates finance transactions; payout posting
+      // happens exactly once when an approved record is marked paid.
+      await this.prisma.$transaction(async (tx: any) => {
+        for (const payroll of payrolls) {
+          const updated = await tx.payroll.updateMany({
+            where: { id: payroll.id, status: "draft" },
+            data: { status: "submitted" },
+          });
+          if (!updated.count) continue;
+          totalAmount += payroll.net_salary;
+          details.push({
+            payroll_id: payroll.id,
+            payroll_no: payroll.payroll_no,
+            user_id: payroll.userId,
+            user_name: payroll.user?.name || "Unknown",
+            base_salary: payroll.base_salary,
+            allowances: payroll.allowances,
+            deductions: payroll.deductions,
+            net_salary: payroll.net_salary,
+            status: "submitted",
+            paid_date: payroll.paid_date?.toISOString(),
+          });
         }
-
-        return {
-          batchId,
-          details,
-          totalAmount,
-          processedCount: details.length,
-        };
       });
 
       logger.info(
         {
-          batchId: result.batchId,
-          employeeCount: result.processedCount,
-          totalAmount: result.totalAmount,
+          batchId,
+          employeeCount: details.length,
+          totalAmount,
         },
-        "Payroll run completed",
+        "Payroll run submitted for review",
       );
 
       return {
         success: true,
-        batch_id: result.batchId,
-        payroll_count: result.processedCount,
-        total_amount: result.totalAmount,
+        batch_id: batchId,
+        payroll_count: details.length,
+        total_amount: totalAmount,
         period_start: dto.period_start,
         period_end: dto.period_end,
-        status: "completed",
+        status: "submitted",
         created_at: new Date().toISOString(),
-        details: result.details,
+        details,
       };
     } catch (error) {
       logger.error(error as Error, "Failed to run payroll");
@@ -216,6 +129,7 @@ export class PayrollService {
   async getPayrollReport(
     period_start: string,
     period_end: string,
+    scope: { authorizedBranchIds?: string[]; onlyOwnedRecords?: boolean; userId?: string } = {},
   ): Promise<PayrollReportDTO> {
     try {
       logger.debug(
@@ -228,6 +142,9 @@ export class PayrollService {
 
       const startDate = new Date(period_start);
       const endDate = new Date(period_end);
+      if (!Number.isFinite(startDate.getTime()) || !Number.isFinite(endDate.getTime()) || startDate > endDate) {
+        throw validationError("A valid report period is required");
+      }
 
       const payrolls = await this.prisma.payroll.findMany({
         where: {
@@ -237,6 +154,8 @@ export class PayrollService {
           period_end: {
             lte: endDate,
           },
+          ...(scope.authorizedBranchIds?.length ? { user: { branchId: { in: scope.authorizedBranchIds } } } : {}),
+          ...(scope.onlyOwnedRecords && scope.userId ? { userId: scope.userId } : {}),
         },
         include: {
           user: true,
@@ -285,7 +204,7 @@ export class PayrollService {
 
       const paidCount = payrolls.filter((p: any) => p.status === "paid").length;
       const pendingCount = payrolls.filter(
-        (p: any) => p.status === "processed" || p.status === "draft",
+        (p: any) => p.status === "draft" || p.status === "submitted" || p.status === "approved",
       ).length;
 
       return {
@@ -314,6 +233,7 @@ export class PayrollService {
   async getPayrollAnalytics(
     period_start: string,
     period_end: string,
+    scope: { authorizedBranchIds?: string[]; onlyOwnedRecords?: boolean; userId?: string } = {},
   ): Promise<PayrollAnalyticsDTO> {
     try {
       logger.debug(
@@ -326,6 +246,9 @@ export class PayrollService {
 
       const startDate = new Date(period_start);
       const endDate = new Date(period_end);
+      if (!Number.isFinite(startDate.getTime()) || !Number.isFinite(endDate.getTime()) || startDate > endDate) {
+        throw validationError("A valid report period is required");
+      }
 
       const payrolls = await this.prisma.payroll.findMany({
         where: {
@@ -335,6 +258,8 @@ export class PayrollService {
           period_end: {
             lte: endDate,
           },
+          ...(scope.authorizedBranchIds?.length ? { user: { branchId: { in: scope.authorizedBranchIds } } } : {}),
+          ...(scope.onlyOwnedRecords && scope.userId ? { userId: scope.userId } : {}),
         },
         include: {
           user: true,
@@ -446,12 +371,27 @@ export class PayrollService {
   /**
    * Get payroll by ID
    */
-  async getPayroll(id: string): Promise<any> {
+  async getPayroll(
+    id: string,
+    scope: { authorizedBranchIds?: string[]; onlyOwnedRecords?: boolean; userId?: string } = {},
+  ): Promise<any> {
     try {
-      const payroll = await this.prisma.payroll.findUnique({
-        where: { id },
+      const payroll = await this.prisma.payroll.findFirst({
+        where: {
+          id,
+          ...(scope.authorizedBranchIds?.length ? { user: { branchId: { in: scope.authorizedBranchIds } } } : {}),
+          ...(scope.onlyOwnedRecords && scope.userId ? { userId: scope.userId } : {}),
+        },
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              branchId: true,
+              department: { select: { name: true } },
+            },
+          },
           transactions: true,
         },
       });
@@ -463,77 +403,6 @@ export class PayrollService {
       return payroll;
     } catch (error) {
       logger.error(error as Error, "Failed to fetch payroll");
-      throw error;
-    }
-  }
-
-  /**
-   * Update payroll status (draft → processed → paid)
-   */
-  async updatePayrollStatus(
-    id: string,
-    status: string,
-    paid_date?: string,
-  ): Promise<any> {
-    try {
-      const validStatuses = ["draft", "processed", "paid", "failed"];
-
-      if (!validStatuses.includes(status)) {
-        throw validationError(
-          `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
-        );
-      }
-
-      const payroll = await this.prisma.payroll.findUnique({
-        where: { id },
-      });
-
-      if (!payroll) {
-        throw notFoundError("Payroll", id);
-      }
-
-      // Validate transition rules
-      const validTransitions: Record<string, string[]> = {
-        draft: ["processed", "failed"],
-        processed: ["paid", "failed"],
-        paid: ["paid"], // Terminal state
-        failed: ["processed", "draft"],
-      };
-
-      if (!validTransitions[payroll.status]?.includes(status)) {
-        throw validationError(
-          `Cannot transition from ${payroll.status} to ${status}`,
-        );
-      }
-
-      const updateData: any = {
-        status,
-      };
-
-      if (status === "paid" && paid_date) {
-        updateData.paid_date = new Date(paid_date);
-      }
-
-      const updated = await this.prisma.payroll.update({
-        where: { id },
-        data: updateData,
-        include: {
-          user: true,
-        },
-      });
-
-      logger.info(
-        {
-          id,
-          oldStatus: payroll.status,
-          newStatus: status,
-        },
-        "Payroll status updated",
-      );
-
-      return updated;
-    } catch (error) {
-      logger.error(error as Error, "Failed to update payroll status");
       throw error;
     }
   }
@@ -559,7 +428,7 @@ export class PayrollService {
         (sum: number, p: any) => sum + p.net_salary,
         0,
       ),
-      percentage: (records.length / total) * 100,
+      percentage: total ? (records.length / total) * 100 : 0,
     }));
   }
 }
