@@ -68,138 +68,134 @@ html {
 :root {
   --radius: 0.5rem;
 
-  /* Backgrounds - Clean, modern canvas */
-  --background: hsl(0, 0%, 97%);
-  --foreground: hsl(160, 15%, 12%);
+  /* ERP light palette */
+  --background: #F0F0F0;
+  --foreground: #102030;
 
   /* Borders & Inputs */
-  --border: hsl(210, 15%, 90%);
-  --input: hsl(210, 15%, 90%);
-  --ring: hsl(160, 95%, 25%);
+  --border: #E0E0E0;
+  --input: #E0E0E0;
+  --ring: #1060D0;
 
   /* Card */
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(160, 15%, 12%);
+  --card: #FFFFFF;
+  --card-foreground: #102030;
 
   /* Popover */
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(160, 15%, 12%);
+  --popover: #FFFFFF;
+  --popover-foreground: #102030;
 
-  /* Primary - Accessible Emerald */
-  --primary: hsl(160, 95%, 25%);
-  --primary-foreground: hsl(0, 0%, 100%);
+  /* Primary ERP blue */
+  --primary: #1060D0;
+  --primary-foreground: #FFFFFF;
 
-  /* Secondary - Emerald Tint */
-  --secondary: hsl(155, 70%, 95%);
-  --secondary-foreground: hsl(160, 95%, 25%);
+  --secondary: #E0F0F0;
+  --secondary-foreground: #102040;
 
-  /* Accent - Soft Mint */
-  --accent: hsl(155, 60%, 92%);
-  --accent-foreground: hsl(160, 95%, 22%);
+  --accent: #E0F0F0;
+  --accent-foreground: #102040;
 
-  /* Muted - Neutral */
-  --muted: hsl(210, 15%, 93%);
-  --muted-foreground: hsl(160, 8%, 45%);
+  --muted: #F5F8FC;
+  --muted-foreground: #607080;
 
   /* Semantic Colors */
-  --success: hsl(152, 76%, 36%);
-  --success-foreground: hsl(0, 0%, 100%);
-  --success-muted: hsl(152, 76%, 92%);
-  --success-border: hsl(152, 76%, 80%);
+  --success: #168050;
+  --success-foreground: #FFFFFF;
+  --success-muted: #D0F0E0;
+  --success-border: #A8DCC2;
 
-  --warning: hsl(38, 92%, 50%);
-  --warning-foreground: hsl(0, 0%, 100%);
-  --warning-muted: hsl(38, 92%, 92%);
-  --warning-border: hsl(38, 92%, 80%);
+  --warning: #D09020;
+  --warning-foreground: #102030;
+  --warning-muted: #FFF2D6;
+  --warning-border: #E8C77F;
 
-  --destructive: hsl(0, 72%, 51%);
-  --destructive-foreground: hsl(0, 0%, 100%);
+  --destructive: #D04040;
+  --destructive-foreground: #FFFFFF;
 
-  --info: hsl(201, 96%, 32%);
-  --info-foreground: hsl(0, 0%, 100%);
-  --info-muted: hsl(201, 96%, 92%);
-  --info-border: hsl(201, 96%, 80%);
+  --info: #1050A0;
+  --info-foreground: #FFFFFF;
+  --info-muted: #E0F0F0;
+  --info-border: #A9C6E8;
 
-  /* Sidebar - Clean Light Theme */
-  --sidebar: hsl(0, 0%, 100%);
-  --sidebar-foreground: hsl(160, 15%, 18%);
-  --sidebar-accent: hsl(155, 45%, 93%);
-  --sidebar-accent-foreground: hsl(160, 95%, 22%);
-  --sidebar-border: hsl(210, 15%, 90%);
-  --sidebar-primary: hsl(160, 95%, 25%);
-  --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-ring: hsl(160, 95%, 25%);
+  /* Navy sidebar remains branded in both themes */
+  --sidebar: #102040;
+  --sidebar-foreground: #F1F5F9;
+  --sidebar-accent: #173A60;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #263B55;
+  --sidebar-primary: #1060D0;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-ring: #1060D0;
 
   /* Chart Colors */
-  --chart-1: hsl(160, 95%, 25%);
-  --chart-2: hsl(170, 65%, 40%);
-  --chart-3: hsl(145, 55%, 52%);
-  --chart-4: hsl(38, 92%, 50%);
-  --chart-5: hsl(200, 60%, 45%);
+  --chart-1: #1060D0;
+  --chart-2: #1050A0;
+  --chart-3: #168050;
+  --chart-4: #D09020;
+  --chart-5: #607080;
 }
 
 .dark {
-  /* Backgrounds - Rich Dark */
-  --background: hsl(210, 30%, 8%);
-  --foreground: hsl(200, 20%, 92%);
+  /* ERP dark palette */
+  --background: #0F172A;
+  --foreground: #F1F5F9;
 
   /* Borders & Inputs */
-  --border: hsl(210, 20%, 16%);
-  --input: hsl(210, 20%, 16%);
-  --ring: hsl(160, 58%, 44%);
+  --border: #334155;
+  --input: #334155;
+  --ring: #3B82F6;
 
   /* Card */
-  --card: hsl(210, 28%, 10%);
-  --card-foreground: hsl(200, 20%, 92%);
+  --card: #172033;
+  --card-foreground: #F1F5F9;
 
   /* Popover */
-  --popover: hsl(210, 30%, 11%);
-  --popover-foreground: hsl(200, 20%, 92%);
+  --popover: #1E293B;
+  --popover-foreground: #F1F5F9;
 
-  /* Primary - Calm Emerald for dark surfaces */
-  --primary: hsl(160, 58%, 42%);
-  --primary-foreground: hsl(0, 0%, 100%);
+  --primary: #3B82F6;
+  --primary-foreground: #FFFFFF;
 
   /* Secondary */
-  --secondary: hsl(160, 30%, 16%);
-  --secondary-foreground: hsl(155, 70%, 85%);
+  --secondary: #1E293B;
+  --secondary-foreground: #F1F5F9;
 
   /* Accent */
-  --accent: hsl(160, 25%, 20%);
-  --accent-foreground: hsl(155, 75%, 85%);
+  --accent: #162238;
+  --accent-foreground: #F1F5F9;
 
   /* Muted */
-  --muted: hsl(210, 20%, 15%);
-  --muted-foreground: hsl(200, 15%, 60%);
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
 
   /* Semantic Colors */
-  --success: hsl(152, 55%, 40%);
-  --success-foreground: hsl(0, 0%, 100%);
-  --success-muted: hsl(152, 60%, 20%);
-  --success-border: hsl(152, 60%, 30%);
+  --success: #34D399;
+  --success-foreground: #0B1220;
+  --success-muted: #123B32;
+  --success-border: #21634F;
 
-  --warning: hsl(38, 80%, 50%);
-  --warning-foreground: hsl(0, 0%, 100%);
-  --warning-muted: hsl(38, 80%, 20%);
-  --warning-border: hsl(38, 80%, 30%);
+  --warning: #FBBF24;
+  --warning-foreground: #0F172A;
+  --warning-muted: #3B3217;
+  --warning-border: #6B5520;
 
-  --destructive: hsl(0, 60%, 50%);
-  --destructive-foreground: hsl(0, 0%, 100%);
+  --destructive: #F87171;
+  --destructive-foreground: #0F172A;
 
-  --info: hsl(201, 80%, 40%);
-  --info-foreground: hsl(0, 0%, 100%);
-  --info-muted: hsl(201, 80%, 20%);
-  --info-border: hsl(201, 80%, 30%);
+  --info: #60A5FA;
+  --info-foreground: #0F172A;
+  --info-muted: #172B47;
+  --info-border: #284A73;
 
   /* Sidebar - Dark Mode */
-  --sidebar: hsl(210, 35%, 8%);
-  --sidebar-foreground: hsl(200, 20%, 92%);
-  --sidebar-accent: hsl(160, 30%, 16%);
-  --sidebar-border: hsl(210, 20%, 15%);
-  --sidebar-primary: hsl(160, 58%, 42%);
-  --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent-foreground: hsl(155, 75%, 85%);
-  --sidebar-ring: hsl(160, 58%, 42%);
+  --sidebar: #0B1220;
+  --sidebar-foreground: #F1F5F9;
+  --sidebar-accent: #162238;
+  --sidebar-border: #243247;
+  --sidebar-primary: #3B82F6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent-foreground: #F1F5F9;
+  --sidebar-ring: #3B82F6;
 }
 
 /* Keep older utility-heavy screens readable when the shadcn theme is dark. */

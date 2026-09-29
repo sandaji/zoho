@@ -21,12 +21,14 @@ interface PDFViewerProps {
   documentId: string;
   documentType: "quote" | "invoice";
   documentNumber: string;
+  layout?: "row" | "stack";
 }
 
 export function PDFViewer({
   documentId,
   documentType,
   documentNumber,
+  layout = "row",
 }: PDFViewerProps) {
   const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -114,7 +116,7 @@ export function PDFViewer({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className={layout === "stack" ? "flex w-full flex-col gap-2" : "flex flex-wrap gap-2"}>
       {/* Hidden div for react-to-print */}
       <div style={{ display: "none" }}>
         <div ref={printRef} dangerouslySetInnerHTML={{ __html: htmlContent }} />
@@ -128,6 +130,7 @@ export function PDFViewer({
             size="sm"
             onClick={handlePreview}
             disabled={loading}
+            className={layout === "stack" ? "w-full justify-start" : undefined}
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -168,6 +171,7 @@ export function PDFViewer({
         size="sm"
         onClick={handleDownload}
         disabled={loading}
+        className={layout === "stack" ? "w-full justify-start" : undefined}
       >
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -183,6 +187,7 @@ export function PDFViewer({
         size="sm"
         onClick={handlePrint}
         disabled={loading}
+        className={layout === "stack" ? "w-full justify-start" : undefined}
       >
         {loading ? (
           <Loader2 className="h-4 w-4 animate-spin" />

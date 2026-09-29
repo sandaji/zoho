@@ -25,13 +25,11 @@ import {
   Mail,
   Phone,
   MapPin,
-  Receipt,
   Package,
   CheckCircle2,
   Clock,
   AlertCircle,
   XCircle,
-  Building2,
   Hash,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -40,56 +38,40 @@ import { PDFViewer } from "@/components/sales/PDFViewer";
 // ─── Status badge styling: works cleanly in both light & dark modes ───────────
 const STATUS_STYLES: Record<string, { className: string; icon: any; label: string }> = {
   DRAFT: {
-    className:
-      "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+    className: "bg-success-muted text-success border-success-border",
     icon: FileText,
     label: "Draft",
   },
   SENT: {
-    className:
-      "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800",
+    className: "bg-primary/10 text-primary border-primary/20",
     icon: Clock,
     label: "Sent",
   },
   CONVERTED: {
-    className:
-      "bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-950/50 dark:text-violet-300 dark:border-violet-800",
+    className: "bg-primary/10 text-primary border-primary/20",
     icon: CheckCircle2,
     label: "Converted",
   },
   PAID: {
-    className:
-      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800",
+    className: "bg-success-muted text-success border-success-border",
     icon: CheckCircle2,
     label: "Paid",
   },
   UNPAID: {
-    className:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800",
+    className: "bg-warning-muted text-warning border-warning-border",
     icon: AlertCircle,
     label: "Unpaid",
   },
   PARTIALLY_PAID: {
-    className:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800",
+    className: "bg-warning-muted text-warning border-warning-border",
     icon: AlertCircle,
     label: "Partially Paid",
   },
   VOID: {
-    className:
-      "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-800",
+    className: "bg-destructive/10 text-destructive border-destructive/20",
     icon: XCircle,
     label: "Void",
   },
-};
-
-const DOC_TYPE_STYLES: Record<string, string> = {
-  QUOTE:
-    "bg-cyan-50 text-cyan-700 border-cyan-200 dark:bg-cyan-950/50 dark:text-cyan-300 dark:border-cyan-800",
-  INVOICE:
-    "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/50 dark:text-indigo-300 dark:border-indigo-800",
-  CREDIT_NOTE:
-    "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/50 dark:text-orange-300 dark:border-orange-800",
 };
 
 export default function DocumentDetailPage() {
@@ -133,8 +115,7 @@ export default function DocumentDetailPage() {
 
   const renderStatusBadge = (status: string) => {
     const config = STATUS_STYLES[status] || {
-      className:
-        "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+      className: "bg-muted text-muted-foreground border-border",
       icon: FileText,
       label: status,
     };
@@ -147,27 +128,16 @@ export default function DocumentDetailPage() {
     );
   };
 
-  const renderDocTypeBadge = (type: string) => {
-    const className =
-      DOC_TYPE_STYLES[type] ||
-      "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
-    return (
-      <Badge variant="outline" className={`border font-medium ${className}`}>
-        {type.replace("_", " ")}
-      </Badge>
-    );
-  };
-
   // ─── Loading state ─────────────────────────────────────────────────────────
   if (isLoading || loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="flex h-screen items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
-            <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-xl" />
-            <Loader2 className="relative h-12 w-12 animate-spin text-indigo-600 dark:text-indigo-400" />
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl" />
+            <Loader2 className="relative h-12 w-12 animate-spin text-primary" />
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Loading document...</p>
+          <p className="text-sm text-muted-foreground">Loading document...</p>
         </div>
       </div>
     );
@@ -176,16 +146,16 @@ export default function DocumentDetailPage() {
   // ─── Not-found state ───────────────────────────────────────────────────────
   if (!document) {
     return (
-      <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-950 p-6">
-        <Card className="max-w-md w-full border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+      <div className="flex h-screen items-center justify-center bg-background p-6">
+        <Card className="max-w-md w-full border-border bg-card">
           <CardContent className="flex flex-col items-center py-12 text-center">
-            <div className="rounded-full bg-slate-100 dark:bg-slate-800 p-4 mb-4">
-              <FileText className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <FileText className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+            <h3 className="text-lg font-semibold text-foreground mb-2">
               Document not found
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+            <p className="text-sm text-muted-foreground mb-6">
               The document you're looking for doesn't exist or has been removed.
             </p>
             <Button onClick={() => router.back()} variant="outline">
@@ -199,328 +169,145 @@ export default function DocumentDetailPage() {
   }
 
   const itemCount = document.items?.length || 0;
+  const currency = (value: number) =>
+    `KES ${Number(value || 0).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const title = document.type === "QUOTE" ? "Quotation" : document.type.replace("_", " ");
+  const salesperson = document.createdBy?.name || "—";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      {/* ─── Sticky Header ─────────────────────────────────────────────────── */}
-      <div className="sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => router.back()}
-                className="gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Back</span>
-              </Button>
-              <div className="h-8 w-px bg-slate-200 dark:bg-slate-700" />
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900">
-                  <Receipt className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      {document.type} Details
-                    </h1>
-                    {renderDocTypeBadge(document.type)}
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-0.5">
-                    {document.documentId}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              {renderStatusBadge(document.status)}
-              {(document.type === "QUOTE" || document.type === "INVOICE") && (
-                <PDFViewer
-                  documentId={document.id}
-                  documentType={document.type === "QUOTE" ? "quote" : "invoice"}
-                  documentNumber={document.documentId}
-                />
-              )}
-            </div>
-          </div>
+    <div className="min-h-screen bg-background">
+      <main className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mb-5 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          <button onClick={() => router.back()} className="hover:text-foreground">Sales</button>
+          <span>/</span><span>{title}s</span><span>/</span>
+          <span className="text-foreground">{document.documentId}</span>
         </div>
-      </div>
 
-      {/* ─── Main Content ──────────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column: Items + Notes (main content) */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Items Card */}
-            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Package className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-                    <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                      Items
-                    </CardTitle>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-0"
-                  >
-                    {itemCount} {itemCount === 1 ? "item" : "items"}
-                  </Badge>
-                </div>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                {title} #{document.documentId}
+              </h1>
+              {renderStatusBadge(document.status)}
+            </div>
+            <p className="mt-1 text-sm text-muted-foreground">View and manage this sales document</p>
+          </div>
+          <Button variant="outline" onClick={() => router.back()} className="gap-2">
+            <ArrowLeft className="h-4 w-4" /> Back
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_290px]">
+          <div className="space-y-5">
+            <Card className="border-border bg-card shadow-sm">
+              <CardContent className="grid gap-6 p-5 md:grid-cols-2 md:p-6">
+                <section className="space-y-4">
+                  <h2 className="font-semibold text-foreground">{title} Details</h2>
+                  <DetailLine label="Document No." value={document.documentId} icon={Hash} />
+                  <DetailLine label="Date" value={format(new Date(document.issueDate), "dd MMM yyyy")} icon={Calendar} />
+                  <DetailLine label="Salesperson" value={salesperson} icon={User} />
+                </section>
+                <section className="space-y-4 border-t border-border pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0">
+                  <h2 className="font-semibold text-foreground">Customer Details</h2>
+                  <DetailLine label="Customer Name" value={document.customer?.name || "Walk-in customer"} icon={User} />
+                  {document.customer?.phone && <DetailLine label="Phone" value={document.customer.phone} icon={Phone} />}
+                  {document.customer?.email && <DetailLine label="Email" value={document.customer.email} icon={Mail} />}
+                  {document.customer?.address && <DetailLine label="Address" value={document.customer.address} icon={MapPin} />}
+                </section>
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden border-border bg-card shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between border-b border-border bg-muted/40 px-5 py-4">
+                <CardTitle className="flex items-center gap-2 text-base"><Package className="h-4 w-4 text-primary" /> Items</CardTitle>
+                <Badge variant="secondary">{itemCount} {itemCount === 1 ? "item" : "items"}</Badge>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader>
-                      <TableRow className="border-slate-100 dark:border-slate-800 hover:bg-transparent">
-                        <TableHead className="w-12 text-slate-500 dark:text-slate-400 font-medium">
-                          #
-                        </TableHead>
-                        <TableHead className="text-slate-500 dark:text-slate-400 font-medium">
-                          Code
-                        </TableHead>
-                        <TableHead className="text-slate-500 dark:text-slate-400 font-medium">
-                          Description
-                        </TableHead>
-                        <TableHead className="text-right text-slate-500 dark:text-slate-400 font-medium">
-                          Qty
-                        </TableHead>
-                        <TableHead className="text-right text-slate-500 dark:text-slate-400 font-medium">
-                          Unit Price
-                        </TableHead>
-                        <TableHead className="text-right text-slate-500 dark:text-slate-400 font-medium">
-                          Amount
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
+                    <TableHeader><TableRow className="bg-muted/50 hover:bg-muted/50">
+                      <TableHead className="w-12">#</TableHead><TableHead>Item Code</TableHead><TableHead>Item Name</TableHead>
+                      <TableHead className="text-right">Qty</TableHead><TableHead className="text-right">Unit Price</TableHead>
+                      <TableHead className="text-right">VAT (%)</TableHead><TableHead className="text-right">Amount (KES)</TableHead>
+                    </TableRow></TableHeader>
                     <TableBody>
-                      {document.items.map((item: any, index: number) => (
-                        <TableRow
-                          key={item.id}
-                          className="border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50"
-                        >
-                          <TableCell className="text-slate-400 dark:text-slate-500 font-mono text-xs">
-                            {index + 1}
-                          </TableCell>
-                          <TableCell className="font-mono text-xs text-slate-600 dark:text-slate-400">
-                            {item.product?.sku || "—"}
-                          </TableCell>
-                          <TableCell className="font-medium text-slate-900 dark:text-slate-100">
-                            {item.description}
-                          </TableCell>
-                          <TableCell className="text-right text-slate-700 dark:text-slate-300">
-                            {item.quantity}
-                          </TableCell>
-                          <TableCell className="text-right text-slate-700 dark:text-slate-300 tabular-nums">
-                            {item.unitPrice.toLocaleString("en-KE", {
-                              minimumFractionDigits: 2,
-                            })}
-                          </TableCell>
-                          <TableCell className="text-right font-semibold text-slate-900 dark:text-slate-100 tabular-nums">
-                            {item.total.toLocaleString("en-KE", {
-                              minimumFractionDigits: 2,
-                            })}
-                          </TableCell>
+                      {document.items?.map((item: any, index: number) => (
+                        <TableRow key={item.id || index}>
+                          <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                          <TableCell className="font-mono text-xs">{item.product?.sku || item.product?.code || "—"}</TableCell>
+                          <TableCell className="font-medium text-foreground">{item.description || item.product?.name || "—"}</TableCell>
+                          <TableCell className="text-right tabular-nums">{item.quantity}</TableCell>
+                          <TableCell className="text-right tabular-nums">{Number(item.unitPrice || 0).toLocaleString("en-KE", { minimumFractionDigits: 2 })}</TableCell>
+                          <TableCell className="text-right tabular-nums">{Number(item.taxRate || 0)}%</TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{Number(item.total || 0).toLocaleString("en-KE", { minimumFractionDigits: 2 })}</TableCell>
                         </TableRow>
                       ))}
+                      {itemCount === 0 && <TableRow><TableCell colSpan={7} className="py-10 text-center text-muted-foreground">No items on this document.</TableCell></TableRow>}
                     </TableBody>
                   </Table>
                 </div>
               </CardContent>
+              <div className="grid gap-6 border-t border-border p-5 md:grid-cols-2 md:p-6">
+                <section>
+                  <h3 className="mb-3 font-semibold text-foreground">Notes</h3>
+                  <p className="min-h-24 whitespace-pre-wrap rounded-md border border-border bg-background p-3 text-sm text-muted-foreground">{document.notes || "No additional notes."}</p>
+                </section>
+                <section className="space-y-3 self-end">
+                  <AmountLine label="Subtotal" value={currency(document.subtotal)} />
+                  {Number(document.discount) > 0 && <AmountLine label="Discount" value={`− ${currency(document.discount)}`} />}
+                  <AmountLine label="VAT" value={currency(document.tax)} />
+                  <div className="flex items-center justify-between rounded-md bg-primary px-4 py-3 text-primary-foreground">
+                    <span className="font-semibold">Grand Total</span><span className="text-lg font-bold tabular-nums">{currency(document.total)}</span>
+                  </div>
+                  {document.type === "INVOICE" && <div className="space-y-2 border-t border-border pt-3">
+                    <AmountLine label="Paid" value={currency(document.paidAmount)} />
+                    <AmountLine label="Balance" value={currency(document.balance)} />
+                  </div>}
+                </section>
+              </div>
             </Card>
-
-            {/* Notes Card */}
-            {document.notes && (
-              <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-                <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                  <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-                    Notes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">
-                    {document.notes}
-                  </p>
-                </CardContent>
-              </Card>
-            )}
           </div>
 
-          {/* Right Column: Summary + Info */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Summary Card */}
-            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Summary
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-5 space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 dark:text-slate-400">Subtotal</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100 tabular-nums">
-                    KES{" "}
-                    {document.subtotal.toLocaleString("en-KE", {
-                      minimumFractionDigits: 2,
-                    })}
-                  </span>
-                </div>
-
-                {document.discount > 0 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-500 dark:text-slate-400">Discount</span>
-                    <span className="font-medium text-rose-600 dark:text-rose-400 tabular-nums">
-                      − KES{" "}
-                      {document.discount.toLocaleString("en-KE", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500 dark:text-slate-400">VAT (16%)</span>
-                  <span className="font-medium text-slate-900 dark:text-slate-100 tabular-nums">
-                    KES{" "}
-                    {document.tax.toLocaleString("en-KE", {
-                      minimumFractionDigits: 2,
-                    })}
-                  </span>
-                </div>
-
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-3 mt-3">
-                  <div className="flex justify-between items-baseline">
-                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                      Total
-                    </span>
-                    <span className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">
-                      KES{" "}
-                      {document.total.toLocaleString("en-KE", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </span>
-                  </div>
-                </div>
-
-                {document.type === "INVOICE" && (
-                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
-                        Paid
-                      </span>
-                      <span className="font-medium text-emerald-600 dark:text-emerald-400 tabular-nums">
-                        KES{" "}
-                        {(document.paidAmount || 0).toLocaleString("en-KE", {
-                          minimumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                        <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
-                        Balance
-                      </span>
-                      <span className="font-semibold text-amber-600 dark:text-amber-400 tabular-nums">
-                        KES{" "}
-                        {document.balance.toLocaleString("en-KE", {
-                          minimumFractionDigits: 2,
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                )}
+          <aside className="space-y-5">
+            <Card className="border-border bg-card shadow-sm">
+              <CardHeader className="border-b border-border pb-3"><CardTitle className="text-base">Document Actions</CardTitle></CardHeader>
+              <CardContent className="space-y-2 p-4">
+                {(document.type === "QUOTE" || document.type === "INVOICE") ? <PDFViewer
+                  documentId={document.id}
+                  documentType={document.type === "QUOTE" ? "quote" : "invoice"}
+                  documentNumber={document.documentId}
+                  layout="stack"
+                /> : <p className="text-sm text-muted-foreground">No document actions available.</p>}
               </CardContent>
             </Card>
 
-            {/* Document Info Card */}
-            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-              <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                  Document Info
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-5 space-y-4">
-                <InfoRow icon={Hash} label="Document ID" value={document.documentId} mono />
-                <InfoRow
-                  icon={Calendar}
-                  label="Issue Date"
-                  value={format(new Date(document.issueDate), "MMM dd, yyyy")}
-                />
-                {document.dueDate && (
-                  <InfoRow
-                    icon={Clock}
-                    label="Due Date"
-                    value={format(new Date(document.dueDate), "MMM dd, yyyy")}
-                  />
-                )}
+            <Card className="border-border bg-card shadow-sm">
+              <CardHeader className="border-b border-border pb-3"><CardTitle className="text-base">Quick Info</CardTitle></CardHeader>
+              <CardContent className="space-y-4 p-4">
+                <QuickInfo label="Document No." value={document.documentId} />
+                <QuickInfo label="Date" value={format(new Date(document.issueDate), "dd MMM yyyy")} />
+                <QuickInfo label="Salesperson" value={salesperson} />
+                <QuickInfo label="Customer" value={document.customer?.name || "Walk-in customer"} />
+                {document.customer?.phone && <QuickInfo label="Phone" value={document.customer.phone} />}
+                <div className="flex items-center justify-between gap-3"><span className="text-sm text-muted-foreground">Status</span>{renderStatusBadge(document.status)}</div>
               </CardContent>
             </Card>
-
-            {/* Customer Info Card */}
-            {document.customer && (
-              <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
-                <CardHeader className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-                  <CardTitle className="text-base font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-slate-500 dark:text-slate-400" />
-                    Customer
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-5 space-y-4">
-                  <InfoRow icon={User} label="Name" value={document.customer.name} />
-                  {document.customer.email && (
-                    <InfoRow icon={Mail} label="Email" value={document.customer.email} />
-                  )}
-                  {document.customer.phone && (
-                    <InfoRow icon={Phone} label="Phone" value={document.customer.phone} />
-                  )}
-                  {document.customer.address && (
-                    <InfoRow icon={MapPin} label="Address" value={document.customer.address} />
-                  )}
-                </CardContent>
-              </Card>
-            )}
-          </div>
+          </aside>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
 
-// ─── Reusable info row component ─────────────────────────────────────────────
-function InfoRow({
-  icon: Icon,
-  label,
-  value,
-  mono,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <div className="mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
-        <Icon className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-          {label}
-        </p>
-        <p
-          className={`mt-0.5 text-sm font-medium text-slate-900 dark:text-slate-100 break-words ${
-            mono ? "font-mono" : ""
-          }`}
-        >
-          {value}
-        </p>
-      </div>
-    </div>
-  );
+function DetailLine({ label, value, icon: Icon }: { label: string; value: string; icon: React.ComponentType<{ className?: string }> }) {
+  return <div className="space-y-1.5"><p className="text-xs font-medium text-muted-foreground">{label}</p><div className="flex min-h-10 items-center gap-2 rounded-md border border-border bg-background px-3 text-sm text-foreground"><Icon className="h-4 w-4 shrink-0 text-muted-foreground" /><span className="truncate">{value}</span></div></div>;
+}
+
+function AmountLine({ label, value }: { label: string; value: string }) {
+  return <div className="flex items-center justify-between gap-4 text-sm"><span className="text-muted-foreground">{label}</span><span className="font-medium tabular-nums text-foreground">{value}</span></div>;
+}
+
+function QuickInfo({ label, value }: { label: string; value: string }) {
+  return <div className="flex items-start justify-between gap-3 text-sm"><span className="text-muted-foreground">{label}</span><span className="text-right font-medium text-foreground">{value}</span></div>;
 }
