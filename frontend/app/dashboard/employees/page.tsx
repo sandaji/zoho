@@ -167,7 +167,7 @@ export default function EmployeeManagement() {
   const [formData, setFormData] = useState<EmployeeFormData>({
     email: "",
     name: "",
-    role: "cashier",
+    role: "",
   });
   const [transferData, setTransferData] = useState({
     toBranchId: "",
@@ -405,7 +405,7 @@ export default function EmployeeManagement() {
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm"
+          className="border border-input rounded-md  px-3 py-2 text-sm bg-background text-foreground  focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <option value="">All Roles</option>
           {ROLES.map((role) => (
@@ -417,7 +417,7 @@ export default function EmployeeManagement() {
         <select
           value={branchFilter}
           onChange={(e) => setBranchFilter(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm"
+          className="border border-input rounded-md bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
         >
           <option value="">All Branches</option>
           {branches.map((branch) => (
@@ -515,7 +515,7 @@ export default function EmployeeManagement() {
                   setFormData({ ...formData, departmentId: e.target.value || undefined })
                 }
                 disabled={isEditing && !!selectedEmployee?.employeeCode}
-                className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
+                className="w-full mt-1 border border-input rounded-md bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
               >
                 <option value="">-- Select Department --</option>
                 {departments
@@ -544,7 +544,7 @@ export default function EmployeeManagement() {
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
+                className="w-full mt-1 border border-input rounded-md bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
               >
                 {ROLES.map((role) => (
                   <option key={role.value} value={role.value}>
@@ -561,7 +561,7 @@ export default function EmployeeManagement() {
                 onChange={(e) =>
                   setFormData({ ...formData, branchId: e.target.value || undefined })
                 }
-                className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
+                className="w-full mt-1 border border-input rounded-md bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
               >
                 <option value="">-- Select Branch --</option>
                 {branches.map((branch) => (
@@ -608,7 +608,7 @@ export default function EmployeeManagement() {
               <select
                 value={transferData.toBranchId}
                 onChange={(e) => setTransferData({ ...transferData, toBranchId: e.target.value })}
-                className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
+                className="w-full mt-1 border border-input rounded-md bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
               >
                 <option value="">-- Select Branch --</option>
                 {branches.map((branch) => (
@@ -624,7 +624,7 @@ export default function EmployeeManagement() {
               <select
                 value={transferData.toRole}
                 onChange={(e) => setTransferData({ ...transferData, toRole: e.target.value })}
-                className="w-full mt-1 border rounded-md px-3 py-2 text-sm"
+                className="w-full mt-1 border border-input rounded-md bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
               >
                 {ROLES.map((role) => (
                   <option key={role.value} value={role.value}>

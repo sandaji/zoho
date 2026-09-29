@@ -160,7 +160,11 @@ export default function CustomersPage() {
       showToast("Success", "Customer code prefix updated", "success");
       setCodeSettingOpen(false);
     } catch (error) {
-      showToast("Error", error instanceof Error ? error.message : "Failed to update prefix", "error");
+      showToast(
+        "Error",
+        error instanceof Error ? error.message : "Failed to update prefix",
+        "error"
+      );
     } finally {
       setSavingPrefix(false);
     }
@@ -265,7 +269,9 @@ export default function CustomersPage() {
         columnHelper.accessor((row) => row.code, {
           id: "code",
           header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
-          cell: (ctx) => <span className="font-mono text-sm text-slate-600">{ctx.getValue()}</span>,
+          cell: (ctx) => (
+            <span className="font-mono text-sm text-muted-foreground">{ctx.getValue()}</span>
+          ),
           sortFn: "text",
         }),
         columnHelper.accessor((row) => row.name, {
@@ -273,9 +279,9 @@ export default function CustomersPage() {
           header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
           cell: (ctx) => (
             <div>
-              <div className="font-medium text-slate-900">{ctx.getValue()}</div>
+              <div className="font-medium text-foreground">{ctx.getValue()}</div>
               {ctx.row.original.email && (
-                <div className="text-xs text-slate-500">{ctx.row.original.email}</div>
+                <div className="text-xs text-muted-foreground">{ctx.row.original.email}</div>
               )}
             </div>
           ),
@@ -290,13 +296,17 @@ export default function CustomersPage() {
         columnHelper.accessor((row) => row.phone || "-", {
           id: "phone",
           header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
-          cell: (ctx) => <span className="text-slate-600">{ctx.getValue()}</span>,
+          cell: (ctx) => <span className="text-muted-foreground">{ctx.getValue()}</span>,
           sortFn: "text",
         }),
         columnHelper.accessor((row) => row.creditLimit, {
           id: "creditLimit",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Credit Limit" className="w-full justify-end" />
+            <DataTableColumnHeader
+              column={column}
+              title="Credit Limit"
+              className="w-full justify-end"
+            />
           ),
           cell: (ctx) => (
             <div className="text-right font-mono text-sm">
@@ -308,7 +318,11 @@ export default function CustomersPage() {
         columnHelper.accessor((row) => row.currentBalance, {
           id: "currentBalance",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Current Balance" className="w-full justify-end" />
+            <DataTableColumnHeader
+              column={column}
+              title="Current Balance"
+              className="w-full justify-end"
+            />
           ),
           cell: (ctx) => {
             const customer = ctx.row.original;
@@ -318,7 +332,7 @@ export default function CustomersPage() {
                 <div
                   className={cn(
                     "text-right font-mono text-sm font-semibold",
-                    isOverLimit ? "text-red-600" : "text-emerald-600"
+                    isOverLimit ? "text-destructive" : "text-success"
                   )}
                 >
                   {customer.currentBalance.toLocaleString("en-KE", {
@@ -326,7 +340,9 @@ export default function CustomersPage() {
                     currency: "KES",
                   })}
                 </div>
-                {isOverLimit && <div className="text-xs text-red-600 mt-1 text-right">Over limit</div>}
+                {isOverLimit && (
+                  <div className="text-xs text-destructive mt-1 text-right">Over limit</div>
+                )}
               </div>
             );
           },
@@ -341,7 +357,9 @@ export default function CustomersPage() {
             return (
               <Badge
                 variant={isActive ? "default" : "secondary"}
-                className={isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-700"}
+                className={
+                  isActive ? "bg-success-muted text-success" : "bg-muted text-muted-foreground"
+                }
               >
                 {isActive ? "Active" : "Inactive"}
               </Badge>
@@ -354,7 +372,11 @@ export default function CustomersPage() {
           enableSorting: false,
           cell: (ctx) => (
             <div className="w-32">
-              <Button size="sm" variant="ghost" onClick={() => handleOpenDetails(ctx.row.original.id)}>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleOpenDetails(ctx.row.original.id)}
+              >
                 View
               </Button>
             </div>
@@ -381,8 +403,8 @@ export default function CustomersPage() {
       {/* ── Header with Add Button ────────────────────────────────────── */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-emerald-900">Customers</h2>
-          <p className="text-sm text-emerald-600 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">Customers</h2>
+          <p className="text-sm text-muted-foreground mt-1">
             Manage B2B and B2C customers, credit limits, and balances
           </p>
         </div>
@@ -401,11 +423,10 @@ export default function CustomersPage() {
                   <DialogTitle>Customer Code Prefix</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
-                  <p className="text-sm text-slate-600">
-                    Every customer gets a code of 2 letters + an auto-incrementing
-                    6-digit number (e.g. "{codeSetting.prefix}000001"). Changing the
-                    prefix here only affects new customers going forward — the
-                    number keeps counting up from where it is.
+                  <p className="text-sm text-muted-foreground">
+                    Every customer gets a code of 2 letters + an auto-incrementing 6-digit number
+                    (e.g. "{codeSetting.prefix}000001"). Changing the prefix here only affects new
+                    customers going forward — the number keeps counting up from where it is.
                   </p>
                   <div>
                     <Label htmlFor="prefix" className="text-sm font-medium">
@@ -419,7 +440,7 @@ export default function CustomersPage() {
                       className="mt-1 uppercase w-24"
                     />
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-muted-foreground">
                     Next code will be: {prefixInput.toUpperCase() || "??"}
                     {codeSetting.nextCode.replace(codeSetting.prefix, "")}
                   </p>
@@ -427,11 +448,7 @@ export default function CustomersPage() {
                     <Button variant="outline" onClick={() => setCodeSettingOpen(false)}>
                       Cancel
                     </Button>
-                    <Button
-                      onClick={handleSavePrefix}
-                      disabled={savingPrefix}
-                      className="bg-emerald-600 hover:bg-emerald-700"
-                    >
+                    <Button onClick={handleSavePrefix} disabled={savingPrefix}>
                       {savingPrefix ? "Saving..." : "Save"}
                     </Button>
                   </div>
@@ -442,151 +459,147 @@ export default function CustomersPage() {
 
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogTrigger asChild>
-              <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button>
                 <Plus className="h-4 w-4 mr-2" />
                 New Customer
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Create New Customer</DialogTitle>
-            </DialogHeader>
+              <DialogHeader>
+                <DialogTitle>Create New Customer</DialogTitle>
+              </DialogHeader>
 
-            <form onSubmit={handleCreateCustomer} className="space-y-4">
-              {/* Name */}
-              <div>
-                <Label htmlFor="name" className="text-sm font-medium">
-                  Customer Name *
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="Enter customer name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="mt-1"
-                />
-              </div>
+              <form onSubmit={handleCreateCustomer} className="space-y-4">
+                {/* Name */}
+                <div>
+                  <Label htmlFor="name" className="text-sm font-medium">
+                    Customer Name *
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter customer name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    className="mt-1"
+                  />
+                </div>
 
-              {/* Email */}
-              <div>
-                <Label htmlFor="email" className="text-sm font-medium">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="email@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
+                {/* Email */}
+                <div>
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="email@example.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
 
-              {/* Phone */}
-              <div>
-                <Label htmlFor="phone" className="text-sm font-medium">
-                  Phone
-                </Label>
-                <Input
-                  id="phone"
-                  placeholder="+254 711 611 971"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
+                {/* Phone */}
+                <div>
+                  <Label htmlFor="phone" className="text-sm font-medium">
+                    Phone
+                  </Label>
+                  <Input
+                    id="phone"
+                    placeholder="+254 711 611 971"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
 
-              {/* Address */}
-              <div>
-                <Label htmlFor="address" className="text-sm font-medium">
-                  Address
-                </Label>
-                <Input
-                  id="address"
-                  placeholder="Street address"
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
+                {/* Address */}
+                <div>
+                  <Label htmlFor="address" className="text-sm font-medium">
+                    Address
+                  </Label>
+                  <Input
+                    id="address"
+                    placeholder="Street address"
+                    value={formData.address}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
 
-              {/* Tax ID */}
-              <div>
-                <Label htmlFor="taxId" className="text-sm font-medium">
-                  Tax ID (KRA PIN)
-                </Label>
-                <Input
-                  id="taxId"
-                  placeholder="A001234567B"
-                  value={formData.taxId}
-                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
-                  className="mt-1"
-                />
-              </div>
+                {/* Tax ID */}
+                <div>
+                  <Label htmlFor="taxId" className="text-sm font-medium">
+                    Tax ID (KRA PIN)
+                  </Label>
+                  <Input
+                    id="taxId"
+                    placeholder="A001234567B"
+                    value={formData.taxId}
+                    onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                    className="mt-1"
+                  />
+                </div>
 
-              {/* Customer Type */}
-              <div>
-                <Label htmlFor="customerType" className="text-sm font-medium">
-                  Customer Type
-                </Label>
-                <select
-                  id="customerType"
-                  value={formData.customerType}
-                  onChange={(e) => setFormData({ ...formData, customerType: e.target.value })}
-                  className="mt-1 w-full rounded-md border border-slate-200 px-3 py-2 text-sm"
-                >
-                  <option value="RETAIL">Retail</option>
-                  <option value="WHOLESALE">Wholesale</option>
-                  <option value="DISTRIBUTOR">Distributor</option>
-                </select>
-              </div>
+                {/* Customer Type */}
+                <div>
+                  <Label htmlFor="customerType" className="text-sm font-medium">
+                    Customer Type
+                  </Label>
+                  <select
+                    id="customerType"
+                    value={formData.customerType}
+                    onChange={(e) => setFormData({ ...formData, customerType: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [color-scheme:light] dark:[color-scheme:dark]"
+                  >
+                    <option value="RETAIL">Retail</option>
+                    <option value="WHOLESALE">Wholesale</option>
+                    <option value="DISTRIBUTOR">Distributor</option>
+                  </select>
+                </div>
 
-              {/* Credit Limit */}
-              <div>
-                <Label htmlFor="creditLimit" className="text-sm font-medium">
-                  Credit Limit (KSH)
-                </Label>
-                <Input
-                  id="creditLimit"
-                  type="number"
-                  placeholder="0.00"
-                  value={formData.creditLimit}
-                  onChange={(e) => setFormData({ ...formData, creditLimit: e.target.value })}
-                  className="mt-1"
-                  step="0.01"
-                />
-              </div>
+                {/* Credit Limit */}
+                <div>
+                  <Label htmlFor="creditLimit" className="text-sm font-medium">
+                    Credit Limit (KSH)
+                  </Label>
+                  <Input
+                    id="creditLimit"
+                    type="number"
+                    placeholder="0.00"
+                    value={formData.creditLimit}
+                    onChange={(e) => setFormData({ ...formData, creditLimit: e.target.value })}
+                    className="mt-1"
+                    step="0.01"
+                  />
+                </div>
 
-              {/* Buttons */}
-              <div className="flex gap-3 pt-4">
-                <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  disabled={isCreating}
-                >
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Customer"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
+                {/* Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isCreating}>
+                    {isCreating ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      "Create Customer"
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
           </Dialog>
         </div>
       </div>
 
       {/* ── Search Bar ────────────────────────────────────────────────────── */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Search by name, email, or phone..."
           value={searchTerm}
@@ -596,16 +609,16 @@ export default function CustomersPage() {
       </div>
 
       {/* ── Data Table ────────────────────────────────────────────────────── */}
-      <div className="rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-lg border border-border bg-card text-card-foreground shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
         ) : customers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <AlertCircle className="h-8 w-8 text-slate-400 mb-2" />
-            <p className="text-slate-600 font-medium">No customers found</p>
-            <p className="text-sm text-slate-500 mt-1">
+            <AlertCircle className="h-8 w-8 text-muted-foreground mb-2" />
+            <p className="text-muted-foreground font-medium">No customers found</p>
+            <p className="text-sm text-muted-foreground mt-1">
               {searchTerm ? "Try adjusting your search" : "Add your first customer"}
             </p>
           </div>
@@ -613,12 +626,12 @@ export default function CustomersPage() {
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="border-b border-slate-200 bg-emerald-50">
+                <TableRow key={headerGroup.id} className="border-b border-border bg-muted">
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
                       className={cn(
-                        "font-semibold text-emerald-900",
+                        "font-semibold text-foreground",
                         ["creditLimit", "currentBalance"].includes(header.column.id) && "text-right"
                       )}
                     >
@@ -632,7 +645,7 @@ export default function CustomersPage() {
               {rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className="border-b border-slate-100 hover:bg-slate-50 transition-colors"
+                  className="border-b border-border hover:bg-muted/50 transition-colors"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -660,20 +673,20 @@ export default function CustomersPage() {
 
           {detailsLoading ? (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
           ) : customerDetails ? (
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-slate-900">{customerDetails.name}</h3>
-                <p className="text-sm font-mono text-slate-500">{customerDetails.code}</p>
-                <p className="text-sm text-slate-600">{customerDetails.email || ""}</p>
-                <p className="text-sm text-slate-600">{customerDetails.phone || ""}</p>
+                <h3 className="text-lg font-semibold text-foreground">{customerDetails.name}</h3>
+                <p className="text-sm font-mono text-muted-foreground">{customerDetails.code}</p>
+                <p className="text-sm text-muted-foreground">{customerDetails.email || ""}</p>
+                <p className="text-sm text-muted-foreground">{customerDetails.phone || ""}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-slate-200 bg-white p-3">
-                  <p className="text-xs text-slate-500">Credit Limit</p>
+                <div className="rounded-lg border border-border bg-card p-3">
+                  <p className="text-xs text-muted-foreground">Credit Limit</p>
                   <p className="text-sm font-mono font-semibold">
                     {Number(customerDetails.creditLimit || 0).toLocaleString("en-KE", {
                       style: "currency",
@@ -681,8 +694,8 @@ export default function CustomersPage() {
                     })}
                   </p>
                 </div>
-                <div className="rounded-lg border border-slate-200 bg-white p-3">
-                  <p className="text-xs text-slate-500">Current Balance</p>
+                <div className="rounded-lg border border-border bg-card p-3">
+                  <p className="text-xs text-muted-foreground">Current Balance</p>
                   <p className="text-sm font-mono font-semibold">
                     {Number(customerDetails.currentBalance || 0).toLocaleString("en-KE", {
                       style: "currency",
@@ -699,13 +712,13 @@ export default function CustomersPage() {
                     <Link
                       key={d.id}
                       href={`/dashboard/pos/documents/${d.id}`}
-                      className="block rounded-md border p-2 bg-white hover:bg-slate-50"
+                      className="block rounded-md border border-border bg-card p-2 text-card-foreground hover:bg-accent"
                     >
                       <div className="flex justify-between text-sm">
                         <div className="font-medium">{d.documentId || d.id}</div>
-                        <div className="text-slate-600">{d.status}</div>
+                        <div className="text-muted-foreground">{d.status}</div>
                       </div>
-                      <div className="text-xs text-slate-500">
+                      <div className="text-xs text-muted-foreground">
                         {d.type} •{" "}
                         {Number(d.total || 0).toLocaleString("en-KE", {
                           style: "currency",
@@ -729,7 +742,7 @@ export default function CustomersPage() {
                     <Link
                       key={p.id}
                       href={`/dashboard/finance/ar?customerId=${selectedCustomerId}&invoiceNo=${encodeURIComponent(p.salesDocument?.documentId || "")}&paymentId=${p.id}`}
-                      className="block rounded-md border p-2 bg-white text-sm hover:bg-slate-50 flex justify-between"
+                      className="block rounded-md border border-border bg-card p-2 text-sm text-card-foreground hover:bg-accent flex justify-between"
                     >
                       <div>
                         {Number(p.amount || 0).toLocaleString("en-KE", {
@@ -737,7 +750,7 @@ export default function CustomersPage() {
                           currency: "KES",
                         })}
                       </div>
-                      <div className="text-slate-500">
+                      <div className="text-muted-foreground">
                         {p.method || p.source} •{" "}
                         {new Date(p.createdAt || p.date).toLocaleDateString()}
                       </div>
@@ -747,7 +760,7 @@ export default function CustomersPage() {
               </div>
             </div>
           ) : (
-            <div className="text-sm text-slate-500">No details available</div>
+            <div className="text-sm text-muted-foreground">No details available</div>
           )}
         </DialogContent>
       </Dialog>
@@ -755,14 +768,14 @@ export default function CustomersPage() {
       {/* ── Footer Stats ────────────────────────────────────────────────────── */}
       {customers.length > 0 && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
-            <p className="text-sm text-slate-600">Total Customers</p>
-            <p className="mt-2 text-2xl font-bold text-emerald-900">{customers.length}</p>
+          <div className="rounded-lg border border-border bg-card p-4">
+            <p className="text-sm text-muted-foreground">Total Customers</p>
+            <p className="mt-2 text-2xl font-bold text-foreground">{customers.length}</p>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
-            <p className="text-sm text-slate-600">Total Credit Limit</p>
-            <p className="mt-2 text-2xl font-bold text-emerald-900">
+          <div className="rounded-lg border border-border bg-card p-4">
+            <p className="text-sm text-muted-foreground">Total Credit Limit</p>
+            <p className="mt-2 text-2xl font-bold text-foreground">
               {customers
                 .reduce((sum, c) => sum + c.creditLimit, 0)
                 .toLocaleString("en-KE", {
@@ -773,14 +786,14 @@ export default function CustomersPage() {
             </p>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
-            <p className="text-sm text-slate-600">Total Balance</p>
+          <div className="rounded-lg border border-border bg-card p-4">
+            <p className="text-sm text-muted-foreground">Total Balance</p>
             <p
               className={cn(
                 "mt-2 text-2xl font-bold",
                 customers.some((c) => c.currentBalance > c.creditLimit)
-                  ? "text-red-600"
-                  : "text-emerald-900"
+                  ? "text-destructive"
+                  : "text-foreground"
               )}
             >
               {customers
