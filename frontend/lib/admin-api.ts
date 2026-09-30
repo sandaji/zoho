@@ -422,6 +422,56 @@ export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
   return data;
 };
 
+export interface CreateWarehousePayload {
+  code: string;
+  name: string;
+  location: string;
+  capacity: number;
+  branchId: string;
+}
+
+export interface UpdateWarehousePayload {
+  name?: string;
+  location?: string;
+  capacity?: number;
+  isActive?: boolean;
+}
+
+export const createWarehouse = async (
+  token: string,
+  payload: CreateWarehousePayload
+): Promise<Warehouse> => {
+  const response = await fetch(`${API_BASE_URL}/v1/warehouses`, {
+    method: "POST",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || errorData.error || "Failed to create warehouse");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
+export const updateWarehouse = async (
+  token: string,
+  warehouseId: string,
+  payload: UpdateWarehousePayload
+): Promise<Warehouse> => {
+  const response = await fetch(`${API_BASE_URL}/v1/warehouses/${warehouseId}`, {
+    method: "PATCH",
+    headers: getAuthHeadersWithToken(token),
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error?.message || errorData.error || "Failed to update warehouse");
+  }
+  const { data } = await response.json();
+  return data;
+};
+
 export const fetchVendors = async (token: string): Promise<any[]> => {
   const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
     headers: getAuthHeadersWithToken(token),

@@ -851,13 +851,23 @@ export class SalesService {
     startDate?: string;
     endDate?: string;
     paymentMethod?: string;
+    status?: string;
     limit?: number;
     offset?: number;
   }) {
     const where: any = {
       type: SalesDocumentType.INVOICE,
-      status: SalesDocumentStatus.PAID,
     };
+
+    // Default: show every real invoice status (unpaid/on-account, partially
+    // paid, paid, parked, held) except VOID, which represents a cancelled
+    // sale and shouldn't count. A specific status can still be requested
+    // explicitly (e.g. ?status=PAID) to narrow the view.
+    if (query.status) {
+      where.status = query.status as SalesDocumentStatus;
+    } else {
+      where.status = { not: SalesDocumentStatus.VOID };
+    }
 
     if (query.branchId) where.branchId = query.branchId;
 

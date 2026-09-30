@@ -1,14 +1,30 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AdminTable, Column } from "./AdminTable";
-import { Product, fetchProducts, updateProduct } from "@/lib/admin-api";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Product,
+  Branch,
+  fetchProducts,
+  updateProduct,
+  createProduct,
+  fetchBranches,
+  fetchVendors,
+} from "@/lib/admin-api";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { toast } from "sonner";
 
 export default function ProductsSection() {
   const { token } = useAuth();
@@ -18,13 +34,25 @@ export default function ProductsSection() {
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<Partial<Product> | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isCreateOpen, setCreateOpen] = useState(false);
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [vendors, setVendors] = useState<any[]>([]);
+
+  const loadProducts = () => {
+    if (!token) return;
+    setLoading(true);
+    fetchProducts(token)
+      .then(setProducts)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
+    loadProducts();
     if (token) {
-      fetchProducts(token)
-        .then(setProducts)
-        .catch(console.error)
-        .finally(() => setLoading(false));
+      // Needed for the Create Product form's branch/vendor pickers.
+      fetchBranches(token).then(setBranches).catch(console.error);
+      fetchVendors(token).then(setVendors).catch(console.error);
     }
   }, [token]);
 
@@ -109,6 +137,7 @@ export default function ProductsSection() {
         columns={columns}
         loading={loading}
         searchKeys={["name", "sku", "category"]}
+        headerActions={<Button onClick={() => setCreateOpen(true)}>Create Product</Button>}
         actions={(product) => (
           <Button variant="outline" size="sm" onClick={() => setSelectedProduct(product)}>
             View Details
@@ -344,6 +373,235 @@ export default function ProductsSection() {
           )}
         </DialogContent>
       </Dialog>
+
+      <CreateProductDialog
+        isOpen={isCreateOpen}
+        branches={branches}
+        vendors={vendors}
+        onClose={() => setCreateOpen(false)}
+        onSuccess={() => {
+          setCreateOpen(false);
+          loadProducts();
+        }}
+      />
     </>
+  );
+}
+
+function CreateProductDialog({
+  isOpen,
+  branches,
+  vendors,
+  onClose,
+  onSuccess,
+}: {
+  isOpen: boolean;
+  branches: Branch[];
+  vendors: any[];
+  onClose: () => void;
+  onSuccess: () => void;
+}) {
+  const { token } = useAuth();
+  const [form, setForm] = useState({
+    sku: "",
+    name: "",
+    category: "",
+    barcode: "",
+    cost_price: "",
+    unit_price: "",
+    tax_rate: "0.16",
+    quantity: "0",
+    reorder_level: "10",
+    branchId: "",
+    vendorId: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!token) return;
+    if (
+      !form.sku ||
+      !form.name ||
+      !form.cost_price ||
+      !form.unit_price ||
+      !form.branchId ||
+      !form.vendorId
+    ) {
+      toast.error("SKU, name, cost price, unit price, branch and vendor are all required.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await createProduct(token, {
+        sku: form.sku,
+        upc: null,
+        barcode: form.barcode || null,
+        name: form.name,
+        description: null,
+        category: form.category || null,
+        subcategory: null,
+        product_type: "physical",
+        cost_price: parseFloat(form.cost_price),
+        unit_price: parseFloat(form.unit_price),
+        tax_rate: parseFloat(form.tax_rate) || 0,
+        quantity: parseInt(form.quantity, 10) || 0,
+        reorder_level: parseInt(form.reorder_level, 10) || 10,
+        reorder_quantity: (parseInt(form.reorder_level, 10) || 10) * 2,
+        unit_of_measurement: "pcs",
+        weight: null,
+        weight_unit: null,
+        length: null,
+        width: null,
+        height: null,
+        dimension_unit: null,
+        image_url: null,
+        vendorId: form.vendorId,
+        branchId: form.branchId,
+        supplier_part_number: null,
+        lead_time_days: null,
+        status: "active",
+      });
+      toast.success("Product created");
+      setForm({
+        sku: "",
+        name: "",
+        category: "",
+        barcode: "",
+        cost_price: "",
+        unit_price: "",
+        tax_rate: "0.16",
+        quantity: "0",
+        reorder_level: "10",
+        branchId: "",
+        vendorId: "",
+      });
+      onSuccess();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to create product");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Create New Product</DialogTitle>
+        </DialogHeader>
+        <div className="grid grid-cols-2 gap-4 py-4">
+          <div className="space-y-2">
+            <Label>Branch</Label>
+            <select
+              value={form.branchId}
+              onChange={(e) => setForm((f) => ({ ...f, branchId: e.target.value }))}
+              className="w-full px-3 py-2 border border-input rounded-md text-sm"
+            >
+              <option value="">Select a branch...</option>
+              {branches.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name} ({b.code})
+                </option>
+              ))}
+            </select>
+            <p className="text-[10px] text-slate-500 italic">
+              The branch must already have a warehouse, or product creation will fail.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label>Vendor</Label>
+            <select
+              value={form.vendorId}
+              onChange={(e) => setForm((f) => ({ ...f, vendorId: e.target.value }))}
+              className="w-full px-3 py-2 border border-input rounded-md text-sm"
+            >
+              <option value="">Select a vendor...</option>
+              {vendors.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label>SKU</Label>
+            <Input
+              value={form.sku}
+              onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Barcode</Label>
+            <Input
+              value={form.barcode}
+              onChange={(e) => setForm((f) => ({ ...f, barcode: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2 col-span-2">
+            <Label>Name</Label>
+            <Input
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Category</Label>
+            <Input
+              value={form.category}
+              onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Tax Rate (0–1)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              value={form.tax_rate}
+              onChange={(e) => setForm((f) => ({ ...f, tax_rate: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Cost Price</Label>
+            <Input
+              type="number"
+              value={form.cost_price}
+              onChange={(e) => setForm((f) => ({ ...f, cost_price: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Unit Price</Label>
+            <Input
+              type="number"
+              value={form.unit_price}
+              onChange={(e) => setForm((f) => ({ ...f, unit_price: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Initial Stock</Label>
+            <Input
+              type="number"
+              value={form.quantity}
+              onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Reorder Level</Label>
+            <Input
+              type="number"
+              value={form.reorder_level}
+              onChange={(e) => setForm((f) => ({ ...f, reorder_level: e.target.value }))}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? "Creating..." : "Create Product"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

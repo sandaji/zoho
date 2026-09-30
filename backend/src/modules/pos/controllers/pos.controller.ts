@@ -224,6 +224,7 @@ export class POSController {
         startDate: query.startDate,
         endDate: (query as any).endDate,
         paymentMethod: query.payment_method || undefined,
+        status: (query as any).status || undefined,
         limit: query.limit || 50,
         offset: ((query.page || 1) - 1) * (query.limit || 50),
       });

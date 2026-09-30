@@ -21,15 +21,18 @@ import {
 import SalesPerformance from "./sections/SalesPerformance";
 
 const statusVariant = (status: string) => {
-  switch (status) {
-    case "confirmed":
+  switch (status?.toUpperCase()) {
+    case "PAID":
       return "default";
-    case "delivered":
-      return "default";
-    case "cancelled":
-      return "destructive";
-    case "returned":
+    case "PARTIALLY_PAID":
       return "secondary";
+    case "SENT":
+      return "outline";
+    case "PARKED":
+    case "HELD":
+      return "secondary";
+    case "VOID":
+      return "destructive";
     default:
       return "secondary";
   }
@@ -140,7 +143,7 @@ export default function SalesSection() {
                 <Button variant="outline" size="sm" onClick={() => setSelectedSale(sale)}>
                   View
                 </Button>
-                {sale.status !== "cancelled" && (
+                {sale.status !== "VOID" && (
                   <Button
                     variant="destructive"
                     size="sm"
