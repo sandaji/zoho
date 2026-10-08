@@ -13,10 +13,16 @@ export default function DashboardPage() {
   const { hasPermission } = useHasPermission();
   const router = useRouter();
 
-  // Redirect based on role – only for roles with a dedicated dashboard
+  // Redirect based on role – only for roles with a dedicated dashboard.
+  // Use the full roles array (RBAC + legacy) so a role granted purely
+  // through the multi-role system still resolves correctly — same pattern
+  // the login page uses.
+  const userRoles =
+    user?.roles && user.roles.length > 0 ? user.roles : user?.role ? [user.role] : [];
+
   useEffect(() => {
     if (!isLoading && user) {
-      const roleDashboard = getRoleDashboardRoute(user.role);
+      const roleDashboard = getRoleDashboardRoute(userRoles);
       if (roleDashboard !== "/dashboard") {
         router.replace(roleDashboard);
       }
@@ -25,7 +31,7 @@ export default function DashboardPage() {
 
   // Show redirect loading state
   if (!isLoading && user) {
-    const roleDashboard = getRoleDashboardRoute(user.role);
+    const roleDashboard = getRoleDashboardRoute(userRoles);
     if (roleDashboard !== "/dashboard") {
       return (
         <div className="flex min-h-screen items-center justify-center bg-background">

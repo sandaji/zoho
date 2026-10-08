@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DailySummary } from "@/lib/admin-api";
 import { formatCurrency } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import {
   TrendingUp,
   DollarSign,
@@ -84,6 +85,7 @@ const productBadge = cva("text-[11px] font-semibold", {
 export default function AdminOverview() {
   const { token } = useAuth();
   const { permissions } = useAdminBranch();
+  const router = useRouter();
   const [summary, setSummary] = useState<DailySummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -309,8 +311,15 @@ export default function AdminOverview() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View Details</DropdownMenuItem>
-                            <DropdownMenuItem>View Product</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/products?search=${encodeURIComponent(product.name)}`,
+                                )
+                              }
+                            >
+                              View Product
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
