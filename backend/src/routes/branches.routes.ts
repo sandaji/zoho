@@ -6,7 +6,7 @@
 import { Router } from "express";
 import { BranchController } from "../modules/branches/branch.controller";
 import { authMiddleware } from '@core/middleware/auth';
-import { requirePermission } from "../middleware/rbac.middleware";
+import { requirePermission, hasAnyPermission } from "../middleware/rbac.middleware";
 
 const router = Router();
 const branchController = new BranchController();
@@ -17,7 +17,11 @@ router.post("/branches/:id/switch", authMiddleware, requirePermission('admin.bra
 );
 
 // Get all branches
-router.get("/branches", authMiddleware, requirePermission('admin.branch.manage'), (req, res, next) =>
+// Read-only list: also reachable by anyone who can view employees
+// (hr.employee.view) so the HR/employees screens can populate a branch
+// dropdown/column without needing full branch-management rights. Mutating
+// routes below stay admin.branch.manage-only.
+router.get("/branches", authMiddleware, hasAnyPermission(['admin.branch.manage', 'hr.employee.view']), (req, res, next) =>
   branchController.getAllBranches(req, res, next)
 );
 

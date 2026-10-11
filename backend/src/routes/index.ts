@@ -750,8 +750,13 @@ router.get(
   (req: Request, res: Response, next: NextFunction) =>
     financeController.getTransaction(req, res, next),
 );
+// Relocated from GET /finance/transactions: that path was always shadowed by
+// financeRoutes' own GET /transactions (the dashboard "recent transactions"
+// widget, mounted earlier via `router.use("/finance", financeRoutes)`), so
+// this full paginated GL list was unreachable dead code. Moved under /gl to
+// match the existing /finance/gl/journals and /finance/gl/entries routes.
 router.get(
-  "/finance/transactions",
+  "/finance/gl/transactions",
   authMiddleware,
   (req: Request, res: Response, next: NextFunction) =>
     financeController.listTransactions(req, res, next),
