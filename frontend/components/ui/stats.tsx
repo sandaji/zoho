@@ -75,11 +75,11 @@ export function StatCard({
 
   return (
     <div
-      className={`border rounded-xl ${accent.bg} ${accent.border} ${sizeStyles[size]} flex flex-col justify-between transition-all hover:shadow-sm`}
+      className={`border rounded-xl shadow-sm ${accent.bg} ${accent.border} ${sizeStyles[size]} flex flex-col justify-between transition-all hover:shadow-md`}
       title={cardTooltip}
     >
       <div className="flex items-center justify-between gap-3">
-        <span className={`text-slate-300 ${titleSizeStyles[size]}`}>{cardTitle}</span>
+        <span className={`text-muted-foreground ${titleSizeStyles[size]}`}>{cardTitle}</span>
         {icon && (
           <div className={`${accent.badge} p-2 rounded-lg`}>
             {React.cloneElement(icon as React.ReactElement<any>, {
@@ -91,7 +91,7 @@ export function StatCard({
       </div>
 
       <div className="mt-3 flex items-baseline justify-between gap-2">
-        <span className={`${valueSizeStyles[size]} ${accent.text}`}>
+        <span className={`${valueSizeStyles[size]} tracking-tight ${accent.text}`}>
           {prefix}
           {typeof cardValue === "number" ? cardValue.toLocaleString() : cardValue}
           {suffix}
@@ -101,10 +101,10 @@ export function StatCard({
           <div
             className={`flex items-center text-xs font-semibold px-2 py-0.5 rounded-md ${
               cardTrendDirection === "up"
-                ? "bg-emerald-500/10 text-emerald-400"
+                ? "bg-success-muted text-success"
                 : cardTrendDirection === "down"
-                ? "bg-rose-500/10 text-rose-400"
-                : "bg-slate-500/10 text-slate-400"
+                ? "bg-destructive/10 text-destructive"
+                : "bg-muted text-muted-foreground"
             }`}
           >
             {cardTrendDirection === "up" && <TrendingUp size={12} className="mr-1 inline" />}
@@ -115,7 +115,7 @@ export function StatCard({
         )}
       </div>
 
-      {cardTooltip && <p className="mt-2 text-xs text-slate-400">{cardTooltip}</p>}
+      {cardTooltip && <p className="mt-2 text-xs text-muted-foreground">{cardTooltip}</p>}
     </div>
   );
 }

@@ -90,12 +90,12 @@ export default function SettingsPage() {
   const branchName = user?.branch?.name ?? "Main Branch (Enterprise)";
 
   return (
-    <div className="p-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between rounded-xl border border-border bg-card p-6 shadow-sm">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Settings &amp; Preferences
             </h1>
             <p className="text-sm text-muted-foreground mt-1">

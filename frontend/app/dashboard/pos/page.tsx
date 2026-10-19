@@ -100,6 +100,11 @@ export default function POSPage() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const customerSelectRef = useRef<POSCustomerSelectHandle>(null);
 
+  // One idempotency key per checkout attempt. It is reused when the same sale is
+  // retried (e.g. after a timeout) so the server can de-duplicate it, and is
+  // cleared whenever the sale's contents change or the sale succeeds.
+  const idempotencyKeyRef = useRef<string | null>(null);
+
   // ------------------ Auth Guard ------------------
   useEffect(() => {
     if (!isLoading && !isAuthenticated) router.push("/auth/login");
@@ -111,6 +116,11 @@ export default function POSPage() {
       searchInputRef.current.focus();
     }
   }, [activeTab]);
+
+  // Any change to what is being sold invalidates the pending idempotency key.
+  useEffect(() => {
+    idempotencyKeyRef.current = null;
+  }, [cart, orderDiscount, paymentMethod, amountTendered, selectedCustomer, notes]);
 
   if (isLoading) {
     return (
@@ -249,8 +259,10 @@ export default function POSPage() {
 
     setLoading(true);
 
-    // Generate idempotency key to prevent duplicate sales
-    const idempotencyKey = crypto.randomUUID();
+    // Reuse the same key for retries of an unchanged sale so a timeout followed
+    // by a retry can't create a duplicate sale.
+    if (!idempotencyKeyRef.current) idempotencyKeyRef.current = crypto.randomUUID();
+    const idempotencyKey = idempotencyKeyRef.current;
 
     try {
       const authHeaders = getAuthHeadersWithToken(token || "");
@@ -305,6 +317,7 @@ export default function POSPage() {
             }
           : undefined,
       });
+      idempotencyKeyRef.current = null;
       setShowSuccessModal(true);
     } catch (error) {
       toast("Checkout failed. Please try again.", "error");

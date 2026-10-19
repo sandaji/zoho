@@ -57,7 +57,7 @@ export default function LeaveDashboard() {
   }, []);
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Leave Management</h2>
         <div className="flex items-center space-x-2">

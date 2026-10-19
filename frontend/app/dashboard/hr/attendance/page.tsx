@@ -174,10 +174,10 @@ export default function AttendancePage() {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="grid gap-4">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Attendance Tracking</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Attendance Tracking</h1>
           <div className="flex gap-2">
             <Button onClick={handleClockIn} className="bg-green-600 hover:bg-green-700">
               <Clock className="mr-2 h-4 w-4" />

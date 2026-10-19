@@ -160,10 +160,10 @@ export default function ProfitLossPage() {
   );
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Profit & Loss</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Profit & Loss</h1>
           <p className="text-muted-foreground">
             Income Statement for {format(startDate, "MMM d, yyyy")} -{" "}
             {format(endDate, "MMM d, yyyy")}

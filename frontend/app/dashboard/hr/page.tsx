@@ -89,10 +89,10 @@ export default function HRDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-8 space-y-8 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">HR Management</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">HR Management</h1>
           <p className="text-muted-foreground mt-1">
             Oversee your organization's human resources and talent.
           </p>

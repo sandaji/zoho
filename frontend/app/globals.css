@@ -3,6 +3,86 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ERP PALETTE REMAP
+   Re-points Tailwind's default colour scales at the ERP design language used
+   by the Payroll page, so hard-coded utilities (bg-slate-50, text-emerald-600,
+   border-gray-200, ...) render in ERP colours everywhere without editing every
+   file. Scales are fixed (not theme-flipped); the `.dark` overrides further
+   down still handle dark mode for the common neutral utilities.
+     slate/gray/zinc/neutral/stone -> ERP cool neutrals
+     emerald/blue/indigo/sky       -> ERP primary blue (#1060D0)
+     green                         -> ERP success
+     red/rose                      -> ERP destructive
+     amber/yellow/orange           -> ERP warning
+   ═══════════════════════════════════════════════════════════════════════════ */
+@theme {
+  /* Neutrals */
+  --color-slate-50: #F5F8FC;  --color-gray-50: #F5F8FC;  --color-zinc-50: #F5F8FC;  --color-neutral-50: #F5F8FC;  --color-stone-50: #F5F8FC;
+  --color-slate-100: #EDF1F6; --color-gray-100: #EDF1F6; --color-zinc-100: #EDF1F6; --color-neutral-100: #EDF1F6; --color-stone-100: #EDF1F6;
+  --color-slate-200: #E0E0E0; --color-gray-200: #E0E0E0; --color-zinc-200: #E0E0E0; --color-neutral-200: #E0E0E0; --color-stone-200: #E0E0E0;
+  --color-slate-300: #CBD3DC; --color-gray-300: #CBD3DC; --color-zinc-300: #CBD3DC; --color-neutral-300: #CBD3DC; --color-stone-300: #CBD3DC;
+  --color-slate-400: #94A3B3; --color-gray-400: #94A3B3; --color-zinc-400: #94A3B3; --color-neutral-400: #94A3B3; --color-stone-400: #94A3B3;
+  --color-slate-500: #607080; --color-gray-500: #607080; --color-zinc-500: #607080; --color-neutral-500: #607080; --color-stone-500: #607080;
+  --color-slate-600: #4A5B6C; --color-gray-600: #4A5B6C; --color-zinc-600: #4A5B6C; --color-neutral-600: #4A5B6C; --color-stone-600: #4A5B6C;
+  --color-slate-700: #2F4054; --color-gray-700: #2F4054; --color-zinc-700: #2F4054; --color-neutral-700: #2F4054; --color-stone-700: #2F4054;
+  --color-slate-800: #1A2C40; --color-gray-800: #1A2C40; --color-zinc-800: #1A2C40; --color-neutral-800: #1A2C40; --color-stone-800: #1A2C40;
+  --color-slate-900: #102030; --color-gray-900: #102030; --color-zinc-900: #102030; --color-neutral-900: #102030; --color-stone-900: #102030;
+  --color-slate-950: #0A1522; --color-gray-950: #0A1522; --color-zinc-950: #0A1522; --color-neutral-950: #0A1522; --color-stone-950: #0A1522;
+
+  /* Primary blue */
+  --color-emerald-50: #EAF2FD;  --color-blue-50: #EAF2FD;  --color-indigo-50: #EAF2FD;  --color-sky-50: #EAF2FD;
+  --color-emerald-100: #D6E6FA; --color-blue-100: #D6E6FA; --color-indigo-100: #D6E6FA; --color-sky-100: #D6E6FA;
+  --color-emerald-200: #B0CDF4; --color-blue-200: #B0CDF4; --color-indigo-200: #B0CDF4; --color-sky-200: #B0CDF4;
+  --color-emerald-300: #80AEEC; --color-blue-300: #80AEEC; --color-indigo-300: #80AEEC; --color-sky-300: #80AEEC;
+  --color-emerald-400: #4A87E0; --color-blue-400: #4A87E0; --color-indigo-400: #4A87E0; --color-sky-400: #4A87E0;
+  --color-emerald-500: #2A6FD8; --color-blue-500: #2A6FD8; --color-indigo-500: #2A6FD8; --color-sky-500: #2A6FD8;
+  --color-emerald-600: #1060D0; --color-blue-600: #1060D0; --color-indigo-600: #1060D0; --color-sky-600: #1060D0;
+  --color-emerald-700: #0D50AC; --color-blue-700: #0D50AC; --color-indigo-700: #0D50AC; --color-sky-700: #0D50AC;
+  --color-emerald-800: #0B4088; --color-blue-800: #0B4088; --color-indigo-800: #0B4088; --color-sky-800: #0B4088;
+  --color-emerald-900: #0A3366; --color-blue-900: #0A3366; --color-indigo-900: #0A3366; --color-sky-900: #0A3366;
+  --color-emerald-950: #071F40; --color-blue-950: #071F40; --color-indigo-950: #071F40; --color-sky-950: #071F40;
+
+  /* Success green */
+  --color-green-50: #EEF9F3;
+  --color-green-100: #D0F0E0;
+  --color-green-200: #A8DCC2;
+  --color-green-300: #7ACAA4;
+  --color-green-400: #3FAE7C;
+  --color-green-500: #22966A;
+  --color-green-600: #168050;
+  --color-green-700: #11663F;
+  --color-green-800: #0E5133;
+  --color-green-900: #0B3F28;
+  --color-green-950: #06261A;
+
+  /* Destructive red */
+  --color-red-50: #FDF1F1;  --color-rose-50: #FDF1F1;
+  --color-red-100: #FAE0E0; --color-rose-100: #FAE0E0;
+  --color-red-200: #F4C2C2; --color-rose-200: #F4C2C2;
+  --color-red-300: #EC9A9A; --color-rose-300: #EC9A9A;
+  --color-red-400: #E06A6A; --color-rose-400: #E06A6A;
+  --color-red-500: #D85050; --color-rose-500: #D85050;
+  --color-red-600: #D04040; --color-rose-600: #D04040;
+  --color-red-700: #AE3030; --color-rose-700: #AE3030;
+  --color-red-800: #8A2727; --color-rose-800: #8A2727;
+  --color-red-900: #6E2121; --color-rose-900: #6E2121;
+  --color-red-950: #3D1010; --color-rose-950: #3D1010;
+
+  /* Warning amber */
+  --color-amber-50: #FFFBF0;  --color-yellow-50: #FFFBF0;  --color-orange-50: #FFFBF0;
+  --color-amber-100: #FFF2D6; --color-yellow-100: #FFF2D6; --color-orange-100: #FFF2D6;
+  --color-amber-200: #F6E0A6; --color-yellow-200: #F6E0A6; --color-orange-200: #F6E0A6;
+  --color-amber-300: #E8C77F; --color-yellow-300: #E8C77F; --color-orange-300: #E8C77F;
+  --color-amber-400: #DCAA4C; --color-yellow-400: #DCAA4C; --color-orange-400: #DCAA4C;
+  --color-amber-500: #D09020; --color-yellow-500: #D09020; --color-orange-500: #D09020;
+  --color-amber-600: #B07A18; --color-yellow-600: #B07A18; --color-orange-600: #B07A18;
+  --color-amber-700: #8F6313; --color-yellow-700: #8F6313; --color-orange-700: #8F6313;
+  --color-amber-800: #724F10; --color-yellow-800: #724F10; --color-orange-800: #724F10;
+  --color-amber-900: #5C400D; --color-yellow-900: #5C400D; --color-orange-900: #5C400D;
+  --color-amber-950: #342407; --color-yellow-950: #342407; --color-orange-950: #342407;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

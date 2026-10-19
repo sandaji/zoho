@@ -1,114 +1,46 @@
 "use client";
 
 import * as React from "react";
-import { X, CheckCircle, AlertCircle, Info } from "lucide-react";
+import { toast as sonner } from "sonner";
+
+/**
+ * Legacy `useToast()` API, now backed by Sonner.
+ *
+ * The app mounts Sonner's <Toaster /> in the root layout, but no custom
+ * <ToastProvider /> was ever mounted, so `useToast().toast(...)` silently hit
+ * the context's no-op default and users never saw messages such as
+ * "Insufficient inventory" or "Checkout failed" on the POS and finance pages.
+ * Delegating to Sonner makes every existing caller work (no provider needed)
+ * and keeps a single toast system app-wide, matching the Payroll page.
+ */
 
 type ToastType = "success" | "error" | "info" | "warning";
 
-interface Toast {
-  id: string;
-  message: string;
-  type: ToastType;
-  isOpen: boolean;
-}
+type ToastFn = (message: string, type?: ToastType, duration?: number) => void;
 
-const ToastContext = React.createContext<{
-  toast: (message: string, type: ToastType, duration?: number) => void;
-}>({
-  toast: () => {},
-});
-
-export const useToast = () => {
-  const context = React.useContext(ToastContext);
-  if (!context) {
-    throw new Error("useToast must be used within ToastProvider");
+const showToast: ToastFn = (message, type = "info", duration = 3000) => {
+  const options = { duration: duration > 0 ? duration : Infinity };
+  switch (type) {
+    case "success":
+      sonner.success(message, options);
+      break;
+    case "error":
+      sonner.error(message, options);
+      break;
+    case "warning":
+      sonner.warning(message, options);
+      break;
+    default:
+      sonner.info(message, options);
   }
-  return context;
 };
 
-export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [toasts, setToasts] = React.useState<Toast[]>([]);
+// Stable reference so callers can safely list `toast` in effect dependencies.
+const toastApi = { toast: showToast };
 
-  const toast = React.useCallback((message: string, type: ToastType = "info", duration = 3000) => {
-    const id = Date.now().toString();
-    const newToast: Toast = { id, message, type, isOpen: true };
+export const useToast = () => toastApi;
 
-    setToasts((prev) => [...prev, newToast]);
-
-    if (duration > 0) {
-      setTimeout(() => {
-        setToasts((prev) => prev.map((t) => (t.id === id ? { ...t, isOpen: false } : t)));
-        setTimeout(() => {
-          setToasts((prev) => prev.filter((t) => t.id !== id));
-        }, 300);
-      }, duration);
-    }
-  }, []);
-
-  const removeToast = (id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  };
-
-  return (
-    <ToastContext.Provider value={{ toast }}>
-      {children}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
-        {toasts.map((t) => (
-          <ToastItem key={t.id} toast={t} onClose={() => removeToast(t.id)} />
-        ))}
-      </div>
-    </ToastContext.Provider>
-  );
-};
-
-const ToastItem: React.FC<{
-  toast: Toast;
-  onClose: () => void;
-}> = ({ toast, onClose }) => {
-  const getStyles = () => {
-    switch (toast.type) {
-      case "success":
-        return {
-          bg:     "bg-success/10",
-          border: "border-success/20",
-          text:   "text-foreground",
-          icon:   <CheckCircle className="text-success" />,
-        };
-      case "error":
-        return {
-          bg:     "bg-destructive/10",
-          border: "border-destructive/30",
-          text:   "text-foreground",
-          icon:   <AlertCircle className="text-destructive" />,
-        };
-      case "warning":
-        return {
-          bg:     "bg-warning-muted",
-          border: "border-warning-border",
-          text:   "text-foreground",
-          icon:   <Info className="text-warning" />,
-        };
-      default:
-        return {
-          bg:     "bg-info-muted",
-          border: "border-info-border",
-          text:   "text-foreground",
-          icon:   <Info className="text-info" />,
-        };
-    }
-  };
-
-  const styles = getStyles();
-
-  return (
-    <div
-      className={`${styles.bg} ${styles.border} ${styles.text} border rounded-lg p-4 shadow-lg flex items-center gap-3 min-w-64 animate-in fade-in slide-in-from-bottom-4 duration-300`}
-    >
-      <div className="text-lg">{styles.icon}</div>
-      <div className="flex-1">{toast.message}</div>
-      <button onClick={onClose} className="text-lg hover:opacity-70 transition-opacity">
-        <X size={20} />
-      </button>
-    </div>
-  );
-};
+/** Kept for backwards compatibility; Sonner needs no provider. */
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <>{children}</>
+);

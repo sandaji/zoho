@@ -73,17 +73,17 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 to-slate-800 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
-        <div className="rounded-xl border border-border/60 bg-card p-8 shadow-lg">
+        <div className="rounded-xl border border-border bg-card p-8 shadow-sm">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-            <p className="text-slate-600">Sign in to your swiftpos ERP account</p>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground mb-2 sm:text-3xl">Welcome Back</h1>
+            <p className="text-sm text-muted-foreground">Sign in to your SwiftPos ERP account</p>
           </div>
 
           {error && (
-            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
-              <p className="text-sm text-red-700">{error}</p>
+            <div role="alert" className="mb-6 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3">
+              <p className="text-sm text-destructive">{error}</p>
             </div>
           )}
 
@@ -133,12 +133,12 @@ export default function LoginPage() {
             </form>
           </Form>
 
-          <div className="mt-6 pt-6 border-t border-slate-200">
-            <p className="text-center text-sm text-slate-600">
+          <div className="mt-6 pt-6 border-t border-border">
+            <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
               <button
                 onClick={() => router.push("/auth/register")}
-                className="text-blue-600 hover:text-blue-700 font-medium"
+                className="text-primary hover:text-primary/80 font-medium"
               >
                 Sign up
               </button>

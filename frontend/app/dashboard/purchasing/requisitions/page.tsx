@@ -83,10 +83,10 @@ export default function RequisitionsPage() {
   );
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Purchase Requisitions</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Purchase Requisitions</h1>
           <p className="text-slate-500">
             {canApproveAny
               ? "Review and act on requisitions awaiting your approval or conversion"

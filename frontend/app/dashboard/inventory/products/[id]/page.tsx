@@ -69,7 +69,7 @@ export default function ProductDetailsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-slate-50 dark:bg-slate-900 min-h-screen">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export default function ProductDetailsPage() {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl flex items-center gap-2">
               {product.name}
               <Badge variant={product.quantity <= product.reorder_level ? "destructive" : "secondary"}>
                 {product.quantity <= 0 ? "Out of Stock" : product.quantity <= product.reorder_level ? "Low Stock" : "In Stock"}

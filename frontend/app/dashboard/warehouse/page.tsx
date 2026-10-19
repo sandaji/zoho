@@ -52,7 +52,7 @@ export default function WarehouseDashboard() {
 
   if (loading) {
     return (
-      <div className="p-6 bg-emerald-50/30 min-h-screen">
+      <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         <div className="animate-pulse">
           <div className="h-8 bg-emerald-100 rounded w-1/4 mb-6"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
@@ -66,11 +66,11 @@ export default function WarehouseDashboard() {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-emerald-50/30 min-h-screen">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Warehouse Management</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Warehouse Management</h1>
           <p className="text-slate-600 mt-1">Monitor multi-branch inventory and stock movements</p>
         </div>
         <div className="flex gap-3">

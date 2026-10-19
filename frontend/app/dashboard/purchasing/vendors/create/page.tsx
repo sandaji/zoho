@@ -75,14 +75,14 @@ export default function CreateVendorPage() {
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="flex items-center gap-4">
         <Link href="/dashboard/purchasing/vendors">
           <Button variant="ghost" size="icon">
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900">Add New Vendor</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Add New Vendor</h1>
       </div>
 
       <form

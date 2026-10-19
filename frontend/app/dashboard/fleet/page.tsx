@@ -254,14 +254,14 @@ export default function FleetDashboard() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       {/* Sonner Toaster (if not in root layout) */}
       <Toaster richColors position="top-right" />
 
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-4xl font-bold text-slate-900">Fleet & Delivery Management</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Fleet & Delivery Management</h1>
           <p className="text-slate-600 mt-2">Manage your fleet and track deliveries.</p>
         </div>
 

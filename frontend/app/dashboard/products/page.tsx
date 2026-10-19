@@ -107,11 +107,11 @@ export default function ProductsPage() {
   });
 
   return (
-    <div className="min-h-screen space-y-6 bg-background p-6">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="flex items-center gap-3 text-3xl font-bold text-foreground">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl flex items-center gap-3">
             <div className="rounded-lg bg-primary/10 p-2">
               <Package className="h-8 w-8 text-primary" />
             </div>

@@ -150,7 +150,7 @@ export default function NewExpenseReportPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -160,7 +160,7 @@ export default function NewExpenseReportPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Submit Expense Report</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Submit Expense Report</h1>
               <p className="text-slate-500">One line per receipt — date, vendor, category, amount</p>
             </div>
           </div>

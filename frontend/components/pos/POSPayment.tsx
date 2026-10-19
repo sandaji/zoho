@@ -90,6 +90,17 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
     { value: "credit", label: "Credit", icon: FileText, color: "bg-amber-100 text-amber-700" },
   ];
 
+  // Payment controls (tax line, order discount, payment method, cash tendered)
+  // are needed both for a direct sale and when converting a draft/quote to an
+  // invoice. They were previously gated on `canConvertDocument` alone, which is
+  // never true in plain SALE mode — so a cashier could not take payment.
+  const showPaymentControls = docMode === "SALE" || canConvertDocument;
+
+  // Credit needs an invoice with an outstanding balance, so it is only offered
+  // when converting a document — a direct sale is always paid in full.
+  const availableMethods =
+    docMode === "SALE" ? paymentMethods.filter((m) => m.value !== "credit") : paymentMethods;
+
   const quickAmounts = [
     { label: "Exact", value: grandTotal },
     { label: "1000", value: 1000 },
@@ -111,23 +122,23 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           <span className="text-muted-foreground">Subtotal</span>
           <span className="font-medium text-foreground">{formatCurrency(subtotal)}</span>
         </div>
-        {canConvertDocument && totalDiscount > 0 && (
+        {showPaymentControls && totalDiscount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Item Discounts</span>
             <span className="font-medium text-success">-{formatCurrency(totalDiscount)}</span>
           </div>
         )}
-        {canConvertDocument && orderDiscount > 0 && (
+        {showPaymentControls && orderDiscount > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Order Discount</span>
             <span className="font-medium text-success">-{formatCurrency(orderDiscount)}</span>
           </div>
         )}
-        {canConvertDocument && <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Tax (16%)</span>
+        {showPaymentControls && <div className="flex justify-between text-sm">
+          <span className="text-muted-foreground">Tax</span>
           <span className="font-medium text-foreground">{formatCurrency(tax)}</span>
         </div>}
-        {canConvertDocument && <Separator className="my-2 bg-primary/20" />}
+        {showPaymentControls && <Separator className="my-2 bg-primary/20" />}
         <div className="flex justify-between text-lg font-bold">
           <span className="text-foreground">Total</span>
           <span className="text-2xl text-primary">{formatCurrency(grandTotal)}</span>
@@ -135,7 +146,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
       </div>
 
       {/* Whole-Order Discount — separate from per-item discounts above */}
-      {canConvertDocument && <div className="space-y-2">
+      {showPaymentControls && <div className="space-y-2">
         <Label htmlFor="orderDiscount" className="text-sm font-semibold text-foreground">
           Order Discount (KES)
         </Label>
@@ -152,7 +163,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
       </div>}
 
       {/* Payment Method */}
-      {canConvertDocument && <div className="space-y-2">
+      {showPaymentControls && <div className="space-y-2">
         <Label className="text-sm font-semibold text-foreground">Payment Method</Label>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -173,7 +184,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
                 value={paymentMethod}
                 onValueChange={(value) => setPaymentMethod(value as PaymentMethod)}
               >
-                {paymentMethods.map((method) => {
+                {availableMethods.map((method) => {
                   const Icon = method.icon;
                   return (
                     <DropdownMenuRadioItem
@@ -193,7 +204,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
       </div>}
 
       {/* Cash Payment Details */}
-      {canConvertDocument && paymentMethod === "cash" && docMode === "SALE" && (
+      {docMode === "SALE" && paymentMethod === "cash" && (
         <div className="space-y-3 rounded-xl border border-border/60 bg-muted/35 p-4">
           <div>
             <Label htmlFor="amountTendered" className="text-sm font-semibold text-foreground">
@@ -273,7 +284,6 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
 
       {/* Checkout Button - changes based on document mode */}
       {docMode === "SALE" ? (
-        canConvertDocument ? (
         <Button
           onClick={onCheckout}
           disabled={
@@ -290,11 +300,10 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           ) : (
             <>
               <CheckCircle2 className="mr-2 h-5 w-5" />
-              Complete Sale (F9)
+              Complete Sale
             </>
           )}
         </Button>
-        ) : null
       ) : (
         <>
         <Button

@@ -368,13 +368,13 @@ export default function EmployeeManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-background space-y-6 mx-4 py-4">
+    <div className="min-h-screen bg-background mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Users className="w-8 h-8 text-primary" />
           <div>
-            <h1 className="text-3xl font-bold">STAFF MODULE</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">STAFF MODULE</h1>
             <p className="text-sm text-muted-foreground">Manage employees, roles, and transfers</p>
           </div>
         </div>
