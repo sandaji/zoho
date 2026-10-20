@@ -6,6 +6,7 @@ import * as bcrypt from "bcrypt";
 import { prisma } from "@/core/database/db";
 import { logger } from "@/core/utils/logger";
 import { CodeGeneratorService } from "@/shared/code-generator.service";
+import { financeAnalytics } from "../finance/services/finance-analytics.service";
 
 type BranchSummary = {
   id: string;
@@ -456,8 +457,14 @@ export class AdminController {
   }
 
   /**
-   * Global financials aggregator
-   * NetGlobalRevenue = Σ(BranchSales) - Σ(InternalTransfers) to avoid double-counting
+   * Global financials aggregator.
+   *
+   * Revenue is the sum of paid / partially paid / closed invoices across
+   * branches (VAT-inclusive). Internal stock transfers move stock between our
+   * own warehouses and never generate invoices, so there is nothing to deduct
+   * from revenue — `internal_transfers` is only a count of received transfers.
+   * Expenses come from the general ledger (same source as the finance
+   * dashboard) so Net Profit includes payroll and anything posted to the GL.
    */
   async getGlobalFinancials(req: Request, res: Response, next: NextFunction) {
     try {
@@ -534,19 +541,33 @@ export class AdminController {
       );
       const internalTransfers = internalTransferTotal._count.id;
 
-      // Expense aggregation from FinanceTransaction
-      const expenses = await prisma.financeTransaction.aggregate({
-        where: { type: "expense", createdAt: { gte: since } },
-        _sum: { amount: true },
-      });
-      const totalExpenses = expenses._sum.amount || 0;
+      // Expenses: GL first (honours the branch filter), falling back to the
+      // legacy FinanceTransaction table if the ledger query fails.
+      let totalExpenses = 0;
+      try {
+        const gl = await financeAnalytics.getFinancialSummary(
+          { startDate: since, endDate: new Date() },
+          branchId && branchId !== "all" ? (branchId as string) : undefined,
+        );
+        totalExpenses = gl.expenses;
+      } catch (glError) {
+        logger.warn(
+          { error: glError },
+          "GL expense lookup failed; falling back to FinanceTransaction",
+        );
+        const expenses = await prisma.financeTransaction.aggregate({
+          where: { type: "expense", createdAt: { gte: since } },
+          _sum: { amount: true },
+        });
+        totalExpenses = expenses._sum.amount || 0;
+      }
 
       res.json({
         success: true,
         data: {
           period_days: days,
           gross_revenue: grossRevenue,
-          net_global_revenue: grossRevenue, // IBT deduction at product level not applicable in revenue terms
+          net_global_revenue: grossRevenue, // kept for API compatibility; equals gross_revenue
           total_tax: totalTax,
           total_discount: totalDiscount,
           total_expenses: totalExpenses,

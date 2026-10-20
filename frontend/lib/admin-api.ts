@@ -946,8 +946,14 @@ export const bulkImportProducts = async (
   return data;
 };
 
-export const fetchDailySummary = async (token: string): Promise<DailySummary> => {
-  const response = await fetch(getApiUrl(API_ENDPOINTS.POS_DAILY_SUMMARY), {
+export const fetchDailySummary = async (
+  token: string,
+  branchId?: string
+): Promise<DailySummary> => {
+  const base = getApiUrl(API_ENDPOINTS.POS_DAILY_SUMMARY);
+  const url =
+    branchId && branchId !== "all" ? `${base}?branchId=${encodeURIComponent(branchId)}` : base;
+  const response = await fetch(url, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -956,7 +962,30 @@ export const fetchDailySummary = async (token: string): Promise<DailySummary> =>
     throw new Error(`Failed to fetch daily summary (${response.status}): ${errorDetails}`);
   }
   const { data } = await response.json();
-  return data;
+
+  // The backend (SalesService.getDailySummary) returns camelCase fields
+  // (totalRevenue, topProducts[].productName/quantitySold) but DailySummary and
+  // its consumers use snake_case. Returning `data` untouched left every field
+  // undefined, which the UI rendered as zeros. Accept either shape.
+  const num = (...vals: unknown[]): number => {
+    for (const v of vals) {
+      const n = typeof v === "string" ? parseFloat(v) : v;
+      if (typeof n === "number" && !isNaN(n)) return n;
+    }
+    return 0;
+  };
+  const rawProducts: any[] = data?.topProducts ?? data?.top_products ?? [];
+  return {
+    total_sales: num(data?.totalSales, data?.total_sales),
+    total_revenue: num(data?.totalRevenue, data?.total_revenue),
+    total_tax: num(data?.totalTax, data?.total_tax),
+    total_discount: num(data?.totalDiscount, data?.total_discount),
+    top_products: rawProducts.map((p) => ({
+      productId: p?.productId ?? "unknown",
+      name: p?.productName ?? p?.name ?? "Unknown Product",
+      quantity: num(p?.quantitySold, p?.quantity),
+    })),
+  };
 };
 
 export interface SalesPerformanceItem {

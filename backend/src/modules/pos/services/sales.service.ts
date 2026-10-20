@@ -1276,10 +1276,14 @@ export class SalesService {
     const endOfDay = new Date(targetDate);
     endOfDay.setHours(23, 59, 59, 999);
 
+    // Same definition of "a sale" as the admin global-financials endpoint:
+    // paid, partially paid and closed invoices, dated by issueDate. Using
+    // different statuses/date fields made the same invoice appear in one
+    // dashboard block and not the other.
     const where: any = {
       type: SalesDocumentType.INVOICE,
-      status: SalesDocumentStatus.PAID,
-      createdAt: { gte: startOfDay, lte: endOfDay },
+      status: { in: ["PAID", "PARTIALLY_PAID", "CLOSED"] },
+      issueDate: { gte: startOfDay, lte: endOfDay },
     };
 
     if (query.branchId) {
@@ -1296,9 +1300,10 @@ export class SalesService {
     });
 
     const totalSales = sales.length;
-    const totalRevenue = Math.floor(sales.reduce((sum, s) => sum + s.total, 0));
-    const totalTax = Math.floor(sales.reduce((sum, s) => sum + s.tax, 0));
-    const totalDiscount = Math.floor(
+    const round2 = (n: number) => Math.round(n * 100) / 100;
+    const totalRevenue = round2(sales.reduce((sum, s) => sum + s.total, 0));
+    const totalTax = round2(sales.reduce((sum, s) => sum + s.tax, 0));
+    const totalDiscount = round2(
       sales.reduce((sum, s) => sum + s.discount, 0),
     );
 

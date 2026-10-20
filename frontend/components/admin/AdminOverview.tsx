@@ -84,7 +84,9 @@ const productBadge = cva("text-[11px] font-semibold", {
 
 export default function AdminOverview() {
   const { token } = useAuth();
-  const { permissions } = useAdminBranch();
+  const { permissions, selectedBranchId } = useAdminBranch();
+  // Bumped by the Refresh button so the Global Financials widget reloads too.
+  const [refreshKey, setRefreshKey] = useState(0);
   const router = useRouter();
   const [summary, setSummary] = useState<DailySummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -96,7 +98,7 @@ export default function AdminOverview() {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchDailySummary(token);
+      const data = await fetchDailySummary(token, selectedBranchId);
       setSummary(data);
       setLastUpdated(new Date());
     } catch (err) {
@@ -108,7 +110,12 @@ export default function AdminOverview() {
 
   useEffect(() => {
     loadData();
-  }, [token]);
+  }, [token, selectedBranchId]);
+
+  const handleRefresh = () => {
+    setRefreshKey((k) => k + 1);
+    loadData();
+  };
 
   if (loading && !summary) return <LoadingSkeleton />;
 
@@ -201,7 +208,7 @@ export default function AdminOverview() {
           </div>
         </div>
         <Button
-          onClick={loadData}
+          onClick={handleRefresh}
           variant="outline"
           size="sm"
           disabled={loading}
@@ -333,7 +340,7 @@ export default function AdminOverview() {
       </Card>
 
       {/* ── Global Financials Widget ────────────────────────────────────── */}
-      {permissions.canViewFinancials && <GlobalFinancialsWidget />}
+      {permissions.canViewFinancials && <GlobalFinancialsWidget refreshKey={refreshKey} />}
 
       {/* ── Multi-Branch Widgets Grid ───────────────────────────────────── */}
       <div className="grid gap-6 lg:grid-cols-2">

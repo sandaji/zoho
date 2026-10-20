@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 // COMPONENT
 // ============================================================================
 
-export function GlobalFinancialsWidget() {
+export function GlobalFinancialsWidget({ refreshKey = 0 }: { refreshKey?: number }) {
   const { token } = useAuth();
   const { selectedBranchId, setSelectedBranchId, branches, permissions } = useAdminBranch();
 
@@ -73,7 +73,7 @@ export function GlobalFinancialsWidget() {
 
   useEffect(() => {
     loadData();
-  }, [token, selectedBranchId, period]);
+  }, [token, selectedBranchId, period, refreshKey]);
 
   // Safe data access
   const safeData = data || {
@@ -102,7 +102,7 @@ export function GlobalFinancialsWidget() {
       {
         title: "Net Profit",
         value: formatCurrency(safeData.net_profit),
-        subtitle: "After expenses",
+        subtitle: "Revenue less posted expenses",
         icon: TrendingUp,
         color: safeData.net_profit >= 0 ? "emerald" : "red",
         trend: safeData.net_profit > 0 ? "up" : "down",
