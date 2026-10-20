@@ -21,6 +21,10 @@
 // starts on top of it.
 import { prisma } from '@core/database/db';
 import { logger } from '@core/utils/logger';
+import {
+  SalesDocumentType,
+  SalesDocumentStatus,
+} from "../../../generated/enums.js";
 
 export type AlertSeverity = "critical" | "warning" | "info";
 export type AlertType =
@@ -130,21 +134,27 @@ export class AlertsService {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const overdueInvoices = await prisma.accountReceivable.findMany({
+    // AR lives on SalesDocument (type INVOICE) — the same source
+    // ReceivablesService uses. The old accounts_receivable table is never
+    // written to, so reading it meant these alerts could never fire.
+    const overdueInvoices = await prisma.salesDocument.findMany({
       where: {
-        AND: [
-          { due_date: { lt: today } },
-          { status: { in: ["outstanding", "partial"] } },
-          { balance: { gt: 0 } },
-        ],
+        type: SalesDocumentType.INVOICE,
+        status: {
+          in: [SalesDocumentStatus.SENT, SalesDocumentStatus.PARTIALLY_PAID],
+        },
+        balance: { gt: 0 },
+        dueDate: { lt: today },
       },
-      orderBy: { due_date: "asc" },
+      include: { customer: { select: { name: true } } },
+      orderBy: { dueDate: "asc" },
       take: 5, // Limit to top 5
     });
 
-    return overdueInvoices.map((invoice, index) => {
+    return overdueInvoices.map((invoice) => {
+      const dueDate = invoice.dueDate as Date;
       const daysOverdue = Math.floor(
-        (today.getTime() - invoice.due_date.getTime()) / (1000 * 60 * 60 * 24),
+        (today.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24),
       );
       const severity: AlertSeverity =
         daysOverdue > 30 ? "critical" : daysOverdue > 14 ? "warning" : "info";
@@ -153,9 +163,9 @@ export class AlertsService {
         id: `overdue-${invoice.id}`,
         type: "overdue_invoice" as const,
         severity,
-        title: `Invoice ${invoice.invoice_no} - ${daysOverdue} days overdue`,
-        message: `Customer owes ${invoice.balance} - Invoice was due on ${invoice.due_date.toLocaleDateString()}`,
-        actionUrl: `/dashboard/finance/ar/${invoice.id}`,
+        title: `Invoice ${invoice.documentId} - ${daysOverdue} days overdue`,
+        message: `${invoice.customer?.name ?? "Customer"} owes ${invoice.balance} - Invoice was due on ${dueDate.toISOString().split("T")[0]}`,
+        actionUrl: `/dashboard/finance/ar`,
         actionLabel: "Review & Follow Up",
         timestamp: new Date().toISOString(),
         read: false,
@@ -198,7 +208,7 @@ export class AlertsService {
         severity,
         title: `Payment due in ${daysUntilDue} days - ${payable.bill_no}`,
         message: `Amount due: ${payable.balance} - Due date: ${payable.due_date.toLocaleDateString()}`,
-        actionUrl: `/dashboard/finance/ap/${payable.id}`,
+        actionUrl: `/dashboard/finance/ap`,
         actionLabel: "Record Payment",
         timestamp: new Date().toISOString(),
         read: false,

@@ -161,10 +161,10 @@ export class PeriodService {
           entityType: "FiscalPeriod",
           entityId: periodId,
           action: "UPDATE",
-          ...(userId || "system"
+          ...(userId
             ? {
                 user: {
-                  connect: { id: userId || "system" },
+                  connect: { id: userId },
                 },
               }
             : {}),

@@ -185,7 +185,7 @@ const FinanceDashboardPage = () => {
               {summary ? formatCurrencyCompact(summary.revenue) : "—"}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {summary ? `${summary.salesCount} sales` : "Loading..."}
+              {summary ? `${summary.salesCount} sales` : "—"}
             </p>
           </CardContent>
         </Card>
@@ -205,7 +205,7 @@ const FinanceDashboardPage = () => {
             <p className="mt-1 text-xs text-muted-foreground">
               {summary && summary.revenue > 0
                 ? `${((summary.expenses / summary.revenue) * 100).toFixed(1)}% of revenue`
-                : "Loading..."}
+                : "—"}
             </p>
           </CardContent>
         </Card>
@@ -223,7 +223,7 @@ const FinanceDashboardPage = () => {
               {summary ? formatCurrencyCompact(summary.profit) : "—"}
             </div>
             <p className="mt-1 text-xs text-info">
-              {summary ? `${summary.netMargin.toFixed(1)}% margin` : "Loading..."}
+              {summary ? `${summary.netMargin.toFixed(1)}% margin` : "—"}
             </p>
           </CardContent>
         </Card>
@@ -273,7 +273,7 @@ const FinanceDashboardPage = () => {
               {summary ? formatCurrencyCompact(summary.accountsPayable) : "—"}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {summary ? `Net ${netAR >= 0 ? "+" : ""}${formatCurrencyCompact(netAR)}` : "Loading..."}
+              {summary ? `Net ${netAR >= 0 ? "+" : ""}${formatCurrencyCompact(netAR)}` : "—"}
             </p>
           </CardContent>
         </Card>

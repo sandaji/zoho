@@ -28,6 +28,8 @@ import { prisma } from '@core/database/db';
 import { logger } from '@core/utils/logger';
 import { AppError, ErrorCode } from '@core/errors/errors';
 import { Prisma } from "../../../generated";
+import { ReceivablesService } from "./receivables.service";
+import { PayablesService } from "./payables.service";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -176,20 +178,16 @@ export class FinanceAnalyticsService {
       });
       const cashBalance = cashResult._sum.current_balance ?? 0;
 
-      // AR / AP from dedicated tables (these already track balances correctly)
-      const [arResult, apResult] = await Promise.all([
-        prisma.accountReceivable.aggregate({
-          where: { status: { in: ["outstanding", "partial"] } },
-          _sum: { balance: true },
-        }),
-        prisma.accountPayable.aggregate({
-          where: { status: { in: ["outstanding", "partial"] } },
-          _sum: { balance: true },
-        }),
+      // AR / AP: use the same services the AR-aging / AP-status widgets use.
+      // AR lives on open SalesDocument invoices (the old accounts_receivable
+      // table is never written to) and AP totals include overdue bills.
+      const [arAging, apStatus] = await Promise.all([
+        ReceivablesService.getAgingReport(),
+        PayablesService.getAPStatusSummary(),
       ]);
 
-      const accountsReceivable = arResult._sum.balance ?? 0;
-      const accountsPayable = apResult._sum.balance ?? 0;
+      const accountsReceivable = arAging.total;
+      const accountsPayable = apStatus.totalPayables;
 
       return {
         revenue,

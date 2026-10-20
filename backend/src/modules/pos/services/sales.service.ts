@@ -412,12 +412,14 @@ export class SalesService {
   static async createPOSSale(input: {
     branchId: string;
     userId: string;
+    /**
+     * Unit price and tax rate are intentionally NOT accepted here: they are
+     * always read from the product catalogue so a client can't under-charge.
+     */
     items: {
       productId: string;
-      description?: string;
       quantity: number;
-      unitPrice: number;
-      taxRate?: number;
+      /** Absolute discount on this line (never more than the line's pre-tax value). */
       discount?: number;
     }[];
     paymentMethod: string;
@@ -427,6 +429,11 @@ export class SalesService {
     idempotencyKey?: string;
     /** Whole-order discount (section 7B) — separate from any per-item discounts already in `items`. */
     discount?: number;
+    /**
+     * When true the user must have an OPEN cashier session. The session is
+     * always linked to the sale (and its totals updated) when one exists.
+     */
+    requireSession?: boolean;
   }) {
     const {
       branchId,
@@ -438,6 +445,7 @@ export class SalesService {
       customerId,
       idempotencyKey,
       discount: orderDiscount = 0,
+      requireSession = false,
     } = input;
 
     // Idempotency check: if idempotency key provided, check for existing sale
@@ -446,6 +454,7 @@ export class SalesService {
         where: {
           idempotencyKey,
           branchId,
+          createdById: userId,
           type: SalesDocumentType.INVOICE,
         },
         include: { items: true, payments: true },
@@ -456,31 +465,106 @@ export class SalesService {
           { idempotencyKey, existingSaleId: existingSale.id },
           "Returning existing sale for idempotency key",
         );
-        return existingSale;
+        // Change given at the till isn't stored, so a replay reports 0.
+        return { ...existingSale, change: 0 };
       }
     }
+
+    if (!Number.isFinite(amountPaid) || amountPaid < 0) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "Amount paid must be zero or more",
+      );
+    }
+
+    // Prices and tax rates ALWAYS come from the product catalogue.
+    const productIds = items.map((item) => item.productId);
+    if (new Set(productIds).size !== productIds.length) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "Duplicate product lines are not allowed - combine the quantities on one line",
+      );
+    }
+
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: {
+        id: true,
+        name: true,
+        unit_price: true,
+        tax_rate: true,
+        isActive: true,
+      },
+    });
+    const productById = new Map(products.map((p) => [p.id, p]));
+
+    const pricedItems = items.map((item) => {
+      const product = productById.get(item.productId);
+      if (!product || !product.isActive) {
+        throw new AppError(
+          ErrorCode.NOT_FOUND,
+          404,
+          `Product not found or inactive: ${item.productId}`,
+        );
+      }
+
+      const discount = item.discount ?? 0;
+      const lineValue = Math.floor(item.quantity * product.unit_price);
+      if (!Number.isFinite(discount) || discount < 0 || discount > lineValue) {
+        throw new AppError(
+          ErrorCode.VALIDATION_ERROR,
+          400,
+          `Invalid discount for ${product.name}`,
+        );
+      }
+
+      return {
+        productId: item.productId,
+        description: product.name,
+        quantity: item.quantity,
+        unitPrice: product.unit_price,
+        taxRate: product.tax_rate,
+        discount,
+      };
+    });
 
     // Validate stock
     await StockValidationService.validateOrThrow(
       branchId,
-      items,
+      pricedItems,
       userId,
       false,
     );
+
+    // Cashier session: link the sale to it so the session's totals (and the
+    // expected cash at close) are correct. Non-admin users must have one open.
+    const session = await prisma.cashierSession.findFirst({
+      where: { userId, branchId, status: "OPEN" },
+      select: { id: true },
+    });
+    if (!session && requireSession) {
+      throw new AppError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        "Open a cashier session before making a sale",
+      );
+    }
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.INVOICE,
       branchId,
     );
 
-    const preparedItems = items.map((item) => {
+    const preparedItems = pricedItems.map((item) => {
       const totals = calculateItemTotals(item);
       return {
         productId: item.productId,
-        description: item.description || "POS item",
+        description: item.description,
         quantity: item.quantity,
         unitPrice: item.unitPrice,
-        taxRate: item.taxRate || 0,
+        taxRate: item.taxRate,
         subtotal: totals.subtotal,
         taxAmount: totals.taxAmount,
         discount: totals.discount,
@@ -495,10 +579,25 @@ export class SalesService {
       orderDiscount,
     );
 
-    return prisma.$transaction(
+    // Only what is owed is applied to the invoice. Cash handed over beyond the
+    // total is change - it must not be booked as a payment or as cash received.
+    const tendered = Math.floor(amountPaid);
+    const paidApplied = Math.min(tendered, totals.total);
+    const change = tendered - paidApplied;
+    const balance = totals.total - paidApplied;
+    const isPaid = balance <= 0;
+
+    if (balance > 0 && !customerId) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "A customer is required when a sale is not paid in full",
+      );
+    }
+
+    try {
+    return await prisma.$transaction(
       async (tx) => {
-        const balance = Math.max(0, Math.floor(totals.total - amountPaid));
-        const isPaid = balance <= 0;
 
         const invoice = await tx.salesDocument.create({
           data: {
@@ -517,8 +616,9 @@ export class SalesService {
             tax: totals.tax,
             discount: totals.discount,
             total: totals.total,
-            balance: balance,
-            paidAmount: amountPaid,
+            balance,
+            paidAmount: paidApplied,
+            sessionId: session?.id ?? null,
             notes: notes || null,
             createdById: userId,
             idempotencyKey: idempotencyKey || null,
@@ -527,23 +627,45 @@ export class SalesService {
           include: { items: true },
         });
 
-        await tx.payment.create({
-          data: {
-            salesDocumentId: invoice.id,
-            customerId: customerId || null,
-            amount: Math.floor(amountPaid),
-            method: paymentMethod as PaymentMethod,
-            paymentDate: new Date(),
-            createdById: userId,
-          },
-        });
+        if (paidApplied > 0) {
+          await tx.payment.create({
+            data: {
+              salesDocumentId: invoice.id,
+              customerId: customerId || null,
+              amount: paidApplied,
+              method: paymentMethod as PaymentMethod,
+              paymentDate: new Date(),
+              createdById: userId,
+            },
+          });
+        }
 
         // Update customer balance if they bought on credit/partial payment
         if (customerId && balance > 0) {
           await tx.customer.update({
             where: { id: customerId },
             data: {
-              currentBalance: { increment: Math.floor(balance) },
+              currentBalance: { increment: balance },
+            },
+          });
+        }
+
+        // Keep the cashier session's running totals correct. Close-of-day
+        // reconciliation compares the counted cash with totalCashReceived.
+        if (session) {
+          const received = { increment: paidApplied };
+          await tx.cashierSession.update({
+            where: { id: session.id },
+            data: {
+              totalSalesCount: { increment: 1 },
+              totalSalesAmount: { increment: totals.total },
+              ...(paymentMethod === "cash"
+                ? { totalCashReceived: received }
+                : paymentMethod === "card"
+                  ? { totalCardReceived: received }
+                  : paymentMethod === "mpesa"
+                    ? { totalMpesaReceived: received }
+                    : { totalOtherReceived: received }),
             },
           });
         }
@@ -580,7 +702,7 @@ export class SalesService {
         await AccountingService.recordSaleTransaction(tx, {
           saleId: invoice.id,
           date: new Date(),
-          amountPaid: amountPaid,
+          amountPaid: paidApplied,
           paymentMethod: paymentMethod,
           subtotal: totals.subtotal,
           tax: totals.tax,
@@ -590,10 +712,31 @@ export class SalesService {
           cogs: totalCogs,
         });
 
-        return invoice;
+        return { ...invoice, change };
       },
       { timeout: 30000 },
     );
+    } catch (error: any) {
+      // Two simultaneous requests with the same Idempotency-Key: the unique
+      // index lets only one insert win. Return the winner's sale for the loser.
+      if (idempotencyKey && error?.code === "P2002") {
+        const existing = await prisma.salesDocument.findFirst({
+          where: { idempotencyKey },
+          include: { items: true, payments: true },
+        });
+        if (existing) {
+          if (existing.branchId === branchId && existing.createdById === userId) {
+            return { ...existing, change: 0 };
+          }
+          throw new AppError(
+            ErrorCode.ALREADY_EXISTS,
+            409,
+            "Idempotency key was already used by another request",
+          );
+        }
+      }
+      throw error;
+    }
   }
 
   // =============================

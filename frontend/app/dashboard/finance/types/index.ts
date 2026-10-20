@@ -305,9 +305,6 @@ export interface FinancialKPIs {
   grossProfitMargin: number;
   netProfitMargin: number;
   returnOnSales: number;
-  currentRatio: number;
-  quickRatio: number;
-  salesGrowth: number;
   expenseRatio: number;
   averageSaleValue: number;
   cashPosition: number;
@@ -431,7 +428,7 @@ export interface ARAgingSummaryResponse {
  * AP Status Item
  */
 export interface APStatusItem {
-  status: "outstanding" | "partial" | "scheduled" | "paid";
+  status: "outstanding" | "partial" | "overdue" | "scheduled" | "paid";
   label: string;
   count: number;
   totalAmount: number;

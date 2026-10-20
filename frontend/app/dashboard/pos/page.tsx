@@ -1,6 +1,6 @@
 "use client";
 // frontend/app/dashboard/pos/page.tsx
-import React, { useEffect, useMemo, useState, useRef, Suspense } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
@@ -17,6 +17,7 @@ import { CloseSessionDialog } from "@/components/pos/CloseSessionDialog";
 import { POSMenuBar } from "@/components/pos/POSMenuBar";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { computeCartTotals, lineDiscount } from "@/lib/sales-calculator";
 import { POSCashier } from "@/components/pos/POSCashier";
 
 // ------------------ Types ------------------
@@ -122,42 +123,15 @@ export default function POSPage() {
     idempotencyKeyRef.current = null;
   }, [cart, orderDiscount, paymentMethod, amountTendered, selectedCustomer, notes]);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
   // ------------------ Totals ------------------
-  const subtotal = useMemo(
-    () => cart.reduce((s, i) => s + (i.quantity * i.unit_price - i.discount), 0),
-    [cart]
-  );
-
-  const totalDiscount = useMemo(() => cart.reduce((s, i) => s + i.discount, 0), [cart]);
-
-  const tax = useMemo(
-    () => cart.reduce((s, i) => s + (i.quantity * i.unit_price - i.discount) * i.tax_rate, 0),
-    [cart]
-  );
-
-  // Order-level discount can never exceed what's actually left to discount.
-  const clampedOrderDiscount = useMemo(
-    () => Math.max(0, Math.min(orderDiscount, subtotal + tax)),
-    [orderDiscount, subtotal, tax]
-  );
-  const grandTotal = useMemo(
-    () => Math.floor(subtotal + tax - clampedOrderDiscount),
-    [subtotal, tax, clampedOrderDiscount]
-  );
-  const changeAmount = useMemo(
-    () => Math.max(0, amountTendered - grandTotal),
-    [amountTendered, grandTotal]
-  );
+  // Same rules as the backend (see lib/sales-calculator.ts) so the total shown
+  // here is the total the server charges. Plain computation, no hooks, so it is
+  // safe above the early returns.
+  const totals = computeCartTotals(cart, orderDiscount);
+  const { subtotal, tax, grandTotal } = totals;
+  const totalDiscount = totals.itemDiscount;
+  const clampedOrderDiscount = totals.orderDiscountApplied;
+  const changeAmount = Math.max(0, amountTendered - grandTotal);
 
   // ------------------ Cart Logic ------------------
   const addToCart = (product: any) => {
@@ -203,25 +177,39 @@ export default function POSPage() {
       return;
     }
 
-    setCart((prev) => prev.map((c) => (c.productId === productId ? { ...c, quantity: qty } : c)));
+    setCart((prev) =>
+      prev.map((c) => {
+        if (c.productId !== productId) return c;
+        const lineValue = Math.floor(qty * c.unit_price);
+        // Percentage discounts follow the new quantity; fixed ones are clamped.
+        const discount =
+          c.discount_percent > 0
+            ? Math.floor((lineValue * c.discount_percent) / 100)
+            : Math.min(c.discount, lineValue);
+        return { ...c, quantity: qty, discount };
+      })
+    );
   };
 
   const updateDiscount = (productId: string, discount: number, isPercent: boolean = false) => {
     setCart((prev) =>
       prev.map((c) => {
         if (c.productId === productId) {
-          const lineTotal = c.quantity * c.unit_price;
+          const lineValue = Math.floor(c.quantity * c.unit_price);
+          const value = Number.isFinite(discount) ? discount : 0;
           if (isPercent) {
+            const pct = Math.max(0, Math.min(value, 100));
             return {
               ...c,
-              discount_percent: discount,
-              discount: (lineTotal * discount) / 100,
+              discount_percent: pct,
+              discount: Math.floor((lineValue * pct) / 100),
             };
           } else {
+            const amount = Math.max(0, Math.min(Math.floor(value), lineValue));
             return {
               ...c,
-              discount: Math.min(discount, lineTotal),
-              discount_percent: (discount / lineTotal) * 100,
+              discount: amount,
+              discount_percent: lineValue > 0 ? (amount / lineValue) * 100 : 0,
             };
           }
         }
@@ -252,6 +240,15 @@ export default function POSPage() {
       return;
     }
 
+    // Non-admin users must have an open cashier session (the server enforces
+    // this too); stop early with a clear message and the way forward.
+    const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
+    if (!isAdminUser && !sessionLoading && !session) {
+      toast("Open a cashier session before making a sale", "warning");
+      setShowOpenDialog(true);
+      return;
+    }
+
     if (paymentMethod === "cash" && amountTendered < grandTotal) {
       toast("Insufficient amount tendered", "warning");
       return;
@@ -272,16 +269,14 @@ export default function POSPage() {
       const res = await fetch(getApiUrl(API_ENDPOINTS.POS_SALES), {
         method: "POST",
         headers,
+        // Identity (user, branch) comes from the auth token and prices come
+        // from the product catalogue on the server - only quantities, discounts
+        // and payment details are sent.
         body: JSON.stringify({
-          branchId: user.branchId,
-          userId: user.id,
           items: cart.map((c) => ({
             productId: c.productId,
             quantity: c.quantity,
-            unit_price: c.unit_price,
-            tax_rate: c.tax_rate,
-            discount: c.discount,
-            discount_percent: c.discount_percent,
+            discount: lineDiscount(c),
           })),
           discount: clampedOrderDiscount,
           payment_method: paymentMethod,
@@ -294,7 +289,7 @@ export default function POSPage() {
       const json = await res.json();
 
       if (!res.ok || !json.success) {
-        toast(json.message || "Checkout failed", "error");
+        toast(json.error?.message || json.message || "Checkout failed", "error");
         return;
       }
 
@@ -302,10 +297,12 @@ export default function POSPage() {
       setLastSale({
         id: json.data.id,
         invoice_no: json.data.invoice_no,
-        subtotal,
-        tax,
-        total: grandTotal,
-        amount_paid: paymentMethod === "cash" ? amountTendered : grandTotal,
+        // Show what the server actually recorded, falling back to local figures.
+        subtotal: json.data.subtotal ?? subtotal,
+        tax: json.data.tax ?? tax,
+        total: json.data.grand_total ?? grandTotal,
+        amount_paid:
+          json.data.amount_paid ?? (paymentMethod === "cash" ? amountTendered : grandTotal),
         payment_method: paymentMethod,
         items: cart,
         created_at: new Date().toISOString(),
@@ -361,7 +358,7 @@ export default function POSPage() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        toast(json.message || "Failed to load document", "error");
+        toast(json.error?.message || json.message || "Failed to load document", "error");
         return;
       }
 
@@ -451,7 +448,12 @@ export default function POSPage() {
 
       const json = await res.json();
       if (!res.ok || !json.success) {
-        toast(json.message || `Failed to ${editingDocId ? "update" : "create"} document`, "error");
+        toast(
+          json.error?.message ||
+            json.message ||
+            `Failed to ${editingDocId ? "update" : "create"} document`,
+          "error"
+        );
         return;
       }
 
@@ -493,7 +495,10 @@ export default function POSPage() {
       );
       const savedJson = await saved.json();
       if (!saved.ok || !savedJson.success) {
-        toast(savedJson.message || "Unable to save invoice changes", "error");
+        toast(
+          savedJson.error?.message || savedJson.message || "Unable to save invoice changes",
+          "error"
+        );
         return;
       }
       const converted = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(editingDocId)), {
@@ -508,7 +513,10 @@ export default function POSPage() {
       });
       const convertedJson = await converted.json();
       if (!converted.ok || !convertedJson.success) {
-        toast(convertedJson.message || "Unable to convert to invoice", "error");
+        toast(
+          convertedJson.error?.message || convertedJson.message || "Unable to convert to invoice",
+          "error"
+        );
         return;
       }
       toast(`Invoice created: ${convertedJson.data.documentId}`, "success");
@@ -554,18 +562,40 @@ export default function POSPage() {
         e.preventDefault();
         customerSelectRef.current?.openSearch();
       }
-      // ESC: Focus search
+      // ESC: Focus search - but never fight a dialog/menu that is handling
+      // Escape itself (it would steal focus the moment the dialog closes).
       if (e.key === "Escape" && activeTab === "sale") {
-        e.preventDefault();
-        searchInputRef.current?.focus();
+        const target = e.target as HTMLElement | null;
+        const insideOverlay = !!target?.closest?.(
+          '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"]'
+        );
+        const overlayOpen = !!document.querySelector(
+          '[role="dialog"][data-state="open"],[role="alertdialog"][data-state="open"]'
+        );
+        if (!e.defaultPrevented && !insideOverlay && !overlayOpen) {
+          e.preventDefault();
+          searchInputRef.current?.focus();
+        }
       }
     };
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [cart, loading, grandTotal, activeTab, editingDocId]);
+  }, [cart, loading, grandTotal, activeTab, editingDocId, amountTendered, paymentMethod, selectedCustomer, notes]);
+  // (Hooks above must stay above the early returns below.)
 
   // ------------------ UI ------------------
+  // Early returns live AFTER every hook above so the hook order never changes.
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
+
   return (
     <div className="min-h-screen bg-muted/30 px-1 py-1">
       <div className="mx-auto max-w-[1700px] space-y-4">

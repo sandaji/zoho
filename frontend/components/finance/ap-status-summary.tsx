@@ -11,6 +11,7 @@ import type { APStatusItem } from "@/app/dashboard/finance/types";
 const StatusIconMap: Record<string, React.ReactNode> = {
   outstanding: <AlertCircle className="h-4 w-4 text-destructive" />,
   partial:     <Clock className="h-4 w-4 text-warning" />,
+  overdue:     <AlertCircle className="h-4 w-4 text-destructive" />,
   scheduled:   <Clock className="h-4 w-4 text-info" />,
   paid:        <span className="text-success text-sm font-bold">✓</span>,
 };
@@ -19,6 +20,7 @@ const StatusIconMap: Record<string, React.ReactNode> = {
 const StatusColorMap: Record<string, string> = {
   outstanding: "bg-destructive/10 border-destructive/30 text-destructive",
   partial:     "bg-warning-muted border-warning-border text-warning-foreground",
+  overdue:     "bg-destructive/10 border-destructive/30 text-destructive",
   scheduled:   "bg-info-muted border-info-border text-info",
   paid:        "bg-success/10 border-success/20 text-success",
 };

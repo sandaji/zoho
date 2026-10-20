@@ -21,6 +21,7 @@ import type {
   CreateSavingsGoalRequest,
   UpdateSavingsGoalRequest,
   FinancialKPIsResponse,
+  FiscalPeriod,
   FiscalPeriodsResponse,
   FinancialAlertsResponse,
   BankAccountsResponse,
@@ -154,7 +155,33 @@ export async function fetchFiscalPeriods(
   year?: number
 ): Promise<ApiResponse<FiscalPeriodsResponse>> {
   const queryString = year ? `?year=${year}` : "";
-  return apiClient.request<FiscalPeriodsResponse>(`/v1/finance/periods${queryString}`, "GET");
+  // The backend returns the raw FiscalPeriod rows (id, name, startDate, endDate,
+  // status, isLocked) as a bare array, so adapt them to the shape the dashboard
+  // widgets expect instead of assuming { periods, currentPeriod }.
+  const res = await apiClient.request<any>(`/v1/finance/periods${queryString}`, "GET");
+  if (!res.success) return res as ApiResponse<FiscalPeriodsResponse>;
+
+  const rows: any[] = Array.isArray(res.data) ? res.data : (res.data?.periods ?? []);
+  const periods: FiscalPeriod[] = rows.map((p) => {
+    const start = new Date(p.startDate);
+    return {
+      id: p.id,
+      year: start.getFullYear(),
+      month: start.getMonth() + 1,
+      startDate: p.startDate,
+      endDate: p.endDate,
+      status: p.status,
+      isLocked: Boolean(p.isLocked),
+      lockedDate: p.lockedAt ?? undefined,
+    };
+  });
+
+  const now = Date.now();
+  const currentPeriod =
+    periods.find((p) => new Date(p.startDate).getTime() <= now && now <= new Date(p.endDate).getTime()) ??
+    periods[0];
+
+  return { success: true, data: { periods, currentPeriod } };
 }
 
 /**

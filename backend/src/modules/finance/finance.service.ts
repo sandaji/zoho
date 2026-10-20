@@ -8,11 +8,9 @@ import { salesRepository, SalesRepository } from "../../repositories/sales.repos
 import { inventoryRepository, InventoryRepository } from "../../repositories/inventory.repository";
 import { financeRepository, FinanceRepository } from "../../repositories/finance.repository";
 import { dashboardMetricsService, DashboardMetricsService } from "../../services/dashboard-metrics.service";
-import { getFinancialYear, getMonthRange } from "../../utils/date";
+import { getFinancialYear, getMonthRange, type DateRange } from "../../utils/date";
 import { sum, subtract, multiply, percentage, roundCurrency } from "../../utils/money";
-import { ReceivablesService } from "./services/receivables.service";
-import { PayablesService } from "./services/payables.service";
-import { FinanceAnalyticsService } from "./services/finance-analytics.service";
+import { FinanceAnalyticsService, financeAnalytics } from "./services/finance-analytics.service";
 
 export class FinanceService {
   private salesRepo: SalesRepository;
@@ -39,48 +37,38 @@ export class FinanceService {
     try {
       const fy = getFinancialYear();
 
-      const [salesTotals, totalExpenses, activeProducts, lowStockProducts, cashBalance, arAging, apStatus] =
+      // Revenue / expenses / profit / margins come from the general ledger
+      // (FinanceAnalyticsService) so the strip, KPIs, P&L preview, chart and
+      // trends all share one source of truth. Cash and AR/AP are also served
+      // by it (AR/AP via the same services the detail widgets use). Sales
+      // count, inventory and payroll are operational figures, not GL ones.
+      const [gl, salesTotals, activeProducts, lowStockProducts, payrollSummary] =
         await Promise.all([
+          financeAnalytics.getFinancialSummary(fy),
           this.salesRepo.getSalesTotals({
-            startDate: fy.startDate,
-            endDate: fy.endDate,
-          }),
-          this.financeRepo.getExpenses({
             startDate: fy.startDate,
             endDate: fy.endDate,
           }),
           this.inventoryRepo.getActiveProductsCount(),
           this.inventoryRepo.getLowStockItemsCount(),
-          this.financeRepo.getCashBalance(),
-          ReceivablesService.getAgingReport(),
-          PayablesService.getAPStatusSummary(),
+          this.financeRepo.getPayrollSummary({
+            startDate: fy.startDate,
+            endDate: fy.endDate,
+          }),
         ]);
 
-      const revenue = salesTotals.total;
-      const salesCount = salesTotals.count;
-      const profit = subtract(revenue, totalExpenses);
-
-      const grossMargin = revenue > 0 ? roundCurrency(((revenue - totalExpenses) / revenue) * 100) : 0;
-      const netMargin = revenue > 0 ? roundCurrency((profit / revenue) * 100) : 0;
-
-      const payrollSummary = await this.financeRepo.getPayrollSummary({
-        startDate: fy.startDate,
-        endDate: fy.endDate,
-      });
-
       return {
-        cashBalance,
-        // Previously hardcoded to 0 — now backed by the same AR/AP services
-        // the dedicated ARAgingSummary / APStatusSummary dashboard widgets use,
-        // so the executive-strip totals match the detail widgets below them.
-        accountsReceivable: arAging.total,
-        accountsPayable: apStatus.totalPayables,
-        revenue,
-        profit,
-        expenses: totalExpenses,
-        grossMargin,
-        netMargin,
-        salesCount,
+        cashBalance: roundCurrency(gl.cashBalance),
+        accountsReceivable: roundCurrency(gl.accountsReceivable),
+        accountsPayable: roundCurrency(gl.accountsPayable),
+        revenue: roundCurrency(gl.revenue),
+        profit: roundCurrency(gl.netIncome),
+        expenses: roundCurrency(gl.expenses),
+        // The GL has no COGS account range yet, so gross margin is an estimate
+        // (see FinanceAnalyticsService); net margin is the real GL figure.
+        grossMargin: roundCurrency(gl.grossMargin),
+        netMargin: roundCurrency(gl.netMargin),
+        salesCount: salesTotals.count,
         activeProducts,
         lowStockProducts,
         payrollExpenses: payrollSummary.netSalary,
@@ -94,16 +82,16 @@ export class FinanceService {
   /**
    * Get income statement data consuming repositories
    */
-  async getIncomeStatement() {
+  async getIncomeStatement(range?: DateRange) {
     try {
-      const fy = getFinancialYear();
+      const fy = range ?? getFinancialYear();
 
-      const [salesTotals, operatingExpenses, payrollSummary] = await Promise.all([
+      // GL-backed (same source as the summary). Payroll is already inside GL
+      // expenses, so it is shown separately for information only and is never
+      // added on top.
+      const [gl, salesTotals, payrollSummary] = await Promise.all([
+        financeAnalytics.getIncomeStatement(fy),
         this.salesRepo.getSalesTotals({
-          startDate: fy.startDate,
-          endDate: fy.endDate,
-        }),
-        this.financeRepo.getExpenses({
           startDate: fy.startDate,
           endDate: fy.endDate,
         }),
@@ -113,26 +101,17 @@ export class FinanceService {
         }),
       ]);
 
-      const revenue = salesTotals.total;
-      const payrollExpenses = payrollSummary.netSalary;
-      const totalExpenses = sum(operatingExpenses, payrollExpenses);
-
-      // Estimated COGS (approx 60% of subtotal)
-      const cogs = multiply(salesTotals.subtotal, 0.6);
-      const grossProfit = subtract(revenue, cogs);
-      const netIncome = subtract(grossProfit, totalExpenses);
-
       return {
-        revenue,
-        cogs,
-        grossProfit,
-        operatingExpenses,
-        payrollExpenses,
-        totalExpenses,
+        revenue: roundCurrency(gl.revenue),
+        cogs: roundCurrency(gl.cogs), // estimate until a COGS account range exists
+        grossProfit: roundCurrency(gl.grossProfit),
+        operatingExpenses: roundCurrency(gl.operatingExpenses),
+        payrollExpenses: payrollSummary.netSalary,
+        totalExpenses: roundCurrency(gl.operatingExpenses),
         taxes: salesTotals.tax,
-        netIncome,
-        grossMargin: revenue > 0 ? roundCurrency((grossProfit / revenue) * 100) : 0,
-        netMargin: revenue > 0 ? roundCurrency((netIncome / revenue) * 100) : 0,
+        netIncome: roundCurrency(gl.netIncome),
+        grossMargin: roundCurrency(gl.grossProfitMargin),
+        netMargin: roundCurrency(gl.netProfitMargin),
       };
     } catch (error) {
       logger.error({ error }, "Error fetching income statement");
@@ -231,9 +210,10 @@ export class FinanceService {
         grossProfitMargin: incomeStatement.grossMargin,
         netProfitMargin: incomeStatement.netMargin,
         returnOnSales: summary.netMargin,
-        currentRatio: 2.5,
-        quickRatio: 1.8,
-        salesGrowth: 0,
+        // currentRatio / quickRatio / salesGrowth were hardcoded placeholders
+        // and have been removed. Add them back only when they can be computed
+        // from real data (balance-sheet current assets/liabilities, prior-period
+        // revenue).
         expenseRatio: summary.revenue > 0 ? roundCurrency((summary.expenses / summary.revenue) * 100) : 0,
         averageSaleValue: summary.salesCount > 0 ? roundCurrency(summary.revenue / summary.salesCount) : 0,
         cashPosition: summary.cashBalance,

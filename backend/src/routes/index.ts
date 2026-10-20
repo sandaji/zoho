@@ -235,6 +235,7 @@ router.post(
 router.post(
   "/pos/sales",
   authMiddleware,
+  requirePermission("sales.order.create"),
   (req: Request, res: Response, next: NextFunction) =>
     posController.createSales(req, res, next),
 );

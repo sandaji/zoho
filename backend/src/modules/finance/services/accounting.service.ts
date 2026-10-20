@@ -142,13 +142,38 @@ export class AccountingService {
     const netRevenue = Math.round(data.total - data.tax);
     const lines: JournalLineInput[] = [];
 
-    // 1. Debit Cash/Bank for Total Received
-    lines.push({
-      accountId: assetAccount.id,
-      debit: new Prisma.Decimal(Math.round(data.total)),
-      credit: new Prisma.Decimal(0),
-      description: `POS Collection (${data.paymentMethod})`,
-    });
+    // Only what was actually collected hits cash/bank; any shortfall is a
+    // receivable (the customer owes it). Total debits always equal the total.
+    const saleTotal = Math.round(data.total);
+    const received = Math.min(
+      Math.max(0, Math.round(data.amountPaid)),
+      saleTotal,
+    );
+    const outstanding = saleTotal - received;
+
+    // 1. Debit Cash/Bank for the amount received
+    if (received > 0) {
+      lines.push({
+        accountId: assetAccount.id,
+        debit: new Prisma.Decimal(received),
+        credit: new Prisma.Decimal(0),
+        description: `POS Collection (${data.paymentMethod})`,
+      });
+    }
+
+    // 1b. Debit Accounts Receivable for the unpaid balance
+    if (outstanding > 0) {
+      const receivableAccount = await this.getEnsureAccount(
+        DEFAULT_ACCOUNTS.ACCOUNTS_RECEIVABLE,
+        tx,
+      );
+      lines.push({
+        accountId: receivableAccount.id,
+        debit: new Prisma.Decimal(outstanding),
+        credit: new Prisma.Decimal(0),
+        description: `POS Sale on account`,
+      });
+    }
 
     // 2. Credit Revenue for Net Sales
     lines.push({
@@ -198,11 +223,11 @@ export class AccountingService {
     // journal entry below succeeds (a missing fiscal period must never
     // block a POS sale, but the cash was still actually received and
     // should still be reconcilable against the bank).
-    if (data.total > 0) {
+    if (received > 0) {
       await BankTreasuryService.recordTransaction(tx, {
         paymentMethod: data.paymentMethod,
         type: "income",
-        amount: Math.round(data.total),
+        amount: received,
         description: `POS Sale #${data.saleId}`,
         referenceNo: data.saleId,
         category: "pos_sale",

@@ -73,7 +73,7 @@ export function ReconciliationStatus() {
   }
 
   const reconciliationRate =
-    Math.round(((data.reconciledCount + data.pendingCount) / data.totalAccounts) * 100) || 0;
+    Math.round((data.reconciledCount / data.totalAccounts) * 100) || 0;
 
   return (
     <Card>

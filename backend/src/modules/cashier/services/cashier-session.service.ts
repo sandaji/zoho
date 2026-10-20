@@ -3,6 +3,17 @@ import { AppError, ErrorCode } from '@core/errors/errors';
 import { CashierSessionStatus } from '@/types';
 
 export class CashierSessionService {
+  /** Cash that should be in the drawer: opening float + cash received. */
+  static computeExpectedCash(session: {
+    openingBalance?: number | null;
+    totalCashReceived?: number | null;
+  }): number {
+    return (
+      (Number(session.openingBalance) || 0) +
+      (Number(session.totalCashReceived) || 0)
+    );
+  }
+
   /**
    * STEP 4.1: Open a new cashier session
    *
@@ -85,6 +96,9 @@ export class CashierSessionService {
     sessionId: string;
     actualCash: number;
     closedById?: string;
+    /** Role and branch of whoever is closing; used to enforce ownership. */
+    closedByRole?: string;
+    closedByBranchId?: string;
     notes?: string;
   }): Promise<any> {
     // Fetch session and validate state
@@ -104,8 +118,27 @@ export class CashierSessionService {
       );
     }
 
-    // Calculate expected cash from payment totals
-    const expectedCash = session.totalCashReceived;
+    // Only the session's owner may close it. Admins can close any session, and
+    // branch managers any session in their own branch.
+    if (input.closedById && session.userId !== input.closedById) {
+      const role = input.closedByRole;
+      const isAdmin = role === 'admin' || role === 'super_admin';
+      const isBranchManager =
+        role === 'branch_manager' &&
+        !!input.closedByBranchId &&
+        input.closedByBranchId === session.branchId;
+      if (!isAdmin && !isBranchManager) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          'You can only close your own cashier session'
+        );
+      }
+    }
+
+    // Expected cash in the drawer = the opening float + cash taken during the
+    // session (card / M-Pesa / other never enter the drawer).
+    const expectedCash = CashierSessionService.computeExpectedCash(session);
 
     // Calculate variance
     const cashVariance = input.actualCash - expectedCash;
@@ -310,7 +343,7 @@ export class CashierSessionService {
 
     // Validate variance is within acceptable range (5% or ±500)
     const varianceThreshold = Math.max(
-      session.expectedCash! * 0.05, // 5% of expected
+      (session.expectedCash ?? 0) * 0.05, // 5% of expected
       500 // Or 500 KES absolute
     );
 
@@ -452,7 +485,11 @@ export class CashierSessionService {
   static async calculateVariance(sessionId: string): Promise<any> {
     const session = await this.getSessionById(sessionId);
 
-    if (!session.actualCash || !session.expectedCash) {
+    if (
+      session.status === 'OPEN' ||
+      session.actualCash == null ||
+      session.expectedCash == null
+    ) {
       throw new AppError(
         ErrorCode.BAD_REQUEST,
         400,
@@ -460,21 +497,17 @@ export class CashierSessionService {
       );
     }
 
-    // Get sales breakdown by payment method
-    const paymentBreakdown = session.sales.reduce(
-      (acc: any, sale: any) => {
-        const method = sale.paymentMethod?.toLowerCase() || 'other';
-        if (!acc[method]) {
-          acc[method] = { expected: 0, actual: 0, variance: 0 };
-        }
-        acc[method].expected += sale.total;
-        return acc;
-      },
-      {}
-    );
+    // Takings per payment method come from the session's running totals
+    // (sales rows don't carry a payment method of their own).
+    const paymentBreakdown = {
+      cash: session.totalCashReceived,
+      card: session.totalCardReceived,
+      mpesa: session.totalMpesaReceived,
+      other: session.totalOtherReceived,
+    };
 
-    // For cash method specifically
-    const cashExpected = session.totalCashReceived;
+    // Cash in the drawer: opening float + cash received
+    const cashExpected = session.expectedCash;
     const cashActual = session.actualCash;
     const cashVariance = cashActual - cashExpected;
 
@@ -488,7 +521,10 @@ export class CashierSessionService {
         expected: session.expectedCash,
         actual: session.actualCash,
         variance: session.cashVariance,
-        variancePercent: ((session.cashVariance / session.expectedCash) * 100).toFixed(2),
+        variancePercent:
+          session.expectedCash > 0
+            ? ((session.cashVariance / session.expectedCash) * 100).toFixed(2)
+            : '0.00',
       },
 
       // Cash Method Specific
@@ -526,44 +562,6 @@ export class CashierSessionService {
     };
   }
 
-  /**
-   * Helper: Update session totals on new sale
-   * Called from SalesService.createPOSSale()
-   *
-   * @param sessionId - Active session
-   * @param saleAmount - Total sale amount
-   * @param paymentMethod - How payment was received
-   * @returns Updated CashierSession
-   */
-  static async incrementSessionTotals(
-    sessionId: string,
-    saleAmount: number,
-    paymentMethod: string
-  ): Promise<any> {
-    const paymentKey = paymentMethod.toLowerCase();
-
-    const updateData: any = {
-      totalSalesCount: { increment: 1 },
-      totalSalesAmount: { increment: saleAmount },
-    };
-
-    switch (paymentKey) {
-      case 'cash':
-        updateData.totalCashReceived = { increment: saleAmount };
-        break;
-      case 'card':
-        updateData.totalCardReceived = { increment: saleAmount };
-        break;
-      case 'mpesa':
-        updateData.totalMpesaReceived = { increment: saleAmount };
-        break;
-      default:
-        updateData.totalOtherReceived = { increment: saleAmount };
-    }
-
-    return prisma.cashierSession.update({
-      where: { id: sessionId },
-      data: updateData,
-    });
-  }
+  // Note: session totals are updated inside SalesService.createPOSSale's own
+  // transaction, so a sale and its session totals can never drift apart.
 }

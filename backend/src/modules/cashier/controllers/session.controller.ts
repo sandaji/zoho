@@ -19,7 +19,12 @@ const mapToSessionResponse = (session: any) => {
   // Ensure numeric values are properly converted to numbers with 0 as default for undefined
   const openingBalance = Number(session.openingBalance) || 0;
   const actualCash = session.actualCash ? Number(session.actualCash) : undefined;
-  const expectedCash = Number(session.expectedCash) || 0;
+  // While a session is OPEN nothing is stored yet, so derive what should be in
+  // the drawer (opening float + cash received) - the close dialog shows this.
+  const expectedCash =
+    session.status === 'OPEN'
+      ? CashierSessionService.computeExpectedCash(session)
+      : Number(session.expectedCash) || 0;
   const cashVariance = session.cashVariance ? Number(session.cashVariance) : 0;
   const totalSalesAmount = Number(session.totalSalesAmount) || 0;
   const totalSalesCount = Number(session.totalSalesCount) || 0;
@@ -140,7 +145,8 @@ export class CashierSessionController {
     try {
       const { id } = req.params as { id: string };
       const { actualCash, notes } = req.body;
-      const userId = (req as any).user?.userId;
+      const authUser = (req as any).user;
+      const userId = authUser?.userId;
 
       // Validate session ID
       const idString = (id as string) || '';
@@ -164,6 +170,8 @@ export class CashierSessionController {
         sessionId: idString,
         actualCash,
         closedById: userId,
+        closedByRole: authUser?.role,
+        closedByBranchId: authUser?.branchId,
         notes,
       });
 

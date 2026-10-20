@@ -20,8 +20,9 @@ import {
   ProductSearchDTO,
   ApproveDiscountDTO,
 } from "../dtos";
-import { validationError } from "@core/errors/errors";
+import { validationError, AppError, ErrorCode } from "@core/errors/errors";
 import { logger } from "@core/utils/logger";
+import { createPosSaleSchema } from "../pos-sale.validation";
 
 export class POSController {
   private posService = new PosService();
@@ -67,47 +68,58 @@ export class POSController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const dto: CreateSalesDTO = req.body;
-      const idempotencyKey = req.headers["idempotency-key"] as string;
-
-      // Validation
-      if (
-        !dto.branchId ||
-        !dto.userId ||
-        !dto.items ||
-        dto.items.length === 0
-      ) {
-        throw validationError(
-          "Missing required fields: branchId, userId, items",
-        );
+      const parsed = createPosSaleSchema.safeParse(req.body);
+      if (!parsed.success) {
+        const first = parsed.error.issues[0];
+        const where = first?.path?.length ? `${first.path.join(".")}: ` : "";
+        throw validationError(`${where}${first?.message ?? "Invalid sale"}`);
       }
+      const dto = parsed.data;
+      const idempotencyKey = req.headers["idempotency-key"] as string | undefined;
 
-      if (!dto.payment_method) {
-        throw validationError("Payment method is required");
+      // Identity comes from the token, never from the body.
+      const authUser = req.user;
+      if (!authUser) {
+        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "Not authenticated");
+      }
+      const isAdmin =
+        authUser.role === "admin" || authUser.role === "super_admin";
+      const userId = authUser.userId;
+      const branchId = isAdmin
+        ? dto.branchId || authUser.branchId
+        : authUser.branchId;
+      if (!branchId) {
+        throw validationError("No branch is assigned to this user");
+      }
+      if (!isAdmin && dto.branchId && dto.branchId !== authUser.branchId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "You can only sell from your own branch",
+        );
       }
 
       // Create using SalesDocument model with idempotency support
       const newSaleDocument = await SalesService.createPOSSale({
-        branchId: dto.branchId,
-        userId: dto.userId,
+        branchId,
+        userId,
         items: dto.items.map((item) => ({
           productId: item.productId,
           quantity: item.quantity,
-          unitPrice: item.unit_price,
-          taxRate: item.tax_rate,
           discount: item.discount,
         })),
         paymentMethod: dto.payment_method,
-        amountPaid: dto.amount_paid || 0,
-        notes: dto.notes,
-        customerId: dto.customerId,
+        amountPaid: dto.amount_paid ?? 0,
+        notes: dto.notes ?? undefined,
+        customerId: dto.customerId ?? undefined,
         idempotencyKey,
         discount: dto.discount || 0,
+        requireSession: !isAdmin,
       });
 
       // Fetch branch details for receipt header
       const branch = await prisma.branch.findUnique({
-        where: { id: dto.branchId },
+        where: { id: branchId },
         select: {
           id: true,
           name: true,
@@ -123,7 +135,7 @@ export class POSController {
         invoice_no: newSaleDocument.documentId,
         status: "confirmed",
         payment_method: dto.payment_method,
-        branchId: dto.branchId,
+        branchId,
         branch: branch
           ? {
               id: branch.id,
@@ -133,14 +145,14 @@ export class POSController {
               city: branch.city,
             }
           : null,
-        userId: dto.userId,
+        userId,
         subtotal: newSaleDocument.subtotal,
         total_amount: newSaleDocument.subtotal,
         discount: newSaleDocument.discount,
         tax: newSaleDocument.tax,
         grand_total: newSaleDocument.total,
-        amount_paid: dto.amount_paid || newSaleDocument.total,
-        change: 0,
+        amount_paid: newSaleDocument.paidAmount,
+        change: newSaleDocument.change,
         sales_items: newSaleDocument.items.map((item: any) => ({
           id: item.id,
           productId: item.productId,
@@ -160,7 +172,7 @@ export class POSController {
         {
           saleDocumentId: newSaleDocument.id,
           invoice_no: newSaleDocument.documentId,
-          branchId: dto.branchId,
+          branchId,
         },
         "POS sale created using SalesDocument model",
       );

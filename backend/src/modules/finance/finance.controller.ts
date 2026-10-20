@@ -307,18 +307,29 @@ class FinanceController {
         ? new Date(req.query.endDate as string)
         : new Date();
 
-      const incomeStatement = await this.financeService.getIncomeStatement();
+      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        throw validationError("startDate and endDate must be valid dates");
+      }
+
+      const incomeStatement = await this.financeService.getIncomeStatement({
+        startDate,
+        endDate,
+      });
+
+      const isoDay = (d: Date) => d.toISOString().split("T")[0];
 
       // Format as P&L Quick Preview
       const plPreview = {
-        period: `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
+        period: `${isoDay(startDate)} - ${isoDay(endDate)}`,
         revenue: incomeStatement.revenue,
         cogs: incomeStatement.cogs,
         grossProfit: incomeStatement.grossProfit,
         grossMarginPercent: incomeStatement.grossMargin,
         operatingExpenses: incomeStatement.operatingExpenses,
-        operatingIncome:
-          incomeStatement.grossProfit - incomeStatement.operatingExpenses,
+        // GL net income = revenue - posted expenses. gross profit/COGS are an
+        // estimate (no COGS account range yet), so deriving operating income
+        // from them would not reconcile to net income.
+        operatingIncome: incomeStatement.netIncome,
         netIncome: incomeStatement.netIncome,
         netMarginPercent: incomeStatement.netMargin,
         ebitda: incomeStatement.netIncome + 0, // Simplified - would need interest, tax, etc.
@@ -733,13 +744,15 @@ class FinanceController {
   ): Promise<void> {
     try {
       const { id } = req.params;
+      // @ts-ignore
+      const userId = (req.user as any)?.userId as string | undefined;
       if (!id) {
         res
           .status(400)
           .json({ status: "error", message: "Period ID is required" });
         return;
       }
-      const result = await PeriodService.unlock(id as string);
+      const result = await PeriodService.unlock(id as string, userId);
       res.status(200).json({ status: "success", data: result });
     } catch (error) {
       logger.error(error, "Error unlocking fiscal period:");
