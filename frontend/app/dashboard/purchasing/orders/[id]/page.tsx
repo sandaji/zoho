@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Download, Eye, CheckCircle, Loader2 } from "lucide-react";
 import ReceiveGoodsModal from "./receive-goods-modal";
+import { formatCurrency } from "@/lib/utils";
 
 import { frontendEnv } from "@/lib/env";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
@@ -129,8 +130,6 @@ export default function PurchaseOrderDetailPage() {
     };
 
     fetchPO();
-    // Only fetch when params.id or token changes - removed router/showToast from dependencies
-    // as they are utilities, not data dependencies
   }, [params.id, token]);
 
   const handleReceiveSuccess = (updatedPO: PurchaseOrderDetail) => {
@@ -221,350 +220,280 @@ export default function PurchaseOrderDetailPage() {
   }
 
   const canReceiveGoods = ["APPROVED", "PARTIALLY_RECEIVED"].includes(po.status);
-  // Only a SUBMITTED order can move to APPROVED — the backend's state
-  // machine (VALID_STATE_TRANSITIONS) never allows DRAFT -> APPROVED
-  // directly, so offering this button on a DRAFT order just guarantees a
-  // rejected request. "PENDING" isn't a real PurchaseOrderStatus value at
-  // all, so it never matched anything and is dropped here too.
   const canApprove =
     (user?.role === "super_admin" || user?.role === "branch_manager") &&
     po.status === "SUBMITTED";
-  // A DRAFT order's only forward path is Submit for Approval (DRAFT ->
-  // SUBMITTED per the backend state machine); nothing else is legal yet.
   const canSubmit = po.status === "DRAFT";
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-slate-200">
           <div className="flex items-center gap-4">
             <Button variant="outline" size="sm" onClick={() => router.back()}>
               <ArrowLeft className="h-4 w-4" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900">{po.poNumber}</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold text-slate-900">{po.poNumber}</h1>
+                <Badge className={statusColors[po.status]}>{po.status.replace(/_/g, " ")}</Badge>
+              </div>
               <p className="text-sm text-slate-600 mt-1">
                 Created on {new Date(po.createdAt).toLocaleDateString()}
               </p>
             </div>
           </div>
-          <Badge className={statusColors[po.status]}>{po.status.replace(/_/g, " ")}</Badge>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* PO Details Card */}
-            <Card>
-              <CardHeader className="bg-slate-50 border-b">
-                <CardTitle className="text-lg">Order Details</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-2 gap-6">
-                  <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">Vendor</div>
-                    <div className="text-base font-semibold text-slate-900">{po.vendor.name}</div>
-                    {po.vendor.email && (
-                      <div className="text-sm text-slate-600">{po.vendor.email}</div>
-                    )}
-                  </div>
-
-                  <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">Branch</div>
-                    <div className="text-base font-semibold text-slate-900">{po.branch.name}</div>
-                  </div>
-
-                  <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">Requested By</div>
-                    <div className="text-base font-semibold text-slate-900">
-                      {po.requestedBy.name}
-                    </div>
-                    <div className="text-sm text-slate-600">{po.requestedBy.email}</div>
-                  </div>
-
-                  <div>
-                    <div className="text-sm font-medium text-slate-600 mb-1">Approved By</div>
-                    <div className="text-base font-semibold text-slate-900">
-                      {po.approvedBy?.name || "Pending"}
-                    </div>
-                  </div>
-
-                  {po.expectedDeliveryDate && (
+          {/* Inline Timeline & Actions */}
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+            {/* Timeline */}
+            <div className="flex items-center gap-4 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                <div>
+                  <div className="font-medium text-slate-900">Created</div>
+                  <div className="text-slate-500">{new Date(po.createdAt).toLocaleDateString()}</div>
+                </div>
+              </div>
+              {po.submittedAt && (
+                <>
+                  <div className="w-4 h-px bg-slate-300"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
                     <div>
-                      <div className="text-sm font-medium text-slate-600 mb-1">
-                        Expected Delivery
-                      </div>
-                      <div className="text-base font-semibold text-slate-900">
-                        {new Date(po.expectedDeliveryDate).toLocaleDateString()}
-                      </div>
+                      <div className="font-medium text-slate-900">Submitted</div>
+                      <div className="text-slate-500">{new Date(po.submittedAt).toLocaleDateString()}</div>
                     </div>
-                  )}
-
-                  {po.notes && (
-                    <div className="col-span-2">
-                      <div className="text-sm font-medium text-slate-600 mb-1">Notes</div>
-                      <div className="text-slate-700">{po.notes}</div>
+                  </div>
+                </>
+              )}
+              {po.approvedAt && (
+                <>
+                  <div className="w-4 h-px bg-slate-300"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                    <div>
+                      <div className="font-medium text-slate-900">Approved</div>
+                      <div className="text-slate-500">{new Date(po.approvedAt).toLocaleDateString()}</div>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Line Items */}
-            <Card>
-              <CardHeader className="bg-slate-50 border-b">
-                <CardTitle className="text-lg">Line Items</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-slate-200 hover:bg-transparent">
-                      <TableHead className="h-12 text-slate-700 font-semibold">Product</TableHead>
-                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
-                        Qty Ordered
-                      </TableHead>
-                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
-                        Unit Price
-                      </TableHead>
-                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
-                        Received
-                      </TableHead>
-                      <TableHead className="h-12 text-right text-slate-700 font-semibold">
-                        Subtotal
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {po.items.map((item) => (
-                      <TableRow key={item.id} className="hover:bg-slate-50">
-                        <TableCell className="py-4">
-                          <div>
-                            <div className="font-medium text-slate-900">{item.product.name}</div>
-                            <div className="text-sm text-slate-600">SKU: {item.product.sku}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right py-4">{item.quantity}</TableCell>
-                        <TableCell className="text-right py-4">
-                          KES {item.unitPrice.toFixed(2)}
-                        </TableCell>
-                        <TableCell className="text-right py-4">
-                          <Badge
-                            variant={
-                              item.receivedQuantity === item.quantity ? "default" : "secondary"
-                            }
-                            className={
-                              item.receivedQuantity === item.quantity
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "bg-amber-100 text-amber-800"
-                            }
-                          >
-                            {item.receivedQuantity}/{item.quantity}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right py-4 font-medium">
-                          KES {item.subtotal.toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-
-            {/* GRN History */}
-            {po.grns && po.grns.length > 0 && (
-              <Card>
-                <CardHeader className="bg-slate-50 border-b">
-                  <CardTitle className="text-lg">Goods Receipt History</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    {po.grns.map((grn) => (
-                      <div
-                        key={grn.id}
-                        className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50"
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <div className="font-semibold text-slate-900">{grn.grnNumber}</div>
-                            <div className="text-sm text-slate-600 mt-1">
-                              Received by {grn.receivedBy.name} on{" "}
-                              {new Date(grn.receivedAt).toLocaleDateString()}
-                            </div>
-                          </div>
-                          <Badge className="bg-green-100 text-green-800">{grn.status}</Badge>
-                        </div>
-                        <div className="text-sm text-slate-700">
-                          <div className="font-medium mb-2">Items received:</div>
-                          <ul className="space-y-1 ml-4">
-                            {grn.items.map((item) => (
-                              <li key={item.id} className="text-slate-600">
-                                {item.product.name}: {item.qtyReceived} units
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Summary Card */}
-            <Card>
-              <CardHeader className="bg-slate-50 border-b">
-                <CardTitle className="text-lg">Summary</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-slate-600">Subtotal:</span>
-                    <span className="font-semibold text-slate-900">
-                      KES {po.subtotal.toFixed(2)}
-                    </span>
+                </>
+              )}
+              {po.closedAt && (
+                <>
+                  <div className="w-4 h-px bg-slate-300"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-slate-400"></div>
+                    <div>
+                      <div className="font-medium text-slate-900">Closed</div>
+                      <div className="text-slate-500">{new Date(po.closedAt).toLocaleDateString()}</div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-600">Tax:</span>
-                    <span className="font-semibold text-slate-900">KES {po.tax.toFixed(2)}</span>
-                  </div>
-                  <div className="h-px bg-slate-200 my-4"></div>
-                  <div className="flex justify-between text-lg">
-                    <span className="font-semibold text-slate-900">Total:</span>
-                    <span className="font-bold text-emerald-600">KES {po.total.toFixed(2)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </>
+              )}
+            </div>
 
             {/* Action Buttons */}
-            {canSubmit && (
-              <Link href={`/dashboard/purchasing/orders/${po.id}/edit`}>
-                <Button variant="outline" className="w-full mb-3">
-                  Edit Order
+            <div className="flex items-center gap-2">
+              {canSubmit && (
+                <Link href={`/dashboard/purchasing/orders/${po.id}/edit`}>
+                  <Button variant="outline" size="sm">Edit</Button>
+                </Link>
+              )}
+              {canSubmit && (
+                <Button
+                  onClick={handleSubmitForApproval}
+                  disabled={submitting}
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                >
+                  {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                  Submit
                 </Button>
-              </Link>
-            )}
-
-            {canSubmit && (
-              <Button
-                onClick={handleSubmitForApproval}
-                disabled={submitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-4"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Submit for Approval
-                  </>
-                )}
-              </Button>
-            )}
-
-            {canApprove && (
-              <Button
-                onClick={handleApprove}
-                disabled={approving}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mb-4"
-              >
-                {approving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Approving...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Approve Order
-                  </>
-                )}
-              </Button>
-            )}
-
-            {canReceiveGoods && (
-              <Button
-                onClick={() => setShowReceiveModal(true)}
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mb-4"
-              >
-                <Eye className="mr-2 h-4 w-4" />
-                Receive Goods
-              </Button>
-            )}
-
-            {/* Status Timeline */}
-            <Card>
-              <CardHeader className="bg-slate-50 border-b">
-                <CardTitle className="text-lg">Timeline</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="space-y-4 text-sm">
-                  <div className="flex gap-3">
-                    <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
-                    <div>
-                      <div className="font-medium text-slate-900">Created</div>
-                      <div className="text-slate-600">
-                        {new Date(po.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-
-                  {po.submittedAt && (
-                    <div className="flex gap-3">
-                      <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
-                      <div>
-                        <div className="font-medium text-slate-900">Submitted</div>
-                        <div className="text-slate-600">
-                          {new Date(po.submittedAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {po.approvedAt && (
-                    <div className="flex gap-3">
-                      <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
-                      <div>
-                        <div className="font-medium text-slate-900">Approved</div>
-                        <div className="text-slate-600">
-                          {new Date(po.approvedAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {po.closedAt && (
-                    <div className="flex gap-3">
-                      <div className="w-2 h-2 rounded-full bg-emerald-600 mt-2 flex-shrink-0"></div>
-                      <div>
-                        <div className="font-medium text-slate-900">Closed</div>
-                        <div className="text-slate-600">
-                          {new Date(po.closedAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <Button variant="outline" className="flex-1">
+              )}
+              {canApprove && (
+                <Button
+                  onClick={handleApprove}
+                  disabled={approving}
+                  size="sm"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  {approving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                  Approve
+                </Button>
+              )}
+              {canReceiveGoods && (
+                <Button
+                  onClick={() => setShowReceiveModal(true)}
+                  size="sm"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Receive
+                </Button>
+              )}
+              <Button variant="outline" size="sm">
                 <Download className="mr-2 h-4 w-4" />
                 Print
               </Button>
             </div>
           </div>
         </div>
+
+        {/* Order Details Card - Reduced Size */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Vendor</div>
+                <div className="text-sm font-semibold text-slate-900">{po.vendor.name}</div>
+                {po.vendor.email && <div className="text-xs text-slate-600">{po.vendor.email}</div>}
+              </div>
+              <div>
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Branch</div>
+                <div className="text-sm font-semibold text-slate-900">{po.branch.name}</div>
+              </div>
+              <div>
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Requested By</div>
+                <div className="text-sm font-semibold text-slate-900">{po.requestedBy.name}</div>
+                <div className="text-xs text-slate-600">{po.requestedBy.email}</div>
+              </div>
+              <div>
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Approved By</div>
+                <div className="text-sm font-semibold text-slate-900">{po.approvedBy?.name || "Pending"}</div>
+                {po.approvedBy?.email && <div className="text-xs text-slate-600">{po.approvedBy.email}</div>}
+              </div>
+            </div>
+            {(po.expectedDeliveryDate || po.notes) && (
+              <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {po.expectedDeliveryDate && (
+                  <div>
+                    <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Expected Delivery</div>
+                    <div className="text-sm font-semibold text-slate-900">{new Date(po.expectedDeliveryDate).toLocaleDateString()}</div>
+                  </div>
+                )}
+                {po.notes && (
+                  <div className="md:col-span-2">
+                    <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Notes</div>
+                    <div className="text-sm text-slate-700">{po.notes}</div>
+                  </div>
+                )}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Line Items - Full Width */}
+        <Card>
+          <CardHeader className="bg-slate-50 border-b py-4">
+            <CardTitle className="text-lg">Line Items</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0 p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-slate-200 hover:bg-transparent">
+                  <TableHead className="h-12 text-slate-700 font-semibold pl-6">Product</TableHead>
+                  <TableHead className="h-12 text-right text-slate-700 font-semibold">Qty Ordered</TableHead>
+                  <TableHead className="h-12 text-right text-slate-700 font-semibold">Unit Price</TableHead>
+                  <TableHead className="h-12 text-right text-slate-700 font-semibold">Received</TableHead>
+                  <TableHead className="h-12 text-right text-slate-700 font-semibold pr-6">Subtotal</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {po.items.map((item) => (
+                  <TableRow key={item.id} className="hover:bg-slate-50">
+                    <TableCell className="py-4 pl-6">
+                      <div>
+                        <div className="font-medium text-slate-900">{item.product.name}</div>
+                        <div className="text-sm text-slate-600">SKU: {item.product.sku}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right py-4">{item.quantity}</TableCell>
+                    <TableCell className="text-right py-4">{formatCurrency(item.unitPrice)}</TableCell>
+                    <TableCell className="text-right py-4">
+                      <Badge
+                        variant={item.receivedQuantity === item.quantity ? "default" : "secondary"}
+                        className={
+                          item.receivedQuantity === item.quantity
+                            ? "bg-emerald-100 text-emerald-800"
+                            : "bg-amber-100 text-amber-800"
+                        }
+                      >
+                        {item.receivedQuantity}/{item.quantity}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right py-4 font-medium pr-6">
+                      {formatCurrency(item.subtotal)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Summary - Below Line Items, Aligned Right */}
+        <div className="flex justify-end">
+          <Card className="w-full md:w-1/2 lg:w-1/3">
+            <CardHeader className="bg-slate-50 border-b py-4">
+              <CardTitle className="text-lg">Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Subtotal:</span>
+                  <span className="font-semibold text-slate-900">{formatCurrency(po.subtotal)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Tax:</span>
+                  <span className="font-semibold text-slate-900">{formatCurrency(po.tax)}</span>
+                </div>
+                <div className="h-px bg-slate-200 my-4"></div>
+                <div className="flex justify-between text-lg">
+                  <span className="font-semibold text-slate-900">Total:</span>
+                  <span className="font-bold text-emerald-600">{formatCurrency(po.total)}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* GRN History */}
+        {po.grns && po.grns.length > 0 && (
+          <Card>
+            <CardHeader className="bg-slate-50 border-b py-4">
+              <CardTitle className="text-lg">Goods Receipt History</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="space-y-4">
+                {po.grns.map((grn) => (
+                  <div key={grn.id} className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="font-semibold text-slate-900">{grn.grnNumber}</div>
+                        <div className="text-sm text-slate-600 mt-1">
+                          Received by {grn.receivedBy.name} on {new Date(grn.receivedAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <Badge className="bg-green-100 text-green-800">{grn.status}</Badge>
+                    </div>
+                    <div className="text-sm text-slate-700">
+                      <div className="font-medium mb-2">Items received:</div>
+                      <ul className="space-y-1 ml-4">
+                        {grn.items.map((item) => (
+                          <li key={item.id} className="text-slate-600">
+                            {item.product.name}: {item.qtyReceived} units
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Receive Goods Modal */}

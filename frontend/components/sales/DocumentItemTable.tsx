@@ -16,6 +16,7 @@ import { Input } from "../ui/input";
 import { Trash2, Plus } from "lucide-react";
 import { ProductSearchCombobox } from "./ProductSearchCombobox";
 import { Badge } from "../ui/badge";
+import { formatCurrency } from "@/lib/utils";
 
 interface DocumentItemTableProps {
   form: any;
@@ -216,7 +217,7 @@ export const DocumentItemTable: React.FC<DocumentItemTableProps> = ({
                     {/* Amount */}
                     <TableCell>
                       <div className="text-right font-semibold">
-                        {totals.total.toFixed(2)}
+                        {formatCurrency(totals.total)}
                       </div>
                     </TableCell>
 

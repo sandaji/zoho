@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import clsx from "clsx";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   open: boolean;
@@ -70,7 +71,7 @@ export function CloseSessionDialog({
                 Expected Cash
               </p>
               <p className="text-3xl font-bold tracking-tight">
-                KES {expectedCash.toFixed(2)}
+                {formatCurrency(expectedCash)}
               </p>
             </div>
 
@@ -103,10 +104,9 @@ export function CloseSessionDialog({
                   )}
                 >
                   {difference === 0 && "Balanced ✔ No difference"}
-                  {difference > 0 &&
-                    `Over by KES ${difference.toFixed(2)}`}
+                  {difference > 0 && `Over by ${formatCurrency(difference)}`}
                   {difference < 0 &&
-                    `Short by KES ${Math.abs(difference).toFixed(2)}`}
+                    `Short by ${formatCurrency(Math.abs(difference))}`}
                 </div>
               )}
 

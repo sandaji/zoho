@@ -31,6 +31,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/lib/utils';
 
 import { frontendEnv } from "@/lib/env";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
@@ -404,7 +405,7 @@ export default function CreateSalesOrderPage() {
                           />
                         </TableCell>
                         <TableCell className="text-right font-medium">
-                          {item.subtotal.toFixed(2)}
+                          {formatCurrency(item.subtotal)}
                         </TableCell>
                         <TableCell>
                           <button
@@ -430,15 +431,15 @@ export default function CreateSalesOrderPage() {
             <div className="space-y-2 ml-auto w-72">
               <div className="flex justify-between">
                 <span className="text-slate-600">Subtotal:</span>
-                <span className="font-medium">{subtotal.toFixed(2)}</span>
+                <span className="font-medium">{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Tax (16%):</span>
-                <span className="font-medium">{tax.toFixed(2)}</span>
+                <span className="font-medium">{formatCurrency(tax)}</span>
               </div>
               <div className="border-t pt-2 flex justify-between text-lg font-bold">
                 <span>Total:</span>
-                <span className="text-emerald-600">{total.toFixed(2)}</span>
+                <span className="text-emerald-600">{formatCurrency(total)}</span>
               </div>
             </div>
           </CardContent>

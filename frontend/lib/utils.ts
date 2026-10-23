@@ -16,12 +16,16 @@ export function cn(...inputs: ClassValue[]) {
  * Safely coerces Prisma Decimal strings, null, and undefined to a number
  * so we never display "Ksh NaN".
  */
-export function formatCurrency(amount: number | string | null | undefined): string {
+export function formatCurrency(
+  amount: number | string | null | undefined,
+  currency: string = "KES"
+): string {
   const value = Number(amount ?? 0);
   return new Intl.NumberFormat("en-KE", {
     style: "currency",
-    currency: "KES",
+    currency,
     minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(isNaN(value) ? 0 : value);
 }
 

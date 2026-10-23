@@ -1,5 +1,6 @@
 import { TableRow, TableCell } from "@/components/ui/table";
 import { AlertCircle, Trash2 } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   item: any;
@@ -32,7 +33,7 @@ export function CartItemRow({ item, onQtyChange, onRemove }: Props) {
           {isLowStock && <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />}
         </div>
       </TableCell>
-      <TableCell>ksh {item.unit_price.toFixed(2)}</TableCell>
+      <TableCell>{formatCurrency(item.unit_price)}</TableCell>
 
       <TableCell>
         <div className="flex items-center gap-1">
@@ -67,7 +68,7 @@ export function CartItemRow({ item, onQtyChange, onRemove }: Props) {
       </TableCell>
 
       <TableCell className="font-semibold">
-        ksh {(item.unit_price * item.quantity).toFixed(2)}
+        {formatCurrency(item.unit_price * item.quantity)}
       </TableCell>
 
       <TableCell>

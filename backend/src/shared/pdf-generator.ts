@@ -2,6 +2,7 @@
 // SalesDocument import removed as it was unused in this file but required in options interface
 // which now uses 'any' or could be typed if needed.
 
+import { formatCurrency } from "../utils/money";
 
 /**
  * PDF Generator for Sales Documents
@@ -444,8 +445,8 @@ export class PDFGenerator {
         <th style="width: 15%;">CODE</th>
         <th style="width: 45%;">DESCRIPTION</th>
         <th class="text-center" style="width: 10%;">QUANTITY</th>
-        <th class="text-right" style="width: 12%;">PRICE (KES)</th>
-        <th class="text-right" style="width: 13%;">AMOUNT (KES)</th>
+        <th class="text-right" style="width: 12%;">PRICE</th>
+        <th class="text-right" style="width: 13%;">AMOUNT</th>
       </tr>
     </thead>
     <tbody>
@@ -457,8 +458,8 @@ export class PDFGenerator {
         <td>${item.product?.sku || ""}</td>
         <td>${item.description || item.product?.name || "Item"}</td>
         <td class="text-center">${Math.abs(item.quantity)}</td>
-        <td class="text-right">${item.unitPrice.toFixed(2)}</td>
-        <td class="text-right">${Math.abs(item.total).toFixed(2)}</td>
+        <td class="text-right">${formatCurrency(item.unitPrice)}</td>
+        <td class="text-right">${formatCurrency(Math.abs(item.total))}</td>
       </tr>
       `
         )
@@ -471,28 +472,28 @@ export class PDFGenerator {
     <div class="totals-section">
       <div class="totals-row">
         <span>SUB TOTAL</span>
-        <span>${subtotal.toFixed(2)}</span>
+        <span>${formatCurrency(subtotal)}</span>
       </div>
       <div class="totals-row">
         <span>DISCOUNT</span>
-        <span>${discount.toFixed(2)}</span>
+        <span>${formatCurrency(discount)}</span>
       </div>
       <div class="totals-row">
         <span>VAT</span>
-        <span>${vat.toFixed(2)}</span>
+        <span>${formatCurrency(vat)}</span>
       </div>
       <div class="totals-row grand-total">
         <span>GRAND TOTAL</span>
-        <span>${grandTotal.toFixed(2)}</span>
+        <span>${formatCurrency(grandTotal)}</span>
       </div>
       ${(document.type === "INVOICE" || amountPaid > 0) ? `
       <div class="totals-row">
         <span>AMOUNT PAID (${paymentMethod})</span>
-        <span>${amountPaid.toFixed(2)}</span>
+        <span>${formatCurrency(amountPaid)}</span>
       </div>
       <div class="totals-row">
         <span>BALANCE</span>
-        <span>${balance.toFixed(2)}</span>
+        <span>${formatCurrency(balance)}</span>
       </div>
       ` : ''}
     </div>

@@ -4,6 +4,7 @@ import { Prisma } from "../../../src/generated";
 import { PurchaseOrderStatus } from "../../../src/generated/enums.js";
 import { InventoryService } from "../inventory/services/inventory.service";
 import PDFDocument from "pdfkit";
+import { formatCurrency } from "../../utils/money";
 
 // Vendor.paymentTerms is a free-text field ("NET_30", "NET_15", "COD", ...).
 // Parse the NET_n convention into a day count for AccountPayable.due_date;
@@ -141,8 +142,8 @@ export class PurchasingService {
 
         doc.text(productName, itemX, y);
         doc.text(item.quantity.toString(), qtyX, y);
-        doc.text(item.unitPrice.toFixed(2), priceX, y);
-        doc.text(subtotal.toFixed(2), totalX, y);
+        doc.text(formatCurrency(item.unitPrice), priceX, y);
+        doc.text(formatCurrency(subtotal), totalX, y);
 
         y += 20;
       });
@@ -152,15 +153,15 @@ export class PurchasingService {
 
       // -- TOTALS --
       doc.font("Helvetica-Bold");
-      doc.text(`Subtotal: ${po.subtotal.toFixed(2)}`, 400, y, {
+      doc.text(`Subtotal: ${formatCurrency(po.subtotal)}`, 400, y, {
         align: "right",
       });
       y += 15;
-      doc.text(`Tax: ${po.tax.toFixed(2)}`, 400, y, { align: "right" });
+      doc.text(`Tax: ${formatCurrency(po.tax)}`, 400, y, { align: "right" });
       y += 15;
       doc
         .fontSize(12)
-        .text(`Total: ${po.total.toFixed(2)}`, 400, y, { align: "right" });
+        .text(`Total: ${formatCurrency(po.total)}`, 400, y, { align: "right" });
 
       // -- FOOTER --
       doc.fontSize(10).font("Helvetica");

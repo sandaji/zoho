@@ -26,6 +26,7 @@ export interface StatCardProps {
   trend?: { value: number; direction: "up" | "down" | "neutral" };
   prefix?: string;
   suffix?: string;
+  isCurrency?: boolean;
   size?: "sm" | "md" | "lg";
   cardData?: StatCardData;
 }
@@ -43,6 +44,7 @@ export function StatCard({
   trend,
   prefix = "",
   suffix = "",
+  isCurrency = false,
   size = "md",
   cardData,
 }: StatCardProps) {
@@ -92,9 +94,15 @@ export function StatCard({
 
       <div className="mt-3 flex items-baseline justify-between gap-2">
         <span className={`${valueSizeStyles[size]} tracking-tight ${accent.text}`}>
-          {prefix}
-          {typeof cardValue === "number" ? cardValue.toLocaleString() : cardValue}
-          {suffix}
+          {isCurrency ? (
+            formatCurrency(cardValue)
+          ) : (
+            <>
+              {prefix}
+              {typeof cardValue === "number" ? cardValue.toLocaleString("en-KE") : cardValue}
+              {suffix}
+            </>
+          )}
         </span>
 
         {cardChange !== undefined && cardChange !== 0 && (
@@ -141,4 +149,3 @@ export function StatCardGrid({ children, cols = 4, className = "" }: StatCardGri
     </div>
   );
 }
-

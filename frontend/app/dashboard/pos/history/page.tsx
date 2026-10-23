@@ -38,6 +38,7 @@ import { format } from "date-fns";
 import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { formatCurrency } from "@/lib/utils";
 
 type DocumentType = "ALL" | "DRAFT" | "QUOTE" | "INVOICE" | "CREDIT_NOTE";
 
@@ -207,7 +208,7 @@ export default function HistoryPage() {
           id: "total",
           header: ({ column }) => <DataTableColumnHeader column={column} title="Amount" />,
           cell: (ctx) => (
-            <span className="font-semibold">KES {ctx.getValue().toFixed(2)}</span>
+            <span className="font-semibold">{formatCurrency(ctx.getValue())}</span>
           ),
           sortFn: "alphanumeric",
         }),

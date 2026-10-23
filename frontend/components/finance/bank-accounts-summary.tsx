@@ -124,9 +124,9 @@ export const BankAccountsSummary = () => {
                   </div>
                   <div className="text-right ml-4">
                     <p className="text-sm font-semibold text-foreground">
-                      {formatCurrency(account.balance)}
+                      {formatCurrency(account.balance, account.currency || "KES")}
                     </p>
-                    <p className="text-xs text-muted-foreground">{account.currency || "USD"}</p>
+                    <p className="text-xs text-muted-foreground">{account.currency || "KES"}</p>
                   </div>
                 </div>
               </div>

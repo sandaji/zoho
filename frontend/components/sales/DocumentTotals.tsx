@@ -4,6 +4,7 @@
 import React, { useEffect, useState } from 'react';
 // useFormContext removed
 import { Card, CardContent } from '../ui/card';
+import { formatCurrency } from '@/lib/utils';
 
 interface DocumentTotalsProps {
   form: any; // Simplified for now
@@ -33,19 +34,23 @@ export const DocumentTotals: React.FC<DocumentTotalsProps> = ({ form }) => {
         <CardContent className="space-y-3 pt-4">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Subtotal</span>
-            <span className="font-medium tabular-nums">KES {totals.subtotal.toLocaleString("en-KE", { minimumFractionDigits: 2 })}</span>
+            <span className="font-medium tabular-nums">{formatCurrency(totals.subtotal)}</span>
           </div>
-          {totals.discount > 0 && <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Discount</span>
-            <span className="font-medium text-success tabular-nums">− KES {totals.discount.toLocaleString("en-KE", { minimumFractionDigits: 2 })}</span>
-          </div>
+          {totals.discount > 0 && (
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Discount</span>
+              <span className="font-medium text-success tabular-nums">
+                {formatCurrency(-Math.abs(totals.discount))}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">VAT</span>
-            <span className="font-medium tabular-nums">KES {totals.tax.toLocaleString("en-KE", { minimumFractionDigits: 2 })}</span>
+            <span className="font-medium tabular-nums">{formatCurrency(totals.tax)}</span>
           </div>
           <div className="flex justify-between rounded-md bg-primary px-3 py-3 text-primary-foreground">
             <span className="font-semibold">Grand Total</span>
-            <span className="text-lg font-bold tabular-nums">KES {totals.total.toLocaleString("en-KE", { minimumFractionDigits: 2 })}</span>
+            <span className="text-lg font-bold tabular-nums">{formatCurrency(totals.total)}</span>
           </div>
         </CardContent>
       </Card>

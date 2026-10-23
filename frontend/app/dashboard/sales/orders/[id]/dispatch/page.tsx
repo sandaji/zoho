@@ -31,6 +31,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { formatCurrency } from '@/lib/utils';
 
 import { frontendEnv } from "@/lib/env";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
@@ -403,7 +404,7 @@ export default function SalesOrderDispatchPage({
                 <span className="font-medium">{totalToDispatch}</span>
               </div>
               <div className="text-sm text-slate-500">
-                Order Total: {salesOrder.totalAmount.toFixed(2)} KES
+                Order Total: {formatCurrency(salesOrder.totalAmount)}
               </div>
             </div>
           </CardContent>

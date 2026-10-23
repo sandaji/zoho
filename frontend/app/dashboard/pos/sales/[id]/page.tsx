@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Printer, ArrowLeft } from "lucide-react";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { formatCurrency } from "@/lib/utils";
 
 interface SaleItem {
   id: string;
@@ -178,14 +179,16 @@ export default function InvoicePage() {
                   <div key={item.id}>
                     <div className="flex justify-between">
                       <span className="font-medium">{item.product.name}</span>
-                      <span className="font-mono">ksh {item.amount.toFixed(2)}</span>
+                      <span className="font-mono">{formatCurrency(item.amount)}</span>
                     </div>
                     <div className="flex justify-between text-muted-foreground">
                       <span className="text-xs">
-                        {item.quantity} × ksh {item.unit_price.toFixed(2)}
+                        {item.quantity} × {formatCurrency(item.unit_price)}
                       </span>
                       {item.discount > 0 && (
-                        <span className="text-xs">-ksh {item.discount.toFixed(2)}</span>
+                        <span className="text-xs">
+                          {formatCurrency(-Math.abs(item.discount))}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -197,21 +200,23 @@ export default function InvoicePage() {
             <div className="mb-4 space-y-1 text-xs">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span className="font-mono">ksh {sale.subtotal.toFixed(2)}</span>
+                <span className="font-mono">{formatCurrency(sale.subtotal)}</span>
               </div>
               {sale.discount > 0 && (
                 <div className="flex justify-between text-orange-600">
                   <span>Discount</span>
-                  <span className="font-mono">-ksh {sale.discount.toFixed(2)}</span>
+                  <span className="font-mono">
+                    {formatCurrency(-Math.abs(sale.discount))}
+                  </span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span>Tax (16%)</span>
-                <span className="font-mono">ksh {sale.tax.toFixed(0)}</span>
+                <span className="font-mono">{formatCurrency(sale.tax)}</span>
               </div>
               <div className="flex justify-between border-t pt-1 font-bold">
                 <span>Total</span>
-                <span className="font-mono">ksh {sale.grand_total.toFixed(0)}</span>
+                <span className="font-mono">{formatCurrency(sale.grand_total)}</span>
               </div>
             </div>
 
@@ -223,13 +228,15 @@ export default function InvoicePage() {
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Amount Paid</span>
-                <span className="font-mono font-bold">ksh {sale.amount_paid.toFixed(0)}</span>
+                <span className="font-mono font-bold">
+                  {formatCurrency(sale.amount_paid)}
+                </span>
               </div>
               {sale.change > 0 && (
                 <div className="flex justify-between">
                   <span className="font-medium">Change</span>
                   <span className="font-mono font-bold text-green-600">
-                    ksh {sale.change.toFixed(2)}
+                    {formatCurrency(sale.change)}
                   </span>
                 </div>
               )}

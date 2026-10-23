@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {  Lock, AlertCircle } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 export function OrderSummary({
   subtotal,
@@ -31,22 +32,22 @@ export function OrderSummary({
       <div className="space-y-3 rounded-lg bg-slate-50 p-4">
         <div className="flex justify-between text-sm">
           <span className="text-slate-600">Subtotal</span>
-          <span className="font-medium">ksh {subtotal.toFixed(2)}</span>
+          <span className="font-medium">{formatCurrency(subtotal)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-slate-600">Tax (16%)</span>
-          <span className="font-medium text-blue-600">ksh {tax.toFixed(2)}</span>
+          <span className="font-medium text-blue-600">{formatCurrency(tax)}</span>
         </div>
         <div className="border-t border-slate-200 pt-3 flex justify-between">
           <span className="text-slate-600 font-medium">Discount</span>
-          <span className="font-medium">ksh 0.00</span>
+          <span className="font-medium">{formatCurrency(0)}</span>
         </div>
       </div>
 
       {/* Grand Total - HERO ELEMENT */}
       <div className="rounded-lg bg-linear-to-r from-blue-600 to-blue-700 p-6 text-white shadow-md">
         <p className="text-sm uppercase tracking-wide opacity-90 mb-1">Amount Due</p>
-        <p className="text-5xl font-bold">ksh {total.toFixed(2)}</p>
+        <p className="text-5xl font-bold">{formatCurrency(total)}</p>
       </div>
 
       {/* Payment Method Selection */}

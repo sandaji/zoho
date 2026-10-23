@@ -70,9 +70,9 @@ export function discount(
   }
 }
 
-export function formatCurrency(amount: MoneyInput, currency: string = "USD"): string {
+export function formatCurrency(amount: MoneyInput, currency: string = "KES"): string {
   const num = roundCurrency(amount);
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("en-KE", {
     style: "currency",
     currency,
     minimumFractionDigits: 2,

@@ -32,6 +32,7 @@ import { useAuth } from "@/lib/auth-context";
 import { purchasingService } from "@/lib/purchasing.service";
 import { warehouseService } from "@/lib/warehouse.service";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/utils";
 
 interface Vendor {
   id: string;
@@ -579,10 +580,7 @@ export default function CreatePurchaseOrderPage() {
 
                     {/* Total (Auto-calculated) */}
                     <TableCell className="text-right font-semibold text-slate-900">
-                      $
-                      {calculateLineTotal(item.quantity, item.unitPrice).toFixed(
-                        2
-                      )}
+                      {formatCurrency(calculateLineTotal(item.quantity, item.unitPrice))}
                     </TableCell>
 
                     {/* Remove Button */}
@@ -609,15 +607,15 @@ export default function CreatePurchaseOrderPage() {
           <CardContent className="pt-6 space-y-3">
             <div className="flex justify-between items-center text-slate-700">
               <span>Subtotal:</span>
-              <span className="font-medium">${subtotal.toFixed(2)}</span>
+              <span className="font-medium">{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between items-center text-slate-700">
               <span>Tax ({(TAX_RATE * 100).toFixed(0)}%):</span>
-              <span className="font-medium">${tax.toFixed(2)}</span>
+              <span className="font-medium">{formatCurrency(tax)}</span>
             </div>
             <div className="border-t border-slate-200 pt-3 flex justify-between items-center text-lg font-bold text-slate-900">
               <span>Grand Total:</span>
-              <span className="text-emerald-600">${total.toFixed(2)}</span>
+              <span className="text-emerald-600">{formatCurrency(total)}</span>
             </div>
           </CardContent>
         </Card>

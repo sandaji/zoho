@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, FileText, Plus, Printer } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 
 interface PostSaleSuccessModalProps {
   isOpen: boolean;
@@ -68,7 +69,7 @@ export function PostSaleSuccessModal({
 
           <div className="flex justify-between items-center">
             <span className="text-sm text-slate-600">Amount Paid</span>
-            <span className="text-lg font-bold text-blue-600">ksh {amountPaid.toFixed(2)}</span>
+            <span className="text-lg font-bold text-blue-600">{formatCurrency(amountPaid)}</span>
           </div>
 
           <div className="flex justify-between items-center border-t border-slate-200 pt-3">

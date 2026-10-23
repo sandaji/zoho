@@ -18,6 +18,7 @@ import { StatCard, StatCardGrid } from "@/components/ui/stats";
 import { LineChart } from "@/components/ui/chart";
 import { QuickActionButtons } from "@/components/ui/quick-action-buttons";
 import { API_ENDPOINTS, getApiUrl, getAuthHeaders } from "@/lib/api-config";
+import { formatCurrency } from "@/lib/utils";
 
 interface BranchDashboardData {
   branch_id: string;
@@ -180,7 +181,7 @@ export default function BranchDashboard() {
                   value={dashboard.kpis.total_revenue}
                   icon={<MdAttachMoney />}
                   variant="success"
-                  prefix="ksh"
+                  isCurrency
                   trend={{ value: dashboard.kpis.sales_growth_percentage, direction: "up" }}
                 />
                 <StatCard
@@ -188,7 +189,7 @@ export default function BranchDashboard() {
                   value={dashboard.kpis.sales_this_month}
                   icon={<MdShoppingCart />}
                   variant="info"
-                  prefix="ksh"
+                  isCurrency
                 />
                 <StatCard
                   title="Employees"
@@ -215,25 +216,25 @@ export default function BranchDashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Total Revenue</span>
                     <span className="font-semibold">
-                      ksh {dashboard.kpis.total_revenue.toLocaleString()}
+                      {formatCurrency(dashboard.kpis.total_revenue)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Total Expenses</span>
                     <span className="font-semibold text-red-600">
-                      -ksh {dashboard.kpis.total_expenses.toLocaleString()}
+                      {formatCurrency(-Math.abs(dashboard.kpis.total_expenses))}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Payroll Cost</span>
                     <span className="font-semibold text-red-600">
-                      -ksh {dashboard.kpis.total_payroll.toLocaleString()}
+                      {formatCurrency(-Math.abs(dashboard.kpis.total_payroll))}
                     </span>
                   </div>
                   <div className="border-t pt-3 flex justify-between">
                     <span className="font-semibold">Net Profit</span>
                     <span className="font-bold text-green-600">
-                      ksh {dashboard.kpis.net_profit.toLocaleString()}
+                      {formatCurrency(dashboard.kpis.net_profit)}
                     </span>
                   </div>
                 </div>
@@ -245,7 +246,7 @@ export default function BranchDashboard() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Inventory Value</span>
                     <span className="font-semibold">
-                      ksh {dashboard.kpis.total_inventory_value.toLocaleString()}
+                      {formatCurrency(dashboard.kpis.total_inventory_value)}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -283,14 +284,14 @@ export default function BranchDashboard() {
                 value={dashboard.sales_metrics.total_revenue}
                 icon={<MdAttachMoney />}
                 variant="success"
-                prefix="$"
+                isCurrency
               />
               <StatCard
                 title="Avg Order Value"
                 value={dashboard.sales_metrics.average_order_value}
                 icon={<MdTrendingUp />}
                 variant="info"
-                prefix="$"
+                isCurrency
               />
             </StatCardGrid>
 
@@ -318,7 +319,7 @@ export default function BranchDashboard() {
                       <p className="font-semibold text-gray-900">{customer.customer_name}</p>
                       <p className="text-sm text-gray-600">{customer.order_count} orders</p>
                     </div>
-                    <span className="font-bold">ksh {customer.total_spent.toLocaleString()}</span>
+                    <span className="font-bold">{formatCurrency(customer.total_spent)}</span>
                   </div>
                 ))}
               </div>
@@ -342,7 +343,7 @@ export default function BranchDashboard() {
                 value={dashboard.operations_metrics.total_inventory_value}
                 icon={<MdWarehouse />}
                 variant="warning"
-                prefix="$"
+                isCurrency
               />
               <StatCard
                 title="Active Trucks"
@@ -356,7 +357,7 @@ export default function BranchDashboard() {
                 value={dashboard.operations_metrics.fuel_cost_total}
                 icon={<MdAttachMoney />}
                 variant="danger"
-                prefix="$"
+                isCurrency
               />
             </StatCardGrid>
 
@@ -429,14 +430,14 @@ export default function BranchDashboard() {
                 value={dashboard.payroll_metrics.total_payroll_cost}
                 icon={<MdAttachMoney />}
                 variant="danger"
-                prefix="$"
+                isCurrency
               />
               <StatCard
                 title="Avg Salary"
                 value={dashboard.payroll_metrics.average_salary}
                 icon={<MdTrendingUp />}
                 variant="info"
-                prefix="$"
+                isCurrency
               />
               <StatCard
                 title="Paid"
@@ -464,26 +465,26 @@ export default function BranchDashboard() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Salary Range</span>
                   <span className="font-semibold">
-                    ${dashboard.payroll_metrics.lowest_salary.toLocaleString()} - $
-                    {dashboard.payroll_metrics.highest_salary.toLocaleString()}
+                    {formatCurrency(dashboard.payroll_metrics.lowest_salary)} -{" "}
+                    {formatCurrency(dashboard.payroll_metrics.highest_salary)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Allowances</span>
                   <span className="font-semibold text-green-600">
-                    +${dashboard.payroll_metrics.total_allowances.toLocaleString()}
+                    +{formatCurrency(dashboard.payroll_metrics.total_allowances)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Deductions</span>
                   <span className="font-semibold text-red-600">
-                    -${dashboard.payroll_metrics.total_deductions.toLocaleString()}
+                    {formatCurrency(-Math.abs(dashboard.payroll_metrics.total_deductions))}
                   </span>
                 </div>
                 <div className="border-t pt-3 flex justify-between">
                   <span className="font-semibold">Net Payroll Cost</span>
                   <span className="font-bold">
-                    ${dashboard.payroll_metrics.total_payroll_cost.toLocaleString()}
+                    {formatCurrency(dashboard.payroll_metrics.total_payroll_cost)}
                   </span>
                 </div>
               </div>

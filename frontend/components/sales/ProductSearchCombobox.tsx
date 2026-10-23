@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Check, ChevronsUpDown, AlertCircle, Package } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -222,7 +222,7 @@ export function ProductSearchCombobox({
                         <div className="flex items-center gap-4 text-xs text-muted-foreground">
                           <span>SKU: {product.sku}</span>
                           <span>•</span>
-                          <span>KES {product.unit_price.toFixed(2)}</span>
+                          <span>{formatCurrency(product.unit_price)}</span>
                           {product.category && (
                             <>
                               <span>•</span>

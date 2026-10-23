@@ -1,5 +1,6 @@
 // frontend/components/sales/PrintableDocument.tsx
 import React from "react";
+import { formatCurrency } from "@/lib/utils";
 
 // Define types for props - replace with actual types from your project
 type DocumentItem = {
@@ -61,8 +62,8 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document }
               <tr key={index}>
                 <td>{item.description}</td>
                 <td className="text-right">{item.quantity}</td>
-                <td className="text-right">{item.unitPrice.toFixed(2)}</td>
-                <td className="text-right">{item.total.toFixed(2)}</td>
+                <td className="text-right">{formatCurrency(item.unitPrice)}</td>
+                <td className="text-right">{formatCurrency(item.total)}</td>
               </tr>
             ))}
           </tbody>
@@ -76,13 +77,13 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document }
               <td colSpan={3} className="text-right">
                 Subtotal
               </td>
-              <td className="text-right">{document.subtotal.toFixed(2)}</td>
+              <td className="text-right">{formatCurrency(document.subtotal)}</td>
             </tr>
             <tr className="font-bold">
               <td colSpan={3} className="text-right">
                 Tax
               </td>
-              <td className="text-right">{document.tax.toFixed(2)}</td>
+              <td className="text-right">{formatCurrency(document.tax)}</td>
             </tr>
             <tr>
               <td colSpan={4}>
@@ -93,7 +94,7 @@ export const PrintableDocument: React.FC<PrintableDocumentProps> = ({ document }
               <td colSpan={3} className="text-right">
                 Total
               </td>
-              <td className="text-right">{document.total.toFixed(2)}</td>
+              <td className="text-right">{formatCurrency(document.total)}</td>
             </tr>
           </tfoot>
         </table>

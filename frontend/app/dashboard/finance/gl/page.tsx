@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 import { getApiUrl } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { formatCurrency } from "@/lib/utils";
 import {
   Plus,
   Search,
@@ -194,7 +195,7 @@ export default function GeneralLedgerPage() {
   const handleSubmit = async () => {
     if (!isBalanced) {
       toast(
-        `Entry not balanced — Debit ${totalDebit.toFixed(2)} ≠ Credit ${totalCredit.toFixed(2)}`,
+        `Entry not balanced — Debit ${formatCurrency(totalDebit)} ≠ Credit ${formatCurrency(totalCredit)}`,
         "error",
       );
       return;
@@ -552,7 +553,7 @@ export default function GeneralLedgerPage() {
                 {!isBalanced && totalDebit + totalCredit > 0 && (
                   <p className="text-xs text-red-600">
                     ⚠ Entry is not balanced — difference:{" "}
-                    {Math.abs(totalDebit - totalCredit).toFixed(2)}
+                    {formatCurrency(Math.abs(totalDebit - totalCredit))}
                   </p>
                 )}
               </div>
