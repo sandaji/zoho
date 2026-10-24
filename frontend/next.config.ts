@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   experimental: {
     useTypeScriptCli: true,
   },
+  allowedDevOrigins: ["192.168.100.7"],
 
   // API proxy configuration
   rewrites: async () => {

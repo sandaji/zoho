@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/lib/auth-context";
+import { formatCurrency } from "@/lib/utils";
 import { purchasingService } from "@/lib/purchasing.service";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
@@ -113,7 +114,7 @@ const columns = columnHelper.columns([
     header: ({ column }) => <DataTableColumnHeader column={column} title="Total" />,
     cell: (ctx) => (
       <span className="font-semibold text-slate-900">
-        KES {ctx.getValue().toLocaleString("en-KE", { minimumFractionDigits: 2 })}
+        {formatCurrency(ctx.getValue())}
       </span>
     ),
     sortFn: "alphanumeric",
