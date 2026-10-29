@@ -29,6 +29,7 @@ interface PurchaseOrderDetail {
   status:
     | "DRAFT"
     | "SUBMITTED"
+    | "ACKNOWLEDGED"
     | "APPROVED"
     | "PARTIALLY_RECEIVED"
     | "RECEIVED"
@@ -37,6 +38,7 @@ interface PurchaseOrderDetail {
   vendor: { id: string; name: string; email?: string; phone?: string };
   branch: { id: string; name: string };
   requestedBy: { id: string; email: string; name: string };
+  acknowledgedBy?: { id: string; email: string; name: string };
   approvedBy?: { id: string; email: string; name: string };
   subtotal: number;
   tax: number;
@@ -69,6 +71,7 @@ interface PurchaseOrderDetail {
   notes?: string;
   expectedDeliveryDate?: string;
   submittedAt?: string;
+  acknowledgedAt?: string;
   approvedAt?: string;
   closedAt?: string;
   createdAt: string;
@@ -78,6 +81,7 @@ interface PurchaseOrderDetail {
 const statusColors: Record<string, string> = {
   DRAFT: "bg-slate-100 text-slate-800",
   SUBMITTED: "bg-blue-100 text-blue-800",
+  ACKNOWLEDGED: "bg-violet-100 text-violet-800",
   APPROVED: "bg-emerald-100 text-emerald-800",
   PARTIALLY_RECEIVED: "bg-amber-100 text-amber-800",
   RECEIVED: "bg-green-100 text-green-800",
@@ -93,6 +97,8 @@ export default function PurchaseOrderDetailPage() {
   const [po, setPO] = useState<PurchaseOrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [approving, setApproving] = useState(false);
+  const [acknowledging, setAcknowledging] = useState(false);
+  const [returning, setReturning] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -154,15 +160,111 @@ export default function PurchaseOrderDetailPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Failed to approve purchase order");
+        throw new Error(data.error?.message || data.message || "Failed to approve purchase order");
       }
 
       showToast("success", "Purchase Order approved successfully");
-      setPO((prev) => (prev ? { ...prev, status: "APPROVED" } : null));
+      setPO((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: "APPROVED",
+              approvedBy: data.data?.approvedBy ?? prev.approvedBy,
+              approvedAt: data.data?.approvedAt ?? new Date().toISOString(),
+            }
+          : null
+      );
     } catch (error) {
       showToast("error", error instanceof Error ? error.message : "Approval failed");
     } finally {
       setApproving(false);
+    }
+  };
+
+  // Finance step: acknowledge a submitted LPO so the MD / admin can approve it
+  const handleAcknowledge = async () => {
+    if (!token || !po) return;
+
+    try {
+      setAcknowledging(true);
+      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/acknowledge`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error?.message || data.message || "Failed to acknowledge purchase order"
+        );
+      }
+
+      showToast("success", "Purchase Order acknowledged — it's now waiting for approval");
+      setPO((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: "ACKNOWLEDGED",
+              acknowledgedBy: data.data?.acknowledgedBy,
+              acknowledgedAt: data.data?.acknowledgedAt ?? new Date().toISOString(),
+            }
+          : null
+      );
+    } catch (error) {
+      showToast("error", error instanceof Error ? error.message : "Acknowledgement failed");
+    } finally {
+      setAcknowledging(false);
+    }
+  };
+
+  // Send the LPO back to the requester to be changed and re-submitted
+  const handleReturnToDraft = async () => {
+    if (!token || !po) return;
+    if (
+      !window.confirm(
+        "Return this LPO to draft? It will have to be submitted to Finance again."
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setReturning(true);
+      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/status`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "DRAFT" }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || data.message || "Failed to return purchase order");
+      }
+
+      showToast("success", "Purchase Order returned to draft");
+      setPO((prev) =>
+        prev
+          ? {
+              ...prev,
+              status: "DRAFT",
+              submittedAt: undefined,
+              acknowledgedAt: undefined,
+              acknowledgedBy: undefined,
+            }
+          : null
+      );
+    } catch (error) {
+      showToast("error", error instanceof Error ? error.message : "Could not return the order");
+    } finally {
+      setReturning(false);
     }
   };
 
@@ -183,10 +285,10 @@ export default function PurchaseOrderDetailPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || data.error || "Failed to submit purchase order");
+        throw new Error(data.error?.message || data.message || "Failed to submit purchase order");
       }
 
-      showToast("success", "Purchase Order submitted for approval");
+      showToast("success", "Purchase Order submitted to Finance");
       setPO((prev) =>
         prev ? { ...prev, status: "SUBMITTED", submittedAt: new Date().toISOString() } : null
       );
@@ -220,10 +322,32 @@ export default function PurchaseOrderDetailPage() {
   }
 
   const canReceiveGoods = ["APPROVED", "PARTIALLY_RECEIVED"].includes(po.status);
+  // Workflow: procurement submits -> Finance acknowledges -> MD / admin approves.
+  // These mirror the backend rules (which are the real enforcement).
+  const permissions = user?.permissions || [];
+  const isAdminRole = user?.role === "super_admin" || user?.role === "admin";
+  const isRequester = po.requestedBy?.id === user?.id;
+  // Same KSH amount tiers as the backend
+  const approvalLevel =
+    po.total < 10000 ? "standard" : po.total < 100000 ? "high_value" : "executive";
+  const hasApprovePermission =
+    isAdminRole ||
+    permissions.includes(`purchasing.order.approve_${approvalLevel}`) ||
+    permissions.includes("purchasing.order.approve_executive");
+
+  const canSubmit =
+    po.status === "DRAFT" &&
+    (isRequester || isAdminRole || permissions.includes("purchasing.order.submit"));
+  const canAcknowledge =
+    po.status === "SUBMITTED" &&
+    !isRequester &&
+    (isAdminRole || permissions.includes("purchasing.order.acknowledge"));
   const canApprove =
-    (user?.role === "super_admin" || user?.role === "branch_manager") &&
-    po.status === "SUBMITTED";
-  const canSubmit = po.status === "DRAFT";
+    po.status === "ACKNOWLEDGED" &&
+    !isRequester &&
+    po.acknowledgedBy?.id !== user?.id &&
+    hasApprovePermission;
+  const canReturn = canAcknowledge || canApprove;
 
   return (
     <div className="min-h-screen bg-slate-50 p-8">
@@ -264,6 +388,18 @@ export default function PurchaseOrderDetailPage() {
                     <div>
                       <div className="font-medium text-slate-900">Submitted</div>
                       <div className="text-slate-500">{new Date(po.submittedAt).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                </>
+              )}
+              {po.acknowledgedAt && (
+                <>
+                  <div className="w-4 h-px bg-slate-300"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-600"></div>
+                    <div>
+                      <div className="font-medium text-slate-900">Acknowledged</div>
+                      <div className="text-slate-500">{new Date(po.acknowledgedAt).toLocaleDateString()}</div>
                     </div>
                   </div>
                 </>
@@ -309,7 +445,30 @@ export default function PurchaseOrderDetailPage() {
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                  Submit
+                  Submit to Finance
+                </Button>
+              )}
+              {canAcknowledge && (
+                <Button
+                  onClick={handleAcknowledge}
+                  disabled={acknowledging}
+                  size="sm"
+                  className="bg-violet-600 hover:bg-violet-700 text-white"
+                >
+                  {acknowledging ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
+                  Acknowledge
+                </Button>
+              )}
+              {canReturn && (
+                <Button
+                  onClick={handleReturnToDraft}
+                  disabled={returning}
+                  variant="outline"
+                  size="sm"
+                  className="border-red-300 text-red-700 hover:bg-red-50"
+                >
+                  {returning && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Return to Draft
                 </Button>
               )}
               {canApprove && (
@@ -344,7 +503,7 @@ export default function PurchaseOrderDetailPage() {
         {/* Order Details Card - Reduced Size */}
         <Card>
           <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div>
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Vendor</div>
                 <div className="text-sm font-semibold text-slate-900">{po.vendor.name}</div>
@@ -358,6 +517,13 @@ export default function PurchaseOrderDetailPage() {
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Requested By</div>
                 <div className="text-sm font-semibold text-slate-900">{po.requestedBy.name}</div>
                 <div className="text-xs text-slate-600">{po.requestedBy.email}</div>
+              </div>
+              <div>
+                <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Acknowledged By</div>
+                <div className="text-sm font-semibold text-slate-900">
+                  {po.acknowledgedBy?.name || (po.status === "SUBMITTED" ? "Awaiting Finance" : "-")}
+                </div>
+                {po.acknowledgedBy?.email && <div className="text-xs text-slate-600">{po.acknowledgedBy.email}</div>}
               </div>
               <div>
                 <div className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Approved By</div>

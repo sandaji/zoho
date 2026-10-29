@@ -50,9 +50,16 @@ const VALID_STATE_TRANSITIONS: Record<
     PurchaseOrderStatus.SUBMITTED,
     PurchaseOrderStatus.CANCELLED,
   ],
+  // Procurement submits to Finance; Finance acknowledges; only then can the
+  // MD / admin approve. SUBMITTED -> APPROVED is deliberately NOT allowed.
   [PurchaseOrderStatus.SUBMITTED]: [
+    PurchaseOrderStatus.ACKNOWLEDGED,
+    PurchaseOrderStatus.DRAFT, // Returned for changes
+    PurchaseOrderStatus.CANCELLED,
+  ],
+  [PurchaseOrderStatus.ACKNOWLEDGED]: [
     PurchaseOrderStatus.APPROVED,
-    PurchaseOrderStatus.DRAFT, // Can revert
+    PurchaseOrderStatus.DRAFT, // Returned for changes
     PurchaseOrderStatus.CANCELLED,
   ],
   [PurchaseOrderStatus.APPROVED]: [
@@ -624,6 +631,7 @@ export class PurchasingService {
         branch: true,
         requestedBy: true,
         approvedBy: true,
+        acknowledgedBy: true,
         items: {
           include: {
             product: true,
@@ -677,10 +685,13 @@ export class PurchasingService {
 
     // ✅ NEW: Branch isolation logic
     const hasViewAll = userPermissions.includes("purchasing.order.view_all");
-    const filterBranchId = branchId || userBranchId;
+    // Head-office roles (org.branches.view_all) see every branch by default,
+    // so Finance and the MD aren't limited to their own branch's LPOs.
+    const crossBranch = userPermissions.includes("org.branches.view_all");
+    const filterBranchId = branchId || (crossBranch ? undefined : userBranchId);
 
     // Prevent viewing other branches without permission
-    if (!hasViewAll && filterBranchId !== userBranchId) {
+    if (!hasViewAll && !crossBranch && filterBranchId !== userBranchId) {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
@@ -732,6 +743,19 @@ export class PurchasingService {
   ) {
     const po = await this.getPurchaseOrder(id);
 
+    // Friendlier message than the generic state-machine error: the common
+    // mistake is trying to approve before Finance has acknowledged.
+    if (
+      status === PurchaseOrderStatus.APPROVED &&
+      po.status === PurchaseOrderStatus.SUBMITTED
+    ) {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Finance must acknowledge this LPO before it can be approved.",
+      );
+    }
+
     // ✅ Validate state transition (State Machine)
     if (!this.isValidStateTransition(po.status, status)) {
       throw new AppError(
@@ -741,6 +765,9 @@ export class PurchasingService {
       );
     }
 
+    // ✅ Who may perform this particular transition
+    this.assertCanTransition(po, status, userId, userPermissions);
+
     // ✅ Prevent self-approval (Segregation of Duties)
     if (status === PurchaseOrderStatus.APPROVED) {
       if (po.requestedById === userId) {
@@ -748,6 +775,15 @@ export class PurchasingService {
           ErrorCode.FORBIDDEN,
           403,
           "Segregation of Duties Violation: You cannot approve your own Purchase Order. A different user must approve this LPO.",
+        );
+      }
+
+      // Finance acknowledges, the MD / admin approves — never the same person.
+      if (po.acknowledgedById && po.acknowledgedById === userId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Segregation of Duties Violation: You acknowledged this LPO, so a different user must approve it.",
         );
       }
 
@@ -793,11 +829,20 @@ export class PurchasingService {
 
     if (status === PurchaseOrderStatus.SUBMITTED) {
       updateData.submittedAt = new Date();
+    } else if (status === PurchaseOrderStatus.ACKNOWLEDGED) {
+      updateData.acknowledgedBy = { connect: { id: userId } };
+      updateData.acknowledgedAt = new Date();
     } else if (status === PurchaseOrderStatus.APPROVED) {
       updateData.approvedBy = { connect: { id: userId } };
       updateData.approvedAt = new Date();
     } else if (status === PurchaseOrderStatus.CLOSED) {
       updateData.closedAt = new Date();
+    } else if (status === PurchaseOrderStatus.DRAFT) {
+      // Returned for changes: it will go through Finance again, so any earlier
+      // submission / acknowledgment no longer applies.
+      updateData.submittedAt = null;
+      updateData.acknowledgedBy = { disconnect: true };
+      updateData.acknowledgedAt = null;
     }
 
     return prisma.purchaseOrder.update({
@@ -808,9 +853,241 @@ export class PurchasingService {
         branch: true,
         requestedBy: true,
         approvedBy: true,
+        acknowledgedBy: true,
         items: { include: { product: true } },
       },
     });
+  }
+
+  /**
+   * The Approvals inbox: LPOs Finance has acknowledged that this user may give
+   * final approval to. Mirrors the checks in updateStatus (amount tier, not the
+   * requester, not the acknowledger) so nothing appears here that the Approve
+   * button would then refuse.
+   */
+  async listPendingApprovals(
+    userId: string,
+    userPermissions: string[],
+    userBranchId?: string,
+  ) {
+    const hasExecutive = userPermissions.includes(
+      "purchasing.order.approve_executive",
+    );
+    const canStandard =
+      hasExecutive ||
+      userPermissions.includes("purchasing.order.approve_standard");
+    const canHighValue =
+      hasExecutive ||
+      userPermissions.includes("purchasing.order.approve_high_value");
+
+    const amountRanges: Prisma.PurchaseOrderWhereInput[] = [];
+    if (canStandard) {
+      amountRanges.push({ total: { lt: APPROVAL_THRESHOLDS.STANDARD_MAX } });
+    }
+    if (canHighValue) {
+      amountRanges.push({
+        total: {
+          gte: APPROVAL_THRESHOLDS.STANDARD_MAX,
+          lt: APPROVAL_THRESHOLDS.HIGH_VALUE_MAX,
+        },
+      });
+    }
+    if (hasExecutive) {
+      amountRanges.push({ total: { gte: APPROVAL_THRESHOLDS.HIGH_VALUE_MAX } });
+    }
+    if (amountRanges.length === 0) return [];
+
+    const seesAllBranches =
+      userPermissions.includes("purchasing.order.view_all") ||
+      userPermissions.includes("org.branches.view_all");
+
+    const orders = await prisma.purchaseOrder.findMany({
+      where: {
+        status: PurchaseOrderStatus.ACKNOWLEDGED,
+        requestedById: { not: userId },
+        AND: [
+          // `not` skips NULLs, so an LPO with no acknowledger needs its own arm
+          {
+            OR: [
+              { acknowledgedById: null },
+              { acknowledgedById: { not: userId } },
+            ],
+          },
+          { OR: amountRanges },
+        ],
+        ...(!seesAllBranches && userBranchId && { branchId: userBranchId }),
+      },
+      include: { vendor: true },
+      orderBy: { acknowledgedAt: "asc" },
+    });
+
+    return orders.map((po) => ({
+      id: po.id,
+      purchaseOrderId: po.id,
+      currentLevel: getApprovalLevel(po.total),
+      createdAt: (po.acknowledgedAt ?? po.submittedAt ?? po.createdAt).toISOString(),
+      purchaseOrder: {
+        poNumber: po.poNumber,
+        totalAmount: po.total,
+        vendor: { name: po.vendor.name },
+      },
+    }));
+  }
+
+  /**
+   * Approver declines an acknowledged LPO: it goes back to DRAFT (so procurement
+   * can fix and resubmit it to Finance) with the reason kept in the notes.
+   */
+  async rejectPurchaseOrder(
+    id: string,
+    userId: string,
+    userPermissions: string[],
+    reason: string,
+  ) {
+    const po = await this.getPurchaseOrder(id);
+
+    if (po.status !== PurchaseOrderStatus.ACKNOWLEDGED) {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Only an acknowledged LPO awaiting approval can be rejected.",
+      );
+    }
+    if (
+      !userPermissions.some((p) => p.startsWith("purchasing.order.approve_"))
+    ) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only an approver can reject an acknowledged LPO.",
+      );
+    }
+
+    const updated = await this.updateStatus(
+      id,
+      PurchaseOrderStatus.DRAFT,
+      userId,
+      userPermissions,
+    );
+
+    await prisma.purchaseOrder.update({
+      where: { id },
+      data: {
+        notes: [po.notes, `Rejected by approver: ${reason}`]
+          .filter(Boolean)
+          .join("\n\n"),
+      },
+    });
+
+    return updated;
+  }
+
+  /**
+   * Who may move a PO into a given status. The generic /status route only
+   * checks branch access, so the rules that define the Finance step live here
+   * rather than being trusted to the route middleware.
+   */
+  private assertCanTransition(
+    po: { status: PurchaseOrderStatus; requestedById: string },
+    target: PurchaseOrderStatus,
+    userId: string,
+    userPermissions: string[],
+  ) {
+    const isRequester = po.requestedById === userId;
+
+    // Procurement hands the LPO to Finance.
+    if (
+      target === PurchaseOrderStatus.SUBMITTED &&
+      !userPermissions.includes("purchasing.order.submit")
+    ) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Permission denied: purchasing.order.submit",
+        { requiredPermission: "purchasing.order.submit" },
+      );
+    }
+
+    // The requester can withdraw their own LPO before it is approved;
+    // cancelling anything else needs the cancel permission.
+    if (target === PurchaseOrderStatus.CANCELLED) {
+      const requesterWithdraw =
+        isRequester &&
+        (po.status === PurchaseOrderStatus.DRAFT ||
+          po.status === PurchaseOrderStatus.SUBMITTED);
+      if (
+        !requesterWithdraw &&
+        !userPermissions.includes("purchasing.order.cancel")
+      ) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Permission denied: purchasing.order.cancel",
+          { requiredPermission: "purchasing.order.cancel" },
+        );
+      }
+    }
+
+    // Stock-in status is driven by the goods-receipt (GRN) flow, never set by hand.
+    if (
+      target === PurchaseOrderStatus.PARTIALLY_RECEIVED ||
+      target === PurchaseOrderStatus.RECEIVED
+    ) {
+      throw new AppError(
+        ErrorCode.INVALID_STATUS,
+        400,
+        "Receipt status is set automatically when goods are received against the LPO.",
+      );
+    }
+
+    if (
+      target === PurchaseOrderStatus.CLOSED &&
+      !userPermissions.includes("purchasing.order.receive")
+    ) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Permission denied: purchasing.order.receive",
+        { requiredPermission: "purchasing.order.receive" },
+      );
+    }
+
+    if (target === PurchaseOrderStatus.ACKNOWLEDGED) {
+      if (!userPermissions.includes("purchasing.order.acknowledge")) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Permission denied: purchasing.order.acknowledge",
+          { requiredPermission: "purchasing.order.acknowledge" },
+        );
+      }
+      if (isRequester) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Segregation of Duties Violation: You cannot acknowledge an LPO you raised yourself.",
+        );
+      }
+    }
+
+    // Sending an LPO back from a review stage: the requester can withdraw it,
+    // otherwise only someone who reviews LPOs (Finance or an approver) can.
+    if (
+      target === PurchaseOrderStatus.DRAFT &&
+      (po.status === PurchaseOrderStatus.SUBMITTED ||
+        po.status === PurchaseOrderStatus.ACKNOWLEDGED)
+    ) {
+      const isReviewer =
+        userPermissions.includes("purchasing.order.acknowledge") ||
+        userPermissions.some((p) => p.startsWith("purchasing.order.approve_"));
+      if (!isRequester && !isReviewer) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Only the requester, Finance, or an approver can return an LPO to draft.",
+        );
+      }
+    }
   }
 
   /**
@@ -1082,6 +1359,7 @@ export class PurchasingService {
           in: [
             PurchaseOrderStatus.DRAFT,
             PurchaseOrderStatus.SUBMITTED,
+            PurchaseOrderStatus.ACKNOWLEDGED,
             PurchaseOrderStatus.APPROVED,
             PurchaseOrderStatus.PARTIALLY_RECEIVED,
           ],

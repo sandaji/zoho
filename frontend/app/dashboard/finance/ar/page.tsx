@@ -71,6 +71,11 @@ export default function ReceivablesPage() {
     notes: "",
   });
 
+  // Header "Record Payment": pick which open invoice the payment is for,
+  // then continue in the same payment dialog the row menu uses.
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [pickerQuery, setPickerQuery] = useState("");
+
   useEffect(() => {
     if (token) fetchReceivables();
   }, [token]);
@@ -186,6 +191,14 @@ export default function ReceivablesPage() {
       toast("Network error — please try again", "error");
     }
   };
+
+  const openReceivables = receivables.filter(
+    (ar) =>
+      ar.status !== "paid" &&
+      ar.balance > 0 &&
+      (ar.invoice_no.toLowerCase().includes(pickerQuery.toLowerCase()) ||
+        ar.customer_name.toLowerCase().includes(pickerQuery.toLowerCase())),
+  );
 
   const filteredReceivables = receivables.filter(
     (ar) =>
@@ -358,7 +371,13 @@ export default function ReceivablesPage() {
           <Button variant="outline" className="text-slate-700 border-slate-200">
             Aging Report
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+          <Button
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+            onClick={() => {
+              setPickerQuery("");
+              setIsPickerOpen(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Record Payment
           </Button>
@@ -535,6 +554,56 @@ export default function ReceivablesPage() {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={isPickerOpen} onOpenChange={setIsPickerOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Record Customer Payment</DialogTitle>
+            <DialogDescription>Choose the invoice the customer is paying.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                autoFocus
+                placeholder="Search invoice or customer..."
+                className="pl-9"
+                value={pickerQuery}
+                onChange={(e) => setPickerQuery(e.target.value)}
+              />
+            </div>
+            <div className="max-h-72 overflow-y-auto rounded-md border border-slate-200 divide-y divide-slate-100">
+              {openReceivables.length === 0 ? (
+                <p className="px-3 py-6 text-center text-sm text-slate-500">
+                  No open invoices match.
+                </p>
+              ) : (
+                openReceivables.map((ar) => (
+                  <button
+                    key={ar.id}
+                    type="button"
+                    className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-slate-50"
+                    onClick={() => {
+                      setIsPickerOpen(false);
+                      handleOpenPayment(ar);
+                    }}
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-slate-900">
+                        {ar.customer_name}
+                      </p>
+                      <p className="text-xs font-mono text-slate-500">{ar.invoice_no}</p>
+                    </div>
+                    <span className="shrink-0 text-sm font-bold text-slate-900">
+                      KES {ar.balance.toLocaleString()}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>
         <DialogContent>

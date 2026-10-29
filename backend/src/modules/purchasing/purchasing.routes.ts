@@ -7,6 +7,16 @@ import {
   hasAnyPermission,
 } from "../../middleware/rbac.middleware";
 
+// Anyone who can give final approval to an LPO. (The old lists spelled the
+// high tier 'approve_high', which no role holds — so those routes were closed to
+// everyone except super admin.)
+const LPO_APPROVER_PERMISSIONS = [
+  "system.role.super_admin",
+  "purchasing.order.approve_standard",
+  "purchasing.order.approve_high_value",
+  "purchasing.order.approve_executive",
+];
+
 const router = Router();
 const controller = new PurchasingController();
 const requisitionController = new RequisitionController();
@@ -92,7 +102,8 @@ router.patch(
 router.patch(
   "/orders/:id/status",
   authMiddleware,
-  // ✅ Permission checked in controller based on target status + amount
+  // Permission per target status (submit / cancel / acknowledge / approve /
+  // close) is enforced in PurchasingService.updateStatus
   controller.updateStatus,
 );
 
@@ -100,49 +111,38 @@ router.patch(
 router.patch(
   "/orders/:id/approve",
   authMiddleware,
-  hasAnyPermission([
-    "system.role.super_admin",
-    "purchasing.order.approve_standard",
-    "purchasing.order.approve_high",
-    "purchasing.order.approve_executive",
-  ]),
+  hasAnyPermission(LPO_APPROVER_PERMISSIONS),
   controller.approvePurchaseOrder,
+);
+
+// PATCH /orders/:id/acknowledge - Finance acknowledges a submitted LPO
+// (the step between procurement's submission and the MD / admin's approval)
+router.patch(
+  "/orders/:id/acknowledge",
+  authMiddleware,
+  requirePermission("purchasing.order.acknowledge"),
+  controller.acknowledgePurchaseOrder,
 );
 
 // ========== APPROVAL INBOX ROUTES ==========
 router.get(
   "/approvals/pending",
   authMiddleware,
-  hasAnyPermission([
-    "system.role.super_admin",
-    "purchasing.order.approve_standard",
-    "purchasing.order.approve_high",
-    "purchasing.order.approve_executive",
-  ]),
+  hasAnyPermission(LPO_APPROVER_PERMISSIONS),
   controller.listPendingApprovals,
 );
 
 router.post(
   "/approvals/:id/approve",
   authMiddleware,
-  hasAnyPermission([
-    "system.role.super_admin",
-    "purchasing.order.approve_standard",
-    "purchasing.order.approve_high",
-    "purchasing.order.approve_executive",
-  ]),
+  hasAnyPermission(LPO_APPROVER_PERMISSIONS),
   controller.approveApprovalRequest,
 );
 
 router.post(
   "/approvals/:id/reject",
   authMiddleware,
-  hasAnyPermission([
-    "system.role.super_admin",
-    "purchasing.order.approve_standard",
-    "purchasing.order.approve_high",
-    "purchasing.order.approve_executive",
-  ]),
+  hasAnyPermission(LPO_APPROVER_PERMISSIONS),
   controller.rejectApprovalRequest,
 );
 

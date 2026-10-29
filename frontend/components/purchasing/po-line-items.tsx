@@ -30,32 +30,51 @@ export interface POLineItem {
   unitPrice: number;
 }
 
+const newId = () => Math.random().toString(36).slice(2, 11);
+
 export const newBlankLine = (): POLineItem => ({
-  id: Math.random().toString(36).slice(2, 11),
+  id: newId(),
   product: null,
   quantity: 1,
   unitPrice: 0,
 });
 
-/** Guarantees the list always ends with exactly one empty row to type into. */
-export const withTrailingBlank = (items: POLineItem[]): POLineItem[] => {
-  const last = items[items.length - 1];
-  return !last || last.product ? [...items, newBlankLine()] : items;
-};
+/**
+ * Kept for the edit page. Lines are now only created by the search box, so
+ * blank rows are never rendered — they're simply ignored by the table.
+ */
+export const withTrailingBlank = (items: POLineItem[]): POLineItem[] => items;
 
 interface ComboboxProps {
   token: string;
   vendorId: string;
-  value: POProduct | null;
-  excludeIds: string[];
-  autoFocus?: boolean;
-  onSelect: (product: POProduct) => void;
+  excludeIds?: string[];
+  onPick: (product: POProduct) => void;
+  placeholder?: string;
+  className?: string;
+  /**
+   * Single-select use: text shown in the box once something has been picked.
+   * Leave unset to clear the box after every pick (add-to-list use).
+   */
+  selectedLabel?: string;
 }
 
-function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSelect }: ComboboxProps) {
+/**
+ * Vendor-scoped product search box. Results refetch as the user types and
+ * only ever include the given vendor's products.
+ */
+export function VendorProductCombobox({
+  token,
+  vendorId,
+  excludeIds = [],
+  onPick,
+  placeholder,
+  className,
+  selectedLabel,
+}: ComboboxProps) {
   const [query, setQuery] = useState("");
+  const [typing, setTyping] = useState(false);
   const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState(false);
   const [results, setResults] = useState<POProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const [highlight, setHighlight] = useState(0);
@@ -64,8 +83,6 @@ function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSele
 
   const disabled = !vendorId;
 
-  // Type-ahead: refetch (vendor-scoped) as the user types. Opening the
-  // dropdown with an empty query lists the vendor's products.
   useEffect(() => {
     if (!open || disabled) return;
     const id = ++requestId.current;
@@ -90,12 +107,11 @@ function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSele
     return () => clearTimeout(timer);
   }, [query, open, vendorId, token, disabled]);
 
-  // Close when clicking outside.
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
-        setEditing(false);
+        setTyping(false);
         setQuery("");
       }
     };
@@ -106,40 +122,37 @@ function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSele
   const visible = results.filter((p) => !excludeIds.includes(p.id));
 
   const choose = (p: POProduct) => {
-    onSelect(p);
+    onPick(p);
     setQuery("");
+    setTyping(false);
     setOpen(false);
-    setEditing(false);
   };
 
-  if (value && !editing) {
-    return (
-      <button
-        type="button"
-        onClick={() => {
-          setEditing(true);
-          setOpen(true);
-        }}
-        className="w-full rounded-md px-3 py-2 text-left text-sm hover:bg-muted"
-      >
-        <span className="font-medium text-foreground">{value.name}</span>
-        <span className="ml-2 text-xs text-muted-foreground">{value.sku}</span>
-      </button>
-    );
-  }
-
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className={cn("relative", className)}>
       <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
-        autoFocus={editing || autoFocus}
         disabled={disabled}
-        value={query}
-        placeholder={disabled ? "Select a vendor first" : "Type to search vendor products..."}
+        value={selectedLabel && !typing ? selectedLabel : query}
+        placeholder={
+          disabled ? "Select a vendor first" : (placeholder ?? "Search vendor products...")
+        }
         className="pl-9"
-        onFocus={() => setOpen(true)}
+        onFocus={() => {
+          setOpen(true);
+          // Single-select: start searching from an empty box rather than
+          // editing the displayed label.
+          if (selectedLabel) setTyping(true);
+        }}
+        onClick={() => setOpen(true)}
+        onBlur={() => {
+          setOpen(false);
+          setTyping(false);
+          setQuery("");
+        }}
         onChange={(e) => {
           setQuery(e.target.value);
+          setTyping(true);
           setOpen(true);
         }}
         onKeyDown={(e) => {
@@ -151,10 +164,9 @@ function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSele
             setHighlight((h) => Math.max(h - 1, 0));
           } else if (e.key === "Enter" && open && visible[highlight]) {
             e.preventDefault();
-            choose(visible[highlight]);
+            choose(visible[highlight]!);
           } else if (e.key === "Escape") {
             setOpen(false);
-            setEditing(false);
           }
         }}
       />
@@ -162,7 +174,12 @@ function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSele
         <Loader2 className="absolute right-3 top-2.5 h-4 w-4 animate-spin text-muted-foreground" />
       )}
       {open && !disabled && (
-        <div className="absolute z-50 mt-1 max-h-64 w-full min-w-72 overflow-y-auto rounded-md border border-border bg-popover text-popover-foreground shadow-md">
+        <div
+          // Keep focus in the input while clicking / scrolling the list, so the
+          // blur handler above doesn't close it mid-interaction.
+          onMouseDown={(e) => e.preventDefault()}
+          className="absolute right-0 z-50 mt-1 max-h-72 w-full min-w-80 overflow-y-auto rounded-md border border-border bg-popover text-popover-foreground shadow-md"
+        >
           {visible.length === 0 ? (
             <div className="flex items-center gap-2 px-3 py-3 text-sm text-muted-foreground">
               <PackageSearch className="h-4 w-4" />
@@ -197,66 +214,93 @@ function ProductCombobox({ token, vendorId, value, excludeIds, autoFocus, onSele
   );
 }
 
-interface LineItemsProps {
+interface SearchProps {
   token: string;
   vendorId: string;
   items: POLineItem[];
   onChange: (items: POLineItem[]) => void;
+  className?: string;
 }
 
-export function POLineItemsTable({ token, vendorId, items, onChange }: LineItemsProps) {
-  // After picking a product, focus jumps to the freshly added blank row so
-  // several items can be entered in a row without touching the mouse.
-  const [focusId, setFocusId] = useState<string | null>(null);
+/**
+ * Search box for the PO form: choosing a product appends it to the line items
+ * (quantity 1, price defaulted to the product's cost price) and clears the box.
+ */
+export function POProductSearch({ token, vendorId, items, onChange, className }: SearchProps) {
   const selectedIds = items.map((i) => i.product?.id).filter(Boolean) as string[];
+
+  return (
+    <VendorProductCombobox
+      token={token}
+      vendorId={vendorId}
+      excludeIds={selectedIds}
+      placeholder="Search vendor products to add..."
+      className={className}
+      onPick={(p) =>
+        onChange([
+          ...items.filter((i) => i.product),
+          {
+            id: newId(),
+            product: p,
+            quantity: 1,
+            unitPrice: Number(p.cost_price) || 0,
+          },
+        ])
+      }
+    />
+  );
+}
+
+interface LineItemsProps {
+  items: POLineItem[];
+  onChange: (items: POLineItem[]) => void;
+  // Accepted for backwards compatibility with existing callers.
+  token?: string;
+  vendorId?: string;
+}
+
+/**
+ * Lists the products added through <POProductSearch />. The row number column
+ * comes from the app's shared <TableRow> (it injects a "#" column itself), so
+ * numbering is automatic and updates when rows are removed.
+ */
+export function POLineItemsTable({ items, onChange }: LineItemsProps) {
+  const rows = items.filter((i) => i.product);
 
   const update = (id: string, patch: Partial<POLineItem>) =>
     onChange(items.map((i) => (i.id === id ? { ...i, ...patch } : i)));
 
-  const select = (id: string, product: POProduct) => {
-    const next = withTrailingBlank(
-      items.map((i) =>
-        i.id === id ? { ...i, product, unitPrice: Number(product.cost_price) || 0 } : i
-      )
-    );
-    setFocusId(next[next.length - 1]!.id);
-    onChange(next);
-  };
-
-  const remove = (id: string) => onChange(withTrailingBlank(items.filter((i) => i.id !== id)));
+  const remove = (id: string) => onChange(items.filter((i) => i.id !== id));
 
   return (
-    <div className="overflow-visible">
-      <Table>
-        <TableHeader>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="min-w-72">Product</TableHead>
+          <TableHead className="w-28 text-right">Quantity</TableHead>
+          <TableHead className="w-36 text-right">Unit Price</TableHead>
+          <TableHead className="w-36 text-right">Total</TableHead>
+          <TableHead className="w-12" />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.length === 0 ? (
           <TableRow>
-            <TableHead className="w-12">#</TableHead>
-            <TableHead className="min-w-72">Product</TableHead>
-            <TableHead className="w-28 text-right">Quantity</TableHead>
-            <TableHead className="w-36 text-right">Unit Price</TableHead>
-            <TableHead className="w-36 text-right">Total</TableHead>
-            <TableHead className="w-12" />
+            <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
+              No products added yet — use the search above to add items.
+            </TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item, index) => (
+        ) : (
+          rows.map((item, index) => (
             <TableRow key={item.id}>
-              <TableCell className="text-muted-foreground">{index + 1}</TableCell>
               <TableCell>
-                <ProductCombobox
-                  token={token}
-                  vendorId={vendorId}
-                  value={item.product}
-                  excludeIds={selectedIds.filter((id) => id !== item.product?.id)}
-                  autoFocus={item.id === focusId}
-                  onSelect={(p) => select(item.id, p)}
-                />
+                <span className="font-medium text-foreground">{item.product!.name}</span>
+                <span className="ml-2 text-xs text-muted-foreground">{item.product!.sku}</span>
               </TableCell>
               <TableCell>
                 <Input
                   type="number"
                   min={1}
-                  disabled={!item.product}
                   value={item.quantity}
                   onChange={(e) =>
                     update(item.id, { quantity: Math.max(1, parseInt(e.target.value) || 1) })
@@ -269,7 +313,6 @@ export function POLineItemsTable({ token, vendorId, items, onChange }: LineItems
                   type="number"
                   min={0}
                   step="0.01"
-                  disabled={!item.product}
                   value={item.unitPrice}
                   onChange={(e) =>
                     update(item.id, { unitPrice: Math.max(0, parseFloat(e.target.value) || 0) })
@@ -278,26 +321,24 @@ export function POLineItemsTable({ token, vendorId, items, onChange }: LineItems
                 />
               </TableCell>
               <TableCell className="text-right font-semibold text-foreground">
-                {item.product ? formatCurrency(item.quantity * item.unitPrice) : "—"}
+                {formatCurrency(item.quantity * item.unitPrice)}
               </TableCell>
               <TableCell className="text-center">
-                {item.product && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => remove(item.id)}
-                    className="text-red-500 hover:bg-red-50 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Remove line {index + 1}</span>
-                  </Button>
-                )}
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => remove(item.id)}
+                  className="text-red-500 hover:bg-red-50 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Remove line {index + 1}</span>
+                </Button>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          ))
+        )}
+      </TableBody>
+    </Table>
   );
 }

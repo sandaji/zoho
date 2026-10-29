@@ -261,7 +261,13 @@ async function main() {
     },
     {
       code: "purchasing.order.submit",
-      name: "Submit Purchase Orders for Approval",
+      name: "Submit Purchase Orders to Finance",
+      module: "purchasing",
+    },
+    // Finance step between procurement's submission and the MD / admin's approval
+    {
+      code: "purchasing.order.acknowledge",
+      name: "Acknowledge Purchase Orders (Finance)",
       module: "purchasing",
     },
 
@@ -642,7 +648,6 @@ async function main() {
     "finance.invoice.view",
     "purchasing.order.view_all",
     "purchasing.vendor.view",
-    "purchasing.order.approve_standard",
     "purchasing.requisition.view",
     "purchasing.requisition.approve_standard",
     "finance.expense.approve_standard",
@@ -753,7 +758,17 @@ async function main() {
   const purManagerPerms = permissions
     .filter((p) => p.module === "purchasing")
     .map((p) => p.code);
-  await assignAll("purchasing_manager", purManagerPerms, AccessScope.GLOBAL);
+  // Procurement never approves or acknowledges the LPOs it raises: Finance
+  // acknowledges, the MD / admin approves.
+  await assignAll(
+    "purchasing_manager",
+    purManagerPerms.filter(
+      (p) =>
+        !p.startsWith("purchasing.order.approve_") &&
+        p !== "purchasing.order.acknowledge",
+    ),
+    AccessScope.GLOBAL,
+  );
 
   // Purchasing Officer (Create & Submit LPOs, View vendors)
   await assignAll(
@@ -792,15 +807,10 @@ async function main() {
   await assignAll(
     "finance_manager",
     [
-      "purchasing.order.approve_standard",
-      "purchasing.order.approve_high_value",
       "purchasing.order.view_all",
       "purchasing.order.receive",
       "purchasing.vendor.view",
       "purchasing.requisition.view",
-      "purchasing.requisition.approve_standard",
-      "purchasing.requisition.approve_high_value",
-      "purchasing.requisition.convert",
       "finance.expense.view_all",
       "finance.expense.approve_standard",
       "finance.expense.approve_high_value",
@@ -814,19 +824,12 @@ async function main() {
     "director",
     [
       "purchasing.order.view_all",
-      "purchasing.order.approve_standard",
-      "purchasing.order.approve_high_value",
-      "purchasing.order.approve_executive",
       "purchasing.order.cancel",
       "purchasing.order.receive",
       "purchasing.vendor.view",
       "purchasing.vendor.manage",
       "purchasing.vendor.delete",
       "purchasing.requisition.view",
-      "purchasing.requisition.approve_standard",
-      "purchasing.requisition.approve_high_value",
-      "purchasing.requisition.approve_executive",
-      "purchasing.requisition.convert",
       "finance.expense.view_all",
       "finance.expense.approve_standard",
       "finance.expense.approve_high_value",
@@ -883,8 +886,6 @@ async function main() {
       "finance.expense.approve_high_value",
       "purchasing.order.view_all",
       "purchasing.vendor.view",
-      "purchasing.order.approve_standard",
-      "purchasing.order.approve_high_value",
       "purchasing.requisition.view",
       "purchasing.requisition.approve_standard",
       "purchasing.requisition.approve_high_value",
@@ -918,7 +919,6 @@ async function main() {
       "finance.expense.approve_standard",
       "purchasing.requisition.view",
       "purchasing.requisition.create",
-      "purchasing.requisition.approve_standard",
       "purchasing.order.view_all",
       "purchasing.vendor.view",
       "hr.payroll.view",
@@ -946,6 +946,122 @@ async function main() {
   ]) {
     await assign(roleCode, "org.branches.view_all", AccessScope.GLOBAL);
   }
+
+  // ==========================================================================
+  // Procure-to-pay workflow
+  //   any user raises a requisition -> manager approves it -> procurement
+  //   converts it into an LPO and submits it -> Finance acknowledges ->
+  //   MD / admin gives the final approval
+  // ==========================================================================
+
+  // Finance acknowledges submitted LPOs. Acknowledging is NOT approving: the
+  // service also stops the same person doing both.
+  await assign(
+    "finance_manager",
+    "purchasing.order.acknowledge",
+    AccessScope.GLOBAL,
+  );
+  await assign(
+    "branch_finance_manager",
+    "purchasing.order.acknowledge",
+    AccessScope.BRANCH,
+  );
+
+  // MD / CEO gives the final approval. 'approve_executive' covers every amount
+  // tier (the service accepts it for standard and high-value LPOs as well).
+  await assignAll(
+    "ceo",
+    [
+      "purchasing.order.view_all",
+      "purchasing.order.approve_standard",
+      "purchasing.order.approve_high_value",
+      "purchasing.order.approve_executive",
+      "purchasing.order.cancel",
+      "purchasing.vendor.view",
+      "purchasing.requisition.view",
+    ],
+    AccessScope.GLOBAL,
+  );
+
+  // Purchasing officers turn approved requisitions into LPOs.
+  await assignAll(
+    "purchasing_officer",
+    ["purchasing.requisition.view", "purchasing.requisition.convert"],
+    AccessScope.BRANCH,
+  );
+
+  // Any user can raise requisitions and see their own. This only CREATES a
+  // grant where a role has none — it never touches the scope of an existing
+  // one (assign() above upserts and would otherwise downgrade GLOBAL grants).
+  // Covers every role in the database, not just the ones defined in this file,
+  // since older seeds created a few others (warehouse_staff, procurement_officer).
+  const everyRole = await prisma.role.findMany({
+    select: { id: true, code: true },
+  });
+  for (const role of everyRole) {
+    if (role.code === "auditor") continue; // read-only role
+    for (const permCode of [
+      "purchasing.requisition.create",
+      "purchasing.requisition.view",
+    ]) {
+      const permissionId = permissionMap.get(permCode);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: {},
+        create: { roleId: role.id, permissionId, scope: AccessScope.BRANCH },
+      });
+    }
+  }
+
+  // ==========================================================================
+  // Separation of duties: take back approvals that older runs of this script
+  // (or the seed) granted to roles that should no longer hold them.
+  //   - LPO approval is the MD / admin's (ceo, super_admin, erp_admin only)
+  //   - Finance acknowledges LPOs; it does not approve them or requisitions,
+  //     and it does not convert requisitions (procurement does)
+  // Only the roles named here are touched, so custom roles built on the Roles
+  // screen keep whatever they were given.
+  // ==========================================================================
+  const noLpoApproval = [
+    "finance_manager",
+    "branch_finance_manager",
+    "director",
+    "manager",
+    "branch_manager",
+    "purchasing_manager",
+    "purchasing_officer",
+    "procurement",
+    "accountant",
+    "senior_accountant",
+    "junior_accountant",
+  ];
+  const revokedLpo = await prisma.rolePermission.deleteMany({
+    where: {
+      role: { code: { in: noLpoApproval } },
+      permission: { code: { startsWith: "purchasing.order.approve_" } },
+    },
+  });
+  const revokedReq = await prisma.rolePermission.deleteMany({
+    where: {
+      role: {
+        code: { in: ["finance_manager", "branch_finance_manager", "director"] },
+      },
+      permission: {
+        code: {
+          in: [
+            "purchasing.requisition.approve_standard",
+            "purchasing.requisition.approve_high_value",
+            "purchasing.requisition.approve_executive",
+            "purchasing.requisition.convert",
+          ],
+        },
+      },
+    },
+  });
+  console.log(
+    `✅ Revoked ${revokedLpo.count} LPO-approval and ${revokedReq.count} finance requisition grants`,
+  );
 
   console.log("✅ Role Assignments completed");
   console.log("🎉 RBAC Update Finished Successfully");

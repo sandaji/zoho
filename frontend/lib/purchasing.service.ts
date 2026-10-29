@@ -26,6 +26,7 @@ interface GetOrdersResponse {
       status:
         | "DRAFT"
         | "SUBMITTED"
+        | "ACKNOWLEDGED"
         | "APPROVED"
         | "PARTIALLY_RECEIVED"
         | "RECEIVED"

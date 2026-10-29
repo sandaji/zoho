@@ -28,7 +28,7 @@ import { purchasingService } from "@/lib/purchasing.service";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 
-type PurchaseOrderStatus = "DRAFT" | "SUBMITTED" | "APPROVED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CLOSED" | "CANCELLED";
+type PurchaseOrderStatus = "DRAFT" | "SUBMITTED" | "ACKNOWLEDGED" | "APPROVED" | "PARTIALLY_RECEIVED" | "RECEIVED" | "CLOSED" | "CANCELLED";
 
 interface DestinationWarehouse {
   id: string;
@@ -58,6 +58,7 @@ interface PurchaseOrder {
 const STATUS_COLOR_MAP: Record<PurchaseOrderStatus, string> = {
   DRAFT: "bg-gray-100 text-gray-800",
   SUBMITTED: "bg-blue-100 text-blue-800",
+  ACKNOWLEDGED: "bg-violet-100 text-violet-800",
   APPROVED: "bg-emerald-100 text-emerald-800 border border-emerald-200",
   PARTIALLY_RECEIVED: "bg-yellow-100 text-yellow-800 border border-yellow-200",
   RECEIVED: "bg-teal-100 text-teal-800",
@@ -244,6 +245,7 @@ export default function PurchaseOrdersPage() {
               <SelectItem value="ALL">All Statuses</SelectItem>
               <SelectItem value="DRAFT">Draft</SelectItem>
               <SelectItem value="SUBMITTED">Submitted</SelectItem>
+              <SelectItem value="ACKNOWLEDGED">Acknowledged</SelectItem>
               <SelectItem value="APPROVED">Approved</SelectItem>
               <SelectItem value="PARTIALLY_RECEIVED">Partially Received</SelectItem>
               <SelectItem value="RECEIVED">Received</SelectItem>

@@ -38,6 +38,8 @@ import { ArrowLeft, Loader2, CheckCircle2, XCircle, Send, ArrowRightLeft } from 
 import { useAuth } from "@/lib/auth-context";
 import { requisitionService, type Requisition } from "@/lib/requisition.service";
 import { purchasingService } from "@/lib/purchasing.service";
+import { warehouseService } from "@/lib/warehouse.service";
+import { VendorProductCombobox, type POProduct } from "@/components/purchasing/po-line-items";
 import { toast } from "sonner";
 
 const STATUS_COLOR_MAP: Record<Requisition["status"], string> = {
@@ -66,21 +68,16 @@ export default function RequisitionDetailPage() {
   const [vendors, setVendors] = useState<Array<{ id: string; name: string; code: string }>>([]);
   const [convertVendorId, setConvertVendorId] = useState("");
   const [convertProductIds, setConvertProductIds] = useState<Record<string, string>>({});
+  const [convertProductNames, setConvertProductNames] = useState<Record<string, string>>({});
   const [convertUnitPrices, setConvertUnitPrices] = useState<Record<string, number>>({});
+  const [warehouses, setWarehouses] = useState<Array<{ id: string; name: string; code: string }>>([]);
+  const [convertWarehouseId, setConvertWarehouseId] = useState("");
 
   const permissions = user?.permissions || [];
-  const canApprove = (level: "standard" | "high_value" | "executive") =>
-    permissions.includes(`purchasing.requisition.approve_${level}`) ||
-    permissions.includes("purchasing.requisition.approve_executive");
+  // One manager approval, whatever the amount — the amount-tiered sign-off
+  // happens later, on the LPO (after Finance has acknowledged it).
+  const canApprove = permissions.some((p) => p.startsWith("purchasing.requisition.approve_"));
   const canConvert = permissions.includes("purchasing.requisition.convert");
-
-  const approvalLevel = requisition
-    ? requisition.estimatedTotal < 10000
-      ? "standard"
-      : requisition.estimatedTotal < 100000
-        ? "high_value"
-        : "executive"
-    : "standard";
 
   const fetchRequisition = async () => {
     try {
@@ -117,7 +114,8 @@ export default function RequisitionDetailPage() {
 
   const openConvertDialog = async () => {
     setConvertOpen(true);
-    if (vendors.length === 0 && token) {
+    if (!token) return;
+    if (vendors.length === 0) {
       try {
         const data = await purchasingService.getVendors(token);
         setVendors(data.vendors || data || []);
@@ -125,6 +123,33 @@ export default function RequisitionDetailPage() {
         console.error("Failed to fetch vendors:", error);
       }
     }
+    if (warehouses.length === 0) {
+      try {
+        const data = await warehouseService.getWarehouses(token);
+        setWarehouses(data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch warehouses:", error);
+      }
+    }
+  };
+
+  // Products belong to one vendor, so changing vendor clears the picks.
+  const handleConvertVendorChange = (vendorId: string) => {
+    if (vendorId === convertVendorId) return;
+    setConvertVendorId(vendorId);
+    setConvertProductIds({});
+    setConvertProductNames({});
+    setConvertUnitPrices({});
+  };
+
+  const handlePickProduct = (lineId: string, product: POProduct) => {
+    setConvertProductIds((prev) => ({ ...prev, [lineId]: product.id }));
+    setConvertProductNames((prev) => ({
+      ...prev,
+      [lineId]: `${product.name} (${product.sku})`,
+    }));
+    // Default the price to the product's cost price; still editable.
+    setConvertUnitPrices((prev) => ({ ...prev, [lineId]: Number(product.cost_price) || 0 }));
   };
 
   const handleConvert = async () => {
@@ -144,9 +169,15 @@ export default function RequisitionDetailPage() {
     }
     try {
       setActing(true);
-      await requisitionService.convertToPurchaseOrder(id, { vendorId: convertVendorId, items });
-      toast.success("Converted to Purchase Order");
-      router.push("/dashboard/purchasing/orders");
+      const po = (await requisitionService.convertToPurchaseOrder(id, {
+        vendorId: convertVendorId,
+        warehouseId: convertWarehouseId || undefined,
+        items,
+      })) as { id?: string };
+      toast.success("Purchase Order created as a draft — review it, then submit it to Finance");
+      router.push(
+        po?.id ? `/dashboard/purchasing/orders/${po.id}` : "/dashboard/purchasing/orders",
+      );
     } catch (error) {
       console.error("Failed to convert requisition:", error);
       toast.error(error instanceof Error ? error.message : "Failed to convert requisition");
@@ -202,7 +233,7 @@ export default function RequisitionDetailPage() {
                 Submit for Approval
               </Button>
             )}
-            {requisition.status === "SUBMITTED" && canApprove(approvalLevel) && !isOwner && (
+            {requisition.status === "SUBMITTED" && canApprove && !isOwner && (
               <>
                 <Button
                   onClick={() => handleStatusChange("APPROVED")}
@@ -223,7 +254,7 @@ export default function RequisitionDetailPage() {
                 </Button>
               </>
             )}
-            {requisition.status === "SUBMITTED" && requisition.requestedById === user?.id && canApprove(approvalLevel) && (
+            {requisition.status === "SUBMITTED" && requisition.requestedById === user?.id && canApprove && (
               <p className="text-xs text-slate-500 self-center">
                 You can't approve your own requisition — segregation of duties.
               </p>
@@ -348,7 +379,7 @@ export default function RequisitionDetailPage() {
           <div className="space-y-4 py-2">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-700">Vendor</label>
-              <Select value={convertVendorId} onValueChange={setConvertVendorId}>
+              <Select value={convertVendorId} onValueChange={handleConvertVendorChange}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select a vendor" />
                 </SelectTrigger>
@@ -361,19 +392,39 @@ export default function RequisitionDetailPage() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700">
+                Destination Warehouse
+              </label>
+              <Select value={convertWarehouseId} onValueChange={setConvertWarehouseId}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select warehouse" />
+                </SelectTrigger>
+                <SelectContent>
+                  {warehouses.map((w) => (
+                    <SelectItem key={w.id} value={w.id}>
+                      {w.name} ({w.code})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <div className="space-y-3">
               <p className="text-sm font-medium text-slate-700">
-                Match each line to a catalog product from that vendor and confirm the price
+                Pick a catalog product from that vendor for each line and confirm the price
               </p>
               {requisition.items.map((item) => (
                 <div key={item.id} className="grid grid-cols-3 gap-3 items-center border border-slate-200 rounded-lg p-3">
                   <div className="text-sm text-slate-700">{item.description}</div>
-                  <Input
-                    placeholder="Product ID"
-                    value={convertProductIds[item.id!] || ""}
-                    onChange={(e) =>
-                      setConvertProductIds((prev) => ({ ...prev, [item.id!]: e.target.value }))
-                    }
+                  <VendorProductCombobox
+                    token={token!}
+                    vendorId={convertVendorId}
+                    placeholder="Search vendor products..."
+                    selectedLabel={convertProductNames[item.id!]}
+                    excludeIds={Object.entries(convertProductIds)
+                      .filter(([lineId]) => lineId !== item.id)
+                      .map(([, productId]) => productId)}
+                    onPick={(p) => handlePickProduct(item.id!, p)}
                   />
                   <Input
                     type="number"

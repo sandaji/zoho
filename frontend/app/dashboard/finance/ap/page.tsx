@@ -79,6 +79,11 @@ export default function PayablesPage() {
     notes: "",
   });
 
+  // Header "Record Payment": pick which open bill is being paid, then continue
+  // in the same payment dialog the row menu uses.
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [pickerQuery, setPickerQuery] = useState("");
+
   const fetchPayables = useCallback(async () => {
     if (!token) return;
     try {
@@ -165,6 +170,14 @@ export default function PayablesPage() {
       toast("Network error — please try again", "error");
     }
   };
+
+  const openPayables = payables.filter(
+    (ap) =>
+      ap.status !== "paid" &&
+      (ap.balance || 0) > 0 &&
+      (ap.bill_no?.toLowerCase().includes(pickerQuery.toLowerCase()) ||
+        ap.vendor_name?.toLowerCase().includes(pickerQuery.toLowerCase())),
+  );
 
   const filteredPayables = payables.filter((ap) => {
     const matchesSearch =
@@ -304,7 +317,7 @@ export default function PayablesPage() {
                       onClick={() => handleOpenPayment(ap)}
                     >
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      Mark as Settled
+                      Record Payment
                     </DropdownMenuItem>
                     <DropdownMenuItem className="gap-2.5 py-2.5 cursor-pointer text-sm font-medium">
                       <Clock className="w-4 h-4 text-blue-500" />
@@ -357,7 +370,13 @@ export default function PayablesPage() {
             <Filter className="w-4 h-4 mr-2 text-slate-400" />
             Vendor List
           </Button>
-          <Button className="bg-emerald-700 hover:bg-emerald-800 text-white shadow-md">
+          <Button
+            className="bg-emerald-700 hover:bg-emerald-800 text-white shadow-md"
+            onClick={() => {
+              setPickerQuery("");
+              setIsPickerOpen(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Record Payment
           </Button>
@@ -558,6 +577,57 @@ export default function PayablesPage() {
           </TableBody>
         </Table>
       </div>
+
+      {/* Bill picker for the header button */}
+      <Dialog open={isPickerOpen} onOpenChange={setIsPickerOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Record Vendor Payment</DialogTitle>
+            <DialogDescription>Choose the bill you are paying.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Input
+                autoFocus
+                placeholder="Search vendor or bill number..."
+                className="pl-9"
+                value={pickerQuery}
+                onChange={(e) => setPickerQuery(e.target.value)}
+              />
+            </div>
+            <div className="max-h-72 overflow-y-auto rounded-md border border-slate-200 divide-y divide-slate-100">
+              {openPayables.length === 0 ? (
+                <p className="px-3 py-6 text-center text-sm text-slate-500">
+                  No open bills match.
+                </p>
+              ) : (
+                openPayables.map((ap) => (
+                  <button
+                    key={ap.id}
+                    type="button"
+                    className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left hover:bg-slate-50"
+                    onClick={() => {
+                      setIsPickerOpen(false);
+                      handleOpenPayment(ap);
+                    }}
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-slate-800">
+                        {ap.vendor_name}
+                      </p>
+                      <p className="text-xs font-mono text-slate-500">{ap.bill_no}</p>
+                    </div>
+                    <span className="shrink-0 text-sm font-bold text-slate-800">
+                      KES {(ap.balance || 0).toLocaleString()}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Payment Modal */}
       <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>

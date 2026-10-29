@@ -537,6 +537,7 @@ exports.Prisma.PurchaseOrderScalarFieldEnum = {
   branchId: 'branchId',
   requestedById: 'requestedById',
   approvedById: 'approvedById',
+  acknowledgedById: 'acknowledgedById',
   destinationWarehouseId: 'destinationWarehouseId',
   departmentId: 'departmentId',
   projectCode: 'projectCode',
@@ -547,6 +548,7 @@ exports.Prisma.PurchaseOrderScalarFieldEnum = {
   notes: 'notes',
   expectedDeliveryDate: 'expectedDeliveryDate',
   submittedAt: 'submittedAt',
+  acknowledgedAt: 'acknowledgedAt',
   approvedAt: 'approvedAt',
   closedAt: 'closedAt',
   createdAt: 'createdAt',
@@ -1432,6 +1434,7 @@ exports.CashierSessionStatus = exports.$Enums.CashierSessionStatus = {
 exports.PurchaseOrderStatus = exports.$Enums.PurchaseOrderStatus = {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
   APPROVED: 'APPROVED',
   PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
   RECEIVED: 'RECEIVED',

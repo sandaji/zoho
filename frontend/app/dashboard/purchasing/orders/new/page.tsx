@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { formatCurrency } from "@/lib/utils";
 import {
   POLineItemsTable,
+  POProductSearch,
   newBlankLine,
   type POLineItem,
 } from "@/components/purchasing/po-line-items";
@@ -189,7 +190,7 @@ export default function CreatePurchaseOrderPage() {
               Create Purchase Order
             </h1>
             <p className="text-muted-foreground">
-              Add a new purchase order and send for approval
+              Raise a purchase order and send it to Finance for acknowledgment
             </p>
           </div>
         </div>
@@ -223,7 +224,7 @@ export default function CreatePurchaseOrderPage() {
             ) : (
               <>
                 <Plus className="mr-2 h-4 w-4" />
-                Submit for Approval
+                Submit to Finance
               </>
             )}
           </Button>
@@ -303,12 +304,23 @@ export default function CreatePurchaseOrderPage() {
       {/* Line items */}
       <Card className="border-slate-200">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Line Items</CardTitle>
-          <CardDescription>
-            {vendorId
-              ? "Search this vendor's products and pick one — a new row is added automatically"
-              : "Select a vendor above to start adding products"}
-          </CardDescription>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-lg">Line Items</CardTitle>
+              <CardDescription>
+                {vendorId
+                  ? "Search this vendor's products — picking one adds it to the list"
+                  : "Select a vendor above to start adding products"}
+              </CardDescription>
+            </div>
+            <POProductSearch
+              token={token!}
+              vendorId={vendorId}
+              items={items}
+              onChange={setItems}
+              className="w-full sm:w-80"
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <POLineItemsTable

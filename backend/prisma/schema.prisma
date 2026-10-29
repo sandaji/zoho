@@ -46,6 +46,7 @@ model User {
   goals                   Goal[]
   approvedPurchaseOrders  PurchaseOrder[]         @relation("ApprovedByPO")
   requestedPurchaseOrders PurchaseOrder[]         @relation("RequestedByPO")
+  acknowledgedPurchaseOrders PurchaseOrder[]     @relation("AcknowledgedByPO")
   approvedPurchaseRequisitions  PurchaseRequisition[] @relation("ApprovedByRequisition")
   requestedPurchaseRequisitions PurchaseRequisition[] @relation("RequestedByRequisition")
   approvedExpenseReports  ExpenseReport[]         @relation("ApprovedByExpenseReport")
@@ -761,6 +762,7 @@ model PurchaseOrder {
   branchId               String
   requestedById          String
   approvedById           String?
+  acknowledgedById       String?
   destinationWarehouseId String?
   departmentId           String?              @map("department_id")
   projectCode            String?              @map("project_code")
@@ -771,6 +773,7 @@ model PurchaseOrder {
   notes                  String?
   expectedDeliveryDate   DateTime?            @map("expected_delivery_date")
   submittedAt            DateTime?
+  acknowledgedAt         DateTime?
   approvedAt             DateTime?
   closedAt               DateTime?
   createdAt              DateTime             @default(now())
@@ -778,6 +781,7 @@ model PurchaseOrder {
   grns                   GoodsReceiptNote[]   @relation("GRNToPO")
   items                  PurchaseOrderItem[]
   approvedBy             User?                @relation("ApprovedByPO", fields: [approvedById], references: [id])
+  acknowledgedBy         User?                @relation("AcknowledgedByPO", fields: [acknowledgedById], references: [id])
   branch                 Branch               @relation(fields: [branchId], references: [id])
   destinationWarehouse   Warehouse?           @relation("WarehouseToPO", fields: [destinationWarehouseId], references: [id])
   requestedBy            User                 @relation("RequestedByPO", fields: [requestedById], references: [id])
@@ -2145,6 +2149,7 @@ enum ApprovalStatus {
 enum PurchaseOrderStatus {
   DRAFT
   SUBMITTED
+  ACKNOWLEDGED
   APPROVED
   PARTIALLY_RECEIVED
   RECEIVED

@@ -97,6 +97,20 @@ export class PurchasingController {
           "User not authenticated",
         );
 
+      // Creating straight into SUBMITTED hands the LPO to Finance, so it needs
+      // the same permission as submitting a draft.
+      if (req.body?.status === PurchaseOrderStatus.SUBMITTED) {
+        const perms = await getUserPermissions(req);
+        if (!perms.includes("purchasing.order.submit")) {
+          throw new AppError(
+            ErrorCode.FORBIDDEN,
+            403,
+            "Permission denied: purchasing.order.submit",
+            { requiredPermission: "purchasing.order.submit" },
+          );
+        }
+      }
+
       const order = await this.service.createPurchaseOrder(
         req.user.userId,
         req.body,
@@ -307,6 +321,61 @@ export class PurchasingController {
     }
   };
 
+  /**
+   * PATCH /purchasing/orders/:id/acknowledge
+   * Finance acknowledges a submitted LPO. This is NOT an approval: the MD /
+   * admin still has to approve it afterwards.
+   */
+  acknowledgePurchaseOrder = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      if (!req.user || !req.user.userId) {
+        throw new AppError(
+          ErrorCode.UNAUTHORIZED,
+          401,
+          "User not authenticated",
+        );
+      }
+
+      const id = req.params.id as string;
+      if (!id) {
+        throw new AppError(ErrorCode.BAD_REQUEST, 400, "Order ID is required");
+      }
+
+      const userBranchId = (req as any).user?.branchId;
+      const userPermissions = await getUserPermissions(req);
+
+      // Same branch isolation as the other order actions
+      const existing = await this.service.getPurchaseOrder(id);
+      const hasViewAll = userPermissions.includes("purchasing.order.view_all");
+      if (!hasViewAll && existing.branchId !== userBranchId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Cannot acknowledge Purchase Orders from other branches",
+        );
+      }
+
+      const order = await this.service.updateStatus(
+        id,
+        PurchaseOrderStatus.ACKNOWLEDGED,
+        req.user.userId,
+        userPermissions,
+      );
+
+      res.json({
+        success: true,
+        message: "Purchase Order acknowledged",
+        data: order,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   receiveGoods = async (req: Request, res: Response, next: NextFunction) => {
     try {
       if (!req.user || !req.user.userId)
@@ -406,9 +475,13 @@ export class PurchasingController {
         );
       }
 
-      const { getPendingApprovalsForUser } =
-        await import("./services/approval.service");
-      const pendingApprovals = await getPendingApprovalsForUser(userId);
+      // Driven by the real LPO workflow (ACKNOWLEDGED orders this user may
+      // approve), not the legacy ApprovalRequest table.
+      const pendingApprovals = await this.service.listPendingApprovals(
+        userId,
+        await getUserPermissions(req),
+        (req as any).user?.branchId,
+      );
 
       res.json({
         success: true,
@@ -430,9 +503,9 @@ export class PurchasingController {
     next: NextFunction,
   ) => {
     try {
+      // The inbox id is the purchase order's id.
       const approvalId = req.params.id as string;
       const userId = (req as any).user?.userId;
-      const { comments } = req.body;
 
       if (!approvalId || !userId) {
         throw new AppError(
@@ -442,9 +515,27 @@ export class PurchasingController {
         );
       }
 
-      const { approvePurchaseOrder } =
-        await import("./services/approval.service");
-      const result = await approvePurchaseOrder(approvalId, userId, comments);
+      const userPermissions = await getUserPermissions(req);
+      const existing = await this.service.getPurchaseOrder(approvalId);
+      if (
+        !userPermissions.includes("purchasing.order.view_all") &&
+        !userPermissions.includes("org.branches.view_all") &&
+        existing.branchId !== (req as any).user?.branchId
+      ) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Cannot approve Purchase Orders from other branches",
+        );
+      }
+
+      // Same checks as every other approval: tier, requester, acknowledger.
+      const result = await this.service.updateStatus(
+        approvalId,
+        PurchaseOrderStatus.APPROVED,
+        userId,
+        userPermissions,
+      );
 
       res.json({
         success: true,
@@ -478,9 +569,26 @@ export class PurchasingController {
         );
       }
 
-      const { rejectPurchaseOrder } =
-        await import("./services/approval.service");
-      const result = await rejectPurchaseOrder(approvalId, userId, reason);
+      const userPermissions = await getUserPermissions(req);
+      const existing = await this.service.getPurchaseOrder(approvalId);
+      if (
+        !userPermissions.includes("purchasing.order.view_all") &&
+        !userPermissions.includes("org.branches.view_all") &&
+        existing.branchId !== (req as any).user?.branchId
+      ) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Cannot reject Purchase Orders from other branches",
+        );
+      }
+
+      const result = await this.service.rejectPurchaseOrder(
+        approvalId,
+        userId,
+        userPermissions,
+        reason,
+      );
 
       res.json({
         success: true,

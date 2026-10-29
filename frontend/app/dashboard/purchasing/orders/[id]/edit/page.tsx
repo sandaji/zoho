@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { formatCurrency } from "@/lib/utils";
 import {
   POLineItemsTable,
+  POProductSearch,
   newBlankLine,
   withTrailingBlank,
   type POLineItem,
@@ -184,7 +185,7 @@ export default function EditPurchaseOrderPage() {
 
       if (thenSubmit) {
         await purchasingService.updateOrderStatus(token!, orderId, "SUBMITTED");
-        toast.success("Purchase Order updated and submitted for approval");
+        toast.success("Purchase Order updated and submitted to Finance");
       } else {
         toast.success("Purchase Order changes saved");
       }
@@ -253,7 +254,7 @@ export default function EditPurchaseOrderPage() {
               Edit Purchase Order{poNumber ? ` — ${poNumber}` : ""}
             </h1>
             <p className="text-muted-foreground">
-              Update this draft and save your changes, or submit it for approval
+              Update this draft and save your changes, or submit it to Finance
             </p>
           </div>
         </div>
@@ -287,7 +288,7 @@ export default function EditPurchaseOrderPage() {
             ) : (
               <>
                 <CheckCircle className="mr-2 h-4 w-4" />
-                Save &amp; Submit for Approval
+                Save &amp; Submit to Finance
               </>
             )}
           </Button>
@@ -367,10 +368,21 @@ export default function EditPurchaseOrderPage() {
       {/* Line items */}
       <Card className="border-slate-200">
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Line Items</CardTitle>
-          <CardDescription>
-            Search this vendor&apos;s products and pick one — a new row is added automatically
-          </CardDescription>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-lg">Line Items</CardTitle>
+              <CardDescription>
+                Search this vendor&apos;s products — picking one adds it to the list
+              </CardDescription>
+            </div>
+            <POProductSearch
+              token={token!}
+              vendorId={vendorId}
+              items={items}
+              onChange={setItems}
+              className="w-full sm:w-80"
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <POLineItemsTable

@@ -668,6 +668,7 @@ export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus
 export const PurchaseOrderStatus: {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
+  ACKNOWLEDGED: 'ACKNOWLEDGED',
   APPROVED: 'APPROVED',
   PARTIALLY_RECEIVED: 'PARTIALLY_RECEIVED',
   RECEIVED: 'RECEIVED',
@@ -9000,6 +9001,7 @@ export namespace Prisma {
     goals: number
     approvedPurchaseOrders: number
     requestedPurchaseOrders: number
+    acknowledgedPurchaseOrders: number
     approvedPurchaseRequisitions: number
     requestedPurchaseRequisitions: number
     approvedExpenseReports: number
@@ -9044,6 +9046,7 @@ export namespace Prisma {
     goals?: boolean | UserCountOutputTypeCountGoalsArgs
     approvedPurchaseOrders?: boolean | UserCountOutputTypeCountApprovedPurchaseOrdersArgs
     requestedPurchaseOrders?: boolean | UserCountOutputTypeCountRequestedPurchaseOrdersArgs
+    acknowledgedPurchaseOrders?: boolean | UserCountOutputTypeCountAcknowledgedPurchaseOrdersArgs
     approvedPurchaseRequisitions?: boolean | UserCountOutputTypeCountApprovedPurchaseRequisitionsArgs
     requestedPurchaseRequisitions?: boolean | UserCountOutputTypeCountRequestedPurchaseRequisitionsArgs
     approvedExpenseReports?: boolean | UserCountOutputTypeCountApprovedExpenseReportsArgs
@@ -9227,6 +9230,13 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountRequestedPurchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PurchaseOrderWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAcknowledgedPurchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PurchaseOrderWhereInput
   }
 
@@ -11368,6 +11378,7 @@ export namespace Prisma {
     goals?: boolean | User$goalsArgs<ExtArgs>
     approvedPurchaseOrders?: boolean | User$approvedPurchaseOrdersArgs<ExtArgs>
     requestedPurchaseOrders?: boolean | User$requestedPurchaseOrdersArgs<ExtArgs>
+    acknowledgedPurchaseOrders?: boolean | User$acknowledgedPurchaseOrdersArgs<ExtArgs>
     approvedPurchaseRequisitions?: boolean | User$approvedPurchaseRequisitionsArgs<ExtArgs>
     requestedPurchaseRequisitions?: boolean | User$requestedPurchaseRequisitionsArgs<ExtArgs>
     approvedExpenseReports?: boolean | User$approvedExpenseReportsArgs<ExtArgs>
@@ -11474,6 +11485,7 @@ export namespace Prisma {
     goals?: boolean | User$goalsArgs<ExtArgs>
     approvedPurchaseOrders?: boolean | User$approvedPurchaseOrdersArgs<ExtArgs>
     requestedPurchaseOrders?: boolean | User$requestedPurchaseOrdersArgs<ExtArgs>
+    acknowledgedPurchaseOrders?: boolean | User$acknowledgedPurchaseOrdersArgs<ExtArgs>
     approvedPurchaseRequisitions?: boolean | User$approvedPurchaseRequisitionsArgs<ExtArgs>
     requestedPurchaseRequisitions?: boolean | User$requestedPurchaseRequisitionsArgs<ExtArgs>
     approvedExpenseReports?: boolean | User$approvedExpenseReportsArgs<ExtArgs>
@@ -11531,6 +11543,7 @@ export namespace Prisma {
       goals: Prisma.$GoalPayload<ExtArgs>[]
       approvedPurchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
       requestedPurchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
+      acknowledgedPurchaseOrders: Prisma.$PurchaseOrderPayload<ExtArgs>[]
       approvedPurchaseRequisitions: Prisma.$PurchaseRequisitionPayload<ExtArgs>[]
       requestedPurchaseRequisitions: Prisma.$PurchaseRequisitionPayload<ExtArgs>[]
       approvedExpenseReports: Prisma.$ExpenseReportPayload<ExtArgs>[]
@@ -11985,6 +11998,7 @@ export namespace Prisma {
     goals<T extends User$goalsArgs<ExtArgs> = {}>(args?: Subset<T, User$goalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GoalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvedPurchaseOrders<T extends User$approvedPurchaseOrdersArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedPurchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     requestedPurchaseOrders<T extends User$requestedPurchaseOrdersArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedPurchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    acknowledgedPurchaseOrders<T extends User$acknowledgedPurchaseOrdersArgs<ExtArgs> = {}>(args?: Subset<T, User$acknowledgedPurchaseOrdersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvedPurchaseRequisitions<T extends User$approvedPurchaseRequisitionsArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedPurchaseRequisitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseRequisitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     requestedPurchaseRequisitions<T extends User$requestedPurchaseRequisitionsArgs<ExtArgs> = {}>(args?: Subset<T, User$requestedPurchaseRequisitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseRequisitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvedExpenseReports<T extends User$approvedExpenseReportsArgs<ExtArgs> = {}>(args?: Subset<T, User$approvedExpenseReportsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExpenseReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -12958,6 +12972,30 @@ export namespace Prisma {
    * User.requestedPurchaseOrders
    */
   export type User$requestedPurchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PurchaseOrder
+     */
+    select?: PurchaseOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PurchaseOrder
+     */
+    omit?: PurchaseOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PurchaseOrderInclude<ExtArgs> | null
+    where?: PurchaseOrderWhereInput
+    orderBy?: PurchaseOrderOrderByWithRelationInput | PurchaseOrderOrderByWithRelationInput[]
+    cursor?: PurchaseOrderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PurchaseOrderScalarFieldEnum | PurchaseOrderScalarFieldEnum[]
+  }
+
+  /**
+   * User.acknowledgedPurchaseOrders
+   */
+  export type User$acknowledgedPurchaseOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the PurchaseOrder
      */
@@ -46490,6 +46528,7 @@ export namespace Prisma {
     branchId: string | null
     requestedById: string | null
     approvedById: string | null
+    acknowledgedById: string | null
     destinationWarehouseId: string | null
     departmentId: string | null
     projectCode: string | null
@@ -46500,6 +46539,7 @@ export namespace Prisma {
     notes: string | null
     expectedDeliveryDate: Date | null
     submittedAt: Date | null
+    acknowledgedAt: Date | null
     approvedAt: Date | null
     closedAt: Date | null
     createdAt: Date | null
@@ -46514,6 +46554,7 @@ export namespace Prisma {
     branchId: string | null
     requestedById: string | null
     approvedById: string | null
+    acknowledgedById: string | null
     destinationWarehouseId: string | null
     departmentId: string | null
     projectCode: string | null
@@ -46524,6 +46565,7 @@ export namespace Prisma {
     notes: string | null
     expectedDeliveryDate: Date | null
     submittedAt: Date | null
+    acknowledgedAt: Date | null
     approvedAt: Date | null
     closedAt: Date | null
     createdAt: Date | null
@@ -46538,6 +46580,7 @@ export namespace Prisma {
     branchId: number
     requestedById: number
     approvedById: number
+    acknowledgedById: number
     destinationWarehouseId: number
     departmentId: number
     projectCode: number
@@ -46548,6 +46591,7 @@ export namespace Prisma {
     notes: number
     expectedDeliveryDate: number
     submittedAt: number
+    acknowledgedAt: number
     approvedAt: number
     closedAt: number
     createdAt: number
@@ -46576,6 +46620,7 @@ export namespace Prisma {
     branchId?: true
     requestedById?: true
     approvedById?: true
+    acknowledgedById?: true
     destinationWarehouseId?: true
     departmentId?: true
     projectCode?: true
@@ -46586,6 +46631,7 @@ export namespace Prisma {
     notes?: true
     expectedDeliveryDate?: true
     submittedAt?: true
+    acknowledgedAt?: true
     approvedAt?: true
     closedAt?: true
     createdAt?: true
@@ -46600,6 +46646,7 @@ export namespace Prisma {
     branchId?: true
     requestedById?: true
     approvedById?: true
+    acknowledgedById?: true
     destinationWarehouseId?: true
     departmentId?: true
     projectCode?: true
@@ -46610,6 +46657,7 @@ export namespace Prisma {
     notes?: true
     expectedDeliveryDate?: true
     submittedAt?: true
+    acknowledgedAt?: true
     approvedAt?: true
     closedAt?: true
     createdAt?: true
@@ -46624,6 +46672,7 @@ export namespace Prisma {
     branchId?: true
     requestedById?: true
     approvedById?: true
+    acknowledgedById?: true
     destinationWarehouseId?: true
     departmentId?: true
     projectCode?: true
@@ -46634,6 +46683,7 @@ export namespace Prisma {
     notes?: true
     expectedDeliveryDate?: true
     submittedAt?: true
+    acknowledgedAt?: true
     approvedAt?: true
     closedAt?: true
     createdAt?: true
@@ -46735,6 +46785,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById: string | null
+    acknowledgedById: string | null
     destinationWarehouseId: string | null
     departmentId: string | null
     projectCode: string | null
@@ -46745,6 +46796,7 @@ export namespace Prisma {
     notes: string | null
     expectedDeliveryDate: Date | null
     submittedAt: Date | null
+    acknowledgedAt: Date | null
     approvedAt: Date | null
     closedAt: Date | null
     createdAt: Date
@@ -46778,6 +46830,7 @@ export namespace Prisma {
     branchId?: boolean
     requestedById?: boolean
     approvedById?: boolean
+    acknowledgedById?: boolean
     destinationWarehouseId?: boolean
     departmentId?: boolean
     projectCode?: boolean
@@ -46788,6 +46841,7 @@ export namespace Prisma {
     notes?: boolean
     expectedDeliveryDate?: boolean
     submittedAt?: boolean
+    acknowledgedAt?: boolean
     approvedAt?: boolean
     closedAt?: boolean
     createdAt?: boolean
@@ -46795,6 +46849,7 @@ export namespace Prisma {
     grns?: boolean | PurchaseOrder$grnsArgs<ExtArgs>
     items?: boolean | PurchaseOrder$itemsArgs<ExtArgs>
     approvedBy?: boolean | PurchaseOrder$approvedByArgs<ExtArgs>
+    acknowledgedBy?: boolean | PurchaseOrder$acknowledgedByArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | PurchaseOrder$destinationWarehouseArgs<ExtArgs>
     requestedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -46812,6 +46867,7 @@ export namespace Prisma {
     branchId?: boolean
     requestedById?: boolean
     approvedById?: boolean
+    acknowledgedById?: boolean
     destinationWarehouseId?: boolean
     departmentId?: boolean
     projectCode?: boolean
@@ -46822,11 +46878,13 @@ export namespace Prisma {
     notes?: boolean
     expectedDeliveryDate?: boolean
     submittedAt?: boolean
+    acknowledgedAt?: boolean
     approvedAt?: boolean
     closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     approvedBy?: boolean | PurchaseOrder$approvedByArgs<ExtArgs>
+    acknowledgedBy?: boolean | PurchaseOrder$acknowledgedByArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | PurchaseOrder$destinationWarehouseArgs<ExtArgs>
     requestedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -46843,6 +46901,7 @@ export namespace Prisma {
     branchId?: boolean
     requestedById?: boolean
     approvedById?: boolean
+    acknowledgedById?: boolean
     destinationWarehouseId?: boolean
     departmentId?: boolean
     projectCode?: boolean
@@ -46853,11 +46912,13 @@ export namespace Prisma {
     notes?: boolean
     expectedDeliveryDate?: boolean
     submittedAt?: boolean
+    acknowledgedAt?: boolean
     approvedAt?: boolean
     closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     approvedBy?: boolean | PurchaseOrder$approvedByArgs<ExtArgs>
+    acknowledgedBy?: boolean | PurchaseOrder$acknowledgedByArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | PurchaseOrder$destinationWarehouseArgs<ExtArgs>
     requestedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -46874,6 +46935,7 @@ export namespace Prisma {
     branchId?: boolean
     requestedById?: boolean
     approvedById?: boolean
+    acknowledgedById?: boolean
     destinationWarehouseId?: boolean
     departmentId?: boolean
     projectCode?: boolean
@@ -46884,17 +46946,19 @@ export namespace Prisma {
     notes?: boolean
     expectedDeliveryDate?: boolean
     submittedAt?: boolean
+    acknowledgedAt?: boolean
     approvedAt?: boolean
     closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type PurchaseOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "poNumber" | "status" | "vendorId" | "branchId" | "requestedById" | "approvedById" | "destinationWarehouseId" | "departmentId" | "projectCode" | "sourceRequisitionId" | "subtotal" | "tax" | "total" | "notes" | "expectedDeliveryDate" | "submittedAt" | "approvedAt" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["purchaseOrder"]>
+  export type PurchaseOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "poNumber" | "status" | "vendorId" | "branchId" | "requestedById" | "approvedById" | "acknowledgedById" | "destinationWarehouseId" | "departmentId" | "projectCode" | "sourceRequisitionId" | "subtotal" | "tax" | "total" | "notes" | "expectedDeliveryDate" | "submittedAt" | "acknowledgedAt" | "approvedAt" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["purchaseOrder"]>
   export type PurchaseOrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     grns?: boolean | PurchaseOrder$grnsArgs<ExtArgs>
     items?: boolean | PurchaseOrder$itemsArgs<ExtArgs>
     approvedBy?: boolean | PurchaseOrder$approvedByArgs<ExtArgs>
+    acknowledgedBy?: boolean | PurchaseOrder$acknowledgedByArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | PurchaseOrder$destinationWarehouseArgs<ExtArgs>
     requestedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -46905,6 +46969,7 @@ export namespace Prisma {
   }
   export type PurchaseOrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     approvedBy?: boolean | PurchaseOrder$approvedByArgs<ExtArgs>
+    acknowledgedBy?: boolean | PurchaseOrder$acknowledgedByArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | PurchaseOrder$destinationWarehouseArgs<ExtArgs>
     requestedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -46914,6 +46979,7 @@ export namespace Prisma {
   }
   export type PurchaseOrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     approvedBy?: boolean | PurchaseOrder$approvedByArgs<ExtArgs>
+    acknowledgedBy?: boolean | PurchaseOrder$acknowledgedByArgs<ExtArgs>
     branch?: boolean | BranchDefaultArgs<ExtArgs>
     destinationWarehouse?: boolean | PurchaseOrder$destinationWarehouseArgs<ExtArgs>
     requestedBy?: boolean | UserDefaultArgs<ExtArgs>
@@ -46928,6 +46994,7 @@ export namespace Prisma {
       grns: Prisma.$GoodsReceiptNotePayload<ExtArgs>[]
       items: Prisma.$PurchaseOrderItemPayload<ExtArgs>[]
       approvedBy: Prisma.$UserPayload<ExtArgs> | null
+      acknowledgedBy: Prisma.$UserPayload<ExtArgs> | null
       branch: Prisma.$BranchPayload<ExtArgs>
       destinationWarehouse: Prisma.$WarehousePayload<ExtArgs> | null
       requestedBy: Prisma.$UserPayload<ExtArgs>
@@ -46943,6 +47010,7 @@ export namespace Prisma {
       branchId: string
       requestedById: string
       approvedById: string | null
+      acknowledgedById: string | null
       destinationWarehouseId: string | null
       departmentId: string | null
       projectCode: string | null
@@ -46953,6 +47021,7 @@ export namespace Prisma {
       notes: string | null
       expectedDeliveryDate: Date | null
       submittedAt: Date | null
+      acknowledgedAt: Date | null
       approvedAt: Date | null
       closedAt: Date | null
       createdAt: Date
@@ -47354,6 +47423,7 @@ export namespace Prisma {
     grns<T extends PurchaseOrder$grnsArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrder$grnsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GoodsReceiptNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     items<T extends PurchaseOrder$itemsArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrder$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PurchaseOrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     approvedBy<T extends PurchaseOrder$approvedByArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrder$approvedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    acknowledgedBy<T extends PurchaseOrder$acknowledgedByArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrder$acknowledgedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     branch<T extends BranchDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BranchDefaultArgs<ExtArgs>>): Prisma__BranchClient<$Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     destinationWarehouse<T extends PurchaseOrder$destinationWarehouseArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrder$destinationWarehouseArgs<ExtArgs>>): Prisma__WarehouseClient<$Result.GetResult<Prisma.$WarehousePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     requestedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -47396,6 +47466,7 @@ export namespace Prisma {
     readonly branchId: FieldRef<"PurchaseOrder", 'String'>
     readonly requestedById: FieldRef<"PurchaseOrder", 'String'>
     readonly approvedById: FieldRef<"PurchaseOrder", 'String'>
+    readonly acknowledgedById: FieldRef<"PurchaseOrder", 'String'>
     readonly destinationWarehouseId: FieldRef<"PurchaseOrder", 'String'>
     readonly departmentId: FieldRef<"PurchaseOrder", 'String'>
     readonly projectCode: FieldRef<"PurchaseOrder", 'String'>
@@ -47406,6 +47477,7 @@ export namespace Prisma {
     readonly notes: FieldRef<"PurchaseOrder", 'String'>
     readonly expectedDeliveryDate: FieldRef<"PurchaseOrder", 'DateTime'>
     readonly submittedAt: FieldRef<"PurchaseOrder", 'DateTime'>
+    readonly acknowledgedAt: FieldRef<"PurchaseOrder", 'DateTime'>
     readonly approvedAt: FieldRef<"PurchaseOrder", 'DateTime'>
     readonly closedAt: FieldRef<"PurchaseOrder", 'DateTime'>
     readonly createdAt: FieldRef<"PurchaseOrder", 'DateTime'>
@@ -47862,6 +47934,25 @@ export namespace Prisma {
    * PurchaseOrder.approvedBy
    */
   export type PurchaseOrder$approvedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * PurchaseOrder.acknowledgedBy
+   */
+  export type PurchaseOrder$acknowledgedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the User
      */
@@ -112621,6 +112712,7 @@ export namespace Prisma {
     branchId: 'branchId',
     requestedById: 'requestedById',
     approvedById: 'approvedById',
+    acknowledgedById: 'acknowledgedById',
     destinationWarehouseId: 'destinationWarehouseId',
     departmentId: 'departmentId',
     projectCode: 'projectCode',
@@ -112631,6 +112723,7 @@ export namespace Prisma {
     notes: 'notes',
     expectedDeliveryDate: 'expectedDeliveryDate',
     submittedAt: 'submittedAt',
+    acknowledgedAt: 'acknowledgedAt',
     approvedAt: 'approvedAt',
     closedAt: 'closedAt',
     createdAt: 'createdAt',
@@ -114387,6 +114480,7 @@ export namespace Prisma {
     goals?: GoalListRelationFilter
     approvedPurchaseOrders?: PurchaseOrderListRelationFilter
     requestedPurchaseOrders?: PurchaseOrderListRelationFilter
+    acknowledgedPurchaseOrders?: PurchaseOrderListRelationFilter
     approvedPurchaseRequisitions?: PurchaseRequisitionListRelationFilter
     requestedPurchaseRequisitions?: PurchaseRequisitionListRelationFilter
     approvedExpenseReports?: ExpenseReportListRelationFilter
@@ -114448,6 +114542,7 @@ export namespace Prisma {
     goals?: GoalOrderByRelationAggregateInput
     approvedPurchaseOrders?: PurchaseOrderOrderByRelationAggregateInput
     requestedPurchaseOrders?: PurchaseOrderOrderByRelationAggregateInput
+    acknowledgedPurchaseOrders?: PurchaseOrderOrderByRelationAggregateInput
     approvedPurchaseRequisitions?: PurchaseRequisitionOrderByRelationAggregateInput
     requestedPurchaseRequisitions?: PurchaseRequisitionOrderByRelationAggregateInput
     approvedExpenseReports?: ExpenseReportOrderByRelationAggregateInput
@@ -114512,6 +114607,7 @@ export namespace Prisma {
     goals?: GoalListRelationFilter
     approvedPurchaseOrders?: PurchaseOrderListRelationFilter
     requestedPurchaseOrders?: PurchaseOrderListRelationFilter
+    acknowledgedPurchaseOrders?: PurchaseOrderListRelationFilter
     approvedPurchaseRequisitions?: PurchaseRequisitionListRelationFilter
     requestedPurchaseRequisitions?: PurchaseRequisitionListRelationFilter
     approvedExpenseReports?: ExpenseReportListRelationFilter
@@ -117244,6 +117340,7 @@ export namespace Prisma {
     branchId?: StringFilter<"PurchaseOrder"> | string
     requestedById?: StringFilter<"PurchaseOrder"> | string
     approvedById?: StringNullableFilter<"PurchaseOrder"> | string | null
+    acknowledgedById?: StringNullableFilter<"PurchaseOrder"> | string | null
     destinationWarehouseId?: StringNullableFilter<"PurchaseOrder"> | string | null
     departmentId?: StringNullableFilter<"PurchaseOrder"> | string | null
     projectCode?: StringNullableFilter<"PurchaseOrder"> | string | null
@@ -117254,6 +117351,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"PurchaseOrder"> | string | null
     expectedDeliveryDate?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     submittedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
+    acknowledgedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     approvedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     closedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     createdAt?: DateTimeFilter<"PurchaseOrder"> | Date | string
@@ -117261,6 +117359,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteListRelationFilter
     items?: PurchaseOrderItemListRelationFilter
     approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    acknowledgedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
     destinationWarehouse?: XOR<WarehouseNullableScalarRelationFilter, WarehouseWhereInput> | null
     requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -117277,6 +117376,7 @@ export namespace Prisma {
     branchId?: SortOrder
     requestedById?: SortOrder
     approvedById?: SortOrderInput | SortOrder
+    acknowledgedById?: SortOrderInput | SortOrder
     destinationWarehouseId?: SortOrderInput | SortOrder
     departmentId?: SortOrderInput | SortOrder
     projectCode?: SortOrderInput | SortOrder
@@ -117287,6 +117387,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     expectedDeliveryDate?: SortOrderInput | SortOrder
     submittedAt?: SortOrderInput | SortOrder
+    acknowledgedAt?: SortOrderInput | SortOrder
     approvedAt?: SortOrderInput | SortOrder
     closedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -117294,6 +117395,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteOrderByRelationAggregateInput
     items?: PurchaseOrderItemOrderByRelationAggregateInput
     approvedBy?: UserOrderByWithRelationInput
+    acknowledgedBy?: UserOrderByWithRelationInput
     branch?: BranchOrderByWithRelationInput
     destinationWarehouse?: WarehouseOrderByWithRelationInput
     requestedBy?: UserOrderByWithRelationInput
@@ -117314,6 +117416,7 @@ export namespace Prisma {
     branchId?: StringFilter<"PurchaseOrder"> | string
     requestedById?: StringFilter<"PurchaseOrder"> | string
     approvedById?: StringNullableFilter<"PurchaseOrder"> | string | null
+    acknowledgedById?: StringNullableFilter<"PurchaseOrder"> | string | null
     destinationWarehouseId?: StringNullableFilter<"PurchaseOrder"> | string | null
     departmentId?: StringNullableFilter<"PurchaseOrder"> | string | null
     projectCode?: StringNullableFilter<"PurchaseOrder"> | string | null
@@ -117323,6 +117426,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"PurchaseOrder"> | string | null
     expectedDeliveryDate?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     submittedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
+    acknowledgedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     approvedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     closedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     createdAt?: DateTimeFilter<"PurchaseOrder"> | Date | string
@@ -117330,6 +117434,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteListRelationFilter
     items?: PurchaseOrderItemListRelationFilter
     approvedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    acknowledgedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     branch?: XOR<BranchScalarRelationFilter, BranchWhereInput>
     destinationWarehouse?: XOR<WarehouseNullableScalarRelationFilter, WarehouseWhereInput> | null
     requestedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -117346,6 +117451,7 @@ export namespace Prisma {
     branchId?: SortOrder
     requestedById?: SortOrder
     approvedById?: SortOrderInput | SortOrder
+    acknowledgedById?: SortOrderInput | SortOrder
     destinationWarehouseId?: SortOrderInput | SortOrder
     departmentId?: SortOrderInput | SortOrder
     projectCode?: SortOrderInput | SortOrder
@@ -117356,6 +117462,7 @@ export namespace Prisma {
     notes?: SortOrderInput | SortOrder
     expectedDeliveryDate?: SortOrderInput | SortOrder
     submittedAt?: SortOrderInput | SortOrder
+    acknowledgedAt?: SortOrderInput | SortOrder
     approvedAt?: SortOrderInput | SortOrder
     closedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -117378,6 +117485,7 @@ export namespace Prisma {
     branchId?: StringWithAggregatesFilter<"PurchaseOrder"> | string
     requestedById?: StringWithAggregatesFilter<"PurchaseOrder"> | string
     approvedById?: StringNullableWithAggregatesFilter<"PurchaseOrder"> | string | null
+    acknowledgedById?: StringNullableWithAggregatesFilter<"PurchaseOrder"> | string | null
     destinationWarehouseId?: StringNullableWithAggregatesFilter<"PurchaseOrder"> | string | null
     departmentId?: StringNullableWithAggregatesFilter<"PurchaseOrder"> | string | null
     projectCode?: StringNullableWithAggregatesFilter<"PurchaseOrder"> | string | null
@@ -117388,6 +117496,7 @@ export namespace Prisma {
     notes?: StringNullableWithAggregatesFilter<"PurchaseOrder"> | string | null
     expectedDeliveryDate?: DateTimeNullableWithAggregatesFilter<"PurchaseOrder"> | Date | string | null
     submittedAt?: DateTimeNullableWithAggregatesFilter<"PurchaseOrder"> | Date | string | null
+    acknowledgedAt?: DateTimeNullableWithAggregatesFilter<"PurchaseOrder"> | Date | string | null
     approvedAt?: DateTimeNullableWithAggregatesFilter<"PurchaseOrder"> | Date | string | null
     closedAt?: DateTimeNullableWithAggregatesFilter<"PurchaseOrder"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"PurchaseOrder"> | Date | string
@@ -122190,6 +122299,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -122251,6 +122361,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -122308,6 +122419,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -122369,6 +122481,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -125360,6 +125473,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -125367,6 +125481,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -125383,6 +125498,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -125393,6 +125509,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -125412,6 +125529,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -125419,6 +125537,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -125435,6 +125554,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125445,6 +125565,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -125461,6 +125582,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -125471,6 +125593,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -125488,6 +125611,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -125502,6 +125626,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -125512,6 +125637,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -133458,6 +133584,7 @@ export namespace Prisma {
     branchId?: SortOrder
     requestedById?: SortOrder
     approvedById?: SortOrder
+    acknowledgedById?: SortOrder
     destinationWarehouseId?: SortOrder
     departmentId?: SortOrder
     projectCode?: SortOrder
@@ -133468,6 +133595,7 @@ export namespace Prisma {
     notes?: SortOrder
     expectedDeliveryDate?: SortOrder
     submittedAt?: SortOrder
+    acknowledgedAt?: SortOrder
     approvedAt?: SortOrder
     closedAt?: SortOrder
     createdAt?: SortOrder
@@ -133488,6 +133616,7 @@ export namespace Prisma {
     branchId?: SortOrder
     requestedById?: SortOrder
     approvedById?: SortOrder
+    acknowledgedById?: SortOrder
     destinationWarehouseId?: SortOrder
     departmentId?: SortOrder
     projectCode?: SortOrder
@@ -133498,6 +133627,7 @@ export namespace Prisma {
     notes?: SortOrder
     expectedDeliveryDate?: SortOrder
     submittedAt?: SortOrder
+    acknowledgedAt?: SortOrder
     approvedAt?: SortOrder
     closedAt?: SortOrder
     createdAt?: SortOrder
@@ -133512,6 +133642,7 @@ export namespace Prisma {
     branchId?: SortOrder
     requestedById?: SortOrder
     approvedById?: SortOrder
+    acknowledgedById?: SortOrder
     destinationWarehouseId?: SortOrder
     departmentId?: SortOrder
     projectCode?: SortOrder
@@ -133522,6 +133653,7 @@ export namespace Prisma {
     notes?: SortOrder
     expectedDeliveryDate?: SortOrder
     submittedAt?: SortOrder
+    acknowledgedAt?: SortOrder
     approvedAt?: SortOrder
     closedAt?: SortOrder
     createdAt?: SortOrder
@@ -137237,6 +137369,13 @@ export namespace Prisma {
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
   }
 
+  export type PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput = {
+    create?: XOR<PurchaseOrderCreateWithoutAcknowledgedByInput, PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput> | PurchaseOrderCreateWithoutAcknowledgedByInput[] | PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput | PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput[]
+    createMany?: PurchaseOrderCreateManyAcknowledgedByInputEnvelope
+    connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+  }
+
   export type PurchaseRequisitionCreateNestedManyWithoutApprovedByInput = {
     create?: XOR<PurchaseRequisitionCreateWithoutApprovedByInput, PurchaseRequisitionUncheckedCreateWithoutApprovedByInput> | PurchaseRequisitionCreateWithoutApprovedByInput[] | PurchaseRequisitionUncheckedCreateWithoutApprovedByInput[]
     connectOrCreate?: PurchaseRequisitionCreateOrConnectWithoutApprovedByInput | PurchaseRequisitionCreateOrConnectWithoutApprovedByInput[]
@@ -137533,6 +137672,13 @@ export namespace Prisma {
     create?: XOR<PurchaseOrderCreateWithoutRequestedByInput, PurchaseOrderUncheckedCreateWithoutRequestedByInput> | PurchaseOrderCreateWithoutRequestedByInput[] | PurchaseOrderUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: PurchaseOrderCreateOrConnectWithoutRequestedByInput | PurchaseOrderCreateOrConnectWithoutRequestedByInput[]
     createMany?: PurchaseOrderCreateManyRequestedByInputEnvelope
+    connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+  }
+
+  export type PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput = {
+    create?: XOR<PurchaseOrderCreateWithoutAcknowledgedByInput, PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput> | PurchaseOrderCreateWithoutAcknowledgedByInput[] | PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput | PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput[]
+    createMany?: PurchaseOrderCreateManyAcknowledgedByInputEnvelope
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
   }
 
@@ -137998,6 +138144,20 @@ export namespace Prisma {
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
     update?: PurchaseOrderUpdateWithWhereUniqueWithoutRequestedByInput | PurchaseOrderUpdateWithWhereUniqueWithoutRequestedByInput[]
     updateMany?: PurchaseOrderUpdateManyWithWhereWithoutRequestedByInput | PurchaseOrderUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: PurchaseOrderScalarWhereInput | PurchaseOrderScalarWhereInput[]
+  }
+
+  export type PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput = {
+    create?: XOR<PurchaseOrderCreateWithoutAcknowledgedByInput, PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput> | PurchaseOrderCreateWithoutAcknowledgedByInput[] | PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput | PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput[]
+    upsert?: PurchaseOrderUpsertWithWhereUniqueWithoutAcknowledgedByInput | PurchaseOrderUpsertWithWhereUniqueWithoutAcknowledgedByInput[]
+    createMany?: PurchaseOrderCreateManyAcknowledgedByInputEnvelope
+    set?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    disconnect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    delete?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    update?: PurchaseOrderUpdateWithWhereUniqueWithoutAcknowledgedByInput | PurchaseOrderUpdateWithWhereUniqueWithoutAcknowledgedByInput[]
+    updateMany?: PurchaseOrderUpdateManyWithWhereWithoutAcknowledgedByInput | PurchaseOrderUpdateManyWithWhereWithoutAcknowledgedByInput[]
     deleteMany?: PurchaseOrderScalarWhereInput | PurchaseOrderScalarWhereInput[]
   }
 
@@ -138592,6 +138752,20 @@ export namespace Prisma {
     connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
     update?: PurchaseOrderUpdateWithWhereUniqueWithoutRequestedByInput | PurchaseOrderUpdateWithWhereUniqueWithoutRequestedByInput[]
     updateMany?: PurchaseOrderUpdateManyWithWhereWithoutRequestedByInput | PurchaseOrderUpdateManyWithWhereWithoutRequestedByInput[]
+    deleteMany?: PurchaseOrderScalarWhereInput | PurchaseOrderScalarWhereInput[]
+  }
+
+  export type PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput = {
+    create?: XOR<PurchaseOrderCreateWithoutAcknowledgedByInput, PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput> | PurchaseOrderCreateWithoutAcknowledgedByInput[] | PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput[]
+    connectOrCreate?: PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput | PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput[]
+    upsert?: PurchaseOrderUpsertWithWhereUniqueWithoutAcknowledgedByInput | PurchaseOrderUpsertWithWhereUniqueWithoutAcknowledgedByInput[]
+    createMany?: PurchaseOrderCreateManyAcknowledgedByInputEnvelope
+    set?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    disconnect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    delete?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    connect?: PurchaseOrderWhereUniqueInput | PurchaseOrderWhereUniqueInput[]
+    update?: PurchaseOrderUpdateWithWhereUniqueWithoutAcknowledgedByInput | PurchaseOrderUpdateWithWhereUniqueWithoutAcknowledgedByInput[]
+    updateMany?: PurchaseOrderUpdateManyWithWhereWithoutAcknowledgedByInput | PurchaseOrderUpdateManyWithWhereWithoutAcknowledgedByInput[]
     deleteMany?: PurchaseOrderScalarWhereInput | PurchaseOrderScalarWhereInput[]
   }
 
@@ -142221,6 +142395,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput = {
+    create?: XOR<UserCreateWithoutAcknowledgedPurchaseOrdersInput, UserUncheckedCreateWithoutAcknowledgedPurchaseOrdersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAcknowledgedPurchaseOrdersInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type BranchCreateNestedOneWithoutPurchaseOrdersInput = {
     create?: XOR<BranchCreateWithoutPurchaseOrdersInput, BranchUncheckedCreateWithoutPurchaseOrdersInput>
     connectOrCreate?: BranchCreateOrConnectWithoutPurchaseOrdersInput
@@ -142311,6 +142491,16 @@ export namespace Prisma {
     delete?: UserWhereInput | boolean
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovedPurchaseOrdersInput, UserUpdateWithoutApprovedPurchaseOrdersInput>, UserUncheckedUpdateWithoutApprovedPurchaseOrdersInput>
+  }
+
+  export type UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput = {
+    create?: XOR<UserCreateWithoutAcknowledgedPurchaseOrdersInput, UserUncheckedCreateWithoutAcknowledgedPurchaseOrdersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAcknowledgedPurchaseOrdersInput
+    upsert?: UserUpsertWithoutAcknowledgedPurchaseOrdersInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAcknowledgedPurchaseOrdersInput, UserUpdateWithoutAcknowledgedPurchaseOrdersInput>, UserUncheckedUpdateWithoutAcknowledgedPurchaseOrdersInput>
   }
 
   export type BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput = {
@@ -147110,12 +147300,14 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -147131,6 +147323,7 @@ export namespace Prisma {
     vendorId: string
     branchId: string
     requestedById: string
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -147141,6 +147334,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -147170,6 +147364,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -147177,6 +147372,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     vendor: VendorCreateNestedOneWithoutPurchaseOrdersInput
@@ -147191,6 +147387,7 @@ export namespace Prisma {
     vendorId: string
     branchId: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -147201,6 +147398,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -147216,6 +147414,70 @@ export namespace Prisma {
 
   export type PurchaseOrderCreateManyRequestedByInputEnvelope = {
     data: PurchaseOrderCreateManyRequestedByInput | PurchaseOrderCreateManyRequestedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PurchaseOrderCreateWithoutAcknowledgedByInput = {
+    id?: string
+    poNumber: string
+    status?: $Enums.PurchaseOrderStatus
+    projectCode?: string | null
+    subtotal?: number
+    tax?: number
+    total?: number
+    notes?: string | null
+    expectedDeliveryDate?: Date | string | null
+    submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
+    items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
+    approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
+    destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
+    requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
+    vendor: VendorCreateNestedOneWithoutPurchaseOrdersInput
+    department?: DepartmentCreateNestedOneWithoutPurchaseOrdersInput
+    sourceRequisition?: PurchaseRequisitionCreateNestedOneWithoutPurchaseOrderInput
+  }
+
+  export type PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput = {
+    id?: string
+    poNumber: string
+    status?: $Enums.PurchaseOrderStatus
+    vendorId: string
+    branchId: string
+    requestedById: string
+    approvedById?: string | null
+    destinationWarehouseId?: string | null
+    departmentId?: string | null
+    projectCode?: string | null
+    sourceRequisitionId?: string | null
+    subtotal?: number
+    tax?: number
+    total?: number
+    notes?: string | null
+    expectedDeliveryDate?: Date | string | null
+    submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    grns?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutPurchaseOrderInput
+    items?: PurchaseOrderItemUncheckedCreateNestedManyWithoutPurchaseOrderInput
+  }
+
+  export type PurchaseOrderCreateOrConnectWithoutAcknowledgedByInput = {
+    where: PurchaseOrderWhereUniqueInput
+    create: XOR<PurchaseOrderCreateWithoutAcknowledgedByInput, PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type PurchaseOrderCreateManyAcknowledgedByInputEnvelope = {
+    data: PurchaseOrderCreateManyAcknowledgedByInput | PurchaseOrderCreateManyAcknowledgedByInput[]
     skipDuplicates?: boolean
   }
 
@@ -149048,6 +149310,7 @@ export namespace Prisma {
     branchId?: StringFilter<"PurchaseOrder"> | string
     requestedById?: StringFilter<"PurchaseOrder"> | string
     approvedById?: StringNullableFilter<"PurchaseOrder"> | string | null
+    acknowledgedById?: StringNullableFilter<"PurchaseOrder"> | string | null
     destinationWarehouseId?: StringNullableFilter<"PurchaseOrder"> | string | null
     departmentId?: StringNullableFilter<"PurchaseOrder"> | string | null
     projectCode?: StringNullableFilter<"PurchaseOrder"> | string | null
@@ -149058,6 +149321,7 @@ export namespace Prisma {
     notes?: StringNullableFilter<"PurchaseOrder"> | string | null
     expectedDeliveryDate?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     submittedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
+    acknowledgedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     approvedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     closedAt?: DateTimeNullableFilter<"PurchaseOrder"> | Date | string | null
     createdAt?: DateTimeFilter<"PurchaseOrder"> | Date | string
@@ -149078,6 +149342,22 @@ export namespace Prisma {
   export type PurchaseOrderUpdateManyWithWhereWithoutRequestedByInput = {
     where: PurchaseOrderScalarWhereInput
     data: XOR<PurchaseOrderUpdateManyMutationInput, PurchaseOrderUncheckedUpdateManyWithoutRequestedByInput>
+  }
+
+  export type PurchaseOrderUpsertWithWhereUniqueWithoutAcknowledgedByInput = {
+    where: PurchaseOrderWhereUniqueInput
+    update: XOR<PurchaseOrderUpdateWithoutAcknowledgedByInput, PurchaseOrderUncheckedUpdateWithoutAcknowledgedByInput>
+    create: XOR<PurchaseOrderCreateWithoutAcknowledgedByInput, PurchaseOrderUncheckedCreateWithoutAcknowledgedByInput>
+  }
+
+  export type PurchaseOrderUpdateWithWhereUniqueWithoutAcknowledgedByInput = {
+    where: PurchaseOrderWhereUniqueInput
+    data: XOR<PurchaseOrderUpdateWithoutAcknowledgedByInput, PurchaseOrderUncheckedUpdateWithoutAcknowledgedByInput>
+  }
+
+  export type PurchaseOrderUpdateManyWithWhereWithoutAcknowledgedByInput = {
+    where: PurchaseOrderScalarWhereInput
+    data: XOR<PurchaseOrderUpdateManyMutationInput, PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByInput>
   }
 
   export type PurchaseRequisitionUpsertWithWhereUniqueWithoutApprovedByInput = {
@@ -150215,6 +150495,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -150222,6 +150503,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
     vendor: VendorCreateNestedOneWithoutPurchaseOrdersInput
@@ -150236,6 +150518,7 @@ export namespace Prisma {
     vendorId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -150246,6 +150529,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -150520,6 +150804,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -150579,6 +150864,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -151448,6 +151734,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -151508,6 +151795,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -151726,6 +152014,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -151786,6 +152075,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -151852,6 +152142,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -151859,6 +152150,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
     vendor: VendorCreateNestedOneWithoutPurchaseOrdersInput
@@ -151874,6 +152166,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     departmentId?: string | null
     projectCode?: string | null
     sourceRequisitionId?: string | null
@@ -151883,6 +152176,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -154781,6 +155075,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -154841,6 +155136,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -154902,6 +155198,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -154962,6 +155259,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -155062,6 +155360,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -155122,6 +155421,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -155183,6 +155483,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -155243,6 +155544,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -155304,6 +155606,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -155364,6 +155667,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -155425,6 +155729,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -155485,6 +155790,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -155693,6 +155999,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -155753,6 +156060,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -155820,6 +156128,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -155880,6 +156189,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -155992,6 +156302,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -156052,6 +156363,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -156119,6 +156431,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -156179,6 +156492,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -156246,6 +156560,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -156306,6 +156621,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -156373,6 +156689,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -156433,6 +156750,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -156587,6 +156905,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -156647,6 +156966,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -156708,6 +157028,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -156768,6 +157089,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -156901,6 +157223,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -156961,6 +157284,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -157028,6 +157352,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -157088,6 +157413,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -157514,6 +157840,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -157574,6 +157901,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -157646,6 +157974,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -157706,6 +158035,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -158047,6 +158377,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -158107,6 +158438,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -158168,6 +158500,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -158228,6 +158561,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -158289,6 +158623,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -158349,6 +158684,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -158477,6 +158813,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -158537,6 +158874,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -158930,6 +159268,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -158990,6 +159329,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -159057,6 +159397,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -159117,6 +159458,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -159184,6 +159526,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -159244,6 +159587,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -159384,6 +159728,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -159444,6 +159789,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -160058,6 +160404,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -160118,6 +160465,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -160308,6 +160656,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -160368,6 +160717,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -160794,6 +161144,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -160854,6 +161205,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -161088,6 +161440,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -161148,6 +161501,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -161618,6 +161972,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -161678,6 +162033,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -161828,6 +162184,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -161888,6 +162245,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -162350,6 +162708,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -162410,6 +162769,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -162637,6 +162997,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -162697,6 +163058,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -162835,6 +163197,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -162842,6 +163205,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -162856,6 +163220,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -162866,6 +163231,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -163124,6 +163490,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
     goals?: GoalCreateNestedManyWithoutUserInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -163184,6 +163551,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -163208,6 +163576,129 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutApprovedPurchaseOrdersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutApprovedPurchaseOrdersInput, UserUncheckedCreateWithoutApprovedPurchaseOrdersInput>
+  }
+
+  export type UserCreateWithoutAcknowledgedPurchaseOrdersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesPrefix?: string | null
+    lastSequence?: number
+    hasSystemAccess?: boolean
+    role?: string
+    employeeCode?: string | null
+    approvedApprovals?: ApprovalRequestCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
+    goals?: GoalCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
+    approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
+    submittedExpenseReports?: ExpenseReportCreateNestedManyWithoutEmployeeInput
+    approvalSteps?: ApprovalStepCreateNestedManyWithoutApproverInput
+    approvedSalesDocuments?: SalesDocumentCreateNestedManyWithoutApprovedByInput
+    invoicedSalesDocuments?: SalesDocumentCreateNestedManyWithoutInvoicedByInput
+    closedSalesDocuments?: SalesDocumentCreateNestedManyWithoutClosedByInput
+    createdSalesDocuments?: SalesDocumentCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderCreateNestedManyWithoutCreatedByInput
+    approvedTransfers?: StockTransferCreateNestedManyWithoutApprovedByInput
+    createdTransfers?: StockTransferCreateNestedManyWithoutCreatedByInput
+    driverTransfers?: StockTransferCreateNestedManyWithoutDriverInput
+    receivedTransfers?: StockTransferCreateNestedManyWithoutReceivedByInput
+    pickedTransfers?: StockTransferCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueCreateNestedManyWithoutResolvedByInput
+    roles?: RoleAssignmentCreateNestedManyWithoutUserInput
+    branch?: BranchCreateNestedOneWithoutUsersInput
+    department?: DepartmentCreateNestedOneWithoutUsersInput
+  }
+
+  export type UserUncheckedCreateWithoutAcknowledgedPurchaseOrdersInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    name: string
+    phone?: string | null
+    branchId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    salesPrefix?: string | null
+    lastSequence?: number
+    hasSystemAccess?: boolean
+    role?: string
+    employeeCode?: string | null
+    departmentId?: string | null
+    approvedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedApprovals?: ApprovalRequestUncheckedCreateNestedManyWithoutRequestedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedCreateNestedManyWithoutUserInput
+    cashierSessions?: CashierSessionUncheckedCreateNestedManyWithoutUserInput
+    deliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+    developmentPlans?: DevelopmentPlanUncheckedCreateNestedManyWithoutUserInput
+    dispatchNotes?: DispatchNoteUncheckedCreateNestedManyWithoutDispatchedByInput
+    transfers?: EmployeeTransferUncheckedCreateNestedManyWithoutUserInput
+    lockedPeriods?: FiscalPeriodUncheckedCreateNestedManyWithoutLockedByInput
+    receivedGRN?: GoodsReceiptNoteUncheckedCreateNestedManyWithoutReceivedByInput
+    interviews?: InterviewUncheckedCreateNestedManyWithoutInterviewerInput
+    leaveAllocations?: LeaveAllocationUncheckedCreateNestedManyWithoutUserInput
+    leaveRequests?: LeaveRequestUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    createdPayments?: PaymentUncheckedCreateNestedManyWithoutCreatedByInput
+    payrollRecords?: PayrollUncheckedCreateNestedManyWithoutUserInput
+    givenEvaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutEvaluatorInput
+    evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
+    goals?: GoalUncheckedCreateNestedManyWithoutUserInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
+    requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
+    approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
+    submittedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutEmployeeInput
+    approvalSteps?: ApprovalStepUncheckedCreateNestedManyWithoutApproverInput
+    approvedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutApprovedByInput
+    invoicedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutInvoicedByInput
+    closedSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutClosedByInput
+    createdSalesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCreatedByInput
+    createdSalesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCreatedByInput
+    approvedTransfers?: StockTransferUncheckedCreateNestedManyWithoutApprovedByInput
+    createdTransfers?: StockTransferUncheckedCreateNestedManyWithoutCreatedByInput
+    driverTransfers?: StockTransferUncheckedCreateNestedManyWithoutDriverInput
+    receivedTransfers?: StockTransferUncheckedCreateNestedManyWithoutReceivedByInput
+    pickedTransfers?: StockTransferUncheckedCreateNestedManyWithoutPickedByInput
+    verifiedTransfers?: StockTransferUncheckedCreateNestedManyWithoutVerifiedByInput
+    raisedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutRaisedByInput
+    resolvedTransferIssues?: TransferIssueUncheckedCreateNestedManyWithoutResolvedByInput
+    roles?: RoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutAcknowledgedPurchaseOrdersInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAcknowledgedPurchaseOrdersInput, UserUncheckedCreateWithoutAcknowledgedPurchaseOrdersInput>
   }
 
   export type BranchCreateWithoutPurchaseOrdersInput = {
@@ -163351,6 +163842,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -163411,6 +163903,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -163632,6 +164125,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
     goals?: GoalUpdateManyWithoutUserNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -163691,6 +164185,136 @@ export namespace Prisma {
     givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
     evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
+    approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
+    approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
+    submittedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutEmployeeNestedInput
+    approvalSteps?: ApprovalStepUncheckedUpdateManyWithoutApproverNestedInput
+    approvedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutApprovedByNestedInput
+    invoicedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutInvoicedByNestedInput
+    closedSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutClosedByNestedInput
+    createdSalesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUncheckedUpdateManyWithoutCreatedByNestedInput
+    approvedTransfers?: StockTransferUncheckedUpdateManyWithoutApprovedByNestedInput
+    createdTransfers?: StockTransferUncheckedUpdateManyWithoutCreatedByNestedInput
+    driverTransfers?: StockTransferUncheckedUpdateManyWithoutDriverNestedInput
+    receivedTransfers?: StockTransferUncheckedUpdateManyWithoutReceivedByNestedInput
+    pickedTransfers?: StockTransferUncheckedUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUncheckedUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUncheckedUpdateManyWithoutResolvedByNestedInput
+    roles?: RoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUpsertWithoutAcknowledgedPurchaseOrdersInput = {
+    update: XOR<UserUpdateWithoutAcknowledgedPurchaseOrdersInput, UserUncheckedUpdateWithoutAcknowledgedPurchaseOrdersInput>
+    create: XOR<UserCreateWithoutAcknowledgedPurchaseOrdersInput, UserUncheckedCreateWithoutAcknowledgedPurchaseOrdersInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAcknowledgedPurchaseOrdersInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAcknowledgedPurchaseOrdersInput, UserUncheckedUpdateWithoutAcknowledgedPurchaseOrdersInput>
+  }
+
+  export type UserUpdateWithoutAcknowledgedPurchaseOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedApprovals?: ApprovalRequestUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
+    goals?: GoalUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
+    requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
+    approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
+    submittedExpenseReports?: ExpenseReportUpdateManyWithoutEmployeeNestedInput
+    approvalSteps?: ApprovalStepUpdateManyWithoutApproverNestedInput
+    approvedSalesDocuments?: SalesDocumentUpdateManyWithoutApprovedByNestedInput
+    invoicedSalesDocuments?: SalesDocumentUpdateManyWithoutInvoicedByNestedInput
+    closedSalesDocuments?: SalesDocumentUpdateManyWithoutClosedByNestedInput
+    createdSalesDocuments?: SalesDocumentUpdateManyWithoutCreatedByNestedInput
+    createdSalesOrders?: SalesOrderUpdateManyWithoutCreatedByNestedInput
+    approvedTransfers?: StockTransferUpdateManyWithoutApprovedByNestedInput
+    createdTransfers?: StockTransferUpdateManyWithoutCreatedByNestedInput
+    driverTransfers?: StockTransferUpdateManyWithoutDriverNestedInput
+    receivedTransfers?: StockTransferUpdateManyWithoutReceivedByNestedInput
+    pickedTransfers?: StockTransferUpdateManyWithoutPickedByNestedInput
+    verifiedTransfers?: StockTransferUpdateManyWithoutVerifiedByNestedInput
+    raisedTransferIssues?: TransferIssueUpdateManyWithoutRaisedByNestedInput
+    resolvedTransferIssues?: TransferIssueUpdateManyWithoutResolvedByNestedInput
+    roles?: RoleAssignmentUpdateManyWithoutUserNestedInput
+    branch?: BranchUpdateOneWithoutUsersNestedInput
+    department?: DepartmentUpdateOneWithoutUsersNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAcknowledgedPurchaseOrdersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    salesPrefix?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSequence?: IntFieldUpdateOperationsInput | number
+    hasSystemAccess?: BoolFieldUpdateOperationsInput | boolean
+    role?: StringFieldUpdateOperationsInput | string
+    employeeCode?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutApprovedByNestedInput
+    requestedApprovals?: ApprovalRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    benefitEnrollments?: BenefitEnrollmentUncheckedUpdateManyWithoutUserNestedInput
+    cashierSessions?: CashierSessionUncheckedUpdateManyWithoutUserNestedInput
+    deliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+    developmentPlans?: DevelopmentPlanUncheckedUpdateManyWithoutUserNestedInput
+    dispatchNotes?: DispatchNoteUncheckedUpdateManyWithoutDispatchedByNestedInput
+    transfers?: EmployeeTransferUncheckedUpdateManyWithoutUserNestedInput
+    lockedPeriods?: FiscalPeriodUncheckedUpdateManyWithoutLockedByNestedInput
+    receivedGRN?: GoodsReceiptNoteUncheckedUpdateManyWithoutReceivedByNestedInput
+    interviews?: InterviewUncheckedUpdateManyWithoutInterviewerNestedInput
+    leaveAllocations?: LeaveAllocationUncheckedUpdateManyWithoutUserNestedInput
+    leaveRequests?: LeaveRequestUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    createdPayments?: PaymentUncheckedUpdateManyWithoutCreatedByNestedInput
+    payrollRecords?: PayrollUncheckedUpdateManyWithoutUserNestedInput
+    givenEvaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutEvaluatorNestedInput
+    evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
+    goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
+    approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -163877,6 +164501,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -163937,6 +164562,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -164161,6 +164787,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
     submittedExpenseReports?: ExpenseReportCreateNestedManyWithoutEmployeeInput
@@ -164221,6 +164848,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
     submittedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutEmployeeInput
@@ -164282,6 +164910,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
     submittedExpenseReports?: ExpenseReportCreateNestedManyWithoutEmployeeInput
@@ -164342,6 +164971,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
     submittedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutEmployeeInput
@@ -164476,6 +165106,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -164483,6 +165114,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -164498,6 +165130,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -164507,6 +165140,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -164583,6 +165217,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
     submittedExpenseReports?: ExpenseReportUpdateManyWithoutEmployeeNestedInput
@@ -164643,6 +165278,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
     submittedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -164710,6 +165346,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
     submittedExpenseReports?: ExpenseReportUpdateManyWithoutEmployeeNestedInput
@@ -164770,6 +165407,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
     submittedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -164922,6 +165560,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -164929,6 +165568,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -164944,6 +165584,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -164953,6 +165594,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -165264,6 +165906,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -165324,6 +165967,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -165385,6 +166029,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -165445,6 +166090,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -165517,6 +166163,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -165577,6 +166224,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -165644,6 +166292,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -165704,6 +166353,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -165851,12 +166501,14 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -165873,6 +166525,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -165883,6 +166536,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -166024,12 +166678,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -166046,6 +166702,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166056,6 +166713,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -166074,12 +166732,14 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -166096,6 +166756,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -166106,6 +166767,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -166153,6 +166815,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -166213,6 +166876,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -166340,12 +167004,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -166362,6 +167028,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -166372,6 +167039,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -166425,6 +167093,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -166485,6 +167154,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -167120,6 +167790,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -167180,6 +167851,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -167303,6 +167975,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -167363,6 +168036,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -167887,6 +168561,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -167947,6 +168622,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -168008,6 +168684,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     submittedExpenseReports?: ExpenseReportCreateNestedManyWithoutEmployeeInput
@@ -168068,6 +168745,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     submittedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutEmployeeInput
@@ -168270,6 +168948,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -168330,6 +169009,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -168397,6 +169077,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     submittedExpenseReports?: ExpenseReportUpdateManyWithoutEmployeeNestedInput
@@ -168457,6 +169138,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     submittedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -168756,6 +169438,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -168816,6 +169499,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -168904,6 +169588,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -168964,6 +169649,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -169703,6 +170389,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -169763,6 +170450,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -169964,6 +170652,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -170024,6 +170713,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -172349,6 +173039,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -172409,6 +173100,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -172514,6 +173206,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -172574,6 +173267,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -172657,6 +173351,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -172717,6 +173412,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -172822,6 +173518,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -172882,6 +173579,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -173149,6 +173847,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -173209,6 +173908,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -173318,6 +174018,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -173378,6 +174079,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -173434,6 +174136,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -173494,6 +174197,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -173566,6 +174270,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -173626,6 +174331,7 @@ export namespace Prisma {
     evaluations?: PerformanceEvaluationUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -173682,6 +174388,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -173742,6 +174449,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -173803,6 +174511,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -173863,6 +174572,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -173935,6 +174645,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -173995,6 +174706,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -174062,6 +174774,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -174122,6 +174835,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -174178,6 +174892,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -174238,6 +174953,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -174310,6 +175026,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -174370,6 +175087,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -174495,6 +175213,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -174555,6 +175274,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -174658,6 +175378,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -174718,6 +175439,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -175133,6 +175855,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -175193,6 +175916,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -175298,6 +176022,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -175358,6 +176083,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -175413,6 +176139,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -175473,6 +176200,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -175545,6 +176273,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -175605,6 +176334,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -176298,6 +177028,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -176357,6 +177088,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -176399,6 +177131,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -176406,6 +177139,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteCreateNestedManyWithoutPurchaseOrderInput
     items?: PurchaseOrderItemCreateNestedManyWithoutPurchaseOrderInput
     approvedBy?: UserCreateNestedOneWithoutApprovedPurchaseOrdersInput
+    acknowledgedBy?: UserCreateNestedOneWithoutAcknowledgedPurchaseOrdersInput
     branch: BranchCreateNestedOneWithoutPurchaseOrdersInput
     destinationWarehouse?: WarehouseCreateNestedOneWithoutPurchaseOrdersInput
     requestedBy: UserCreateNestedOneWithoutRequestedPurchaseOrdersInput
@@ -176421,6 +177155,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     projectCode?: string | null
     sourceRequisitionId?: string | null
@@ -176430,6 +177165,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -176644,6 +177380,7 @@ export namespace Prisma {
     goals?: GoalCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportCreateNestedManyWithoutApprovedByInput
@@ -176704,6 +177441,7 @@ export namespace Prisma {
     goals?: GoalUncheckedCreateNestedManyWithoutUserInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutRequestedByInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedCreateNestedManyWithoutAcknowledgedByInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutApprovedByInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedCreateNestedManyWithoutRequestedByInput
     approvedExpenseReports?: ExpenseReportUncheckedCreateNestedManyWithoutApprovedByInput
@@ -176776,6 +177514,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -176836,6 +177575,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -177114,6 +177854,7 @@ export namespace Prisma {
     vendorId: string
     branchId: string
     requestedById: string
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -177124,6 +177865,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -177137,6 +177879,7 @@ export namespace Prisma {
     vendorId: string
     branchId: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -177147,6 +177890,32 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
+    approvedAt?: Date | string | null
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PurchaseOrderCreateManyAcknowledgedByInput = {
+    id?: string
+    poNumber: string
+    status?: $Enums.PurchaseOrderStatus
+    vendorId: string
+    branchId: string
+    requestedById: string
+    approvedById?: string | null
+    destinationWarehouseId?: string | null
+    departmentId?: string | null
+    projectCode?: string | null
+    sourceRequisitionId?: string | null
+    subtotal?: number
+    tax?: number
+    total?: number
+    notes?: string | null
+    expectedDeliveryDate?: Date | string | null
+    submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -178340,12 +179109,14 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -178361,6 +179132,7 @@ export namespace Prisma {
     vendorId?: StringFieldUpdateOperationsInput | string
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178371,6 +179143,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -178386,6 +179159,7 @@ export namespace Prisma {
     vendorId?: StringFieldUpdateOperationsInput | string
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178396,6 +179170,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -178413,6 +179188,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -178420,6 +179196,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     vendor?: VendorUpdateOneRequiredWithoutPurchaseOrdersNestedInput
@@ -178434,6 +179211,7 @@ export namespace Prisma {
     vendorId?: StringFieldUpdateOperationsInput | string
     branchId?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178444,6 +179222,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -178459,6 +179238,7 @@ export namespace Prisma {
     vendorId?: StringFieldUpdateOperationsInput | string
     branchId?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -178469,6 +179249,86 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PurchaseOrderUpdateWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    poNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPurchaseOrderStatusFieldUpdateOperationsInput | $Enums.PurchaseOrderStatus
+    projectCode?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
+    items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
+    approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
+    destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
+    requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
+    vendor?: VendorUpdateOneRequiredWithoutPurchaseOrdersNestedInput
+    department?: DepartmentUpdateOneWithoutPurchaseOrdersNestedInput
+    sourceRequisition?: PurchaseRequisitionUpdateOneWithoutPurchaseOrderNestedInput
+  }
+
+  export type PurchaseOrderUncheckedUpdateWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    poNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPurchaseOrderStatusFieldUpdateOperationsInput | $Enums.PurchaseOrderStatus
+    vendorId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectCode?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceRequisitionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    grns?: GoodsReceiptNoteUncheckedUpdateManyWithoutPurchaseOrderNestedInput
+    items?: PurchaseOrderItemUncheckedUpdateManyWithoutPurchaseOrderNestedInput
+  }
+
+  export type PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    poNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPurchaseOrderStatusFieldUpdateOperationsInput | $Enums.PurchaseOrderStatus
+    vendorId?: StringFieldUpdateOperationsInput | string
+    branchId?: StringFieldUpdateOperationsInput | string
+    requestedById?: StringFieldUpdateOperationsInput | string
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
+    departmentId?: NullableStringFieldUpdateOperationsInput | string | null
+    projectCode?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceRequisitionId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    total?: FloatFieldUpdateOperationsInput | number
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -179987,6 +180847,7 @@ export namespace Prisma {
     vendorId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -179997,6 +180858,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -180774,6 +181636,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -180781,6 +181644,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
     vendor?: VendorUpdateOneRequiredWithoutPurchaseOrdersNestedInput
@@ -180795,6 +181659,7 @@ export namespace Prisma {
     vendorId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180805,6 +181670,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -180820,6 +181686,7 @@ export namespace Prisma {
     vendorId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -180830,6 +181697,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -181133,6 +182001,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -181192,6 +182061,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -181364,6 +182234,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     departmentId?: string | null
     projectCode?: string | null
     sourceRequisitionId?: string | null
@@ -181373,6 +182244,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -181501,6 +182373,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -181508,6 +182381,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
     vendor?: VendorUpdateOneRequiredWithoutPurchaseOrdersNestedInput
@@ -181523,6 +182397,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
     sourceRequisitionId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -181532,6 +182407,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -181548,6 +182424,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
     sourceRequisitionId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -181557,6 +182434,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -183404,6 +184282,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     departmentId?: string | null
     projectCode?: string | null
@@ -183414,6 +184293,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -183561,6 +184441,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -183568,6 +184449,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -183582,6 +184464,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183592,6 +184475,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -183607,6 +184491,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     departmentId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
@@ -183617,6 +184502,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -185569,6 +186455,7 @@ export namespace Prisma {
     branchId: string
     requestedById: string
     approvedById?: string | null
+    acknowledgedById?: string | null
     destinationWarehouseId?: string | null
     projectCode?: string | null
     sourceRequisitionId?: string | null
@@ -185578,6 +186465,7 @@ export namespace Prisma {
     notes?: string | null
     expectedDeliveryDate?: Date | string | null
     submittedAt?: Date | string | null
+    acknowledgedAt?: Date | string | null
     approvedAt?: Date | string | null
     closedAt?: Date | string | null
     createdAt?: Date | string
@@ -185655,6 +186543,7 @@ export namespace Prisma {
     goals?: GoalUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUpdateManyWithoutApprovedByNestedInput
@@ -185714,6 +186603,7 @@ export namespace Prisma {
     goals?: GoalUncheckedUpdateManyWithoutUserNestedInput
     approvedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutRequestedByNestedInput
+    acknowledgedPurchaseOrders?: PurchaseOrderUncheckedUpdateManyWithoutAcknowledgedByNestedInput
     approvedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutApprovedByNestedInput
     requestedPurchaseRequisitions?: PurchaseRequisitionUncheckedUpdateManyWithoutRequestedByNestedInput
     approvedExpenseReports?: ExpenseReportUncheckedUpdateManyWithoutApprovedByNestedInput
@@ -185763,6 +186653,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -185770,6 +186661,7 @@ export namespace Prisma {
     grns?: GoodsReceiptNoteUpdateManyWithoutPurchaseOrderNestedInput
     items?: PurchaseOrderItemUpdateManyWithoutPurchaseOrderNestedInput
     approvedBy?: UserUpdateOneWithoutApprovedPurchaseOrdersNestedInput
+    acknowledgedBy?: UserUpdateOneWithoutAcknowledgedPurchaseOrdersNestedInput
     branch?: BranchUpdateOneRequiredWithoutPurchaseOrdersNestedInput
     destinationWarehouse?: WarehouseUpdateOneWithoutPurchaseOrdersNestedInput
     requestedBy?: UserUpdateOneRequiredWithoutRequestedPurchaseOrdersNestedInput
@@ -185785,6 +186677,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
     sourceRequisitionId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185794,6 +186687,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -185810,6 +186704,7 @@ export namespace Prisma {
     branchId?: StringFieldUpdateOperationsInput | string
     requestedById?: StringFieldUpdateOperationsInput | string
     approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    acknowledgedById?: NullableStringFieldUpdateOperationsInput | string | null
     destinationWarehouseId?: NullableStringFieldUpdateOperationsInput | string | null
     projectCode?: NullableStringFieldUpdateOperationsInput | string | null
     sourceRequisitionId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -185819,6 +186714,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     expectedDeliveryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acknowledgedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

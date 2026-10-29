@@ -113,11 +113,22 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: BookOpen,
     section: "operations",
     accent: sharedAccent("text-violet-700 dark:text-violet-300", "text-violet-600 dark:text-violet-400", "bg-violet-50 text-violet-900 dark:bg-violet-500/20 dark:text-violet-200", "bg-violet-500 dark:bg-violet-400"),
-    permissions: ["procurement.vendor.view", "procurement.order.view", "admin.branch.manage"],
+    // 'purchasing.*' are the codes the backend actually enforces; the older
+    // 'procurement.*' ones are kept so existing grants keep working. Requisition
+    // access is here so every user who can raise one can reach the module.
+    permissions: [
+      "procurement.vendor.view",
+      "procurement.order.view",
+      "admin.branch.manage",
+      "purchasing.order.view_all",
+      "purchasing.vendor.view",
+      "purchasing.requisition.view",
+      "purchasing.requisition.create",
+    ],
     pages: [
       { id: "purchasing", label: "Purchasing Overview", href: "/dashboard/purchasing", icon: BookOpen },
-      { id: "vendors", label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users, permissions: ["procurement.vendor.view", "admin.branch.manage"] },
-      { id: "purchase-orders", label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen, permissions: ["procurement.order.view", "admin.branch.manage"] },
+      { id: "vendors", label: "Vendors", href: "/dashboard/purchasing/vendors", icon: Users, permissions: ["procurement.vendor.view", "admin.branch.manage", "purchasing.vendor.view"] },
+      { id: "purchase-orders", label: "Purchase Orders", href: "/dashboard/purchasing/orders", icon: BookOpen, permissions: ["procurement.order.view", "admin.branch.manage", "purchasing.order.view_all"] },
       {
         id: "purchase-requisitions",
         label: "Requisitions",

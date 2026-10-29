@@ -7,31 +7,13 @@ import {
 } from "../../generated";
 
 // ============================================================================
-// APPROVAL THRESHOLDS (KSH) — mirrors purchasing.service.ts's PO thresholds.
-// Deliberately duplicated rather than imported: keeping each entity's
-// threshold logic self-contained avoids one service reaching into another's
-// internals, matching the existing pattern in this codebase (PO thresholds
-// are likewise inlined in purchasing.service.ts, not shared from a common
-// module). If these ever need to diverge (e.g. different limits for
-// requisitions vs. POs) that's a one-file change either way.
+// APPROVAL MODEL
+// A requisition needs ONE approval: from a manager (anyone holding a
+// purchasing.requisition.approve_* permission) in the requester's own branch,
+// whatever the amount. Procurement then converts it into an LPO, and the
+// amount-tiered KSH sign-off happens on that LPO (see purchasing.service.ts),
+// after Finance has acknowledged it.
 // ============================================================================
-enum ApprovalLevel {
-  STANDARD = "standard", // < KSH 10,000
-  HIGH_VALUE = "high_value", // KSH 10,000 - 100,000
-  EXECUTIVE = "executive", // > KSH 100,000
-}
-
-const APPROVAL_THRESHOLDS = {
-  STANDARD_MAX: 10000,
-  HIGH_VALUE_MAX: 100000,
-};
-
-function getApprovalLevel(total: number): ApprovalLevel {
-  if (total < APPROVAL_THRESHOLDS.STANDARD_MAX) return ApprovalLevel.STANDARD;
-  if (total < APPROVAL_THRESHOLDS.HIGH_VALUE_MAX)
-    return ApprovalLevel.HIGH_VALUE;
-  return ApprovalLevel.EXECUTIVE;
-}
 
 // ============================================================================
 // VALID STATE TRANSITIONS
@@ -159,6 +141,7 @@ export class PurchaseRequisitionService {
    */
   async updateRequisition(
     id: string,
+    userId: string,
     data: {
       departmentId?: string;
       projectCode?: string;
@@ -180,6 +163,13 @@ export class PurchaseRequisitionService {
           ErrorCode.NOT_FOUND,
           404,
           "Purchase Requisition not found",
+        );
+      }
+      if (existing.requestedById !== userId) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Only the person who raised a Requisition can edit it.",
         );
       }
       if (existing.status !== PurchaseRequisitionStatus.DRAFT) {
@@ -268,6 +258,7 @@ export class PurchaseRequisitionService {
     take?: number;
     userBranchId?: string;
     userPermissions?: string[];
+    userId?: string;
   }) {
     const {
       status,
@@ -277,6 +268,7 @@ export class PurchaseRequisitionService {
       take = 50,
       userBranchId,
       userPermissions = [],
+      userId,
     } = query;
 
     const hasViewAll =
@@ -284,9 +276,12 @@ export class PurchaseRequisitionService {
       userPermissions.includes("purchasing.requisition.approve_high_value") ||
       userPermissions.includes("purchasing.requisition.approve_executive") ||
       userPermissions.includes("purchasing.requisition.convert");
-    const filterBranchId = branchId || userBranchId;
+    // Head-office roles (org.branches.view_all) see every branch by default;
+    // everyone else defaults to — and is held to — their own branch.
+    const crossBranch = userPermissions.includes("org.branches.view_all");
+    const filterBranchId = branchId || (crossBranch ? undefined : userBranchId);
 
-    if (!hasViewAll && filterBranchId !== userBranchId) {
+    if (!hasViewAll && !crossBranch && filterBranchId !== userBranchId) {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
@@ -294,7 +289,10 @@ export class PurchaseRequisitionService {
       );
     }
 
+    // Anyone can raise requisitions, but only managers / procurement see other
+    // people's — everyone else sees just their own.
     const where: Prisma.PurchaseRequisitionWhereInput = {
+      ...(!hasViewAll && userId && { requestedById: userId }),
       ...(status && { status }),
       ...(departmentId && { departmentId }),
       ...(filterBranchId && { branchId: filterBranchId }),
@@ -331,6 +329,7 @@ export class PurchaseRequisitionService {
     userId: string,
     userPermissions: string[] = [],
     rejectionReason?: string,
+    userBranchId?: string,
   ) {
     const req = await this.getRequisition(id);
 
@@ -339,6 +338,71 @@ export class PurchaseRequisitionService {
         ErrorCode.INVALID_STATUS,
         400,
         `Cannot transition from ${req.status} to ${status}. Valid transitions: ${VALID_STATE_TRANSITIONS[req.status]?.join(", ") || "None"}`,
+      );
+    }
+
+    const isOwner = req.requestedById === userId;
+    const isApprover = userPermissions.some((p) =>
+      p.startsWith("purchasing.requisition.approve_"),
+    );
+
+    // CONVERTED is only reachable through convertToPurchaseOrder(), which
+    // creates the LPO — setting it here would orphan the requisition.
+    if (status === PurchaseRequisitionStatus.CONVERTED) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "A requisition can only be converted by creating a Purchase Order from it.",
+      );
+    }
+
+    // Approving / rejecting is the manager's call...
+    if (
+      (status === PurchaseRequisitionStatus.APPROVED ||
+        status === PurchaseRequisitionStatus.REJECTED) &&
+      !isApprover
+    ) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only a manager can approve or reject a Purchase Requisition.",
+      );
+    }
+
+    // ...and only for their own branch, unless they have head-office access.
+    if (
+      (status === PurchaseRequisitionStatus.APPROVED ||
+        status === PurchaseRequisitionStatus.REJECTED) &&
+      userBranchId &&
+      req.branchId !== userBranchId &&
+      !userPermissions.includes("org.branches.view_all")
+    ) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "You can only approve or reject requisitions raised in your own branch.",
+      );
+    }
+
+    // Submitting and cancelling belong to whoever raised it.
+    if (
+      (status === PurchaseRequisitionStatus.SUBMITTED ||
+        status === PurchaseRequisitionStatus.CANCELLED) &&
+      !isOwner
+    ) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only the person who raised this Requisition can submit or cancel it.",
+      );
+    }
+
+    // Back to draft: the requester withdrawing it, or a manager returning it.
+    if (status === PurchaseRequisitionStatus.DRAFT && !isOwner && !isApprover) {
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        "Only the requester or a manager can return a Requisition to draft.",
       );
     }
 
@@ -351,19 +415,6 @@ export class PurchaseRequisitionService {
         );
       }
 
-      const approvalLevel = getApprovalLevel(req.estimatedTotal);
-      const requiredPermission = `purchasing.requisition.approve_${approvalLevel}`;
-      const hasRequiredPermission =
-        userPermissions.includes(requiredPermission) ||
-        userPermissions.includes("purchasing.requisition.approve_executive");
-
-      if (!hasRequiredPermission) {
-        throw new AppError(
-          ErrorCode.FORBIDDEN,
-          403,
-          `Insufficient permission to approve this Requisition (Estimated: KSH ${req.estimatedTotal.toLocaleString()}). Requires '${requiredPermission}'.`,
-        );
-      }
     }
 
     if (status === PurchaseRequisitionStatus.REJECTED && !rejectionReason) {
