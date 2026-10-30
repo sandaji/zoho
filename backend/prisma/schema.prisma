@@ -994,6 +994,88 @@ model DeliveryDispatchNote {
   @@map("delivery_dispatch_notes")
 }
 
+/// Petty cash imprest fund held by one custodian. The custodian disburses small
+/// amounts; Finance tops the fund up. Every movement is a PettyCashEntry that
+/// posts to the ledger (1004 Petty Cash).
+model PettyCashFund {
+  id                String           @id @default(cuid())
+  name              String
+  branchId          String?          @map("branch_id")
+  custodianId       String           @map("custodian_id")
+  imprestAmount     Float            @map("imprest_amount")
+  maxPerTransaction Float            @map("max_per_transaction")
+  balance           Float            @default(0)
+  isActive          Boolean          @default(true) @map("is_active")
+  createdById       String           @map("created_by_id")
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  entries           PettyCashEntry[]
+
+  @@index([custodianId])
+  @@index([branchId])
+  @@map("petty_cash_funds")
+}
+
+model PettyCashEntry {
+  id               String             @id @default(cuid())
+  entryNumber      String             @unique @map("entry_number")
+  fundId           String             @map("fund_id")
+  type             PettyCashEntryType
+  amount           Float
+  balanceAfter     Float              @map("balance_after")
+  payee            String?
+  category         String?
+  description      String
+  receiptRef       String?            @map("receipt_ref")
+  entryDate        DateTime           @map("entry_date")
+  counterAccountId String?            @map("counter_account_id")
+  journalHeaderId  String?            @map("journal_header_id")
+  recordedById     String             @map("recorded_by_id")
+  voidedAt         DateTime?          @map("voided_at")
+  voidedById       String?            @map("voided_by_id")
+  voidReason       String?            @map("void_reason")
+  createdAt        DateTime           @default(now())
+  fund             PettyCashFund      @relation(fields: [fundId], references: [id])
+
+  @@index([fundId])
+  @@index([entryDate])
+  @@index([recordedById])
+  @@map("petty_cash_entries")
+}
+
+/// Payment Vouchers — general money out (not tied to a vendor bill or an
+/// employee expense report). Draft -> submit -> approve -> pay; paying posts
+/// DR expense / CR cash-bank-mpesa and records the treasury outflow.
+model PaymentVoucher {
+  id               String               @id @default(cuid())
+  voucherNumber    String               @unique @map("voucher_number")
+  status           PaymentVoucherStatus @default(DRAFT)
+  payeeName        String               @map("payee_name")
+  category         String
+  description      String
+  amount           Float
+  paymentMethod    PaymentMethod        @map("payment_method")
+  referenceNo      String?              @map("reference_no")
+  paymentDate      DateTime             @map("payment_date")
+  expenseAccountId String?              @map("expense_account_id")
+  branchId         String?              @map("branch_id")
+  requestedById    String               @map("requested_by_id")
+  submittedAt      DateTime?            @map("submitted_at")
+  approvedById     String?              @map("approved_by_id")
+  approvedAt       DateTime?            @map("approved_at")
+  rejectedReason   String?              @map("rejected_reason")
+  paidById         String?              @map("paid_by_id")
+  paidAt           DateTime?            @map("paid_at")
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+
+  @@index([status])
+  @@index([requestedById])
+  @@index([branchId])
+  @@index([paymentDate])
+  @@map("payment_vouchers")
+}
+
 /// Finance Transactions
 model FinanceTransaction {
   id              String          @id @default(cuid())
@@ -2168,6 +2250,24 @@ enum PurchaseRequisitionStatus {
   CANCELLED
 
   @@map("purchase_requisition_status")
+}
+
+enum PettyCashEntryType {
+  TOPUP
+  DISBURSEMENT
+
+  @@map("petty_cash_entry_type")
+}
+
+enum PaymentVoucherStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  PAID
+  CANCELLED
+
+  @@map("payment_voucher_status")
 }
 
 enum ExpenseReportStatus {

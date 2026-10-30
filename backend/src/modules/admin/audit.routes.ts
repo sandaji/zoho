@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { AuditController } from './audit.controller';
-import { requirePermission } from '../../middleware/rbac.middleware';
+import { hasAnyPermission } from '../../middleware/rbac.middleware';
 
 const router = Router();
 const auditController = new AuditController();
 
-// Only admins should view audit logs
+// Auditors, the MD and system admins (audit.log.view) and user administrators
 router.get(
   '/',
-  requirePermission('admin.user.manage'), 
+  hasAnyPermission(['audit.log.view', 'admin.user.manage']),
   (req, res, next) => auditController.getAuditLogs(req, res, next)
 );
 

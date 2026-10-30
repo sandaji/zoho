@@ -201,6 +201,25 @@ export type Delivery = $Result.DefaultSelection<Prisma.$DeliveryPayload>
  */
 export type DeliveryDispatchNote = $Result.DefaultSelection<Prisma.$DeliveryDispatchNotePayload>
 /**
+ * Model PettyCashFund
+ * Petty cash imprest fund held by one custodian. The custodian disburses small
+ * amounts; Finance tops the fund up. Every movement is a PettyCashEntry that
+ * posts to the ledger (1004 Petty Cash).
+ */
+export type PettyCashFund = $Result.DefaultSelection<Prisma.$PettyCashFundPayload>
+/**
+ * Model PettyCashEntry
+ * 
+ */
+export type PettyCashEntry = $Result.DefaultSelection<Prisma.$PettyCashEntryPayload>
+/**
+ * Model PaymentVoucher
+ * Payment Vouchers — general money out (not tied to a vendor bill or an
+ * employee expense report). Draft -> submit -> approve -> pay; paying posts
+ * DR expense / CR cash-bank-mpesa and records the treasury outflow.
+ */
+export type PaymentVoucher = $Result.DefaultSelection<Prisma.$PaymentVoucherPayload>
+/**
  * Model FinanceTransaction
  * Finance Transactions
  */
@@ -691,6 +710,26 @@ export const PurchaseRequisitionStatus: {
 export type PurchaseRequisitionStatus = (typeof PurchaseRequisitionStatus)[keyof typeof PurchaseRequisitionStatus]
 
 
+export const PettyCashEntryType: {
+  TOPUP: 'TOPUP',
+  DISBURSEMENT: 'DISBURSEMENT'
+};
+
+export type PettyCashEntryType = (typeof PettyCashEntryType)[keyof typeof PettyCashEntryType]
+
+
+export const PaymentVoucherStatus: {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+};
+
+export type PaymentVoucherStatus = (typeof PaymentVoucherStatus)[keyof typeof PaymentVoucherStatus]
+
+
 export const ExpenseReportStatus: {
   DRAFT: 'DRAFT',
   SUBMITTED: 'SUBMITTED',
@@ -1037,6 +1076,14 @@ export const PurchaseOrderStatus: typeof $Enums.PurchaseOrderStatus
 export type PurchaseRequisitionStatus = $Enums.PurchaseRequisitionStatus
 
 export const PurchaseRequisitionStatus: typeof $Enums.PurchaseRequisitionStatus
+
+export type PettyCashEntryType = $Enums.PettyCashEntryType
+
+export const PettyCashEntryType: typeof $Enums.PettyCashEntryType
+
+export type PaymentVoucherStatus = $Enums.PaymentVoucherStatus
+
+export const PaymentVoucherStatus: typeof $Enums.PaymentVoucherStatus
 
 export type ExpenseReportStatus = $Enums.ExpenseReportStatus
 
@@ -1628,6 +1675,36 @@ export class PrismaClient<
     * ```
     */
   get deliveryDispatchNote(): Prisma.DeliveryDispatchNoteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pettyCashFund`: Exposes CRUD operations for the **PettyCashFund** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PettyCashFunds
+    * const pettyCashFunds = await prisma.pettyCashFund.findMany()
+    * ```
+    */
+  get pettyCashFund(): Prisma.PettyCashFundDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pettyCashEntry`: Exposes CRUD operations for the **PettyCashEntry** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PettyCashEntries
+    * const pettyCashEntries = await prisma.pettyCashEntry.findMany()
+    * ```
+    */
+  get pettyCashEntry(): Prisma.PettyCashEntryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentVoucher`: Exposes CRUD operations for the **PaymentVoucher** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentVouchers
+    * const paymentVouchers = await prisma.paymentVoucher.findMany()
+    * ```
+    */
+  get paymentVoucher(): Prisma.PaymentVoucherDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.financeTransaction`: Exposes CRUD operations for the **FinanceTransaction** model.
@@ -2562,6 +2639,9 @@ export namespace Prisma {
     Truck: 'Truck',
     Delivery: 'Delivery',
     DeliveryDispatchNote: 'DeliveryDispatchNote',
+    PettyCashFund: 'PettyCashFund',
+    PettyCashEntry: 'PettyCashEntry',
+    PaymentVoucher: 'PaymentVoucher',
     FinanceTransaction: 'FinanceTransaction',
     ExpenseReport: 'ExpenseReport',
     ExpenseReportItem: 'ExpenseReportItem',
@@ -2622,7 +2702,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -5361,6 +5441,228 @@ export namespace Prisma {
           count: {
             args: Prisma.DeliveryDispatchNoteCountArgs<ExtArgs>
             result: $Utils.Optional<DeliveryDispatchNoteCountAggregateOutputType> | number
+          }
+        }
+      }
+      PettyCashFund: {
+        payload: Prisma.$PettyCashFundPayload<ExtArgs>
+        fields: Prisma.PettyCashFundFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PettyCashFundFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PettyCashFundFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>
+          }
+          findFirst: {
+            args: Prisma.PettyCashFundFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PettyCashFundFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>
+          }
+          findMany: {
+            args: Prisma.PettyCashFundFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>[]
+          }
+          create: {
+            args: Prisma.PettyCashFundCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>
+          }
+          createMany: {
+            args: Prisma.PettyCashFundCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PettyCashFundCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>[]
+          }
+          delete: {
+            args: Prisma.PettyCashFundDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>
+          }
+          update: {
+            args: Prisma.PettyCashFundUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>
+          }
+          deleteMany: {
+            args: Prisma.PettyCashFundDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PettyCashFundUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PettyCashFundUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>[]
+          }
+          upsert: {
+            args: Prisma.PettyCashFundUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashFundPayload>
+          }
+          aggregate: {
+            args: Prisma.PettyCashFundAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePettyCashFund>
+          }
+          groupBy: {
+            args: Prisma.PettyCashFundGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PettyCashFundGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PettyCashFundCountArgs<ExtArgs>
+            result: $Utils.Optional<PettyCashFundCountAggregateOutputType> | number
+          }
+        }
+      }
+      PettyCashEntry: {
+        payload: Prisma.$PettyCashEntryPayload<ExtArgs>
+        fields: Prisma.PettyCashEntryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PettyCashEntryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PettyCashEntryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>
+          }
+          findFirst: {
+            args: Prisma.PettyCashEntryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PettyCashEntryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>
+          }
+          findMany: {
+            args: Prisma.PettyCashEntryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>[]
+          }
+          create: {
+            args: Prisma.PettyCashEntryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>
+          }
+          createMany: {
+            args: Prisma.PettyCashEntryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PettyCashEntryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>[]
+          }
+          delete: {
+            args: Prisma.PettyCashEntryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>
+          }
+          update: {
+            args: Prisma.PettyCashEntryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>
+          }
+          deleteMany: {
+            args: Prisma.PettyCashEntryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PettyCashEntryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PettyCashEntryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>[]
+          }
+          upsert: {
+            args: Prisma.PettyCashEntryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PettyCashEntryPayload>
+          }
+          aggregate: {
+            args: Prisma.PettyCashEntryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePettyCashEntry>
+          }
+          groupBy: {
+            args: Prisma.PettyCashEntryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PettyCashEntryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PettyCashEntryCountArgs<ExtArgs>
+            result: $Utils.Optional<PettyCashEntryCountAggregateOutputType> | number
+          }
+        }
+      }
+      PaymentVoucher: {
+        payload: Prisma.$PaymentVoucherPayload<ExtArgs>
+        fields: Prisma.PaymentVoucherFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentVoucherFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentVoucherFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentVoucherFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentVoucherFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentVoucherFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentVoucherCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentVoucherCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentVoucherCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentVoucherDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>
+          }
+          update: {
+            args: Prisma.PaymentVoucherUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentVoucherDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentVoucherUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentVoucherUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentVoucherUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentVoucherPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentVoucherAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentVoucher>
+          }
+          groupBy: {
+            args: Prisma.PaymentVoucherGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentVoucherGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentVoucherCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentVoucherCountAggregateOutputType> | number
           }
         }
       }
@@ -8854,6 +9156,9 @@ export namespace Prisma {
     truck?: TruckOmit
     delivery?: DeliveryOmit
     deliveryDispatchNote?: DeliveryDispatchNoteOmit
+    pettyCashFund?: PettyCashFundOmit
+    pettyCashEntry?: PettyCashEntryOmit
+    paymentVoucher?: PaymentVoucherOmit
     financeTransaction?: FinanceTransactionOmit
     expenseReport?: ExpenseReportOmit
     expenseReportItem?: ExpenseReportItemOmit
@@ -10383,6 +10688,37 @@ export namespace Prisma {
    */
   export type DeliveryCountOutputTypeCountDispatchNotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DeliveryDispatchNoteWhereInput
+  }
+
+
+  /**
+   * Count Type PettyCashFundCountOutputType
+   */
+
+  export type PettyCashFundCountOutputType = {
+    entries: number
+  }
+
+  export type PettyCashFundCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    entries?: boolean | PettyCashFundCountOutputTypeCountEntriesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PettyCashFundCountOutputType without action
+   */
+  export type PettyCashFundCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFundCountOutputType
+     */
+    select?: PettyCashFundCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PettyCashFundCountOutputType without action
+   */
+  export type PettyCashFundCountOutputTypeCountEntriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PettyCashEntryWhereInput
   }
 
 
@@ -58791,6 +59127,3713 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DeliveryDispatchNoteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PettyCashFund
+   */
+
+  export type AggregatePettyCashFund = {
+    _count: PettyCashFundCountAggregateOutputType | null
+    _avg: PettyCashFundAvgAggregateOutputType | null
+    _sum: PettyCashFundSumAggregateOutputType | null
+    _min: PettyCashFundMinAggregateOutputType | null
+    _max: PettyCashFundMaxAggregateOutputType | null
+  }
+
+  export type PettyCashFundAvgAggregateOutputType = {
+    imprestAmount: number | null
+    maxPerTransaction: number | null
+    balance: number | null
+  }
+
+  export type PettyCashFundSumAggregateOutputType = {
+    imprestAmount: number | null
+    maxPerTransaction: number | null
+    balance: number | null
+  }
+
+  export type PettyCashFundMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    branchId: string | null
+    custodianId: string | null
+    imprestAmount: number | null
+    maxPerTransaction: number | null
+    balance: number | null
+    isActive: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PettyCashFundMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    branchId: string | null
+    custodianId: string | null
+    imprestAmount: number | null
+    maxPerTransaction: number | null
+    balance: number | null
+    isActive: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PettyCashFundCountAggregateOutputType = {
+    id: number
+    name: number
+    branchId: number
+    custodianId: number
+    imprestAmount: number
+    maxPerTransaction: number
+    balance: number
+    isActive: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PettyCashFundAvgAggregateInputType = {
+    imprestAmount?: true
+    maxPerTransaction?: true
+    balance?: true
+  }
+
+  export type PettyCashFundSumAggregateInputType = {
+    imprestAmount?: true
+    maxPerTransaction?: true
+    balance?: true
+  }
+
+  export type PettyCashFundMinAggregateInputType = {
+    id?: true
+    name?: true
+    branchId?: true
+    custodianId?: true
+    imprestAmount?: true
+    maxPerTransaction?: true
+    balance?: true
+    isActive?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PettyCashFundMaxAggregateInputType = {
+    id?: true
+    name?: true
+    branchId?: true
+    custodianId?: true
+    imprestAmount?: true
+    maxPerTransaction?: true
+    balance?: true
+    isActive?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PettyCashFundCountAggregateInputType = {
+    id?: true
+    name?: true
+    branchId?: true
+    custodianId?: true
+    imprestAmount?: true
+    maxPerTransaction?: true
+    balance?: true
+    isActive?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PettyCashFundAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PettyCashFund to aggregate.
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashFunds to fetch.
+     */
+    orderBy?: PettyCashFundOrderByWithRelationInput | PettyCashFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PettyCashFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PettyCashFunds
+    **/
+    _count?: true | PettyCashFundCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PettyCashFundAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PettyCashFundSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PettyCashFundMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PettyCashFundMaxAggregateInputType
+  }
+
+  export type GetPettyCashFundAggregateType<T extends PettyCashFundAggregateArgs> = {
+        [P in keyof T & keyof AggregatePettyCashFund]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePettyCashFund[P]>
+      : GetScalarType<T[P], AggregatePettyCashFund[P]>
+  }
+
+
+
+
+  export type PettyCashFundGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PettyCashFundWhereInput
+    orderBy?: PettyCashFundOrderByWithAggregationInput | PettyCashFundOrderByWithAggregationInput[]
+    by: PettyCashFundScalarFieldEnum[] | PettyCashFundScalarFieldEnum
+    having?: PettyCashFundScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PettyCashFundCountAggregateInputType | true
+    _avg?: PettyCashFundAvgAggregateInputType
+    _sum?: PettyCashFundSumAggregateInputType
+    _min?: PettyCashFundMinAggregateInputType
+    _max?: PettyCashFundMaxAggregateInputType
+  }
+
+  export type PettyCashFundGroupByOutputType = {
+    id: string
+    name: string
+    branchId: string | null
+    custodianId: string
+    imprestAmount: number
+    maxPerTransaction: number
+    balance: number
+    isActive: boolean
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: PettyCashFundCountAggregateOutputType | null
+    _avg: PettyCashFundAvgAggregateOutputType | null
+    _sum: PettyCashFundSumAggregateOutputType | null
+    _min: PettyCashFundMinAggregateOutputType | null
+    _max: PettyCashFundMaxAggregateOutputType | null
+  }
+
+  type GetPettyCashFundGroupByPayload<T extends PettyCashFundGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PettyCashFundGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PettyCashFundGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PettyCashFundGroupByOutputType[P]>
+            : GetScalarType<T[P], PettyCashFundGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PettyCashFundSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    branchId?: boolean
+    custodianId?: boolean
+    imprestAmount?: boolean
+    maxPerTransaction?: boolean
+    balance?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    entries?: boolean | PettyCashFund$entriesArgs<ExtArgs>
+    _count?: boolean | PettyCashFundCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pettyCashFund"]>
+
+  export type PettyCashFundSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    branchId?: boolean
+    custodianId?: boolean
+    imprestAmount?: boolean
+    maxPerTransaction?: boolean
+    balance?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pettyCashFund"]>
+
+  export type PettyCashFundSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    branchId?: boolean
+    custodianId?: boolean
+    imprestAmount?: boolean
+    maxPerTransaction?: boolean
+    balance?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["pettyCashFund"]>
+
+  export type PettyCashFundSelectScalar = {
+    id?: boolean
+    name?: boolean
+    branchId?: boolean
+    custodianId?: boolean
+    imprestAmount?: boolean
+    maxPerTransaction?: boolean
+    balance?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PettyCashFundOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "branchId" | "custodianId" | "imprestAmount" | "maxPerTransaction" | "balance" | "isActive" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["pettyCashFund"]>
+  export type PettyCashFundInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    entries?: boolean | PettyCashFund$entriesArgs<ExtArgs>
+    _count?: boolean | PettyCashFundCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PettyCashFundIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type PettyCashFundIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $PettyCashFundPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PettyCashFund"
+    objects: {
+      entries: Prisma.$PettyCashEntryPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      branchId: string | null
+      custodianId: string
+      imprestAmount: number
+      maxPerTransaction: number
+      balance: number
+      isActive: boolean
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["pettyCashFund"]>
+    composites: {}
+  }
+
+  type PettyCashFundGetPayload<S extends boolean | null | undefined | PettyCashFundDefaultArgs> = $Result.GetResult<Prisma.$PettyCashFundPayload, S>
+
+  type PettyCashFundCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PettyCashFundFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PettyCashFundCountAggregateInputType | true
+    }
+
+  export interface PettyCashFundDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PettyCashFund'], meta: { name: 'PettyCashFund' } }
+    /**
+     * Find zero or one PettyCashFund that matches the filter.
+     * @param {PettyCashFundFindUniqueArgs} args - Arguments to find a PettyCashFund
+     * @example
+     * // Get one PettyCashFund
+     * const pettyCashFund = await prisma.pettyCashFund.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PettyCashFundFindUniqueArgs>(args: SelectSubset<T, PettyCashFundFindUniqueArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PettyCashFund that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PettyCashFundFindUniqueOrThrowArgs} args - Arguments to find a PettyCashFund
+     * @example
+     * // Get one PettyCashFund
+     * const pettyCashFund = await prisma.pettyCashFund.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PettyCashFundFindUniqueOrThrowArgs>(args: SelectSubset<T, PettyCashFundFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PettyCashFund that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundFindFirstArgs} args - Arguments to find a PettyCashFund
+     * @example
+     * // Get one PettyCashFund
+     * const pettyCashFund = await prisma.pettyCashFund.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PettyCashFundFindFirstArgs>(args?: SelectSubset<T, PettyCashFundFindFirstArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PettyCashFund that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundFindFirstOrThrowArgs} args - Arguments to find a PettyCashFund
+     * @example
+     * // Get one PettyCashFund
+     * const pettyCashFund = await prisma.pettyCashFund.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PettyCashFundFindFirstOrThrowArgs>(args?: SelectSubset<T, PettyCashFundFindFirstOrThrowArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PettyCashFunds that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PettyCashFunds
+     * const pettyCashFunds = await prisma.pettyCashFund.findMany()
+     * 
+     * // Get first 10 PettyCashFunds
+     * const pettyCashFunds = await prisma.pettyCashFund.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pettyCashFundWithIdOnly = await prisma.pettyCashFund.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PettyCashFundFindManyArgs>(args?: SelectSubset<T, PettyCashFundFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PettyCashFund.
+     * @param {PettyCashFundCreateArgs} args - Arguments to create a PettyCashFund.
+     * @example
+     * // Create one PettyCashFund
+     * const PettyCashFund = await prisma.pettyCashFund.create({
+     *   data: {
+     *     // ... data to create a PettyCashFund
+     *   }
+     * })
+     * 
+     */
+    create<T extends PettyCashFundCreateArgs>(args: SelectSubset<T, PettyCashFundCreateArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PettyCashFunds.
+     * @param {PettyCashFundCreateManyArgs} args - Arguments to create many PettyCashFunds.
+     * @example
+     * // Create many PettyCashFunds
+     * const pettyCashFund = await prisma.pettyCashFund.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PettyCashFundCreateManyArgs>(args?: SelectSubset<T, PettyCashFundCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PettyCashFunds and returns the data saved in the database.
+     * @param {PettyCashFundCreateManyAndReturnArgs} args - Arguments to create many PettyCashFunds.
+     * @example
+     * // Create many PettyCashFunds
+     * const pettyCashFund = await prisma.pettyCashFund.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PettyCashFunds and only return the `id`
+     * const pettyCashFundWithIdOnly = await prisma.pettyCashFund.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PettyCashFundCreateManyAndReturnArgs>(args?: SelectSubset<T, PettyCashFundCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PettyCashFund.
+     * @param {PettyCashFundDeleteArgs} args - Arguments to delete one PettyCashFund.
+     * @example
+     * // Delete one PettyCashFund
+     * const PettyCashFund = await prisma.pettyCashFund.delete({
+     *   where: {
+     *     // ... filter to delete one PettyCashFund
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PettyCashFundDeleteArgs>(args: SelectSubset<T, PettyCashFundDeleteArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PettyCashFund.
+     * @param {PettyCashFundUpdateArgs} args - Arguments to update one PettyCashFund.
+     * @example
+     * // Update one PettyCashFund
+     * const pettyCashFund = await prisma.pettyCashFund.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PettyCashFundUpdateArgs>(args: SelectSubset<T, PettyCashFundUpdateArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PettyCashFunds.
+     * @param {PettyCashFundDeleteManyArgs} args - Arguments to filter PettyCashFunds to delete.
+     * @example
+     * // Delete a few PettyCashFunds
+     * const { count } = await prisma.pettyCashFund.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PettyCashFundDeleteManyArgs>(args?: SelectSubset<T, PettyCashFundDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PettyCashFunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PettyCashFunds
+     * const pettyCashFund = await prisma.pettyCashFund.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PettyCashFundUpdateManyArgs>(args: SelectSubset<T, PettyCashFundUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PettyCashFunds and returns the data updated in the database.
+     * @param {PettyCashFundUpdateManyAndReturnArgs} args - Arguments to update many PettyCashFunds.
+     * @example
+     * // Update many PettyCashFunds
+     * const pettyCashFund = await prisma.pettyCashFund.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PettyCashFunds and only return the `id`
+     * const pettyCashFundWithIdOnly = await prisma.pettyCashFund.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PettyCashFundUpdateManyAndReturnArgs>(args: SelectSubset<T, PettyCashFundUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PettyCashFund.
+     * @param {PettyCashFundUpsertArgs} args - Arguments to update or create a PettyCashFund.
+     * @example
+     * // Update or create a PettyCashFund
+     * const pettyCashFund = await prisma.pettyCashFund.upsert({
+     *   create: {
+     *     // ... data to create a PettyCashFund
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PettyCashFund we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PettyCashFundUpsertArgs>(args: SelectSubset<T, PettyCashFundUpsertArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PettyCashFunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundCountArgs} args - Arguments to filter PettyCashFunds to count.
+     * @example
+     * // Count the number of PettyCashFunds
+     * const count = await prisma.pettyCashFund.count({
+     *   where: {
+     *     // ... the filter for the PettyCashFunds we want to count
+     *   }
+     * })
+    **/
+    count<T extends PettyCashFundCountArgs>(
+      args?: Subset<T, PettyCashFundCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PettyCashFundCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PettyCashFund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PettyCashFundAggregateArgs>(args: Subset<T, PettyCashFundAggregateArgs>): Prisma.PrismaPromise<GetPettyCashFundAggregateType<T>>
+
+    /**
+     * Group by PettyCashFund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashFundGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PettyCashFundGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PettyCashFundGroupByArgs['orderBy'] }
+        : { orderBy?: PettyCashFundGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PettyCashFundGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPettyCashFundGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PettyCashFund model
+   */
+  readonly fields: PettyCashFundFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PettyCashFund.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PettyCashFundClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    entries<T extends PettyCashFund$entriesArgs<ExtArgs> = {}>(args?: Subset<T, PettyCashFund$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PettyCashFund model
+   */
+  interface PettyCashFundFieldRefs {
+    readonly id: FieldRef<"PettyCashFund", 'String'>
+    readonly name: FieldRef<"PettyCashFund", 'String'>
+    readonly branchId: FieldRef<"PettyCashFund", 'String'>
+    readonly custodianId: FieldRef<"PettyCashFund", 'String'>
+    readonly imprestAmount: FieldRef<"PettyCashFund", 'Float'>
+    readonly maxPerTransaction: FieldRef<"PettyCashFund", 'Float'>
+    readonly balance: FieldRef<"PettyCashFund", 'Float'>
+    readonly isActive: FieldRef<"PettyCashFund", 'Boolean'>
+    readonly createdById: FieldRef<"PettyCashFund", 'String'>
+    readonly createdAt: FieldRef<"PettyCashFund", 'DateTime'>
+    readonly updatedAt: FieldRef<"PettyCashFund", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PettyCashFund findUnique
+   */
+  export type PettyCashFundFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashFund to fetch.
+     */
+    where: PettyCashFundWhereUniqueInput
+  }
+
+  /**
+   * PettyCashFund findUniqueOrThrow
+   */
+  export type PettyCashFundFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashFund to fetch.
+     */
+    where: PettyCashFundWhereUniqueInput
+  }
+
+  /**
+   * PettyCashFund findFirst
+   */
+  export type PettyCashFundFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashFund to fetch.
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashFunds to fetch.
+     */
+    orderBy?: PettyCashFundOrderByWithRelationInput | PettyCashFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PettyCashFunds.
+     */
+    cursor?: PettyCashFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PettyCashFunds.
+     */
+    distinct?: PettyCashFundScalarFieldEnum | PettyCashFundScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashFund findFirstOrThrow
+   */
+  export type PettyCashFundFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashFund to fetch.
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashFunds to fetch.
+     */
+    orderBy?: PettyCashFundOrderByWithRelationInput | PettyCashFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PettyCashFunds.
+     */
+    cursor?: PettyCashFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PettyCashFunds.
+     */
+    distinct?: PettyCashFundScalarFieldEnum | PettyCashFundScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashFund findMany
+   */
+  export type PettyCashFundFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashFunds to fetch.
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashFunds to fetch.
+     */
+    orderBy?: PettyCashFundOrderByWithRelationInput | PettyCashFundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PettyCashFunds.
+     */
+    cursor?: PettyCashFundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashFunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashFunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PettyCashFunds.
+     */
+    distinct?: PettyCashFundScalarFieldEnum | PettyCashFundScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashFund create
+   */
+  export type PettyCashFundCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PettyCashFund.
+     */
+    data: XOR<PettyCashFundCreateInput, PettyCashFundUncheckedCreateInput>
+  }
+
+  /**
+   * PettyCashFund createMany
+   */
+  export type PettyCashFundCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PettyCashFunds.
+     */
+    data: PettyCashFundCreateManyInput | PettyCashFundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PettyCashFund createManyAndReturn
+   */
+  export type PettyCashFundCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * The data used to create many PettyCashFunds.
+     */
+    data: PettyCashFundCreateManyInput | PettyCashFundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PettyCashFund update
+   */
+  export type PettyCashFundUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PettyCashFund.
+     */
+    data: XOR<PettyCashFundUpdateInput, PettyCashFundUncheckedUpdateInput>
+    /**
+     * Choose, which PettyCashFund to update.
+     */
+    where: PettyCashFundWhereUniqueInput
+  }
+
+  /**
+   * PettyCashFund updateMany
+   */
+  export type PettyCashFundUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PettyCashFunds.
+     */
+    data: XOR<PettyCashFundUpdateManyMutationInput, PettyCashFundUncheckedUpdateManyInput>
+    /**
+     * Filter which PettyCashFunds to update
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * Limit how many PettyCashFunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PettyCashFund updateManyAndReturn
+   */
+  export type PettyCashFundUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * The data used to update PettyCashFunds.
+     */
+    data: XOR<PettyCashFundUpdateManyMutationInput, PettyCashFundUncheckedUpdateManyInput>
+    /**
+     * Filter which PettyCashFunds to update
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * Limit how many PettyCashFunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PettyCashFund upsert
+   */
+  export type PettyCashFundUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PettyCashFund to update in case it exists.
+     */
+    where: PettyCashFundWhereUniqueInput
+    /**
+     * In case the PettyCashFund found by the `where` argument doesn't exist, create a new PettyCashFund with this data.
+     */
+    create: XOR<PettyCashFundCreateInput, PettyCashFundUncheckedCreateInput>
+    /**
+     * In case the PettyCashFund was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PettyCashFundUpdateInput, PettyCashFundUncheckedUpdateInput>
+  }
+
+  /**
+   * PettyCashFund delete
+   */
+  export type PettyCashFundDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+    /**
+     * Filter which PettyCashFund to delete.
+     */
+    where: PettyCashFundWhereUniqueInput
+  }
+
+  /**
+   * PettyCashFund deleteMany
+   */
+  export type PettyCashFundDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PettyCashFunds to delete
+     */
+    where?: PettyCashFundWhereInput
+    /**
+     * Limit how many PettyCashFunds to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PettyCashFund.entries
+   */
+  export type PettyCashFund$entriesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    where?: PettyCashEntryWhereInput
+    orderBy?: PettyCashEntryOrderByWithRelationInput | PettyCashEntryOrderByWithRelationInput[]
+    cursor?: PettyCashEntryWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PettyCashEntryScalarFieldEnum | PettyCashEntryScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashFund without action
+   */
+  export type PettyCashFundDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashFund
+     */
+    select?: PettyCashFundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashFund
+     */
+    omit?: PettyCashFundOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashFundInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PettyCashEntry
+   */
+
+  export type AggregatePettyCashEntry = {
+    _count: PettyCashEntryCountAggregateOutputType | null
+    _avg: PettyCashEntryAvgAggregateOutputType | null
+    _sum: PettyCashEntrySumAggregateOutputType | null
+    _min: PettyCashEntryMinAggregateOutputType | null
+    _max: PettyCashEntryMaxAggregateOutputType | null
+  }
+
+  export type PettyCashEntryAvgAggregateOutputType = {
+    amount: number | null
+    balanceAfter: number | null
+  }
+
+  export type PettyCashEntrySumAggregateOutputType = {
+    amount: number | null
+    balanceAfter: number | null
+  }
+
+  export type PettyCashEntryMinAggregateOutputType = {
+    id: string | null
+    entryNumber: string | null
+    fundId: string | null
+    type: $Enums.PettyCashEntryType | null
+    amount: number | null
+    balanceAfter: number | null
+    payee: string | null
+    category: string | null
+    description: string | null
+    receiptRef: string | null
+    entryDate: Date | null
+    counterAccountId: string | null
+    journalHeaderId: string | null
+    recordedById: string | null
+    voidedAt: Date | null
+    voidedById: string | null
+    voidReason: string | null
+    createdAt: Date | null
+  }
+
+  export type PettyCashEntryMaxAggregateOutputType = {
+    id: string | null
+    entryNumber: string | null
+    fundId: string | null
+    type: $Enums.PettyCashEntryType | null
+    amount: number | null
+    balanceAfter: number | null
+    payee: string | null
+    category: string | null
+    description: string | null
+    receiptRef: string | null
+    entryDate: Date | null
+    counterAccountId: string | null
+    journalHeaderId: string | null
+    recordedById: string | null
+    voidedAt: Date | null
+    voidedById: string | null
+    voidReason: string | null
+    createdAt: Date | null
+  }
+
+  export type PettyCashEntryCountAggregateOutputType = {
+    id: number
+    entryNumber: number
+    fundId: number
+    type: number
+    amount: number
+    balanceAfter: number
+    payee: number
+    category: number
+    description: number
+    receiptRef: number
+    entryDate: number
+    counterAccountId: number
+    journalHeaderId: number
+    recordedById: number
+    voidedAt: number
+    voidedById: number
+    voidReason: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PettyCashEntryAvgAggregateInputType = {
+    amount?: true
+    balanceAfter?: true
+  }
+
+  export type PettyCashEntrySumAggregateInputType = {
+    amount?: true
+    balanceAfter?: true
+  }
+
+  export type PettyCashEntryMinAggregateInputType = {
+    id?: true
+    entryNumber?: true
+    fundId?: true
+    type?: true
+    amount?: true
+    balanceAfter?: true
+    payee?: true
+    category?: true
+    description?: true
+    receiptRef?: true
+    entryDate?: true
+    counterAccountId?: true
+    journalHeaderId?: true
+    recordedById?: true
+    voidedAt?: true
+    voidedById?: true
+    voidReason?: true
+    createdAt?: true
+  }
+
+  export type PettyCashEntryMaxAggregateInputType = {
+    id?: true
+    entryNumber?: true
+    fundId?: true
+    type?: true
+    amount?: true
+    balanceAfter?: true
+    payee?: true
+    category?: true
+    description?: true
+    receiptRef?: true
+    entryDate?: true
+    counterAccountId?: true
+    journalHeaderId?: true
+    recordedById?: true
+    voidedAt?: true
+    voidedById?: true
+    voidReason?: true
+    createdAt?: true
+  }
+
+  export type PettyCashEntryCountAggregateInputType = {
+    id?: true
+    entryNumber?: true
+    fundId?: true
+    type?: true
+    amount?: true
+    balanceAfter?: true
+    payee?: true
+    category?: true
+    description?: true
+    receiptRef?: true
+    entryDate?: true
+    counterAccountId?: true
+    journalHeaderId?: true
+    recordedById?: true
+    voidedAt?: true
+    voidedById?: true
+    voidReason?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PettyCashEntryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PettyCashEntry to aggregate.
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashEntries to fetch.
+     */
+    orderBy?: PettyCashEntryOrderByWithRelationInput | PettyCashEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PettyCashEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PettyCashEntries
+    **/
+    _count?: true | PettyCashEntryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PettyCashEntryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PettyCashEntrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PettyCashEntryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PettyCashEntryMaxAggregateInputType
+  }
+
+  export type GetPettyCashEntryAggregateType<T extends PettyCashEntryAggregateArgs> = {
+        [P in keyof T & keyof AggregatePettyCashEntry]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePettyCashEntry[P]>
+      : GetScalarType<T[P], AggregatePettyCashEntry[P]>
+  }
+
+
+
+
+  export type PettyCashEntryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PettyCashEntryWhereInput
+    orderBy?: PettyCashEntryOrderByWithAggregationInput | PettyCashEntryOrderByWithAggregationInput[]
+    by: PettyCashEntryScalarFieldEnum[] | PettyCashEntryScalarFieldEnum
+    having?: PettyCashEntryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PettyCashEntryCountAggregateInputType | true
+    _avg?: PettyCashEntryAvgAggregateInputType
+    _sum?: PettyCashEntrySumAggregateInputType
+    _min?: PettyCashEntryMinAggregateInputType
+    _max?: PettyCashEntryMaxAggregateInputType
+  }
+
+  export type PettyCashEntryGroupByOutputType = {
+    id: string
+    entryNumber: string
+    fundId: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee: string | null
+    category: string | null
+    description: string
+    receiptRef: string | null
+    entryDate: Date
+    counterAccountId: string | null
+    journalHeaderId: string | null
+    recordedById: string
+    voidedAt: Date | null
+    voidedById: string | null
+    voidReason: string | null
+    createdAt: Date
+    _count: PettyCashEntryCountAggregateOutputType | null
+    _avg: PettyCashEntryAvgAggregateOutputType | null
+    _sum: PettyCashEntrySumAggregateOutputType | null
+    _min: PettyCashEntryMinAggregateOutputType | null
+    _max: PettyCashEntryMaxAggregateOutputType | null
+  }
+
+  type GetPettyCashEntryGroupByPayload<T extends PettyCashEntryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PettyCashEntryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PettyCashEntryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PettyCashEntryGroupByOutputType[P]>
+            : GetScalarType<T[P], PettyCashEntryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PettyCashEntrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    entryNumber?: boolean
+    fundId?: boolean
+    type?: boolean
+    amount?: boolean
+    balanceAfter?: boolean
+    payee?: boolean
+    category?: boolean
+    description?: boolean
+    receiptRef?: boolean
+    entryDate?: boolean
+    counterAccountId?: boolean
+    journalHeaderId?: boolean
+    recordedById?: boolean
+    voidedAt?: boolean
+    voidedById?: boolean
+    voidReason?: boolean
+    createdAt?: boolean
+    fund?: boolean | PettyCashFundDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pettyCashEntry"]>
+
+  export type PettyCashEntrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    entryNumber?: boolean
+    fundId?: boolean
+    type?: boolean
+    amount?: boolean
+    balanceAfter?: boolean
+    payee?: boolean
+    category?: boolean
+    description?: boolean
+    receiptRef?: boolean
+    entryDate?: boolean
+    counterAccountId?: boolean
+    journalHeaderId?: boolean
+    recordedById?: boolean
+    voidedAt?: boolean
+    voidedById?: boolean
+    voidReason?: boolean
+    createdAt?: boolean
+    fund?: boolean | PettyCashFundDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pettyCashEntry"]>
+
+  export type PettyCashEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    entryNumber?: boolean
+    fundId?: boolean
+    type?: boolean
+    amount?: boolean
+    balanceAfter?: boolean
+    payee?: boolean
+    category?: boolean
+    description?: boolean
+    receiptRef?: boolean
+    entryDate?: boolean
+    counterAccountId?: boolean
+    journalHeaderId?: boolean
+    recordedById?: boolean
+    voidedAt?: boolean
+    voidedById?: boolean
+    voidReason?: boolean
+    createdAt?: boolean
+    fund?: boolean | PettyCashFundDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pettyCashEntry"]>
+
+  export type PettyCashEntrySelectScalar = {
+    id?: boolean
+    entryNumber?: boolean
+    fundId?: boolean
+    type?: boolean
+    amount?: boolean
+    balanceAfter?: boolean
+    payee?: boolean
+    category?: boolean
+    description?: boolean
+    receiptRef?: boolean
+    entryDate?: boolean
+    counterAccountId?: boolean
+    journalHeaderId?: boolean
+    recordedById?: boolean
+    voidedAt?: boolean
+    voidedById?: boolean
+    voidReason?: boolean
+    createdAt?: boolean
+  }
+
+  export type PettyCashEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "entryNumber" | "fundId" | "type" | "amount" | "balanceAfter" | "payee" | "category" | "description" | "receiptRef" | "entryDate" | "counterAccountId" | "journalHeaderId" | "recordedById" | "voidedAt" | "voidedById" | "voidReason" | "createdAt", ExtArgs["result"]["pettyCashEntry"]>
+  export type PettyCashEntryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    fund?: boolean | PettyCashFundDefaultArgs<ExtArgs>
+  }
+  export type PettyCashEntryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    fund?: boolean | PettyCashFundDefaultArgs<ExtArgs>
+  }
+  export type PettyCashEntryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    fund?: boolean | PettyCashFundDefaultArgs<ExtArgs>
+  }
+
+  export type $PettyCashEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PettyCashEntry"
+    objects: {
+      fund: Prisma.$PettyCashFundPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      entryNumber: string
+      fundId: string
+      type: $Enums.PettyCashEntryType
+      amount: number
+      balanceAfter: number
+      payee: string | null
+      category: string | null
+      description: string
+      receiptRef: string | null
+      entryDate: Date
+      counterAccountId: string | null
+      journalHeaderId: string | null
+      recordedById: string
+      voidedAt: Date | null
+      voidedById: string | null
+      voidReason: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["pettyCashEntry"]>
+    composites: {}
+  }
+
+  type PettyCashEntryGetPayload<S extends boolean | null | undefined | PettyCashEntryDefaultArgs> = $Result.GetResult<Prisma.$PettyCashEntryPayload, S>
+
+  type PettyCashEntryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PettyCashEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PettyCashEntryCountAggregateInputType | true
+    }
+
+  export interface PettyCashEntryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PettyCashEntry'], meta: { name: 'PettyCashEntry' } }
+    /**
+     * Find zero or one PettyCashEntry that matches the filter.
+     * @param {PettyCashEntryFindUniqueArgs} args - Arguments to find a PettyCashEntry
+     * @example
+     * // Get one PettyCashEntry
+     * const pettyCashEntry = await prisma.pettyCashEntry.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PettyCashEntryFindUniqueArgs>(args: SelectSubset<T, PettyCashEntryFindUniqueArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PettyCashEntry that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PettyCashEntryFindUniqueOrThrowArgs} args - Arguments to find a PettyCashEntry
+     * @example
+     * // Get one PettyCashEntry
+     * const pettyCashEntry = await prisma.pettyCashEntry.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PettyCashEntryFindUniqueOrThrowArgs>(args: SelectSubset<T, PettyCashEntryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PettyCashEntry that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryFindFirstArgs} args - Arguments to find a PettyCashEntry
+     * @example
+     * // Get one PettyCashEntry
+     * const pettyCashEntry = await prisma.pettyCashEntry.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PettyCashEntryFindFirstArgs>(args?: SelectSubset<T, PettyCashEntryFindFirstArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PettyCashEntry that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryFindFirstOrThrowArgs} args - Arguments to find a PettyCashEntry
+     * @example
+     * // Get one PettyCashEntry
+     * const pettyCashEntry = await prisma.pettyCashEntry.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PettyCashEntryFindFirstOrThrowArgs>(args?: SelectSubset<T, PettyCashEntryFindFirstOrThrowArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PettyCashEntries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PettyCashEntries
+     * const pettyCashEntries = await prisma.pettyCashEntry.findMany()
+     * 
+     * // Get first 10 PettyCashEntries
+     * const pettyCashEntries = await prisma.pettyCashEntry.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pettyCashEntryWithIdOnly = await prisma.pettyCashEntry.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PettyCashEntryFindManyArgs>(args?: SelectSubset<T, PettyCashEntryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PettyCashEntry.
+     * @param {PettyCashEntryCreateArgs} args - Arguments to create a PettyCashEntry.
+     * @example
+     * // Create one PettyCashEntry
+     * const PettyCashEntry = await prisma.pettyCashEntry.create({
+     *   data: {
+     *     // ... data to create a PettyCashEntry
+     *   }
+     * })
+     * 
+     */
+    create<T extends PettyCashEntryCreateArgs>(args: SelectSubset<T, PettyCashEntryCreateArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PettyCashEntries.
+     * @param {PettyCashEntryCreateManyArgs} args - Arguments to create many PettyCashEntries.
+     * @example
+     * // Create many PettyCashEntries
+     * const pettyCashEntry = await prisma.pettyCashEntry.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PettyCashEntryCreateManyArgs>(args?: SelectSubset<T, PettyCashEntryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PettyCashEntries and returns the data saved in the database.
+     * @param {PettyCashEntryCreateManyAndReturnArgs} args - Arguments to create many PettyCashEntries.
+     * @example
+     * // Create many PettyCashEntries
+     * const pettyCashEntry = await prisma.pettyCashEntry.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PettyCashEntries and only return the `id`
+     * const pettyCashEntryWithIdOnly = await prisma.pettyCashEntry.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PettyCashEntryCreateManyAndReturnArgs>(args?: SelectSubset<T, PettyCashEntryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PettyCashEntry.
+     * @param {PettyCashEntryDeleteArgs} args - Arguments to delete one PettyCashEntry.
+     * @example
+     * // Delete one PettyCashEntry
+     * const PettyCashEntry = await prisma.pettyCashEntry.delete({
+     *   where: {
+     *     // ... filter to delete one PettyCashEntry
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PettyCashEntryDeleteArgs>(args: SelectSubset<T, PettyCashEntryDeleteArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PettyCashEntry.
+     * @param {PettyCashEntryUpdateArgs} args - Arguments to update one PettyCashEntry.
+     * @example
+     * // Update one PettyCashEntry
+     * const pettyCashEntry = await prisma.pettyCashEntry.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PettyCashEntryUpdateArgs>(args: SelectSubset<T, PettyCashEntryUpdateArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PettyCashEntries.
+     * @param {PettyCashEntryDeleteManyArgs} args - Arguments to filter PettyCashEntries to delete.
+     * @example
+     * // Delete a few PettyCashEntries
+     * const { count } = await prisma.pettyCashEntry.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PettyCashEntryDeleteManyArgs>(args?: SelectSubset<T, PettyCashEntryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PettyCashEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PettyCashEntries
+     * const pettyCashEntry = await prisma.pettyCashEntry.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PettyCashEntryUpdateManyArgs>(args: SelectSubset<T, PettyCashEntryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PettyCashEntries and returns the data updated in the database.
+     * @param {PettyCashEntryUpdateManyAndReturnArgs} args - Arguments to update many PettyCashEntries.
+     * @example
+     * // Update many PettyCashEntries
+     * const pettyCashEntry = await prisma.pettyCashEntry.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PettyCashEntries and only return the `id`
+     * const pettyCashEntryWithIdOnly = await prisma.pettyCashEntry.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PettyCashEntryUpdateManyAndReturnArgs>(args: SelectSubset<T, PettyCashEntryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PettyCashEntry.
+     * @param {PettyCashEntryUpsertArgs} args - Arguments to update or create a PettyCashEntry.
+     * @example
+     * // Update or create a PettyCashEntry
+     * const pettyCashEntry = await prisma.pettyCashEntry.upsert({
+     *   create: {
+     *     // ... data to create a PettyCashEntry
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PettyCashEntry we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PettyCashEntryUpsertArgs>(args: SelectSubset<T, PettyCashEntryUpsertArgs<ExtArgs>>): Prisma__PettyCashEntryClient<$Result.GetResult<Prisma.$PettyCashEntryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PettyCashEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryCountArgs} args - Arguments to filter PettyCashEntries to count.
+     * @example
+     * // Count the number of PettyCashEntries
+     * const count = await prisma.pettyCashEntry.count({
+     *   where: {
+     *     // ... the filter for the PettyCashEntries we want to count
+     *   }
+     * })
+    **/
+    count<T extends PettyCashEntryCountArgs>(
+      args?: Subset<T, PettyCashEntryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PettyCashEntryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PettyCashEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PettyCashEntryAggregateArgs>(args: Subset<T, PettyCashEntryAggregateArgs>): Prisma.PrismaPromise<GetPettyCashEntryAggregateType<T>>
+
+    /**
+     * Group by PettyCashEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PettyCashEntryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PettyCashEntryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PettyCashEntryGroupByArgs['orderBy'] }
+        : { orderBy?: PettyCashEntryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PettyCashEntryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPettyCashEntryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PettyCashEntry model
+   */
+  readonly fields: PettyCashEntryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PettyCashEntry.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PettyCashEntryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    fund<T extends PettyCashFundDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PettyCashFundDefaultArgs<ExtArgs>>): Prisma__PettyCashFundClient<$Result.GetResult<Prisma.$PettyCashFundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PettyCashEntry model
+   */
+  interface PettyCashEntryFieldRefs {
+    readonly id: FieldRef<"PettyCashEntry", 'String'>
+    readonly entryNumber: FieldRef<"PettyCashEntry", 'String'>
+    readonly fundId: FieldRef<"PettyCashEntry", 'String'>
+    readonly type: FieldRef<"PettyCashEntry", 'PettyCashEntryType'>
+    readonly amount: FieldRef<"PettyCashEntry", 'Float'>
+    readonly balanceAfter: FieldRef<"PettyCashEntry", 'Float'>
+    readonly payee: FieldRef<"PettyCashEntry", 'String'>
+    readonly category: FieldRef<"PettyCashEntry", 'String'>
+    readonly description: FieldRef<"PettyCashEntry", 'String'>
+    readonly receiptRef: FieldRef<"PettyCashEntry", 'String'>
+    readonly entryDate: FieldRef<"PettyCashEntry", 'DateTime'>
+    readonly counterAccountId: FieldRef<"PettyCashEntry", 'String'>
+    readonly journalHeaderId: FieldRef<"PettyCashEntry", 'String'>
+    readonly recordedById: FieldRef<"PettyCashEntry", 'String'>
+    readonly voidedAt: FieldRef<"PettyCashEntry", 'DateTime'>
+    readonly voidedById: FieldRef<"PettyCashEntry", 'String'>
+    readonly voidReason: FieldRef<"PettyCashEntry", 'String'>
+    readonly createdAt: FieldRef<"PettyCashEntry", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PettyCashEntry findUnique
+   */
+  export type PettyCashEntryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashEntry to fetch.
+     */
+    where: PettyCashEntryWhereUniqueInput
+  }
+
+  /**
+   * PettyCashEntry findUniqueOrThrow
+   */
+  export type PettyCashEntryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashEntry to fetch.
+     */
+    where: PettyCashEntryWhereUniqueInput
+  }
+
+  /**
+   * PettyCashEntry findFirst
+   */
+  export type PettyCashEntryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashEntry to fetch.
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashEntries to fetch.
+     */
+    orderBy?: PettyCashEntryOrderByWithRelationInput | PettyCashEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PettyCashEntries.
+     */
+    cursor?: PettyCashEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PettyCashEntries.
+     */
+    distinct?: PettyCashEntryScalarFieldEnum | PettyCashEntryScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashEntry findFirstOrThrow
+   */
+  export type PettyCashEntryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashEntry to fetch.
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashEntries to fetch.
+     */
+    orderBy?: PettyCashEntryOrderByWithRelationInput | PettyCashEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PettyCashEntries.
+     */
+    cursor?: PettyCashEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PettyCashEntries.
+     */
+    distinct?: PettyCashEntryScalarFieldEnum | PettyCashEntryScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashEntry findMany
+   */
+  export type PettyCashEntryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * Filter, which PettyCashEntries to fetch.
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PettyCashEntries to fetch.
+     */
+    orderBy?: PettyCashEntryOrderByWithRelationInput | PettyCashEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PettyCashEntries.
+     */
+    cursor?: PettyCashEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PettyCashEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PettyCashEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PettyCashEntries.
+     */
+    distinct?: PettyCashEntryScalarFieldEnum | PettyCashEntryScalarFieldEnum[]
+  }
+
+  /**
+   * PettyCashEntry create
+   */
+  export type PettyCashEntryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PettyCashEntry.
+     */
+    data: XOR<PettyCashEntryCreateInput, PettyCashEntryUncheckedCreateInput>
+  }
+
+  /**
+   * PettyCashEntry createMany
+   */
+  export type PettyCashEntryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PettyCashEntries.
+     */
+    data: PettyCashEntryCreateManyInput | PettyCashEntryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PettyCashEntry createManyAndReturn
+   */
+  export type PettyCashEntryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * The data used to create many PettyCashEntries.
+     */
+    data: PettyCashEntryCreateManyInput | PettyCashEntryCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PettyCashEntry update
+   */
+  export type PettyCashEntryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PettyCashEntry.
+     */
+    data: XOR<PettyCashEntryUpdateInput, PettyCashEntryUncheckedUpdateInput>
+    /**
+     * Choose, which PettyCashEntry to update.
+     */
+    where: PettyCashEntryWhereUniqueInput
+  }
+
+  /**
+   * PettyCashEntry updateMany
+   */
+  export type PettyCashEntryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PettyCashEntries.
+     */
+    data: XOR<PettyCashEntryUpdateManyMutationInput, PettyCashEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which PettyCashEntries to update
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * Limit how many PettyCashEntries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PettyCashEntry updateManyAndReturn
+   */
+  export type PettyCashEntryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * The data used to update PettyCashEntries.
+     */
+    data: XOR<PettyCashEntryUpdateManyMutationInput, PettyCashEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which PettyCashEntries to update
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * Limit how many PettyCashEntries to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PettyCashEntry upsert
+   */
+  export type PettyCashEntryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PettyCashEntry to update in case it exists.
+     */
+    where: PettyCashEntryWhereUniqueInput
+    /**
+     * In case the PettyCashEntry found by the `where` argument doesn't exist, create a new PettyCashEntry with this data.
+     */
+    create: XOR<PettyCashEntryCreateInput, PettyCashEntryUncheckedCreateInput>
+    /**
+     * In case the PettyCashEntry was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PettyCashEntryUpdateInput, PettyCashEntryUncheckedUpdateInput>
+  }
+
+  /**
+   * PettyCashEntry delete
+   */
+  export type PettyCashEntryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+    /**
+     * Filter which PettyCashEntry to delete.
+     */
+    where: PettyCashEntryWhereUniqueInput
+  }
+
+  /**
+   * PettyCashEntry deleteMany
+   */
+  export type PettyCashEntryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PettyCashEntries to delete
+     */
+    where?: PettyCashEntryWhereInput
+    /**
+     * Limit how many PettyCashEntries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PettyCashEntry without action
+   */
+  export type PettyCashEntryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PettyCashEntry
+     */
+    select?: PettyCashEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PettyCashEntry
+     */
+    omit?: PettyCashEntryOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PettyCashEntryInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PaymentVoucher
+   */
+
+  export type AggregatePaymentVoucher = {
+    _count: PaymentVoucherCountAggregateOutputType | null
+    _avg: PaymentVoucherAvgAggregateOutputType | null
+    _sum: PaymentVoucherSumAggregateOutputType | null
+    _min: PaymentVoucherMinAggregateOutputType | null
+    _max: PaymentVoucherMaxAggregateOutputType | null
+  }
+
+  export type PaymentVoucherAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type PaymentVoucherSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type PaymentVoucherMinAggregateOutputType = {
+    id: string | null
+    voucherNumber: string | null
+    status: $Enums.PaymentVoucherStatus | null
+    payeeName: string | null
+    category: string | null
+    description: string | null
+    amount: number | null
+    paymentMethod: $Enums.PaymentMethod | null
+    referenceNo: string | null
+    paymentDate: Date | null
+    expenseAccountId: string | null
+    branchId: string | null
+    requestedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    rejectedReason: string | null
+    paidById: string | null
+    paidAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentVoucherMaxAggregateOutputType = {
+    id: string | null
+    voucherNumber: string | null
+    status: $Enums.PaymentVoucherStatus | null
+    payeeName: string | null
+    category: string | null
+    description: string | null
+    amount: number | null
+    paymentMethod: $Enums.PaymentMethod | null
+    referenceNo: string | null
+    paymentDate: Date | null
+    expenseAccountId: string | null
+    branchId: string | null
+    requestedById: string | null
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    rejectedReason: string | null
+    paidById: string | null
+    paidAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentVoucherCountAggregateOutputType = {
+    id: number
+    voucherNumber: number
+    status: number
+    payeeName: number
+    category: number
+    description: number
+    amount: number
+    paymentMethod: number
+    referenceNo: number
+    paymentDate: number
+    expenseAccountId: number
+    branchId: number
+    requestedById: number
+    submittedAt: number
+    approvedById: number
+    approvedAt: number
+    rejectedReason: number
+    paidById: number
+    paidAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PaymentVoucherAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type PaymentVoucherSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type PaymentVoucherMinAggregateInputType = {
+    id?: true
+    voucherNumber?: true
+    status?: true
+    payeeName?: true
+    category?: true
+    description?: true
+    amount?: true
+    paymentMethod?: true
+    referenceNo?: true
+    paymentDate?: true
+    expenseAccountId?: true
+    branchId?: true
+    requestedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
+    rejectedReason?: true
+    paidById?: true
+    paidAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentVoucherMaxAggregateInputType = {
+    id?: true
+    voucherNumber?: true
+    status?: true
+    payeeName?: true
+    category?: true
+    description?: true
+    amount?: true
+    paymentMethod?: true
+    referenceNo?: true
+    paymentDate?: true
+    expenseAccountId?: true
+    branchId?: true
+    requestedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
+    rejectedReason?: true
+    paidById?: true
+    paidAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentVoucherCountAggregateInputType = {
+    id?: true
+    voucherNumber?: true
+    status?: true
+    payeeName?: true
+    category?: true
+    description?: true
+    amount?: true
+    paymentMethod?: true
+    referenceNo?: true
+    paymentDate?: true
+    expenseAccountId?: true
+    branchId?: true
+    requestedById?: true
+    submittedAt?: true
+    approvedById?: true
+    approvedAt?: true
+    rejectedReason?: true
+    paidById?: true
+    paidAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PaymentVoucherAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentVoucher to aggregate.
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentVouchers to fetch.
+     */
+    orderBy?: PaymentVoucherOrderByWithRelationInput | PaymentVoucherOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentVoucherWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentVouchers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentVouchers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentVouchers
+    **/
+    _count?: true | PaymentVoucherCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentVoucherAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentVoucherSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentVoucherMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentVoucherMaxAggregateInputType
+  }
+
+  export type GetPaymentVoucherAggregateType<T extends PaymentVoucherAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentVoucher]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentVoucher[P]>
+      : GetScalarType<T[P], AggregatePaymentVoucher[P]>
+  }
+
+
+
+
+  export type PaymentVoucherGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentVoucherWhereInput
+    orderBy?: PaymentVoucherOrderByWithAggregationInput | PaymentVoucherOrderByWithAggregationInput[]
+    by: PaymentVoucherScalarFieldEnum[] | PaymentVoucherScalarFieldEnum
+    having?: PaymentVoucherScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentVoucherCountAggregateInputType | true
+    _avg?: PaymentVoucherAvgAggregateInputType
+    _sum?: PaymentVoucherSumAggregateInputType
+    _min?: PaymentVoucherMinAggregateInputType
+    _max?: PaymentVoucherMaxAggregateInputType
+  }
+
+  export type PaymentVoucherGroupByOutputType = {
+    id: string
+    voucherNumber: string
+    status: $Enums.PaymentVoucherStatus
+    payeeName: string
+    category: string
+    description: string
+    amount: number
+    paymentMethod: $Enums.PaymentMethod
+    referenceNo: string | null
+    paymentDate: Date
+    expenseAccountId: string | null
+    branchId: string | null
+    requestedById: string
+    submittedAt: Date | null
+    approvedById: string | null
+    approvedAt: Date | null
+    rejectedReason: string | null
+    paidById: string | null
+    paidAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PaymentVoucherCountAggregateOutputType | null
+    _avg: PaymentVoucherAvgAggregateOutputType | null
+    _sum: PaymentVoucherSumAggregateOutputType | null
+    _min: PaymentVoucherMinAggregateOutputType | null
+    _max: PaymentVoucherMaxAggregateOutputType | null
+  }
+
+  type GetPaymentVoucherGroupByPayload<T extends PaymentVoucherGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentVoucherGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentVoucherGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentVoucherGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentVoucherGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentVoucherSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    voucherNumber?: boolean
+    status?: boolean
+    payeeName?: boolean
+    category?: boolean
+    description?: boolean
+    amount?: boolean
+    paymentMethod?: boolean
+    referenceNo?: boolean
+    paymentDate?: boolean
+    expenseAccountId?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    rejectedReason?: boolean
+    paidById?: boolean
+    paidAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["paymentVoucher"]>
+
+  export type PaymentVoucherSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    voucherNumber?: boolean
+    status?: boolean
+    payeeName?: boolean
+    category?: boolean
+    description?: boolean
+    amount?: boolean
+    paymentMethod?: boolean
+    referenceNo?: boolean
+    paymentDate?: boolean
+    expenseAccountId?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    rejectedReason?: boolean
+    paidById?: boolean
+    paidAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["paymentVoucher"]>
+
+  export type PaymentVoucherSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    voucherNumber?: boolean
+    status?: boolean
+    payeeName?: boolean
+    category?: boolean
+    description?: boolean
+    amount?: boolean
+    paymentMethod?: boolean
+    referenceNo?: boolean
+    paymentDate?: boolean
+    expenseAccountId?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    rejectedReason?: boolean
+    paidById?: boolean
+    paidAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["paymentVoucher"]>
+
+  export type PaymentVoucherSelectScalar = {
+    id?: boolean
+    voucherNumber?: boolean
+    status?: boolean
+    payeeName?: boolean
+    category?: boolean
+    description?: boolean
+    amount?: boolean
+    paymentMethod?: boolean
+    referenceNo?: boolean
+    paymentDate?: boolean
+    expenseAccountId?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    submittedAt?: boolean
+    approvedById?: boolean
+    approvedAt?: boolean
+    rejectedReason?: boolean
+    paidById?: boolean
+    paidAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PaymentVoucherOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "voucherNumber" | "status" | "payeeName" | "category" | "description" | "amount" | "paymentMethod" | "referenceNo" | "paymentDate" | "expenseAccountId" | "branchId" | "requestedById" | "submittedAt" | "approvedById" | "approvedAt" | "rejectedReason" | "paidById" | "paidAt" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentVoucher"]>
+
+  export type $PaymentVoucherPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentVoucher"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      voucherNumber: string
+      status: $Enums.PaymentVoucherStatus
+      payeeName: string
+      category: string
+      description: string
+      amount: number
+      paymentMethod: $Enums.PaymentMethod
+      referenceNo: string | null
+      paymentDate: Date
+      expenseAccountId: string | null
+      branchId: string | null
+      requestedById: string
+      submittedAt: Date | null
+      approvedById: string | null
+      approvedAt: Date | null
+      rejectedReason: string | null
+      paidById: string | null
+      paidAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["paymentVoucher"]>
+    composites: {}
+  }
+
+  type PaymentVoucherGetPayload<S extends boolean | null | undefined | PaymentVoucherDefaultArgs> = $Result.GetResult<Prisma.$PaymentVoucherPayload, S>
+
+  type PaymentVoucherCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentVoucherFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentVoucherCountAggregateInputType | true
+    }
+
+  export interface PaymentVoucherDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentVoucher'], meta: { name: 'PaymentVoucher' } }
+    /**
+     * Find zero or one PaymentVoucher that matches the filter.
+     * @param {PaymentVoucherFindUniqueArgs} args - Arguments to find a PaymentVoucher
+     * @example
+     * // Get one PaymentVoucher
+     * const paymentVoucher = await prisma.paymentVoucher.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentVoucherFindUniqueArgs>(args: SelectSubset<T, PaymentVoucherFindUniqueArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentVoucher that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentVoucherFindUniqueOrThrowArgs} args - Arguments to find a PaymentVoucher
+     * @example
+     * // Get one PaymentVoucher
+     * const paymentVoucher = await prisma.paymentVoucher.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentVoucherFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentVoucherFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentVoucher that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherFindFirstArgs} args - Arguments to find a PaymentVoucher
+     * @example
+     * // Get one PaymentVoucher
+     * const paymentVoucher = await prisma.paymentVoucher.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentVoucherFindFirstArgs>(args?: SelectSubset<T, PaymentVoucherFindFirstArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentVoucher that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherFindFirstOrThrowArgs} args - Arguments to find a PaymentVoucher
+     * @example
+     * // Get one PaymentVoucher
+     * const paymentVoucher = await prisma.paymentVoucher.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentVoucherFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentVoucherFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentVouchers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentVouchers
+     * const paymentVouchers = await prisma.paymentVoucher.findMany()
+     * 
+     * // Get first 10 PaymentVouchers
+     * const paymentVouchers = await prisma.paymentVoucher.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentVoucherWithIdOnly = await prisma.paymentVoucher.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentVoucherFindManyArgs>(args?: SelectSubset<T, PaymentVoucherFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentVoucher.
+     * @param {PaymentVoucherCreateArgs} args - Arguments to create a PaymentVoucher.
+     * @example
+     * // Create one PaymentVoucher
+     * const PaymentVoucher = await prisma.paymentVoucher.create({
+     *   data: {
+     *     // ... data to create a PaymentVoucher
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentVoucherCreateArgs>(args: SelectSubset<T, PaymentVoucherCreateArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentVouchers.
+     * @param {PaymentVoucherCreateManyArgs} args - Arguments to create many PaymentVouchers.
+     * @example
+     * // Create many PaymentVouchers
+     * const paymentVoucher = await prisma.paymentVoucher.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentVoucherCreateManyArgs>(args?: SelectSubset<T, PaymentVoucherCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentVouchers and returns the data saved in the database.
+     * @param {PaymentVoucherCreateManyAndReturnArgs} args - Arguments to create many PaymentVouchers.
+     * @example
+     * // Create many PaymentVouchers
+     * const paymentVoucher = await prisma.paymentVoucher.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentVouchers and only return the `id`
+     * const paymentVoucherWithIdOnly = await prisma.paymentVoucher.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentVoucherCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentVoucherCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentVoucher.
+     * @param {PaymentVoucherDeleteArgs} args - Arguments to delete one PaymentVoucher.
+     * @example
+     * // Delete one PaymentVoucher
+     * const PaymentVoucher = await prisma.paymentVoucher.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentVoucher
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentVoucherDeleteArgs>(args: SelectSubset<T, PaymentVoucherDeleteArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentVoucher.
+     * @param {PaymentVoucherUpdateArgs} args - Arguments to update one PaymentVoucher.
+     * @example
+     * // Update one PaymentVoucher
+     * const paymentVoucher = await prisma.paymentVoucher.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentVoucherUpdateArgs>(args: SelectSubset<T, PaymentVoucherUpdateArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentVouchers.
+     * @param {PaymentVoucherDeleteManyArgs} args - Arguments to filter PaymentVouchers to delete.
+     * @example
+     * // Delete a few PaymentVouchers
+     * const { count } = await prisma.paymentVoucher.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentVoucherDeleteManyArgs>(args?: SelectSubset<T, PaymentVoucherDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentVouchers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentVouchers
+     * const paymentVoucher = await prisma.paymentVoucher.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentVoucherUpdateManyArgs>(args: SelectSubset<T, PaymentVoucherUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentVouchers and returns the data updated in the database.
+     * @param {PaymentVoucherUpdateManyAndReturnArgs} args - Arguments to update many PaymentVouchers.
+     * @example
+     * // Update many PaymentVouchers
+     * const paymentVoucher = await prisma.paymentVoucher.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentVouchers and only return the `id`
+     * const paymentVoucherWithIdOnly = await prisma.paymentVoucher.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentVoucherUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentVoucherUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentVoucher.
+     * @param {PaymentVoucherUpsertArgs} args - Arguments to update or create a PaymentVoucher.
+     * @example
+     * // Update or create a PaymentVoucher
+     * const paymentVoucher = await prisma.paymentVoucher.upsert({
+     *   create: {
+     *     // ... data to create a PaymentVoucher
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentVoucher we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentVoucherUpsertArgs>(args: SelectSubset<T, PaymentVoucherUpsertArgs<ExtArgs>>): Prisma__PaymentVoucherClient<$Result.GetResult<Prisma.$PaymentVoucherPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentVouchers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherCountArgs} args - Arguments to filter PaymentVouchers to count.
+     * @example
+     * // Count the number of PaymentVouchers
+     * const count = await prisma.paymentVoucher.count({
+     *   where: {
+     *     // ... the filter for the PaymentVouchers we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentVoucherCountArgs>(
+      args?: Subset<T, PaymentVoucherCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentVoucherCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentVoucher.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentVoucherAggregateArgs>(args: Subset<T, PaymentVoucherAggregateArgs>): Prisma.PrismaPromise<GetPaymentVoucherAggregateType<T>>
+
+    /**
+     * Group by PaymentVoucher.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentVoucherGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentVoucherGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentVoucherGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentVoucherGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentVoucherGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentVoucherGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentVoucher model
+   */
+  readonly fields: PaymentVoucherFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentVoucher.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentVoucherClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentVoucher model
+   */
+  interface PaymentVoucherFieldRefs {
+    readonly id: FieldRef<"PaymentVoucher", 'String'>
+    readonly voucherNumber: FieldRef<"PaymentVoucher", 'String'>
+    readonly status: FieldRef<"PaymentVoucher", 'PaymentVoucherStatus'>
+    readonly payeeName: FieldRef<"PaymentVoucher", 'String'>
+    readonly category: FieldRef<"PaymentVoucher", 'String'>
+    readonly description: FieldRef<"PaymentVoucher", 'String'>
+    readonly amount: FieldRef<"PaymentVoucher", 'Float'>
+    readonly paymentMethod: FieldRef<"PaymentVoucher", 'PaymentMethod'>
+    readonly referenceNo: FieldRef<"PaymentVoucher", 'String'>
+    readonly paymentDate: FieldRef<"PaymentVoucher", 'DateTime'>
+    readonly expenseAccountId: FieldRef<"PaymentVoucher", 'String'>
+    readonly branchId: FieldRef<"PaymentVoucher", 'String'>
+    readonly requestedById: FieldRef<"PaymentVoucher", 'String'>
+    readonly submittedAt: FieldRef<"PaymentVoucher", 'DateTime'>
+    readonly approvedById: FieldRef<"PaymentVoucher", 'String'>
+    readonly approvedAt: FieldRef<"PaymentVoucher", 'DateTime'>
+    readonly rejectedReason: FieldRef<"PaymentVoucher", 'String'>
+    readonly paidById: FieldRef<"PaymentVoucher", 'String'>
+    readonly paidAt: FieldRef<"PaymentVoucher", 'DateTime'>
+    readonly createdAt: FieldRef<"PaymentVoucher", 'DateTime'>
+    readonly updatedAt: FieldRef<"PaymentVoucher", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentVoucher findUnique
+   */
+  export type PaymentVoucherFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentVoucher to fetch.
+     */
+    where: PaymentVoucherWhereUniqueInput
+  }
+
+  /**
+   * PaymentVoucher findUniqueOrThrow
+   */
+  export type PaymentVoucherFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentVoucher to fetch.
+     */
+    where: PaymentVoucherWhereUniqueInput
+  }
+
+  /**
+   * PaymentVoucher findFirst
+   */
+  export type PaymentVoucherFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentVoucher to fetch.
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentVouchers to fetch.
+     */
+    orderBy?: PaymentVoucherOrderByWithRelationInput | PaymentVoucherOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentVouchers.
+     */
+    cursor?: PaymentVoucherWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentVouchers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentVouchers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentVouchers.
+     */
+    distinct?: PaymentVoucherScalarFieldEnum | PaymentVoucherScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentVoucher findFirstOrThrow
+   */
+  export type PaymentVoucherFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentVoucher to fetch.
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentVouchers to fetch.
+     */
+    orderBy?: PaymentVoucherOrderByWithRelationInput | PaymentVoucherOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentVouchers.
+     */
+    cursor?: PaymentVoucherWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentVouchers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentVouchers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentVouchers.
+     */
+    distinct?: PaymentVoucherScalarFieldEnum | PaymentVoucherScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentVoucher findMany
+   */
+  export type PaymentVoucherFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentVouchers to fetch.
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentVouchers to fetch.
+     */
+    orderBy?: PaymentVoucherOrderByWithRelationInput | PaymentVoucherOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentVouchers.
+     */
+    cursor?: PaymentVoucherWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentVouchers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentVouchers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentVouchers.
+     */
+    distinct?: PaymentVoucherScalarFieldEnum | PaymentVoucherScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentVoucher create
+   */
+  export type PaymentVoucherCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentVoucher.
+     */
+    data: XOR<PaymentVoucherCreateInput, PaymentVoucherUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentVoucher createMany
+   */
+  export type PaymentVoucherCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentVouchers.
+     */
+    data: PaymentVoucherCreateManyInput | PaymentVoucherCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentVoucher createManyAndReturn
+   */
+  export type PaymentVoucherCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentVouchers.
+     */
+    data: PaymentVoucherCreateManyInput | PaymentVoucherCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentVoucher update
+   */
+  export type PaymentVoucherUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentVoucher.
+     */
+    data: XOR<PaymentVoucherUpdateInput, PaymentVoucherUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentVoucher to update.
+     */
+    where: PaymentVoucherWhereUniqueInput
+  }
+
+  /**
+   * PaymentVoucher updateMany
+   */
+  export type PaymentVoucherUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentVouchers.
+     */
+    data: XOR<PaymentVoucherUpdateManyMutationInput, PaymentVoucherUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentVouchers to update
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * Limit how many PaymentVouchers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentVoucher updateManyAndReturn
+   */
+  export type PaymentVoucherUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentVouchers.
+     */
+    data: XOR<PaymentVoucherUpdateManyMutationInput, PaymentVoucherUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentVouchers to update
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * Limit how many PaymentVouchers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentVoucher upsert
+   */
+  export type PaymentVoucherUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentVoucher to update in case it exists.
+     */
+    where: PaymentVoucherWhereUniqueInput
+    /**
+     * In case the PaymentVoucher found by the `where` argument doesn't exist, create a new PaymentVoucher with this data.
+     */
+    create: XOR<PaymentVoucherCreateInput, PaymentVoucherUncheckedCreateInput>
+    /**
+     * In case the PaymentVoucher was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentVoucherUpdateInput, PaymentVoucherUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentVoucher delete
+   */
+  export type PaymentVoucherDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
+    /**
+     * Filter which PaymentVoucher to delete.
+     */
+    where: PaymentVoucherWhereUniqueInput
+  }
+
+  /**
+   * PaymentVoucher deleteMany
+   */
+  export type PaymentVoucherDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentVouchers to delete
+     */
+    where?: PaymentVoucherWhereInput
+    /**
+     * Limit how many PaymentVouchers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentVoucher without action
+   */
+  export type PaymentVoucherDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentVoucher
+     */
+    select?: PaymentVoucherSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentVoucher
+     */
+    omit?: PaymentVoucherOmit<ExtArgs> | null
   }
 
 
@@ -112875,6 +116918,74 @@ export namespace Prisma {
   export type DeliveryDispatchNoteScalarFieldEnum = (typeof DeliveryDispatchNoteScalarFieldEnum)[keyof typeof DeliveryDispatchNoteScalarFieldEnum]
 
 
+  export const PettyCashFundScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    branchId: 'branchId',
+    custodianId: 'custodianId',
+    imprestAmount: 'imprestAmount',
+    maxPerTransaction: 'maxPerTransaction',
+    balance: 'balance',
+    isActive: 'isActive',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PettyCashFundScalarFieldEnum = (typeof PettyCashFundScalarFieldEnum)[keyof typeof PettyCashFundScalarFieldEnum]
+
+
+  export const PettyCashEntryScalarFieldEnum: {
+    id: 'id',
+    entryNumber: 'entryNumber',
+    fundId: 'fundId',
+    type: 'type',
+    amount: 'amount',
+    balanceAfter: 'balanceAfter',
+    payee: 'payee',
+    category: 'category',
+    description: 'description',
+    receiptRef: 'receiptRef',
+    entryDate: 'entryDate',
+    counterAccountId: 'counterAccountId',
+    journalHeaderId: 'journalHeaderId',
+    recordedById: 'recordedById',
+    voidedAt: 'voidedAt',
+    voidedById: 'voidedById',
+    voidReason: 'voidReason',
+    createdAt: 'createdAt'
+  };
+
+  export type PettyCashEntryScalarFieldEnum = (typeof PettyCashEntryScalarFieldEnum)[keyof typeof PettyCashEntryScalarFieldEnum]
+
+
+  export const PaymentVoucherScalarFieldEnum: {
+    id: 'id',
+    voucherNumber: 'voucherNumber',
+    status: 'status',
+    payeeName: 'payeeName',
+    category: 'category',
+    description: 'description',
+    amount: 'amount',
+    paymentMethod: 'paymentMethod',
+    referenceNo: 'referenceNo',
+    paymentDate: 'paymentDate',
+    expenseAccountId: 'expenseAccountId',
+    branchId: 'branchId',
+    requestedById: 'requestedById',
+    submittedAt: 'submittedAt',
+    approvedById: 'approvedById',
+    approvedAt: 'approvedAt',
+    rejectedReason: 'rejectedReason',
+    paidById: 'paidById',
+    paidAt: 'paidAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PaymentVoucherScalarFieldEnum = (typeof PaymentVoucherScalarFieldEnum)[keyof typeof PaymentVoucherScalarFieldEnum]
+
+
   export const FinanceTransactionScalarFieldEnum: {
     id: 'id',
     type: 'type',
@@ -114041,6 +118152,34 @@ export namespace Prisma {
    * Reference to a field of type 'DeliveryStatus[]'
    */
   export type ListEnumDeliveryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeliveryStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PettyCashEntryType'
+   */
+  export type EnumPettyCashEntryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PettyCashEntryType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PettyCashEntryType[]'
+   */
+  export type ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PettyCashEntryType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentVoucherStatus'
+   */
+  export type EnumPaymentVoucherStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentVoucherStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'PaymentVoucherStatus[]'
+   */
+  export type ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentVoucherStatus[]'>
     
 
 
@@ -118281,6 +122420,349 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"DeliveryDispatchNote"> | string
     deliveryId?: StringWithAggregatesFilter<"DeliveryDispatchNote"> | string
     dispatchNoteId?: StringWithAggregatesFilter<"DeliveryDispatchNote"> | string
+  }
+
+  export type PettyCashFundWhereInput = {
+    AND?: PettyCashFundWhereInput | PettyCashFundWhereInput[]
+    OR?: PettyCashFundWhereInput[]
+    NOT?: PettyCashFundWhereInput | PettyCashFundWhereInput[]
+    id?: StringFilter<"PettyCashFund"> | string
+    name?: StringFilter<"PettyCashFund"> | string
+    branchId?: StringNullableFilter<"PettyCashFund"> | string | null
+    custodianId?: StringFilter<"PettyCashFund"> | string
+    imprestAmount?: FloatFilter<"PettyCashFund"> | number
+    maxPerTransaction?: FloatFilter<"PettyCashFund"> | number
+    balance?: FloatFilter<"PettyCashFund"> | number
+    isActive?: BoolFilter<"PettyCashFund"> | boolean
+    createdById?: StringFilter<"PettyCashFund"> | string
+    createdAt?: DateTimeFilter<"PettyCashFund"> | Date | string
+    updatedAt?: DateTimeFilter<"PettyCashFund"> | Date | string
+    entries?: PettyCashEntryListRelationFilter
+  }
+
+  export type PettyCashFundOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    custodianId?: SortOrder
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    entries?: PettyCashEntryOrderByRelationAggregateInput
+  }
+
+  export type PettyCashFundWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PettyCashFundWhereInput | PettyCashFundWhereInput[]
+    OR?: PettyCashFundWhereInput[]
+    NOT?: PettyCashFundWhereInput | PettyCashFundWhereInput[]
+    name?: StringFilter<"PettyCashFund"> | string
+    branchId?: StringNullableFilter<"PettyCashFund"> | string | null
+    custodianId?: StringFilter<"PettyCashFund"> | string
+    imprestAmount?: FloatFilter<"PettyCashFund"> | number
+    maxPerTransaction?: FloatFilter<"PettyCashFund"> | number
+    balance?: FloatFilter<"PettyCashFund"> | number
+    isActive?: BoolFilter<"PettyCashFund"> | boolean
+    createdById?: StringFilter<"PettyCashFund"> | string
+    createdAt?: DateTimeFilter<"PettyCashFund"> | Date | string
+    updatedAt?: DateTimeFilter<"PettyCashFund"> | Date | string
+    entries?: PettyCashEntryListRelationFilter
+  }, "id">
+
+  export type PettyCashFundOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    custodianId?: SortOrder
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PettyCashFundCountOrderByAggregateInput
+    _avg?: PettyCashFundAvgOrderByAggregateInput
+    _max?: PettyCashFundMaxOrderByAggregateInput
+    _min?: PettyCashFundMinOrderByAggregateInput
+    _sum?: PettyCashFundSumOrderByAggregateInput
+  }
+
+  export type PettyCashFundScalarWhereWithAggregatesInput = {
+    AND?: PettyCashFundScalarWhereWithAggregatesInput | PettyCashFundScalarWhereWithAggregatesInput[]
+    OR?: PettyCashFundScalarWhereWithAggregatesInput[]
+    NOT?: PettyCashFundScalarWhereWithAggregatesInput | PettyCashFundScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PettyCashFund"> | string
+    name?: StringWithAggregatesFilter<"PettyCashFund"> | string
+    branchId?: StringNullableWithAggregatesFilter<"PettyCashFund"> | string | null
+    custodianId?: StringWithAggregatesFilter<"PettyCashFund"> | string
+    imprestAmount?: FloatWithAggregatesFilter<"PettyCashFund"> | number
+    maxPerTransaction?: FloatWithAggregatesFilter<"PettyCashFund"> | number
+    balance?: FloatWithAggregatesFilter<"PettyCashFund"> | number
+    isActive?: BoolWithAggregatesFilter<"PettyCashFund"> | boolean
+    createdById?: StringWithAggregatesFilter<"PettyCashFund"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PettyCashFund"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PettyCashFund"> | Date | string
+  }
+
+  export type PettyCashEntryWhereInput = {
+    AND?: PettyCashEntryWhereInput | PettyCashEntryWhereInput[]
+    OR?: PettyCashEntryWhereInput[]
+    NOT?: PettyCashEntryWhereInput | PettyCashEntryWhereInput[]
+    id?: StringFilter<"PettyCashEntry"> | string
+    entryNumber?: StringFilter<"PettyCashEntry"> | string
+    fundId?: StringFilter<"PettyCashEntry"> | string
+    type?: EnumPettyCashEntryTypeFilter<"PettyCashEntry"> | $Enums.PettyCashEntryType
+    amount?: FloatFilter<"PettyCashEntry"> | number
+    balanceAfter?: FloatFilter<"PettyCashEntry"> | number
+    payee?: StringNullableFilter<"PettyCashEntry"> | string | null
+    category?: StringNullableFilter<"PettyCashEntry"> | string | null
+    description?: StringFilter<"PettyCashEntry"> | string
+    receiptRef?: StringNullableFilter<"PettyCashEntry"> | string | null
+    entryDate?: DateTimeFilter<"PettyCashEntry"> | Date | string
+    counterAccountId?: StringNullableFilter<"PettyCashEntry"> | string | null
+    journalHeaderId?: StringNullableFilter<"PettyCashEntry"> | string | null
+    recordedById?: StringFilter<"PettyCashEntry"> | string
+    voidedAt?: DateTimeNullableFilter<"PettyCashEntry"> | Date | string | null
+    voidedById?: StringNullableFilter<"PettyCashEntry"> | string | null
+    voidReason?: StringNullableFilter<"PettyCashEntry"> | string | null
+    createdAt?: DateTimeFilter<"PettyCashEntry"> | Date | string
+    fund?: XOR<PettyCashFundScalarRelationFilter, PettyCashFundWhereInput>
+  }
+
+  export type PettyCashEntryOrderByWithRelationInput = {
+    id?: SortOrder
+    entryNumber?: SortOrder
+    fundId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+    payee?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    description?: SortOrder
+    receiptRef?: SortOrderInput | SortOrder
+    entryDate?: SortOrder
+    counterAccountId?: SortOrderInput | SortOrder
+    journalHeaderId?: SortOrderInput | SortOrder
+    recordedById?: SortOrder
+    voidedAt?: SortOrderInput | SortOrder
+    voidedById?: SortOrderInput | SortOrder
+    voidReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    fund?: PettyCashFundOrderByWithRelationInput
+  }
+
+  export type PettyCashEntryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    entryNumber?: string
+    AND?: PettyCashEntryWhereInput | PettyCashEntryWhereInput[]
+    OR?: PettyCashEntryWhereInput[]
+    NOT?: PettyCashEntryWhereInput | PettyCashEntryWhereInput[]
+    fundId?: StringFilter<"PettyCashEntry"> | string
+    type?: EnumPettyCashEntryTypeFilter<"PettyCashEntry"> | $Enums.PettyCashEntryType
+    amount?: FloatFilter<"PettyCashEntry"> | number
+    balanceAfter?: FloatFilter<"PettyCashEntry"> | number
+    payee?: StringNullableFilter<"PettyCashEntry"> | string | null
+    category?: StringNullableFilter<"PettyCashEntry"> | string | null
+    description?: StringFilter<"PettyCashEntry"> | string
+    receiptRef?: StringNullableFilter<"PettyCashEntry"> | string | null
+    entryDate?: DateTimeFilter<"PettyCashEntry"> | Date | string
+    counterAccountId?: StringNullableFilter<"PettyCashEntry"> | string | null
+    journalHeaderId?: StringNullableFilter<"PettyCashEntry"> | string | null
+    recordedById?: StringFilter<"PettyCashEntry"> | string
+    voidedAt?: DateTimeNullableFilter<"PettyCashEntry"> | Date | string | null
+    voidedById?: StringNullableFilter<"PettyCashEntry"> | string | null
+    voidReason?: StringNullableFilter<"PettyCashEntry"> | string | null
+    createdAt?: DateTimeFilter<"PettyCashEntry"> | Date | string
+    fund?: XOR<PettyCashFundScalarRelationFilter, PettyCashFundWhereInput>
+  }, "id" | "entryNumber">
+
+  export type PettyCashEntryOrderByWithAggregationInput = {
+    id?: SortOrder
+    entryNumber?: SortOrder
+    fundId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+    payee?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
+    description?: SortOrder
+    receiptRef?: SortOrderInput | SortOrder
+    entryDate?: SortOrder
+    counterAccountId?: SortOrderInput | SortOrder
+    journalHeaderId?: SortOrderInput | SortOrder
+    recordedById?: SortOrder
+    voidedAt?: SortOrderInput | SortOrder
+    voidedById?: SortOrderInput | SortOrder
+    voidReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PettyCashEntryCountOrderByAggregateInput
+    _avg?: PettyCashEntryAvgOrderByAggregateInput
+    _max?: PettyCashEntryMaxOrderByAggregateInput
+    _min?: PettyCashEntryMinOrderByAggregateInput
+    _sum?: PettyCashEntrySumOrderByAggregateInput
+  }
+
+  export type PettyCashEntryScalarWhereWithAggregatesInput = {
+    AND?: PettyCashEntryScalarWhereWithAggregatesInput | PettyCashEntryScalarWhereWithAggregatesInput[]
+    OR?: PettyCashEntryScalarWhereWithAggregatesInput[]
+    NOT?: PettyCashEntryScalarWhereWithAggregatesInput | PettyCashEntryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PettyCashEntry"> | string
+    entryNumber?: StringWithAggregatesFilter<"PettyCashEntry"> | string
+    fundId?: StringWithAggregatesFilter<"PettyCashEntry"> | string
+    type?: EnumPettyCashEntryTypeWithAggregatesFilter<"PettyCashEntry"> | $Enums.PettyCashEntryType
+    amount?: FloatWithAggregatesFilter<"PettyCashEntry"> | number
+    balanceAfter?: FloatWithAggregatesFilter<"PettyCashEntry"> | number
+    payee?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    category?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    description?: StringWithAggregatesFilter<"PettyCashEntry"> | string
+    receiptRef?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    entryDate?: DateTimeWithAggregatesFilter<"PettyCashEntry"> | Date | string
+    counterAccountId?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    journalHeaderId?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    recordedById?: StringWithAggregatesFilter<"PettyCashEntry"> | string
+    voidedAt?: DateTimeNullableWithAggregatesFilter<"PettyCashEntry"> | Date | string | null
+    voidedById?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    voidReason?: StringNullableWithAggregatesFilter<"PettyCashEntry"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PettyCashEntry"> | Date | string
+  }
+
+  export type PaymentVoucherWhereInput = {
+    AND?: PaymentVoucherWhereInput | PaymentVoucherWhereInput[]
+    OR?: PaymentVoucherWhereInput[]
+    NOT?: PaymentVoucherWhereInput | PaymentVoucherWhereInput[]
+    id?: StringFilter<"PaymentVoucher"> | string
+    voucherNumber?: StringFilter<"PaymentVoucher"> | string
+    status?: EnumPaymentVoucherStatusFilter<"PaymentVoucher"> | $Enums.PaymentVoucherStatus
+    payeeName?: StringFilter<"PaymentVoucher"> | string
+    category?: StringFilter<"PaymentVoucher"> | string
+    description?: StringFilter<"PaymentVoucher"> | string
+    amount?: FloatFilter<"PaymentVoucher"> | number
+    paymentMethod?: EnumPaymentMethodFilter<"PaymentVoucher"> | $Enums.PaymentMethod
+    referenceNo?: StringNullableFilter<"PaymentVoucher"> | string | null
+    paymentDate?: DateTimeFilter<"PaymentVoucher"> | Date | string
+    expenseAccountId?: StringNullableFilter<"PaymentVoucher"> | string | null
+    branchId?: StringNullableFilter<"PaymentVoucher"> | string | null
+    requestedById?: StringFilter<"PaymentVoucher"> | string
+    submittedAt?: DateTimeNullableFilter<"PaymentVoucher"> | Date | string | null
+    approvedById?: StringNullableFilter<"PaymentVoucher"> | string | null
+    approvedAt?: DateTimeNullableFilter<"PaymentVoucher"> | Date | string | null
+    rejectedReason?: StringNullableFilter<"PaymentVoucher"> | string | null
+    paidById?: StringNullableFilter<"PaymentVoucher"> | string | null
+    paidAt?: DateTimeNullableFilter<"PaymentVoucher"> | Date | string | null
+    createdAt?: DateTimeFilter<"PaymentVoucher"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentVoucher"> | Date | string
+  }
+
+  export type PaymentVoucherOrderByWithRelationInput = {
+    id?: SortOrder
+    voucherNumber?: SortOrder
+    status?: SortOrder
+    payeeName?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    paymentMethod?: SortOrder
+    referenceNo?: SortOrderInput | SortOrder
+    paymentDate?: SortOrder
+    expenseAccountId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    rejectedReason?: SortOrderInput | SortOrder
+    paidById?: SortOrderInput | SortOrder
+    paidAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentVoucherWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    voucherNumber?: string
+    AND?: PaymentVoucherWhereInput | PaymentVoucherWhereInput[]
+    OR?: PaymentVoucherWhereInput[]
+    NOT?: PaymentVoucherWhereInput | PaymentVoucherWhereInput[]
+    status?: EnumPaymentVoucherStatusFilter<"PaymentVoucher"> | $Enums.PaymentVoucherStatus
+    payeeName?: StringFilter<"PaymentVoucher"> | string
+    category?: StringFilter<"PaymentVoucher"> | string
+    description?: StringFilter<"PaymentVoucher"> | string
+    amount?: FloatFilter<"PaymentVoucher"> | number
+    paymentMethod?: EnumPaymentMethodFilter<"PaymentVoucher"> | $Enums.PaymentMethod
+    referenceNo?: StringNullableFilter<"PaymentVoucher"> | string | null
+    paymentDate?: DateTimeFilter<"PaymentVoucher"> | Date | string
+    expenseAccountId?: StringNullableFilter<"PaymentVoucher"> | string | null
+    branchId?: StringNullableFilter<"PaymentVoucher"> | string | null
+    requestedById?: StringFilter<"PaymentVoucher"> | string
+    submittedAt?: DateTimeNullableFilter<"PaymentVoucher"> | Date | string | null
+    approvedById?: StringNullableFilter<"PaymentVoucher"> | string | null
+    approvedAt?: DateTimeNullableFilter<"PaymentVoucher"> | Date | string | null
+    rejectedReason?: StringNullableFilter<"PaymentVoucher"> | string | null
+    paidById?: StringNullableFilter<"PaymentVoucher"> | string | null
+    paidAt?: DateTimeNullableFilter<"PaymentVoucher"> | Date | string | null
+    createdAt?: DateTimeFilter<"PaymentVoucher"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentVoucher"> | Date | string
+  }, "id" | "voucherNumber">
+
+  export type PaymentVoucherOrderByWithAggregationInput = {
+    id?: SortOrder
+    voucherNumber?: SortOrder
+    status?: SortOrder
+    payeeName?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    paymentMethod?: SortOrder
+    referenceNo?: SortOrderInput | SortOrder
+    paymentDate?: SortOrder
+    expenseAccountId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    approvedById?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    rejectedReason?: SortOrderInput | SortOrder
+    paidById?: SortOrderInput | SortOrder
+    paidAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PaymentVoucherCountOrderByAggregateInput
+    _avg?: PaymentVoucherAvgOrderByAggregateInput
+    _max?: PaymentVoucherMaxOrderByAggregateInput
+    _min?: PaymentVoucherMinOrderByAggregateInput
+    _sum?: PaymentVoucherSumOrderByAggregateInput
+  }
+
+  export type PaymentVoucherScalarWhereWithAggregatesInput = {
+    AND?: PaymentVoucherScalarWhereWithAggregatesInput | PaymentVoucherScalarWhereWithAggregatesInput[]
+    OR?: PaymentVoucherScalarWhereWithAggregatesInput[]
+    NOT?: PaymentVoucherScalarWhereWithAggregatesInput | PaymentVoucherScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentVoucher"> | string
+    voucherNumber?: StringWithAggregatesFilter<"PaymentVoucher"> | string
+    status?: EnumPaymentVoucherStatusWithAggregatesFilter<"PaymentVoucher"> | $Enums.PaymentVoucherStatus
+    payeeName?: StringWithAggregatesFilter<"PaymentVoucher"> | string
+    category?: StringWithAggregatesFilter<"PaymentVoucher"> | string
+    description?: StringWithAggregatesFilter<"PaymentVoucher"> | string
+    amount?: FloatWithAggregatesFilter<"PaymentVoucher"> | number
+    paymentMethod?: EnumPaymentMethodWithAggregatesFilter<"PaymentVoucher"> | $Enums.PaymentMethod
+    referenceNo?: StringNullableWithAggregatesFilter<"PaymentVoucher"> | string | null
+    paymentDate?: DateTimeWithAggregatesFilter<"PaymentVoucher"> | Date | string
+    expenseAccountId?: StringNullableWithAggregatesFilter<"PaymentVoucher"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"PaymentVoucher"> | string | null
+    requestedById?: StringWithAggregatesFilter<"PaymentVoucher"> | string
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"PaymentVoucher"> | Date | string | null
+    approvedById?: StringNullableWithAggregatesFilter<"PaymentVoucher"> | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"PaymentVoucher"> | Date | string | null
+    rejectedReason?: StringNullableWithAggregatesFilter<"PaymentVoucher"> | string | null
+    paidById?: StringNullableWithAggregatesFilter<"PaymentVoucher"> | string | null
+    paidAt?: DateTimeNullableWithAggregatesFilter<"PaymentVoucher"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentVoucher"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PaymentVoucher"> | Date | string
   }
 
   export type FinanceTransactionWhereInput = {
@@ -126466,6 +130948,422 @@ export namespace Prisma {
     dispatchNoteId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type PettyCashFundCreateInput = {
+    id?: string
+    name: string
+    branchId?: string | null
+    custodianId: string
+    imprestAmount: number
+    maxPerTransaction: number
+    balance?: number
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    entries?: PettyCashEntryCreateNestedManyWithoutFundInput
+  }
+
+  export type PettyCashFundUncheckedCreateInput = {
+    id?: string
+    name: string
+    branchId?: string | null
+    custodianId: string
+    imprestAmount: number
+    maxPerTransaction: number
+    balance?: number
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    entries?: PettyCashEntryUncheckedCreateNestedManyWithoutFundInput
+  }
+
+  export type PettyCashFundUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    custodianId?: StringFieldUpdateOperationsInput | string
+    imprestAmount?: FloatFieldUpdateOperationsInput | number
+    maxPerTransaction?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    entries?: PettyCashEntryUpdateManyWithoutFundNestedInput
+  }
+
+  export type PettyCashFundUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    custodianId?: StringFieldUpdateOperationsInput | string
+    imprestAmount?: FloatFieldUpdateOperationsInput | number
+    maxPerTransaction?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    entries?: PettyCashEntryUncheckedUpdateManyWithoutFundNestedInput
+  }
+
+  export type PettyCashFundCreateManyInput = {
+    id?: string
+    name: string
+    branchId?: string | null
+    custodianId: string
+    imprestAmount: number
+    maxPerTransaction: number
+    balance?: number
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PettyCashFundUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    custodianId?: StringFieldUpdateOperationsInput | string
+    imprestAmount?: FloatFieldUpdateOperationsInput | number
+    maxPerTransaction?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashFundUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    custodianId?: StringFieldUpdateOperationsInput | string
+    imprestAmount?: FloatFieldUpdateOperationsInput | number
+    maxPerTransaction?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashEntryCreateInput = {
+    id?: string
+    entryNumber: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee?: string | null
+    category?: string | null
+    description: string
+    receiptRef?: string | null
+    entryDate: Date | string
+    counterAccountId?: string | null
+    journalHeaderId?: string | null
+    recordedById: string
+    voidedAt?: Date | string | null
+    voidedById?: string | null
+    voidReason?: string | null
+    createdAt?: Date | string
+    fund: PettyCashFundCreateNestedOneWithoutEntriesInput
+  }
+
+  export type PettyCashEntryUncheckedCreateInput = {
+    id?: string
+    entryNumber: string
+    fundId: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee?: string | null
+    category?: string | null
+    description: string
+    receiptRef?: string | null
+    entryDate: Date | string
+    counterAccountId?: string | null
+    journalHeaderId?: string | null
+    recordedById: string
+    voidedAt?: Date | string | null
+    voidedById?: string | null
+    voidReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PettyCashEntryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fund?: PettyCashFundUpdateOneRequiredWithoutEntriesNestedInput
+  }
+
+  export type PettyCashEntryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    fundId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashEntryCreateManyInput = {
+    id?: string
+    entryNumber: string
+    fundId: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee?: string | null
+    category?: string | null
+    description: string
+    receiptRef?: string | null
+    entryDate: Date | string
+    counterAccountId?: string | null
+    journalHeaderId?: string | null
+    recordedById: string
+    voidedAt?: Date | string | null
+    voidedById?: string | null
+    voidReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PettyCashEntryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashEntryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    fundId?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentVoucherCreateInput = {
+    id?: string
+    voucherNumber: string
+    status?: $Enums.PaymentVoucherStatus
+    payeeName: string
+    category: string
+    description: string
+    amount: number
+    paymentMethod: $Enums.PaymentMethod
+    referenceNo?: string | null
+    paymentDate: Date | string
+    expenseAccountId?: string | null
+    branchId?: string | null
+    requestedById: string
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    rejectedReason?: string | null
+    paidById?: string | null
+    paidAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentVoucherUncheckedCreateInput = {
+    id?: string
+    voucherNumber: string
+    status?: $Enums.PaymentVoucherStatus
+    payeeName: string
+    category: string
+    description: string
+    amount: number
+    paymentMethod: $Enums.PaymentMethod
+    referenceNo?: string | null
+    paymentDate: Date | string
+    expenseAccountId?: string | null
+    branchId?: string | null
+    requestedById: string
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    rejectedReason?: string | null
+    paidById?: string | null
+    paidAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentVoucherUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    voucherNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentVoucherStatusFieldUpdateOperationsInput | $Enums.PaymentVoucherStatus
+    payeeName?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expenseAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paidById?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentVoucherUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    voucherNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentVoucherStatusFieldUpdateOperationsInput | $Enums.PaymentVoucherStatus
+    payeeName?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expenseAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paidById?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentVoucherCreateManyInput = {
+    id?: string
+    voucherNumber: string
+    status?: $Enums.PaymentVoucherStatus
+    payeeName: string
+    category: string
+    description: string
+    amount: number
+    paymentMethod: $Enums.PaymentMethod
+    referenceNo?: string | null
+    paymentDate: Date | string
+    expenseAccountId?: string | null
+    branchId?: string | null
+    requestedById: string
+    submittedAt?: Date | string | null
+    approvedById?: string | null
+    approvedAt?: Date | string | null
+    rejectedReason?: string | null
+    paidById?: string | null
+    paidAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentVoucherUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    voucherNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentVoucherStatusFieldUpdateOperationsInput | $Enums.PaymentVoucherStatus
+    payeeName?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expenseAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paidById?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentVoucherUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    voucherNumber?: StringFieldUpdateOperationsInput | string
+    status?: EnumPaymentVoucherStatusFieldUpdateOperationsInput | $Enums.PaymentVoucherStatus
+    payeeName?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    amount?: FloatFieldUpdateOperationsInput | number
+    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
+    referenceNo?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expenseAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedById?: NullableStringFieldUpdateOperationsInput | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paidById?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type FinanceTransactionCreateInput = {
     id?: string
     type: $Enums.TransactionType
@@ -134261,6 +139159,262 @@ export namespace Prisma {
     id?: SortOrder
     deliveryId?: SortOrder
     dispatchNoteId?: SortOrder
+  }
+
+  export type PettyCashEntryListRelationFilter = {
+    every?: PettyCashEntryWhereInput
+    some?: PettyCashEntryWhereInput
+    none?: PettyCashEntryWhereInput
+  }
+
+  export type PettyCashEntryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PettyCashFundCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    branchId?: SortOrder
+    custodianId?: SortOrder
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PettyCashFundAvgOrderByAggregateInput = {
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+  }
+
+  export type PettyCashFundMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    branchId?: SortOrder
+    custodianId?: SortOrder
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PettyCashFundMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    branchId?: SortOrder
+    custodianId?: SortOrder
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PettyCashFundSumOrderByAggregateInput = {
+    imprestAmount?: SortOrder
+    maxPerTransaction?: SortOrder
+    balance?: SortOrder
+  }
+
+  export type EnumPettyCashEntryTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PettyCashEntryType | EnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPettyCashEntryTypeFilter<$PrismaModel> | $Enums.PettyCashEntryType
+  }
+
+  export type PettyCashFundScalarRelationFilter = {
+    is?: PettyCashFundWhereInput
+    isNot?: PettyCashFundWhereInput
+  }
+
+  export type PettyCashEntryCountOrderByAggregateInput = {
+    id?: SortOrder
+    entryNumber?: SortOrder
+    fundId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+    payee?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    receiptRef?: SortOrder
+    entryDate?: SortOrder
+    counterAccountId?: SortOrder
+    journalHeaderId?: SortOrder
+    recordedById?: SortOrder
+    voidedAt?: SortOrder
+    voidedById?: SortOrder
+    voidReason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PettyCashEntryAvgOrderByAggregateInput = {
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+  }
+
+  export type PettyCashEntryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    entryNumber?: SortOrder
+    fundId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+    payee?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    receiptRef?: SortOrder
+    entryDate?: SortOrder
+    counterAccountId?: SortOrder
+    journalHeaderId?: SortOrder
+    recordedById?: SortOrder
+    voidedAt?: SortOrder
+    voidedById?: SortOrder
+    voidReason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PettyCashEntryMinOrderByAggregateInput = {
+    id?: SortOrder
+    entryNumber?: SortOrder
+    fundId?: SortOrder
+    type?: SortOrder
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+    payee?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    receiptRef?: SortOrder
+    entryDate?: SortOrder
+    counterAccountId?: SortOrder
+    journalHeaderId?: SortOrder
+    recordedById?: SortOrder
+    voidedAt?: SortOrder
+    voidedById?: SortOrder
+    voidReason?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PettyCashEntrySumOrderByAggregateInput = {
+    amount?: SortOrder
+    balanceAfter?: SortOrder
+  }
+
+  export type EnumPettyCashEntryTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PettyCashEntryType | EnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPettyCashEntryTypeWithAggregatesFilter<$PrismaModel> | $Enums.PettyCashEntryType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPettyCashEntryTypeFilter<$PrismaModel>
+    _max?: NestedEnumPettyCashEntryTypeFilter<$PrismaModel>
+  }
+
+  export type EnumPaymentVoucherStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentVoucherStatus | EnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentVoucherStatusFilter<$PrismaModel> | $Enums.PaymentVoucherStatus
+  }
+
+  export type PaymentVoucherCountOrderByAggregateInput = {
+    id?: SortOrder
+    voucherNumber?: SortOrder
+    status?: SortOrder
+    payeeName?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    paymentMethod?: SortOrder
+    referenceNo?: SortOrder
+    paymentDate?: SortOrder
+    expenseAccountId?: SortOrder
+    branchId?: SortOrder
+    requestedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    rejectedReason?: SortOrder
+    paidById?: SortOrder
+    paidAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentVoucherAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type PaymentVoucherMaxOrderByAggregateInput = {
+    id?: SortOrder
+    voucherNumber?: SortOrder
+    status?: SortOrder
+    payeeName?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    paymentMethod?: SortOrder
+    referenceNo?: SortOrder
+    paymentDate?: SortOrder
+    expenseAccountId?: SortOrder
+    branchId?: SortOrder
+    requestedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    rejectedReason?: SortOrder
+    paidById?: SortOrder
+    paidAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentVoucherMinOrderByAggregateInput = {
+    id?: SortOrder
+    voucherNumber?: SortOrder
+    status?: SortOrder
+    payeeName?: SortOrder
+    category?: SortOrder
+    description?: SortOrder
+    amount?: SortOrder
+    paymentMethod?: SortOrder
+    referenceNo?: SortOrder
+    paymentDate?: SortOrder
+    expenseAccountId?: SortOrder
+    branchId?: SortOrder
+    requestedById?: SortOrder
+    submittedAt?: SortOrder
+    approvedById?: SortOrder
+    approvedAt?: SortOrder
+    rejectedReason?: SortOrder
+    paidById?: SortOrder
+    paidAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentVoucherSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type EnumPaymentVoucherStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentVoucherStatus | EnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentVoucherStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentVoucherStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentVoucherStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentVoucherStatusFilter<$PrismaModel>
   }
 
   export type EnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -143237,6 +148391,70 @@ export namespace Prisma {
     update?: XOR<XOR<DispatchNoteUpdateToOneWithWhereWithoutDeliveryItemsInput, DispatchNoteUpdateWithoutDeliveryItemsInput>, DispatchNoteUncheckedUpdateWithoutDeliveryItemsInput>
   }
 
+  export type PettyCashEntryCreateNestedManyWithoutFundInput = {
+    create?: XOR<PettyCashEntryCreateWithoutFundInput, PettyCashEntryUncheckedCreateWithoutFundInput> | PettyCashEntryCreateWithoutFundInput[] | PettyCashEntryUncheckedCreateWithoutFundInput[]
+    connectOrCreate?: PettyCashEntryCreateOrConnectWithoutFundInput | PettyCashEntryCreateOrConnectWithoutFundInput[]
+    createMany?: PettyCashEntryCreateManyFundInputEnvelope
+    connect?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+  }
+
+  export type PettyCashEntryUncheckedCreateNestedManyWithoutFundInput = {
+    create?: XOR<PettyCashEntryCreateWithoutFundInput, PettyCashEntryUncheckedCreateWithoutFundInput> | PettyCashEntryCreateWithoutFundInput[] | PettyCashEntryUncheckedCreateWithoutFundInput[]
+    connectOrCreate?: PettyCashEntryCreateOrConnectWithoutFundInput | PettyCashEntryCreateOrConnectWithoutFundInput[]
+    createMany?: PettyCashEntryCreateManyFundInputEnvelope
+    connect?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+  }
+
+  export type PettyCashEntryUpdateManyWithoutFundNestedInput = {
+    create?: XOR<PettyCashEntryCreateWithoutFundInput, PettyCashEntryUncheckedCreateWithoutFundInput> | PettyCashEntryCreateWithoutFundInput[] | PettyCashEntryUncheckedCreateWithoutFundInput[]
+    connectOrCreate?: PettyCashEntryCreateOrConnectWithoutFundInput | PettyCashEntryCreateOrConnectWithoutFundInput[]
+    upsert?: PettyCashEntryUpsertWithWhereUniqueWithoutFundInput | PettyCashEntryUpsertWithWhereUniqueWithoutFundInput[]
+    createMany?: PettyCashEntryCreateManyFundInputEnvelope
+    set?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    disconnect?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    delete?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    connect?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    update?: PettyCashEntryUpdateWithWhereUniqueWithoutFundInput | PettyCashEntryUpdateWithWhereUniqueWithoutFundInput[]
+    updateMany?: PettyCashEntryUpdateManyWithWhereWithoutFundInput | PettyCashEntryUpdateManyWithWhereWithoutFundInput[]
+    deleteMany?: PettyCashEntryScalarWhereInput | PettyCashEntryScalarWhereInput[]
+  }
+
+  export type PettyCashEntryUncheckedUpdateManyWithoutFundNestedInput = {
+    create?: XOR<PettyCashEntryCreateWithoutFundInput, PettyCashEntryUncheckedCreateWithoutFundInput> | PettyCashEntryCreateWithoutFundInput[] | PettyCashEntryUncheckedCreateWithoutFundInput[]
+    connectOrCreate?: PettyCashEntryCreateOrConnectWithoutFundInput | PettyCashEntryCreateOrConnectWithoutFundInput[]
+    upsert?: PettyCashEntryUpsertWithWhereUniqueWithoutFundInput | PettyCashEntryUpsertWithWhereUniqueWithoutFundInput[]
+    createMany?: PettyCashEntryCreateManyFundInputEnvelope
+    set?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    disconnect?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    delete?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    connect?: PettyCashEntryWhereUniqueInput | PettyCashEntryWhereUniqueInput[]
+    update?: PettyCashEntryUpdateWithWhereUniqueWithoutFundInput | PettyCashEntryUpdateWithWhereUniqueWithoutFundInput[]
+    updateMany?: PettyCashEntryUpdateManyWithWhereWithoutFundInput | PettyCashEntryUpdateManyWithWhereWithoutFundInput[]
+    deleteMany?: PettyCashEntryScalarWhereInput | PettyCashEntryScalarWhereInput[]
+  }
+
+  export type PettyCashFundCreateNestedOneWithoutEntriesInput = {
+    create?: XOR<PettyCashFundCreateWithoutEntriesInput, PettyCashFundUncheckedCreateWithoutEntriesInput>
+    connectOrCreate?: PettyCashFundCreateOrConnectWithoutEntriesInput
+    connect?: PettyCashFundWhereUniqueInput
+  }
+
+  export type EnumPettyCashEntryTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PettyCashEntryType
+  }
+
+  export type PettyCashFundUpdateOneRequiredWithoutEntriesNestedInput = {
+    create?: XOR<PettyCashFundCreateWithoutEntriesInput, PettyCashFundUncheckedCreateWithoutEntriesInput>
+    connectOrCreate?: PettyCashFundCreateOrConnectWithoutEntriesInput
+    upsert?: PettyCashFundUpsertWithoutEntriesInput
+    connect?: PettyCashFundWhereUniqueInput
+    update?: XOR<XOR<PettyCashFundUpdateToOneWithWhereWithoutEntriesInput, PettyCashFundUpdateWithoutEntriesInput>, PettyCashFundUncheckedUpdateWithoutEntriesInput>
+  }
+
+  export type EnumPaymentVoucherStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentVoucherStatus
+  }
+
   export type BranchCreateNestedOneWithoutFinanceTransactionsInput = {
     create?: XOR<BranchCreateWithoutFinanceTransactionsInput, BranchUncheckedCreateWithoutFinanceTransactionsInput>
     connectOrCreate?: BranchCreateOrConnectWithoutFinanceTransactionsInput
@@ -146068,6 +151286,40 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDeliveryStatusFilter<$PrismaModel>
     _max?: NestedEnumDeliveryStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPettyCashEntryTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PettyCashEntryType | EnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPettyCashEntryTypeFilter<$PrismaModel> | $Enums.PettyCashEntryType
+  }
+
+  export type NestedEnumPettyCashEntryTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PettyCashEntryType | EnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PettyCashEntryType[] | ListEnumPettyCashEntryTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPettyCashEntryTypeWithAggregatesFilter<$PrismaModel> | $Enums.PettyCashEntryType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPettyCashEntryTypeFilter<$PrismaModel>
+    _max?: NestedEnumPettyCashEntryTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPaymentVoucherStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentVoucherStatus | EnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentVoucherStatusFilter<$PrismaModel> | $Enums.PaymentVoucherStatus
+  }
+
+  export type NestedEnumPaymentVoucherStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PaymentVoucherStatus | EnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PaymentVoucherStatus[] | ListEnumPaymentVoucherStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPaymentVoucherStatusWithAggregatesFilter<$PrismaModel> | $Enums.PaymentVoucherStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPaymentVoucherStatusFilter<$PrismaModel>
+    _max?: NestedEnumPaymentVoucherStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumTransactionTypeFilter<$PrismaModel = never> = {
@@ -168267,6 +173519,168 @@ export namespace Prisma {
     items?: DispatchItemUncheckedUpdateManyWithoutDispatchNoteNestedInput
   }
 
+  export type PettyCashEntryCreateWithoutFundInput = {
+    id?: string
+    entryNumber: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee?: string | null
+    category?: string | null
+    description: string
+    receiptRef?: string | null
+    entryDate: Date | string
+    counterAccountId?: string | null
+    journalHeaderId?: string | null
+    recordedById: string
+    voidedAt?: Date | string | null
+    voidedById?: string | null
+    voidReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PettyCashEntryUncheckedCreateWithoutFundInput = {
+    id?: string
+    entryNumber: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee?: string | null
+    category?: string | null
+    description: string
+    receiptRef?: string | null
+    entryDate: Date | string
+    counterAccountId?: string | null
+    journalHeaderId?: string | null
+    recordedById: string
+    voidedAt?: Date | string | null
+    voidedById?: string | null
+    voidReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PettyCashEntryCreateOrConnectWithoutFundInput = {
+    where: PettyCashEntryWhereUniqueInput
+    create: XOR<PettyCashEntryCreateWithoutFundInput, PettyCashEntryUncheckedCreateWithoutFundInput>
+  }
+
+  export type PettyCashEntryCreateManyFundInputEnvelope = {
+    data: PettyCashEntryCreateManyFundInput | PettyCashEntryCreateManyFundInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PettyCashEntryUpsertWithWhereUniqueWithoutFundInput = {
+    where: PettyCashEntryWhereUniqueInput
+    update: XOR<PettyCashEntryUpdateWithoutFundInput, PettyCashEntryUncheckedUpdateWithoutFundInput>
+    create: XOR<PettyCashEntryCreateWithoutFundInput, PettyCashEntryUncheckedCreateWithoutFundInput>
+  }
+
+  export type PettyCashEntryUpdateWithWhereUniqueWithoutFundInput = {
+    where: PettyCashEntryWhereUniqueInput
+    data: XOR<PettyCashEntryUpdateWithoutFundInput, PettyCashEntryUncheckedUpdateWithoutFundInput>
+  }
+
+  export type PettyCashEntryUpdateManyWithWhereWithoutFundInput = {
+    where: PettyCashEntryScalarWhereInput
+    data: XOR<PettyCashEntryUpdateManyMutationInput, PettyCashEntryUncheckedUpdateManyWithoutFundInput>
+  }
+
+  export type PettyCashEntryScalarWhereInput = {
+    AND?: PettyCashEntryScalarWhereInput | PettyCashEntryScalarWhereInput[]
+    OR?: PettyCashEntryScalarWhereInput[]
+    NOT?: PettyCashEntryScalarWhereInput | PettyCashEntryScalarWhereInput[]
+    id?: StringFilter<"PettyCashEntry"> | string
+    entryNumber?: StringFilter<"PettyCashEntry"> | string
+    fundId?: StringFilter<"PettyCashEntry"> | string
+    type?: EnumPettyCashEntryTypeFilter<"PettyCashEntry"> | $Enums.PettyCashEntryType
+    amount?: FloatFilter<"PettyCashEntry"> | number
+    balanceAfter?: FloatFilter<"PettyCashEntry"> | number
+    payee?: StringNullableFilter<"PettyCashEntry"> | string | null
+    category?: StringNullableFilter<"PettyCashEntry"> | string | null
+    description?: StringFilter<"PettyCashEntry"> | string
+    receiptRef?: StringNullableFilter<"PettyCashEntry"> | string | null
+    entryDate?: DateTimeFilter<"PettyCashEntry"> | Date | string
+    counterAccountId?: StringNullableFilter<"PettyCashEntry"> | string | null
+    journalHeaderId?: StringNullableFilter<"PettyCashEntry"> | string | null
+    recordedById?: StringFilter<"PettyCashEntry"> | string
+    voidedAt?: DateTimeNullableFilter<"PettyCashEntry"> | Date | string | null
+    voidedById?: StringNullableFilter<"PettyCashEntry"> | string | null
+    voidReason?: StringNullableFilter<"PettyCashEntry"> | string | null
+    createdAt?: DateTimeFilter<"PettyCashEntry"> | Date | string
+  }
+
+  export type PettyCashFundCreateWithoutEntriesInput = {
+    id?: string
+    name: string
+    branchId?: string | null
+    custodianId: string
+    imprestAmount: number
+    maxPerTransaction: number
+    balance?: number
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PettyCashFundUncheckedCreateWithoutEntriesInput = {
+    id?: string
+    name: string
+    branchId?: string | null
+    custodianId: string
+    imprestAmount: number
+    maxPerTransaction: number
+    balance?: number
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PettyCashFundCreateOrConnectWithoutEntriesInput = {
+    where: PettyCashFundWhereUniqueInput
+    create: XOR<PettyCashFundCreateWithoutEntriesInput, PettyCashFundUncheckedCreateWithoutEntriesInput>
+  }
+
+  export type PettyCashFundUpsertWithoutEntriesInput = {
+    update: XOR<PettyCashFundUpdateWithoutEntriesInput, PettyCashFundUncheckedUpdateWithoutEntriesInput>
+    create: XOR<PettyCashFundCreateWithoutEntriesInput, PettyCashFundUncheckedCreateWithoutEntriesInput>
+    where?: PettyCashFundWhereInput
+  }
+
+  export type PettyCashFundUpdateToOneWithWhereWithoutEntriesInput = {
+    where?: PettyCashFundWhereInput
+    data: XOR<PettyCashFundUpdateWithoutEntriesInput, PettyCashFundUncheckedUpdateWithoutEntriesInput>
+  }
+
+  export type PettyCashFundUpdateWithoutEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    custodianId?: StringFieldUpdateOperationsInput | string
+    imprestAmount?: FloatFieldUpdateOperationsInput | number
+    maxPerTransaction?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashFundUncheckedUpdateWithoutEntriesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    custodianId?: StringFieldUpdateOperationsInput | string
+    imprestAmount?: FloatFieldUpdateOperationsInput | number
+    maxPerTransaction?: FloatFieldUpdateOperationsInput | number
+    balance?: FloatFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BranchCreateWithoutFinanceTransactionsInput = {
     id?: string
     code: string
@@ -185042,6 +190456,86 @@ export namespace Prisma {
   export type DeliveryDispatchNoteUncheckedUpdateManyWithoutDeliveryInput = {
     id?: StringFieldUpdateOperationsInput | string
     dispatchNoteId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type PettyCashEntryCreateManyFundInput = {
+    id?: string
+    entryNumber: string
+    type: $Enums.PettyCashEntryType
+    amount: number
+    balanceAfter: number
+    payee?: string | null
+    category?: string | null
+    description: string
+    receiptRef?: string | null
+    entryDate: Date | string
+    counterAccountId?: string | null
+    journalHeaderId?: string | null
+    recordedById: string
+    voidedAt?: Date | string | null
+    voidedById?: string | null
+    voidReason?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PettyCashEntryUpdateWithoutFundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashEntryUncheckedUpdateWithoutFundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PettyCashEntryUncheckedUpdateManyWithoutFundInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    entryNumber?: StringFieldUpdateOperationsInput | string
+    type?: EnumPettyCashEntryTypeFieldUpdateOperationsInput | $Enums.PettyCashEntryType
+    amount?: FloatFieldUpdateOperationsInput | number
+    balanceAfter?: FloatFieldUpdateOperationsInput | number
+    payee?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    receiptRef?: NullableStringFieldUpdateOperationsInput | string | null
+    entryDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    counterAccountId?: NullableStringFieldUpdateOperationsInput | string | null
+    journalHeaderId?: NullableStringFieldUpdateOperationsInput | string | null
+    recordedById?: StringFieldUpdateOperationsInput | string
+    voidedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    voidedById?: NullableStringFieldUpdateOperationsInput | string | null
+    voidReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ExpenseReportItemCreateManyExpenseReportInput = {

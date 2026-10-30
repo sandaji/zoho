@@ -189,6 +189,20 @@ async function main() {
       module: "finance",
     },
 
+    // Payment vouchers (general money out)
+    { code: "finance.voucher.create", name: "Raise Payment Vouchers", module: "finance" },
+    { code: "finance.voucher.view_all", name: "View All Payment Vouchers", module: "finance" },
+    { code: "finance.voucher.approve_standard", name: "Approve Standard Payment Vouchers (< KSH 10,000)", module: "finance" },
+    { code: "finance.voucher.approve_high_value", name: "Approve High-Value Payment Vouchers (KSH 10,000 - 100,000)", module: "finance" },
+    { code: "finance.voucher.approve_executive", name: "Approve Executive Payment Vouchers (> KSH 100,000)", module: "finance" },
+    { code: "finance.voucher.pay", name: "Pay Approved Payment Vouchers", module: "finance" },
+
+    // Petty cash (imprest funds)
+    { code: "finance.pettycash.view", name: "View Own Petty Cash Fund", module: "finance" },
+    { code: "finance.pettycash.view_all", name: "View All Petty Cash Funds", module: "finance" },
+    { code: "finance.pettycash.disburse", name: "Pay Out of Petty Cash (Custodian)", module: "finance" },
+    { code: "finance.pettycash.manage", name: "Manage Petty Cash Funds (Create, Top Up, Void)", module: "finance" },
+
     // Sales
     {
       code: "sales.order.view_all",
@@ -530,6 +544,13 @@ async function main() {
     // existing 'ceo'/'purchasing_manager' roles instead of new distinct
     // roles, replace the role codes in the assignAll() calls below rather
     // than keeping both this entry and the alias.
+    {
+      code: "petty_cash_custodian",
+      name: "Petty Cash Custodian",
+      isSystem: true,
+      description:
+        "Finance office: holds the petty cash float and pays small expenses. Read access to the finance modules; cannot approve or top up.",
+    },
     {
       code: "director",
       name: "Finance Director / Finance Controller",
@@ -983,6 +1004,69 @@ async function main() {
     AccessScope.GLOBAL,
   );
 
+  // Payment vouchers: finance raises and pays, directors / the MD approve.
+  // (Approvers can't approve their own; the payer can't be the requester.)
+  await assignAll(
+    "finance_manager",
+    ["finance.voucher.create", "finance.voucher.view_all", "finance.voucher.pay"],
+    AccessScope.GLOBAL,
+  );
+  await assignAll(
+    "branch_finance_manager",
+    ["finance.voucher.create", "finance.voucher.view_all", "finance.voucher.pay"],
+    AccessScope.BRANCH,
+  );
+  await assignAll(
+    "senior_accountant",
+    ["finance.voucher.create"],
+    AccessScope.BRANCH,
+  );
+  await assignAll(
+    "director",
+    [
+      "finance.voucher.view_all",
+      "finance.voucher.approve_standard",
+      "finance.voucher.approve_high_value",
+    ],
+    AccessScope.GLOBAL,
+  );
+  await assignAll(
+    "ceo",
+    [
+      "finance.voucher.view_all",
+      "finance.voucher.approve_standard",
+      "finance.voucher.approve_high_value",
+      "finance.voucher.approve_executive",
+    ],
+    AccessScope.GLOBAL,
+  );
+
+  // Petty cash custodian: runs the float, can see the finance modules
+  // (read-only) and raise expense reports / payment vouchers, but approves and
+  // tops up nothing. BRANCH scope: only their own branch's books.
+  await assignAll(
+    "petty_cash_custodian",
+    [
+      "finance.pettycash.view",
+      "finance.pettycash.disburse",
+      "finance.gl.view",
+      "finance.report.aging",
+      "finance.invoice.view",
+      "finance.payment.view",
+      "finance.expense.view",
+      "finance.expense.create",
+      "finance.voucher.create",
+      "purchasing.vendor.view",
+    ],
+    AccessScope.BRANCH,
+  );
+  // The director / MD can see every fund; Finance manages them.
+  await assign("director", "finance.pettycash.view_all", AccessScope.GLOBAL);
+  await assign("ceo", "finance.pettycash.view_all", AccessScope.GLOBAL);
+  await assign("finance_manager", "finance.pettycash.manage", AccessScope.GLOBAL);
+  await assign("branch_finance_manager", "finance.pettycash.manage", AccessScope.BRANCH);
+  await assign("branch_finance_manager", "finance.pettycash.view_all", AccessScope.BRANCH);
+
   // Purchasing officers turn approved requisitions into LPOs.
   await assignAll(
     "purchasing_officer",
@@ -1059,6 +1143,15 @@ async function main() {
       },
     },
   });
+  // finance_manager is granted every finance.* permission above; payment
+  // vouchers are raised and paid by Finance but approved by director / MD.
+  await prisma.rolePermission.deleteMany({
+    where: {
+      role: { code: { in: ["finance_manager", "branch_finance_manager"] } },
+      permission: { code: { startsWith: "finance.voucher.approve_" } },
+    },
+  });
+
   console.log(
     `✅ Revoked ${revokedLpo.count} LPO-approval and ${revokedReq.count} finance requisition grants`,
   );

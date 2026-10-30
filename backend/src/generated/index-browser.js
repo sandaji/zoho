@@ -670,6 +670,65 @@ exports.Prisma.DeliveryDispatchNoteScalarFieldEnum = {
   dispatchNoteId: 'dispatchNoteId'
 };
 
+exports.Prisma.PettyCashFundScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  branchId: 'branchId',
+  custodianId: 'custodianId',
+  imprestAmount: 'imprestAmount',
+  maxPerTransaction: 'maxPerTransaction',
+  balance: 'balance',
+  isActive: 'isActive',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PettyCashEntryScalarFieldEnum = {
+  id: 'id',
+  entryNumber: 'entryNumber',
+  fundId: 'fundId',
+  type: 'type',
+  amount: 'amount',
+  balanceAfter: 'balanceAfter',
+  payee: 'payee',
+  category: 'category',
+  description: 'description',
+  receiptRef: 'receiptRef',
+  entryDate: 'entryDate',
+  counterAccountId: 'counterAccountId',
+  journalHeaderId: 'journalHeaderId',
+  recordedById: 'recordedById',
+  voidedAt: 'voidedAt',
+  voidedById: 'voidedById',
+  voidReason: 'voidReason',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PaymentVoucherScalarFieldEnum = {
+  id: 'id',
+  voucherNumber: 'voucherNumber',
+  status: 'status',
+  payeeName: 'payeeName',
+  category: 'category',
+  description: 'description',
+  amount: 'amount',
+  paymentMethod: 'paymentMethod',
+  referenceNo: 'referenceNo',
+  paymentDate: 'paymentDate',
+  expenseAccountId: 'expenseAccountId',
+  branchId: 'branchId',
+  requestedById: 'requestedById',
+  submittedAt: 'submittedAt',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  rejectedReason: 'rejectedReason',
+  paidById: 'paidById',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.FinanceTransactionScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -1480,6 +1539,20 @@ exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
   returned_to_base: 'returned_to_base'
 };
 
+exports.PettyCashEntryType = exports.$Enums.PettyCashEntryType = {
+  TOPUP: 'TOPUP',
+  DISBURSEMENT: 'DISBURSEMENT'
+};
+
+exports.PaymentVoucherStatus = exports.$Enums.PaymentVoucherStatus = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.TransactionType = exports.$Enums.TransactionType = {
   income: 'income',
   expense: 'expense',
@@ -1717,6 +1790,9 @@ exports.Prisma.ModelName = {
   Truck: 'Truck',
   Delivery: 'Delivery',
   DeliveryDispatchNote: 'DeliveryDispatchNote',
+  PettyCashFund: 'PettyCashFund',
+  PettyCashEntry: 'PettyCashEntry',
+  PaymentVoucher: 'PaymentVoucher',
   FinanceTransaction: 'FinanceTransaction',
   ExpenseReport: 'ExpenseReport',
   ExpenseReportItem: 'ExpenseReportItem',

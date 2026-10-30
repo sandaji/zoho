@@ -143,7 +143,7 @@ export default function SalesSection() {
                 <Button variant="outline" size="sm" onClick={() => setSelectedSale(sale)}>
                   View
                 </Button>
-                {sale.status !== "VOID" && (
+                {String(sale.status).toUpperCase() !== "VOID" && (
                   <Button
                     variant="destructive"
                     size="sm"

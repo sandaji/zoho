@@ -11,6 +11,7 @@ import {
 import { sanitizeInputs } from "./middleware/validation.middleware";
 import { globalLimiter } from "./middleware/rate-limit.middleware";
 import { contextMiddleware } from "./middleware/context.middleware";
+import { auditTrail } from "./middleware/audit-trail.middleware";
 import { logger } from "./core/utils/logger";
 import { prisma } from "./core/database/db";
 import { AppError } from "./core/errors/errors";
@@ -53,6 +54,10 @@ export async function createApp(): Promise<Express> {
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
   app.use(sanitizeInputs);
   app.use(globalLimiter);
+
+  // Who did what: logs every state-changing request (after body parsing so the
+  // payload is available; the user is read once the response finishes).
+  app.use(auditTrail);
 
   // 2. DATABASE CONNECTION CHECK
   try {

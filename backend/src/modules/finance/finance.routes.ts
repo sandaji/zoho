@@ -1,6 +1,8 @@
 import { Router } from "express";
 import financeController from "./finance.controller";
 import expenseReportController from "./controllers/expense-report.controller";
+import paymentVoucherController from "./controllers/payment-voucher.controller";
+import pettyCashController from "./controllers/petty-cash.controller";
 import { authMiddleware } from "@core/middleware/auth";
 import {
   requirePermission,
@@ -316,6 +318,102 @@ router.post(
   "/expenses/:id/post",
   requirePermission("finance.expense.post"),
   (req, res, next) => expenseReportController.postToGL(req, res, next),
+);
+
+// ============================================
+// Petty Cash — imprest funds held by a custodian
+// ============================================
+const PETTY_VIEW = [
+  "finance.pettycash.view",
+  "finance.pettycash.disburse",
+  "finance.pettycash.view_all",
+  "finance.pettycash.manage",
+];
+router.get("/petty-cash/funds", hasAnyPermission(PETTY_VIEW), (req, res, next) =>
+  pettyCashController.listFunds(req, res, next),
+);
+router.post(
+  "/petty-cash/funds",
+  requirePermission("finance.pettycash.manage"),
+  (req, res, next) => pettyCashController.createFund(req, res, next),
+);
+router.get("/petty-cash/funds/:id", hasAnyPermission(PETTY_VIEW), (req, res, next) =>
+  pettyCashController.getFund(req, res, next),
+);
+router.post(
+  "/petty-cash/funds/:id/topup",
+  requirePermission("finance.pettycash.manage"),
+  validateFiscalPeriod(),
+  (req, res, next) => pettyCashController.topUp(req, res, next),
+);
+router.post(
+  "/petty-cash/funds/:id/disburse",
+  requirePermission("finance.pettycash.disburse"),
+  validateFiscalPeriod(),
+  (req, res, next) => pettyCashController.disburse(req, res, next),
+);
+router.post(
+  "/petty-cash/entries/:id/void",
+  requirePermission("finance.pettycash.manage"),
+  validateFiscalPeriod(),
+  (req, res, next) => pettyCashController.voidEntry(req, res, next),
+);
+
+// ============================================
+// Payment Vouchers — general money out
+// draft -> submit -> approve (amount-tiered) -> pay
+// ============================================
+router.post(
+  "/vouchers",
+  requirePermission("finance.voucher.create"),
+  (req, res, next) => paymentVoucherController.create(req, res, next),
+);
+router.get(
+  "/vouchers",
+  hasAnyPermission([
+    "finance.voucher.create",
+    "finance.voucher.view_all",
+    "finance.voucher.pay",
+    "finance.voucher.approve_standard",
+    "finance.voucher.approve_high_value",
+    "finance.voucher.approve_executive",
+  ]),
+  (req, res, next) => paymentVoucherController.list(req, res, next),
+);
+router.get(
+  "/vouchers/:id",
+  hasAnyPermission([
+    "finance.voucher.create",
+    "finance.voucher.view_all",
+    "finance.voucher.pay",
+    "finance.voucher.approve_standard",
+    "finance.voucher.approve_high_value",
+    "finance.voucher.approve_executive",
+  ]),
+  (req, res, next) => paymentVoucherController.get(req, res, next),
+);
+router.patch(
+  "/vouchers/:id",
+  requirePermission("finance.voucher.create"),
+  (req, res, next) => paymentVoucherController.update(req, res, next),
+);
+router.patch(
+  "/vouchers/:id/status",
+  hasAnyPermission([
+    "finance.voucher.create",
+    "finance.voucher.pay",
+    "finance.voucher.approve_standard",
+    "finance.voucher.approve_high_value",
+    "finance.voucher.approve_executive",
+  ]),
+  // Tier, ownership and segregation checks are in the service
+  (req, res, next) => paymentVoucherController.updateStatus(req, res, next),
+);
+router.post(
+  "/vouchers/:id/pay",
+  requirePermission("finance.voucher.pay"),
+  validateFiscalPeriod(),
+  (req, res, next) => paymentVoucherController.pay(req, res, next),
 );
 
 export default router;
