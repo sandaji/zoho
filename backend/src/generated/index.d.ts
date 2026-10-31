@@ -449,6 +449,71 @@ export type Department = $Result.DefaultSelection<Prisma.$DepartmentPayload>
  * = Finance Director (approve_executive, >= KSH 100,000).
  */
 export type ApprovalStep = $Result.DefaultSelection<Prisma.$ApprovalStepPayload>
+/**
+ * Model CrmTerritory
+ * 
+ */
+export type CrmTerritory = $Result.DefaultSelection<Prisma.$CrmTerritoryPayload>
+/**
+ * Model CrmTerritoryMember
+ * 
+ */
+export type CrmTerritoryMember = $Result.DefaultSelection<Prisma.$CrmTerritoryMemberPayload>
+/**
+ * Model CrmLead
+ * 
+ */
+export type CrmLead = $Result.DefaultSelection<Prisma.$CrmLeadPayload>
+/**
+ * Model CrmOpportunity
+ * 
+ */
+export type CrmOpportunity = $Result.DefaultSelection<Prisma.$CrmOpportunityPayload>
+/**
+ * Model CrmInteraction
+ * 
+ */
+export type CrmInteraction = $Result.DefaultSelection<Prisma.$CrmInteractionPayload>
+/**
+ * Model CrmTask
+ * 
+ */
+export type CrmTask = $Result.DefaultSelection<Prisma.$CrmTaskPayload>
+/**
+ * Model CrmSalesTarget
+ * 
+ */
+export type CrmSalesTarget = $Result.DefaultSelection<Prisma.$CrmSalesTargetPayload>
+/**
+ * Model WorkflowDefinition
+ * 
+ */
+export type WorkflowDefinition = $Result.DefaultSelection<Prisma.$WorkflowDefinitionPayload>
+/**
+ * Model WorkflowStage
+ * 
+ */
+export type WorkflowStage = $Result.DefaultSelection<Prisma.$WorkflowStagePayload>
+/**
+ * Model WorkflowInstance
+ * 
+ */
+export type WorkflowInstance = $Result.DefaultSelection<Prisma.$WorkflowInstancePayload>
+/**
+ * Model WorkflowStep
+ * 
+ */
+export type WorkflowStep = $Result.DefaultSelection<Prisma.$WorkflowStepPayload>
+/**
+ * Model WorkflowDelegation
+ * 
+ */
+export type WorkflowDelegation = $Result.DefaultSelection<Prisma.$WorkflowDelegationPayload>
+/**
+ * Model WorkflowEvent
+ * 
+ */
+export type WorkflowEvent = $Result.DefaultSelection<Prisma.$WorkflowEventPayload>
 
 /**
  * Enums
@@ -2155,6 +2220,136 @@ export class PrismaClient<
     * ```
     */
   get approvalStep(): Prisma.ApprovalStepDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmTerritory`: Exposes CRUD operations for the **CrmTerritory** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmTerritories
+    * const crmTerritories = await prisma.crmTerritory.findMany()
+    * ```
+    */
+  get crmTerritory(): Prisma.CrmTerritoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmTerritoryMember`: Exposes CRUD operations for the **CrmTerritoryMember** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmTerritoryMembers
+    * const crmTerritoryMembers = await prisma.crmTerritoryMember.findMany()
+    * ```
+    */
+  get crmTerritoryMember(): Prisma.CrmTerritoryMemberDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmLead`: Exposes CRUD operations for the **CrmLead** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmLeads
+    * const crmLeads = await prisma.crmLead.findMany()
+    * ```
+    */
+  get crmLead(): Prisma.CrmLeadDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmOpportunity`: Exposes CRUD operations for the **CrmOpportunity** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmOpportunities
+    * const crmOpportunities = await prisma.crmOpportunity.findMany()
+    * ```
+    */
+  get crmOpportunity(): Prisma.CrmOpportunityDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmInteraction`: Exposes CRUD operations for the **CrmInteraction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmInteractions
+    * const crmInteractions = await prisma.crmInteraction.findMany()
+    * ```
+    */
+  get crmInteraction(): Prisma.CrmInteractionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmTask`: Exposes CRUD operations for the **CrmTask** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmTasks
+    * const crmTasks = await prisma.crmTask.findMany()
+    * ```
+    */
+  get crmTask(): Prisma.CrmTaskDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.crmSalesTarget`: Exposes CRUD operations for the **CrmSalesTarget** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CrmSalesTargets
+    * const crmSalesTargets = await prisma.crmSalesTarget.findMany()
+    * ```
+    */
+  get crmSalesTarget(): Prisma.CrmSalesTargetDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflowDefinition`: Exposes CRUD operations for the **WorkflowDefinition** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkflowDefinitions
+    * const workflowDefinitions = await prisma.workflowDefinition.findMany()
+    * ```
+    */
+  get workflowDefinition(): Prisma.WorkflowDefinitionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflowStage`: Exposes CRUD operations for the **WorkflowStage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkflowStages
+    * const workflowStages = await prisma.workflowStage.findMany()
+    * ```
+    */
+  get workflowStage(): Prisma.WorkflowStageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflowInstance`: Exposes CRUD operations for the **WorkflowInstance** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkflowInstances
+    * const workflowInstances = await prisma.workflowInstance.findMany()
+    * ```
+    */
+  get workflowInstance(): Prisma.WorkflowInstanceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflowStep`: Exposes CRUD operations for the **WorkflowStep** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkflowSteps
+    * const workflowSteps = await prisma.workflowStep.findMany()
+    * ```
+    */
+  get workflowStep(): Prisma.WorkflowStepDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflowDelegation`: Exposes CRUD operations for the **WorkflowDelegation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkflowDelegations
+    * const workflowDelegations = await prisma.workflowDelegation.findMany()
+    * ```
+    */
+  get workflowDelegation(): Prisma.WorkflowDelegationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.workflowEvent`: Exposes CRUD operations for the **WorkflowEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WorkflowEvents
+    * const workflowEvents = await prisma.workflowEvent.findMany()
+    * ```
+    */
+  get workflowEvent(): Prisma.WorkflowEventDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -2686,7 +2881,20 @@ export namespace Prisma {
     JournalLine: 'JournalLine',
     VATTransaction: 'VATTransaction',
     Department: 'Department',
-    ApprovalStep: 'ApprovalStep'
+    ApprovalStep: 'ApprovalStep',
+    CrmTerritory: 'CrmTerritory',
+    CrmTerritoryMember: 'CrmTerritoryMember',
+    CrmLead: 'CrmLead',
+    CrmOpportunity: 'CrmOpportunity',
+    CrmInteraction: 'CrmInteraction',
+    CrmTask: 'CrmTask',
+    CrmSalesTarget: 'CrmSalesTarget',
+    WorkflowDefinition: 'WorkflowDefinition',
+    WorkflowStage: 'WorkflowStage',
+    WorkflowInstance: 'WorkflowInstance',
+    WorkflowStep: 'WorkflowStep',
+    WorkflowDelegation: 'WorkflowDelegation',
+    WorkflowEvent: 'WorkflowEvent'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -2702,7 +2910,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -8996,6 +9204,968 @@ export namespace Prisma {
           }
         }
       }
+      CrmTerritory: {
+        payload: Prisma.$CrmTerritoryPayload<ExtArgs>
+        fields: Prisma.CrmTerritoryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmTerritoryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmTerritoryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmTerritoryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmTerritoryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>
+          }
+          findMany: {
+            args: Prisma.CrmTerritoryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>[]
+          }
+          create: {
+            args: Prisma.CrmTerritoryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>
+          }
+          createMany: {
+            args: Prisma.CrmTerritoryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmTerritoryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmTerritoryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>
+          }
+          update: {
+            args: Prisma.CrmTerritoryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmTerritoryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmTerritoryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmTerritoryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmTerritoryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmTerritoryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmTerritory>
+          }
+          groupBy: {
+            args: Prisma.CrmTerritoryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmTerritoryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmTerritoryCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmTerritoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      CrmTerritoryMember: {
+        payload: Prisma.$CrmTerritoryMemberPayload<ExtArgs>
+        fields: Prisma.CrmTerritoryMemberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmTerritoryMemberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmTerritoryMemberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmTerritoryMemberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmTerritoryMemberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>
+          }
+          findMany: {
+            args: Prisma.CrmTerritoryMemberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>[]
+          }
+          create: {
+            args: Prisma.CrmTerritoryMemberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>
+          }
+          createMany: {
+            args: Prisma.CrmTerritoryMemberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmTerritoryMemberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmTerritoryMemberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>
+          }
+          update: {
+            args: Prisma.CrmTerritoryMemberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmTerritoryMemberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmTerritoryMemberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmTerritoryMemberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmTerritoryMemberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTerritoryMemberPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmTerritoryMemberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmTerritoryMember>
+          }
+          groupBy: {
+            args: Prisma.CrmTerritoryMemberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmTerritoryMemberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmTerritoryMemberCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmTerritoryMemberCountAggregateOutputType> | number
+          }
+        }
+      }
+      CrmLead: {
+        payload: Prisma.$CrmLeadPayload<ExtArgs>
+        fields: Prisma.CrmLeadFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmLeadFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmLeadFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmLeadFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmLeadFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>
+          }
+          findMany: {
+            args: Prisma.CrmLeadFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>[]
+          }
+          create: {
+            args: Prisma.CrmLeadCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>
+          }
+          createMany: {
+            args: Prisma.CrmLeadCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmLeadCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmLeadDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>
+          }
+          update: {
+            args: Prisma.CrmLeadUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmLeadDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmLeadUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmLeadUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmLeadUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmLeadPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmLeadAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmLead>
+          }
+          groupBy: {
+            args: Prisma.CrmLeadGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmLeadGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmLeadCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmLeadCountAggregateOutputType> | number
+          }
+        }
+      }
+      CrmOpportunity: {
+        payload: Prisma.$CrmOpportunityPayload<ExtArgs>
+        fields: Prisma.CrmOpportunityFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmOpportunityFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmOpportunityFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmOpportunityFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmOpportunityFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>
+          }
+          findMany: {
+            args: Prisma.CrmOpportunityFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>[]
+          }
+          create: {
+            args: Prisma.CrmOpportunityCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>
+          }
+          createMany: {
+            args: Prisma.CrmOpportunityCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmOpportunityCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmOpportunityDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>
+          }
+          update: {
+            args: Prisma.CrmOpportunityUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmOpportunityDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmOpportunityUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmOpportunityUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmOpportunityUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmOpportunityPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmOpportunityAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmOpportunity>
+          }
+          groupBy: {
+            args: Prisma.CrmOpportunityGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmOpportunityGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmOpportunityCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmOpportunityCountAggregateOutputType> | number
+          }
+        }
+      }
+      CrmInteraction: {
+        payload: Prisma.$CrmInteractionPayload<ExtArgs>
+        fields: Prisma.CrmInteractionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmInteractionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmInteractionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmInteractionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmInteractionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>
+          }
+          findMany: {
+            args: Prisma.CrmInteractionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>[]
+          }
+          create: {
+            args: Prisma.CrmInteractionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>
+          }
+          createMany: {
+            args: Prisma.CrmInteractionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmInteractionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmInteractionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>
+          }
+          update: {
+            args: Prisma.CrmInteractionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmInteractionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmInteractionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmInteractionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmInteractionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmInteractionPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmInteractionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmInteraction>
+          }
+          groupBy: {
+            args: Prisma.CrmInteractionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmInteractionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmInteractionCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmInteractionCountAggregateOutputType> | number
+          }
+        }
+      }
+      CrmTask: {
+        payload: Prisma.$CrmTaskPayload<ExtArgs>
+        fields: Prisma.CrmTaskFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmTaskFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmTaskFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmTaskFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmTaskFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>
+          }
+          findMany: {
+            args: Prisma.CrmTaskFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>[]
+          }
+          create: {
+            args: Prisma.CrmTaskCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>
+          }
+          createMany: {
+            args: Prisma.CrmTaskCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmTaskCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmTaskDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>
+          }
+          update: {
+            args: Prisma.CrmTaskUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmTaskDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmTaskUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmTaskUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmTaskUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmTaskPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmTaskAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmTask>
+          }
+          groupBy: {
+            args: Prisma.CrmTaskGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmTaskGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmTaskCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmTaskCountAggregateOutputType> | number
+          }
+        }
+      }
+      CrmSalesTarget: {
+        payload: Prisma.$CrmSalesTargetPayload<ExtArgs>
+        fields: Prisma.CrmSalesTargetFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CrmSalesTargetFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CrmSalesTargetFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>
+          }
+          findFirst: {
+            args: Prisma.CrmSalesTargetFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CrmSalesTargetFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>
+          }
+          findMany: {
+            args: Prisma.CrmSalesTargetFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>[]
+          }
+          create: {
+            args: Prisma.CrmSalesTargetCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>
+          }
+          createMany: {
+            args: Prisma.CrmSalesTargetCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CrmSalesTargetCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>[]
+          }
+          delete: {
+            args: Prisma.CrmSalesTargetDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>
+          }
+          update: {
+            args: Prisma.CrmSalesTargetUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>
+          }
+          deleteMany: {
+            args: Prisma.CrmSalesTargetDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CrmSalesTargetUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CrmSalesTargetUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>[]
+          }
+          upsert: {
+            args: Prisma.CrmSalesTargetUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CrmSalesTargetPayload>
+          }
+          aggregate: {
+            args: Prisma.CrmSalesTargetAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCrmSalesTarget>
+          }
+          groupBy: {
+            args: Prisma.CrmSalesTargetGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CrmSalesTargetGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CrmSalesTargetCountArgs<ExtArgs>
+            result: $Utils.Optional<CrmSalesTargetCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkflowDefinition: {
+        payload: Prisma.$WorkflowDefinitionPayload<ExtArgs>
+        fields: Prisma.WorkflowDefinitionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkflowDefinitionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkflowDefinitionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkflowDefinitionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkflowDefinitionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>
+          }
+          findMany: {
+            args: Prisma.WorkflowDefinitionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>[]
+          }
+          create: {
+            args: Prisma.WorkflowDefinitionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>
+          }
+          createMany: {
+            args: Prisma.WorkflowDefinitionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkflowDefinitionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkflowDefinitionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>
+          }
+          update: {
+            args: Prisma.WorkflowDefinitionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkflowDefinitionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkflowDefinitionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkflowDefinitionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkflowDefinitionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDefinitionPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkflowDefinitionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflowDefinition>
+          }
+          groupBy: {
+            args: Prisma.WorkflowDefinitionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowDefinitionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkflowDefinitionCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowDefinitionCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkflowStage: {
+        payload: Prisma.$WorkflowStagePayload<ExtArgs>
+        fields: Prisma.WorkflowStageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkflowStageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkflowStageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>
+          }
+          findFirst: {
+            args: Prisma.WorkflowStageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkflowStageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>
+          }
+          findMany: {
+            args: Prisma.WorkflowStageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>[]
+          }
+          create: {
+            args: Prisma.WorkflowStageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>
+          }
+          createMany: {
+            args: Prisma.WorkflowStageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkflowStageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>[]
+          }
+          delete: {
+            args: Prisma.WorkflowStageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>
+          }
+          update: {
+            args: Prisma.WorkflowStageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkflowStageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkflowStageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkflowStageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkflowStageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStagePayload>
+          }
+          aggregate: {
+            args: Prisma.WorkflowStageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflowStage>
+          }
+          groupBy: {
+            args: Prisma.WorkflowStageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowStageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkflowStageCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowStageCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkflowInstance: {
+        payload: Prisma.$WorkflowInstancePayload<ExtArgs>
+        fields: Prisma.WorkflowInstanceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkflowInstanceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkflowInstanceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>
+          }
+          findFirst: {
+            args: Prisma.WorkflowInstanceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkflowInstanceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>
+          }
+          findMany: {
+            args: Prisma.WorkflowInstanceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>[]
+          }
+          create: {
+            args: Prisma.WorkflowInstanceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>
+          }
+          createMany: {
+            args: Prisma.WorkflowInstanceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkflowInstanceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>[]
+          }
+          delete: {
+            args: Prisma.WorkflowInstanceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>
+          }
+          update: {
+            args: Prisma.WorkflowInstanceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkflowInstanceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkflowInstanceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkflowInstanceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkflowInstanceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowInstancePayload>
+          }
+          aggregate: {
+            args: Prisma.WorkflowInstanceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflowInstance>
+          }
+          groupBy: {
+            args: Prisma.WorkflowInstanceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowInstanceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkflowInstanceCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowInstanceCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkflowStep: {
+        payload: Prisma.$WorkflowStepPayload<ExtArgs>
+        fields: Prisma.WorkflowStepFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkflowStepFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkflowStepFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkflowStepFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkflowStepFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>
+          }
+          findMany: {
+            args: Prisma.WorkflowStepFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>[]
+          }
+          create: {
+            args: Prisma.WorkflowStepCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>
+          }
+          createMany: {
+            args: Prisma.WorkflowStepCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkflowStepCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkflowStepDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>
+          }
+          update: {
+            args: Prisma.WorkflowStepUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkflowStepDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkflowStepUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkflowStepUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkflowStepUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowStepPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkflowStepAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflowStep>
+          }
+          groupBy: {
+            args: Prisma.WorkflowStepGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowStepGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkflowStepCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowStepCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkflowDelegation: {
+        payload: Prisma.$WorkflowDelegationPayload<ExtArgs>
+        fields: Prisma.WorkflowDelegationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkflowDelegationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkflowDelegationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkflowDelegationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkflowDelegationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>
+          }
+          findMany: {
+            args: Prisma.WorkflowDelegationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>[]
+          }
+          create: {
+            args: Prisma.WorkflowDelegationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>
+          }
+          createMany: {
+            args: Prisma.WorkflowDelegationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkflowDelegationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkflowDelegationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>
+          }
+          update: {
+            args: Prisma.WorkflowDelegationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkflowDelegationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkflowDelegationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkflowDelegationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkflowDelegationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowDelegationPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkflowDelegationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflowDelegation>
+          }
+          groupBy: {
+            args: Prisma.WorkflowDelegationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowDelegationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkflowDelegationCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowDelegationCountAggregateOutputType> | number
+          }
+        }
+      }
+      WorkflowEvent: {
+        payload: Prisma.$WorkflowEventPayload<ExtArgs>
+        fields: Prisma.WorkflowEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WorkflowEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WorkflowEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>
+          }
+          findFirst: {
+            args: Prisma.WorkflowEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WorkflowEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>
+          }
+          findMany: {
+            args: Prisma.WorkflowEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>[]
+          }
+          create: {
+            args: Prisma.WorkflowEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>
+          }
+          createMany: {
+            args: Prisma.WorkflowEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WorkflowEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>[]
+          }
+          delete: {
+            args: Prisma.WorkflowEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>
+          }
+          update: {
+            args: Prisma.WorkflowEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.WorkflowEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WorkflowEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WorkflowEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.WorkflowEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WorkflowEventPayload>
+          }
+          aggregate: {
+            args: Prisma.WorkflowEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWorkflowEvent>
+          }
+          groupBy: {
+            args: Prisma.WorkflowEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WorkflowEventCountArgs<ExtArgs>
+            result: $Utils.Optional<WorkflowEventCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -9204,6 +10374,19 @@ export namespace Prisma {
     vATTransaction?: VATTransactionOmit
     department?: DepartmentOmit
     approvalStep?: ApprovalStepOmit
+    crmTerritory?: CrmTerritoryOmit
+    crmTerritoryMember?: CrmTerritoryMemberOmit
+    crmLead?: CrmLeadOmit
+    crmOpportunity?: CrmOpportunityOmit
+    crmInteraction?: CrmInteractionOmit
+    crmTask?: CrmTaskOmit
+    crmSalesTarget?: CrmSalesTargetOmit
+    workflowDefinition?: WorkflowDefinitionOmit
+    workflowStage?: WorkflowStageOmit
+    workflowInstance?: WorkflowInstanceOmit
+    workflowStep?: WorkflowStepOmit
+    workflowDelegation?: WorkflowDelegationOmit
+    workflowEvent?: WorkflowEventOmit
   }
 
   /* Types for Logging */
@@ -116244,6 +117427,14349 @@ export namespace Prisma {
 
 
   /**
+   * Model CrmTerritory
+   */
+
+  export type AggregateCrmTerritory = {
+    _count: CrmTerritoryCountAggregateOutputType | null
+    _min: CrmTerritoryMinAggregateOutputType | null
+    _max: CrmTerritoryMaxAggregateOutputType | null
+  }
+
+  export type CrmTerritoryMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    branchId: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmTerritoryMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    description: string | null
+    branchId: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmTerritoryCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    branchId: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CrmTerritoryMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    branchId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmTerritoryMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    branchId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmTerritoryCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    branchId?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CrmTerritoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmTerritory to aggregate.
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritories to fetch.
+     */
+    orderBy?: CrmTerritoryOrderByWithRelationInput | CrmTerritoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmTerritoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmTerritories
+    **/
+    _count?: true | CrmTerritoryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmTerritoryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmTerritoryMaxAggregateInputType
+  }
+
+  export type GetCrmTerritoryAggregateType<T extends CrmTerritoryAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmTerritory]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmTerritory[P]>
+      : GetScalarType<T[P], AggregateCrmTerritory[P]>
+  }
+
+
+
+
+  export type CrmTerritoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmTerritoryWhereInput
+    orderBy?: CrmTerritoryOrderByWithAggregationInput | CrmTerritoryOrderByWithAggregationInput[]
+    by: CrmTerritoryScalarFieldEnum[] | CrmTerritoryScalarFieldEnum
+    having?: CrmTerritoryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmTerritoryCountAggregateInputType | true
+    _min?: CrmTerritoryMinAggregateInputType
+    _max?: CrmTerritoryMaxAggregateInputType
+  }
+
+  export type CrmTerritoryGroupByOutputType = {
+    id: string
+    name: string
+    description: string | null
+    branchId: string | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: CrmTerritoryCountAggregateOutputType | null
+    _min: CrmTerritoryMinAggregateOutputType | null
+    _max: CrmTerritoryMaxAggregateOutputType | null
+  }
+
+  type GetCrmTerritoryGroupByPayload<T extends CrmTerritoryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmTerritoryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmTerritoryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmTerritoryGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmTerritoryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmTerritorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    branchId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmTerritory"]>
+
+  export type CrmTerritorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    branchId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmTerritory"]>
+
+  export type CrmTerritorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    branchId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmTerritory"]>
+
+  export type CrmTerritorySelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    branchId?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CrmTerritoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "branchId" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["crmTerritory"]>
+
+  export type $CrmTerritoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmTerritory"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      description: string | null
+      branchId: string | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["crmTerritory"]>
+    composites: {}
+  }
+
+  type CrmTerritoryGetPayload<S extends boolean | null | undefined | CrmTerritoryDefaultArgs> = $Result.GetResult<Prisma.$CrmTerritoryPayload, S>
+
+  type CrmTerritoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmTerritoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmTerritoryCountAggregateInputType | true
+    }
+
+  export interface CrmTerritoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmTerritory'], meta: { name: 'CrmTerritory' } }
+    /**
+     * Find zero or one CrmTerritory that matches the filter.
+     * @param {CrmTerritoryFindUniqueArgs} args - Arguments to find a CrmTerritory
+     * @example
+     * // Get one CrmTerritory
+     * const crmTerritory = await prisma.crmTerritory.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmTerritoryFindUniqueArgs>(args: SelectSubset<T, CrmTerritoryFindUniqueArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmTerritory that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmTerritoryFindUniqueOrThrowArgs} args - Arguments to find a CrmTerritory
+     * @example
+     * // Get one CrmTerritory
+     * const crmTerritory = await prisma.crmTerritory.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmTerritoryFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmTerritoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmTerritory that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryFindFirstArgs} args - Arguments to find a CrmTerritory
+     * @example
+     * // Get one CrmTerritory
+     * const crmTerritory = await prisma.crmTerritory.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmTerritoryFindFirstArgs>(args?: SelectSubset<T, CrmTerritoryFindFirstArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmTerritory that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryFindFirstOrThrowArgs} args - Arguments to find a CrmTerritory
+     * @example
+     * // Get one CrmTerritory
+     * const crmTerritory = await prisma.crmTerritory.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmTerritoryFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmTerritoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmTerritories that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmTerritories
+     * const crmTerritories = await prisma.crmTerritory.findMany()
+     * 
+     * // Get first 10 CrmTerritories
+     * const crmTerritories = await prisma.crmTerritory.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmTerritoryWithIdOnly = await prisma.crmTerritory.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmTerritoryFindManyArgs>(args?: SelectSubset<T, CrmTerritoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmTerritory.
+     * @param {CrmTerritoryCreateArgs} args - Arguments to create a CrmTerritory.
+     * @example
+     * // Create one CrmTerritory
+     * const CrmTerritory = await prisma.crmTerritory.create({
+     *   data: {
+     *     // ... data to create a CrmTerritory
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmTerritoryCreateArgs>(args: SelectSubset<T, CrmTerritoryCreateArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmTerritories.
+     * @param {CrmTerritoryCreateManyArgs} args - Arguments to create many CrmTerritories.
+     * @example
+     * // Create many CrmTerritories
+     * const crmTerritory = await prisma.crmTerritory.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmTerritoryCreateManyArgs>(args?: SelectSubset<T, CrmTerritoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmTerritories and returns the data saved in the database.
+     * @param {CrmTerritoryCreateManyAndReturnArgs} args - Arguments to create many CrmTerritories.
+     * @example
+     * // Create many CrmTerritories
+     * const crmTerritory = await prisma.crmTerritory.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmTerritories and only return the `id`
+     * const crmTerritoryWithIdOnly = await prisma.crmTerritory.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmTerritoryCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmTerritoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmTerritory.
+     * @param {CrmTerritoryDeleteArgs} args - Arguments to delete one CrmTerritory.
+     * @example
+     * // Delete one CrmTerritory
+     * const CrmTerritory = await prisma.crmTerritory.delete({
+     *   where: {
+     *     // ... filter to delete one CrmTerritory
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmTerritoryDeleteArgs>(args: SelectSubset<T, CrmTerritoryDeleteArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmTerritory.
+     * @param {CrmTerritoryUpdateArgs} args - Arguments to update one CrmTerritory.
+     * @example
+     * // Update one CrmTerritory
+     * const crmTerritory = await prisma.crmTerritory.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmTerritoryUpdateArgs>(args: SelectSubset<T, CrmTerritoryUpdateArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmTerritories.
+     * @param {CrmTerritoryDeleteManyArgs} args - Arguments to filter CrmTerritories to delete.
+     * @example
+     * // Delete a few CrmTerritories
+     * const { count } = await prisma.crmTerritory.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmTerritoryDeleteManyArgs>(args?: SelectSubset<T, CrmTerritoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmTerritories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmTerritories
+     * const crmTerritory = await prisma.crmTerritory.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmTerritoryUpdateManyArgs>(args: SelectSubset<T, CrmTerritoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmTerritories and returns the data updated in the database.
+     * @param {CrmTerritoryUpdateManyAndReturnArgs} args - Arguments to update many CrmTerritories.
+     * @example
+     * // Update many CrmTerritories
+     * const crmTerritory = await prisma.crmTerritory.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmTerritories and only return the `id`
+     * const crmTerritoryWithIdOnly = await prisma.crmTerritory.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmTerritoryUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmTerritoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmTerritory.
+     * @param {CrmTerritoryUpsertArgs} args - Arguments to update or create a CrmTerritory.
+     * @example
+     * // Update or create a CrmTerritory
+     * const crmTerritory = await prisma.crmTerritory.upsert({
+     *   create: {
+     *     // ... data to create a CrmTerritory
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmTerritory we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmTerritoryUpsertArgs>(args: SelectSubset<T, CrmTerritoryUpsertArgs<ExtArgs>>): Prisma__CrmTerritoryClient<$Result.GetResult<Prisma.$CrmTerritoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmTerritories.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryCountArgs} args - Arguments to filter CrmTerritories to count.
+     * @example
+     * // Count the number of CrmTerritories
+     * const count = await prisma.crmTerritory.count({
+     *   where: {
+     *     // ... the filter for the CrmTerritories we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmTerritoryCountArgs>(
+      args?: Subset<T, CrmTerritoryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmTerritoryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmTerritory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmTerritoryAggregateArgs>(args: Subset<T, CrmTerritoryAggregateArgs>): Prisma.PrismaPromise<GetCrmTerritoryAggregateType<T>>
+
+    /**
+     * Group by CrmTerritory.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmTerritoryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmTerritoryGroupByArgs['orderBy'] }
+        : { orderBy?: CrmTerritoryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmTerritoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmTerritoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmTerritory model
+   */
+  readonly fields: CrmTerritoryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmTerritory.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmTerritoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmTerritory model
+   */
+  interface CrmTerritoryFieldRefs {
+    readonly id: FieldRef<"CrmTerritory", 'String'>
+    readonly name: FieldRef<"CrmTerritory", 'String'>
+    readonly description: FieldRef<"CrmTerritory", 'String'>
+    readonly branchId: FieldRef<"CrmTerritory", 'String'>
+    readonly isActive: FieldRef<"CrmTerritory", 'Boolean'>
+    readonly createdAt: FieldRef<"CrmTerritory", 'DateTime'>
+    readonly updatedAt: FieldRef<"CrmTerritory", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmTerritory findUnique
+   */
+  export type CrmTerritoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritory to fetch.
+     */
+    where: CrmTerritoryWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritory findUniqueOrThrow
+   */
+  export type CrmTerritoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritory to fetch.
+     */
+    where: CrmTerritoryWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritory findFirst
+   */
+  export type CrmTerritoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritory to fetch.
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritories to fetch.
+     */
+    orderBy?: CrmTerritoryOrderByWithRelationInput | CrmTerritoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmTerritories.
+     */
+    cursor?: CrmTerritoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTerritories.
+     */
+    distinct?: CrmTerritoryScalarFieldEnum | CrmTerritoryScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTerritory findFirstOrThrow
+   */
+  export type CrmTerritoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritory to fetch.
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritories to fetch.
+     */
+    orderBy?: CrmTerritoryOrderByWithRelationInput | CrmTerritoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmTerritories.
+     */
+    cursor?: CrmTerritoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTerritories.
+     */
+    distinct?: CrmTerritoryScalarFieldEnum | CrmTerritoryScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTerritory findMany
+   */
+  export type CrmTerritoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritories to fetch.
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritories to fetch.
+     */
+    orderBy?: CrmTerritoryOrderByWithRelationInput | CrmTerritoryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmTerritories.
+     */
+    cursor?: CrmTerritoryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritories from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritories.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTerritories.
+     */
+    distinct?: CrmTerritoryScalarFieldEnum | CrmTerritoryScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTerritory create
+   */
+  export type CrmTerritoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmTerritory.
+     */
+    data: XOR<CrmTerritoryCreateInput, CrmTerritoryUncheckedCreateInput>
+  }
+
+  /**
+   * CrmTerritory createMany
+   */
+  export type CrmTerritoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmTerritories.
+     */
+    data: CrmTerritoryCreateManyInput | CrmTerritoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmTerritory createManyAndReturn
+   */
+  export type CrmTerritoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmTerritories.
+     */
+    data: CrmTerritoryCreateManyInput | CrmTerritoryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmTerritory update
+   */
+  export type CrmTerritoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmTerritory.
+     */
+    data: XOR<CrmTerritoryUpdateInput, CrmTerritoryUncheckedUpdateInput>
+    /**
+     * Choose, which CrmTerritory to update.
+     */
+    where: CrmTerritoryWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritory updateMany
+   */
+  export type CrmTerritoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmTerritories.
+     */
+    data: XOR<CrmTerritoryUpdateManyMutationInput, CrmTerritoryUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmTerritories to update
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * Limit how many CrmTerritories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTerritory updateManyAndReturn
+   */
+  export type CrmTerritoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmTerritories.
+     */
+    data: XOR<CrmTerritoryUpdateManyMutationInput, CrmTerritoryUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmTerritories to update
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * Limit how many CrmTerritories to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTerritory upsert
+   */
+  export type CrmTerritoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmTerritory to update in case it exists.
+     */
+    where: CrmTerritoryWhereUniqueInput
+    /**
+     * In case the CrmTerritory found by the `where` argument doesn't exist, create a new CrmTerritory with this data.
+     */
+    create: XOR<CrmTerritoryCreateInput, CrmTerritoryUncheckedCreateInput>
+    /**
+     * In case the CrmTerritory was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmTerritoryUpdateInput, CrmTerritoryUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmTerritory delete
+   */
+  export type CrmTerritoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+    /**
+     * Filter which CrmTerritory to delete.
+     */
+    where: CrmTerritoryWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritory deleteMany
+   */
+  export type CrmTerritoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmTerritories to delete
+     */
+    where?: CrmTerritoryWhereInput
+    /**
+     * Limit how many CrmTerritories to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTerritory without action
+   */
+  export type CrmTerritoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritory
+     */
+    select?: CrmTerritorySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritory
+     */
+    omit?: CrmTerritoryOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CrmTerritoryMember
+   */
+
+  export type AggregateCrmTerritoryMember = {
+    _count: CrmTerritoryMemberCountAggregateOutputType | null
+    _min: CrmTerritoryMemberMinAggregateOutputType | null
+    _max: CrmTerritoryMemberMaxAggregateOutputType | null
+  }
+
+  export type CrmTerritoryMemberMinAggregateOutputType = {
+    id: string | null
+    territoryId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type CrmTerritoryMemberMaxAggregateOutputType = {
+    id: string | null
+    territoryId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type CrmTerritoryMemberCountAggregateOutputType = {
+    id: number
+    territoryId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CrmTerritoryMemberMinAggregateInputType = {
+    id?: true
+    territoryId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type CrmTerritoryMemberMaxAggregateInputType = {
+    id?: true
+    territoryId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type CrmTerritoryMemberCountAggregateInputType = {
+    id?: true
+    territoryId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CrmTerritoryMemberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmTerritoryMember to aggregate.
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritoryMembers to fetch.
+     */
+    orderBy?: CrmTerritoryMemberOrderByWithRelationInput | CrmTerritoryMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmTerritoryMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritoryMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritoryMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmTerritoryMembers
+    **/
+    _count?: true | CrmTerritoryMemberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmTerritoryMemberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmTerritoryMemberMaxAggregateInputType
+  }
+
+  export type GetCrmTerritoryMemberAggregateType<T extends CrmTerritoryMemberAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmTerritoryMember]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmTerritoryMember[P]>
+      : GetScalarType<T[P], AggregateCrmTerritoryMember[P]>
+  }
+
+
+
+
+  export type CrmTerritoryMemberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmTerritoryMemberWhereInput
+    orderBy?: CrmTerritoryMemberOrderByWithAggregationInput | CrmTerritoryMemberOrderByWithAggregationInput[]
+    by: CrmTerritoryMemberScalarFieldEnum[] | CrmTerritoryMemberScalarFieldEnum
+    having?: CrmTerritoryMemberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmTerritoryMemberCountAggregateInputType | true
+    _min?: CrmTerritoryMemberMinAggregateInputType
+    _max?: CrmTerritoryMemberMaxAggregateInputType
+  }
+
+  export type CrmTerritoryMemberGroupByOutputType = {
+    id: string
+    territoryId: string
+    userId: string
+    createdAt: Date
+    _count: CrmTerritoryMemberCountAggregateOutputType | null
+    _min: CrmTerritoryMemberMinAggregateOutputType | null
+    _max: CrmTerritoryMemberMaxAggregateOutputType | null
+  }
+
+  type GetCrmTerritoryMemberGroupByPayload<T extends CrmTerritoryMemberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmTerritoryMemberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmTerritoryMemberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmTerritoryMemberGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmTerritoryMemberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmTerritoryMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    territoryId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["crmTerritoryMember"]>
+
+  export type CrmTerritoryMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    territoryId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["crmTerritoryMember"]>
+
+  export type CrmTerritoryMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    territoryId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["crmTerritoryMember"]>
+
+  export type CrmTerritoryMemberSelectScalar = {
+    id?: boolean
+    territoryId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type CrmTerritoryMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "territoryId" | "userId" | "createdAt", ExtArgs["result"]["crmTerritoryMember"]>
+
+  export type $CrmTerritoryMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmTerritoryMember"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      territoryId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["crmTerritoryMember"]>
+    composites: {}
+  }
+
+  type CrmTerritoryMemberGetPayload<S extends boolean | null | undefined | CrmTerritoryMemberDefaultArgs> = $Result.GetResult<Prisma.$CrmTerritoryMemberPayload, S>
+
+  type CrmTerritoryMemberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmTerritoryMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmTerritoryMemberCountAggregateInputType | true
+    }
+
+  export interface CrmTerritoryMemberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmTerritoryMember'], meta: { name: 'CrmTerritoryMember' } }
+    /**
+     * Find zero or one CrmTerritoryMember that matches the filter.
+     * @param {CrmTerritoryMemberFindUniqueArgs} args - Arguments to find a CrmTerritoryMember
+     * @example
+     * // Get one CrmTerritoryMember
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmTerritoryMemberFindUniqueArgs>(args: SelectSubset<T, CrmTerritoryMemberFindUniqueArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmTerritoryMember that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmTerritoryMemberFindUniqueOrThrowArgs} args - Arguments to find a CrmTerritoryMember
+     * @example
+     * // Get one CrmTerritoryMember
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmTerritoryMemberFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmTerritoryMemberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmTerritoryMember that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberFindFirstArgs} args - Arguments to find a CrmTerritoryMember
+     * @example
+     * // Get one CrmTerritoryMember
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmTerritoryMemberFindFirstArgs>(args?: SelectSubset<T, CrmTerritoryMemberFindFirstArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmTerritoryMember that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberFindFirstOrThrowArgs} args - Arguments to find a CrmTerritoryMember
+     * @example
+     * // Get one CrmTerritoryMember
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmTerritoryMemberFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmTerritoryMemberFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmTerritoryMembers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmTerritoryMembers
+     * const crmTerritoryMembers = await prisma.crmTerritoryMember.findMany()
+     * 
+     * // Get first 10 CrmTerritoryMembers
+     * const crmTerritoryMembers = await prisma.crmTerritoryMember.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmTerritoryMemberWithIdOnly = await prisma.crmTerritoryMember.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmTerritoryMemberFindManyArgs>(args?: SelectSubset<T, CrmTerritoryMemberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmTerritoryMember.
+     * @param {CrmTerritoryMemberCreateArgs} args - Arguments to create a CrmTerritoryMember.
+     * @example
+     * // Create one CrmTerritoryMember
+     * const CrmTerritoryMember = await prisma.crmTerritoryMember.create({
+     *   data: {
+     *     // ... data to create a CrmTerritoryMember
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmTerritoryMemberCreateArgs>(args: SelectSubset<T, CrmTerritoryMemberCreateArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmTerritoryMembers.
+     * @param {CrmTerritoryMemberCreateManyArgs} args - Arguments to create many CrmTerritoryMembers.
+     * @example
+     * // Create many CrmTerritoryMembers
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmTerritoryMemberCreateManyArgs>(args?: SelectSubset<T, CrmTerritoryMemberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmTerritoryMembers and returns the data saved in the database.
+     * @param {CrmTerritoryMemberCreateManyAndReturnArgs} args - Arguments to create many CrmTerritoryMembers.
+     * @example
+     * // Create many CrmTerritoryMembers
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmTerritoryMembers and only return the `id`
+     * const crmTerritoryMemberWithIdOnly = await prisma.crmTerritoryMember.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmTerritoryMemberCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmTerritoryMemberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmTerritoryMember.
+     * @param {CrmTerritoryMemberDeleteArgs} args - Arguments to delete one CrmTerritoryMember.
+     * @example
+     * // Delete one CrmTerritoryMember
+     * const CrmTerritoryMember = await prisma.crmTerritoryMember.delete({
+     *   where: {
+     *     // ... filter to delete one CrmTerritoryMember
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmTerritoryMemberDeleteArgs>(args: SelectSubset<T, CrmTerritoryMemberDeleteArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmTerritoryMember.
+     * @param {CrmTerritoryMemberUpdateArgs} args - Arguments to update one CrmTerritoryMember.
+     * @example
+     * // Update one CrmTerritoryMember
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmTerritoryMemberUpdateArgs>(args: SelectSubset<T, CrmTerritoryMemberUpdateArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmTerritoryMembers.
+     * @param {CrmTerritoryMemberDeleteManyArgs} args - Arguments to filter CrmTerritoryMembers to delete.
+     * @example
+     * // Delete a few CrmTerritoryMembers
+     * const { count } = await prisma.crmTerritoryMember.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmTerritoryMemberDeleteManyArgs>(args?: SelectSubset<T, CrmTerritoryMemberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmTerritoryMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmTerritoryMembers
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmTerritoryMemberUpdateManyArgs>(args: SelectSubset<T, CrmTerritoryMemberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmTerritoryMembers and returns the data updated in the database.
+     * @param {CrmTerritoryMemberUpdateManyAndReturnArgs} args - Arguments to update many CrmTerritoryMembers.
+     * @example
+     * // Update many CrmTerritoryMembers
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmTerritoryMembers and only return the `id`
+     * const crmTerritoryMemberWithIdOnly = await prisma.crmTerritoryMember.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmTerritoryMemberUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmTerritoryMemberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmTerritoryMember.
+     * @param {CrmTerritoryMemberUpsertArgs} args - Arguments to update or create a CrmTerritoryMember.
+     * @example
+     * // Update or create a CrmTerritoryMember
+     * const crmTerritoryMember = await prisma.crmTerritoryMember.upsert({
+     *   create: {
+     *     // ... data to create a CrmTerritoryMember
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmTerritoryMember we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmTerritoryMemberUpsertArgs>(args: SelectSubset<T, CrmTerritoryMemberUpsertArgs<ExtArgs>>): Prisma__CrmTerritoryMemberClient<$Result.GetResult<Prisma.$CrmTerritoryMemberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmTerritoryMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberCountArgs} args - Arguments to filter CrmTerritoryMembers to count.
+     * @example
+     * // Count the number of CrmTerritoryMembers
+     * const count = await prisma.crmTerritoryMember.count({
+     *   where: {
+     *     // ... the filter for the CrmTerritoryMembers we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmTerritoryMemberCountArgs>(
+      args?: Subset<T, CrmTerritoryMemberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmTerritoryMemberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmTerritoryMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmTerritoryMemberAggregateArgs>(args: Subset<T, CrmTerritoryMemberAggregateArgs>): Prisma.PrismaPromise<GetCrmTerritoryMemberAggregateType<T>>
+
+    /**
+     * Group by CrmTerritoryMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTerritoryMemberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmTerritoryMemberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmTerritoryMemberGroupByArgs['orderBy'] }
+        : { orderBy?: CrmTerritoryMemberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmTerritoryMemberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmTerritoryMemberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmTerritoryMember model
+   */
+  readonly fields: CrmTerritoryMemberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmTerritoryMember.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmTerritoryMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmTerritoryMember model
+   */
+  interface CrmTerritoryMemberFieldRefs {
+    readonly id: FieldRef<"CrmTerritoryMember", 'String'>
+    readonly territoryId: FieldRef<"CrmTerritoryMember", 'String'>
+    readonly userId: FieldRef<"CrmTerritoryMember", 'String'>
+    readonly createdAt: FieldRef<"CrmTerritoryMember", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmTerritoryMember findUnique
+   */
+  export type CrmTerritoryMemberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritoryMember to fetch.
+     */
+    where: CrmTerritoryMemberWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritoryMember findUniqueOrThrow
+   */
+  export type CrmTerritoryMemberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritoryMember to fetch.
+     */
+    where: CrmTerritoryMemberWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritoryMember findFirst
+   */
+  export type CrmTerritoryMemberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritoryMember to fetch.
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritoryMembers to fetch.
+     */
+    orderBy?: CrmTerritoryMemberOrderByWithRelationInput | CrmTerritoryMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmTerritoryMembers.
+     */
+    cursor?: CrmTerritoryMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritoryMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritoryMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTerritoryMembers.
+     */
+    distinct?: CrmTerritoryMemberScalarFieldEnum | CrmTerritoryMemberScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTerritoryMember findFirstOrThrow
+   */
+  export type CrmTerritoryMemberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritoryMember to fetch.
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritoryMembers to fetch.
+     */
+    orderBy?: CrmTerritoryMemberOrderByWithRelationInput | CrmTerritoryMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmTerritoryMembers.
+     */
+    cursor?: CrmTerritoryMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritoryMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritoryMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTerritoryMembers.
+     */
+    distinct?: CrmTerritoryMemberScalarFieldEnum | CrmTerritoryMemberScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTerritoryMember findMany
+   */
+  export type CrmTerritoryMemberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTerritoryMembers to fetch.
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTerritoryMembers to fetch.
+     */
+    orderBy?: CrmTerritoryMemberOrderByWithRelationInput | CrmTerritoryMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmTerritoryMembers.
+     */
+    cursor?: CrmTerritoryMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTerritoryMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTerritoryMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTerritoryMembers.
+     */
+    distinct?: CrmTerritoryMemberScalarFieldEnum | CrmTerritoryMemberScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTerritoryMember create
+   */
+  export type CrmTerritoryMemberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmTerritoryMember.
+     */
+    data: XOR<CrmTerritoryMemberCreateInput, CrmTerritoryMemberUncheckedCreateInput>
+  }
+
+  /**
+   * CrmTerritoryMember createMany
+   */
+  export type CrmTerritoryMemberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmTerritoryMembers.
+     */
+    data: CrmTerritoryMemberCreateManyInput | CrmTerritoryMemberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmTerritoryMember createManyAndReturn
+   */
+  export type CrmTerritoryMemberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmTerritoryMembers.
+     */
+    data: CrmTerritoryMemberCreateManyInput | CrmTerritoryMemberCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmTerritoryMember update
+   */
+  export type CrmTerritoryMemberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmTerritoryMember.
+     */
+    data: XOR<CrmTerritoryMemberUpdateInput, CrmTerritoryMemberUncheckedUpdateInput>
+    /**
+     * Choose, which CrmTerritoryMember to update.
+     */
+    where: CrmTerritoryMemberWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritoryMember updateMany
+   */
+  export type CrmTerritoryMemberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmTerritoryMembers.
+     */
+    data: XOR<CrmTerritoryMemberUpdateManyMutationInput, CrmTerritoryMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmTerritoryMembers to update
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * Limit how many CrmTerritoryMembers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTerritoryMember updateManyAndReturn
+   */
+  export type CrmTerritoryMemberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmTerritoryMembers.
+     */
+    data: XOR<CrmTerritoryMemberUpdateManyMutationInput, CrmTerritoryMemberUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmTerritoryMembers to update
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * Limit how many CrmTerritoryMembers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTerritoryMember upsert
+   */
+  export type CrmTerritoryMemberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmTerritoryMember to update in case it exists.
+     */
+    where: CrmTerritoryMemberWhereUniqueInput
+    /**
+     * In case the CrmTerritoryMember found by the `where` argument doesn't exist, create a new CrmTerritoryMember with this data.
+     */
+    create: XOR<CrmTerritoryMemberCreateInput, CrmTerritoryMemberUncheckedCreateInput>
+    /**
+     * In case the CrmTerritoryMember was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmTerritoryMemberUpdateInput, CrmTerritoryMemberUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmTerritoryMember delete
+   */
+  export type CrmTerritoryMemberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+    /**
+     * Filter which CrmTerritoryMember to delete.
+     */
+    where: CrmTerritoryMemberWhereUniqueInput
+  }
+
+  /**
+   * CrmTerritoryMember deleteMany
+   */
+  export type CrmTerritoryMemberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmTerritoryMembers to delete
+     */
+    where?: CrmTerritoryMemberWhereInput
+    /**
+     * Limit how many CrmTerritoryMembers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTerritoryMember without action
+   */
+  export type CrmTerritoryMemberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTerritoryMember
+     */
+    select?: CrmTerritoryMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTerritoryMember
+     */
+    omit?: CrmTerritoryMemberOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CrmLead
+   */
+
+  export type AggregateCrmLead = {
+    _count: CrmLeadCountAggregateOutputType | null
+    _min: CrmLeadMinAggregateOutputType | null
+    _max: CrmLeadMaxAggregateOutputType | null
+  }
+
+  export type CrmLeadMinAggregateOutputType = {
+    id: string | null
+    leadNumber: string | null
+    name: string | null
+    company: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    source: string | null
+    status: string | null
+    notes: string | null
+    territoryId: string | null
+    branchId: string | null
+    ownerId: string | null
+    customerId: string | null
+    convertedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmLeadMaxAggregateOutputType = {
+    id: string | null
+    leadNumber: string | null
+    name: string | null
+    company: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    source: string | null
+    status: string | null
+    notes: string | null
+    territoryId: string | null
+    branchId: string | null
+    ownerId: string | null
+    customerId: string | null
+    convertedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmLeadCountAggregateOutputType = {
+    id: number
+    leadNumber: number
+    name: number
+    company: number
+    email: number
+    phone: number
+    address: number
+    source: number
+    status: number
+    notes: number
+    territoryId: number
+    branchId: number
+    ownerId: number
+    customerId: number
+    convertedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CrmLeadMinAggregateInputType = {
+    id?: true
+    leadNumber?: true
+    name?: true
+    company?: true
+    email?: true
+    phone?: true
+    address?: true
+    source?: true
+    status?: true
+    notes?: true
+    territoryId?: true
+    branchId?: true
+    ownerId?: true
+    customerId?: true
+    convertedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmLeadMaxAggregateInputType = {
+    id?: true
+    leadNumber?: true
+    name?: true
+    company?: true
+    email?: true
+    phone?: true
+    address?: true
+    source?: true
+    status?: true
+    notes?: true
+    territoryId?: true
+    branchId?: true
+    ownerId?: true
+    customerId?: true
+    convertedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmLeadCountAggregateInputType = {
+    id?: true
+    leadNumber?: true
+    name?: true
+    company?: true
+    email?: true
+    phone?: true
+    address?: true
+    source?: true
+    status?: true
+    notes?: true
+    territoryId?: true
+    branchId?: true
+    ownerId?: true
+    customerId?: true
+    convertedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CrmLeadAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmLead to aggregate.
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmLeads to fetch.
+     */
+    orderBy?: CrmLeadOrderByWithRelationInput | CrmLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmLeads
+    **/
+    _count?: true | CrmLeadCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmLeadMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmLeadMaxAggregateInputType
+  }
+
+  export type GetCrmLeadAggregateType<T extends CrmLeadAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmLead]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmLead[P]>
+      : GetScalarType<T[P], AggregateCrmLead[P]>
+  }
+
+
+
+
+  export type CrmLeadGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmLeadWhereInput
+    orderBy?: CrmLeadOrderByWithAggregationInput | CrmLeadOrderByWithAggregationInput[]
+    by: CrmLeadScalarFieldEnum[] | CrmLeadScalarFieldEnum
+    having?: CrmLeadScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmLeadCountAggregateInputType | true
+    _min?: CrmLeadMinAggregateInputType
+    _max?: CrmLeadMaxAggregateInputType
+  }
+
+  export type CrmLeadGroupByOutputType = {
+    id: string
+    leadNumber: string
+    name: string
+    company: string | null
+    email: string | null
+    phone: string | null
+    address: string | null
+    source: string
+    status: string
+    notes: string | null
+    territoryId: string | null
+    branchId: string | null
+    ownerId: string
+    customerId: string | null
+    convertedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CrmLeadCountAggregateOutputType | null
+    _min: CrmLeadMinAggregateOutputType | null
+    _max: CrmLeadMaxAggregateOutputType | null
+  }
+
+  type GetCrmLeadGroupByPayload<T extends CrmLeadGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmLeadGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmLeadGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmLeadGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmLeadGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmLeadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadNumber?: boolean
+    name?: boolean
+    company?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    source?: boolean
+    status?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    customerId?: boolean
+    convertedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmLead"]>
+
+  export type CrmLeadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadNumber?: boolean
+    name?: boolean
+    company?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    source?: boolean
+    status?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    customerId?: boolean
+    convertedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmLead"]>
+
+  export type CrmLeadSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    leadNumber?: boolean
+    name?: boolean
+    company?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    source?: boolean
+    status?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    customerId?: boolean
+    convertedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmLead"]>
+
+  export type CrmLeadSelectScalar = {
+    id?: boolean
+    leadNumber?: boolean
+    name?: boolean
+    company?: boolean
+    email?: boolean
+    phone?: boolean
+    address?: boolean
+    source?: boolean
+    status?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    customerId?: boolean
+    convertedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CrmLeadOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "leadNumber" | "name" | "company" | "email" | "phone" | "address" | "source" | "status" | "notes" | "territoryId" | "branchId" | "ownerId" | "customerId" | "convertedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["crmLead"]>
+
+  export type $CrmLeadPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmLead"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      leadNumber: string
+      name: string
+      company: string | null
+      email: string | null
+      phone: string | null
+      address: string | null
+      source: string
+      status: string
+      notes: string | null
+      territoryId: string | null
+      branchId: string | null
+      ownerId: string
+      customerId: string | null
+      convertedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["crmLead"]>
+    composites: {}
+  }
+
+  type CrmLeadGetPayload<S extends boolean | null | undefined | CrmLeadDefaultArgs> = $Result.GetResult<Prisma.$CrmLeadPayload, S>
+
+  type CrmLeadCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmLeadFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmLeadCountAggregateInputType | true
+    }
+
+  export interface CrmLeadDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmLead'], meta: { name: 'CrmLead' } }
+    /**
+     * Find zero or one CrmLead that matches the filter.
+     * @param {CrmLeadFindUniqueArgs} args - Arguments to find a CrmLead
+     * @example
+     * // Get one CrmLead
+     * const crmLead = await prisma.crmLead.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmLeadFindUniqueArgs>(args: SelectSubset<T, CrmLeadFindUniqueArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmLead that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmLeadFindUniqueOrThrowArgs} args - Arguments to find a CrmLead
+     * @example
+     * // Get one CrmLead
+     * const crmLead = await prisma.crmLead.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmLeadFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmLeadFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmLead that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadFindFirstArgs} args - Arguments to find a CrmLead
+     * @example
+     * // Get one CrmLead
+     * const crmLead = await prisma.crmLead.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmLeadFindFirstArgs>(args?: SelectSubset<T, CrmLeadFindFirstArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmLead that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadFindFirstOrThrowArgs} args - Arguments to find a CrmLead
+     * @example
+     * // Get one CrmLead
+     * const crmLead = await prisma.crmLead.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmLeadFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmLeadFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmLeads that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmLeads
+     * const crmLeads = await prisma.crmLead.findMany()
+     * 
+     * // Get first 10 CrmLeads
+     * const crmLeads = await prisma.crmLead.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmLeadWithIdOnly = await prisma.crmLead.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmLeadFindManyArgs>(args?: SelectSubset<T, CrmLeadFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmLead.
+     * @param {CrmLeadCreateArgs} args - Arguments to create a CrmLead.
+     * @example
+     * // Create one CrmLead
+     * const CrmLead = await prisma.crmLead.create({
+     *   data: {
+     *     // ... data to create a CrmLead
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmLeadCreateArgs>(args: SelectSubset<T, CrmLeadCreateArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmLeads.
+     * @param {CrmLeadCreateManyArgs} args - Arguments to create many CrmLeads.
+     * @example
+     * // Create many CrmLeads
+     * const crmLead = await prisma.crmLead.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmLeadCreateManyArgs>(args?: SelectSubset<T, CrmLeadCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmLeads and returns the data saved in the database.
+     * @param {CrmLeadCreateManyAndReturnArgs} args - Arguments to create many CrmLeads.
+     * @example
+     * // Create many CrmLeads
+     * const crmLead = await prisma.crmLead.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmLeads and only return the `id`
+     * const crmLeadWithIdOnly = await prisma.crmLead.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmLeadCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmLeadCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmLead.
+     * @param {CrmLeadDeleteArgs} args - Arguments to delete one CrmLead.
+     * @example
+     * // Delete one CrmLead
+     * const CrmLead = await prisma.crmLead.delete({
+     *   where: {
+     *     // ... filter to delete one CrmLead
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmLeadDeleteArgs>(args: SelectSubset<T, CrmLeadDeleteArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmLead.
+     * @param {CrmLeadUpdateArgs} args - Arguments to update one CrmLead.
+     * @example
+     * // Update one CrmLead
+     * const crmLead = await prisma.crmLead.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmLeadUpdateArgs>(args: SelectSubset<T, CrmLeadUpdateArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmLeads.
+     * @param {CrmLeadDeleteManyArgs} args - Arguments to filter CrmLeads to delete.
+     * @example
+     * // Delete a few CrmLeads
+     * const { count } = await prisma.crmLead.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmLeadDeleteManyArgs>(args?: SelectSubset<T, CrmLeadDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmLeads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmLeads
+     * const crmLead = await prisma.crmLead.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmLeadUpdateManyArgs>(args: SelectSubset<T, CrmLeadUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmLeads and returns the data updated in the database.
+     * @param {CrmLeadUpdateManyAndReturnArgs} args - Arguments to update many CrmLeads.
+     * @example
+     * // Update many CrmLeads
+     * const crmLead = await prisma.crmLead.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmLeads and only return the `id`
+     * const crmLeadWithIdOnly = await prisma.crmLead.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmLeadUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmLeadUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmLead.
+     * @param {CrmLeadUpsertArgs} args - Arguments to update or create a CrmLead.
+     * @example
+     * // Update or create a CrmLead
+     * const crmLead = await prisma.crmLead.upsert({
+     *   create: {
+     *     // ... data to create a CrmLead
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmLead we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmLeadUpsertArgs>(args: SelectSubset<T, CrmLeadUpsertArgs<ExtArgs>>): Prisma__CrmLeadClient<$Result.GetResult<Prisma.$CrmLeadPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmLeads.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadCountArgs} args - Arguments to filter CrmLeads to count.
+     * @example
+     * // Count the number of CrmLeads
+     * const count = await prisma.crmLead.count({
+     *   where: {
+     *     // ... the filter for the CrmLeads we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmLeadCountArgs>(
+      args?: Subset<T, CrmLeadCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmLeadCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmLead.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmLeadAggregateArgs>(args: Subset<T, CrmLeadAggregateArgs>): Prisma.PrismaPromise<GetCrmLeadAggregateType<T>>
+
+    /**
+     * Group by CrmLead.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmLeadGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmLeadGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmLeadGroupByArgs['orderBy'] }
+        : { orderBy?: CrmLeadGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmLeadGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmLeadGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmLead model
+   */
+  readonly fields: CrmLeadFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmLead.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmLeadClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmLead model
+   */
+  interface CrmLeadFieldRefs {
+    readonly id: FieldRef<"CrmLead", 'String'>
+    readonly leadNumber: FieldRef<"CrmLead", 'String'>
+    readonly name: FieldRef<"CrmLead", 'String'>
+    readonly company: FieldRef<"CrmLead", 'String'>
+    readonly email: FieldRef<"CrmLead", 'String'>
+    readonly phone: FieldRef<"CrmLead", 'String'>
+    readonly address: FieldRef<"CrmLead", 'String'>
+    readonly source: FieldRef<"CrmLead", 'String'>
+    readonly status: FieldRef<"CrmLead", 'String'>
+    readonly notes: FieldRef<"CrmLead", 'String'>
+    readonly territoryId: FieldRef<"CrmLead", 'String'>
+    readonly branchId: FieldRef<"CrmLead", 'String'>
+    readonly ownerId: FieldRef<"CrmLead", 'String'>
+    readonly customerId: FieldRef<"CrmLead", 'String'>
+    readonly convertedAt: FieldRef<"CrmLead", 'DateTime'>
+    readonly createdAt: FieldRef<"CrmLead", 'DateTime'>
+    readonly updatedAt: FieldRef<"CrmLead", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmLead findUnique
+   */
+  export type CrmLeadFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmLead to fetch.
+     */
+    where: CrmLeadWhereUniqueInput
+  }
+
+  /**
+   * CrmLead findUniqueOrThrow
+   */
+  export type CrmLeadFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmLead to fetch.
+     */
+    where: CrmLeadWhereUniqueInput
+  }
+
+  /**
+   * CrmLead findFirst
+   */
+  export type CrmLeadFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmLead to fetch.
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmLeads to fetch.
+     */
+    orderBy?: CrmLeadOrderByWithRelationInput | CrmLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmLeads.
+     */
+    cursor?: CrmLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmLeads.
+     */
+    distinct?: CrmLeadScalarFieldEnum | CrmLeadScalarFieldEnum[]
+  }
+
+  /**
+   * CrmLead findFirstOrThrow
+   */
+  export type CrmLeadFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmLead to fetch.
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmLeads to fetch.
+     */
+    orderBy?: CrmLeadOrderByWithRelationInput | CrmLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmLeads.
+     */
+    cursor?: CrmLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmLeads.
+     */
+    distinct?: CrmLeadScalarFieldEnum | CrmLeadScalarFieldEnum[]
+  }
+
+  /**
+   * CrmLead findMany
+   */
+  export type CrmLeadFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmLeads to fetch.
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmLeads to fetch.
+     */
+    orderBy?: CrmLeadOrderByWithRelationInput | CrmLeadOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmLeads.
+     */
+    cursor?: CrmLeadWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmLeads from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmLeads.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmLeads.
+     */
+    distinct?: CrmLeadScalarFieldEnum | CrmLeadScalarFieldEnum[]
+  }
+
+  /**
+   * CrmLead create
+   */
+  export type CrmLeadCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmLead.
+     */
+    data: XOR<CrmLeadCreateInput, CrmLeadUncheckedCreateInput>
+  }
+
+  /**
+   * CrmLead createMany
+   */
+  export type CrmLeadCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmLeads.
+     */
+    data: CrmLeadCreateManyInput | CrmLeadCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmLead createManyAndReturn
+   */
+  export type CrmLeadCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmLeads.
+     */
+    data: CrmLeadCreateManyInput | CrmLeadCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmLead update
+   */
+  export type CrmLeadUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmLead.
+     */
+    data: XOR<CrmLeadUpdateInput, CrmLeadUncheckedUpdateInput>
+    /**
+     * Choose, which CrmLead to update.
+     */
+    where: CrmLeadWhereUniqueInput
+  }
+
+  /**
+   * CrmLead updateMany
+   */
+  export type CrmLeadUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmLeads.
+     */
+    data: XOR<CrmLeadUpdateManyMutationInput, CrmLeadUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmLeads to update
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * Limit how many CrmLeads to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmLead updateManyAndReturn
+   */
+  export type CrmLeadUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmLeads.
+     */
+    data: XOR<CrmLeadUpdateManyMutationInput, CrmLeadUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmLeads to update
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * Limit how many CrmLeads to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmLead upsert
+   */
+  export type CrmLeadUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmLead to update in case it exists.
+     */
+    where: CrmLeadWhereUniqueInput
+    /**
+     * In case the CrmLead found by the `where` argument doesn't exist, create a new CrmLead with this data.
+     */
+    create: XOR<CrmLeadCreateInput, CrmLeadUncheckedCreateInput>
+    /**
+     * In case the CrmLead was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmLeadUpdateInput, CrmLeadUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmLead delete
+   */
+  export type CrmLeadDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+    /**
+     * Filter which CrmLead to delete.
+     */
+    where: CrmLeadWhereUniqueInput
+  }
+
+  /**
+   * CrmLead deleteMany
+   */
+  export type CrmLeadDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmLeads to delete
+     */
+    where?: CrmLeadWhereInput
+    /**
+     * Limit how many CrmLeads to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmLead without action
+   */
+  export type CrmLeadDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmLead
+     */
+    select?: CrmLeadSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmLead
+     */
+    omit?: CrmLeadOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CrmOpportunity
+   */
+
+  export type AggregateCrmOpportunity = {
+    _count: CrmOpportunityCountAggregateOutputType | null
+    _avg: CrmOpportunityAvgAggregateOutputType | null
+    _sum: CrmOpportunitySumAggregateOutputType | null
+    _min: CrmOpportunityMinAggregateOutputType | null
+    _max: CrmOpportunityMaxAggregateOutputType | null
+  }
+
+  export type CrmOpportunityAvgAggregateOutputType = {
+    value: number | null
+    probability: number | null
+  }
+
+  export type CrmOpportunitySumAggregateOutputType = {
+    value: number | null
+    probability: number | null
+  }
+
+  export type CrmOpportunityMinAggregateOutputType = {
+    id: string | null
+    opportunityNumber: string | null
+    salesDocumentId: string | null
+    title: string | null
+    leadId: string | null
+    customerId: string | null
+    customerName: string | null
+    stage: string | null
+    value: number | null
+    probability: number | null
+    expectedCloseDate: Date | null
+    lostReason: string | null
+    closedAt: Date | null
+    notes: string | null
+    territoryId: string | null
+    branchId: string | null
+    ownerId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmOpportunityMaxAggregateOutputType = {
+    id: string | null
+    opportunityNumber: string | null
+    salesDocumentId: string | null
+    title: string | null
+    leadId: string | null
+    customerId: string | null
+    customerName: string | null
+    stage: string | null
+    value: number | null
+    probability: number | null
+    expectedCloseDate: Date | null
+    lostReason: string | null
+    closedAt: Date | null
+    notes: string | null
+    territoryId: string | null
+    branchId: string | null
+    ownerId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmOpportunityCountAggregateOutputType = {
+    id: number
+    opportunityNumber: number
+    salesDocumentId: number
+    title: number
+    leadId: number
+    customerId: number
+    customerName: number
+    stage: number
+    value: number
+    probability: number
+    expectedCloseDate: number
+    lostReason: number
+    closedAt: number
+    notes: number
+    territoryId: number
+    branchId: number
+    ownerId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CrmOpportunityAvgAggregateInputType = {
+    value?: true
+    probability?: true
+  }
+
+  export type CrmOpportunitySumAggregateInputType = {
+    value?: true
+    probability?: true
+  }
+
+  export type CrmOpportunityMinAggregateInputType = {
+    id?: true
+    opportunityNumber?: true
+    salesDocumentId?: true
+    title?: true
+    leadId?: true
+    customerId?: true
+    customerName?: true
+    stage?: true
+    value?: true
+    probability?: true
+    expectedCloseDate?: true
+    lostReason?: true
+    closedAt?: true
+    notes?: true
+    territoryId?: true
+    branchId?: true
+    ownerId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmOpportunityMaxAggregateInputType = {
+    id?: true
+    opportunityNumber?: true
+    salesDocumentId?: true
+    title?: true
+    leadId?: true
+    customerId?: true
+    customerName?: true
+    stage?: true
+    value?: true
+    probability?: true
+    expectedCloseDate?: true
+    lostReason?: true
+    closedAt?: true
+    notes?: true
+    territoryId?: true
+    branchId?: true
+    ownerId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmOpportunityCountAggregateInputType = {
+    id?: true
+    opportunityNumber?: true
+    salesDocumentId?: true
+    title?: true
+    leadId?: true
+    customerId?: true
+    customerName?: true
+    stage?: true
+    value?: true
+    probability?: true
+    expectedCloseDate?: true
+    lostReason?: true
+    closedAt?: true
+    notes?: true
+    territoryId?: true
+    branchId?: true
+    ownerId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CrmOpportunityAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmOpportunity to aggregate.
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmOpportunities to fetch.
+     */
+    orderBy?: CrmOpportunityOrderByWithRelationInput | CrmOpportunityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmOpportunityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmOpportunities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmOpportunities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmOpportunities
+    **/
+    _count?: true | CrmOpportunityCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CrmOpportunityAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CrmOpportunitySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmOpportunityMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmOpportunityMaxAggregateInputType
+  }
+
+  export type GetCrmOpportunityAggregateType<T extends CrmOpportunityAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmOpportunity]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmOpportunity[P]>
+      : GetScalarType<T[P], AggregateCrmOpportunity[P]>
+  }
+
+
+
+
+  export type CrmOpportunityGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmOpportunityWhereInput
+    orderBy?: CrmOpportunityOrderByWithAggregationInput | CrmOpportunityOrderByWithAggregationInput[]
+    by: CrmOpportunityScalarFieldEnum[] | CrmOpportunityScalarFieldEnum
+    having?: CrmOpportunityScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmOpportunityCountAggregateInputType | true
+    _avg?: CrmOpportunityAvgAggregateInputType
+    _sum?: CrmOpportunitySumAggregateInputType
+    _min?: CrmOpportunityMinAggregateInputType
+    _max?: CrmOpportunityMaxAggregateInputType
+  }
+
+  export type CrmOpportunityGroupByOutputType = {
+    id: string
+    opportunityNumber: string
+    salesDocumentId: string | null
+    title: string
+    leadId: string | null
+    customerId: string | null
+    customerName: string | null
+    stage: string
+    value: number
+    probability: number
+    expectedCloseDate: Date | null
+    lostReason: string | null
+    closedAt: Date | null
+    notes: string | null
+    territoryId: string | null
+    branchId: string | null
+    ownerId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: CrmOpportunityCountAggregateOutputType | null
+    _avg: CrmOpportunityAvgAggregateOutputType | null
+    _sum: CrmOpportunitySumAggregateOutputType | null
+    _min: CrmOpportunityMinAggregateOutputType | null
+    _max: CrmOpportunityMaxAggregateOutputType | null
+  }
+
+  type GetCrmOpportunityGroupByPayload<T extends CrmOpportunityGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmOpportunityGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmOpportunityGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmOpportunityGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmOpportunityGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmOpportunitySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityNumber?: boolean
+    salesDocumentId?: boolean
+    title?: boolean
+    leadId?: boolean
+    customerId?: boolean
+    customerName?: boolean
+    stage?: boolean
+    value?: boolean
+    probability?: boolean
+    expectedCloseDate?: boolean
+    lostReason?: boolean
+    closedAt?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmOpportunity"]>
+
+  export type CrmOpportunitySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityNumber?: boolean
+    salesDocumentId?: boolean
+    title?: boolean
+    leadId?: boolean
+    customerId?: boolean
+    customerName?: boolean
+    stage?: boolean
+    value?: boolean
+    probability?: boolean
+    expectedCloseDate?: boolean
+    lostReason?: boolean
+    closedAt?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmOpportunity"]>
+
+  export type CrmOpportunitySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    opportunityNumber?: boolean
+    salesDocumentId?: boolean
+    title?: boolean
+    leadId?: boolean
+    customerId?: boolean
+    customerName?: boolean
+    stage?: boolean
+    value?: boolean
+    probability?: boolean
+    expectedCloseDate?: boolean
+    lostReason?: boolean
+    closedAt?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmOpportunity"]>
+
+  export type CrmOpportunitySelectScalar = {
+    id?: boolean
+    opportunityNumber?: boolean
+    salesDocumentId?: boolean
+    title?: boolean
+    leadId?: boolean
+    customerId?: boolean
+    customerName?: boolean
+    stage?: boolean
+    value?: boolean
+    probability?: boolean
+    expectedCloseDate?: boolean
+    lostReason?: boolean
+    closedAt?: boolean
+    notes?: boolean
+    territoryId?: boolean
+    branchId?: boolean
+    ownerId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CrmOpportunityOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "opportunityNumber" | "salesDocumentId" | "title" | "leadId" | "customerId" | "customerName" | "stage" | "value" | "probability" | "expectedCloseDate" | "lostReason" | "closedAt" | "notes" | "territoryId" | "branchId" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["crmOpportunity"]>
+
+  export type $CrmOpportunityPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmOpportunity"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      opportunityNumber: string
+      salesDocumentId: string | null
+      title: string
+      leadId: string | null
+      customerId: string | null
+      customerName: string | null
+      stage: string
+      value: number
+      probability: number
+      expectedCloseDate: Date | null
+      lostReason: string | null
+      closedAt: Date | null
+      notes: string | null
+      territoryId: string | null
+      branchId: string | null
+      ownerId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["crmOpportunity"]>
+    composites: {}
+  }
+
+  type CrmOpportunityGetPayload<S extends boolean | null | undefined | CrmOpportunityDefaultArgs> = $Result.GetResult<Prisma.$CrmOpportunityPayload, S>
+
+  type CrmOpportunityCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmOpportunityFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmOpportunityCountAggregateInputType | true
+    }
+
+  export interface CrmOpportunityDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmOpportunity'], meta: { name: 'CrmOpportunity' } }
+    /**
+     * Find zero or one CrmOpportunity that matches the filter.
+     * @param {CrmOpportunityFindUniqueArgs} args - Arguments to find a CrmOpportunity
+     * @example
+     * // Get one CrmOpportunity
+     * const crmOpportunity = await prisma.crmOpportunity.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmOpportunityFindUniqueArgs>(args: SelectSubset<T, CrmOpportunityFindUniqueArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmOpportunity that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmOpportunityFindUniqueOrThrowArgs} args - Arguments to find a CrmOpportunity
+     * @example
+     * // Get one CrmOpportunity
+     * const crmOpportunity = await prisma.crmOpportunity.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmOpportunityFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmOpportunityFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmOpportunity that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityFindFirstArgs} args - Arguments to find a CrmOpportunity
+     * @example
+     * // Get one CrmOpportunity
+     * const crmOpportunity = await prisma.crmOpportunity.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmOpportunityFindFirstArgs>(args?: SelectSubset<T, CrmOpportunityFindFirstArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmOpportunity that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityFindFirstOrThrowArgs} args - Arguments to find a CrmOpportunity
+     * @example
+     * // Get one CrmOpportunity
+     * const crmOpportunity = await prisma.crmOpportunity.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmOpportunityFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmOpportunityFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmOpportunities that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmOpportunities
+     * const crmOpportunities = await prisma.crmOpportunity.findMany()
+     * 
+     * // Get first 10 CrmOpportunities
+     * const crmOpportunities = await prisma.crmOpportunity.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmOpportunityWithIdOnly = await prisma.crmOpportunity.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmOpportunityFindManyArgs>(args?: SelectSubset<T, CrmOpportunityFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmOpportunity.
+     * @param {CrmOpportunityCreateArgs} args - Arguments to create a CrmOpportunity.
+     * @example
+     * // Create one CrmOpportunity
+     * const CrmOpportunity = await prisma.crmOpportunity.create({
+     *   data: {
+     *     // ... data to create a CrmOpportunity
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmOpportunityCreateArgs>(args: SelectSubset<T, CrmOpportunityCreateArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmOpportunities.
+     * @param {CrmOpportunityCreateManyArgs} args - Arguments to create many CrmOpportunities.
+     * @example
+     * // Create many CrmOpportunities
+     * const crmOpportunity = await prisma.crmOpportunity.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmOpportunityCreateManyArgs>(args?: SelectSubset<T, CrmOpportunityCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmOpportunities and returns the data saved in the database.
+     * @param {CrmOpportunityCreateManyAndReturnArgs} args - Arguments to create many CrmOpportunities.
+     * @example
+     * // Create many CrmOpportunities
+     * const crmOpportunity = await prisma.crmOpportunity.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmOpportunities and only return the `id`
+     * const crmOpportunityWithIdOnly = await prisma.crmOpportunity.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmOpportunityCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmOpportunityCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmOpportunity.
+     * @param {CrmOpportunityDeleteArgs} args - Arguments to delete one CrmOpportunity.
+     * @example
+     * // Delete one CrmOpportunity
+     * const CrmOpportunity = await prisma.crmOpportunity.delete({
+     *   where: {
+     *     // ... filter to delete one CrmOpportunity
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmOpportunityDeleteArgs>(args: SelectSubset<T, CrmOpportunityDeleteArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmOpportunity.
+     * @param {CrmOpportunityUpdateArgs} args - Arguments to update one CrmOpportunity.
+     * @example
+     * // Update one CrmOpportunity
+     * const crmOpportunity = await prisma.crmOpportunity.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmOpportunityUpdateArgs>(args: SelectSubset<T, CrmOpportunityUpdateArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmOpportunities.
+     * @param {CrmOpportunityDeleteManyArgs} args - Arguments to filter CrmOpportunities to delete.
+     * @example
+     * // Delete a few CrmOpportunities
+     * const { count } = await prisma.crmOpportunity.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmOpportunityDeleteManyArgs>(args?: SelectSubset<T, CrmOpportunityDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmOpportunities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmOpportunities
+     * const crmOpportunity = await prisma.crmOpportunity.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmOpportunityUpdateManyArgs>(args: SelectSubset<T, CrmOpportunityUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmOpportunities and returns the data updated in the database.
+     * @param {CrmOpportunityUpdateManyAndReturnArgs} args - Arguments to update many CrmOpportunities.
+     * @example
+     * // Update many CrmOpportunities
+     * const crmOpportunity = await prisma.crmOpportunity.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmOpportunities and only return the `id`
+     * const crmOpportunityWithIdOnly = await prisma.crmOpportunity.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmOpportunityUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmOpportunityUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmOpportunity.
+     * @param {CrmOpportunityUpsertArgs} args - Arguments to update or create a CrmOpportunity.
+     * @example
+     * // Update or create a CrmOpportunity
+     * const crmOpportunity = await prisma.crmOpportunity.upsert({
+     *   create: {
+     *     // ... data to create a CrmOpportunity
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmOpportunity we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmOpportunityUpsertArgs>(args: SelectSubset<T, CrmOpportunityUpsertArgs<ExtArgs>>): Prisma__CrmOpportunityClient<$Result.GetResult<Prisma.$CrmOpportunityPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmOpportunities.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityCountArgs} args - Arguments to filter CrmOpportunities to count.
+     * @example
+     * // Count the number of CrmOpportunities
+     * const count = await prisma.crmOpportunity.count({
+     *   where: {
+     *     // ... the filter for the CrmOpportunities we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmOpportunityCountArgs>(
+      args?: Subset<T, CrmOpportunityCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmOpportunityCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmOpportunity.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmOpportunityAggregateArgs>(args: Subset<T, CrmOpportunityAggregateArgs>): Prisma.PrismaPromise<GetCrmOpportunityAggregateType<T>>
+
+    /**
+     * Group by CrmOpportunity.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmOpportunityGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmOpportunityGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmOpportunityGroupByArgs['orderBy'] }
+        : { orderBy?: CrmOpportunityGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmOpportunityGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmOpportunityGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmOpportunity model
+   */
+  readonly fields: CrmOpportunityFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmOpportunity.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmOpportunityClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmOpportunity model
+   */
+  interface CrmOpportunityFieldRefs {
+    readonly id: FieldRef<"CrmOpportunity", 'String'>
+    readonly opportunityNumber: FieldRef<"CrmOpportunity", 'String'>
+    readonly salesDocumentId: FieldRef<"CrmOpportunity", 'String'>
+    readonly title: FieldRef<"CrmOpportunity", 'String'>
+    readonly leadId: FieldRef<"CrmOpportunity", 'String'>
+    readonly customerId: FieldRef<"CrmOpportunity", 'String'>
+    readonly customerName: FieldRef<"CrmOpportunity", 'String'>
+    readonly stage: FieldRef<"CrmOpportunity", 'String'>
+    readonly value: FieldRef<"CrmOpportunity", 'Float'>
+    readonly probability: FieldRef<"CrmOpportunity", 'Int'>
+    readonly expectedCloseDate: FieldRef<"CrmOpportunity", 'DateTime'>
+    readonly lostReason: FieldRef<"CrmOpportunity", 'String'>
+    readonly closedAt: FieldRef<"CrmOpportunity", 'DateTime'>
+    readonly notes: FieldRef<"CrmOpportunity", 'String'>
+    readonly territoryId: FieldRef<"CrmOpportunity", 'String'>
+    readonly branchId: FieldRef<"CrmOpportunity", 'String'>
+    readonly ownerId: FieldRef<"CrmOpportunity", 'String'>
+    readonly createdAt: FieldRef<"CrmOpportunity", 'DateTime'>
+    readonly updatedAt: FieldRef<"CrmOpportunity", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmOpportunity findUnique
+   */
+  export type CrmOpportunityFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmOpportunity to fetch.
+     */
+    where: CrmOpportunityWhereUniqueInput
+  }
+
+  /**
+   * CrmOpportunity findUniqueOrThrow
+   */
+  export type CrmOpportunityFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmOpportunity to fetch.
+     */
+    where: CrmOpportunityWhereUniqueInput
+  }
+
+  /**
+   * CrmOpportunity findFirst
+   */
+  export type CrmOpportunityFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmOpportunity to fetch.
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmOpportunities to fetch.
+     */
+    orderBy?: CrmOpportunityOrderByWithRelationInput | CrmOpportunityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmOpportunities.
+     */
+    cursor?: CrmOpportunityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmOpportunities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmOpportunities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmOpportunities.
+     */
+    distinct?: CrmOpportunityScalarFieldEnum | CrmOpportunityScalarFieldEnum[]
+  }
+
+  /**
+   * CrmOpportunity findFirstOrThrow
+   */
+  export type CrmOpportunityFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmOpportunity to fetch.
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmOpportunities to fetch.
+     */
+    orderBy?: CrmOpportunityOrderByWithRelationInput | CrmOpportunityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmOpportunities.
+     */
+    cursor?: CrmOpportunityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmOpportunities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmOpportunities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmOpportunities.
+     */
+    distinct?: CrmOpportunityScalarFieldEnum | CrmOpportunityScalarFieldEnum[]
+  }
+
+  /**
+   * CrmOpportunity findMany
+   */
+  export type CrmOpportunityFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmOpportunities to fetch.
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmOpportunities to fetch.
+     */
+    orderBy?: CrmOpportunityOrderByWithRelationInput | CrmOpportunityOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmOpportunities.
+     */
+    cursor?: CrmOpportunityWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmOpportunities from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmOpportunities.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmOpportunities.
+     */
+    distinct?: CrmOpportunityScalarFieldEnum | CrmOpportunityScalarFieldEnum[]
+  }
+
+  /**
+   * CrmOpportunity create
+   */
+  export type CrmOpportunityCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmOpportunity.
+     */
+    data: XOR<CrmOpportunityCreateInput, CrmOpportunityUncheckedCreateInput>
+  }
+
+  /**
+   * CrmOpportunity createMany
+   */
+  export type CrmOpportunityCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmOpportunities.
+     */
+    data: CrmOpportunityCreateManyInput | CrmOpportunityCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmOpportunity createManyAndReturn
+   */
+  export type CrmOpportunityCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmOpportunities.
+     */
+    data: CrmOpportunityCreateManyInput | CrmOpportunityCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmOpportunity update
+   */
+  export type CrmOpportunityUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmOpportunity.
+     */
+    data: XOR<CrmOpportunityUpdateInput, CrmOpportunityUncheckedUpdateInput>
+    /**
+     * Choose, which CrmOpportunity to update.
+     */
+    where: CrmOpportunityWhereUniqueInput
+  }
+
+  /**
+   * CrmOpportunity updateMany
+   */
+  export type CrmOpportunityUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmOpportunities.
+     */
+    data: XOR<CrmOpportunityUpdateManyMutationInput, CrmOpportunityUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmOpportunities to update
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * Limit how many CrmOpportunities to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmOpportunity updateManyAndReturn
+   */
+  export type CrmOpportunityUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmOpportunities.
+     */
+    data: XOR<CrmOpportunityUpdateManyMutationInput, CrmOpportunityUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmOpportunities to update
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * Limit how many CrmOpportunities to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmOpportunity upsert
+   */
+  export type CrmOpportunityUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmOpportunity to update in case it exists.
+     */
+    where: CrmOpportunityWhereUniqueInput
+    /**
+     * In case the CrmOpportunity found by the `where` argument doesn't exist, create a new CrmOpportunity with this data.
+     */
+    create: XOR<CrmOpportunityCreateInput, CrmOpportunityUncheckedCreateInput>
+    /**
+     * In case the CrmOpportunity was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmOpportunityUpdateInput, CrmOpportunityUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmOpportunity delete
+   */
+  export type CrmOpportunityDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+    /**
+     * Filter which CrmOpportunity to delete.
+     */
+    where: CrmOpportunityWhereUniqueInput
+  }
+
+  /**
+   * CrmOpportunity deleteMany
+   */
+  export type CrmOpportunityDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmOpportunities to delete
+     */
+    where?: CrmOpportunityWhereInput
+    /**
+     * Limit how many CrmOpportunities to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmOpportunity without action
+   */
+  export type CrmOpportunityDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmOpportunity
+     */
+    select?: CrmOpportunitySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmOpportunity
+     */
+    omit?: CrmOpportunityOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CrmInteraction
+   */
+
+  export type AggregateCrmInteraction = {
+    _count: CrmInteractionCountAggregateOutputType | null
+    _min: CrmInteractionMinAggregateOutputType | null
+    _max: CrmInteractionMaxAggregateOutputType | null
+  }
+
+  export type CrmInteractionMinAggregateOutputType = {
+    id: string | null
+    type: string | null
+    subject: string | null
+    notes: string | null
+    interactionDate: Date | null
+    leadId: string | null
+    opportunityId: string | null
+    customerId: string | null
+    createdById: string | null
+    createdAt: Date | null
+  }
+
+  export type CrmInteractionMaxAggregateOutputType = {
+    id: string | null
+    type: string | null
+    subject: string | null
+    notes: string | null
+    interactionDate: Date | null
+    leadId: string | null
+    opportunityId: string | null
+    customerId: string | null
+    createdById: string | null
+    createdAt: Date | null
+  }
+
+  export type CrmInteractionCountAggregateOutputType = {
+    id: number
+    type: number
+    subject: number
+    notes: number
+    interactionDate: number
+    leadId: number
+    opportunityId: number
+    customerId: number
+    createdById: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CrmInteractionMinAggregateInputType = {
+    id?: true
+    type?: true
+    subject?: true
+    notes?: true
+    interactionDate?: true
+    leadId?: true
+    opportunityId?: true
+    customerId?: true
+    createdById?: true
+    createdAt?: true
+  }
+
+  export type CrmInteractionMaxAggregateInputType = {
+    id?: true
+    type?: true
+    subject?: true
+    notes?: true
+    interactionDate?: true
+    leadId?: true
+    opportunityId?: true
+    customerId?: true
+    createdById?: true
+    createdAt?: true
+  }
+
+  export type CrmInteractionCountAggregateInputType = {
+    id?: true
+    type?: true
+    subject?: true
+    notes?: true
+    interactionDate?: true
+    leadId?: true
+    opportunityId?: true
+    customerId?: true
+    createdById?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CrmInteractionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmInteraction to aggregate.
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmInteractions to fetch.
+     */
+    orderBy?: CrmInteractionOrderByWithRelationInput | CrmInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmInteractions
+    **/
+    _count?: true | CrmInteractionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmInteractionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmInteractionMaxAggregateInputType
+  }
+
+  export type GetCrmInteractionAggregateType<T extends CrmInteractionAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmInteraction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmInteraction[P]>
+      : GetScalarType<T[P], AggregateCrmInteraction[P]>
+  }
+
+
+
+
+  export type CrmInteractionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmInteractionWhereInput
+    orderBy?: CrmInteractionOrderByWithAggregationInput | CrmInteractionOrderByWithAggregationInput[]
+    by: CrmInteractionScalarFieldEnum[] | CrmInteractionScalarFieldEnum
+    having?: CrmInteractionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmInteractionCountAggregateInputType | true
+    _min?: CrmInteractionMinAggregateInputType
+    _max?: CrmInteractionMaxAggregateInputType
+  }
+
+  export type CrmInteractionGroupByOutputType = {
+    id: string
+    type: string
+    subject: string
+    notes: string | null
+    interactionDate: Date
+    leadId: string | null
+    opportunityId: string | null
+    customerId: string | null
+    createdById: string
+    createdAt: Date
+    _count: CrmInteractionCountAggregateOutputType | null
+    _min: CrmInteractionMinAggregateOutputType | null
+    _max: CrmInteractionMaxAggregateOutputType | null
+  }
+
+  type GetCrmInteractionGroupByPayload<T extends CrmInteractionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmInteractionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmInteractionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmInteractionGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmInteractionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmInteractionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    subject?: boolean
+    notes?: boolean
+    interactionDate?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["crmInteraction"]>
+
+  export type CrmInteractionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    subject?: boolean
+    notes?: boolean
+    interactionDate?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["crmInteraction"]>
+
+  export type CrmInteractionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    subject?: boolean
+    notes?: boolean
+    interactionDate?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["crmInteraction"]>
+
+  export type CrmInteractionSelectScalar = {
+    id?: boolean
+    type?: boolean
+    subject?: boolean
+    notes?: boolean
+    interactionDate?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+  }
+
+  export type CrmInteractionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "subject" | "notes" | "interactionDate" | "leadId" | "opportunityId" | "customerId" | "createdById" | "createdAt", ExtArgs["result"]["crmInteraction"]>
+
+  export type $CrmInteractionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmInteraction"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      type: string
+      subject: string
+      notes: string | null
+      interactionDate: Date
+      leadId: string | null
+      opportunityId: string | null
+      customerId: string | null
+      createdById: string
+      createdAt: Date
+    }, ExtArgs["result"]["crmInteraction"]>
+    composites: {}
+  }
+
+  type CrmInteractionGetPayload<S extends boolean | null | undefined | CrmInteractionDefaultArgs> = $Result.GetResult<Prisma.$CrmInteractionPayload, S>
+
+  type CrmInteractionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmInteractionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmInteractionCountAggregateInputType | true
+    }
+
+  export interface CrmInteractionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmInteraction'], meta: { name: 'CrmInteraction' } }
+    /**
+     * Find zero or one CrmInteraction that matches the filter.
+     * @param {CrmInteractionFindUniqueArgs} args - Arguments to find a CrmInteraction
+     * @example
+     * // Get one CrmInteraction
+     * const crmInteraction = await prisma.crmInteraction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmInteractionFindUniqueArgs>(args: SelectSubset<T, CrmInteractionFindUniqueArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmInteraction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmInteractionFindUniqueOrThrowArgs} args - Arguments to find a CrmInteraction
+     * @example
+     * // Get one CrmInteraction
+     * const crmInteraction = await prisma.crmInteraction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmInteractionFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmInteractionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmInteraction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionFindFirstArgs} args - Arguments to find a CrmInteraction
+     * @example
+     * // Get one CrmInteraction
+     * const crmInteraction = await prisma.crmInteraction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmInteractionFindFirstArgs>(args?: SelectSubset<T, CrmInteractionFindFirstArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmInteraction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionFindFirstOrThrowArgs} args - Arguments to find a CrmInteraction
+     * @example
+     * // Get one CrmInteraction
+     * const crmInteraction = await prisma.crmInteraction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmInteractionFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmInteractionFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmInteractions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmInteractions
+     * const crmInteractions = await prisma.crmInteraction.findMany()
+     * 
+     * // Get first 10 CrmInteractions
+     * const crmInteractions = await prisma.crmInteraction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmInteractionWithIdOnly = await prisma.crmInteraction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmInteractionFindManyArgs>(args?: SelectSubset<T, CrmInteractionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmInteraction.
+     * @param {CrmInteractionCreateArgs} args - Arguments to create a CrmInteraction.
+     * @example
+     * // Create one CrmInteraction
+     * const CrmInteraction = await prisma.crmInteraction.create({
+     *   data: {
+     *     // ... data to create a CrmInteraction
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmInteractionCreateArgs>(args: SelectSubset<T, CrmInteractionCreateArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmInteractions.
+     * @param {CrmInteractionCreateManyArgs} args - Arguments to create many CrmInteractions.
+     * @example
+     * // Create many CrmInteractions
+     * const crmInteraction = await prisma.crmInteraction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmInteractionCreateManyArgs>(args?: SelectSubset<T, CrmInteractionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmInteractions and returns the data saved in the database.
+     * @param {CrmInteractionCreateManyAndReturnArgs} args - Arguments to create many CrmInteractions.
+     * @example
+     * // Create many CrmInteractions
+     * const crmInteraction = await prisma.crmInteraction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmInteractions and only return the `id`
+     * const crmInteractionWithIdOnly = await prisma.crmInteraction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmInteractionCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmInteractionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmInteraction.
+     * @param {CrmInteractionDeleteArgs} args - Arguments to delete one CrmInteraction.
+     * @example
+     * // Delete one CrmInteraction
+     * const CrmInteraction = await prisma.crmInteraction.delete({
+     *   where: {
+     *     // ... filter to delete one CrmInteraction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmInteractionDeleteArgs>(args: SelectSubset<T, CrmInteractionDeleteArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmInteraction.
+     * @param {CrmInteractionUpdateArgs} args - Arguments to update one CrmInteraction.
+     * @example
+     * // Update one CrmInteraction
+     * const crmInteraction = await prisma.crmInteraction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmInteractionUpdateArgs>(args: SelectSubset<T, CrmInteractionUpdateArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmInteractions.
+     * @param {CrmInteractionDeleteManyArgs} args - Arguments to filter CrmInteractions to delete.
+     * @example
+     * // Delete a few CrmInteractions
+     * const { count } = await prisma.crmInteraction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmInteractionDeleteManyArgs>(args?: SelectSubset<T, CrmInteractionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmInteractions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmInteractions
+     * const crmInteraction = await prisma.crmInteraction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmInteractionUpdateManyArgs>(args: SelectSubset<T, CrmInteractionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmInteractions and returns the data updated in the database.
+     * @param {CrmInteractionUpdateManyAndReturnArgs} args - Arguments to update many CrmInteractions.
+     * @example
+     * // Update many CrmInteractions
+     * const crmInteraction = await prisma.crmInteraction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmInteractions and only return the `id`
+     * const crmInteractionWithIdOnly = await prisma.crmInteraction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmInteractionUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmInteractionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmInteraction.
+     * @param {CrmInteractionUpsertArgs} args - Arguments to update or create a CrmInteraction.
+     * @example
+     * // Update or create a CrmInteraction
+     * const crmInteraction = await prisma.crmInteraction.upsert({
+     *   create: {
+     *     // ... data to create a CrmInteraction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmInteraction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmInteractionUpsertArgs>(args: SelectSubset<T, CrmInteractionUpsertArgs<ExtArgs>>): Prisma__CrmInteractionClient<$Result.GetResult<Prisma.$CrmInteractionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmInteractions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionCountArgs} args - Arguments to filter CrmInteractions to count.
+     * @example
+     * // Count the number of CrmInteractions
+     * const count = await prisma.crmInteraction.count({
+     *   where: {
+     *     // ... the filter for the CrmInteractions we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmInteractionCountArgs>(
+      args?: Subset<T, CrmInteractionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmInteractionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmInteraction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmInteractionAggregateArgs>(args: Subset<T, CrmInteractionAggregateArgs>): Prisma.PrismaPromise<GetCrmInteractionAggregateType<T>>
+
+    /**
+     * Group by CrmInteraction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmInteractionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmInteractionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmInteractionGroupByArgs['orderBy'] }
+        : { orderBy?: CrmInteractionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmInteractionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmInteractionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmInteraction model
+   */
+  readonly fields: CrmInteractionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmInteraction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmInteractionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmInteraction model
+   */
+  interface CrmInteractionFieldRefs {
+    readonly id: FieldRef<"CrmInteraction", 'String'>
+    readonly type: FieldRef<"CrmInteraction", 'String'>
+    readonly subject: FieldRef<"CrmInteraction", 'String'>
+    readonly notes: FieldRef<"CrmInteraction", 'String'>
+    readonly interactionDate: FieldRef<"CrmInteraction", 'DateTime'>
+    readonly leadId: FieldRef<"CrmInteraction", 'String'>
+    readonly opportunityId: FieldRef<"CrmInteraction", 'String'>
+    readonly customerId: FieldRef<"CrmInteraction", 'String'>
+    readonly createdById: FieldRef<"CrmInteraction", 'String'>
+    readonly createdAt: FieldRef<"CrmInteraction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmInteraction findUnique
+   */
+  export type CrmInteractionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmInteraction to fetch.
+     */
+    where: CrmInteractionWhereUniqueInput
+  }
+
+  /**
+   * CrmInteraction findUniqueOrThrow
+   */
+  export type CrmInteractionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmInteraction to fetch.
+     */
+    where: CrmInteractionWhereUniqueInput
+  }
+
+  /**
+   * CrmInteraction findFirst
+   */
+  export type CrmInteractionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmInteraction to fetch.
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmInteractions to fetch.
+     */
+    orderBy?: CrmInteractionOrderByWithRelationInput | CrmInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmInteractions.
+     */
+    cursor?: CrmInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmInteractions.
+     */
+    distinct?: CrmInteractionScalarFieldEnum | CrmInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * CrmInteraction findFirstOrThrow
+   */
+  export type CrmInteractionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmInteraction to fetch.
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmInteractions to fetch.
+     */
+    orderBy?: CrmInteractionOrderByWithRelationInput | CrmInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmInteractions.
+     */
+    cursor?: CrmInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmInteractions.
+     */
+    distinct?: CrmInteractionScalarFieldEnum | CrmInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * CrmInteraction findMany
+   */
+  export type CrmInteractionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmInteractions to fetch.
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmInteractions to fetch.
+     */
+    orderBy?: CrmInteractionOrderByWithRelationInput | CrmInteractionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmInteractions.
+     */
+    cursor?: CrmInteractionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmInteractions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmInteractions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmInteractions.
+     */
+    distinct?: CrmInteractionScalarFieldEnum | CrmInteractionScalarFieldEnum[]
+  }
+
+  /**
+   * CrmInteraction create
+   */
+  export type CrmInteractionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmInteraction.
+     */
+    data: XOR<CrmInteractionCreateInput, CrmInteractionUncheckedCreateInput>
+  }
+
+  /**
+   * CrmInteraction createMany
+   */
+  export type CrmInteractionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmInteractions.
+     */
+    data: CrmInteractionCreateManyInput | CrmInteractionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmInteraction createManyAndReturn
+   */
+  export type CrmInteractionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmInteractions.
+     */
+    data: CrmInteractionCreateManyInput | CrmInteractionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmInteraction update
+   */
+  export type CrmInteractionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmInteraction.
+     */
+    data: XOR<CrmInteractionUpdateInput, CrmInteractionUncheckedUpdateInput>
+    /**
+     * Choose, which CrmInteraction to update.
+     */
+    where: CrmInteractionWhereUniqueInput
+  }
+
+  /**
+   * CrmInteraction updateMany
+   */
+  export type CrmInteractionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmInteractions.
+     */
+    data: XOR<CrmInteractionUpdateManyMutationInput, CrmInteractionUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmInteractions to update
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * Limit how many CrmInteractions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmInteraction updateManyAndReturn
+   */
+  export type CrmInteractionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmInteractions.
+     */
+    data: XOR<CrmInteractionUpdateManyMutationInput, CrmInteractionUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmInteractions to update
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * Limit how many CrmInteractions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmInteraction upsert
+   */
+  export type CrmInteractionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmInteraction to update in case it exists.
+     */
+    where: CrmInteractionWhereUniqueInput
+    /**
+     * In case the CrmInteraction found by the `where` argument doesn't exist, create a new CrmInteraction with this data.
+     */
+    create: XOR<CrmInteractionCreateInput, CrmInteractionUncheckedCreateInput>
+    /**
+     * In case the CrmInteraction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmInteractionUpdateInput, CrmInteractionUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmInteraction delete
+   */
+  export type CrmInteractionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+    /**
+     * Filter which CrmInteraction to delete.
+     */
+    where: CrmInteractionWhereUniqueInput
+  }
+
+  /**
+   * CrmInteraction deleteMany
+   */
+  export type CrmInteractionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmInteractions to delete
+     */
+    where?: CrmInteractionWhereInput
+    /**
+     * Limit how many CrmInteractions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmInteraction without action
+   */
+  export type CrmInteractionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmInteraction
+     */
+    select?: CrmInteractionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmInteraction
+     */
+    omit?: CrmInteractionOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CrmTask
+   */
+
+  export type AggregateCrmTask = {
+    _count: CrmTaskCountAggregateOutputType | null
+    _min: CrmTaskMinAggregateOutputType | null
+    _max: CrmTaskMaxAggregateOutputType | null
+  }
+
+  export type CrmTaskMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    notes: string | null
+    dueDate: Date | null
+    status: string | null
+    leadId: string | null
+    opportunityId: string | null
+    customerId: string | null
+    assignedToId: string | null
+    createdById: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmTaskMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    notes: string | null
+    dueDate: Date | null
+    status: string | null
+    leadId: string | null
+    opportunityId: string | null
+    customerId: string | null
+    assignedToId: string | null
+    createdById: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmTaskCountAggregateOutputType = {
+    id: number
+    title: number
+    notes: number
+    dueDate: number
+    status: number
+    leadId: number
+    opportunityId: number
+    customerId: number
+    assignedToId: number
+    createdById: number
+    completedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CrmTaskMinAggregateInputType = {
+    id?: true
+    title?: true
+    notes?: true
+    dueDate?: true
+    status?: true
+    leadId?: true
+    opportunityId?: true
+    customerId?: true
+    assignedToId?: true
+    createdById?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmTaskMaxAggregateInputType = {
+    id?: true
+    title?: true
+    notes?: true
+    dueDate?: true
+    status?: true
+    leadId?: true
+    opportunityId?: true
+    customerId?: true
+    assignedToId?: true
+    createdById?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmTaskCountAggregateInputType = {
+    id?: true
+    title?: true
+    notes?: true
+    dueDate?: true
+    status?: true
+    leadId?: true
+    opportunityId?: true
+    customerId?: true
+    assignedToId?: true
+    createdById?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CrmTaskAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmTask to aggregate.
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTasks to fetch.
+     */
+    orderBy?: CrmTaskOrderByWithRelationInput | CrmTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmTasks
+    **/
+    _count?: true | CrmTaskCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmTaskMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmTaskMaxAggregateInputType
+  }
+
+  export type GetCrmTaskAggregateType<T extends CrmTaskAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmTask]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmTask[P]>
+      : GetScalarType<T[P], AggregateCrmTask[P]>
+  }
+
+
+
+
+  export type CrmTaskGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmTaskWhereInput
+    orderBy?: CrmTaskOrderByWithAggregationInput | CrmTaskOrderByWithAggregationInput[]
+    by: CrmTaskScalarFieldEnum[] | CrmTaskScalarFieldEnum
+    having?: CrmTaskScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmTaskCountAggregateInputType | true
+    _min?: CrmTaskMinAggregateInputType
+    _max?: CrmTaskMaxAggregateInputType
+  }
+
+  export type CrmTaskGroupByOutputType = {
+    id: string
+    title: string
+    notes: string | null
+    dueDate: Date
+    status: string
+    leadId: string | null
+    opportunityId: string | null
+    customerId: string | null
+    assignedToId: string
+    createdById: string
+    completedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: CrmTaskCountAggregateOutputType | null
+    _min: CrmTaskMinAggregateOutputType | null
+    _max: CrmTaskMaxAggregateOutputType | null
+  }
+
+  type GetCrmTaskGroupByPayload<T extends CrmTaskGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmTaskGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmTaskGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmTaskGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmTaskGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmTaskSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    dueDate?: boolean
+    status?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmTask"]>
+
+  export type CrmTaskSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    dueDate?: boolean
+    status?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmTask"]>
+
+  export type CrmTaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    dueDate?: boolean
+    status?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmTask"]>
+
+  export type CrmTaskSelectScalar = {
+    id?: boolean
+    title?: boolean
+    notes?: boolean
+    dueDate?: boolean
+    status?: boolean
+    leadId?: boolean
+    opportunityId?: boolean
+    customerId?: boolean
+    assignedToId?: boolean
+    createdById?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CrmTaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "notes" | "dueDate" | "status" | "leadId" | "opportunityId" | "customerId" | "assignedToId" | "createdById" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["crmTask"]>
+
+  export type $CrmTaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmTask"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      notes: string | null
+      dueDate: Date
+      status: string
+      leadId: string | null
+      opportunityId: string | null
+      customerId: string | null
+      assignedToId: string
+      createdById: string
+      completedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["crmTask"]>
+    composites: {}
+  }
+
+  type CrmTaskGetPayload<S extends boolean | null | undefined | CrmTaskDefaultArgs> = $Result.GetResult<Prisma.$CrmTaskPayload, S>
+
+  type CrmTaskCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmTaskFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmTaskCountAggregateInputType | true
+    }
+
+  export interface CrmTaskDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmTask'], meta: { name: 'CrmTask' } }
+    /**
+     * Find zero or one CrmTask that matches the filter.
+     * @param {CrmTaskFindUniqueArgs} args - Arguments to find a CrmTask
+     * @example
+     * // Get one CrmTask
+     * const crmTask = await prisma.crmTask.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmTaskFindUniqueArgs>(args: SelectSubset<T, CrmTaskFindUniqueArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmTask that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmTaskFindUniqueOrThrowArgs} args - Arguments to find a CrmTask
+     * @example
+     * // Get one CrmTask
+     * const crmTask = await prisma.crmTask.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmTaskFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmTaskFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmTask that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskFindFirstArgs} args - Arguments to find a CrmTask
+     * @example
+     * // Get one CrmTask
+     * const crmTask = await prisma.crmTask.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmTaskFindFirstArgs>(args?: SelectSubset<T, CrmTaskFindFirstArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmTask that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskFindFirstOrThrowArgs} args - Arguments to find a CrmTask
+     * @example
+     * // Get one CrmTask
+     * const crmTask = await prisma.crmTask.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmTaskFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmTaskFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmTasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmTasks
+     * const crmTasks = await prisma.crmTask.findMany()
+     * 
+     * // Get first 10 CrmTasks
+     * const crmTasks = await prisma.crmTask.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmTaskWithIdOnly = await prisma.crmTask.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmTaskFindManyArgs>(args?: SelectSubset<T, CrmTaskFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmTask.
+     * @param {CrmTaskCreateArgs} args - Arguments to create a CrmTask.
+     * @example
+     * // Create one CrmTask
+     * const CrmTask = await prisma.crmTask.create({
+     *   data: {
+     *     // ... data to create a CrmTask
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmTaskCreateArgs>(args: SelectSubset<T, CrmTaskCreateArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmTasks.
+     * @param {CrmTaskCreateManyArgs} args - Arguments to create many CrmTasks.
+     * @example
+     * // Create many CrmTasks
+     * const crmTask = await prisma.crmTask.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmTaskCreateManyArgs>(args?: SelectSubset<T, CrmTaskCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmTasks and returns the data saved in the database.
+     * @param {CrmTaskCreateManyAndReturnArgs} args - Arguments to create many CrmTasks.
+     * @example
+     * // Create many CrmTasks
+     * const crmTask = await prisma.crmTask.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmTasks and only return the `id`
+     * const crmTaskWithIdOnly = await prisma.crmTask.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmTaskCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmTaskCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmTask.
+     * @param {CrmTaskDeleteArgs} args - Arguments to delete one CrmTask.
+     * @example
+     * // Delete one CrmTask
+     * const CrmTask = await prisma.crmTask.delete({
+     *   where: {
+     *     // ... filter to delete one CrmTask
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmTaskDeleteArgs>(args: SelectSubset<T, CrmTaskDeleteArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmTask.
+     * @param {CrmTaskUpdateArgs} args - Arguments to update one CrmTask.
+     * @example
+     * // Update one CrmTask
+     * const crmTask = await prisma.crmTask.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmTaskUpdateArgs>(args: SelectSubset<T, CrmTaskUpdateArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmTasks.
+     * @param {CrmTaskDeleteManyArgs} args - Arguments to filter CrmTasks to delete.
+     * @example
+     * // Delete a few CrmTasks
+     * const { count } = await prisma.crmTask.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmTaskDeleteManyArgs>(args?: SelectSubset<T, CrmTaskDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmTasks
+     * const crmTask = await prisma.crmTask.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmTaskUpdateManyArgs>(args: SelectSubset<T, CrmTaskUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmTasks and returns the data updated in the database.
+     * @param {CrmTaskUpdateManyAndReturnArgs} args - Arguments to update many CrmTasks.
+     * @example
+     * // Update many CrmTasks
+     * const crmTask = await prisma.crmTask.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmTasks and only return the `id`
+     * const crmTaskWithIdOnly = await prisma.crmTask.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmTaskUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmTaskUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmTask.
+     * @param {CrmTaskUpsertArgs} args - Arguments to update or create a CrmTask.
+     * @example
+     * // Update or create a CrmTask
+     * const crmTask = await prisma.crmTask.upsert({
+     *   create: {
+     *     // ... data to create a CrmTask
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmTask we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmTaskUpsertArgs>(args: SelectSubset<T, CrmTaskUpsertArgs<ExtArgs>>): Prisma__CrmTaskClient<$Result.GetResult<Prisma.$CrmTaskPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmTasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskCountArgs} args - Arguments to filter CrmTasks to count.
+     * @example
+     * // Count the number of CrmTasks
+     * const count = await prisma.crmTask.count({
+     *   where: {
+     *     // ... the filter for the CrmTasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmTaskCountArgs>(
+      args?: Subset<T, CrmTaskCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmTaskCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmTaskAggregateArgs>(args: Subset<T, CrmTaskAggregateArgs>): Prisma.PrismaPromise<GetCrmTaskAggregateType<T>>
+
+    /**
+     * Group by CrmTask.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmTaskGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmTaskGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmTaskGroupByArgs['orderBy'] }
+        : { orderBy?: CrmTaskGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmTaskGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmTaskGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmTask model
+   */
+  readonly fields: CrmTaskFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmTask.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmTaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmTask model
+   */
+  interface CrmTaskFieldRefs {
+    readonly id: FieldRef<"CrmTask", 'String'>
+    readonly title: FieldRef<"CrmTask", 'String'>
+    readonly notes: FieldRef<"CrmTask", 'String'>
+    readonly dueDate: FieldRef<"CrmTask", 'DateTime'>
+    readonly status: FieldRef<"CrmTask", 'String'>
+    readonly leadId: FieldRef<"CrmTask", 'String'>
+    readonly opportunityId: FieldRef<"CrmTask", 'String'>
+    readonly customerId: FieldRef<"CrmTask", 'String'>
+    readonly assignedToId: FieldRef<"CrmTask", 'String'>
+    readonly createdById: FieldRef<"CrmTask", 'String'>
+    readonly completedAt: FieldRef<"CrmTask", 'DateTime'>
+    readonly createdAt: FieldRef<"CrmTask", 'DateTime'>
+    readonly updatedAt: FieldRef<"CrmTask", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmTask findUnique
+   */
+  export type CrmTaskFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTask to fetch.
+     */
+    where: CrmTaskWhereUniqueInput
+  }
+
+  /**
+   * CrmTask findUniqueOrThrow
+   */
+  export type CrmTaskFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTask to fetch.
+     */
+    where: CrmTaskWhereUniqueInput
+  }
+
+  /**
+   * CrmTask findFirst
+   */
+  export type CrmTaskFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTask to fetch.
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTasks to fetch.
+     */
+    orderBy?: CrmTaskOrderByWithRelationInput | CrmTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmTasks.
+     */
+    cursor?: CrmTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTasks.
+     */
+    distinct?: CrmTaskScalarFieldEnum | CrmTaskScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTask findFirstOrThrow
+   */
+  export type CrmTaskFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTask to fetch.
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTasks to fetch.
+     */
+    orderBy?: CrmTaskOrderByWithRelationInput | CrmTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmTasks.
+     */
+    cursor?: CrmTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTasks.
+     */
+    distinct?: CrmTaskScalarFieldEnum | CrmTaskScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTask findMany
+   */
+  export type CrmTaskFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmTasks to fetch.
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmTasks to fetch.
+     */
+    orderBy?: CrmTaskOrderByWithRelationInput | CrmTaskOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmTasks.
+     */
+    cursor?: CrmTaskWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmTasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmTasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmTasks.
+     */
+    distinct?: CrmTaskScalarFieldEnum | CrmTaskScalarFieldEnum[]
+  }
+
+  /**
+   * CrmTask create
+   */
+  export type CrmTaskCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmTask.
+     */
+    data: XOR<CrmTaskCreateInput, CrmTaskUncheckedCreateInput>
+  }
+
+  /**
+   * CrmTask createMany
+   */
+  export type CrmTaskCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmTasks.
+     */
+    data: CrmTaskCreateManyInput | CrmTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmTask createManyAndReturn
+   */
+  export type CrmTaskCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmTasks.
+     */
+    data: CrmTaskCreateManyInput | CrmTaskCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmTask update
+   */
+  export type CrmTaskUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmTask.
+     */
+    data: XOR<CrmTaskUpdateInput, CrmTaskUncheckedUpdateInput>
+    /**
+     * Choose, which CrmTask to update.
+     */
+    where: CrmTaskWhereUniqueInput
+  }
+
+  /**
+   * CrmTask updateMany
+   */
+  export type CrmTaskUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmTasks.
+     */
+    data: XOR<CrmTaskUpdateManyMutationInput, CrmTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmTasks to update
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * Limit how many CrmTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTask updateManyAndReturn
+   */
+  export type CrmTaskUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmTasks.
+     */
+    data: XOR<CrmTaskUpdateManyMutationInput, CrmTaskUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmTasks to update
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * Limit how many CrmTasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTask upsert
+   */
+  export type CrmTaskUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmTask to update in case it exists.
+     */
+    where: CrmTaskWhereUniqueInput
+    /**
+     * In case the CrmTask found by the `where` argument doesn't exist, create a new CrmTask with this data.
+     */
+    create: XOR<CrmTaskCreateInput, CrmTaskUncheckedCreateInput>
+    /**
+     * In case the CrmTask was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmTaskUpdateInput, CrmTaskUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmTask delete
+   */
+  export type CrmTaskDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+    /**
+     * Filter which CrmTask to delete.
+     */
+    where: CrmTaskWhereUniqueInput
+  }
+
+  /**
+   * CrmTask deleteMany
+   */
+  export type CrmTaskDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmTasks to delete
+     */
+    where?: CrmTaskWhereInput
+    /**
+     * Limit how many CrmTasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmTask without action
+   */
+  export type CrmTaskDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmTask
+     */
+    select?: CrmTaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmTask
+     */
+    omit?: CrmTaskOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CrmSalesTarget
+   */
+
+  export type AggregateCrmSalesTarget = {
+    _count: CrmSalesTargetCountAggregateOutputType | null
+    _avg: CrmSalesTargetAvgAggregateOutputType | null
+    _sum: CrmSalesTargetSumAggregateOutputType | null
+    _min: CrmSalesTargetMinAggregateOutputType | null
+    _max: CrmSalesTargetMaxAggregateOutputType | null
+  }
+
+  export type CrmSalesTargetAvgAggregateOutputType = {
+    targetAmount: number | null
+  }
+
+  export type CrmSalesTargetSumAggregateOutputType = {
+    targetAmount: number | null
+  }
+
+  export type CrmSalesTargetMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    territoryId: string | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    targetAmount: number | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmSalesTargetMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    territoryId: string | null
+    periodStart: Date | null
+    periodEnd: Date | null
+    targetAmount: number | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type CrmSalesTargetCountAggregateOutputType = {
+    id: number
+    userId: number
+    territoryId: number
+    periodStart: number
+    periodEnd: number
+    targetAmount: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type CrmSalesTargetAvgAggregateInputType = {
+    targetAmount?: true
+  }
+
+  export type CrmSalesTargetSumAggregateInputType = {
+    targetAmount?: true
+  }
+
+  export type CrmSalesTargetMinAggregateInputType = {
+    id?: true
+    userId?: true
+    territoryId?: true
+    periodStart?: true
+    periodEnd?: true
+    targetAmount?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmSalesTargetMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    territoryId?: true
+    periodStart?: true
+    periodEnd?: true
+    targetAmount?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type CrmSalesTargetCountAggregateInputType = {
+    id?: true
+    userId?: true
+    territoryId?: true
+    periodStart?: true
+    periodEnd?: true
+    targetAmount?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type CrmSalesTargetAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmSalesTarget to aggregate.
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmSalesTargets to fetch.
+     */
+    orderBy?: CrmSalesTargetOrderByWithRelationInput | CrmSalesTargetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CrmSalesTargetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmSalesTargets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmSalesTargets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CrmSalesTargets
+    **/
+    _count?: true | CrmSalesTargetCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CrmSalesTargetAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CrmSalesTargetSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CrmSalesTargetMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CrmSalesTargetMaxAggregateInputType
+  }
+
+  export type GetCrmSalesTargetAggregateType<T extends CrmSalesTargetAggregateArgs> = {
+        [P in keyof T & keyof AggregateCrmSalesTarget]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCrmSalesTarget[P]>
+      : GetScalarType<T[P], AggregateCrmSalesTarget[P]>
+  }
+
+
+
+
+  export type CrmSalesTargetGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CrmSalesTargetWhereInput
+    orderBy?: CrmSalesTargetOrderByWithAggregationInput | CrmSalesTargetOrderByWithAggregationInput[]
+    by: CrmSalesTargetScalarFieldEnum[] | CrmSalesTargetScalarFieldEnum
+    having?: CrmSalesTargetScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CrmSalesTargetCountAggregateInputType | true
+    _avg?: CrmSalesTargetAvgAggregateInputType
+    _sum?: CrmSalesTargetSumAggregateInputType
+    _min?: CrmSalesTargetMinAggregateInputType
+    _max?: CrmSalesTargetMaxAggregateInputType
+  }
+
+  export type CrmSalesTargetGroupByOutputType = {
+    id: string
+    userId: string
+    territoryId: string | null
+    periodStart: Date
+    periodEnd: Date
+    targetAmount: number
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: CrmSalesTargetCountAggregateOutputType | null
+    _avg: CrmSalesTargetAvgAggregateOutputType | null
+    _sum: CrmSalesTargetSumAggregateOutputType | null
+    _min: CrmSalesTargetMinAggregateOutputType | null
+    _max: CrmSalesTargetMaxAggregateOutputType | null
+  }
+
+  type GetCrmSalesTargetGroupByPayload<T extends CrmSalesTargetGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CrmSalesTargetGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CrmSalesTargetGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CrmSalesTargetGroupByOutputType[P]>
+            : GetScalarType<T[P], CrmSalesTargetGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CrmSalesTargetSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    territoryId?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    targetAmount?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmSalesTarget"]>
+
+  export type CrmSalesTargetSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    territoryId?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    targetAmount?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmSalesTarget"]>
+
+  export type CrmSalesTargetSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    territoryId?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    targetAmount?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["crmSalesTarget"]>
+
+  export type CrmSalesTargetSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    territoryId?: boolean
+    periodStart?: boolean
+    periodEnd?: boolean
+    targetAmount?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type CrmSalesTargetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "territoryId" | "periodStart" | "periodEnd" | "targetAmount" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["crmSalesTarget"]>
+
+  export type $CrmSalesTargetPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CrmSalesTarget"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      territoryId: string | null
+      periodStart: Date
+      periodEnd: Date
+      targetAmount: number
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["crmSalesTarget"]>
+    composites: {}
+  }
+
+  type CrmSalesTargetGetPayload<S extends boolean | null | undefined | CrmSalesTargetDefaultArgs> = $Result.GetResult<Prisma.$CrmSalesTargetPayload, S>
+
+  type CrmSalesTargetCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CrmSalesTargetFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CrmSalesTargetCountAggregateInputType | true
+    }
+
+  export interface CrmSalesTargetDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CrmSalesTarget'], meta: { name: 'CrmSalesTarget' } }
+    /**
+     * Find zero or one CrmSalesTarget that matches the filter.
+     * @param {CrmSalesTargetFindUniqueArgs} args - Arguments to find a CrmSalesTarget
+     * @example
+     * // Get one CrmSalesTarget
+     * const crmSalesTarget = await prisma.crmSalesTarget.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CrmSalesTargetFindUniqueArgs>(args: SelectSubset<T, CrmSalesTargetFindUniqueArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CrmSalesTarget that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CrmSalesTargetFindUniqueOrThrowArgs} args - Arguments to find a CrmSalesTarget
+     * @example
+     * // Get one CrmSalesTarget
+     * const crmSalesTarget = await prisma.crmSalesTarget.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CrmSalesTargetFindUniqueOrThrowArgs>(args: SelectSubset<T, CrmSalesTargetFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmSalesTarget that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetFindFirstArgs} args - Arguments to find a CrmSalesTarget
+     * @example
+     * // Get one CrmSalesTarget
+     * const crmSalesTarget = await prisma.crmSalesTarget.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CrmSalesTargetFindFirstArgs>(args?: SelectSubset<T, CrmSalesTargetFindFirstArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CrmSalesTarget that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetFindFirstOrThrowArgs} args - Arguments to find a CrmSalesTarget
+     * @example
+     * // Get one CrmSalesTarget
+     * const crmSalesTarget = await prisma.crmSalesTarget.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CrmSalesTargetFindFirstOrThrowArgs>(args?: SelectSubset<T, CrmSalesTargetFindFirstOrThrowArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CrmSalesTargets that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CrmSalesTargets
+     * const crmSalesTargets = await prisma.crmSalesTarget.findMany()
+     * 
+     * // Get first 10 CrmSalesTargets
+     * const crmSalesTargets = await prisma.crmSalesTarget.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const crmSalesTargetWithIdOnly = await prisma.crmSalesTarget.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CrmSalesTargetFindManyArgs>(args?: SelectSubset<T, CrmSalesTargetFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CrmSalesTarget.
+     * @param {CrmSalesTargetCreateArgs} args - Arguments to create a CrmSalesTarget.
+     * @example
+     * // Create one CrmSalesTarget
+     * const CrmSalesTarget = await prisma.crmSalesTarget.create({
+     *   data: {
+     *     // ... data to create a CrmSalesTarget
+     *   }
+     * })
+     * 
+     */
+    create<T extends CrmSalesTargetCreateArgs>(args: SelectSubset<T, CrmSalesTargetCreateArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CrmSalesTargets.
+     * @param {CrmSalesTargetCreateManyArgs} args - Arguments to create many CrmSalesTargets.
+     * @example
+     * // Create many CrmSalesTargets
+     * const crmSalesTarget = await prisma.crmSalesTarget.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CrmSalesTargetCreateManyArgs>(args?: SelectSubset<T, CrmSalesTargetCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CrmSalesTargets and returns the data saved in the database.
+     * @param {CrmSalesTargetCreateManyAndReturnArgs} args - Arguments to create many CrmSalesTargets.
+     * @example
+     * // Create many CrmSalesTargets
+     * const crmSalesTarget = await prisma.crmSalesTarget.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CrmSalesTargets and only return the `id`
+     * const crmSalesTargetWithIdOnly = await prisma.crmSalesTarget.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CrmSalesTargetCreateManyAndReturnArgs>(args?: SelectSubset<T, CrmSalesTargetCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CrmSalesTarget.
+     * @param {CrmSalesTargetDeleteArgs} args - Arguments to delete one CrmSalesTarget.
+     * @example
+     * // Delete one CrmSalesTarget
+     * const CrmSalesTarget = await prisma.crmSalesTarget.delete({
+     *   where: {
+     *     // ... filter to delete one CrmSalesTarget
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CrmSalesTargetDeleteArgs>(args: SelectSubset<T, CrmSalesTargetDeleteArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CrmSalesTarget.
+     * @param {CrmSalesTargetUpdateArgs} args - Arguments to update one CrmSalesTarget.
+     * @example
+     * // Update one CrmSalesTarget
+     * const crmSalesTarget = await prisma.crmSalesTarget.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CrmSalesTargetUpdateArgs>(args: SelectSubset<T, CrmSalesTargetUpdateArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CrmSalesTargets.
+     * @param {CrmSalesTargetDeleteManyArgs} args - Arguments to filter CrmSalesTargets to delete.
+     * @example
+     * // Delete a few CrmSalesTargets
+     * const { count } = await prisma.crmSalesTarget.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CrmSalesTargetDeleteManyArgs>(args?: SelectSubset<T, CrmSalesTargetDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmSalesTargets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CrmSalesTargets
+     * const crmSalesTarget = await prisma.crmSalesTarget.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CrmSalesTargetUpdateManyArgs>(args: SelectSubset<T, CrmSalesTargetUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CrmSalesTargets and returns the data updated in the database.
+     * @param {CrmSalesTargetUpdateManyAndReturnArgs} args - Arguments to update many CrmSalesTargets.
+     * @example
+     * // Update many CrmSalesTargets
+     * const crmSalesTarget = await prisma.crmSalesTarget.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CrmSalesTargets and only return the `id`
+     * const crmSalesTargetWithIdOnly = await prisma.crmSalesTarget.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CrmSalesTargetUpdateManyAndReturnArgs>(args: SelectSubset<T, CrmSalesTargetUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CrmSalesTarget.
+     * @param {CrmSalesTargetUpsertArgs} args - Arguments to update or create a CrmSalesTarget.
+     * @example
+     * // Update or create a CrmSalesTarget
+     * const crmSalesTarget = await prisma.crmSalesTarget.upsert({
+     *   create: {
+     *     // ... data to create a CrmSalesTarget
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CrmSalesTarget we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CrmSalesTargetUpsertArgs>(args: SelectSubset<T, CrmSalesTargetUpsertArgs<ExtArgs>>): Prisma__CrmSalesTargetClient<$Result.GetResult<Prisma.$CrmSalesTargetPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CrmSalesTargets.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetCountArgs} args - Arguments to filter CrmSalesTargets to count.
+     * @example
+     * // Count the number of CrmSalesTargets
+     * const count = await prisma.crmSalesTarget.count({
+     *   where: {
+     *     // ... the filter for the CrmSalesTargets we want to count
+     *   }
+     * })
+    **/
+    count<T extends CrmSalesTargetCountArgs>(
+      args?: Subset<T, CrmSalesTargetCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CrmSalesTargetCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CrmSalesTarget.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CrmSalesTargetAggregateArgs>(args: Subset<T, CrmSalesTargetAggregateArgs>): Prisma.PrismaPromise<GetCrmSalesTargetAggregateType<T>>
+
+    /**
+     * Group by CrmSalesTarget.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CrmSalesTargetGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CrmSalesTargetGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CrmSalesTargetGroupByArgs['orderBy'] }
+        : { orderBy?: CrmSalesTargetGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CrmSalesTargetGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCrmSalesTargetGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CrmSalesTarget model
+   */
+  readonly fields: CrmSalesTargetFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CrmSalesTarget.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CrmSalesTargetClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the CrmSalesTarget model
+   */
+  interface CrmSalesTargetFieldRefs {
+    readonly id: FieldRef<"CrmSalesTarget", 'String'>
+    readonly userId: FieldRef<"CrmSalesTarget", 'String'>
+    readonly territoryId: FieldRef<"CrmSalesTarget", 'String'>
+    readonly periodStart: FieldRef<"CrmSalesTarget", 'DateTime'>
+    readonly periodEnd: FieldRef<"CrmSalesTarget", 'DateTime'>
+    readonly targetAmount: FieldRef<"CrmSalesTarget", 'Float'>
+    readonly createdById: FieldRef<"CrmSalesTarget", 'String'>
+    readonly createdAt: FieldRef<"CrmSalesTarget", 'DateTime'>
+    readonly updatedAt: FieldRef<"CrmSalesTarget", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * CrmSalesTarget findUnique
+   */
+  export type CrmSalesTargetFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmSalesTarget to fetch.
+     */
+    where: CrmSalesTargetWhereUniqueInput
+  }
+
+  /**
+   * CrmSalesTarget findUniqueOrThrow
+   */
+  export type CrmSalesTargetFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmSalesTarget to fetch.
+     */
+    where: CrmSalesTargetWhereUniqueInput
+  }
+
+  /**
+   * CrmSalesTarget findFirst
+   */
+  export type CrmSalesTargetFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmSalesTarget to fetch.
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmSalesTargets to fetch.
+     */
+    orderBy?: CrmSalesTargetOrderByWithRelationInput | CrmSalesTargetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmSalesTargets.
+     */
+    cursor?: CrmSalesTargetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmSalesTargets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmSalesTargets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmSalesTargets.
+     */
+    distinct?: CrmSalesTargetScalarFieldEnum | CrmSalesTargetScalarFieldEnum[]
+  }
+
+  /**
+   * CrmSalesTarget findFirstOrThrow
+   */
+  export type CrmSalesTargetFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmSalesTarget to fetch.
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmSalesTargets to fetch.
+     */
+    orderBy?: CrmSalesTargetOrderByWithRelationInput | CrmSalesTargetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for CrmSalesTargets.
+     */
+    cursor?: CrmSalesTargetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmSalesTargets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmSalesTargets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmSalesTargets.
+     */
+    distinct?: CrmSalesTargetScalarFieldEnum | CrmSalesTargetScalarFieldEnum[]
+  }
+
+  /**
+   * CrmSalesTarget findMany
+   */
+  export type CrmSalesTargetFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * Filter, which CrmSalesTargets to fetch.
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CrmSalesTargets to fetch.
+     */
+    orderBy?: CrmSalesTargetOrderByWithRelationInput | CrmSalesTargetOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing CrmSalesTargets.
+     */
+    cursor?: CrmSalesTargetWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CrmSalesTargets from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CrmSalesTargets.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CrmSalesTargets.
+     */
+    distinct?: CrmSalesTargetScalarFieldEnum | CrmSalesTargetScalarFieldEnum[]
+  }
+
+  /**
+   * CrmSalesTarget create
+   */
+  export type CrmSalesTargetCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * The data needed to create a CrmSalesTarget.
+     */
+    data: XOR<CrmSalesTargetCreateInput, CrmSalesTargetUncheckedCreateInput>
+  }
+
+  /**
+   * CrmSalesTarget createMany
+   */
+  export type CrmSalesTargetCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many CrmSalesTargets.
+     */
+    data: CrmSalesTargetCreateManyInput | CrmSalesTargetCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmSalesTarget createManyAndReturn
+   */
+  export type CrmSalesTargetCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * The data used to create many CrmSalesTargets.
+     */
+    data: CrmSalesTargetCreateManyInput | CrmSalesTargetCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * CrmSalesTarget update
+   */
+  export type CrmSalesTargetUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * The data needed to update a CrmSalesTarget.
+     */
+    data: XOR<CrmSalesTargetUpdateInput, CrmSalesTargetUncheckedUpdateInput>
+    /**
+     * Choose, which CrmSalesTarget to update.
+     */
+    where: CrmSalesTargetWhereUniqueInput
+  }
+
+  /**
+   * CrmSalesTarget updateMany
+   */
+  export type CrmSalesTargetUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update CrmSalesTargets.
+     */
+    data: XOR<CrmSalesTargetUpdateManyMutationInput, CrmSalesTargetUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmSalesTargets to update
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * Limit how many CrmSalesTargets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmSalesTarget updateManyAndReturn
+   */
+  export type CrmSalesTargetUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * The data used to update CrmSalesTargets.
+     */
+    data: XOR<CrmSalesTargetUpdateManyMutationInput, CrmSalesTargetUncheckedUpdateManyInput>
+    /**
+     * Filter which CrmSalesTargets to update
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * Limit how many CrmSalesTargets to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmSalesTarget upsert
+   */
+  export type CrmSalesTargetUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * The filter to search for the CrmSalesTarget to update in case it exists.
+     */
+    where: CrmSalesTargetWhereUniqueInput
+    /**
+     * In case the CrmSalesTarget found by the `where` argument doesn't exist, create a new CrmSalesTarget with this data.
+     */
+    create: XOR<CrmSalesTargetCreateInput, CrmSalesTargetUncheckedCreateInput>
+    /**
+     * In case the CrmSalesTarget was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CrmSalesTargetUpdateInput, CrmSalesTargetUncheckedUpdateInput>
+  }
+
+  /**
+   * CrmSalesTarget delete
+   */
+  export type CrmSalesTargetDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+    /**
+     * Filter which CrmSalesTarget to delete.
+     */
+    where: CrmSalesTargetWhereUniqueInput
+  }
+
+  /**
+   * CrmSalesTarget deleteMany
+   */
+  export type CrmSalesTargetDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CrmSalesTargets to delete
+     */
+    where?: CrmSalesTargetWhereInput
+    /**
+     * Limit how many CrmSalesTargets to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * CrmSalesTarget without action
+   */
+  export type CrmSalesTargetDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CrmSalesTarget
+     */
+    select?: CrmSalesTargetSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CrmSalesTarget
+     */
+    omit?: CrmSalesTargetOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkflowDefinition
+   */
+
+  export type AggregateWorkflowDefinition = {
+    _count: WorkflowDefinitionCountAggregateOutputType | null
+    _min: WorkflowDefinitionMinAggregateOutputType | null
+    _max: WorkflowDefinitionMaxAggregateOutputType | null
+  }
+
+  export type WorkflowDefinitionMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    entityType: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkflowDefinitionMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    entityType: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkflowDefinitionCountAggregateOutputType = {
+    id: number
+    code: number
+    name: number
+    description: number
+    entityType: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkflowDefinitionMinAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    entityType?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkflowDefinitionMaxAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    entityType?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkflowDefinitionCountAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    entityType?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkflowDefinitionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowDefinition to aggregate.
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDefinitions to fetch.
+     */
+    orderBy?: WorkflowDefinitionOrderByWithRelationInput | WorkflowDefinitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkflowDefinitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDefinitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDefinitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkflowDefinitions
+    **/
+    _count?: true | WorkflowDefinitionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkflowDefinitionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkflowDefinitionMaxAggregateInputType
+  }
+
+  export type GetWorkflowDefinitionAggregateType<T extends WorkflowDefinitionAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflowDefinition]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflowDefinition[P]>
+      : GetScalarType<T[P], AggregateWorkflowDefinition[P]>
+  }
+
+
+
+
+  export type WorkflowDefinitionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkflowDefinitionWhereInput
+    orderBy?: WorkflowDefinitionOrderByWithAggregationInput | WorkflowDefinitionOrderByWithAggregationInput[]
+    by: WorkflowDefinitionScalarFieldEnum[] | WorkflowDefinitionScalarFieldEnum
+    having?: WorkflowDefinitionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkflowDefinitionCountAggregateInputType | true
+    _min?: WorkflowDefinitionMinAggregateInputType
+    _max?: WorkflowDefinitionMaxAggregateInputType
+  }
+
+  export type WorkflowDefinitionGroupByOutputType = {
+    id: string
+    code: string
+    name: string
+    description: string | null
+    entityType: string
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkflowDefinitionCountAggregateOutputType | null
+    _min: WorkflowDefinitionMinAggregateOutputType | null
+    _max: WorkflowDefinitionMaxAggregateOutputType | null
+  }
+
+  type GetWorkflowDefinitionGroupByPayload<T extends WorkflowDefinitionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkflowDefinitionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkflowDefinitionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkflowDefinitionGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkflowDefinitionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkflowDefinitionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowDefinition"]>
+
+  export type WorkflowDefinitionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowDefinition"]>
+
+  export type WorkflowDefinitionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowDefinition"]>
+
+  export type WorkflowDefinitionSelectScalar = {
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    entityType?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkflowDefinitionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "description" | "entityType" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["workflowDefinition"]>
+
+  export type $WorkflowDefinitionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkflowDefinition"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      name: string
+      description: string | null
+      entityType: string
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workflowDefinition"]>
+    composites: {}
+  }
+
+  type WorkflowDefinitionGetPayload<S extends boolean | null | undefined | WorkflowDefinitionDefaultArgs> = $Result.GetResult<Prisma.$WorkflowDefinitionPayload, S>
+
+  type WorkflowDefinitionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkflowDefinitionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkflowDefinitionCountAggregateInputType | true
+    }
+
+  export interface WorkflowDefinitionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkflowDefinition'], meta: { name: 'WorkflowDefinition' } }
+    /**
+     * Find zero or one WorkflowDefinition that matches the filter.
+     * @param {WorkflowDefinitionFindUniqueArgs} args - Arguments to find a WorkflowDefinition
+     * @example
+     * // Get one WorkflowDefinition
+     * const workflowDefinition = await prisma.workflowDefinition.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkflowDefinitionFindUniqueArgs>(args: SelectSubset<T, WorkflowDefinitionFindUniqueArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkflowDefinition that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkflowDefinitionFindUniqueOrThrowArgs} args - Arguments to find a WorkflowDefinition
+     * @example
+     * // Get one WorkflowDefinition
+     * const workflowDefinition = await prisma.workflowDefinition.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkflowDefinitionFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkflowDefinitionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowDefinition that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionFindFirstArgs} args - Arguments to find a WorkflowDefinition
+     * @example
+     * // Get one WorkflowDefinition
+     * const workflowDefinition = await prisma.workflowDefinition.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkflowDefinitionFindFirstArgs>(args?: SelectSubset<T, WorkflowDefinitionFindFirstArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowDefinition that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionFindFirstOrThrowArgs} args - Arguments to find a WorkflowDefinition
+     * @example
+     * // Get one WorkflowDefinition
+     * const workflowDefinition = await prisma.workflowDefinition.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkflowDefinitionFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkflowDefinitionFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkflowDefinitions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkflowDefinitions
+     * const workflowDefinitions = await prisma.workflowDefinition.findMany()
+     * 
+     * // Get first 10 WorkflowDefinitions
+     * const workflowDefinitions = await prisma.workflowDefinition.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflowDefinitionWithIdOnly = await prisma.workflowDefinition.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkflowDefinitionFindManyArgs>(args?: SelectSubset<T, WorkflowDefinitionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkflowDefinition.
+     * @param {WorkflowDefinitionCreateArgs} args - Arguments to create a WorkflowDefinition.
+     * @example
+     * // Create one WorkflowDefinition
+     * const WorkflowDefinition = await prisma.workflowDefinition.create({
+     *   data: {
+     *     // ... data to create a WorkflowDefinition
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkflowDefinitionCreateArgs>(args: SelectSubset<T, WorkflowDefinitionCreateArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkflowDefinitions.
+     * @param {WorkflowDefinitionCreateManyArgs} args - Arguments to create many WorkflowDefinitions.
+     * @example
+     * // Create many WorkflowDefinitions
+     * const workflowDefinition = await prisma.workflowDefinition.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkflowDefinitionCreateManyArgs>(args?: SelectSubset<T, WorkflowDefinitionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkflowDefinitions and returns the data saved in the database.
+     * @param {WorkflowDefinitionCreateManyAndReturnArgs} args - Arguments to create many WorkflowDefinitions.
+     * @example
+     * // Create many WorkflowDefinitions
+     * const workflowDefinition = await prisma.workflowDefinition.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkflowDefinitions and only return the `id`
+     * const workflowDefinitionWithIdOnly = await prisma.workflowDefinition.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkflowDefinitionCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkflowDefinitionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkflowDefinition.
+     * @param {WorkflowDefinitionDeleteArgs} args - Arguments to delete one WorkflowDefinition.
+     * @example
+     * // Delete one WorkflowDefinition
+     * const WorkflowDefinition = await prisma.workflowDefinition.delete({
+     *   where: {
+     *     // ... filter to delete one WorkflowDefinition
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkflowDefinitionDeleteArgs>(args: SelectSubset<T, WorkflowDefinitionDeleteArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkflowDefinition.
+     * @param {WorkflowDefinitionUpdateArgs} args - Arguments to update one WorkflowDefinition.
+     * @example
+     * // Update one WorkflowDefinition
+     * const workflowDefinition = await prisma.workflowDefinition.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkflowDefinitionUpdateArgs>(args: SelectSubset<T, WorkflowDefinitionUpdateArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkflowDefinitions.
+     * @param {WorkflowDefinitionDeleteManyArgs} args - Arguments to filter WorkflowDefinitions to delete.
+     * @example
+     * // Delete a few WorkflowDefinitions
+     * const { count } = await prisma.workflowDefinition.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkflowDefinitionDeleteManyArgs>(args?: SelectSubset<T, WorkflowDefinitionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowDefinitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkflowDefinitions
+     * const workflowDefinition = await prisma.workflowDefinition.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkflowDefinitionUpdateManyArgs>(args: SelectSubset<T, WorkflowDefinitionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowDefinitions and returns the data updated in the database.
+     * @param {WorkflowDefinitionUpdateManyAndReturnArgs} args - Arguments to update many WorkflowDefinitions.
+     * @example
+     * // Update many WorkflowDefinitions
+     * const workflowDefinition = await prisma.workflowDefinition.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkflowDefinitions and only return the `id`
+     * const workflowDefinitionWithIdOnly = await prisma.workflowDefinition.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkflowDefinitionUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkflowDefinitionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkflowDefinition.
+     * @param {WorkflowDefinitionUpsertArgs} args - Arguments to update or create a WorkflowDefinition.
+     * @example
+     * // Update or create a WorkflowDefinition
+     * const workflowDefinition = await prisma.workflowDefinition.upsert({
+     *   create: {
+     *     // ... data to create a WorkflowDefinition
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkflowDefinition we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkflowDefinitionUpsertArgs>(args: SelectSubset<T, WorkflowDefinitionUpsertArgs<ExtArgs>>): Prisma__WorkflowDefinitionClient<$Result.GetResult<Prisma.$WorkflowDefinitionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkflowDefinitions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionCountArgs} args - Arguments to filter WorkflowDefinitions to count.
+     * @example
+     * // Count the number of WorkflowDefinitions
+     * const count = await prisma.workflowDefinition.count({
+     *   where: {
+     *     // ... the filter for the WorkflowDefinitions we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkflowDefinitionCountArgs>(
+      args?: Subset<T, WorkflowDefinitionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkflowDefinitionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkflowDefinition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkflowDefinitionAggregateArgs>(args: Subset<T, WorkflowDefinitionAggregateArgs>): Prisma.PrismaPromise<GetWorkflowDefinitionAggregateType<T>>
+
+    /**
+     * Group by WorkflowDefinition.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDefinitionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkflowDefinitionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkflowDefinitionGroupByArgs['orderBy'] }
+        : { orderBy?: WorkflowDefinitionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkflowDefinitionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflowDefinitionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkflowDefinition model
+   */
+  readonly fields: WorkflowDefinitionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkflowDefinition.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkflowDefinitionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkflowDefinition model
+   */
+  interface WorkflowDefinitionFieldRefs {
+    readonly id: FieldRef<"WorkflowDefinition", 'String'>
+    readonly code: FieldRef<"WorkflowDefinition", 'String'>
+    readonly name: FieldRef<"WorkflowDefinition", 'String'>
+    readonly description: FieldRef<"WorkflowDefinition", 'String'>
+    readonly entityType: FieldRef<"WorkflowDefinition", 'String'>
+    readonly isActive: FieldRef<"WorkflowDefinition", 'Boolean'>
+    readonly createdAt: FieldRef<"WorkflowDefinition", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkflowDefinition", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkflowDefinition findUnique
+   */
+  export type WorkflowDefinitionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDefinition to fetch.
+     */
+    where: WorkflowDefinitionWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDefinition findUniqueOrThrow
+   */
+  export type WorkflowDefinitionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDefinition to fetch.
+     */
+    where: WorkflowDefinitionWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDefinition findFirst
+   */
+  export type WorkflowDefinitionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDefinition to fetch.
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDefinitions to fetch.
+     */
+    orderBy?: WorkflowDefinitionOrderByWithRelationInput | WorkflowDefinitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowDefinitions.
+     */
+    cursor?: WorkflowDefinitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDefinitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDefinitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowDefinitions.
+     */
+    distinct?: WorkflowDefinitionScalarFieldEnum | WorkflowDefinitionScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowDefinition findFirstOrThrow
+   */
+  export type WorkflowDefinitionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDefinition to fetch.
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDefinitions to fetch.
+     */
+    orderBy?: WorkflowDefinitionOrderByWithRelationInput | WorkflowDefinitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowDefinitions.
+     */
+    cursor?: WorkflowDefinitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDefinitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDefinitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowDefinitions.
+     */
+    distinct?: WorkflowDefinitionScalarFieldEnum | WorkflowDefinitionScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowDefinition findMany
+   */
+  export type WorkflowDefinitionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDefinitions to fetch.
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDefinitions to fetch.
+     */
+    orderBy?: WorkflowDefinitionOrderByWithRelationInput | WorkflowDefinitionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkflowDefinitions.
+     */
+    cursor?: WorkflowDefinitionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDefinitions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDefinitions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowDefinitions.
+     */
+    distinct?: WorkflowDefinitionScalarFieldEnum | WorkflowDefinitionScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowDefinition create
+   */
+  export type WorkflowDefinitionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WorkflowDefinition.
+     */
+    data: XOR<WorkflowDefinitionCreateInput, WorkflowDefinitionUncheckedCreateInput>
+  }
+
+  /**
+   * WorkflowDefinition createMany
+   */
+  export type WorkflowDefinitionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkflowDefinitions.
+     */
+    data: WorkflowDefinitionCreateManyInput | WorkflowDefinitionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowDefinition createManyAndReturn
+   */
+  export type WorkflowDefinitionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkflowDefinitions.
+     */
+    data: WorkflowDefinitionCreateManyInput | WorkflowDefinitionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowDefinition update
+   */
+  export type WorkflowDefinitionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WorkflowDefinition.
+     */
+    data: XOR<WorkflowDefinitionUpdateInput, WorkflowDefinitionUncheckedUpdateInput>
+    /**
+     * Choose, which WorkflowDefinition to update.
+     */
+    where: WorkflowDefinitionWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDefinition updateMany
+   */
+  export type WorkflowDefinitionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkflowDefinitions.
+     */
+    data: XOR<WorkflowDefinitionUpdateManyMutationInput, WorkflowDefinitionUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowDefinitions to update
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * Limit how many WorkflowDefinitions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowDefinition updateManyAndReturn
+   */
+  export type WorkflowDefinitionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkflowDefinitions.
+     */
+    data: XOR<WorkflowDefinitionUpdateManyMutationInput, WorkflowDefinitionUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowDefinitions to update
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * Limit how many WorkflowDefinitions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowDefinition upsert
+   */
+  export type WorkflowDefinitionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WorkflowDefinition to update in case it exists.
+     */
+    where: WorkflowDefinitionWhereUniqueInput
+    /**
+     * In case the WorkflowDefinition found by the `where` argument doesn't exist, create a new WorkflowDefinition with this data.
+     */
+    create: XOR<WorkflowDefinitionCreateInput, WorkflowDefinitionUncheckedCreateInput>
+    /**
+     * In case the WorkflowDefinition was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkflowDefinitionUpdateInput, WorkflowDefinitionUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkflowDefinition delete
+   */
+  export type WorkflowDefinitionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+    /**
+     * Filter which WorkflowDefinition to delete.
+     */
+    where: WorkflowDefinitionWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDefinition deleteMany
+   */
+  export type WorkflowDefinitionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowDefinitions to delete
+     */
+    where?: WorkflowDefinitionWhereInput
+    /**
+     * Limit how many WorkflowDefinitions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowDefinition without action
+   */
+  export type WorkflowDefinitionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDefinition
+     */
+    select?: WorkflowDefinitionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDefinition
+     */
+    omit?: WorkflowDefinitionOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkflowStage
+   */
+
+  export type AggregateWorkflowStage = {
+    _count: WorkflowStageCountAggregateOutputType | null
+    _avg: WorkflowStageAvgAggregateOutputType | null
+    _sum: WorkflowStageSumAggregateOutputType | null
+    _min: WorkflowStageMinAggregateOutputType | null
+    _max: WorkflowStageMaxAggregateOutputType | null
+  }
+
+  export type WorkflowStageAvgAggregateOutputType = {
+    order: number | null
+    minAmount: number | null
+    escalateAfterHours: number | null
+  }
+
+  export type WorkflowStageSumAggregateOutputType = {
+    order: number | null
+    minAmount: number | null
+    escalateAfterHours: number | null
+  }
+
+  export type WorkflowStageMinAggregateOutputType = {
+    id: string | null
+    definitionId: string | null
+    order: number | null
+    name: string | null
+    approverPermission: string | null
+    branchScoped: boolean | null
+    minAmount: number | null
+    escalateAfterHours: number | null
+    escalateToPermission: string | null
+    createdAt: Date | null
+  }
+
+  export type WorkflowStageMaxAggregateOutputType = {
+    id: string | null
+    definitionId: string | null
+    order: number | null
+    name: string | null
+    approverPermission: string | null
+    branchScoped: boolean | null
+    minAmount: number | null
+    escalateAfterHours: number | null
+    escalateToPermission: string | null
+    createdAt: Date | null
+  }
+
+  export type WorkflowStageCountAggregateOutputType = {
+    id: number
+    definitionId: number
+    order: number
+    name: number
+    approverPermission: number
+    branchScoped: number
+    minAmount: number
+    escalateAfterHours: number
+    escalateToPermission: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WorkflowStageAvgAggregateInputType = {
+    order?: true
+    minAmount?: true
+    escalateAfterHours?: true
+  }
+
+  export type WorkflowStageSumAggregateInputType = {
+    order?: true
+    minAmount?: true
+    escalateAfterHours?: true
+  }
+
+  export type WorkflowStageMinAggregateInputType = {
+    id?: true
+    definitionId?: true
+    order?: true
+    name?: true
+    approverPermission?: true
+    branchScoped?: true
+    minAmount?: true
+    escalateAfterHours?: true
+    escalateToPermission?: true
+    createdAt?: true
+  }
+
+  export type WorkflowStageMaxAggregateInputType = {
+    id?: true
+    definitionId?: true
+    order?: true
+    name?: true
+    approverPermission?: true
+    branchScoped?: true
+    minAmount?: true
+    escalateAfterHours?: true
+    escalateToPermission?: true
+    createdAt?: true
+  }
+
+  export type WorkflowStageCountAggregateInputType = {
+    id?: true
+    definitionId?: true
+    order?: true
+    name?: true
+    approverPermission?: true
+    branchScoped?: true
+    minAmount?: true
+    escalateAfterHours?: true
+    escalateToPermission?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WorkflowStageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowStage to aggregate.
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowStages to fetch.
+     */
+    orderBy?: WorkflowStageOrderByWithRelationInput | WorkflowStageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkflowStageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowStages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowStages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkflowStages
+    **/
+    _count?: true | WorkflowStageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkflowStageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkflowStageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkflowStageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkflowStageMaxAggregateInputType
+  }
+
+  export type GetWorkflowStageAggregateType<T extends WorkflowStageAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflowStage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflowStage[P]>
+      : GetScalarType<T[P], AggregateWorkflowStage[P]>
+  }
+
+
+
+
+  export type WorkflowStageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkflowStageWhereInput
+    orderBy?: WorkflowStageOrderByWithAggregationInput | WorkflowStageOrderByWithAggregationInput[]
+    by: WorkflowStageScalarFieldEnum[] | WorkflowStageScalarFieldEnum
+    having?: WorkflowStageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkflowStageCountAggregateInputType | true
+    _avg?: WorkflowStageAvgAggregateInputType
+    _sum?: WorkflowStageSumAggregateInputType
+    _min?: WorkflowStageMinAggregateInputType
+    _max?: WorkflowStageMaxAggregateInputType
+  }
+
+  export type WorkflowStageGroupByOutputType = {
+    id: string
+    definitionId: string
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped: boolean
+    minAmount: number | null
+    escalateAfterHours: number | null
+    escalateToPermission: string | null
+    createdAt: Date
+    _count: WorkflowStageCountAggregateOutputType | null
+    _avg: WorkflowStageAvgAggregateOutputType | null
+    _sum: WorkflowStageSumAggregateOutputType | null
+    _min: WorkflowStageMinAggregateOutputType | null
+    _max: WorkflowStageMaxAggregateOutputType | null
+  }
+
+  type GetWorkflowStageGroupByPayload<T extends WorkflowStageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkflowStageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkflowStageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkflowStageGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkflowStageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkflowStageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    definitionId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    minAmount?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowStage"]>
+
+  export type WorkflowStageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    definitionId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    minAmount?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowStage"]>
+
+  export type WorkflowStageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    definitionId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    minAmount?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowStage"]>
+
+  export type WorkflowStageSelectScalar = {
+    id?: boolean
+    definitionId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    minAmount?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    createdAt?: boolean
+  }
+
+  export type WorkflowStageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "definitionId" | "order" | "name" | "approverPermission" | "branchScoped" | "minAmount" | "escalateAfterHours" | "escalateToPermission" | "createdAt", ExtArgs["result"]["workflowStage"]>
+
+  export type $WorkflowStagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkflowStage"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      definitionId: string
+      order: number
+      name: string
+      approverPermission: string
+      branchScoped: boolean
+      minAmount: number | null
+      escalateAfterHours: number | null
+      escalateToPermission: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["workflowStage"]>
+    composites: {}
+  }
+
+  type WorkflowStageGetPayload<S extends boolean | null | undefined | WorkflowStageDefaultArgs> = $Result.GetResult<Prisma.$WorkflowStagePayload, S>
+
+  type WorkflowStageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkflowStageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkflowStageCountAggregateInputType | true
+    }
+
+  export interface WorkflowStageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkflowStage'], meta: { name: 'WorkflowStage' } }
+    /**
+     * Find zero or one WorkflowStage that matches the filter.
+     * @param {WorkflowStageFindUniqueArgs} args - Arguments to find a WorkflowStage
+     * @example
+     * // Get one WorkflowStage
+     * const workflowStage = await prisma.workflowStage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkflowStageFindUniqueArgs>(args: SelectSubset<T, WorkflowStageFindUniqueArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkflowStage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkflowStageFindUniqueOrThrowArgs} args - Arguments to find a WorkflowStage
+     * @example
+     * // Get one WorkflowStage
+     * const workflowStage = await prisma.workflowStage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkflowStageFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkflowStageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowStage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageFindFirstArgs} args - Arguments to find a WorkflowStage
+     * @example
+     * // Get one WorkflowStage
+     * const workflowStage = await prisma.workflowStage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkflowStageFindFirstArgs>(args?: SelectSubset<T, WorkflowStageFindFirstArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowStage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageFindFirstOrThrowArgs} args - Arguments to find a WorkflowStage
+     * @example
+     * // Get one WorkflowStage
+     * const workflowStage = await prisma.workflowStage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkflowStageFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkflowStageFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkflowStages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkflowStages
+     * const workflowStages = await prisma.workflowStage.findMany()
+     * 
+     * // Get first 10 WorkflowStages
+     * const workflowStages = await prisma.workflowStage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflowStageWithIdOnly = await prisma.workflowStage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkflowStageFindManyArgs>(args?: SelectSubset<T, WorkflowStageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkflowStage.
+     * @param {WorkflowStageCreateArgs} args - Arguments to create a WorkflowStage.
+     * @example
+     * // Create one WorkflowStage
+     * const WorkflowStage = await prisma.workflowStage.create({
+     *   data: {
+     *     // ... data to create a WorkflowStage
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkflowStageCreateArgs>(args: SelectSubset<T, WorkflowStageCreateArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkflowStages.
+     * @param {WorkflowStageCreateManyArgs} args - Arguments to create many WorkflowStages.
+     * @example
+     * // Create many WorkflowStages
+     * const workflowStage = await prisma.workflowStage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkflowStageCreateManyArgs>(args?: SelectSubset<T, WorkflowStageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkflowStages and returns the data saved in the database.
+     * @param {WorkflowStageCreateManyAndReturnArgs} args - Arguments to create many WorkflowStages.
+     * @example
+     * // Create many WorkflowStages
+     * const workflowStage = await prisma.workflowStage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkflowStages and only return the `id`
+     * const workflowStageWithIdOnly = await prisma.workflowStage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkflowStageCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkflowStageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkflowStage.
+     * @param {WorkflowStageDeleteArgs} args - Arguments to delete one WorkflowStage.
+     * @example
+     * // Delete one WorkflowStage
+     * const WorkflowStage = await prisma.workflowStage.delete({
+     *   where: {
+     *     // ... filter to delete one WorkflowStage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkflowStageDeleteArgs>(args: SelectSubset<T, WorkflowStageDeleteArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkflowStage.
+     * @param {WorkflowStageUpdateArgs} args - Arguments to update one WorkflowStage.
+     * @example
+     * // Update one WorkflowStage
+     * const workflowStage = await prisma.workflowStage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkflowStageUpdateArgs>(args: SelectSubset<T, WorkflowStageUpdateArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkflowStages.
+     * @param {WorkflowStageDeleteManyArgs} args - Arguments to filter WorkflowStages to delete.
+     * @example
+     * // Delete a few WorkflowStages
+     * const { count } = await prisma.workflowStage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkflowStageDeleteManyArgs>(args?: SelectSubset<T, WorkflowStageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowStages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkflowStages
+     * const workflowStage = await prisma.workflowStage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkflowStageUpdateManyArgs>(args: SelectSubset<T, WorkflowStageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowStages and returns the data updated in the database.
+     * @param {WorkflowStageUpdateManyAndReturnArgs} args - Arguments to update many WorkflowStages.
+     * @example
+     * // Update many WorkflowStages
+     * const workflowStage = await prisma.workflowStage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkflowStages and only return the `id`
+     * const workflowStageWithIdOnly = await prisma.workflowStage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkflowStageUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkflowStageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkflowStage.
+     * @param {WorkflowStageUpsertArgs} args - Arguments to update or create a WorkflowStage.
+     * @example
+     * // Update or create a WorkflowStage
+     * const workflowStage = await prisma.workflowStage.upsert({
+     *   create: {
+     *     // ... data to create a WorkflowStage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkflowStage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkflowStageUpsertArgs>(args: SelectSubset<T, WorkflowStageUpsertArgs<ExtArgs>>): Prisma__WorkflowStageClient<$Result.GetResult<Prisma.$WorkflowStagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkflowStages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageCountArgs} args - Arguments to filter WorkflowStages to count.
+     * @example
+     * // Count the number of WorkflowStages
+     * const count = await prisma.workflowStage.count({
+     *   where: {
+     *     // ... the filter for the WorkflowStages we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkflowStageCountArgs>(
+      args?: Subset<T, WorkflowStageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkflowStageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkflowStage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkflowStageAggregateArgs>(args: Subset<T, WorkflowStageAggregateArgs>): Prisma.PrismaPromise<GetWorkflowStageAggregateType<T>>
+
+    /**
+     * Group by WorkflowStage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkflowStageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkflowStageGroupByArgs['orderBy'] }
+        : { orderBy?: WorkflowStageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkflowStageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflowStageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkflowStage model
+   */
+  readonly fields: WorkflowStageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkflowStage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkflowStageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkflowStage model
+   */
+  interface WorkflowStageFieldRefs {
+    readonly id: FieldRef<"WorkflowStage", 'String'>
+    readonly definitionId: FieldRef<"WorkflowStage", 'String'>
+    readonly order: FieldRef<"WorkflowStage", 'Int'>
+    readonly name: FieldRef<"WorkflowStage", 'String'>
+    readonly approverPermission: FieldRef<"WorkflowStage", 'String'>
+    readonly branchScoped: FieldRef<"WorkflowStage", 'Boolean'>
+    readonly minAmount: FieldRef<"WorkflowStage", 'Float'>
+    readonly escalateAfterHours: FieldRef<"WorkflowStage", 'Int'>
+    readonly escalateToPermission: FieldRef<"WorkflowStage", 'String'>
+    readonly createdAt: FieldRef<"WorkflowStage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkflowStage findUnique
+   */
+  export type WorkflowStageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStage to fetch.
+     */
+    where: WorkflowStageWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStage findUniqueOrThrow
+   */
+  export type WorkflowStageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStage to fetch.
+     */
+    where: WorkflowStageWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStage findFirst
+   */
+  export type WorkflowStageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStage to fetch.
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowStages to fetch.
+     */
+    orderBy?: WorkflowStageOrderByWithRelationInput | WorkflowStageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowStages.
+     */
+    cursor?: WorkflowStageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowStages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowStages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowStages.
+     */
+    distinct?: WorkflowStageScalarFieldEnum | WorkflowStageScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowStage findFirstOrThrow
+   */
+  export type WorkflowStageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStage to fetch.
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowStages to fetch.
+     */
+    orderBy?: WorkflowStageOrderByWithRelationInput | WorkflowStageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowStages.
+     */
+    cursor?: WorkflowStageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowStages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowStages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowStages.
+     */
+    distinct?: WorkflowStageScalarFieldEnum | WorkflowStageScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowStage findMany
+   */
+  export type WorkflowStageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStages to fetch.
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowStages to fetch.
+     */
+    orderBy?: WorkflowStageOrderByWithRelationInput | WorkflowStageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkflowStages.
+     */
+    cursor?: WorkflowStageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowStages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowStages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowStages.
+     */
+    distinct?: WorkflowStageScalarFieldEnum | WorkflowStageScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowStage create
+   */
+  export type WorkflowStageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WorkflowStage.
+     */
+    data: XOR<WorkflowStageCreateInput, WorkflowStageUncheckedCreateInput>
+  }
+
+  /**
+   * WorkflowStage createMany
+   */
+  export type WorkflowStageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkflowStages.
+     */
+    data: WorkflowStageCreateManyInput | WorkflowStageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowStage createManyAndReturn
+   */
+  export type WorkflowStageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkflowStages.
+     */
+    data: WorkflowStageCreateManyInput | WorkflowStageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowStage update
+   */
+  export type WorkflowStageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WorkflowStage.
+     */
+    data: XOR<WorkflowStageUpdateInput, WorkflowStageUncheckedUpdateInput>
+    /**
+     * Choose, which WorkflowStage to update.
+     */
+    where: WorkflowStageWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStage updateMany
+   */
+  export type WorkflowStageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkflowStages.
+     */
+    data: XOR<WorkflowStageUpdateManyMutationInput, WorkflowStageUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowStages to update
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * Limit how many WorkflowStages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowStage updateManyAndReturn
+   */
+  export type WorkflowStageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkflowStages.
+     */
+    data: XOR<WorkflowStageUpdateManyMutationInput, WorkflowStageUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowStages to update
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * Limit how many WorkflowStages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowStage upsert
+   */
+  export type WorkflowStageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WorkflowStage to update in case it exists.
+     */
+    where: WorkflowStageWhereUniqueInput
+    /**
+     * In case the WorkflowStage found by the `where` argument doesn't exist, create a new WorkflowStage with this data.
+     */
+    create: XOR<WorkflowStageCreateInput, WorkflowStageUncheckedCreateInput>
+    /**
+     * In case the WorkflowStage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkflowStageUpdateInput, WorkflowStageUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkflowStage delete
+   */
+  export type WorkflowStageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+    /**
+     * Filter which WorkflowStage to delete.
+     */
+    where: WorkflowStageWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStage deleteMany
+   */
+  export type WorkflowStageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowStages to delete
+     */
+    where?: WorkflowStageWhereInput
+    /**
+     * Limit how many WorkflowStages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowStage without action
+   */
+  export type WorkflowStageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStage
+     */
+    select?: WorkflowStageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStage
+     */
+    omit?: WorkflowStageOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkflowInstance
+   */
+
+  export type AggregateWorkflowInstance = {
+    _count: WorkflowInstanceCountAggregateOutputType | null
+    _avg: WorkflowInstanceAvgAggregateOutputType | null
+    _sum: WorkflowInstanceSumAggregateOutputType | null
+    _min: WorkflowInstanceMinAggregateOutputType | null
+    _max: WorkflowInstanceMaxAggregateOutputType | null
+  }
+
+  export type WorkflowInstanceAvgAggregateOutputType = {
+    amount: number | null
+    currentOrder: number | null
+  }
+
+  export type WorkflowInstanceSumAggregateOutputType = {
+    amount: number | null
+    currentOrder: number | null
+  }
+
+  export type WorkflowInstanceMinAggregateOutputType = {
+    id: string | null
+    instanceNumber: string | null
+    definitionId: string | null
+    definitionCode: string | null
+    entityType: string | null
+    entityId: string | null
+    title: string | null
+    summary: string | null
+    amount: number | null
+    branchId: string | null
+    requestedById: string | null
+    status: string | null
+    currentOrder: number | null
+    outcomeApplied: boolean | null
+    outcomeError: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkflowInstanceMaxAggregateOutputType = {
+    id: string | null
+    instanceNumber: string | null
+    definitionId: string | null
+    definitionCode: string | null
+    entityType: string | null
+    entityId: string | null
+    title: string | null
+    summary: string | null
+    amount: number | null
+    branchId: string | null
+    requestedById: string | null
+    status: string | null
+    currentOrder: number | null
+    outcomeApplied: boolean | null
+    outcomeError: string | null
+    completedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkflowInstanceCountAggregateOutputType = {
+    id: number
+    instanceNumber: number
+    definitionId: number
+    definitionCode: number
+    entityType: number
+    entityId: number
+    title: number
+    summary: number
+    amount: number
+    branchId: number
+    requestedById: number
+    status: number
+    currentOrder: number
+    payload: number
+    outcomeApplied: number
+    outcomeError: number
+    completedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkflowInstanceAvgAggregateInputType = {
+    amount?: true
+    currentOrder?: true
+  }
+
+  export type WorkflowInstanceSumAggregateInputType = {
+    amount?: true
+    currentOrder?: true
+  }
+
+  export type WorkflowInstanceMinAggregateInputType = {
+    id?: true
+    instanceNumber?: true
+    definitionId?: true
+    definitionCode?: true
+    entityType?: true
+    entityId?: true
+    title?: true
+    summary?: true
+    amount?: true
+    branchId?: true
+    requestedById?: true
+    status?: true
+    currentOrder?: true
+    outcomeApplied?: true
+    outcomeError?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkflowInstanceMaxAggregateInputType = {
+    id?: true
+    instanceNumber?: true
+    definitionId?: true
+    definitionCode?: true
+    entityType?: true
+    entityId?: true
+    title?: true
+    summary?: true
+    amount?: true
+    branchId?: true
+    requestedById?: true
+    status?: true
+    currentOrder?: true
+    outcomeApplied?: true
+    outcomeError?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkflowInstanceCountAggregateInputType = {
+    id?: true
+    instanceNumber?: true
+    definitionId?: true
+    definitionCode?: true
+    entityType?: true
+    entityId?: true
+    title?: true
+    summary?: true
+    amount?: true
+    branchId?: true
+    requestedById?: true
+    status?: true
+    currentOrder?: true
+    payload?: true
+    outcomeApplied?: true
+    outcomeError?: true
+    completedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkflowInstanceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowInstance to aggregate.
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowInstances to fetch.
+     */
+    orderBy?: WorkflowInstanceOrderByWithRelationInput | WorkflowInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkflowInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkflowInstances
+    **/
+    _count?: true | WorkflowInstanceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkflowInstanceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkflowInstanceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkflowInstanceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkflowInstanceMaxAggregateInputType
+  }
+
+  export type GetWorkflowInstanceAggregateType<T extends WorkflowInstanceAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflowInstance]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflowInstance[P]>
+      : GetScalarType<T[P], AggregateWorkflowInstance[P]>
+  }
+
+
+
+
+  export type WorkflowInstanceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkflowInstanceWhereInput
+    orderBy?: WorkflowInstanceOrderByWithAggregationInput | WorkflowInstanceOrderByWithAggregationInput[]
+    by: WorkflowInstanceScalarFieldEnum[] | WorkflowInstanceScalarFieldEnum
+    having?: WorkflowInstanceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkflowInstanceCountAggregateInputType | true
+    _avg?: WorkflowInstanceAvgAggregateInputType
+    _sum?: WorkflowInstanceSumAggregateInputType
+    _min?: WorkflowInstanceMinAggregateInputType
+    _max?: WorkflowInstanceMaxAggregateInputType
+  }
+
+  export type WorkflowInstanceGroupByOutputType = {
+    id: string
+    instanceNumber: string
+    definitionId: string
+    definitionCode: string
+    entityType: string
+    entityId: string
+    title: string
+    summary: string | null
+    amount: number | null
+    branchId: string | null
+    requestedById: string
+    status: string
+    currentOrder: number
+    payload: JsonValue | null
+    outcomeApplied: boolean
+    outcomeError: string | null
+    completedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkflowInstanceCountAggregateOutputType | null
+    _avg: WorkflowInstanceAvgAggregateOutputType | null
+    _sum: WorkflowInstanceSumAggregateOutputType | null
+    _min: WorkflowInstanceMinAggregateOutputType | null
+    _max: WorkflowInstanceMaxAggregateOutputType | null
+  }
+
+  type GetWorkflowInstanceGroupByPayload<T extends WorkflowInstanceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkflowInstanceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkflowInstanceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkflowInstanceGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkflowInstanceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkflowInstanceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceNumber?: boolean
+    definitionId?: boolean
+    definitionCode?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    title?: boolean
+    summary?: boolean
+    amount?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    status?: boolean
+    currentOrder?: boolean
+    payload?: boolean
+    outcomeApplied?: boolean
+    outcomeError?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowInstance"]>
+
+  export type WorkflowInstanceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceNumber?: boolean
+    definitionId?: boolean
+    definitionCode?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    title?: boolean
+    summary?: boolean
+    amount?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    status?: boolean
+    currentOrder?: boolean
+    payload?: boolean
+    outcomeApplied?: boolean
+    outcomeError?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowInstance"]>
+
+  export type WorkflowInstanceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceNumber?: boolean
+    definitionId?: boolean
+    definitionCode?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    title?: boolean
+    summary?: boolean
+    amount?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    status?: boolean
+    currentOrder?: boolean
+    payload?: boolean
+    outcomeApplied?: boolean
+    outcomeError?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowInstance"]>
+
+  export type WorkflowInstanceSelectScalar = {
+    id?: boolean
+    instanceNumber?: boolean
+    definitionId?: boolean
+    definitionCode?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    title?: boolean
+    summary?: boolean
+    amount?: boolean
+    branchId?: boolean
+    requestedById?: boolean
+    status?: boolean
+    currentOrder?: boolean
+    payload?: boolean
+    outcomeApplied?: boolean
+    outcomeError?: boolean
+    completedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkflowInstanceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "instanceNumber" | "definitionId" | "definitionCode" | "entityType" | "entityId" | "title" | "summary" | "amount" | "branchId" | "requestedById" | "status" | "currentOrder" | "payload" | "outcomeApplied" | "outcomeError" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["workflowInstance"]>
+
+  export type $WorkflowInstancePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkflowInstance"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      instanceNumber: string
+      definitionId: string
+      definitionCode: string
+      entityType: string
+      entityId: string
+      title: string
+      summary: string | null
+      amount: number | null
+      branchId: string | null
+      requestedById: string
+      status: string
+      currentOrder: number
+      payload: Prisma.JsonValue | null
+      outcomeApplied: boolean
+      outcomeError: string | null
+      completedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workflowInstance"]>
+    composites: {}
+  }
+
+  type WorkflowInstanceGetPayload<S extends boolean | null | undefined | WorkflowInstanceDefaultArgs> = $Result.GetResult<Prisma.$WorkflowInstancePayload, S>
+
+  type WorkflowInstanceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkflowInstanceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkflowInstanceCountAggregateInputType | true
+    }
+
+  export interface WorkflowInstanceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkflowInstance'], meta: { name: 'WorkflowInstance' } }
+    /**
+     * Find zero or one WorkflowInstance that matches the filter.
+     * @param {WorkflowInstanceFindUniqueArgs} args - Arguments to find a WorkflowInstance
+     * @example
+     * // Get one WorkflowInstance
+     * const workflowInstance = await prisma.workflowInstance.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkflowInstanceFindUniqueArgs>(args: SelectSubset<T, WorkflowInstanceFindUniqueArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkflowInstance that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkflowInstanceFindUniqueOrThrowArgs} args - Arguments to find a WorkflowInstance
+     * @example
+     * // Get one WorkflowInstance
+     * const workflowInstance = await prisma.workflowInstance.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkflowInstanceFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkflowInstanceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowInstance that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceFindFirstArgs} args - Arguments to find a WorkflowInstance
+     * @example
+     * // Get one WorkflowInstance
+     * const workflowInstance = await prisma.workflowInstance.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkflowInstanceFindFirstArgs>(args?: SelectSubset<T, WorkflowInstanceFindFirstArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowInstance that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceFindFirstOrThrowArgs} args - Arguments to find a WorkflowInstance
+     * @example
+     * // Get one WorkflowInstance
+     * const workflowInstance = await prisma.workflowInstance.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkflowInstanceFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkflowInstanceFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkflowInstances that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkflowInstances
+     * const workflowInstances = await prisma.workflowInstance.findMany()
+     * 
+     * // Get first 10 WorkflowInstances
+     * const workflowInstances = await prisma.workflowInstance.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflowInstanceWithIdOnly = await prisma.workflowInstance.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkflowInstanceFindManyArgs>(args?: SelectSubset<T, WorkflowInstanceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkflowInstance.
+     * @param {WorkflowInstanceCreateArgs} args - Arguments to create a WorkflowInstance.
+     * @example
+     * // Create one WorkflowInstance
+     * const WorkflowInstance = await prisma.workflowInstance.create({
+     *   data: {
+     *     // ... data to create a WorkflowInstance
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkflowInstanceCreateArgs>(args: SelectSubset<T, WorkflowInstanceCreateArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkflowInstances.
+     * @param {WorkflowInstanceCreateManyArgs} args - Arguments to create many WorkflowInstances.
+     * @example
+     * // Create many WorkflowInstances
+     * const workflowInstance = await prisma.workflowInstance.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkflowInstanceCreateManyArgs>(args?: SelectSubset<T, WorkflowInstanceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkflowInstances and returns the data saved in the database.
+     * @param {WorkflowInstanceCreateManyAndReturnArgs} args - Arguments to create many WorkflowInstances.
+     * @example
+     * // Create many WorkflowInstances
+     * const workflowInstance = await prisma.workflowInstance.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkflowInstances and only return the `id`
+     * const workflowInstanceWithIdOnly = await prisma.workflowInstance.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkflowInstanceCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkflowInstanceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkflowInstance.
+     * @param {WorkflowInstanceDeleteArgs} args - Arguments to delete one WorkflowInstance.
+     * @example
+     * // Delete one WorkflowInstance
+     * const WorkflowInstance = await prisma.workflowInstance.delete({
+     *   where: {
+     *     // ... filter to delete one WorkflowInstance
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkflowInstanceDeleteArgs>(args: SelectSubset<T, WorkflowInstanceDeleteArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkflowInstance.
+     * @param {WorkflowInstanceUpdateArgs} args - Arguments to update one WorkflowInstance.
+     * @example
+     * // Update one WorkflowInstance
+     * const workflowInstance = await prisma.workflowInstance.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkflowInstanceUpdateArgs>(args: SelectSubset<T, WorkflowInstanceUpdateArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkflowInstances.
+     * @param {WorkflowInstanceDeleteManyArgs} args - Arguments to filter WorkflowInstances to delete.
+     * @example
+     * // Delete a few WorkflowInstances
+     * const { count } = await prisma.workflowInstance.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkflowInstanceDeleteManyArgs>(args?: SelectSubset<T, WorkflowInstanceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowInstances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkflowInstances
+     * const workflowInstance = await prisma.workflowInstance.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkflowInstanceUpdateManyArgs>(args: SelectSubset<T, WorkflowInstanceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowInstances and returns the data updated in the database.
+     * @param {WorkflowInstanceUpdateManyAndReturnArgs} args - Arguments to update many WorkflowInstances.
+     * @example
+     * // Update many WorkflowInstances
+     * const workflowInstance = await prisma.workflowInstance.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkflowInstances and only return the `id`
+     * const workflowInstanceWithIdOnly = await prisma.workflowInstance.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkflowInstanceUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkflowInstanceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkflowInstance.
+     * @param {WorkflowInstanceUpsertArgs} args - Arguments to update or create a WorkflowInstance.
+     * @example
+     * // Update or create a WorkflowInstance
+     * const workflowInstance = await prisma.workflowInstance.upsert({
+     *   create: {
+     *     // ... data to create a WorkflowInstance
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkflowInstance we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkflowInstanceUpsertArgs>(args: SelectSubset<T, WorkflowInstanceUpsertArgs<ExtArgs>>): Prisma__WorkflowInstanceClient<$Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkflowInstances.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceCountArgs} args - Arguments to filter WorkflowInstances to count.
+     * @example
+     * // Count the number of WorkflowInstances
+     * const count = await prisma.workflowInstance.count({
+     *   where: {
+     *     // ... the filter for the WorkflowInstances we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkflowInstanceCountArgs>(
+      args?: Subset<T, WorkflowInstanceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkflowInstanceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkflowInstance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkflowInstanceAggregateArgs>(args: Subset<T, WorkflowInstanceAggregateArgs>): Prisma.PrismaPromise<GetWorkflowInstanceAggregateType<T>>
+
+    /**
+     * Group by WorkflowInstance.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowInstanceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkflowInstanceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkflowInstanceGroupByArgs['orderBy'] }
+        : { orderBy?: WorkflowInstanceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkflowInstanceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflowInstanceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkflowInstance model
+   */
+  readonly fields: WorkflowInstanceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkflowInstance.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkflowInstanceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkflowInstance model
+   */
+  interface WorkflowInstanceFieldRefs {
+    readonly id: FieldRef<"WorkflowInstance", 'String'>
+    readonly instanceNumber: FieldRef<"WorkflowInstance", 'String'>
+    readonly definitionId: FieldRef<"WorkflowInstance", 'String'>
+    readonly definitionCode: FieldRef<"WorkflowInstance", 'String'>
+    readonly entityType: FieldRef<"WorkflowInstance", 'String'>
+    readonly entityId: FieldRef<"WorkflowInstance", 'String'>
+    readonly title: FieldRef<"WorkflowInstance", 'String'>
+    readonly summary: FieldRef<"WorkflowInstance", 'String'>
+    readonly amount: FieldRef<"WorkflowInstance", 'Float'>
+    readonly branchId: FieldRef<"WorkflowInstance", 'String'>
+    readonly requestedById: FieldRef<"WorkflowInstance", 'String'>
+    readonly status: FieldRef<"WorkflowInstance", 'String'>
+    readonly currentOrder: FieldRef<"WorkflowInstance", 'Int'>
+    readonly payload: FieldRef<"WorkflowInstance", 'Json'>
+    readonly outcomeApplied: FieldRef<"WorkflowInstance", 'Boolean'>
+    readonly outcomeError: FieldRef<"WorkflowInstance", 'String'>
+    readonly completedAt: FieldRef<"WorkflowInstance", 'DateTime'>
+    readonly createdAt: FieldRef<"WorkflowInstance", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkflowInstance", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkflowInstance findUnique
+   */
+  export type WorkflowInstanceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowInstance to fetch.
+     */
+    where: WorkflowInstanceWhereUniqueInput
+  }
+
+  /**
+   * WorkflowInstance findUniqueOrThrow
+   */
+  export type WorkflowInstanceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowInstance to fetch.
+     */
+    where: WorkflowInstanceWhereUniqueInput
+  }
+
+  /**
+   * WorkflowInstance findFirst
+   */
+  export type WorkflowInstanceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowInstance to fetch.
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowInstances to fetch.
+     */
+    orderBy?: WorkflowInstanceOrderByWithRelationInput | WorkflowInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowInstances.
+     */
+    cursor?: WorkflowInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowInstances.
+     */
+    distinct?: WorkflowInstanceScalarFieldEnum | WorkflowInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowInstance findFirstOrThrow
+   */
+  export type WorkflowInstanceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowInstance to fetch.
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowInstances to fetch.
+     */
+    orderBy?: WorkflowInstanceOrderByWithRelationInput | WorkflowInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowInstances.
+     */
+    cursor?: WorkflowInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowInstances.
+     */
+    distinct?: WorkflowInstanceScalarFieldEnum | WorkflowInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowInstance findMany
+   */
+  export type WorkflowInstanceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowInstances to fetch.
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowInstances to fetch.
+     */
+    orderBy?: WorkflowInstanceOrderByWithRelationInput | WorkflowInstanceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkflowInstances.
+     */
+    cursor?: WorkflowInstanceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowInstances from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowInstances.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowInstances.
+     */
+    distinct?: WorkflowInstanceScalarFieldEnum | WorkflowInstanceScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowInstance create
+   */
+  export type WorkflowInstanceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WorkflowInstance.
+     */
+    data: XOR<WorkflowInstanceCreateInput, WorkflowInstanceUncheckedCreateInput>
+  }
+
+  /**
+   * WorkflowInstance createMany
+   */
+  export type WorkflowInstanceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkflowInstances.
+     */
+    data: WorkflowInstanceCreateManyInput | WorkflowInstanceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowInstance createManyAndReturn
+   */
+  export type WorkflowInstanceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkflowInstances.
+     */
+    data: WorkflowInstanceCreateManyInput | WorkflowInstanceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowInstance update
+   */
+  export type WorkflowInstanceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WorkflowInstance.
+     */
+    data: XOR<WorkflowInstanceUpdateInput, WorkflowInstanceUncheckedUpdateInput>
+    /**
+     * Choose, which WorkflowInstance to update.
+     */
+    where: WorkflowInstanceWhereUniqueInput
+  }
+
+  /**
+   * WorkflowInstance updateMany
+   */
+  export type WorkflowInstanceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkflowInstances.
+     */
+    data: XOR<WorkflowInstanceUpdateManyMutationInput, WorkflowInstanceUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowInstances to update
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * Limit how many WorkflowInstances to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowInstance updateManyAndReturn
+   */
+  export type WorkflowInstanceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkflowInstances.
+     */
+    data: XOR<WorkflowInstanceUpdateManyMutationInput, WorkflowInstanceUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowInstances to update
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * Limit how many WorkflowInstances to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowInstance upsert
+   */
+  export type WorkflowInstanceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WorkflowInstance to update in case it exists.
+     */
+    where: WorkflowInstanceWhereUniqueInput
+    /**
+     * In case the WorkflowInstance found by the `where` argument doesn't exist, create a new WorkflowInstance with this data.
+     */
+    create: XOR<WorkflowInstanceCreateInput, WorkflowInstanceUncheckedCreateInput>
+    /**
+     * In case the WorkflowInstance was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkflowInstanceUpdateInput, WorkflowInstanceUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkflowInstance delete
+   */
+  export type WorkflowInstanceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+    /**
+     * Filter which WorkflowInstance to delete.
+     */
+    where: WorkflowInstanceWhereUniqueInput
+  }
+
+  /**
+   * WorkflowInstance deleteMany
+   */
+  export type WorkflowInstanceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowInstances to delete
+     */
+    where?: WorkflowInstanceWhereInput
+    /**
+     * Limit how many WorkflowInstances to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowInstance without action
+   */
+  export type WorkflowInstanceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowInstance
+     */
+    select?: WorkflowInstanceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowInstance
+     */
+    omit?: WorkflowInstanceOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkflowStep
+   */
+
+  export type AggregateWorkflowStep = {
+    _count: WorkflowStepCountAggregateOutputType | null
+    _avg: WorkflowStepAvgAggregateOutputType | null
+    _sum: WorkflowStepSumAggregateOutputType | null
+    _min: WorkflowStepMinAggregateOutputType | null
+    _max: WorkflowStepMaxAggregateOutputType | null
+  }
+
+  export type WorkflowStepAvgAggregateOutputType = {
+    order: number | null
+    escalateAfterHours: number | null
+  }
+
+  export type WorkflowStepSumAggregateOutputType = {
+    order: number | null
+    escalateAfterHours: number | null
+  }
+
+  export type WorkflowStepMinAggregateOutputType = {
+    id: string | null
+    instanceId: string | null
+    stageId: string | null
+    order: number | null
+    name: string | null
+    approverPermission: string | null
+    branchScoped: boolean | null
+    escalateAfterHours: number | null
+    escalateToPermission: string | null
+    status: string | null
+    dueAt: Date | null
+    escalatedAt: Date | null
+    actedById: string | null
+    onBehalfOfId: string | null
+    actedAt: Date | null
+    comment: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkflowStepMaxAggregateOutputType = {
+    id: string | null
+    instanceId: string | null
+    stageId: string | null
+    order: number | null
+    name: string | null
+    approverPermission: string | null
+    branchScoped: boolean | null
+    escalateAfterHours: number | null
+    escalateToPermission: string | null
+    status: string | null
+    dueAt: Date | null
+    escalatedAt: Date | null
+    actedById: string | null
+    onBehalfOfId: string | null
+    actedAt: Date | null
+    comment: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WorkflowStepCountAggregateOutputType = {
+    id: number
+    instanceId: number
+    stageId: number
+    order: number
+    name: number
+    approverPermission: number
+    branchScoped: number
+    escalateAfterHours: number
+    escalateToPermission: number
+    status: number
+    dueAt: number
+    escalatedAt: number
+    actedById: number
+    onBehalfOfId: number
+    actedAt: number
+    comment: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WorkflowStepAvgAggregateInputType = {
+    order?: true
+    escalateAfterHours?: true
+  }
+
+  export type WorkflowStepSumAggregateInputType = {
+    order?: true
+    escalateAfterHours?: true
+  }
+
+  export type WorkflowStepMinAggregateInputType = {
+    id?: true
+    instanceId?: true
+    stageId?: true
+    order?: true
+    name?: true
+    approverPermission?: true
+    branchScoped?: true
+    escalateAfterHours?: true
+    escalateToPermission?: true
+    status?: true
+    dueAt?: true
+    escalatedAt?: true
+    actedById?: true
+    onBehalfOfId?: true
+    actedAt?: true
+    comment?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkflowStepMaxAggregateInputType = {
+    id?: true
+    instanceId?: true
+    stageId?: true
+    order?: true
+    name?: true
+    approverPermission?: true
+    branchScoped?: true
+    escalateAfterHours?: true
+    escalateToPermission?: true
+    status?: true
+    dueAt?: true
+    escalatedAt?: true
+    actedById?: true
+    onBehalfOfId?: true
+    actedAt?: true
+    comment?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WorkflowStepCountAggregateInputType = {
+    id?: true
+    instanceId?: true
+    stageId?: true
+    order?: true
+    name?: true
+    approverPermission?: true
+    branchScoped?: true
+    escalateAfterHours?: true
+    escalateToPermission?: true
+    status?: true
+    dueAt?: true
+    escalatedAt?: true
+    actedById?: true
+    onBehalfOfId?: true
+    actedAt?: true
+    comment?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WorkflowStepAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowStep to aggregate.
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowSteps to fetch.
+     */
+    orderBy?: WorkflowStepOrderByWithRelationInput | WorkflowStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkflowStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowSteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowSteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkflowSteps
+    **/
+    _count?: true | WorkflowStepCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WorkflowStepAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WorkflowStepSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkflowStepMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkflowStepMaxAggregateInputType
+  }
+
+  export type GetWorkflowStepAggregateType<T extends WorkflowStepAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflowStep]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflowStep[P]>
+      : GetScalarType<T[P], AggregateWorkflowStep[P]>
+  }
+
+
+
+
+  export type WorkflowStepGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkflowStepWhereInput
+    orderBy?: WorkflowStepOrderByWithAggregationInput | WorkflowStepOrderByWithAggregationInput[]
+    by: WorkflowStepScalarFieldEnum[] | WorkflowStepScalarFieldEnum
+    having?: WorkflowStepScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkflowStepCountAggregateInputType | true
+    _avg?: WorkflowStepAvgAggregateInputType
+    _sum?: WorkflowStepSumAggregateInputType
+    _min?: WorkflowStepMinAggregateInputType
+    _max?: WorkflowStepMaxAggregateInputType
+  }
+
+  export type WorkflowStepGroupByOutputType = {
+    id: string
+    instanceId: string
+    stageId: string | null
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped: boolean
+    escalateAfterHours: number | null
+    escalateToPermission: string | null
+    status: string
+    dueAt: Date | null
+    escalatedAt: Date | null
+    actedById: string | null
+    onBehalfOfId: string | null
+    actedAt: Date | null
+    comment: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WorkflowStepCountAggregateOutputType | null
+    _avg: WorkflowStepAvgAggregateOutputType | null
+    _sum: WorkflowStepSumAggregateOutputType | null
+    _min: WorkflowStepMinAggregateOutputType | null
+    _max: WorkflowStepMaxAggregateOutputType | null
+  }
+
+  type GetWorkflowStepGroupByPayload<T extends WorkflowStepGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkflowStepGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkflowStepGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkflowStepGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkflowStepGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkflowStepSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceId?: boolean
+    stageId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    status?: boolean
+    dueAt?: boolean
+    escalatedAt?: boolean
+    actedById?: boolean
+    onBehalfOfId?: boolean
+    actedAt?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowStep"]>
+
+  export type WorkflowStepSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceId?: boolean
+    stageId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    status?: boolean
+    dueAt?: boolean
+    escalatedAt?: boolean
+    actedById?: boolean
+    onBehalfOfId?: boolean
+    actedAt?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowStep"]>
+
+  export type WorkflowStepSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceId?: boolean
+    stageId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    status?: boolean
+    dueAt?: boolean
+    escalatedAt?: boolean
+    actedById?: boolean
+    onBehalfOfId?: boolean
+    actedAt?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["workflowStep"]>
+
+  export type WorkflowStepSelectScalar = {
+    id?: boolean
+    instanceId?: boolean
+    stageId?: boolean
+    order?: boolean
+    name?: boolean
+    approverPermission?: boolean
+    branchScoped?: boolean
+    escalateAfterHours?: boolean
+    escalateToPermission?: boolean
+    status?: boolean
+    dueAt?: boolean
+    escalatedAt?: boolean
+    actedById?: boolean
+    onBehalfOfId?: boolean
+    actedAt?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WorkflowStepOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "instanceId" | "stageId" | "order" | "name" | "approverPermission" | "branchScoped" | "escalateAfterHours" | "escalateToPermission" | "status" | "dueAt" | "escalatedAt" | "actedById" | "onBehalfOfId" | "actedAt" | "comment" | "createdAt" | "updatedAt", ExtArgs["result"]["workflowStep"]>
+
+  export type $WorkflowStepPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkflowStep"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      instanceId: string
+      stageId: string | null
+      order: number
+      name: string
+      approverPermission: string
+      branchScoped: boolean
+      escalateAfterHours: number | null
+      escalateToPermission: string | null
+      status: string
+      dueAt: Date | null
+      escalatedAt: Date | null
+      actedById: string | null
+      onBehalfOfId: string | null
+      actedAt: Date | null
+      comment: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["workflowStep"]>
+    composites: {}
+  }
+
+  type WorkflowStepGetPayload<S extends boolean | null | undefined | WorkflowStepDefaultArgs> = $Result.GetResult<Prisma.$WorkflowStepPayload, S>
+
+  type WorkflowStepCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkflowStepFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkflowStepCountAggregateInputType | true
+    }
+
+  export interface WorkflowStepDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkflowStep'], meta: { name: 'WorkflowStep' } }
+    /**
+     * Find zero or one WorkflowStep that matches the filter.
+     * @param {WorkflowStepFindUniqueArgs} args - Arguments to find a WorkflowStep
+     * @example
+     * // Get one WorkflowStep
+     * const workflowStep = await prisma.workflowStep.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkflowStepFindUniqueArgs>(args: SelectSubset<T, WorkflowStepFindUniqueArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkflowStep that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkflowStepFindUniqueOrThrowArgs} args - Arguments to find a WorkflowStep
+     * @example
+     * // Get one WorkflowStep
+     * const workflowStep = await prisma.workflowStep.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkflowStepFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkflowStepFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowStep that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepFindFirstArgs} args - Arguments to find a WorkflowStep
+     * @example
+     * // Get one WorkflowStep
+     * const workflowStep = await prisma.workflowStep.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkflowStepFindFirstArgs>(args?: SelectSubset<T, WorkflowStepFindFirstArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowStep that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepFindFirstOrThrowArgs} args - Arguments to find a WorkflowStep
+     * @example
+     * // Get one WorkflowStep
+     * const workflowStep = await prisma.workflowStep.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkflowStepFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkflowStepFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkflowSteps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkflowSteps
+     * const workflowSteps = await prisma.workflowStep.findMany()
+     * 
+     * // Get first 10 WorkflowSteps
+     * const workflowSteps = await prisma.workflowStep.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflowStepWithIdOnly = await prisma.workflowStep.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkflowStepFindManyArgs>(args?: SelectSubset<T, WorkflowStepFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkflowStep.
+     * @param {WorkflowStepCreateArgs} args - Arguments to create a WorkflowStep.
+     * @example
+     * // Create one WorkflowStep
+     * const WorkflowStep = await prisma.workflowStep.create({
+     *   data: {
+     *     // ... data to create a WorkflowStep
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkflowStepCreateArgs>(args: SelectSubset<T, WorkflowStepCreateArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkflowSteps.
+     * @param {WorkflowStepCreateManyArgs} args - Arguments to create many WorkflowSteps.
+     * @example
+     * // Create many WorkflowSteps
+     * const workflowStep = await prisma.workflowStep.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkflowStepCreateManyArgs>(args?: SelectSubset<T, WorkflowStepCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkflowSteps and returns the data saved in the database.
+     * @param {WorkflowStepCreateManyAndReturnArgs} args - Arguments to create many WorkflowSteps.
+     * @example
+     * // Create many WorkflowSteps
+     * const workflowStep = await prisma.workflowStep.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkflowSteps and only return the `id`
+     * const workflowStepWithIdOnly = await prisma.workflowStep.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkflowStepCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkflowStepCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkflowStep.
+     * @param {WorkflowStepDeleteArgs} args - Arguments to delete one WorkflowStep.
+     * @example
+     * // Delete one WorkflowStep
+     * const WorkflowStep = await prisma.workflowStep.delete({
+     *   where: {
+     *     // ... filter to delete one WorkflowStep
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkflowStepDeleteArgs>(args: SelectSubset<T, WorkflowStepDeleteArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkflowStep.
+     * @param {WorkflowStepUpdateArgs} args - Arguments to update one WorkflowStep.
+     * @example
+     * // Update one WorkflowStep
+     * const workflowStep = await prisma.workflowStep.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkflowStepUpdateArgs>(args: SelectSubset<T, WorkflowStepUpdateArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkflowSteps.
+     * @param {WorkflowStepDeleteManyArgs} args - Arguments to filter WorkflowSteps to delete.
+     * @example
+     * // Delete a few WorkflowSteps
+     * const { count } = await prisma.workflowStep.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkflowStepDeleteManyArgs>(args?: SelectSubset<T, WorkflowStepDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowSteps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkflowSteps
+     * const workflowStep = await prisma.workflowStep.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkflowStepUpdateManyArgs>(args: SelectSubset<T, WorkflowStepUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowSteps and returns the data updated in the database.
+     * @param {WorkflowStepUpdateManyAndReturnArgs} args - Arguments to update many WorkflowSteps.
+     * @example
+     * // Update many WorkflowSteps
+     * const workflowStep = await prisma.workflowStep.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkflowSteps and only return the `id`
+     * const workflowStepWithIdOnly = await prisma.workflowStep.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkflowStepUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkflowStepUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkflowStep.
+     * @param {WorkflowStepUpsertArgs} args - Arguments to update or create a WorkflowStep.
+     * @example
+     * // Update or create a WorkflowStep
+     * const workflowStep = await prisma.workflowStep.upsert({
+     *   create: {
+     *     // ... data to create a WorkflowStep
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkflowStep we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkflowStepUpsertArgs>(args: SelectSubset<T, WorkflowStepUpsertArgs<ExtArgs>>): Prisma__WorkflowStepClient<$Result.GetResult<Prisma.$WorkflowStepPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkflowSteps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepCountArgs} args - Arguments to filter WorkflowSteps to count.
+     * @example
+     * // Count the number of WorkflowSteps
+     * const count = await prisma.workflowStep.count({
+     *   where: {
+     *     // ... the filter for the WorkflowSteps we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkflowStepCountArgs>(
+      args?: Subset<T, WorkflowStepCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkflowStepCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkflowStep.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkflowStepAggregateArgs>(args: Subset<T, WorkflowStepAggregateArgs>): Prisma.PrismaPromise<GetWorkflowStepAggregateType<T>>
+
+    /**
+     * Group by WorkflowStep.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowStepGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkflowStepGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkflowStepGroupByArgs['orderBy'] }
+        : { orderBy?: WorkflowStepGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkflowStepGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflowStepGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkflowStep model
+   */
+  readonly fields: WorkflowStepFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkflowStep.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkflowStepClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkflowStep model
+   */
+  interface WorkflowStepFieldRefs {
+    readonly id: FieldRef<"WorkflowStep", 'String'>
+    readonly instanceId: FieldRef<"WorkflowStep", 'String'>
+    readonly stageId: FieldRef<"WorkflowStep", 'String'>
+    readonly order: FieldRef<"WorkflowStep", 'Int'>
+    readonly name: FieldRef<"WorkflowStep", 'String'>
+    readonly approverPermission: FieldRef<"WorkflowStep", 'String'>
+    readonly branchScoped: FieldRef<"WorkflowStep", 'Boolean'>
+    readonly escalateAfterHours: FieldRef<"WorkflowStep", 'Int'>
+    readonly escalateToPermission: FieldRef<"WorkflowStep", 'String'>
+    readonly status: FieldRef<"WorkflowStep", 'String'>
+    readonly dueAt: FieldRef<"WorkflowStep", 'DateTime'>
+    readonly escalatedAt: FieldRef<"WorkflowStep", 'DateTime'>
+    readonly actedById: FieldRef<"WorkflowStep", 'String'>
+    readonly onBehalfOfId: FieldRef<"WorkflowStep", 'String'>
+    readonly actedAt: FieldRef<"WorkflowStep", 'DateTime'>
+    readonly comment: FieldRef<"WorkflowStep", 'String'>
+    readonly createdAt: FieldRef<"WorkflowStep", 'DateTime'>
+    readonly updatedAt: FieldRef<"WorkflowStep", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkflowStep findUnique
+   */
+  export type WorkflowStepFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStep to fetch.
+     */
+    where: WorkflowStepWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStep findUniqueOrThrow
+   */
+  export type WorkflowStepFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStep to fetch.
+     */
+    where: WorkflowStepWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStep findFirst
+   */
+  export type WorkflowStepFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStep to fetch.
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowSteps to fetch.
+     */
+    orderBy?: WorkflowStepOrderByWithRelationInput | WorkflowStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowSteps.
+     */
+    cursor?: WorkflowStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowSteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowSteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowSteps.
+     */
+    distinct?: WorkflowStepScalarFieldEnum | WorkflowStepScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowStep findFirstOrThrow
+   */
+  export type WorkflowStepFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowStep to fetch.
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowSteps to fetch.
+     */
+    orderBy?: WorkflowStepOrderByWithRelationInput | WorkflowStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowSteps.
+     */
+    cursor?: WorkflowStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowSteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowSteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowSteps.
+     */
+    distinct?: WorkflowStepScalarFieldEnum | WorkflowStepScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowStep findMany
+   */
+  export type WorkflowStepFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowSteps to fetch.
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowSteps to fetch.
+     */
+    orderBy?: WorkflowStepOrderByWithRelationInput | WorkflowStepOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkflowSteps.
+     */
+    cursor?: WorkflowStepWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowSteps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowSteps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowSteps.
+     */
+    distinct?: WorkflowStepScalarFieldEnum | WorkflowStepScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowStep create
+   */
+  export type WorkflowStepCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WorkflowStep.
+     */
+    data: XOR<WorkflowStepCreateInput, WorkflowStepUncheckedCreateInput>
+  }
+
+  /**
+   * WorkflowStep createMany
+   */
+  export type WorkflowStepCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkflowSteps.
+     */
+    data: WorkflowStepCreateManyInput | WorkflowStepCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowStep createManyAndReturn
+   */
+  export type WorkflowStepCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkflowSteps.
+     */
+    data: WorkflowStepCreateManyInput | WorkflowStepCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowStep update
+   */
+  export type WorkflowStepUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WorkflowStep.
+     */
+    data: XOR<WorkflowStepUpdateInput, WorkflowStepUncheckedUpdateInput>
+    /**
+     * Choose, which WorkflowStep to update.
+     */
+    where: WorkflowStepWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStep updateMany
+   */
+  export type WorkflowStepUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkflowSteps.
+     */
+    data: XOR<WorkflowStepUpdateManyMutationInput, WorkflowStepUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowSteps to update
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * Limit how many WorkflowSteps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowStep updateManyAndReturn
+   */
+  export type WorkflowStepUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkflowSteps.
+     */
+    data: XOR<WorkflowStepUpdateManyMutationInput, WorkflowStepUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowSteps to update
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * Limit how many WorkflowSteps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowStep upsert
+   */
+  export type WorkflowStepUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WorkflowStep to update in case it exists.
+     */
+    where: WorkflowStepWhereUniqueInput
+    /**
+     * In case the WorkflowStep found by the `where` argument doesn't exist, create a new WorkflowStep with this data.
+     */
+    create: XOR<WorkflowStepCreateInput, WorkflowStepUncheckedCreateInput>
+    /**
+     * In case the WorkflowStep was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkflowStepUpdateInput, WorkflowStepUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkflowStep delete
+   */
+  export type WorkflowStepDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+    /**
+     * Filter which WorkflowStep to delete.
+     */
+    where: WorkflowStepWhereUniqueInput
+  }
+
+  /**
+   * WorkflowStep deleteMany
+   */
+  export type WorkflowStepDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowSteps to delete
+     */
+    where?: WorkflowStepWhereInput
+    /**
+     * Limit how many WorkflowSteps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowStep without action
+   */
+  export type WorkflowStepDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowStep
+     */
+    select?: WorkflowStepSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowStep
+     */
+    omit?: WorkflowStepOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkflowDelegation
+   */
+
+  export type AggregateWorkflowDelegation = {
+    _count: WorkflowDelegationCountAggregateOutputType | null
+    _min: WorkflowDelegationMinAggregateOutputType | null
+    _max: WorkflowDelegationMaxAggregateOutputType | null
+  }
+
+  export type WorkflowDelegationMinAggregateOutputType = {
+    id: string | null
+    fromUserId: string | null
+    toUserId: string | null
+    startsAt: Date | null
+    endsAt: Date | null
+    reason: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+  }
+
+  export type WorkflowDelegationMaxAggregateOutputType = {
+    id: string | null
+    fromUserId: string | null
+    toUserId: string | null
+    startsAt: Date | null
+    endsAt: Date | null
+    reason: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+  }
+
+  export type WorkflowDelegationCountAggregateOutputType = {
+    id: number
+    fromUserId: number
+    toUserId: number
+    startsAt: number
+    endsAt: number
+    reason: number
+    isActive: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WorkflowDelegationMinAggregateInputType = {
+    id?: true
+    fromUserId?: true
+    toUserId?: true
+    startsAt?: true
+    endsAt?: true
+    reason?: true
+    isActive?: true
+    createdAt?: true
+  }
+
+  export type WorkflowDelegationMaxAggregateInputType = {
+    id?: true
+    fromUserId?: true
+    toUserId?: true
+    startsAt?: true
+    endsAt?: true
+    reason?: true
+    isActive?: true
+    createdAt?: true
+  }
+
+  export type WorkflowDelegationCountAggregateInputType = {
+    id?: true
+    fromUserId?: true
+    toUserId?: true
+    startsAt?: true
+    endsAt?: true
+    reason?: true
+    isActive?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WorkflowDelegationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowDelegation to aggregate.
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDelegations to fetch.
+     */
+    orderBy?: WorkflowDelegationOrderByWithRelationInput | WorkflowDelegationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkflowDelegationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDelegations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDelegations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkflowDelegations
+    **/
+    _count?: true | WorkflowDelegationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkflowDelegationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkflowDelegationMaxAggregateInputType
+  }
+
+  export type GetWorkflowDelegationAggregateType<T extends WorkflowDelegationAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflowDelegation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflowDelegation[P]>
+      : GetScalarType<T[P], AggregateWorkflowDelegation[P]>
+  }
+
+
+
+
+  export type WorkflowDelegationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkflowDelegationWhereInput
+    orderBy?: WorkflowDelegationOrderByWithAggregationInput | WorkflowDelegationOrderByWithAggregationInput[]
+    by: WorkflowDelegationScalarFieldEnum[] | WorkflowDelegationScalarFieldEnum
+    having?: WorkflowDelegationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkflowDelegationCountAggregateInputType | true
+    _min?: WorkflowDelegationMinAggregateInputType
+    _max?: WorkflowDelegationMaxAggregateInputType
+  }
+
+  export type WorkflowDelegationGroupByOutputType = {
+    id: string
+    fromUserId: string
+    toUserId: string
+    startsAt: Date
+    endsAt: Date
+    reason: string | null
+    isActive: boolean
+    createdAt: Date
+    _count: WorkflowDelegationCountAggregateOutputType | null
+    _min: WorkflowDelegationMinAggregateOutputType | null
+    _max: WorkflowDelegationMaxAggregateOutputType | null
+  }
+
+  type GetWorkflowDelegationGroupByPayload<T extends WorkflowDelegationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkflowDelegationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkflowDelegationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkflowDelegationGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkflowDelegationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkflowDelegationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fromUserId?: boolean
+    toUserId?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowDelegation"]>
+
+  export type WorkflowDelegationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fromUserId?: boolean
+    toUserId?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowDelegation"]>
+
+  export type WorkflowDelegationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fromUserId?: boolean
+    toUserId?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowDelegation"]>
+
+  export type WorkflowDelegationSelectScalar = {
+    id?: boolean
+    fromUserId?: boolean
+    toUserId?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    reason?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+  }
+
+  export type WorkflowDelegationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fromUserId" | "toUserId" | "startsAt" | "endsAt" | "reason" | "isActive" | "createdAt", ExtArgs["result"]["workflowDelegation"]>
+
+  export type $WorkflowDelegationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkflowDelegation"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      fromUserId: string
+      toUserId: string
+      startsAt: Date
+      endsAt: Date
+      reason: string | null
+      isActive: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["workflowDelegation"]>
+    composites: {}
+  }
+
+  type WorkflowDelegationGetPayload<S extends boolean | null | undefined | WorkflowDelegationDefaultArgs> = $Result.GetResult<Prisma.$WorkflowDelegationPayload, S>
+
+  type WorkflowDelegationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkflowDelegationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkflowDelegationCountAggregateInputType | true
+    }
+
+  export interface WorkflowDelegationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkflowDelegation'], meta: { name: 'WorkflowDelegation' } }
+    /**
+     * Find zero or one WorkflowDelegation that matches the filter.
+     * @param {WorkflowDelegationFindUniqueArgs} args - Arguments to find a WorkflowDelegation
+     * @example
+     * // Get one WorkflowDelegation
+     * const workflowDelegation = await prisma.workflowDelegation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkflowDelegationFindUniqueArgs>(args: SelectSubset<T, WorkflowDelegationFindUniqueArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkflowDelegation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkflowDelegationFindUniqueOrThrowArgs} args - Arguments to find a WorkflowDelegation
+     * @example
+     * // Get one WorkflowDelegation
+     * const workflowDelegation = await prisma.workflowDelegation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkflowDelegationFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkflowDelegationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowDelegation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationFindFirstArgs} args - Arguments to find a WorkflowDelegation
+     * @example
+     * // Get one WorkflowDelegation
+     * const workflowDelegation = await prisma.workflowDelegation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkflowDelegationFindFirstArgs>(args?: SelectSubset<T, WorkflowDelegationFindFirstArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowDelegation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationFindFirstOrThrowArgs} args - Arguments to find a WorkflowDelegation
+     * @example
+     * // Get one WorkflowDelegation
+     * const workflowDelegation = await prisma.workflowDelegation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkflowDelegationFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkflowDelegationFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkflowDelegations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkflowDelegations
+     * const workflowDelegations = await prisma.workflowDelegation.findMany()
+     * 
+     * // Get first 10 WorkflowDelegations
+     * const workflowDelegations = await prisma.workflowDelegation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflowDelegationWithIdOnly = await prisma.workflowDelegation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkflowDelegationFindManyArgs>(args?: SelectSubset<T, WorkflowDelegationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkflowDelegation.
+     * @param {WorkflowDelegationCreateArgs} args - Arguments to create a WorkflowDelegation.
+     * @example
+     * // Create one WorkflowDelegation
+     * const WorkflowDelegation = await prisma.workflowDelegation.create({
+     *   data: {
+     *     // ... data to create a WorkflowDelegation
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkflowDelegationCreateArgs>(args: SelectSubset<T, WorkflowDelegationCreateArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkflowDelegations.
+     * @param {WorkflowDelegationCreateManyArgs} args - Arguments to create many WorkflowDelegations.
+     * @example
+     * // Create many WorkflowDelegations
+     * const workflowDelegation = await prisma.workflowDelegation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkflowDelegationCreateManyArgs>(args?: SelectSubset<T, WorkflowDelegationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkflowDelegations and returns the data saved in the database.
+     * @param {WorkflowDelegationCreateManyAndReturnArgs} args - Arguments to create many WorkflowDelegations.
+     * @example
+     * // Create many WorkflowDelegations
+     * const workflowDelegation = await prisma.workflowDelegation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkflowDelegations and only return the `id`
+     * const workflowDelegationWithIdOnly = await prisma.workflowDelegation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkflowDelegationCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkflowDelegationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkflowDelegation.
+     * @param {WorkflowDelegationDeleteArgs} args - Arguments to delete one WorkflowDelegation.
+     * @example
+     * // Delete one WorkflowDelegation
+     * const WorkflowDelegation = await prisma.workflowDelegation.delete({
+     *   where: {
+     *     // ... filter to delete one WorkflowDelegation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkflowDelegationDeleteArgs>(args: SelectSubset<T, WorkflowDelegationDeleteArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkflowDelegation.
+     * @param {WorkflowDelegationUpdateArgs} args - Arguments to update one WorkflowDelegation.
+     * @example
+     * // Update one WorkflowDelegation
+     * const workflowDelegation = await prisma.workflowDelegation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkflowDelegationUpdateArgs>(args: SelectSubset<T, WorkflowDelegationUpdateArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkflowDelegations.
+     * @param {WorkflowDelegationDeleteManyArgs} args - Arguments to filter WorkflowDelegations to delete.
+     * @example
+     * // Delete a few WorkflowDelegations
+     * const { count } = await prisma.workflowDelegation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkflowDelegationDeleteManyArgs>(args?: SelectSubset<T, WorkflowDelegationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowDelegations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkflowDelegations
+     * const workflowDelegation = await prisma.workflowDelegation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkflowDelegationUpdateManyArgs>(args: SelectSubset<T, WorkflowDelegationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowDelegations and returns the data updated in the database.
+     * @param {WorkflowDelegationUpdateManyAndReturnArgs} args - Arguments to update many WorkflowDelegations.
+     * @example
+     * // Update many WorkflowDelegations
+     * const workflowDelegation = await prisma.workflowDelegation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkflowDelegations and only return the `id`
+     * const workflowDelegationWithIdOnly = await prisma.workflowDelegation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkflowDelegationUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkflowDelegationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkflowDelegation.
+     * @param {WorkflowDelegationUpsertArgs} args - Arguments to update or create a WorkflowDelegation.
+     * @example
+     * // Update or create a WorkflowDelegation
+     * const workflowDelegation = await prisma.workflowDelegation.upsert({
+     *   create: {
+     *     // ... data to create a WorkflowDelegation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkflowDelegation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkflowDelegationUpsertArgs>(args: SelectSubset<T, WorkflowDelegationUpsertArgs<ExtArgs>>): Prisma__WorkflowDelegationClient<$Result.GetResult<Prisma.$WorkflowDelegationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkflowDelegations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationCountArgs} args - Arguments to filter WorkflowDelegations to count.
+     * @example
+     * // Count the number of WorkflowDelegations
+     * const count = await prisma.workflowDelegation.count({
+     *   where: {
+     *     // ... the filter for the WorkflowDelegations we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkflowDelegationCountArgs>(
+      args?: Subset<T, WorkflowDelegationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkflowDelegationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkflowDelegation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkflowDelegationAggregateArgs>(args: Subset<T, WorkflowDelegationAggregateArgs>): Prisma.PrismaPromise<GetWorkflowDelegationAggregateType<T>>
+
+    /**
+     * Group by WorkflowDelegation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowDelegationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkflowDelegationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkflowDelegationGroupByArgs['orderBy'] }
+        : { orderBy?: WorkflowDelegationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkflowDelegationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflowDelegationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkflowDelegation model
+   */
+  readonly fields: WorkflowDelegationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkflowDelegation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkflowDelegationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkflowDelegation model
+   */
+  interface WorkflowDelegationFieldRefs {
+    readonly id: FieldRef<"WorkflowDelegation", 'String'>
+    readonly fromUserId: FieldRef<"WorkflowDelegation", 'String'>
+    readonly toUserId: FieldRef<"WorkflowDelegation", 'String'>
+    readonly startsAt: FieldRef<"WorkflowDelegation", 'DateTime'>
+    readonly endsAt: FieldRef<"WorkflowDelegation", 'DateTime'>
+    readonly reason: FieldRef<"WorkflowDelegation", 'String'>
+    readonly isActive: FieldRef<"WorkflowDelegation", 'Boolean'>
+    readonly createdAt: FieldRef<"WorkflowDelegation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkflowDelegation findUnique
+   */
+  export type WorkflowDelegationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDelegation to fetch.
+     */
+    where: WorkflowDelegationWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDelegation findUniqueOrThrow
+   */
+  export type WorkflowDelegationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDelegation to fetch.
+     */
+    where: WorkflowDelegationWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDelegation findFirst
+   */
+  export type WorkflowDelegationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDelegation to fetch.
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDelegations to fetch.
+     */
+    orderBy?: WorkflowDelegationOrderByWithRelationInput | WorkflowDelegationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowDelegations.
+     */
+    cursor?: WorkflowDelegationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDelegations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDelegations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowDelegations.
+     */
+    distinct?: WorkflowDelegationScalarFieldEnum | WorkflowDelegationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowDelegation findFirstOrThrow
+   */
+  export type WorkflowDelegationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDelegation to fetch.
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDelegations to fetch.
+     */
+    orderBy?: WorkflowDelegationOrderByWithRelationInput | WorkflowDelegationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowDelegations.
+     */
+    cursor?: WorkflowDelegationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDelegations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDelegations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowDelegations.
+     */
+    distinct?: WorkflowDelegationScalarFieldEnum | WorkflowDelegationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowDelegation findMany
+   */
+  export type WorkflowDelegationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowDelegations to fetch.
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowDelegations to fetch.
+     */
+    orderBy?: WorkflowDelegationOrderByWithRelationInput | WorkflowDelegationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkflowDelegations.
+     */
+    cursor?: WorkflowDelegationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowDelegations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowDelegations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowDelegations.
+     */
+    distinct?: WorkflowDelegationScalarFieldEnum | WorkflowDelegationScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowDelegation create
+   */
+  export type WorkflowDelegationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WorkflowDelegation.
+     */
+    data: XOR<WorkflowDelegationCreateInput, WorkflowDelegationUncheckedCreateInput>
+  }
+
+  /**
+   * WorkflowDelegation createMany
+   */
+  export type WorkflowDelegationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkflowDelegations.
+     */
+    data: WorkflowDelegationCreateManyInput | WorkflowDelegationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowDelegation createManyAndReturn
+   */
+  export type WorkflowDelegationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkflowDelegations.
+     */
+    data: WorkflowDelegationCreateManyInput | WorkflowDelegationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowDelegation update
+   */
+  export type WorkflowDelegationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WorkflowDelegation.
+     */
+    data: XOR<WorkflowDelegationUpdateInput, WorkflowDelegationUncheckedUpdateInput>
+    /**
+     * Choose, which WorkflowDelegation to update.
+     */
+    where: WorkflowDelegationWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDelegation updateMany
+   */
+  export type WorkflowDelegationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkflowDelegations.
+     */
+    data: XOR<WorkflowDelegationUpdateManyMutationInput, WorkflowDelegationUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowDelegations to update
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * Limit how many WorkflowDelegations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowDelegation updateManyAndReturn
+   */
+  export type WorkflowDelegationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkflowDelegations.
+     */
+    data: XOR<WorkflowDelegationUpdateManyMutationInput, WorkflowDelegationUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowDelegations to update
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * Limit how many WorkflowDelegations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowDelegation upsert
+   */
+  export type WorkflowDelegationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WorkflowDelegation to update in case it exists.
+     */
+    where: WorkflowDelegationWhereUniqueInput
+    /**
+     * In case the WorkflowDelegation found by the `where` argument doesn't exist, create a new WorkflowDelegation with this data.
+     */
+    create: XOR<WorkflowDelegationCreateInput, WorkflowDelegationUncheckedCreateInput>
+    /**
+     * In case the WorkflowDelegation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkflowDelegationUpdateInput, WorkflowDelegationUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkflowDelegation delete
+   */
+  export type WorkflowDelegationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+    /**
+     * Filter which WorkflowDelegation to delete.
+     */
+    where: WorkflowDelegationWhereUniqueInput
+  }
+
+  /**
+   * WorkflowDelegation deleteMany
+   */
+  export type WorkflowDelegationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowDelegations to delete
+     */
+    where?: WorkflowDelegationWhereInput
+    /**
+     * Limit how many WorkflowDelegations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowDelegation without action
+   */
+  export type WorkflowDelegationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowDelegation
+     */
+    select?: WorkflowDelegationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowDelegation
+     */
+    omit?: WorkflowDelegationOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WorkflowEvent
+   */
+
+  export type AggregateWorkflowEvent = {
+    _count: WorkflowEventCountAggregateOutputType | null
+    _min: WorkflowEventMinAggregateOutputType | null
+    _max: WorkflowEventMaxAggregateOutputType | null
+  }
+
+  export type WorkflowEventMinAggregateOutputType = {
+    id: string | null
+    instanceId: string | null
+    stepId: string | null
+    action: string | null
+    actorId: string | null
+    onBehalfOfId: string | null
+    comment: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    prevHash: string | null
+    hash: string | null
+    createdAt: Date | null
+  }
+
+  export type WorkflowEventMaxAggregateOutputType = {
+    id: string | null
+    instanceId: string | null
+    stepId: string | null
+    action: string | null
+    actorId: string | null
+    onBehalfOfId: string | null
+    comment: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    prevHash: string | null
+    hash: string | null
+    createdAt: Date | null
+  }
+
+  export type WorkflowEventCountAggregateOutputType = {
+    id: number
+    instanceId: number
+    stepId: number
+    action: number
+    actorId: number
+    onBehalfOfId: number
+    comment: number
+    ipAddress: number
+    userAgent: number
+    prevHash: number
+    hash: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WorkflowEventMinAggregateInputType = {
+    id?: true
+    instanceId?: true
+    stepId?: true
+    action?: true
+    actorId?: true
+    onBehalfOfId?: true
+    comment?: true
+    ipAddress?: true
+    userAgent?: true
+    prevHash?: true
+    hash?: true
+    createdAt?: true
+  }
+
+  export type WorkflowEventMaxAggregateInputType = {
+    id?: true
+    instanceId?: true
+    stepId?: true
+    action?: true
+    actorId?: true
+    onBehalfOfId?: true
+    comment?: true
+    ipAddress?: true
+    userAgent?: true
+    prevHash?: true
+    hash?: true
+    createdAt?: true
+  }
+
+  export type WorkflowEventCountAggregateInputType = {
+    id?: true
+    instanceId?: true
+    stepId?: true
+    action?: true
+    actorId?: true
+    onBehalfOfId?: true
+    comment?: true
+    ipAddress?: true
+    userAgent?: true
+    prevHash?: true
+    hash?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WorkflowEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowEvent to aggregate.
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowEvents to fetch.
+     */
+    orderBy?: WorkflowEventOrderByWithRelationInput | WorkflowEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WorkflowEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WorkflowEvents
+    **/
+    _count?: true | WorkflowEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WorkflowEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WorkflowEventMaxAggregateInputType
+  }
+
+  export type GetWorkflowEventAggregateType<T extends WorkflowEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateWorkflowEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWorkflowEvent[P]>
+      : GetScalarType<T[P], AggregateWorkflowEvent[P]>
+  }
+
+
+
+
+  export type WorkflowEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WorkflowEventWhereInput
+    orderBy?: WorkflowEventOrderByWithAggregationInput | WorkflowEventOrderByWithAggregationInput[]
+    by: WorkflowEventScalarFieldEnum[] | WorkflowEventScalarFieldEnum
+    having?: WorkflowEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WorkflowEventCountAggregateInputType | true
+    _min?: WorkflowEventMinAggregateInputType
+    _max?: WorkflowEventMaxAggregateInputType
+  }
+
+  export type WorkflowEventGroupByOutputType = {
+    id: string
+    instanceId: string
+    stepId: string | null
+    action: string
+    actorId: string
+    onBehalfOfId: string | null
+    comment: string | null
+    ipAddress: string | null
+    userAgent: string | null
+    prevHash: string | null
+    hash: string
+    createdAt: Date
+    _count: WorkflowEventCountAggregateOutputType | null
+    _min: WorkflowEventMinAggregateOutputType | null
+    _max: WorkflowEventMaxAggregateOutputType | null
+  }
+
+  type GetWorkflowEventGroupByPayload<T extends WorkflowEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WorkflowEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WorkflowEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WorkflowEventGroupByOutputType[P]>
+            : GetScalarType<T[P], WorkflowEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WorkflowEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceId?: boolean
+    stepId?: boolean
+    action?: boolean
+    actorId?: boolean
+    onBehalfOfId?: boolean
+    comment?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    prevHash?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowEvent"]>
+
+  export type WorkflowEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceId?: boolean
+    stepId?: boolean
+    action?: boolean
+    actorId?: boolean
+    onBehalfOfId?: boolean
+    comment?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    prevHash?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowEvent"]>
+
+  export type WorkflowEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    instanceId?: boolean
+    stepId?: boolean
+    action?: boolean
+    actorId?: boolean
+    onBehalfOfId?: boolean
+    comment?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    prevHash?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["workflowEvent"]>
+
+  export type WorkflowEventSelectScalar = {
+    id?: boolean
+    instanceId?: boolean
+    stepId?: boolean
+    action?: boolean
+    actorId?: boolean
+    onBehalfOfId?: boolean
+    comment?: boolean
+    ipAddress?: boolean
+    userAgent?: boolean
+    prevHash?: boolean
+    hash?: boolean
+    createdAt?: boolean
+  }
+
+  export type WorkflowEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "instanceId" | "stepId" | "action" | "actorId" | "onBehalfOfId" | "comment" | "ipAddress" | "userAgent" | "prevHash" | "hash" | "createdAt", ExtArgs["result"]["workflowEvent"]>
+
+  export type $WorkflowEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WorkflowEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      instanceId: string
+      stepId: string | null
+      action: string
+      actorId: string
+      onBehalfOfId: string | null
+      comment: string | null
+      ipAddress: string | null
+      userAgent: string | null
+      prevHash: string | null
+      hash: string
+      createdAt: Date
+    }, ExtArgs["result"]["workflowEvent"]>
+    composites: {}
+  }
+
+  type WorkflowEventGetPayload<S extends boolean | null | undefined | WorkflowEventDefaultArgs> = $Result.GetResult<Prisma.$WorkflowEventPayload, S>
+
+  type WorkflowEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WorkflowEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WorkflowEventCountAggregateInputType | true
+    }
+
+  export interface WorkflowEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WorkflowEvent'], meta: { name: 'WorkflowEvent' } }
+    /**
+     * Find zero or one WorkflowEvent that matches the filter.
+     * @param {WorkflowEventFindUniqueArgs} args - Arguments to find a WorkflowEvent
+     * @example
+     * // Get one WorkflowEvent
+     * const workflowEvent = await prisma.workflowEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WorkflowEventFindUniqueArgs>(args: SelectSubset<T, WorkflowEventFindUniqueArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WorkflowEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WorkflowEventFindUniqueOrThrowArgs} args - Arguments to find a WorkflowEvent
+     * @example
+     * // Get one WorkflowEvent
+     * const workflowEvent = await prisma.workflowEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WorkflowEventFindUniqueOrThrowArgs>(args: SelectSubset<T, WorkflowEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventFindFirstArgs} args - Arguments to find a WorkflowEvent
+     * @example
+     * // Get one WorkflowEvent
+     * const workflowEvent = await prisma.workflowEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WorkflowEventFindFirstArgs>(args?: SelectSubset<T, WorkflowEventFindFirstArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WorkflowEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventFindFirstOrThrowArgs} args - Arguments to find a WorkflowEvent
+     * @example
+     * // Get one WorkflowEvent
+     * const workflowEvent = await prisma.workflowEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WorkflowEventFindFirstOrThrowArgs>(args?: SelectSubset<T, WorkflowEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WorkflowEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WorkflowEvents
+     * const workflowEvents = await prisma.workflowEvent.findMany()
+     * 
+     * // Get first 10 WorkflowEvents
+     * const workflowEvents = await prisma.workflowEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const workflowEventWithIdOnly = await prisma.workflowEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WorkflowEventFindManyArgs>(args?: SelectSubset<T, WorkflowEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WorkflowEvent.
+     * @param {WorkflowEventCreateArgs} args - Arguments to create a WorkflowEvent.
+     * @example
+     * // Create one WorkflowEvent
+     * const WorkflowEvent = await prisma.workflowEvent.create({
+     *   data: {
+     *     // ... data to create a WorkflowEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends WorkflowEventCreateArgs>(args: SelectSubset<T, WorkflowEventCreateArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WorkflowEvents.
+     * @param {WorkflowEventCreateManyArgs} args - Arguments to create many WorkflowEvents.
+     * @example
+     * // Create many WorkflowEvents
+     * const workflowEvent = await prisma.workflowEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WorkflowEventCreateManyArgs>(args?: SelectSubset<T, WorkflowEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WorkflowEvents and returns the data saved in the database.
+     * @param {WorkflowEventCreateManyAndReturnArgs} args - Arguments to create many WorkflowEvents.
+     * @example
+     * // Create many WorkflowEvents
+     * const workflowEvent = await prisma.workflowEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WorkflowEvents and only return the `id`
+     * const workflowEventWithIdOnly = await prisma.workflowEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WorkflowEventCreateManyAndReturnArgs>(args?: SelectSubset<T, WorkflowEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WorkflowEvent.
+     * @param {WorkflowEventDeleteArgs} args - Arguments to delete one WorkflowEvent.
+     * @example
+     * // Delete one WorkflowEvent
+     * const WorkflowEvent = await prisma.workflowEvent.delete({
+     *   where: {
+     *     // ... filter to delete one WorkflowEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WorkflowEventDeleteArgs>(args: SelectSubset<T, WorkflowEventDeleteArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WorkflowEvent.
+     * @param {WorkflowEventUpdateArgs} args - Arguments to update one WorkflowEvent.
+     * @example
+     * // Update one WorkflowEvent
+     * const workflowEvent = await prisma.workflowEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WorkflowEventUpdateArgs>(args: SelectSubset<T, WorkflowEventUpdateArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WorkflowEvents.
+     * @param {WorkflowEventDeleteManyArgs} args - Arguments to filter WorkflowEvents to delete.
+     * @example
+     * // Delete a few WorkflowEvents
+     * const { count } = await prisma.workflowEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WorkflowEventDeleteManyArgs>(args?: SelectSubset<T, WorkflowEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WorkflowEvents
+     * const workflowEvent = await prisma.workflowEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WorkflowEventUpdateManyArgs>(args: SelectSubset<T, WorkflowEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WorkflowEvents and returns the data updated in the database.
+     * @param {WorkflowEventUpdateManyAndReturnArgs} args - Arguments to update many WorkflowEvents.
+     * @example
+     * // Update many WorkflowEvents
+     * const workflowEvent = await prisma.workflowEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WorkflowEvents and only return the `id`
+     * const workflowEventWithIdOnly = await prisma.workflowEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WorkflowEventUpdateManyAndReturnArgs>(args: SelectSubset<T, WorkflowEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WorkflowEvent.
+     * @param {WorkflowEventUpsertArgs} args - Arguments to update or create a WorkflowEvent.
+     * @example
+     * // Update or create a WorkflowEvent
+     * const workflowEvent = await prisma.workflowEvent.upsert({
+     *   create: {
+     *     // ... data to create a WorkflowEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WorkflowEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WorkflowEventUpsertArgs>(args: SelectSubset<T, WorkflowEventUpsertArgs<ExtArgs>>): Prisma__WorkflowEventClient<$Result.GetResult<Prisma.$WorkflowEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WorkflowEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventCountArgs} args - Arguments to filter WorkflowEvents to count.
+     * @example
+     * // Count the number of WorkflowEvents
+     * const count = await prisma.workflowEvent.count({
+     *   where: {
+     *     // ... the filter for the WorkflowEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends WorkflowEventCountArgs>(
+      args?: Subset<T, WorkflowEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WorkflowEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WorkflowEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WorkflowEventAggregateArgs>(args: Subset<T, WorkflowEventAggregateArgs>): Prisma.PrismaPromise<GetWorkflowEventAggregateType<T>>
+
+    /**
+     * Group by WorkflowEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WorkflowEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WorkflowEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WorkflowEventGroupByArgs['orderBy'] }
+        : { orderBy?: WorkflowEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WorkflowEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWorkflowEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WorkflowEvent model
+   */
+  readonly fields: WorkflowEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WorkflowEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WorkflowEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WorkflowEvent model
+   */
+  interface WorkflowEventFieldRefs {
+    readonly id: FieldRef<"WorkflowEvent", 'String'>
+    readonly instanceId: FieldRef<"WorkflowEvent", 'String'>
+    readonly stepId: FieldRef<"WorkflowEvent", 'String'>
+    readonly action: FieldRef<"WorkflowEvent", 'String'>
+    readonly actorId: FieldRef<"WorkflowEvent", 'String'>
+    readonly onBehalfOfId: FieldRef<"WorkflowEvent", 'String'>
+    readonly comment: FieldRef<"WorkflowEvent", 'String'>
+    readonly ipAddress: FieldRef<"WorkflowEvent", 'String'>
+    readonly userAgent: FieldRef<"WorkflowEvent", 'String'>
+    readonly prevHash: FieldRef<"WorkflowEvent", 'String'>
+    readonly hash: FieldRef<"WorkflowEvent", 'String'>
+    readonly createdAt: FieldRef<"WorkflowEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WorkflowEvent findUnique
+   */
+  export type WorkflowEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowEvent to fetch.
+     */
+    where: WorkflowEventWhereUniqueInput
+  }
+
+  /**
+   * WorkflowEvent findUniqueOrThrow
+   */
+  export type WorkflowEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowEvent to fetch.
+     */
+    where: WorkflowEventWhereUniqueInput
+  }
+
+  /**
+   * WorkflowEvent findFirst
+   */
+  export type WorkflowEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowEvent to fetch.
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowEvents to fetch.
+     */
+    orderBy?: WorkflowEventOrderByWithRelationInput | WorkflowEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowEvents.
+     */
+    cursor?: WorkflowEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowEvents.
+     */
+    distinct?: WorkflowEventScalarFieldEnum | WorkflowEventScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowEvent findFirstOrThrow
+   */
+  export type WorkflowEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowEvent to fetch.
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowEvents to fetch.
+     */
+    orderBy?: WorkflowEventOrderByWithRelationInput | WorkflowEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WorkflowEvents.
+     */
+    cursor?: WorkflowEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowEvents.
+     */
+    distinct?: WorkflowEventScalarFieldEnum | WorkflowEventScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowEvent findMany
+   */
+  export type WorkflowEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * Filter, which WorkflowEvents to fetch.
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WorkflowEvents to fetch.
+     */
+    orderBy?: WorkflowEventOrderByWithRelationInput | WorkflowEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WorkflowEvents.
+     */
+    cursor?: WorkflowEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WorkflowEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WorkflowEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WorkflowEvents.
+     */
+    distinct?: WorkflowEventScalarFieldEnum | WorkflowEventScalarFieldEnum[]
+  }
+
+  /**
+   * WorkflowEvent create
+   */
+  export type WorkflowEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WorkflowEvent.
+     */
+    data: XOR<WorkflowEventCreateInput, WorkflowEventUncheckedCreateInput>
+  }
+
+  /**
+   * WorkflowEvent createMany
+   */
+  export type WorkflowEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WorkflowEvents.
+     */
+    data: WorkflowEventCreateManyInput | WorkflowEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowEvent createManyAndReturn
+   */
+  export type WorkflowEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many WorkflowEvents.
+     */
+    data: WorkflowEventCreateManyInput | WorkflowEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WorkflowEvent update
+   */
+  export type WorkflowEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WorkflowEvent.
+     */
+    data: XOR<WorkflowEventUpdateInput, WorkflowEventUncheckedUpdateInput>
+    /**
+     * Choose, which WorkflowEvent to update.
+     */
+    where: WorkflowEventWhereUniqueInput
+  }
+
+  /**
+   * WorkflowEvent updateMany
+   */
+  export type WorkflowEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WorkflowEvents.
+     */
+    data: XOR<WorkflowEventUpdateManyMutationInput, WorkflowEventUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowEvents to update
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * Limit how many WorkflowEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowEvent updateManyAndReturn
+   */
+  export type WorkflowEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * The data used to update WorkflowEvents.
+     */
+    data: XOR<WorkflowEventUpdateManyMutationInput, WorkflowEventUncheckedUpdateManyInput>
+    /**
+     * Filter which WorkflowEvents to update
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * Limit how many WorkflowEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowEvent upsert
+   */
+  export type WorkflowEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WorkflowEvent to update in case it exists.
+     */
+    where: WorkflowEventWhereUniqueInput
+    /**
+     * In case the WorkflowEvent found by the `where` argument doesn't exist, create a new WorkflowEvent with this data.
+     */
+    create: XOR<WorkflowEventCreateInput, WorkflowEventUncheckedCreateInput>
+    /**
+     * In case the WorkflowEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WorkflowEventUpdateInput, WorkflowEventUncheckedUpdateInput>
+  }
+
+  /**
+   * WorkflowEvent delete
+   */
+  export type WorkflowEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+    /**
+     * Filter which WorkflowEvent to delete.
+     */
+    where: WorkflowEventWhereUniqueInput
+  }
+
+  /**
+   * WorkflowEvent deleteMany
+   */
+  export type WorkflowEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WorkflowEvents to delete
+     */
+    where?: WorkflowEventWhereInput
+    /**
+     * Limit how many WorkflowEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WorkflowEvent without action
+   */
+  export type WorkflowEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WorkflowEvent
+     */
+    select?: WorkflowEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WorkflowEvent
+     */
+    omit?: WorkflowEventOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -117743,6 +133269,238 @@ export namespace Prisma {
   };
 
   export type ApprovalStepScalarFieldEnum = (typeof ApprovalStepScalarFieldEnum)[keyof typeof ApprovalStepScalarFieldEnum]
+
+
+  export const CrmTerritoryScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    branchId: 'branchId',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CrmTerritoryScalarFieldEnum = (typeof CrmTerritoryScalarFieldEnum)[keyof typeof CrmTerritoryScalarFieldEnum]
+
+
+  export const CrmTerritoryMemberScalarFieldEnum: {
+    id: 'id',
+    territoryId: 'territoryId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type CrmTerritoryMemberScalarFieldEnum = (typeof CrmTerritoryMemberScalarFieldEnum)[keyof typeof CrmTerritoryMemberScalarFieldEnum]
+
+
+  export const CrmLeadScalarFieldEnum: {
+    id: 'id',
+    leadNumber: 'leadNumber',
+    name: 'name',
+    company: 'company',
+    email: 'email',
+    phone: 'phone',
+    address: 'address',
+    source: 'source',
+    status: 'status',
+    notes: 'notes',
+    territoryId: 'territoryId',
+    branchId: 'branchId',
+    ownerId: 'ownerId',
+    customerId: 'customerId',
+    convertedAt: 'convertedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CrmLeadScalarFieldEnum = (typeof CrmLeadScalarFieldEnum)[keyof typeof CrmLeadScalarFieldEnum]
+
+
+  export const CrmOpportunityScalarFieldEnum: {
+    id: 'id',
+    opportunityNumber: 'opportunityNumber',
+    salesDocumentId: 'salesDocumentId',
+    title: 'title',
+    leadId: 'leadId',
+    customerId: 'customerId',
+    customerName: 'customerName',
+    stage: 'stage',
+    value: 'value',
+    probability: 'probability',
+    expectedCloseDate: 'expectedCloseDate',
+    lostReason: 'lostReason',
+    closedAt: 'closedAt',
+    notes: 'notes',
+    territoryId: 'territoryId',
+    branchId: 'branchId',
+    ownerId: 'ownerId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CrmOpportunityScalarFieldEnum = (typeof CrmOpportunityScalarFieldEnum)[keyof typeof CrmOpportunityScalarFieldEnum]
+
+
+  export const CrmInteractionScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    subject: 'subject',
+    notes: 'notes',
+    interactionDate: 'interactionDate',
+    leadId: 'leadId',
+    opportunityId: 'opportunityId',
+    customerId: 'customerId',
+    createdById: 'createdById',
+    createdAt: 'createdAt'
+  };
+
+  export type CrmInteractionScalarFieldEnum = (typeof CrmInteractionScalarFieldEnum)[keyof typeof CrmInteractionScalarFieldEnum]
+
+
+  export const CrmTaskScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    notes: 'notes',
+    dueDate: 'dueDate',
+    status: 'status',
+    leadId: 'leadId',
+    opportunityId: 'opportunityId',
+    customerId: 'customerId',
+    assignedToId: 'assignedToId',
+    createdById: 'createdById',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CrmTaskScalarFieldEnum = (typeof CrmTaskScalarFieldEnum)[keyof typeof CrmTaskScalarFieldEnum]
+
+
+  export const CrmSalesTargetScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    territoryId: 'territoryId',
+    periodStart: 'periodStart',
+    periodEnd: 'periodEnd',
+    targetAmount: 'targetAmount',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type CrmSalesTargetScalarFieldEnum = (typeof CrmSalesTargetScalarFieldEnum)[keyof typeof CrmSalesTargetScalarFieldEnum]
+
+
+  export const WorkflowDefinitionScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    entityType: 'entityType',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkflowDefinitionScalarFieldEnum = (typeof WorkflowDefinitionScalarFieldEnum)[keyof typeof WorkflowDefinitionScalarFieldEnum]
+
+
+  export const WorkflowStageScalarFieldEnum: {
+    id: 'id',
+    definitionId: 'definitionId',
+    order: 'order',
+    name: 'name',
+    approverPermission: 'approverPermission',
+    branchScoped: 'branchScoped',
+    minAmount: 'minAmount',
+    escalateAfterHours: 'escalateAfterHours',
+    escalateToPermission: 'escalateToPermission',
+    createdAt: 'createdAt'
+  };
+
+  export type WorkflowStageScalarFieldEnum = (typeof WorkflowStageScalarFieldEnum)[keyof typeof WorkflowStageScalarFieldEnum]
+
+
+  export const WorkflowInstanceScalarFieldEnum: {
+    id: 'id',
+    instanceNumber: 'instanceNumber',
+    definitionId: 'definitionId',
+    definitionCode: 'definitionCode',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    title: 'title',
+    summary: 'summary',
+    amount: 'amount',
+    branchId: 'branchId',
+    requestedById: 'requestedById',
+    status: 'status',
+    currentOrder: 'currentOrder',
+    payload: 'payload',
+    outcomeApplied: 'outcomeApplied',
+    outcomeError: 'outcomeError',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkflowInstanceScalarFieldEnum = (typeof WorkflowInstanceScalarFieldEnum)[keyof typeof WorkflowInstanceScalarFieldEnum]
+
+
+  export const WorkflowStepScalarFieldEnum: {
+    id: 'id',
+    instanceId: 'instanceId',
+    stageId: 'stageId',
+    order: 'order',
+    name: 'name',
+    approverPermission: 'approverPermission',
+    branchScoped: 'branchScoped',
+    escalateAfterHours: 'escalateAfterHours',
+    escalateToPermission: 'escalateToPermission',
+    status: 'status',
+    dueAt: 'dueAt',
+    escalatedAt: 'escalatedAt',
+    actedById: 'actedById',
+    onBehalfOfId: 'onBehalfOfId',
+    actedAt: 'actedAt',
+    comment: 'comment',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WorkflowStepScalarFieldEnum = (typeof WorkflowStepScalarFieldEnum)[keyof typeof WorkflowStepScalarFieldEnum]
+
+
+  export const WorkflowDelegationScalarFieldEnum: {
+    id: 'id',
+    fromUserId: 'fromUserId',
+    toUserId: 'toUserId',
+    startsAt: 'startsAt',
+    endsAt: 'endsAt',
+    reason: 'reason',
+    isActive: 'isActive',
+    createdAt: 'createdAt'
+  };
+
+  export type WorkflowDelegationScalarFieldEnum = (typeof WorkflowDelegationScalarFieldEnum)[keyof typeof WorkflowDelegationScalarFieldEnum]
+
+
+  export const WorkflowEventScalarFieldEnum: {
+    id: 'id',
+    instanceId: 'instanceId',
+    stepId: 'stepId',
+    action: 'action',
+    actorId: 'actorId',
+    onBehalfOfId: 'onBehalfOfId',
+    comment: 'comment',
+    ipAddress: 'ipAddress',
+    userAgent: 'userAgent',
+    prevHash: 'prevHash',
+    hash: 'hash',
+    createdAt: 'createdAt'
+  };
+
+  export type WorkflowEventScalarFieldEnum = (typeof WorkflowEventScalarFieldEnum)[keyof typeof WorkflowEventScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -126743,6 +142501,1138 @@ export namespace Prisma {
     rejectionReason?: StringNullableWithAggregatesFilter<"ApprovalStep"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ApprovalStep"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ApprovalStep"> | Date | string
+  }
+
+  export type CrmTerritoryWhereInput = {
+    AND?: CrmTerritoryWhereInput | CrmTerritoryWhereInput[]
+    OR?: CrmTerritoryWhereInput[]
+    NOT?: CrmTerritoryWhereInput | CrmTerritoryWhereInput[]
+    id?: StringFilter<"CrmTerritory"> | string
+    name?: StringFilter<"CrmTerritory"> | string
+    description?: StringNullableFilter<"CrmTerritory"> | string | null
+    branchId?: StringNullableFilter<"CrmTerritory"> | string | null
+    isActive?: BoolFilter<"CrmTerritory"> | boolean
+    createdAt?: DateTimeFilter<"CrmTerritory"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmTerritory"> | Date | string
+  }
+
+  export type CrmTerritoryOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTerritoryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: CrmTerritoryWhereInput | CrmTerritoryWhereInput[]
+    OR?: CrmTerritoryWhereInput[]
+    NOT?: CrmTerritoryWhereInput | CrmTerritoryWhereInput[]
+    description?: StringNullableFilter<"CrmTerritory"> | string | null
+    branchId?: StringNullableFilter<"CrmTerritory"> | string | null
+    isActive?: BoolFilter<"CrmTerritory"> | boolean
+    createdAt?: DateTimeFilter<"CrmTerritory"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmTerritory"> | Date | string
+  }, "id" | "name">
+
+  export type CrmTerritoryOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CrmTerritoryCountOrderByAggregateInput
+    _max?: CrmTerritoryMaxOrderByAggregateInput
+    _min?: CrmTerritoryMinOrderByAggregateInput
+  }
+
+  export type CrmTerritoryScalarWhereWithAggregatesInput = {
+    AND?: CrmTerritoryScalarWhereWithAggregatesInput | CrmTerritoryScalarWhereWithAggregatesInput[]
+    OR?: CrmTerritoryScalarWhereWithAggregatesInput[]
+    NOT?: CrmTerritoryScalarWhereWithAggregatesInput | CrmTerritoryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmTerritory"> | string
+    name?: StringWithAggregatesFilter<"CrmTerritory"> | string
+    description?: StringNullableWithAggregatesFilter<"CrmTerritory"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"CrmTerritory"> | string | null
+    isActive?: BoolWithAggregatesFilter<"CrmTerritory"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"CrmTerritory"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CrmTerritory"> | Date | string
+  }
+
+  export type CrmTerritoryMemberWhereInput = {
+    AND?: CrmTerritoryMemberWhereInput | CrmTerritoryMemberWhereInput[]
+    OR?: CrmTerritoryMemberWhereInput[]
+    NOT?: CrmTerritoryMemberWhereInput | CrmTerritoryMemberWhereInput[]
+    id?: StringFilter<"CrmTerritoryMember"> | string
+    territoryId?: StringFilter<"CrmTerritoryMember"> | string
+    userId?: StringFilter<"CrmTerritoryMember"> | string
+    createdAt?: DateTimeFilter<"CrmTerritoryMember"> | Date | string
+  }
+
+  export type CrmTerritoryMemberOrderByWithRelationInput = {
+    id?: SortOrder
+    territoryId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmTerritoryMemberWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    territoryId_userId?: CrmTerritoryMemberTerritoryIdUserIdCompoundUniqueInput
+    AND?: CrmTerritoryMemberWhereInput | CrmTerritoryMemberWhereInput[]
+    OR?: CrmTerritoryMemberWhereInput[]
+    NOT?: CrmTerritoryMemberWhereInput | CrmTerritoryMemberWhereInput[]
+    territoryId?: StringFilter<"CrmTerritoryMember"> | string
+    userId?: StringFilter<"CrmTerritoryMember"> | string
+    createdAt?: DateTimeFilter<"CrmTerritoryMember"> | Date | string
+  }, "id" | "territoryId_userId">
+
+  export type CrmTerritoryMemberOrderByWithAggregationInput = {
+    id?: SortOrder
+    territoryId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: CrmTerritoryMemberCountOrderByAggregateInput
+    _max?: CrmTerritoryMemberMaxOrderByAggregateInput
+    _min?: CrmTerritoryMemberMinOrderByAggregateInput
+  }
+
+  export type CrmTerritoryMemberScalarWhereWithAggregatesInput = {
+    AND?: CrmTerritoryMemberScalarWhereWithAggregatesInput | CrmTerritoryMemberScalarWhereWithAggregatesInput[]
+    OR?: CrmTerritoryMemberScalarWhereWithAggregatesInput[]
+    NOT?: CrmTerritoryMemberScalarWhereWithAggregatesInput | CrmTerritoryMemberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmTerritoryMember"> | string
+    territoryId?: StringWithAggregatesFilter<"CrmTerritoryMember"> | string
+    userId?: StringWithAggregatesFilter<"CrmTerritoryMember"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CrmTerritoryMember"> | Date | string
+  }
+
+  export type CrmLeadWhereInput = {
+    AND?: CrmLeadWhereInput | CrmLeadWhereInput[]
+    OR?: CrmLeadWhereInput[]
+    NOT?: CrmLeadWhereInput | CrmLeadWhereInput[]
+    id?: StringFilter<"CrmLead"> | string
+    leadNumber?: StringFilter<"CrmLead"> | string
+    name?: StringFilter<"CrmLead"> | string
+    company?: StringNullableFilter<"CrmLead"> | string | null
+    email?: StringNullableFilter<"CrmLead"> | string | null
+    phone?: StringNullableFilter<"CrmLead"> | string | null
+    address?: StringNullableFilter<"CrmLead"> | string | null
+    source?: StringFilter<"CrmLead"> | string
+    status?: StringFilter<"CrmLead"> | string
+    notes?: StringNullableFilter<"CrmLead"> | string | null
+    territoryId?: StringNullableFilter<"CrmLead"> | string | null
+    branchId?: StringNullableFilter<"CrmLead"> | string | null
+    ownerId?: StringFilter<"CrmLead"> | string
+    customerId?: StringNullableFilter<"CrmLead"> | string | null
+    convertedAt?: DateTimeNullableFilter<"CrmLead"> | Date | string | null
+    createdAt?: DateTimeFilter<"CrmLead"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmLead"> | Date | string
+  }
+
+  export type CrmLeadOrderByWithRelationInput = {
+    id?: SortOrder
+    leadNumber?: SortOrder
+    name?: SortOrder
+    company?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    source?: SortOrder
+    status?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    territoryId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    ownerId?: SortOrder
+    customerId?: SortOrderInput | SortOrder
+    convertedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmLeadWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    leadNumber?: string
+    AND?: CrmLeadWhereInput | CrmLeadWhereInput[]
+    OR?: CrmLeadWhereInput[]
+    NOT?: CrmLeadWhereInput | CrmLeadWhereInput[]
+    name?: StringFilter<"CrmLead"> | string
+    company?: StringNullableFilter<"CrmLead"> | string | null
+    email?: StringNullableFilter<"CrmLead"> | string | null
+    phone?: StringNullableFilter<"CrmLead"> | string | null
+    address?: StringNullableFilter<"CrmLead"> | string | null
+    source?: StringFilter<"CrmLead"> | string
+    status?: StringFilter<"CrmLead"> | string
+    notes?: StringNullableFilter<"CrmLead"> | string | null
+    territoryId?: StringNullableFilter<"CrmLead"> | string | null
+    branchId?: StringNullableFilter<"CrmLead"> | string | null
+    ownerId?: StringFilter<"CrmLead"> | string
+    customerId?: StringNullableFilter<"CrmLead"> | string | null
+    convertedAt?: DateTimeNullableFilter<"CrmLead"> | Date | string | null
+    createdAt?: DateTimeFilter<"CrmLead"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmLead"> | Date | string
+  }, "id" | "leadNumber">
+
+  export type CrmLeadOrderByWithAggregationInput = {
+    id?: SortOrder
+    leadNumber?: SortOrder
+    name?: SortOrder
+    company?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    address?: SortOrderInput | SortOrder
+    source?: SortOrder
+    status?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    territoryId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    ownerId?: SortOrder
+    customerId?: SortOrderInput | SortOrder
+    convertedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CrmLeadCountOrderByAggregateInput
+    _max?: CrmLeadMaxOrderByAggregateInput
+    _min?: CrmLeadMinOrderByAggregateInput
+  }
+
+  export type CrmLeadScalarWhereWithAggregatesInput = {
+    AND?: CrmLeadScalarWhereWithAggregatesInput | CrmLeadScalarWhereWithAggregatesInput[]
+    OR?: CrmLeadScalarWhereWithAggregatesInput[]
+    NOT?: CrmLeadScalarWhereWithAggregatesInput | CrmLeadScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmLead"> | string
+    leadNumber?: StringWithAggregatesFilter<"CrmLead"> | string
+    name?: StringWithAggregatesFilter<"CrmLead"> | string
+    company?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    email?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    address?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    source?: StringWithAggregatesFilter<"CrmLead"> | string
+    status?: StringWithAggregatesFilter<"CrmLead"> | string
+    notes?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    territoryId?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    ownerId?: StringWithAggregatesFilter<"CrmLead"> | string
+    customerId?: StringNullableWithAggregatesFilter<"CrmLead"> | string | null
+    convertedAt?: DateTimeNullableWithAggregatesFilter<"CrmLead"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CrmLead"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CrmLead"> | Date | string
+  }
+
+  export type CrmOpportunityWhereInput = {
+    AND?: CrmOpportunityWhereInput | CrmOpportunityWhereInput[]
+    OR?: CrmOpportunityWhereInput[]
+    NOT?: CrmOpportunityWhereInput | CrmOpportunityWhereInput[]
+    id?: StringFilter<"CrmOpportunity"> | string
+    opportunityNumber?: StringFilter<"CrmOpportunity"> | string
+    salesDocumentId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    title?: StringFilter<"CrmOpportunity"> | string
+    leadId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    customerId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    customerName?: StringNullableFilter<"CrmOpportunity"> | string | null
+    stage?: StringFilter<"CrmOpportunity"> | string
+    value?: FloatFilter<"CrmOpportunity"> | number
+    probability?: IntFilter<"CrmOpportunity"> | number
+    expectedCloseDate?: DateTimeNullableFilter<"CrmOpportunity"> | Date | string | null
+    lostReason?: StringNullableFilter<"CrmOpportunity"> | string | null
+    closedAt?: DateTimeNullableFilter<"CrmOpportunity"> | Date | string | null
+    notes?: StringNullableFilter<"CrmOpportunity"> | string | null
+    territoryId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    branchId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    ownerId?: StringFilter<"CrmOpportunity"> | string
+    createdAt?: DateTimeFilter<"CrmOpportunity"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmOpportunity"> | Date | string
+  }
+
+  export type CrmOpportunityOrderByWithRelationInput = {
+    id?: SortOrder
+    opportunityNumber?: SortOrder
+    salesDocumentId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    customerName?: SortOrderInput | SortOrder
+    stage?: SortOrder
+    value?: SortOrder
+    probability?: SortOrder
+    expectedCloseDate?: SortOrderInput | SortOrder
+    lostReason?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    territoryId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmOpportunityWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    opportunityNumber?: string
+    AND?: CrmOpportunityWhereInput | CrmOpportunityWhereInput[]
+    OR?: CrmOpportunityWhereInput[]
+    NOT?: CrmOpportunityWhereInput | CrmOpportunityWhereInput[]
+    salesDocumentId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    title?: StringFilter<"CrmOpportunity"> | string
+    leadId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    customerId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    customerName?: StringNullableFilter<"CrmOpportunity"> | string | null
+    stage?: StringFilter<"CrmOpportunity"> | string
+    value?: FloatFilter<"CrmOpportunity"> | number
+    probability?: IntFilter<"CrmOpportunity"> | number
+    expectedCloseDate?: DateTimeNullableFilter<"CrmOpportunity"> | Date | string | null
+    lostReason?: StringNullableFilter<"CrmOpportunity"> | string | null
+    closedAt?: DateTimeNullableFilter<"CrmOpportunity"> | Date | string | null
+    notes?: StringNullableFilter<"CrmOpportunity"> | string | null
+    territoryId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    branchId?: StringNullableFilter<"CrmOpportunity"> | string | null
+    ownerId?: StringFilter<"CrmOpportunity"> | string
+    createdAt?: DateTimeFilter<"CrmOpportunity"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmOpportunity"> | Date | string
+  }, "id" | "opportunityNumber">
+
+  export type CrmOpportunityOrderByWithAggregationInput = {
+    id?: SortOrder
+    opportunityNumber?: SortOrder
+    salesDocumentId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    customerName?: SortOrderInput | SortOrder
+    stage?: SortOrder
+    value?: SortOrder
+    probability?: SortOrder
+    expectedCloseDate?: SortOrderInput | SortOrder
+    lostReason?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    territoryId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CrmOpportunityCountOrderByAggregateInput
+    _avg?: CrmOpportunityAvgOrderByAggregateInput
+    _max?: CrmOpportunityMaxOrderByAggregateInput
+    _min?: CrmOpportunityMinOrderByAggregateInput
+    _sum?: CrmOpportunitySumOrderByAggregateInput
+  }
+
+  export type CrmOpportunityScalarWhereWithAggregatesInput = {
+    AND?: CrmOpportunityScalarWhereWithAggregatesInput | CrmOpportunityScalarWhereWithAggregatesInput[]
+    OR?: CrmOpportunityScalarWhereWithAggregatesInput[]
+    NOT?: CrmOpportunityScalarWhereWithAggregatesInput | CrmOpportunityScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmOpportunity"> | string
+    opportunityNumber?: StringWithAggregatesFilter<"CrmOpportunity"> | string
+    salesDocumentId?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    title?: StringWithAggregatesFilter<"CrmOpportunity"> | string
+    leadId?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    customerId?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    customerName?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    stage?: StringWithAggregatesFilter<"CrmOpportunity"> | string
+    value?: FloatWithAggregatesFilter<"CrmOpportunity"> | number
+    probability?: IntWithAggregatesFilter<"CrmOpportunity"> | number
+    expectedCloseDate?: DateTimeNullableWithAggregatesFilter<"CrmOpportunity"> | Date | string | null
+    lostReason?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    closedAt?: DateTimeNullableWithAggregatesFilter<"CrmOpportunity"> | Date | string | null
+    notes?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    territoryId?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"CrmOpportunity"> | string | null
+    ownerId?: StringWithAggregatesFilter<"CrmOpportunity"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CrmOpportunity"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CrmOpportunity"> | Date | string
+  }
+
+  export type CrmInteractionWhereInput = {
+    AND?: CrmInteractionWhereInput | CrmInteractionWhereInput[]
+    OR?: CrmInteractionWhereInput[]
+    NOT?: CrmInteractionWhereInput | CrmInteractionWhereInput[]
+    id?: StringFilter<"CrmInteraction"> | string
+    type?: StringFilter<"CrmInteraction"> | string
+    subject?: StringFilter<"CrmInteraction"> | string
+    notes?: StringNullableFilter<"CrmInteraction"> | string | null
+    interactionDate?: DateTimeFilter<"CrmInteraction"> | Date | string
+    leadId?: StringNullableFilter<"CrmInteraction"> | string | null
+    opportunityId?: StringNullableFilter<"CrmInteraction"> | string | null
+    customerId?: StringNullableFilter<"CrmInteraction"> | string | null
+    createdById?: StringFilter<"CrmInteraction"> | string
+    createdAt?: DateTimeFilter<"CrmInteraction"> | Date | string
+  }
+
+  export type CrmInteractionOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    subject?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    interactionDate?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    opportunityId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmInteractionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CrmInteractionWhereInput | CrmInteractionWhereInput[]
+    OR?: CrmInteractionWhereInput[]
+    NOT?: CrmInteractionWhereInput | CrmInteractionWhereInput[]
+    type?: StringFilter<"CrmInteraction"> | string
+    subject?: StringFilter<"CrmInteraction"> | string
+    notes?: StringNullableFilter<"CrmInteraction"> | string | null
+    interactionDate?: DateTimeFilter<"CrmInteraction"> | Date | string
+    leadId?: StringNullableFilter<"CrmInteraction"> | string | null
+    opportunityId?: StringNullableFilter<"CrmInteraction"> | string | null
+    customerId?: StringNullableFilter<"CrmInteraction"> | string | null
+    createdById?: StringFilter<"CrmInteraction"> | string
+    createdAt?: DateTimeFilter<"CrmInteraction"> | Date | string
+  }, "id">
+
+  export type CrmInteractionOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    subject?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    interactionDate?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    opportunityId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    _count?: CrmInteractionCountOrderByAggregateInput
+    _max?: CrmInteractionMaxOrderByAggregateInput
+    _min?: CrmInteractionMinOrderByAggregateInput
+  }
+
+  export type CrmInteractionScalarWhereWithAggregatesInput = {
+    AND?: CrmInteractionScalarWhereWithAggregatesInput | CrmInteractionScalarWhereWithAggregatesInput[]
+    OR?: CrmInteractionScalarWhereWithAggregatesInput[]
+    NOT?: CrmInteractionScalarWhereWithAggregatesInput | CrmInteractionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmInteraction"> | string
+    type?: StringWithAggregatesFilter<"CrmInteraction"> | string
+    subject?: StringWithAggregatesFilter<"CrmInteraction"> | string
+    notes?: StringNullableWithAggregatesFilter<"CrmInteraction"> | string | null
+    interactionDate?: DateTimeWithAggregatesFilter<"CrmInteraction"> | Date | string
+    leadId?: StringNullableWithAggregatesFilter<"CrmInteraction"> | string | null
+    opportunityId?: StringNullableWithAggregatesFilter<"CrmInteraction"> | string | null
+    customerId?: StringNullableWithAggregatesFilter<"CrmInteraction"> | string | null
+    createdById?: StringWithAggregatesFilter<"CrmInteraction"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CrmInteraction"> | Date | string
+  }
+
+  export type CrmTaskWhereInput = {
+    AND?: CrmTaskWhereInput | CrmTaskWhereInput[]
+    OR?: CrmTaskWhereInput[]
+    NOT?: CrmTaskWhereInput | CrmTaskWhereInput[]
+    id?: StringFilter<"CrmTask"> | string
+    title?: StringFilter<"CrmTask"> | string
+    notes?: StringNullableFilter<"CrmTask"> | string | null
+    dueDate?: DateTimeFilter<"CrmTask"> | Date | string
+    status?: StringFilter<"CrmTask"> | string
+    leadId?: StringNullableFilter<"CrmTask"> | string | null
+    opportunityId?: StringNullableFilter<"CrmTask"> | string | null
+    customerId?: StringNullableFilter<"CrmTask"> | string | null
+    assignedToId?: StringFilter<"CrmTask"> | string
+    createdById?: StringFilter<"CrmTask"> | string
+    completedAt?: DateTimeNullableFilter<"CrmTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"CrmTask"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmTask"> | Date | string
+  }
+
+  export type CrmTaskOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    opportunityId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTaskWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CrmTaskWhereInput | CrmTaskWhereInput[]
+    OR?: CrmTaskWhereInput[]
+    NOT?: CrmTaskWhereInput | CrmTaskWhereInput[]
+    title?: StringFilter<"CrmTask"> | string
+    notes?: StringNullableFilter<"CrmTask"> | string | null
+    dueDate?: DateTimeFilter<"CrmTask"> | Date | string
+    status?: StringFilter<"CrmTask"> | string
+    leadId?: StringNullableFilter<"CrmTask"> | string | null
+    opportunityId?: StringNullableFilter<"CrmTask"> | string | null
+    customerId?: StringNullableFilter<"CrmTask"> | string | null
+    assignedToId?: StringFilter<"CrmTask"> | string
+    createdById?: StringFilter<"CrmTask"> | string
+    completedAt?: DateTimeNullableFilter<"CrmTask"> | Date | string | null
+    createdAt?: DateTimeFilter<"CrmTask"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmTask"> | Date | string
+  }, "id">
+
+  export type CrmTaskOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    leadId?: SortOrderInput | SortOrder
+    opportunityId?: SortOrderInput | SortOrder
+    customerId?: SortOrderInput | SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CrmTaskCountOrderByAggregateInput
+    _max?: CrmTaskMaxOrderByAggregateInput
+    _min?: CrmTaskMinOrderByAggregateInput
+  }
+
+  export type CrmTaskScalarWhereWithAggregatesInput = {
+    AND?: CrmTaskScalarWhereWithAggregatesInput | CrmTaskScalarWhereWithAggregatesInput[]
+    OR?: CrmTaskScalarWhereWithAggregatesInput[]
+    NOT?: CrmTaskScalarWhereWithAggregatesInput | CrmTaskScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmTask"> | string
+    title?: StringWithAggregatesFilter<"CrmTask"> | string
+    notes?: StringNullableWithAggregatesFilter<"CrmTask"> | string | null
+    dueDate?: DateTimeWithAggregatesFilter<"CrmTask"> | Date | string
+    status?: StringWithAggregatesFilter<"CrmTask"> | string
+    leadId?: StringNullableWithAggregatesFilter<"CrmTask"> | string | null
+    opportunityId?: StringNullableWithAggregatesFilter<"CrmTask"> | string | null
+    customerId?: StringNullableWithAggregatesFilter<"CrmTask"> | string | null
+    assignedToId?: StringWithAggregatesFilter<"CrmTask"> | string
+    createdById?: StringWithAggregatesFilter<"CrmTask"> | string
+    completedAt?: DateTimeNullableWithAggregatesFilter<"CrmTask"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"CrmTask"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CrmTask"> | Date | string
+  }
+
+  export type CrmSalesTargetWhereInput = {
+    AND?: CrmSalesTargetWhereInput | CrmSalesTargetWhereInput[]
+    OR?: CrmSalesTargetWhereInput[]
+    NOT?: CrmSalesTargetWhereInput | CrmSalesTargetWhereInput[]
+    id?: StringFilter<"CrmSalesTarget"> | string
+    userId?: StringFilter<"CrmSalesTarget"> | string
+    territoryId?: StringNullableFilter<"CrmSalesTarget"> | string | null
+    periodStart?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+    periodEnd?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+    targetAmount?: FloatFilter<"CrmSalesTarget"> | number
+    createdById?: StringFilter<"CrmSalesTarget"> | string
+    createdAt?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+  }
+
+  export type CrmSalesTargetOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    territoryId?: SortOrderInput | SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    targetAmount?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmSalesTargetWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CrmSalesTargetWhereInput | CrmSalesTargetWhereInput[]
+    OR?: CrmSalesTargetWhereInput[]
+    NOT?: CrmSalesTargetWhereInput | CrmSalesTargetWhereInput[]
+    userId?: StringFilter<"CrmSalesTarget"> | string
+    territoryId?: StringNullableFilter<"CrmSalesTarget"> | string | null
+    periodStart?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+    periodEnd?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+    targetAmount?: FloatFilter<"CrmSalesTarget"> | number
+    createdById?: StringFilter<"CrmSalesTarget"> | string
+    createdAt?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+    updatedAt?: DateTimeFilter<"CrmSalesTarget"> | Date | string
+  }, "id">
+
+  export type CrmSalesTargetOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    territoryId?: SortOrderInput | SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    targetAmount?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CrmSalesTargetCountOrderByAggregateInput
+    _avg?: CrmSalesTargetAvgOrderByAggregateInput
+    _max?: CrmSalesTargetMaxOrderByAggregateInput
+    _min?: CrmSalesTargetMinOrderByAggregateInput
+    _sum?: CrmSalesTargetSumOrderByAggregateInput
+  }
+
+  export type CrmSalesTargetScalarWhereWithAggregatesInput = {
+    AND?: CrmSalesTargetScalarWhereWithAggregatesInput | CrmSalesTargetScalarWhereWithAggregatesInput[]
+    OR?: CrmSalesTargetScalarWhereWithAggregatesInput[]
+    NOT?: CrmSalesTargetScalarWhereWithAggregatesInput | CrmSalesTargetScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CrmSalesTarget"> | string
+    userId?: StringWithAggregatesFilter<"CrmSalesTarget"> | string
+    territoryId?: StringNullableWithAggregatesFilter<"CrmSalesTarget"> | string | null
+    periodStart?: DateTimeWithAggregatesFilter<"CrmSalesTarget"> | Date | string
+    periodEnd?: DateTimeWithAggregatesFilter<"CrmSalesTarget"> | Date | string
+    targetAmount?: FloatWithAggregatesFilter<"CrmSalesTarget"> | number
+    createdById?: StringWithAggregatesFilter<"CrmSalesTarget"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CrmSalesTarget"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"CrmSalesTarget"> | Date | string
+  }
+
+  export type WorkflowDefinitionWhereInput = {
+    AND?: WorkflowDefinitionWhereInput | WorkflowDefinitionWhereInput[]
+    OR?: WorkflowDefinitionWhereInput[]
+    NOT?: WorkflowDefinitionWhereInput | WorkflowDefinitionWhereInput[]
+    id?: StringFilter<"WorkflowDefinition"> | string
+    code?: StringFilter<"WorkflowDefinition"> | string
+    name?: StringFilter<"WorkflowDefinition"> | string
+    description?: StringNullableFilter<"WorkflowDefinition"> | string | null
+    entityType?: StringFilter<"WorkflowDefinition"> | string
+    isActive?: BoolFilter<"WorkflowDefinition"> | boolean
+    createdAt?: DateTimeFilter<"WorkflowDefinition"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkflowDefinition"> | Date | string
+  }
+
+  export type WorkflowDefinitionOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowDefinitionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: WorkflowDefinitionWhereInput | WorkflowDefinitionWhereInput[]
+    OR?: WorkflowDefinitionWhereInput[]
+    NOT?: WorkflowDefinitionWhereInput | WorkflowDefinitionWhereInput[]
+    name?: StringFilter<"WorkflowDefinition"> | string
+    description?: StringNullableFilter<"WorkflowDefinition"> | string | null
+    entityType?: StringFilter<"WorkflowDefinition"> | string
+    isActive?: BoolFilter<"WorkflowDefinition"> | boolean
+    createdAt?: DateTimeFilter<"WorkflowDefinition"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkflowDefinition"> | Date | string
+  }, "id" | "code">
+
+  export type WorkflowDefinitionOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkflowDefinitionCountOrderByAggregateInput
+    _max?: WorkflowDefinitionMaxOrderByAggregateInput
+    _min?: WorkflowDefinitionMinOrderByAggregateInput
+  }
+
+  export type WorkflowDefinitionScalarWhereWithAggregatesInput = {
+    AND?: WorkflowDefinitionScalarWhereWithAggregatesInput | WorkflowDefinitionScalarWhereWithAggregatesInput[]
+    OR?: WorkflowDefinitionScalarWhereWithAggregatesInput[]
+    NOT?: WorkflowDefinitionScalarWhereWithAggregatesInput | WorkflowDefinitionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkflowDefinition"> | string
+    code?: StringWithAggregatesFilter<"WorkflowDefinition"> | string
+    name?: StringWithAggregatesFilter<"WorkflowDefinition"> | string
+    description?: StringNullableWithAggregatesFilter<"WorkflowDefinition"> | string | null
+    entityType?: StringWithAggregatesFilter<"WorkflowDefinition"> | string
+    isActive?: BoolWithAggregatesFilter<"WorkflowDefinition"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"WorkflowDefinition"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkflowDefinition"> | Date | string
+  }
+
+  export type WorkflowStageWhereInput = {
+    AND?: WorkflowStageWhereInput | WorkflowStageWhereInput[]
+    OR?: WorkflowStageWhereInput[]
+    NOT?: WorkflowStageWhereInput | WorkflowStageWhereInput[]
+    id?: StringFilter<"WorkflowStage"> | string
+    definitionId?: StringFilter<"WorkflowStage"> | string
+    order?: IntFilter<"WorkflowStage"> | number
+    name?: StringFilter<"WorkflowStage"> | string
+    approverPermission?: StringFilter<"WorkflowStage"> | string
+    branchScoped?: BoolFilter<"WorkflowStage"> | boolean
+    minAmount?: FloatNullableFilter<"WorkflowStage"> | number | null
+    escalateAfterHours?: IntNullableFilter<"WorkflowStage"> | number | null
+    escalateToPermission?: StringNullableFilter<"WorkflowStage"> | string | null
+    createdAt?: DateTimeFilter<"WorkflowStage"> | Date | string
+  }
+
+  export type WorkflowStageOrderByWithRelationInput = {
+    id?: SortOrder
+    definitionId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    minAmount?: SortOrderInput | SortOrder
+    escalateAfterHours?: SortOrderInput | SortOrder
+    escalateToPermission?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowStageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkflowStageWhereInput | WorkflowStageWhereInput[]
+    OR?: WorkflowStageWhereInput[]
+    NOT?: WorkflowStageWhereInput | WorkflowStageWhereInput[]
+    definitionId?: StringFilter<"WorkflowStage"> | string
+    order?: IntFilter<"WorkflowStage"> | number
+    name?: StringFilter<"WorkflowStage"> | string
+    approverPermission?: StringFilter<"WorkflowStage"> | string
+    branchScoped?: BoolFilter<"WorkflowStage"> | boolean
+    minAmount?: FloatNullableFilter<"WorkflowStage"> | number | null
+    escalateAfterHours?: IntNullableFilter<"WorkflowStage"> | number | null
+    escalateToPermission?: StringNullableFilter<"WorkflowStage"> | string | null
+    createdAt?: DateTimeFilter<"WorkflowStage"> | Date | string
+  }, "id">
+
+  export type WorkflowStageOrderByWithAggregationInput = {
+    id?: SortOrder
+    definitionId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    minAmount?: SortOrderInput | SortOrder
+    escalateAfterHours?: SortOrderInput | SortOrder
+    escalateToPermission?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: WorkflowStageCountOrderByAggregateInput
+    _avg?: WorkflowStageAvgOrderByAggregateInput
+    _max?: WorkflowStageMaxOrderByAggregateInput
+    _min?: WorkflowStageMinOrderByAggregateInput
+    _sum?: WorkflowStageSumOrderByAggregateInput
+  }
+
+  export type WorkflowStageScalarWhereWithAggregatesInput = {
+    AND?: WorkflowStageScalarWhereWithAggregatesInput | WorkflowStageScalarWhereWithAggregatesInput[]
+    OR?: WorkflowStageScalarWhereWithAggregatesInput[]
+    NOT?: WorkflowStageScalarWhereWithAggregatesInput | WorkflowStageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkflowStage"> | string
+    definitionId?: StringWithAggregatesFilter<"WorkflowStage"> | string
+    order?: IntWithAggregatesFilter<"WorkflowStage"> | number
+    name?: StringWithAggregatesFilter<"WorkflowStage"> | string
+    approverPermission?: StringWithAggregatesFilter<"WorkflowStage"> | string
+    branchScoped?: BoolWithAggregatesFilter<"WorkflowStage"> | boolean
+    minAmount?: FloatNullableWithAggregatesFilter<"WorkflowStage"> | number | null
+    escalateAfterHours?: IntNullableWithAggregatesFilter<"WorkflowStage"> | number | null
+    escalateToPermission?: StringNullableWithAggregatesFilter<"WorkflowStage"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkflowStage"> | Date | string
+  }
+
+  export type WorkflowInstanceWhereInput = {
+    AND?: WorkflowInstanceWhereInput | WorkflowInstanceWhereInput[]
+    OR?: WorkflowInstanceWhereInput[]
+    NOT?: WorkflowInstanceWhereInput | WorkflowInstanceWhereInput[]
+    id?: StringFilter<"WorkflowInstance"> | string
+    instanceNumber?: StringFilter<"WorkflowInstance"> | string
+    definitionId?: StringFilter<"WorkflowInstance"> | string
+    definitionCode?: StringFilter<"WorkflowInstance"> | string
+    entityType?: StringFilter<"WorkflowInstance"> | string
+    entityId?: StringFilter<"WorkflowInstance"> | string
+    title?: StringFilter<"WorkflowInstance"> | string
+    summary?: StringNullableFilter<"WorkflowInstance"> | string | null
+    amount?: FloatNullableFilter<"WorkflowInstance"> | number | null
+    branchId?: StringNullableFilter<"WorkflowInstance"> | string | null
+    requestedById?: StringFilter<"WorkflowInstance"> | string
+    status?: StringFilter<"WorkflowInstance"> | string
+    currentOrder?: IntFilter<"WorkflowInstance"> | number
+    payload?: JsonNullableFilter<"WorkflowInstance">
+    outcomeApplied?: BoolFilter<"WorkflowInstance"> | boolean
+    outcomeError?: StringNullableFilter<"WorkflowInstance"> | string | null
+    completedAt?: DateTimeNullableFilter<"WorkflowInstance"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkflowInstance"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkflowInstance"> | Date | string
+  }
+
+  export type WorkflowInstanceOrderByWithRelationInput = {
+    id?: SortOrder
+    instanceNumber?: SortOrder
+    definitionId?: SortOrder
+    definitionCode?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    status?: SortOrder
+    currentOrder?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    outcomeApplied?: SortOrder
+    outcomeError?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowInstanceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    instanceNumber?: string
+    AND?: WorkflowInstanceWhereInput | WorkflowInstanceWhereInput[]
+    OR?: WorkflowInstanceWhereInput[]
+    NOT?: WorkflowInstanceWhereInput | WorkflowInstanceWhereInput[]
+    definitionId?: StringFilter<"WorkflowInstance"> | string
+    definitionCode?: StringFilter<"WorkflowInstance"> | string
+    entityType?: StringFilter<"WorkflowInstance"> | string
+    entityId?: StringFilter<"WorkflowInstance"> | string
+    title?: StringFilter<"WorkflowInstance"> | string
+    summary?: StringNullableFilter<"WorkflowInstance"> | string | null
+    amount?: FloatNullableFilter<"WorkflowInstance"> | number | null
+    branchId?: StringNullableFilter<"WorkflowInstance"> | string | null
+    requestedById?: StringFilter<"WorkflowInstance"> | string
+    status?: StringFilter<"WorkflowInstance"> | string
+    currentOrder?: IntFilter<"WorkflowInstance"> | number
+    payload?: JsonNullableFilter<"WorkflowInstance">
+    outcomeApplied?: BoolFilter<"WorkflowInstance"> | boolean
+    outcomeError?: StringNullableFilter<"WorkflowInstance"> | string | null
+    completedAt?: DateTimeNullableFilter<"WorkflowInstance"> | Date | string | null
+    createdAt?: DateTimeFilter<"WorkflowInstance"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkflowInstance"> | Date | string
+  }, "id" | "instanceNumber">
+
+  export type WorkflowInstanceOrderByWithAggregationInput = {
+    id?: SortOrder
+    instanceNumber?: SortOrder
+    definitionId?: SortOrder
+    definitionCode?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrderInput | SortOrder
+    amount?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    requestedById?: SortOrder
+    status?: SortOrder
+    currentOrder?: SortOrder
+    payload?: SortOrderInput | SortOrder
+    outcomeApplied?: SortOrder
+    outcomeError?: SortOrderInput | SortOrder
+    completedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkflowInstanceCountOrderByAggregateInput
+    _avg?: WorkflowInstanceAvgOrderByAggregateInput
+    _max?: WorkflowInstanceMaxOrderByAggregateInput
+    _min?: WorkflowInstanceMinOrderByAggregateInput
+    _sum?: WorkflowInstanceSumOrderByAggregateInput
+  }
+
+  export type WorkflowInstanceScalarWhereWithAggregatesInput = {
+    AND?: WorkflowInstanceScalarWhereWithAggregatesInput | WorkflowInstanceScalarWhereWithAggregatesInput[]
+    OR?: WorkflowInstanceScalarWhereWithAggregatesInput[]
+    NOT?: WorkflowInstanceScalarWhereWithAggregatesInput | WorkflowInstanceScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    instanceNumber?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    definitionId?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    definitionCode?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    entityType?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    entityId?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    title?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    summary?: StringNullableWithAggregatesFilter<"WorkflowInstance"> | string | null
+    amount?: FloatNullableWithAggregatesFilter<"WorkflowInstance"> | number | null
+    branchId?: StringNullableWithAggregatesFilter<"WorkflowInstance"> | string | null
+    requestedById?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    status?: StringWithAggregatesFilter<"WorkflowInstance"> | string
+    currentOrder?: IntWithAggregatesFilter<"WorkflowInstance"> | number
+    payload?: JsonNullableWithAggregatesFilter<"WorkflowInstance">
+    outcomeApplied?: BoolWithAggregatesFilter<"WorkflowInstance"> | boolean
+    outcomeError?: StringNullableWithAggregatesFilter<"WorkflowInstance"> | string | null
+    completedAt?: DateTimeNullableWithAggregatesFilter<"WorkflowInstance"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkflowInstance"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkflowInstance"> | Date | string
+  }
+
+  export type WorkflowStepWhereInput = {
+    AND?: WorkflowStepWhereInput | WorkflowStepWhereInput[]
+    OR?: WorkflowStepWhereInput[]
+    NOT?: WorkflowStepWhereInput | WorkflowStepWhereInput[]
+    id?: StringFilter<"WorkflowStep"> | string
+    instanceId?: StringFilter<"WorkflowStep"> | string
+    stageId?: StringNullableFilter<"WorkflowStep"> | string | null
+    order?: IntFilter<"WorkflowStep"> | number
+    name?: StringFilter<"WorkflowStep"> | string
+    approverPermission?: StringFilter<"WorkflowStep"> | string
+    branchScoped?: BoolFilter<"WorkflowStep"> | boolean
+    escalateAfterHours?: IntNullableFilter<"WorkflowStep"> | number | null
+    escalateToPermission?: StringNullableFilter<"WorkflowStep"> | string | null
+    status?: StringFilter<"WorkflowStep"> | string
+    dueAt?: DateTimeNullableFilter<"WorkflowStep"> | Date | string | null
+    escalatedAt?: DateTimeNullableFilter<"WorkflowStep"> | Date | string | null
+    actedById?: StringNullableFilter<"WorkflowStep"> | string | null
+    onBehalfOfId?: StringNullableFilter<"WorkflowStep"> | string | null
+    actedAt?: DateTimeNullableFilter<"WorkflowStep"> | Date | string | null
+    comment?: StringNullableFilter<"WorkflowStep"> | string | null
+    createdAt?: DateTimeFilter<"WorkflowStep"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkflowStep"> | Date | string
+  }
+
+  export type WorkflowStepOrderByWithRelationInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stageId?: SortOrderInput | SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    escalateAfterHours?: SortOrderInput | SortOrder
+    escalateToPermission?: SortOrderInput | SortOrder
+    status?: SortOrder
+    dueAt?: SortOrderInput | SortOrder
+    escalatedAt?: SortOrderInput | SortOrder
+    actedById?: SortOrderInput | SortOrder
+    onBehalfOfId?: SortOrderInput | SortOrder
+    actedAt?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowStepWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkflowStepWhereInput | WorkflowStepWhereInput[]
+    OR?: WorkflowStepWhereInput[]
+    NOT?: WorkflowStepWhereInput | WorkflowStepWhereInput[]
+    instanceId?: StringFilter<"WorkflowStep"> | string
+    stageId?: StringNullableFilter<"WorkflowStep"> | string | null
+    order?: IntFilter<"WorkflowStep"> | number
+    name?: StringFilter<"WorkflowStep"> | string
+    approverPermission?: StringFilter<"WorkflowStep"> | string
+    branchScoped?: BoolFilter<"WorkflowStep"> | boolean
+    escalateAfterHours?: IntNullableFilter<"WorkflowStep"> | number | null
+    escalateToPermission?: StringNullableFilter<"WorkflowStep"> | string | null
+    status?: StringFilter<"WorkflowStep"> | string
+    dueAt?: DateTimeNullableFilter<"WorkflowStep"> | Date | string | null
+    escalatedAt?: DateTimeNullableFilter<"WorkflowStep"> | Date | string | null
+    actedById?: StringNullableFilter<"WorkflowStep"> | string | null
+    onBehalfOfId?: StringNullableFilter<"WorkflowStep"> | string | null
+    actedAt?: DateTimeNullableFilter<"WorkflowStep"> | Date | string | null
+    comment?: StringNullableFilter<"WorkflowStep"> | string | null
+    createdAt?: DateTimeFilter<"WorkflowStep"> | Date | string
+    updatedAt?: DateTimeFilter<"WorkflowStep"> | Date | string
+  }, "id">
+
+  export type WorkflowStepOrderByWithAggregationInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stageId?: SortOrderInput | SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    escalateAfterHours?: SortOrderInput | SortOrder
+    escalateToPermission?: SortOrderInput | SortOrder
+    status?: SortOrder
+    dueAt?: SortOrderInput | SortOrder
+    escalatedAt?: SortOrderInput | SortOrder
+    actedById?: SortOrderInput | SortOrder
+    onBehalfOfId?: SortOrderInput | SortOrder
+    actedAt?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WorkflowStepCountOrderByAggregateInput
+    _avg?: WorkflowStepAvgOrderByAggregateInput
+    _max?: WorkflowStepMaxOrderByAggregateInput
+    _min?: WorkflowStepMinOrderByAggregateInput
+    _sum?: WorkflowStepSumOrderByAggregateInput
+  }
+
+  export type WorkflowStepScalarWhereWithAggregatesInput = {
+    AND?: WorkflowStepScalarWhereWithAggregatesInput | WorkflowStepScalarWhereWithAggregatesInput[]
+    OR?: WorkflowStepScalarWhereWithAggregatesInput[]
+    NOT?: WorkflowStepScalarWhereWithAggregatesInput | WorkflowStepScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkflowStep"> | string
+    instanceId?: StringWithAggregatesFilter<"WorkflowStep"> | string
+    stageId?: StringNullableWithAggregatesFilter<"WorkflowStep"> | string | null
+    order?: IntWithAggregatesFilter<"WorkflowStep"> | number
+    name?: StringWithAggregatesFilter<"WorkflowStep"> | string
+    approverPermission?: StringWithAggregatesFilter<"WorkflowStep"> | string
+    branchScoped?: BoolWithAggregatesFilter<"WorkflowStep"> | boolean
+    escalateAfterHours?: IntNullableWithAggregatesFilter<"WorkflowStep"> | number | null
+    escalateToPermission?: StringNullableWithAggregatesFilter<"WorkflowStep"> | string | null
+    status?: StringWithAggregatesFilter<"WorkflowStep"> | string
+    dueAt?: DateTimeNullableWithAggregatesFilter<"WorkflowStep"> | Date | string | null
+    escalatedAt?: DateTimeNullableWithAggregatesFilter<"WorkflowStep"> | Date | string | null
+    actedById?: StringNullableWithAggregatesFilter<"WorkflowStep"> | string | null
+    onBehalfOfId?: StringNullableWithAggregatesFilter<"WorkflowStep"> | string | null
+    actedAt?: DateTimeNullableWithAggregatesFilter<"WorkflowStep"> | Date | string | null
+    comment?: StringNullableWithAggregatesFilter<"WorkflowStep"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WorkflowStep"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WorkflowStep"> | Date | string
+  }
+
+  export type WorkflowDelegationWhereInput = {
+    AND?: WorkflowDelegationWhereInput | WorkflowDelegationWhereInput[]
+    OR?: WorkflowDelegationWhereInput[]
+    NOT?: WorkflowDelegationWhereInput | WorkflowDelegationWhereInput[]
+    id?: StringFilter<"WorkflowDelegation"> | string
+    fromUserId?: StringFilter<"WorkflowDelegation"> | string
+    toUserId?: StringFilter<"WorkflowDelegation"> | string
+    startsAt?: DateTimeFilter<"WorkflowDelegation"> | Date | string
+    endsAt?: DateTimeFilter<"WorkflowDelegation"> | Date | string
+    reason?: StringNullableFilter<"WorkflowDelegation"> | string | null
+    isActive?: BoolFilter<"WorkflowDelegation"> | boolean
+    createdAt?: DateTimeFilter<"WorkflowDelegation"> | Date | string
+  }
+
+  export type WorkflowDelegationOrderByWithRelationInput = {
+    id?: SortOrder
+    fromUserId?: SortOrder
+    toUserId?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowDelegationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkflowDelegationWhereInput | WorkflowDelegationWhereInput[]
+    OR?: WorkflowDelegationWhereInput[]
+    NOT?: WorkflowDelegationWhereInput | WorkflowDelegationWhereInput[]
+    fromUserId?: StringFilter<"WorkflowDelegation"> | string
+    toUserId?: StringFilter<"WorkflowDelegation"> | string
+    startsAt?: DateTimeFilter<"WorkflowDelegation"> | Date | string
+    endsAt?: DateTimeFilter<"WorkflowDelegation"> | Date | string
+    reason?: StringNullableFilter<"WorkflowDelegation"> | string | null
+    isActive?: BoolFilter<"WorkflowDelegation"> | boolean
+    createdAt?: DateTimeFilter<"WorkflowDelegation"> | Date | string
+  }, "id">
+
+  export type WorkflowDelegationOrderByWithAggregationInput = {
+    id?: SortOrder
+    fromUserId?: SortOrder
+    toUserId?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    reason?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    _count?: WorkflowDelegationCountOrderByAggregateInput
+    _max?: WorkflowDelegationMaxOrderByAggregateInput
+    _min?: WorkflowDelegationMinOrderByAggregateInput
+  }
+
+  export type WorkflowDelegationScalarWhereWithAggregatesInput = {
+    AND?: WorkflowDelegationScalarWhereWithAggregatesInput | WorkflowDelegationScalarWhereWithAggregatesInput[]
+    OR?: WorkflowDelegationScalarWhereWithAggregatesInput[]
+    NOT?: WorkflowDelegationScalarWhereWithAggregatesInput | WorkflowDelegationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkflowDelegation"> | string
+    fromUserId?: StringWithAggregatesFilter<"WorkflowDelegation"> | string
+    toUserId?: StringWithAggregatesFilter<"WorkflowDelegation"> | string
+    startsAt?: DateTimeWithAggregatesFilter<"WorkflowDelegation"> | Date | string
+    endsAt?: DateTimeWithAggregatesFilter<"WorkflowDelegation"> | Date | string
+    reason?: StringNullableWithAggregatesFilter<"WorkflowDelegation"> | string | null
+    isActive?: BoolWithAggregatesFilter<"WorkflowDelegation"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"WorkflowDelegation"> | Date | string
+  }
+
+  export type WorkflowEventWhereInput = {
+    AND?: WorkflowEventWhereInput | WorkflowEventWhereInput[]
+    OR?: WorkflowEventWhereInput[]
+    NOT?: WorkflowEventWhereInput | WorkflowEventWhereInput[]
+    id?: StringFilter<"WorkflowEvent"> | string
+    instanceId?: StringFilter<"WorkflowEvent"> | string
+    stepId?: StringNullableFilter<"WorkflowEvent"> | string | null
+    action?: StringFilter<"WorkflowEvent"> | string
+    actorId?: StringFilter<"WorkflowEvent"> | string
+    onBehalfOfId?: StringNullableFilter<"WorkflowEvent"> | string | null
+    comment?: StringNullableFilter<"WorkflowEvent"> | string | null
+    ipAddress?: StringNullableFilter<"WorkflowEvent"> | string | null
+    userAgent?: StringNullableFilter<"WorkflowEvent"> | string | null
+    prevHash?: StringNullableFilter<"WorkflowEvent"> | string | null
+    hash?: StringFilter<"WorkflowEvent"> | string
+    createdAt?: DateTimeFilter<"WorkflowEvent"> | Date | string
+  }
+
+  export type WorkflowEventOrderByWithRelationInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stepId?: SortOrderInput | SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    onBehalfOfId?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    prevHash?: SortOrderInput | SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WorkflowEventWhereInput | WorkflowEventWhereInput[]
+    OR?: WorkflowEventWhereInput[]
+    NOT?: WorkflowEventWhereInput | WorkflowEventWhereInput[]
+    instanceId?: StringFilter<"WorkflowEvent"> | string
+    stepId?: StringNullableFilter<"WorkflowEvent"> | string | null
+    action?: StringFilter<"WorkflowEvent"> | string
+    actorId?: StringFilter<"WorkflowEvent"> | string
+    onBehalfOfId?: StringNullableFilter<"WorkflowEvent"> | string | null
+    comment?: StringNullableFilter<"WorkflowEvent"> | string | null
+    ipAddress?: StringNullableFilter<"WorkflowEvent"> | string | null
+    userAgent?: StringNullableFilter<"WorkflowEvent"> | string | null
+    prevHash?: StringNullableFilter<"WorkflowEvent"> | string | null
+    hash?: StringFilter<"WorkflowEvent"> | string
+    createdAt?: DateTimeFilter<"WorkflowEvent"> | Date | string
+  }, "id">
+
+  export type WorkflowEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stepId?: SortOrderInput | SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    onBehalfOfId?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    userAgent?: SortOrderInput | SortOrder
+    prevHash?: SortOrderInput | SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
+    _count?: WorkflowEventCountOrderByAggregateInput
+    _max?: WorkflowEventMaxOrderByAggregateInput
+    _min?: WorkflowEventMinOrderByAggregateInput
+  }
+
+  export type WorkflowEventScalarWhereWithAggregatesInput = {
+    AND?: WorkflowEventScalarWhereWithAggregatesInput | WorkflowEventScalarWhereWithAggregatesInput[]
+    OR?: WorkflowEventScalarWhereWithAggregatesInput[]
+    NOT?: WorkflowEventScalarWhereWithAggregatesInput | WorkflowEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WorkflowEvent"> | string
+    instanceId?: StringWithAggregatesFilter<"WorkflowEvent"> | string
+    stepId?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
+    action?: StringWithAggregatesFilter<"WorkflowEvent"> | string
+    actorId?: StringWithAggregatesFilter<"WorkflowEvent"> | string
+    onBehalfOfId?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
+    comment?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
+    ipAddress?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
+    userAgent?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
+    prevHash?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
+    hash?: StringWithAggregatesFilter<"WorkflowEvent"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"WorkflowEvent"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -135803,6 +152693,1357 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CrmTerritoryCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    branchId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmTerritoryUncheckedCreateInput = {
+    id?: string
+    name: string
+    description?: string | null
+    branchId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmTerritoryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryCreateManyInput = {
+    id?: string
+    name: string
+    description?: string | null
+    branchId?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmTerritoryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryMemberCreateInput = {
+    id?: string
+    territoryId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CrmTerritoryMemberUncheckedCreateInput = {
+    id?: string
+    territoryId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CrmTerritoryMemberUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    territoryId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryMemberUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    territoryId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryMemberCreateManyInput = {
+    id?: string
+    territoryId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type CrmTerritoryMemberUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    territoryId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTerritoryMemberUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    territoryId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmLeadCreateInput = {
+    id?: string
+    leadNumber: string
+    name: string
+    company?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    source?: string
+    status?: string
+    notes?: string | null
+    territoryId?: string | null
+    branchId?: string | null
+    ownerId: string
+    customerId?: string | null
+    convertedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmLeadUncheckedCreateInput = {
+    id?: string
+    leadNumber: string
+    name: string
+    company?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    source?: string
+    status?: string
+    notes?: string | null
+    territoryId?: string | null
+    branchId?: string | null
+    ownerId: string
+    customerId?: string | null
+    convertedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmLeadUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadNumber?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    convertedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmLeadUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadNumber?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    convertedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmLeadCreateManyInput = {
+    id?: string
+    leadNumber: string
+    name: string
+    company?: string | null
+    email?: string | null
+    phone?: string | null
+    address?: string | null
+    source?: string
+    status?: string
+    notes?: string | null
+    territoryId?: string | null
+    branchId?: string | null
+    ownerId: string
+    customerId?: string | null
+    convertedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmLeadUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadNumber?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    convertedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmLeadUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    leadNumber?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    company?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    address?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    convertedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmOpportunityCreateInput = {
+    id?: string
+    opportunityNumber: string
+    salesDocumentId?: string | null
+    title: string
+    leadId?: string | null
+    customerId?: string | null
+    customerName?: string | null
+    stage?: string
+    value?: number
+    probability?: number
+    expectedCloseDate?: Date | string | null
+    lostReason?: string | null
+    closedAt?: Date | string | null
+    notes?: string | null
+    territoryId?: string | null
+    branchId?: string | null
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmOpportunityUncheckedCreateInput = {
+    id?: string
+    opportunityNumber: string
+    salesDocumentId?: string | null
+    title: string
+    leadId?: string | null
+    customerId?: string | null
+    customerName?: string | null
+    stage?: string
+    value?: number
+    probability?: number
+    expectedCloseDate?: Date | string | null
+    lostReason?: string | null
+    closedAt?: Date | string | null
+    notes?: string | null
+    territoryId?: string | null
+    branchId?: string | null
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmOpportunityUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityNumber?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    probability?: IntFieldUpdateOperationsInput | number
+    expectedCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmOpportunityUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityNumber?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    probability?: IntFieldUpdateOperationsInput | number
+    expectedCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmOpportunityCreateManyInput = {
+    id?: string
+    opportunityNumber: string
+    salesDocumentId?: string | null
+    title: string
+    leadId?: string | null
+    customerId?: string | null
+    customerName?: string | null
+    stage?: string
+    value?: number
+    probability?: number
+    expectedCloseDate?: Date | string | null
+    lostReason?: string | null
+    closedAt?: Date | string | null
+    notes?: string | null
+    territoryId?: string | null
+    branchId?: string | null
+    ownerId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmOpportunityUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityNumber?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    probability?: IntFieldUpdateOperationsInput | number
+    expectedCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmOpportunityUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    opportunityNumber?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    probability?: IntFieldUpdateOperationsInput | number
+    expectedCloseDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lostReason?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    ownerId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmInteractionCreateInput = {
+    id?: string
+    type?: string
+    subject: string
+    notes?: string | null
+    interactionDate: Date | string
+    leadId?: string | null
+    opportunityId?: string | null
+    customerId?: string | null
+    createdById: string
+    createdAt?: Date | string
+  }
+
+  export type CrmInteractionUncheckedCreateInput = {
+    id?: string
+    type?: string
+    subject: string
+    notes?: string | null
+    interactionDate: Date | string
+    leadId?: string | null
+    opportunityId?: string | null
+    customerId?: string | null
+    createdById: string
+    createdAt?: Date | string
+  }
+
+  export type CrmInteractionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    interactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmInteractionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    interactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmInteractionCreateManyInput = {
+    id?: string
+    type?: string
+    subject: string
+    notes?: string | null
+    interactionDate: Date | string
+    leadId?: string | null
+    opportunityId?: string | null
+    customerId?: string | null
+    createdById: string
+    createdAt?: Date | string
+  }
+
+  export type CrmInteractionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    interactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmInteractionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    subject?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    interactionDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTaskCreateInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    dueDate: Date | string
+    status?: string
+    leadId?: string | null
+    opportunityId?: string | null
+    customerId?: string | null
+    assignedToId: string
+    createdById: string
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmTaskUncheckedCreateInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    dueDate: Date | string
+    status?: string
+    leadId?: string | null
+    opportunityId?: string | null
+    customerId?: string | null
+    assignedToId: string
+    createdById: string
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmTaskUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTaskUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTaskCreateManyInput = {
+    id?: string
+    title: string
+    notes?: string | null
+    dueDate: Date | string
+    status?: string
+    leadId?: string | null
+    opportunityId?: string | null
+    customerId?: string | null
+    assignedToId: string
+    createdById: string
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmTaskUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmTaskUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadId?: NullableStringFieldUpdateOperationsInput | string | null
+    opportunityId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedToId?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmSalesTargetCreateInput = {
+    id?: string
+    userId: string
+    territoryId?: string | null
+    periodStart: Date | string
+    periodEnd: Date | string
+    targetAmount: number
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmSalesTargetUncheckedCreateInput = {
+    id?: string
+    userId: string
+    territoryId?: string | null
+    periodStart: Date | string
+    periodEnd: Date | string
+    targetAmount: number
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmSalesTargetUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetAmount?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmSalesTargetUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetAmount?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmSalesTargetCreateManyInput = {
+    id?: string
+    userId: string
+    territoryId?: string | null
+    periodStart: Date | string
+    periodEnd: Date | string
+    targetAmount: number
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CrmSalesTargetUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetAmount?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CrmSalesTargetUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    territoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    periodStart?: DateTimeFieldUpdateOperationsInput | Date | string
+    periodEnd?: DateTimeFieldUpdateOperationsInput | Date | string
+    targetAmount?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDefinitionCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    entityType: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowDefinitionUncheckedCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    entityType: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowDefinitionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDefinitionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDefinitionCreateManyInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    entityType: string
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowDefinitionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDefinitionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    entityType?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStageCreateInput = {
+    id?: string
+    definitionId: string
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped?: boolean
+    minAmount?: number | null
+    escalateAfterHours?: number | null
+    escalateToPermission?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkflowStageUncheckedCreateInput = {
+    id?: string
+    definitionId: string
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped?: boolean
+    minAmount?: number | null
+    escalateAfterHours?: number | null
+    escalateToPermission?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkflowStageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStageCreateManyInput = {
+    id?: string
+    definitionId: string
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped?: boolean
+    minAmount?: number | null
+    escalateAfterHours?: number | null
+    escalateToPermission?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WorkflowStageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowInstanceCreateInput = {
+    id?: string
+    instanceNumber: string
+    definitionId: string
+    definitionCode: string
+    entityType: string
+    entityId: string
+    title: string
+    summary?: string | null
+    amount?: number | null
+    branchId?: string | null
+    requestedById: string
+    status?: string
+    currentOrder?: number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: boolean
+    outcomeError?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowInstanceUncheckedCreateInput = {
+    id?: string
+    instanceNumber: string
+    definitionId: string
+    definitionCode: string
+    entityType: string
+    entityId: string
+    title: string
+    summary?: string | null
+    amount?: number | null
+    branchId?: string | null
+    requestedById: string
+    status?: string
+    currentOrder?: number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: boolean
+    outcomeError?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowInstanceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceNumber?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    definitionCode?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentOrder?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: BoolFieldUpdateOperationsInput | boolean
+    outcomeError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowInstanceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceNumber?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    definitionCode?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentOrder?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: BoolFieldUpdateOperationsInput | boolean
+    outcomeError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowInstanceCreateManyInput = {
+    id?: string
+    instanceNumber: string
+    definitionId: string
+    definitionCode: string
+    entityType: string
+    entityId: string
+    title: string
+    summary?: string | null
+    amount?: number | null
+    branchId?: string | null
+    requestedById: string
+    status?: string
+    currentOrder?: number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: boolean
+    outcomeError?: string | null
+    completedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowInstanceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceNumber?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    definitionCode?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentOrder?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: BoolFieldUpdateOperationsInput | boolean
+    outcomeError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowInstanceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceNumber?: StringFieldUpdateOperationsInput | string
+    definitionId?: StringFieldUpdateOperationsInput | string
+    definitionCode?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    summary?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: NullableFloatFieldUpdateOperationsInput | number | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedById?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    currentOrder?: IntFieldUpdateOperationsInput | number
+    payload?: NullableJsonNullValueInput | InputJsonValue
+    outcomeApplied?: BoolFieldUpdateOperationsInput | boolean
+    outcomeError?: NullableStringFieldUpdateOperationsInput | string | null
+    completedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStepCreateInput = {
+    id?: string
+    instanceId: string
+    stageId?: string | null
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped?: boolean
+    escalateAfterHours?: number | null
+    escalateToPermission?: string | null
+    status?: string
+    dueAt?: Date | string | null
+    escalatedAt?: Date | string | null
+    actedById?: string | null
+    onBehalfOfId?: string | null
+    actedAt?: Date | string | null
+    comment?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowStepUncheckedCreateInput = {
+    id?: string
+    instanceId: string
+    stageId?: string | null
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped?: boolean
+    escalateAfterHours?: number | null
+    escalateToPermission?: string | null
+    status?: string
+    dueAt?: Date | string | null
+    escalatedAt?: Date | string | null
+    actedById?: string | null
+    onBehalfOfId?: string | null
+    actedAt?: Date | string | null
+    comment?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowStepUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stageId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escalatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actedById?: NullableStringFieldUpdateOperationsInput | string | null
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    actedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStepUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stageId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escalatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actedById?: NullableStringFieldUpdateOperationsInput | string | null
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    actedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStepCreateManyInput = {
+    id?: string
+    instanceId: string
+    stageId?: string | null
+    order: number
+    name: string
+    approverPermission: string
+    branchScoped?: boolean
+    escalateAfterHours?: number | null
+    escalateToPermission?: string | null
+    status?: string
+    dueAt?: Date | string | null
+    escalatedAt?: Date | string | null
+    actedById?: string | null
+    onBehalfOfId?: string | null
+    actedAt?: Date | string | null
+    comment?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WorkflowStepUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stageId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escalatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actedById?: NullableStringFieldUpdateOperationsInput | string | null
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    actedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowStepUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stageId?: NullableStringFieldUpdateOperationsInput | string | null
+    order?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    approverPermission?: StringFieldUpdateOperationsInput | string
+    branchScoped?: BoolFieldUpdateOperationsInput | boolean
+    escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
+    escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    dueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    escalatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    actedById?: NullableStringFieldUpdateOperationsInput | string | null
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    actedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDelegationCreateInput = {
+    id?: string
+    fromUserId: string
+    toUserId: string
+    startsAt: Date | string
+    endsAt: Date | string
+    reason?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type WorkflowDelegationUncheckedCreateInput = {
+    id?: string
+    fromUserId: string
+    toUserId: string
+    startsAt: Date | string
+    endsAt: Date | string
+    reason?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type WorkflowDelegationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromUserId?: StringFieldUpdateOperationsInput | string
+    toUserId?: StringFieldUpdateOperationsInput | string
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDelegationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromUserId?: StringFieldUpdateOperationsInput | string
+    toUserId?: StringFieldUpdateOperationsInput | string
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDelegationCreateManyInput = {
+    id?: string
+    fromUserId: string
+    toUserId: string
+    startsAt: Date | string
+    endsAt: Date | string
+    reason?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+  }
+
+  export type WorkflowDelegationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromUserId?: StringFieldUpdateOperationsInput | string
+    toUserId?: StringFieldUpdateOperationsInput | string
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowDelegationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromUserId?: StringFieldUpdateOperationsInput | string
+    toUserId?: StringFieldUpdateOperationsInput | string
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowEventCreateInput = {
+    id?: string
+    instanceId: string
+    stepId?: string | null
+    action: string
+    actorId: string
+    onBehalfOfId?: string | null
+    comment?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    prevHash?: string | null
+    hash: string
+    createdAt?: Date | string
+  }
+
+  export type WorkflowEventUncheckedCreateInput = {
+    id?: string
+    instanceId: string
+    stepId?: string | null
+    action: string
+    actorId: string
+    onBehalfOfId?: string | null
+    comment?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    prevHash?: string | null
+    hash: string
+    createdAt?: Date | string
+  }
+
+  export type WorkflowEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stepId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    prevHash?: NullableStringFieldUpdateOperationsInput | string | null
+    hash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stepId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    prevHash?: NullableStringFieldUpdateOperationsInput | string | null
+    hash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowEventCreateManyInput = {
+    id?: string
+    instanceId: string
+    stepId?: string | null
+    action: string
+    actorId: string
+    onBehalfOfId?: string | null
+    comment?: string | null
+    ipAddress?: string | null
+    userAgent?: string | null
+    prevHash?: string | null
+    hash: string
+    createdAt?: Date | string
+  }
+
+  export type WorkflowEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stepId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    prevHash?: NullableStringFieldUpdateOperationsInput | string | null
+    hash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WorkflowEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    instanceId?: StringFieldUpdateOperationsInput | string
+    stepId?: NullableStringFieldUpdateOperationsInput | string | null
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    onBehalfOfId?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    userAgent?: NullableStringFieldUpdateOperationsInput | string | null
+    prevHash?: NullableStringFieldUpdateOperationsInput | string | null
+    hash?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -142367,6 +160608,638 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApprovalStepStatusFilter<$PrismaModel>
     _max?: NestedEnumApprovalStepStatusFilter<$PrismaModel>
+  }
+
+  export type CrmTerritoryCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    branchId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTerritoryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    branchId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTerritoryMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    branchId?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTerritoryMemberTerritoryIdUserIdCompoundUniqueInput = {
+    territoryId: string
+    userId: string
+  }
+
+  export type CrmTerritoryMemberCountOrderByAggregateInput = {
+    id?: SortOrder
+    territoryId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmTerritoryMemberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    territoryId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmTerritoryMemberMinOrderByAggregateInput = {
+    id?: SortOrder
+    territoryId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmLeadCountOrderByAggregateInput = {
+    id?: SortOrder
+    leadNumber?: SortOrder
+    name?: SortOrder
+    company?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    source?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    territoryId?: SortOrder
+    branchId?: SortOrder
+    ownerId?: SortOrder
+    customerId?: SortOrder
+    convertedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmLeadMaxOrderByAggregateInput = {
+    id?: SortOrder
+    leadNumber?: SortOrder
+    name?: SortOrder
+    company?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    source?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    territoryId?: SortOrder
+    branchId?: SortOrder
+    ownerId?: SortOrder
+    customerId?: SortOrder
+    convertedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmLeadMinOrderByAggregateInput = {
+    id?: SortOrder
+    leadNumber?: SortOrder
+    name?: SortOrder
+    company?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    source?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    territoryId?: SortOrder
+    branchId?: SortOrder
+    ownerId?: SortOrder
+    customerId?: SortOrder
+    convertedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmOpportunityCountOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityNumber?: SortOrder
+    salesDocumentId?: SortOrder
+    title?: SortOrder
+    leadId?: SortOrder
+    customerId?: SortOrder
+    customerName?: SortOrder
+    stage?: SortOrder
+    value?: SortOrder
+    probability?: SortOrder
+    expectedCloseDate?: SortOrder
+    lostReason?: SortOrder
+    closedAt?: SortOrder
+    notes?: SortOrder
+    territoryId?: SortOrder
+    branchId?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmOpportunityAvgOrderByAggregateInput = {
+    value?: SortOrder
+    probability?: SortOrder
+  }
+
+  export type CrmOpportunityMaxOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityNumber?: SortOrder
+    salesDocumentId?: SortOrder
+    title?: SortOrder
+    leadId?: SortOrder
+    customerId?: SortOrder
+    customerName?: SortOrder
+    stage?: SortOrder
+    value?: SortOrder
+    probability?: SortOrder
+    expectedCloseDate?: SortOrder
+    lostReason?: SortOrder
+    closedAt?: SortOrder
+    notes?: SortOrder
+    territoryId?: SortOrder
+    branchId?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmOpportunityMinOrderByAggregateInput = {
+    id?: SortOrder
+    opportunityNumber?: SortOrder
+    salesDocumentId?: SortOrder
+    title?: SortOrder
+    leadId?: SortOrder
+    customerId?: SortOrder
+    customerName?: SortOrder
+    stage?: SortOrder
+    value?: SortOrder
+    probability?: SortOrder
+    expectedCloseDate?: SortOrder
+    lostReason?: SortOrder
+    closedAt?: SortOrder
+    notes?: SortOrder
+    territoryId?: SortOrder
+    branchId?: SortOrder
+    ownerId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmOpportunitySumOrderByAggregateInput = {
+    value?: SortOrder
+    probability?: SortOrder
+  }
+
+  export type CrmInteractionCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    subject?: SortOrder
+    notes?: SortOrder
+    interactionDate?: SortOrder
+    leadId?: SortOrder
+    opportunityId?: SortOrder
+    customerId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmInteractionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    subject?: SortOrder
+    notes?: SortOrder
+    interactionDate?: SortOrder
+    leadId?: SortOrder
+    opportunityId?: SortOrder
+    customerId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmInteractionMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    subject?: SortOrder
+    notes?: SortOrder
+    interactionDate?: SortOrder
+    leadId?: SortOrder
+    opportunityId?: SortOrder
+    customerId?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CrmTaskCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    leadId?: SortOrder
+    opportunityId?: SortOrder
+    customerId?: SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTaskMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    leadId?: SortOrder
+    opportunityId?: SortOrder
+    customerId?: SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmTaskMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    notes?: SortOrder
+    dueDate?: SortOrder
+    status?: SortOrder
+    leadId?: SortOrder
+    opportunityId?: SortOrder
+    customerId?: SortOrder
+    assignedToId?: SortOrder
+    createdById?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmSalesTargetCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    territoryId?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    targetAmount?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmSalesTargetAvgOrderByAggregateInput = {
+    targetAmount?: SortOrder
+  }
+
+  export type CrmSalesTargetMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    territoryId?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    targetAmount?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmSalesTargetMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    territoryId?: SortOrder
+    periodStart?: SortOrder
+    periodEnd?: SortOrder
+    targetAmount?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type CrmSalesTargetSumOrderByAggregateInput = {
+    targetAmount?: SortOrder
+  }
+
+  export type WorkflowDefinitionCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowDefinitionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowDefinitionMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    entityType?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowStageCountOrderByAggregateInput = {
+    id?: SortOrder
+    definitionId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    minAmount?: SortOrder
+    escalateAfterHours?: SortOrder
+    escalateToPermission?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowStageAvgOrderByAggregateInput = {
+    order?: SortOrder
+    minAmount?: SortOrder
+    escalateAfterHours?: SortOrder
+  }
+
+  export type WorkflowStageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    definitionId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    minAmount?: SortOrder
+    escalateAfterHours?: SortOrder
+    escalateToPermission?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowStageMinOrderByAggregateInput = {
+    id?: SortOrder
+    definitionId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    minAmount?: SortOrder
+    escalateAfterHours?: SortOrder
+    escalateToPermission?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowStageSumOrderByAggregateInput = {
+    order?: SortOrder
+    minAmount?: SortOrder
+    escalateAfterHours?: SortOrder
+  }
+
+  export type WorkflowInstanceCountOrderByAggregateInput = {
+    id?: SortOrder
+    instanceNumber?: SortOrder
+    definitionId?: SortOrder
+    definitionCode?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    amount?: SortOrder
+    branchId?: SortOrder
+    requestedById?: SortOrder
+    status?: SortOrder
+    currentOrder?: SortOrder
+    payload?: SortOrder
+    outcomeApplied?: SortOrder
+    outcomeError?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowInstanceAvgOrderByAggregateInput = {
+    amount?: SortOrder
+    currentOrder?: SortOrder
+  }
+
+  export type WorkflowInstanceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    instanceNumber?: SortOrder
+    definitionId?: SortOrder
+    definitionCode?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    amount?: SortOrder
+    branchId?: SortOrder
+    requestedById?: SortOrder
+    status?: SortOrder
+    currentOrder?: SortOrder
+    outcomeApplied?: SortOrder
+    outcomeError?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowInstanceMinOrderByAggregateInput = {
+    id?: SortOrder
+    instanceNumber?: SortOrder
+    definitionId?: SortOrder
+    definitionCode?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    title?: SortOrder
+    summary?: SortOrder
+    amount?: SortOrder
+    branchId?: SortOrder
+    requestedById?: SortOrder
+    status?: SortOrder
+    currentOrder?: SortOrder
+    outcomeApplied?: SortOrder
+    outcomeError?: SortOrder
+    completedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowInstanceSumOrderByAggregateInput = {
+    amount?: SortOrder
+    currentOrder?: SortOrder
+  }
+
+  export type WorkflowStepCountOrderByAggregateInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stageId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    escalateAfterHours?: SortOrder
+    escalateToPermission?: SortOrder
+    status?: SortOrder
+    dueAt?: SortOrder
+    escalatedAt?: SortOrder
+    actedById?: SortOrder
+    onBehalfOfId?: SortOrder
+    actedAt?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowStepAvgOrderByAggregateInput = {
+    order?: SortOrder
+    escalateAfterHours?: SortOrder
+  }
+
+  export type WorkflowStepMaxOrderByAggregateInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stageId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    escalateAfterHours?: SortOrder
+    escalateToPermission?: SortOrder
+    status?: SortOrder
+    dueAt?: SortOrder
+    escalatedAt?: SortOrder
+    actedById?: SortOrder
+    onBehalfOfId?: SortOrder
+    actedAt?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowStepMinOrderByAggregateInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stageId?: SortOrder
+    order?: SortOrder
+    name?: SortOrder
+    approverPermission?: SortOrder
+    branchScoped?: SortOrder
+    escalateAfterHours?: SortOrder
+    escalateToPermission?: SortOrder
+    status?: SortOrder
+    dueAt?: SortOrder
+    escalatedAt?: SortOrder
+    actedById?: SortOrder
+    onBehalfOfId?: SortOrder
+    actedAt?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WorkflowStepSumOrderByAggregateInput = {
+    order?: SortOrder
+    escalateAfterHours?: SortOrder
+  }
+
+  export type WorkflowDelegationCountOrderByAggregateInput = {
+    id?: SortOrder
+    fromUserId?: SortOrder
+    toUserId?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    reason?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowDelegationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    fromUserId?: SortOrder
+    toUserId?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    reason?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowDelegationMinOrderByAggregateInput = {
+    id?: SortOrder
+    fromUserId?: SortOrder
+    toUserId?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    reason?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stepId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    onBehalfOfId?: SortOrder
+    comment?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    prevHash?: SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stepId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    onBehalfOfId?: SortOrder
+    comment?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    prevHash?: SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WorkflowEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    instanceId?: SortOrder
+    stepId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    onBehalfOfId?: SortOrder
+    comment?: SortOrder
+    ipAddress?: SortOrder
+    userAgent?: SortOrder
+    prevHash?: SortOrder
+    hash?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type ApprovalRequestCreateNestedManyWithoutApprovedByInput = {

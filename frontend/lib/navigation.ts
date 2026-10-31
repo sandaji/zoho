@@ -3,6 +3,7 @@ import {
   BarChart3,
   BookOpen,
   Building2,
+  ClipboardCheck,
   Crown,
   DollarSign,
   LayoutDashboard,
@@ -64,7 +65,10 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: LayoutDashboard,
     section: "operations",
     accent: sharedAccent("text-slate-700 dark:text-slate-200", "text-slate-600 dark:text-slate-400", "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white", "bg-slate-400 dark:bg-slate-300"),
-    pages: [{ id: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard }],
+    pages: [
+      { id: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+      { id: "approvals", label: "Approvals", href: "/dashboard/approvals", icon: ClipboardCheck },
+    ],
   },
   {
     id: "sales",
@@ -72,10 +76,11 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: ShoppingCart,
     section: "operations",
     accent: sharedAccent("text-emerald-700 dark:text-emerald-300", "text-emerald-600 dark:text-emerald-400", "bg-emerald-50 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200", "bg-emerald-500 dark:bg-emerald-400"),
-    permissions: ["sales.order.create", "sales.order.view_all"],
+    permissions: ["sales.order.create", "sales.order.view_all", "crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all"],
     pages: [
       { id: "pos", label: "Point of Sale", href: "/dashboard/pos", icon: ShoppingCart },
       { id: "customers", label: "Customers", href: "/dashboard/crm/customers", icon: Users },
+      { id: "crm-pipeline", label: "Sales Pipeline", href: "/dashboard/crm/pipeline", icon: BarChart3, permissions: ["crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all"] },
     ],
   },
   {

@@ -14,6 +14,8 @@ import { SalesService } from "../services/sales.service";
 import { AppError, ErrorCode } from "@core/errors/errors";
 import { TokenPayload } from "../../../types";
 import { RBACService } from "@core/middleware/rbac.service";
+import workflow from "../../workflow/workflow.service";
+import { logger } from "@core/utils/logger";
 
 interface AuthenticatedRequest extends Request {
   user?: TokenPayload;
@@ -566,7 +568,28 @@ export class SalesController {
         userId,
       });
 
-      res.status(201).json({ success: true, data: creditNote });
+      // Refunds go through the approval workflow (branch manager, then finance).
+      // The credit note stays a DRAFT — no stock moves — until the last stage approves.
+      let approval: unknown = null;
+      let workflowError: string | undefined;
+      try {
+        const cn = creditNote as any;
+        approval = await workflow.start({
+          code: "CUSTOMER_REFUND",
+          entityId: cn.id,
+          title: `Refund ${cn.documentId ?? "credit note"} — KES ${Math.round(Math.abs(cn.total ?? 0)).toLocaleString("en-KE")}`,
+          summary: reason,
+          amount: Math.abs(cn.total ?? 0),
+          branchId: cn.branchId ?? branchId,
+          requestedById: userId,
+          payload: { invoiceId, reason },
+        });
+      } catch (e) {
+        workflowError = e instanceof Error ? e.message : "Could not start the approval";
+        logger.error({ err: e }, "Refund approval could not be started");
+      }
+
+      res.status(201).json({ success: true, data: creditNote, approval, workflowError });
     } catch (error) {
       next(error);
     }
@@ -644,6 +667,9 @@ export class SalesController {
       // RBAC check: Use permission-based authorization instead of inline role check
       // This should be enforced via requirePermission middleware at the route level
       // For now, keeping the check inline but using proper permission check
+      // A refund under an approval workflow is decided there, not here.
+      await workflow.assertNotGoverned("CREDIT_NOTE", id);
+
       const hasPermission = await RBACService.hasPermission(
         user.userId,
         "sales.credit_note.approve",

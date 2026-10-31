@@ -1353,6 +1353,199 @@ exports.Prisma.ApprovalStepScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CrmTerritoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  branchId: 'branchId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CrmTerritoryMemberScalarFieldEnum = {
+  id: 'id',
+  territoryId: 'territoryId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CrmLeadScalarFieldEnum = {
+  id: 'id',
+  leadNumber: 'leadNumber',
+  name: 'name',
+  company: 'company',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  source: 'source',
+  status: 'status',
+  notes: 'notes',
+  territoryId: 'territoryId',
+  branchId: 'branchId',
+  ownerId: 'ownerId',
+  customerId: 'customerId',
+  convertedAt: 'convertedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CrmOpportunityScalarFieldEnum = {
+  id: 'id',
+  opportunityNumber: 'opportunityNumber',
+  salesDocumentId: 'salesDocumentId',
+  title: 'title',
+  leadId: 'leadId',
+  customerId: 'customerId',
+  customerName: 'customerName',
+  stage: 'stage',
+  value: 'value',
+  probability: 'probability',
+  expectedCloseDate: 'expectedCloseDate',
+  lostReason: 'lostReason',
+  closedAt: 'closedAt',
+  notes: 'notes',
+  territoryId: 'territoryId',
+  branchId: 'branchId',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CrmInteractionScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  subject: 'subject',
+  notes: 'notes',
+  interactionDate: 'interactionDate',
+  leadId: 'leadId',
+  opportunityId: 'opportunityId',
+  customerId: 'customerId',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CrmTaskScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  notes: 'notes',
+  dueDate: 'dueDate',
+  status: 'status',
+  leadId: 'leadId',
+  opportunityId: 'opportunityId',
+  customerId: 'customerId',
+  assignedToId: 'assignedToId',
+  createdById: 'createdById',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CrmSalesTargetScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  territoryId: 'territoryId',
+  periodStart: 'periodStart',
+  periodEnd: 'periodEnd',
+  targetAmount: 'targetAmount',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkflowDefinitionScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  entityType: 'entityType',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkflowStageScalarFieldEnum = {
+  id: 'id',
+  definitionId: 'definitionId',
+  order: 'order',
+  name: 'name',
+  approverPermission: 'approverPermission',
+  branchScoped: 'branchScoped',
+  minAmount: 'minAmount',
+  escalateAfterHours: 'escalateAfterHours',
+  escalateToPermission: 'escalateToPermission',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkflowInstanceScalarFieldEnum = {
+  id: 'id',
+  instanceNumber: 'instanceNumber',
+  definitionId: 'definitionId',
+  definitionCode: 'definitionCode',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  title: 'title',
+  summary: 'summary',
+  amount: 'amount',
+  branchId: 'branchId',
+  requestedById: 'requestedById',
+  status: 'status',
+  currentOrder: 'currentOrder',
+  payload: 'payload',
+  outcomeApplied: 'outcomeApplied',
+  outcomeError: 'outcomeError',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkflowStepScalarFieldEnum = {
+  id: 'id',
+  instanceId: 'instanceId',
+  stageId: 'stageId',
+  order: 'order',
+  name: 'name',
+  approverPermission: 'approverPermission',
+  branchScoped: 'branchScoped',
+  escalateAfterHours: 'escalateAfterHours',
+  escalateToPermission: 'escalateToPermission',
+  status: 'status',
+  dueAt: 'dueAt',
+  escalatedAt: 'escalatedAt',
+  actedById: 'actedById',
+  onBehalfOfId: 'onBehalfOfId',
+  actedAt: 'actedAt',
+  comment: 'comment',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WorkflowDelegationScalarFieldEnum = {
+  id: 'id',
+  fromUserId: 'fromUserId',
+  toUserId: 'toUserId',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  reason: 'reason',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkflowEventScalarFieldEnum = {
+  id: 'id',
+  instanceId: 'instanceId',
+  stepId: 'stepId',
+  action: 'action',
+  actorId: 'actorId',
+  onBehalfOfId: 'onBehalfOfId',
+  comment: 'comment',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  prevHash: 'prevHash',
+  hash: 'hash',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1837,7 +2030,20 @@ exports.Prisma.ModelName = {
   JournalLine: 'JournalLine',
   VATTransaction: 'VATTransaction',
   Department: 'Department',
-  ApprovalStep: 'ApprovalStep'
+  ApprovalStep: 'ApprovalStep',
+  CrmTerritory: 'CrmTerritory',
+  CrmTerritoryMember: 'CrmTerritoryMember',
+  CrmLead: 'CrmLead',
+  CrmOpportunity: 'CrmOpportunity',
+  CrmInteraction: 'CrmInteraction',
+  CrmTask: 'CrmTask',
+  CrmSalesTarget: 'CrmSalesTarget',
+  WorkflowDefinition: 'WorkflowDefinition',
+  WorkflowStage: 'WorkflowStage',
+  WorkflowInstance: 'WorkflowInstance',
+  WorkflowStep: 'WorkflowStep',
+  WorkflowDelegation: 'WorkflowDelegation',
+  WorkflowEvent: 'WorkflowEvent'
 };
 
 /**

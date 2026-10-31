@@ -2480,6 +2480,269 @@ enum AccessScope {
   OWN
 }
 
+// ============================================================================
+// CRM — leads, pipeline, follow-ups, territories and sales targets.
+// Plain String ids (no User relations), like payment vouchers and petty cash.
+// ============================================================================
+
+model CrmTerritory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  branchId    String?  @map("branch_id")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([branchId])
+  @@map("crm_territories")
+}
+
+model CrmTerritoryMember {
+  id          String   @id @default(uuid())
+  territoryId String   @map("territory_id")
+  userId      String   @map("user_id")
+  createdAt   DateTime @default(now())
+
+  @@unique([territoryId, userId])
+  @@index([userId])
+  @@map("crm_territory_members")
+}
+
+model CrmLead {
+  id          String    @id @default(uuid())
+  leadNumber  String    @unique @map("lead_number")
+  name        String
+  company     String?
+  email       String?
+  phone       String?
+  address     String?
+  source      String    @default("OTHER")
+  status      String    @default("NEW")
+  notes       String?
+  territoryId String?   @map("territory_id")
+  branchId    String?   @map("branch_id")
+  ownerId     String    @map("owner_id")
+  customerId  String?   @map("customer_id")
+  convertedAt DateTime? @map("converted_at")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([ownerId])
+  @@index([status])
+  @@index([territoryId])
+  @@index([branchId])
+  @@map("crm_leads")
+}
+
+model CrmOpportunity {
+  id               String    @id @default(uuid())
+  opportunityNumber String   @unique @map("opportunity_number")
+  salesDocumentId  String?   @map("sales_document_id")
+  title            String
+  leadId           String?   @map("lead_id")
+  customerId       String?   @map("customer_id")
+  customerName     String?   @map("customer_name")
+  stage            String    @default("PROSPECTING")
+  value            Float     @default(0)
+  probability      Int       @default(10)
+  expectedCloseDate DateTime? @map("expected_close_date")
+  lostReason       String?   @map("lost_reason")
+  closedAt         DateTime? @map("closed_at")
+  notes            String?
+  territoryId      String?   @map("territory_id")
+  branchId         String?   @map("branch_id")
+  ownerId          String    @map("owner_id")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([ownerId])
+  @@index([stage])
+  @@index([territoryId])
+  @@index([branchId])
+  @@index([customerId])
+  @@index([salesDocumentId])
+  @@map("crm_opportunities")
+}
+
+model CrmInteraction {
+  id              String   @id @default(uuid())
+  type            String   @default("NOTE")
+  subject         String
+  notes           String?
+  interactionDate DateTime @map("interaction_date")
+  leadId          String?  @map("lead_id")
+  opportunityId   String?  @map("opportunity_id")
+  customerId      String?  @map("customer_id")
+  createdById     String   @map("created_by_id")
+  createdAt       DateTime @default(now())
+
+  @@index([leadId])
+  @@index([opportunityId])
+  @@index([customerId])
+  @@index([createdById])
+  @@map("crm_interactions")
+}
+
+model CrmTask {
+  id            String    @id @default(uuid())
+  title         String
+  notes         String?
+  dueDate       DateTime  @map("due_date")
+  status        String    @default("OPEN")
+  leadId        String?   @map("lead_id")
+  opportunityId String?   @map("opportunity_id")
+  customerId    String?   @map("customer_id")
+  assignedToId  String    @map("assigned_to_id")
+  createdById   String    @map("created_by_id")
+  completedAt   DateTime? @map("completed_at")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([assignedToId, status])
+  @@index([dueDate])
+  @@index([leadId])
+  @@index([opportunityId])
+  @@map("crm_tasks")
+}
+
+model CrmSalesTarget {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  territoryId  String?  @map("territory_id")
+  periodStart  DateTime @map("period_start")
+  periodEnd    DateTime @map("period_end")
+  targetAmount Float    @map("target_amount")
+  createdById  String   @map("created_by_id")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([periodStart, periodEnd])
+  @@map("crm_sales_targets")
+}
+
+// ============================================================================
+// WORKFLOW ENGINE — configurable multi-stage approvals (sequential and
+// parallel), delegation, escalation and a hash-chained, append-only trail.
+// Plain String ids (no User relations), like CRM and payment vouchers.
+// ============================================================================
+
+model WorkflowDefinition {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  description String?
+  entityType  String   @map("entity_type")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("workflow_definitions")
+}
+
+model WorkflowStage {
+  id                  String   @id @default(uuid())
+  definitionId        String   @map("definition_id")
+  order               Int
+  name                String
+  approverPermission  String   @map("approver_permission")
+  branchScoped        Boolean  @default(false) @map("branch_scoped")
+  minAmount           Float?   @map("min_amount")
+  escalateAfterHours  Int?     @map("escalate_after_hours")
+  escalateToPermission String? @map("escalate_to_permission")
+  createdAt           DateTime @default(now())
+
+  @@index([definitionId, order])
+  @@map("workflow_stages")
+}
+
+model WorkflowInstance {
+  id             String    @id @default(uuid())
+  instanceNumber String    @unique @map("instance_number")
+  definitionId   String    @map("definition_id")
+  definitionCode String    @map("definition_code")
+  entityType     String    @map("entity_type")
+  entityId       String    @map("entity_id")
+  title          String
+  summary        String?
+  amount         Float?
+  branchId       String?   @map("branch_id")
+  requestedById  String    @map("requested_by_id")
+  status         String    @default("PENDING")
+  currentOrder   Int       @default(1) @map("current_order")
+  payload        Json?
+  outcomeApplied Boolean   @default(false) @map("outcome_applied")
+  outcomeError   String?   @map("outcome_error")
+  completedAt    DateTime? @map("completed_at")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status])
+  @@index([requestedById])
+  @@index([entityType, entityId])
+  @@index([branchId])
+  @@map("workflow_instances")
+}
+
+model WorkflowStep {
+  id                   String    @id @default(uuid())
+  instanceId           String    @map("instance_id")
+  stageId              String?   @map("stage_id")
+  order                Int
+  name                 String
+  approverPermission   String    @map("approver_permission")
+  branchScoped         Boolean   @default(false) @map("branch_scoped")
+  escalateAfterHours   Int?      @map("escalate_after_hours")
+  escalateToPermission String?   @map("escalate_to_permission")
+  status               String    @default("WAITING")
+  dueAt                DateTime? @map("due_at")
+  escalatedAt          DateTime? @map("escalated_at")
+  actedById            String?   @map("acted_by_id")
+  onBehalfOfId         String?   @map("on_behalf_of_id")
+  actedAt              DateTime? @map("acted_at")
+  comment              String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([instanceId])
+  @@index([status, approverPermission])
+  @@map("workflow_steps")
+}
+
+model WorkflowDelegation {
+  id         String   @id @default(uuid())
+  fromUserId String   @map("from_user_id")
+  toUserId   String   @map("to_user_id")
+  startsAt   DateTime @map("starts_at")
+  endsAt     DateTime @map("ends_at")
+  reason     String?
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt  DateTime @default(now())
+
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@map("workflow_delegations")
+}
+
+model WorkflowEvent {
+  id           String   @id @default(uuid())
+  instanceId   String   @map("instance_id")
+  stepId       String?  @map("step_id")
+  action       String
+  actorId      String   @map("actor_id")
+  onBehalfOfId String?  @map("on_behalf_of_id")
+  comment      String?
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  prevHash     String?  @map("prev_hash")
+  hash         String
+  createdAt    DateTime @default(now())
+
+  @@index([instanceId, createdAt])
+  @@map("workflow_events")
+}
+
 enum VATType {
   INPUT
   OUTPUT

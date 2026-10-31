@@ -3,7 +3,7 @@ import { Router } from "express";
 import { SalesController } from "../modules/pos/controllers/sales.controller";
 import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import { authMiddleware } from "@core/middleware/auth";
-import { requirePermission } from "../middleware/rbac.middleware";
+import { requirePermission, hasAnyPermission } from "../middleware/rbac.middleware";
 import { validateFiscalPeriod } from "../middleware/fiscal-period.middleware";
 import { PrefixedDocumentController } from "../modules/pos/controllers/prefixed-document.controller";
 import { SalesPerformanceController } from "../modules/pos/controllers/sales-performance.controller";
@@ -76,7 +76,7 @@ router.post(
 router.post(
   "/invoices/:invoiceId/credit-notes",
   authenticate,
-  requirePermission("sales.order.manage"),
+  hasAnyPermission(["sales.order.manage", "sales.refund.request"]),
   validateFiscalPeriod(),
   SalesController.createCreditNote,
 );

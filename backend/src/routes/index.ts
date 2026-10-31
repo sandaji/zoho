@@ -27,6 +27,8 @@ import rbacRoutes from "../modules/rbac/rbac.routes";
 import auditRoutes from "../modules/admin/audit.routes";
 import purchasingRoutes from "../modules/purchasing/purchasing.routes";
 import cashierRoutes from "../modules/cashier/routes/session.routes";
+import crmRoutes from "../modules/crm/crm.routes";
+import workflowRoutes from "../modules/workflow/workflow.routes";
 import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import notificationController from "../modules/notifications/notification.controller";
 
@@ -878,5 +880,15 @@ router.use("/purchasing", purchasingRoutes);
 // CASHIER SESSION MANAGEMENT ROUTES (Protected)
 // ============================================================================
 router.use("/cashier", cashierRoutes);
+
+// ============================================================================
+// CRM ROUTES (leads, pipeline, follow-ups, territories, targets)
+// ============================================================================
+router.use("/crm", crmRoutes);
+
+// ============================================================================
+// WORKFLOW ENGINE (approvals inbox, history, delegation, designer)
+// ============================================================================
+router.use("/workflow", workflowRoutes);
 
 export default router;

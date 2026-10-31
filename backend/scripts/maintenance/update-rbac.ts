@@ -24,6 +24,8 @@ async function main() {
     { code: "inventory", name: "Inventory" },
     { code: "purchasing", name: "Purchasing" },
     { code: "audit", name: "Audit" },
+    { code: "crm", name: "CRM" },
+    { code: "workflow", name: "Workflow & Approvals" },
   ];
 
   const moduleMap = new Map<string, string>();
@@ -105,6 +107,49 @@ async function main() {
     { code: "hr.performance.manage", name: "Manage Performance", module: "hr" },
     { code: "hr.benefits.manage", name: "Manage Benefits", module: "hr" },
     { code: "hr.leave.approve", name: "Approve Leave", module: "hr" },
+
+    // Workflow engine: who may decide each approval stage, and who oversees
+    { code: "sales.refund.request", name: "Raise Customer Refunds", module: "sales" },
+    {
+      code: "workflow.refund.branch_approve",
+      name: "Approve Refunds (Branch Manager stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.refund.finance_approve",
+      name: "Approve Refunds (Finance stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.view_all",
+      name: "View Every Approval Request and Its History",
+      module: "workflow",
+    },
+    {
+      code: "workflow.design.manage",
+      name: "Design Approval Workflows and Retry Failed Outcomes",
+      module: "workflow",
+    },
+
+    // CRM: leads, pipeline, follow-ups, territories, sales targets
+    { code: "crm.pipeline.view", name: "View Own CRM Pipeline", module: "crm" },
+    {
+      code: "crm.pipeline.manage",
+      name: "Manage Leads, Opportunities and Follow-ups",
+      module: "crm",
+    },
+    {
+      code: "crm.pipeline.view_all",
+      name: "View Everyone's CRM Pipeline (Sales Manager)",
+      module: "crm",
+    },
+    {
+      code: "crm.territory.manage",
+      name: "Manage Sales Territories",
+      module: "crm",
+    },
+    { code: "crm.target.view", name: "View Own Sales Targets", module: "crm" },
+    { code: "crm.target.manage", name: "Set Sales Targets", module: "crm" },
 
     // Finance
     { code: "finance.gl.view", name: "View General Ledger", module: "finance" },
@@ -1066,6 +1111,76 @@ async function main() {
   await assign("finance_manager", "finance.pettycash.manage", AccessScope.GLOBAL);
   await assign("branch_finance_manager", "finance.pettycash.manage", AccessScope.BRANCH);
   await assign("branch_finance_manager", "finance.pettycash.view_all", AccessScope.BRANCH);
+
+  // CRM: reps work their own leads and territories; managers see the whole
+  // pipeline, shape territories and set targets. Roles that don't exist in this
+  // database are skipped, so this is safe to run on any install.
+  const CRM_REP = ["crm.pipeline.view", "crm.pipeline.manage", "crm.target.view"];
+  const CRM_MANAGER = [
+    ...CRM_REP,
+    "crm.pipeline.view_all",
+    "crm.territory.manage",
+    "crm.target.manage",
+  ];
+  const crmGrants: [string, string[], AccessScope][] = [
+    ["sales_manager", CRM_MANAGER, AccessScope.GLOBAL],
+    ["manager", CRM_MANAGER, AccessScope.GLOBAL],
+    ["branch_manager", CRM_MANAGER, AccessScope.BRANCH],
+    ["sales_rep", CRM_REP, AccessScope.BRANCH],
+    ["sales_representative", CRM_REP, AccessScope.BRANCH],
+    ["ceo", ["crm.pipeline.view", "crm.pipeline.view_all", "crm.target.view"], AccessScope.GLOBAL],
+    ["director", ["crm.pipeline.view", "crm.pipeline.view_all", "crm.target.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of crmGrants) {
+    const role = await prisma.role.findFirst({
+      where: { code: roleCode },
+      select: { id: true },
+    });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - CRM grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Workflow engine grants. Refund chain: cashier raises it, the branch manager
+  // reviews it (own branch), finance gives the final approval. Directors and the
+  // MD can see every request; only admins design workflows (they hold all perms).
+  const wfGrants: [string, string[], AccessScope][] = [
+    ["cashier", ["sales.refund.request"], AccessScope.BRANCH],
+    ["sales_rep", ["sales.refund.request"], AccessScope.BRANCH],
+    ["branch_manager", ["workflow.refund.branch_approve"], AccessScope.BRANCH],
+    ["finance_manager", ["workflow.refund.finance_approve"], AccessScope.GLOBAL],
+    ["director", ["workflow.view_all"], AccessScope.GLOBAL],
+    ["ceo", ["workflow.view_all"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of wfGrants) {
+    const role = await prisma.role.findFirst({
+      where: { code: roleCode },
+      select: { id: true },
+    });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - workflow grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
 
   // Purchasing officers turn approved requisitions into LPOs.
   await assignAll(
