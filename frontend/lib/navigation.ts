@@ -80,10 +80,11 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: ShoppingCart,
     section: "operations",
     accent: sharedAccent("text-emerald-700 dark:text-emerald-300", "text-emerald-600 dark:text-emerald-400", "bg-emerald-50 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200", "bg-emerald-500 dark:bg-emerald-400"),
-    permissions: ["sales.order.create", "sales.order.view_all", "crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all"],
+    permissions: ["sales.order.create", "sales.order.view_all", "crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all", "sales.promotion.view"],
     pages: [
       { id: "pos", label: "Point of Sale", href: "/dashboard/pos", icon: ShoppingCart },
       { id: "customers", label: "Customers", href: "/dashboard/crm/customers", icon: Users },
+      { id: "promotions", label: "Promotions", href: "/dashboard/sales/promotions", icon: ShoppingCart, permissions: ["sales.promotion.view", "sales.promotion.manage", "sales.promotion.activate"] },
       { id: "crm-pipeline", label: "Sales Pipeline", href: "/dashboard/crm/pipeline", icon: BarChart3, permissions: ["crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all"] },
     ],
   },

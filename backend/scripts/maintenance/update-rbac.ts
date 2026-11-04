@@ -45,6 +45,10 @@ async function main() {
   // 2. Define Permissions
   // ==========================================
   const permissions = [
+    // Promotions
+    { code: "sales.promotion.view", name: "View Promotions", module: "sales" },
+    { code: "sales.promotion.manage", name: "Create and Edit Promotions", module: "sales" },
+    { code: "sales.promotion.activate", name: "Activate Promotions", module: "sales" },
     // RFQs and supplier evaluation
     { code: "purchasing.rfq.view", name: "View RFQs", module: "purchasing" },
     { code: "purchasing.rfq.manage", name: "Run RFQs and Record Quotes", module: "purchasing" },
@@ -1374,6 +1378,34 @@ async function main() {
     const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
     if (!role) {
       console.log(`ℹ️  Role ${roleCode} not found - dashboard grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Promotions: sales managers draft them, a different person (director, MD,
+  // finance) switches them on. Cashiers need nothing: the till applies them.
+  const promoGrants: [string, string[], AccessScope][] = [
+    ["sales_manager", ["sales.promotion.view", "sales.promotion.manage"], AccessScope.GLOBAL],
+    ["manager", ["sales.promotion.view", "sales.promotion.manage", "sales.promotion.activate"], AccessScope.GLOBAL],
+    ["director", ["sales.promotion.view", "sales.promotion.activate"], AccessScope.GLOBAL],
+    ["ceo", ["sales.promotion.view", "sales.promotion.activate"], AccessScope.GLOBAL],
+    ["finance_manager", ["sales.promotion.view", "sales.promotion.activate"], AccessScope.GLOBAL],
+    ["branch_manager", ["sales.promotion.view"], AccessScope.GLOBAL],
+    ["auditor", ["sales.promotion.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of promoGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - promotion grants skipped`);
       continue;
     }
     for (const code of codes) {

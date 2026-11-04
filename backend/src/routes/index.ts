@@ -35,6 +35,7 @@ import dashboardsRoutes from "../modules/dashboards/dashboards.routes";
 import peopleRoutes from "../modules/people/people.routes";
 import stockCountRoutes from "../modules/inventory/stock-count.routes";
 import { rfqRouter, supplierRouter } from "../modules/purchasing/rfq.routes";
+import promotionRoutes from "../modules/promotions/promotion.routes";
 import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import notificationController from "../modules/notifications/notification.controller";
 
@@ -917,5 +918,6 @@ router.use("/people", peopleRoutes);
 router.use("/stock-counts", stockCountRoutes);
 router.use("/rfqs", rfqRouter);
 router.use("/supplier-performance", supplierRouter);
+router.use("/promotions", promotionRoutes);
 
 export default router;

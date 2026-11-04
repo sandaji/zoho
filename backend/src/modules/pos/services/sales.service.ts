@@ -13,6 +13,7 @@ import { BankTreasuryService } from "../../finance/services/bank-treasury.servic
 import { StockValidationService } from "./stock-validation.service";
 import { AppError, ErrorCode } from "@core/errors/errors";
 import { logger } from "@core/utils/logger";
+import { PromotionService } from "../../promotions/promotion.service";
 import { InventoryService } from "../../inventory/services/inventory.service";
 import {
   calculateItemTotals,
@@ -640,6 +641,23 @@ export class SalesService {
       };
     });
 
+    // Promotions are decided here from the catalogue price, never by the client.
+    // One promotion per line (the best for the customer), added on top of any
+    // manual line discount.
+    const promoResult = await PromotionService.evaluate({
+      branchId,
+      lines: pricedItems.map((i) => ({
+        productId: i.productId,
+        quantity: i.quantity,
+        unitPrice: i.unitPrice,
+        manualDiscount: i.discount,
+      })),
+    });
+    for (const item of pricedItems) {
+      const hit = promoResult.get(item.productId);
+      if (hit) item.discount += hit.discount;
+    }
+
     await StockValidationService.validateOrThrow(branchId, pricedItems, userId);
 
     // Cashier session: link the sale to it so the session's totals (and the
@@ -737,6 +755,16 @@ export class SalesService {
             items: { create: preparedItems },
           },
           include: { items: true },
+        });
+
+        await PromotionService.recordRedemptions(tx, {
+          salesDocumentId: invoice.id,
+          branchId,
+          lines: pricedItems.map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            promotion: promoResult.get(i.productId)?.promotion ?? null,
+          })),
         });
 
         if (paidApplied > 0) {
