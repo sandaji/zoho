@@ -10,6 +10,7 @@ export { verifyToken };
 import { AppError, ErrorCode } from "../errors/errors";
 import { logger } from "../utils/logger";
 import { asyncContext } from "../async-context";
+import { hasAdminRole, hasAnyRole } from "../utils/role.helper";
 
 // TokenPayload and Express Request extension now in types/index.ts
 
@@ -60,7 +61,7 @@ export function authMiddleware(
       {
         userId: payload.userId,
         branchId: payload.branchId ?? undefined,
-        role: payload.role,
+        role: hasAdminRole(payload) ? "admin" : payload.role,
         ipAddress: (req.headers["x-forwarded-for"] as string) || req.ip,
         userAgent: req.headers["user-agent"],
       },
@@ -95,12 +96,12 @@ export function roleMiddleware(
         );
       }
 
-      if (!allowedRoles.includes(req.user.role as any)) {
+      if (!hasAnyRole(req.user, allowedRoles)) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
           403,
           "Insufficient permissions for this action",
-          { requiredRoles: allowedRoles, userRole: req.user.role },
+          { requiredRoles: allowedRoles, userRole: req.user.role, userRoles: req.user.roles },
         );
       }
 

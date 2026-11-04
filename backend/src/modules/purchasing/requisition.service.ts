@@ -455,10 +455,8 @@ export class PurchaseRequisitionService {
    * requisition itself never had one. Requires
    * 'purchasing.requisition.convert'.
    *
-   * Line items must map 1:1 to the requisition's items and each needs a
-   * real catalog productId (the requisition item's own productId is
-   * optional/advisory — the PO always needs a concrete product since
-   * PurchaseOrderItem.productId is required).
+   * Each line can map to a stocked catalog product or remain a non-stock
+   * description for internal-use purchases.
    */
   async convertToPurchaseOrder(
     id: string,
@@ -468,7 +466,8 @@ export class PurchaseRequisitionService {
       warehouseId?: string;
       items: {
         requisitionItemId: string;
-        productId: string;
+        productId?: string;
+        lineType?: "STOCKED" | "NON_STOCK";
         unitPrice: number;
       }[];
     },
@@ -518,7 +517,9 @@ export class PurchaseRequisitionService {
 
         let subtotal = 0;
         const itemsData: Array<{
-          productId: string;
+          productId: string | null;
+          description: string;
+          lineType: "STOCKED" | "NON_STOCK";
           quantity: number;
           unitPrice: number;
           subtotal: number;
@@ -536,29 +537,21 @@ export class PurchaseRequisitionService {
             );
           }
 
-          const product = await tx.product.findUnique({
-            where: { id: line.productId },
-            select: { vendorId: true, name: true },
-          });
-          if (!product) {
-            throw new AppError(
-              ErrorCode.NOT_FOUND,
-              404,
-              `Product ${line.productId} not found`,
-            );
-          }
-          if (product.vendorId !== data.vendorId) {
-            throw new AppError(
-              ErrorCode.VALIDATION_ERROR,
-              400,
-              `Product "${product.name}" does not belong to the selected vendor.`,
-            );
+          const lineType = line.lineType ?? (line.productId ? "STOCKED" : "NON_STOCK");
+          let product: { vendorId: string | null; name: string } | null = null;
+          if (lineType === "STOCKED") {
+            if (!line.productId) throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Select a catalog product for stocked lines");
+            product = await tx.product.findUnique({ where: { id: line.productId }, select: { vendorId: true, name: true } });
+            if (!product) throw new AppError(ErrorCode.NOT_FOUND, 404, `Product ${line.productId} not found`);
+            if (product.vendorId !== data.vendorId) throw new AppError(ErrorCode.VALIDATION_ERROR, 400, `Product "${product.name}" does not belong to the selected vendor.`);
           }
 
           const itemSubtotal = reqItem.quantity * line.unitPrice;
           subtotal += itemSubtotal;
           itemsData.push({
-            productId: line.productId,
+            productId: lineType === "STOCKED" ? line.productId! : null,
+            description: product?.name ?? reqItem.description,
+            lineType,
             quantity: reqItem.quantity,
             unitPrice: line.unitPrice,
             subtotal: itemSubtotal,

@@ -91,6 +91,7 @@ export class WorkflowService {
           approverPermission: s.approverPermission,
           branchScoped: s.branchScoped ?? false,
           minAmount: s.minAmount ?? null,
+          maxAmount: s.maxAmount ?? null,
           escalateAfterHours: s.escalateAfterHours ?? null,
           escalateToPermission: s.escalateToPermission ?? null,
         })),
@@ -118,6 +119,7 @@ export class WorkflowService {
         approverPermission: string;
         branchScoped?: boolean;
         minAmount?: number | null;
+        maxAmount?: number | null;
         escalateAfterHours?: number | null;
         escalateToPermission?: string | null;
       }[];
@@ -131,6 +133,7 @@ export class WorkflowService {
         if (!s.name?.trim()) throw bad("Every stage needs a name.");
         if (!Number.isInteger(s.order) || s.order < 1) throw bad("Stage order must be 1 or higher.");
         if (s.minAmount != null && !(s.minAmount >= 0)) throw bad("Minimum amount cannot be negative.");
+        if (s.maxAmount != null && !(s.maxAmount > (s.minAmount ?? 0))) throw bad("Maximum amount must be above the minimum.");
         if (s.escalateAfterHours != null && !(s.escalateAfterHours > 0)) throw bad("Escalation hours must be above zero.");
         codes.add(s.approverPermission);
         if (s.escalateToPermission) codes.add(s.escalateToPermission);
@@ -158,6 +161,7 @@ export class WorkflowService {
             approverPermission: s.approverPermission,
             branchScoped: !!s.branchScoped,
             minAmount: s.minAmount ?? null,
+            maxAmount: s.maxAmount ?? null,
             escalateAfterHours: s.escalateAfterHours ?? null,
             escalateToPermission: s.escalateToPermission || null,
           })),
@@ -360,7 +364,9 @@ export class WorkflowService {
       orderBy: [{ order: "asc" }, { createdAt: "asc" }],
     });
     const amount = input.amount ?? 0;
-    const applicable = stages.filter((s) => s.minAmount == null || amount >= s.minAmount);
+    const applicable = stages.filter(
+      (s) => (s.minAmount == null || amount >= s.minAmount) && (s.maxAmount == null || amount < s.maxAmount),
+    );
     if (!applicable.length)
       throw bad("No approval stage applies to this amount. Check the workflow design before continuing.");
 
@@ -607,6 +613,22 @@ export class WorkflowService {
     return this.get(instanceId, ctx);
   }
 
+  /**
+   * Used when the owning module withdraws a record itself (e.g. an expense report sent back
+   * to draft): closes any open request for it without calling the domain handler.
+   */
+  async cancelForEntity(entityType: string, entityId: string, actorId: string, reason: string) {
+    const open = await prisma.workflowInstance.findMany({ where: { entityType, entityId, status: "PENDING" }, select: { id: true } });
+    for (const { id } of open) {
+      await prisma.$transaction(async (tx) => {
+        await tx.workflowStep.updateMany({ where: { instanceId: id, status: { in: ["PENDING", "WAITING"] } }, data: { status: "SKIPPED" } });
+        await tx.workflowInstance.update({ where: { id }, data: { status: "CANCELLED", completedAt: new Date(), outcomeApplied: true } });
+        await this.addEvent(tx, { instanceId: id, action: "CANCELLED", actorId, comment: reason });
+      });
+    }
+    return open.length;
+  }
+
   // --------------------------------------------------------------- escalation
 
   /** Flags overdue stages and widens who may act on them. Safe to call often. */
@@ -782,6 +804,103 @@ export class WorkflowService {
     });
     if (latest && latest.status !== "APPROVED")
       throw forbid(`This is controlled by approval ${latest.instanceNumber} (${latest.status.toLowerCase()}). Decide it from the Approvals page.`);
+  }
+
+  // ----------------------------------------------------------- price override
+
+  /** Asks for permission to sell one product below its catalogue price. */
+  async requestPriceOverride(
+    ctx: WfContext,
+    d: { productId: string; requestedPrice: number; quantity: number; reason: string },
+  ) {
+    if (!d.reason?.trim()) throw bad("Give a reason for the discount.");
+    if (!(d.quantity > 0)) throw bad("Quantity must be above zero.");
+    if (!(d.requestedPrice >= 0)) throw bad("Requested price cannot be negative.");
+    const product = await prisma.product.findUnique({
+      where: { id: d.productId },
+      select: { id: true, name: true, unit_price: true, cost_price: true },
+    });
+    if (!product) throw notFound("Product not found");
+    if (d.requestedPrice >= product.unit_price) throw bad("That price is not below the catalogue price, so no approval is needed.");
+    const discountValue = Math.round((product.unit_price - d.requestedPrice) * d.quantity * 100) / 100;
+    return this.start({
+      code: "PRICE_OVERRIDE",
+      entityId: crypto.randomUUID(),
+      title: `Price override: ${d.quantity} × ${product.name} at KSh ${d.requestedPrice} (list ${product.unit_price})`,
+      summary: `${d.reason.trim()}${d.requestedPrice < product.cost_price ? " — BELOW COST" : ""}`,
+      amount: discountValue,
+      branchId: ctx.branchId ?? null,
+      requestedById: ctx.userId,
+      payload: {
+        productId: product.id,
+        productName: product.name,
+        catalogPrice: product.unit_price,
+        requestedPrice: d.requestedPrice,
+        quantity: d.quantity,
+        discountValue,
+      },
+    });
+  }
+
+  /**
+   * Used when a document is saved. Anyone holding sales.price.override may price freely;
+   * everyone else needs an APPROVED, unused override of their own for each discounted line.
+   * Returns the approvals to mark used once the document is saved.
+   */
+  async checkPriceOverrides(
+    userId: string,
+    perms: string[],
+    lines: { productId: string; unitPrice: number; quantity: number }[],
+    approvalIds: string[],
+  ): Promise<string[]> {
+    if (perms.includes("sales.price.override")) return [];
+    const products = await prisma.product.findMany({
+      where: { id: { in: [...new Set(lines.map((l) => l.productId))] } },
+      select: { id: true, name: true, unit_price: true },
+    });
+    const byId = new Map(products.map((p) => [p.id, p]));
+    const below = lines.filter((l) => {
+      const p = byId.get(l.productId);
+      return p && l.unitPrice < p.unit_price - 0.005;
+    });
+    if (!below.length) return [];
+
+    const insts = approvalIds.length
+      ? await prisma.workflowInstance.findMany({
+          where: { id: { in: approvalIds }, entityType: "PRICE_OVERRIDE", status: "APPROVED", requestedById: userId },
+        })
+      : [];
+    const used = new Set<string>();
+    for (const line of below) {
+      const p = byId.get(line.productId)!;
+      const match = insts.find((i) => {
+        const pl = (i.payload ?? {}) as Record<string, any>;
+        return (
+          !used.has(i.id) &&
+          !pl.consumedAt &&
+          pl.productId === line.productId &&
+          line.unitPrice >= Number(pl.requestedPrice) - 0.005 &&
+          line.quantity <= Number(pl.quantity)
+        );
+      });
+      if (!match)
+        throw forbid(
+          `"${p.name}" is priced below the catalogue price (KSh ${p.unit_price}). Request a price override from Approvals first, then retry once it is approved.`,
+        );
+      used.add(match.id);
+    }
+    return [...used];
+  }
+
+  async consumePriceOverrides(ids: string[], userId: string, ref: string) {
+    for (const id of ids) {
+      const inst = await prisma.workflowInstance.findUnique({ where: { id }, select: { payload: true } });
+      const payload = { ...((inst?.payload ?? {}) as Record<string, unknown>), consumedAt: new Date().toISOString(), consumedRef: ref };
+      await prisma.$transaction(async (tx) => {
+        await tx.workflowInstance.update({ where: { id }, data: { payload: payload as Prisma.InputJsonValue } });
+        await this.addEvent(tx, { instanceId: id, action: "USED", actorId: userId, comment: `Used on ${ref}` });
+      });
+    }
   }
 
   // --------------------------------------------------------------- delegation

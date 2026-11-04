@@ -63,12 +63,36 @@ export const convertDocumentSchema = z.object({
   notes: z.string().optional(),
   amountPaid: z.number().nonnegative().optional(),
   paymentMethod: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer", "credit"]).optional(),
+  paymentReference: z.string().trim().max(120).optional().nullable(),
+  paymentConfirmed: z.boolean().optional(),
+}).superRefine((data, ctx) => {
+  const hasExternalPayment =
+    (data.amountPaid ?? 0) > 0 &&
+    !!data.paymentMethod &&
+    data.paymentMethod !== "cash" &&
+    data.paymentMethod !== "credit";
+  if (!hasExternalPayment) return;
+  if (!data.paymentConfirmed) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["paymentConfirmed"],
+      message: "Confirm the external payment has been received and verified",
+    });
+  }
+  if (!data.paymentReference?.trim()) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["paymentReference"],
+      message: "A payment reference is required for external payments",
+    });
+  }
 });
 
 // Update document items schema (edit a saved Draft/Quote)
 export const updateDocumentItemsSchema = z.object({
   customerId: z.string().nullable().optional(),
   notes: z.string().optional(),
+  discount: z.number().nonnegative().optional(),
   allowStockOverride: z.boolean().optional(),
   items: z.array(salesDocumentItemSchema).min(1),
 });
@@ -90,11 +114,29 @@ export const createPOSSaleSchema = z.object({
   items: z.array(posSaleItemSchema).min(1),
   payment_method: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer"]),
   amount_paid: z.number().positive(),
+  payment_reference: z.string().trim().max(120).optional().nullable(),
+  payment_confirmed: z.boolean().optional(),
   discount: z.number().nonnegative().default(0),
   customerId: z.string().optional(),
   customer_name: z.string().optional(),
   customer_phone: z.string().optional(),
   notes: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.payment_method === "cash") return;
+  if (!data.payment_confirmed) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["payment_confirmed"],
+      message: "Confirm the external payment has been received and verified",
+    });
+  }
+  if (!data.payment_reference?.trim()) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["payment_reference"],
+      message: "A payment reference is required for external payments",
+    });
+  }
 });
 
 // Record payment schema

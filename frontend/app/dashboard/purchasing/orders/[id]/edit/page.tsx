@@ -110,12 +110,14 @@ export default function EditPurchaseOrderPage() {
       const existing: POLineItem[] = (po.items || []).map((item: any) => ({
         id: item.id,
         product: {
-          id: item.product?.id || item.productId,
+          id: item.product?.id || item.productId || "",
           sku: item.product?.sku || "",
-          name: item.product?.name || "Unknown product",
+          name: item.product?.name || item.description,
           unit_price: Number(item.unitPrice) || 0,
           cost_price: Number(item.unitPrice) || 0,
         },
+        description: item.description,
+        lineType: item.lineType ?? "STOCKED",
         quantity: item.quantity,
         unitPrice: Number(item.unitPrice) || 0,
       }));
@@ -138,7 +140,7 @@ export default function EditPurchaseOrderPage() {
     setItems([newBlankLine()]);
   };
 
-  const filledItems = items.filter((i) => i.product);
+  const filledItems = items.filter((i) => i.product || i.description);
   const subtotal = filledItems.reduce((sum, i) => sum + i.quantity * i.unitPrice, 0);
   const tax = subtotal * TAX_RATE;
   const total = subtotal + tax;
@@ -148,12 +150,12 @@ export default function EditPurchaseOrderPage() {
       toast.error("Please select a vendor");
       return false;
     }
-    if (!destinationId) {
+    if (!destinationId && filledItems.some((item) => (item.lineType ?? "STOCKED") === "STOCKED")) {
       toast.error("Please select a destination warehouse");
       return false;
     }
     if (filledItems.length === 0) {
-      toast.error("Please add at least one product");
+      toast.error("Please add at least one line item");
       return false;
     }
     if (filledItems.some((i) => i.quantity <= 0)) {
@@ -177,7 +179,9 @@ export default function EditPurchaseOrderPage() {
         notes,
         expectedDeliveryDate: expectedDeliveryDate || undefined,
         items: filledItems.map((i) => ({
-          productId: i.product!.id,
+          productId: i.product?.id || undefined,
+          description: i.description || i.product?.name,
+          lineType: i.lineType ?? "STOCKED",
           quantity: i.quantity,
           unitPrice: i.unitPrice,
         })),

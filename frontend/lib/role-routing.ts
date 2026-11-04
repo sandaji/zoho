@@ -27,7 +27,21 @@ export const ROLE_DASHBOARD_ROUTES: Record<string, string> = {
   warehouse_staff: "/dashboard/inventory",
   driver: "/dashboard/fleet",
   procurement: "/dashboard/purchasing",
+  procurement_officer: "/dashboard/purchasing",
   user: "/dashboard", // fallback for generic users
+  // Seeded roles (see backend/scripts/maintenance/update-rbac.ts)
+  erp_admin: "/dashboard/admin",
+  ceo: "/dashboard/executive",
+  auditor: "/dashboard/audit/findings",
+  sales_manager: "/dashboard/executive?view=sales",
+  sales_rep: "/dashboard/pos",
+  warehouse_manager: "/dashboard/executive?view=inventory",
+  inventory_manager: "/dashboard/executive?view=inventory",
+  store_clerk: "/dashboard/inventory",
+  purchasing_manager: "/dashboard/purchasing",
+  purchasing_officer: "/dashboard/purchasing",
+  petty_cash_custodian: "/dashboard/finance",
+  it_support: "/dashboard/admin",
 };
 
 /**
@@ -37,6 +51,18 @@ export const ROLE_DASHBOARD_ROUTES: Record<string, string> = {
 export const ROLE_PRIORITY = [
   "super_admin",
   "admin",
+  "erp_admin",
+  "ceo",
+  "auditor",
+  "inventory_manager",
+  "warehouse_manager",
+  "sales_manager",
+  "purchasing_manager",
+  "purchasing_officer",
+  "sales_rep",
+  "store_clerk",
+  "petty_cash_custodian",
+  "it_support",
   "branch_manager",
   "manager",
   "finance_manager",
@@ -45,6 +71,7 @@ export const ROLE_PRIORITY = [
   "senior_accountant",
   "junior_accountant",
   "accountant",
+  "procurement_officer",
   "procurement",
   "hr_manager",
   "hr",
@@ -54,6 +81,20 @@ export const ROLE_PRIORITY = [
   "driver",
   "user",
 ];
+
+/** Return true when an account has an admin role in either role field. */
+export function hasAdminRole(user: {
+  role?: string | null;
+  roles?: string[] | null;
+} | null | undefined): boolean {
+  if (!user) return false;
+
+  return (
+    user.role === "admin" ||
+    user.role === "super_admin" ||
+    user.roles?.some((role) => role === "admin" || role === "super_admin") === true
+  );
+}
 
 /**
  * Get the appropriate dashboard route based on user roles
@@ -86,11 +127,24 @@ export const ROLE_DISPLAY_NAMES: Record<string, string> = {
   hr_officer: "HR Officer",
   accountant: "Accountant",
   procurement: "Procurement & Purchases",
+  procurement_officer: "Procurement & Purchases",
   hr: "HR Manager",
   cashier: "Cashier",
   warehouse_staff: "Warehouse Staff",
   driver: "Driver",
   user: "User",
+  erp_admin: "ERP Administrator",
+  ceo: "CEO / MD",
+  auditor: "Auditor",
+  sales_manager: "Sales Manager",
+  sales_rep: "Sales Representative",
+  warehouse_manager: "Warehouse Manager",
+  inventory_manager: "Inventory Manager",
+  store_clerk: "Store Clerk",
+  purchasing_manager: "Purchasing Manager",
+  purchasing_officer: "Purchasing Officer",
+  petty_cash_custodian: "Petty Cash Custodian",
+  it_support: "IT Support",
   // Add fallback for composed roles if needed
 };
 
@@ -116,8 +170,8 @@ export const rolePermissions = {
   canManageEmployees: (roles: string | string[]) => checkRoleAccess(["admin", "hr", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
   canViewFinance: (roles: string | string[]) => checkRoleAccess(["admin", "accountant", "manager", "branch_manager", "finance_manager", "branch_finance_manager", "senior_accountant", "junior_accountant", "director"], Array.isArray(roles) ? roles : [roles]),
   canManageFinance: (roles: string | string[]) => checkRoleAccess(["admin", "accountant", "finance_manager", "branch_finance_manager", "senior_accountant", "director"], Array.isArray(roles) ? roles : [roles]),
-  canAccessPOS: (roles: string | string[]) => checkRoleAccess(["admin", "cashier", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
-  canManageInventory: (roles: string | string[]) => checkRoleAccess(["admin", "warehouse_staff", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canAccessPOS: (roles: string | string[]) => checkRoleAccess(["admin", "super_admin", "erp_admin", "cashier", "sales_rep", "sales_manager", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
+  canManageInventory: (roles: string | string[]) => checkRoleAccess(["admin", "super_admin", "erp_admin", "warehouse_staff", "warehouse_manager", "inventory_manager", "store_clerk", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
   canViewDeliveries: (roles: string | string[]) => checkRoleAccess(["admin", "driver", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
   canManageDeliveries: (roles: string | string[]) => checkRoleAccess(["admin", "manager", "branch_manager"], Array.isArray(roles) ? roles : [roles]),
   canAccessAdminPanel: (roles: string | string[]) => checkRoleAccess(["admin"], Array.isArray(roles) ? roles : [roles]),

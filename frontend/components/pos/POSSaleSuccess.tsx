@@ -315,7 +315,12 @@ const ReceiptContent: React.FC<{
           <div className="col-span-2 text-right">Total</div>
         </div>
         {sale.items.map((item, index) => {
-          const lineTotal = item.quantity * item.unit_price - item.discount;
+          // The totals section subtracts the combined line and order discounts,
+          // so show item amounts before line discounts here to avoid subtracting
+          // the line discounts twice on the printed receipt.
+          const lineSubtotal = item.subtotal ?? Math.floor(item.quantity * item.unit_price);
+          const lineTax = item.tax_amount ?? Math.floor(lineSubtotal * item.tax_rate);
+          const lineTotal = lineSubtotal + lineTax;
           return (
             <div key={index} className="grid grid-cols-12 gap-1 text-xs">
               <div className="col-span-6">{item.name}</div>
@@ -335,8 +340,14 @@ const ReceiptContent: React.FC<{
           <span>Subtotal:</span>
           <span>{formatCurrency(sale.subtotal)}</span>
         </div>
+        {sale.discount > 0 && (
+          <div className="flex justify-between">
+            <span>Discount:</span>
+            <span>-{formatCurrency(sale.discount)}</span>
+          </div>
+        )}
         <div className="flex justify-between">
-          <span>Tax (16%):</span>
+          <span>Tax:</span>
           <span>{formatCurrency(sale.tax)}</span>
         </div>
         <Separator className="my-2" />
@@ -348,6 +359,18 @@ const ReceiptContent: React.FC<{
           <span>Payment Method:</span>
           <span className="uppercase">{sale.payment_method}</span>
         </div>
+        {sale.payment_reference && (
+          <div className="flex justify-between gap-2">
+            <span>Payment Reference:</span>
+            <span className="break-all text-right">{sale.payment_reference}</span>
+          </div>
+        )}
+        {sale.payment_method !== "cash" && (
+          <div className="flex justify-between">
+            <span>Amount Paid:</span>
+            <span>{formatCurrency(sale.amount_paid)}</span>
+          </div>
+        )}
         {sale.payment_method === "cash" && (
           <>
             <div className="flex justify-between">

@@ -11,7 +11,7 @@ import { Request, Response, NextFunction } from "express";
 import { PosService } from "../services";
 import { SalesService } from "../services/sales.service";
 import { DocumentService } from "@shared/document.service";
-import { prisma } from "@core/database/db";
+import { prisma, userHasCrossBranchAccess } from "@core/database/db";
 import {
   CreateSalesDTO,
   UpdateSalesDTO,
@@ -45,7 +45,49 @@ export class POSController {
         throw validationError("Search term is required");
       }
 
-      const result = await this.posService.searchProduct(dto);
+      const authUser = req.user;
+      if (!authUser) {
+        throw new AppError(ErrorCode.UNAUTHORIZED, 401, "Not authenticated");
+      }
+
+      const isAdmin = authUser.role === "admin" || authUser.role === "super_admin";
+      const canViewAllBranches =
+        isAdmin || (await userHasCrossBranchAccess(authUser.userId));
+      const requestedBranchId = dto.branchId?.trim() || undefined;
+
+      if (dto.combinedStock && !canViewAllBranches) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "Company-wide stock search requires cross-branch access",
+        );
+      }
+
+      if (
+        !canViewAllBranches &&
+        requestedBranchId &&
+        requestedBranchId !== authUser.branchId
+      ) {
+        throw new AppError(
+          ErrorCode.FORBIDDEN,
+          403,
+          "You can only search stock in your own branch",
+        );
+      }
+
+      const scopedDto: ProductSearchDTO = {
+        ...dto,
+        branchId: canViewAllBranches
+          ? requestedBranchId || authUser.branchId || undefined
+          : authUser.branchId || undefined,
+        combinedStock: dto.combinedStock === true && canViewAllBranches,
+      };
+
+      if (!scopedDto.combinedStock && !scopedDto.branchId) {
+        throw validationError("Select a branch before searching stock");
+      }
+
+      const result = await this.posService.searchProduct(scopedDto);
 
       res.json({
         success: true,
@@ -110,6 +152,8 @@ export class POSController {
         })),
         paymentMethod: dto.payment_method,
         amountPaid: dto.amount_paid ?? 0,
+        paymentReference: dto.payment_reference,
+        paymentConfirmed: dto.payment_confirmed,
         notes: dto.notes ?? undefined,
         customerId: dto.customerId ?? undefined,
         idempotencyKey,

@@ -26,6 +26,7 @@ async function main() {
     { code: "audit", name: "Audit" },
     { code: "crm", name: "CRM" },
     { code: "workflow", name: "Workflow & Approvals" },
+    { code: "dashboard", name: "Role Dashboards" },
   ];
 
   const moduleMap = new Map<string, string>();
@@ -44,6 +45,25 @@ async function main() {
   // 2. Define Permissions
   // ==========================================
   const permissions = [
+    // RFQs and supplier evaluation
+    { code: "purchasing.rfq.view", name: "View RFQs", module: "purchasing" },
+    { code: "purchasing.rfq.manage", name: "Run RFQs and Record Quotes", module: "purchasing" },
+    { code: "purchasing.rfq.award", name: "Award RFQs", module: "purchasing" },
+    { code: "purchasing.vendor.evaluate", name: "Evaluate Suppliers", module: "purchasing" },
+    // Stock counts
+    { code: "inventory.count.view", name: "View Stock Counts", module: "inventory" },
+    { code: "inventory.count.enter", name: "Enter Stock Count Quantities", module: "inventory" },
+    { code: "inventory.count.manage", name: "Create, Review and Post Stock Counts", module: "inventory" },
+    { code: "workflow.stock_count.approve_high", name: "Approve Large Stock Count Variances", module: "workflow" },
+    // People: contracts and salary structures
+    { code: "hr.contract.view", name: "View Employment Contracts", module: "hr" },
+    { code: "hr.contract.manage", name: "Draft Employment Contracts", module: "hr" },
+    { code: "hr.contract.activate", name: "Activate / Terminate Contracts", module: "hr" },
+    { code: "hr.salary_structure.manage", name: "Manage Salary Structures", module: "hr" },
+    // Role dashboards
+    { code: "dashboard.executive.view", name: "View Executive Dashboard", module: "dashboard" },
+    { code: "dashboard.inventory.view", name: "View Inventory Dashboard", module: "dashboard" },
+    { code: "dashboard.sales.view", name: "View Sales Dashboard", module: "dashboard" },
     // Admin
     { code: "admin.user.manage", name: "Manage Users", module: "admin" },
     { code: "admin.role.manage", name: "Manage Roles", module: "admin" },
@@ -121,6 +141,46 @@ async function main() {
       module: "workflow",
     },
     {
+      code: "sales.price.override",
+      name: "Sell Below Catalogue Price Without Approval",
+      module: "sales",
+    },
+    {
+      code: "workflow.price_override.sales_approve",
+      name: "Approve Price Overrides (Sales Manager stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.price_override.branch_approve",
+      name: "Approve Price Overrides (Branch Manager stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.payroll.hr_approve",
+      name: "Approve Payroll (HR Manager stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.payroll.finance_approve",
+      name: "Approve Payroll (Finance Manager stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.payroll.md_approve",
+      name: "Approve Payroll (MD final stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.stock_adjust.warehouse_approve",
+      name: "Approve Stock Adjustments (Warehouse Manager stage)",
+      module: "workflow",
+    },
+    {
+      code: "workflow.stock_adjust.inventory_approve",
+      name: "Approve Stock Adjustments (Inventory Manager stage)",
+      module: "workflow",
+    },
+    {
       code: "workflow.view_all",
       name: "View Every Approval Request and Its History",
       module: "workflow",
@@ -130,6 +190,12 @@ async function main() {
       name: "Design Approval Workflows and Retry Failed Outcomes",
       module: "workflow",
     },
+
+    // Audit governance: findings and the risk register
+    { code: "audit.finding.view", name: "View All Audit Findings", module: "audit" },
+    { code: "audit.finding.manage", name: "Raise, Edit and Close Audit Findings", module: "audit" },
+    { code: "audit.risk.view", name: "View the Risk Register", module: "audit" },
+    { code: "audit.risk.manage", name: "Maintain the Risk Register", module: "audit" },
 
     // CRM: leads, pipeline, follow-ups, territories, sales targets
     { code: "crm.pipeline.view", name: "View Own CRM Pipeline", module: "crm" },
@@ -551,6 +617,13 @@ async function main() {
       description: "Head of Warehousing",
     },
     {
+      code: "inventory_manager",
+      name: "Inventory Manager (Head Office)",
+      isSystem: true,
+      description:
+        "Head-office control of stock across all branches: final approver of stock adjustments.",
+    },
+    {
       code: "store_clerk",
       name: "Store Clerk",
       isSystem: true,
@@ -813,10 +886,17 @@ async function main() {
   await assignAll("warehouse_manager", whManagerPerms, AccessScope.BRANCH);
   await assign("warehouse_manager", "sales.order.view_all", AccessScope.BRANCH); // To see orders for dispatch
 
+  // Inventory Manager (head office): sees and controls stock in every branch and
+  // gives the final approval on stock adjustments (workflow grant further down).
+  await assignAll("inventory_manager", whManagerPerms, AccessScope.GLOBAL);
+  await assign("inventory_manager", "org.branches.view_all", AccessScope.GLOBAL);
+
   // Store Clerk
   await assignAll(
     "store_clerk",
-    ["inventory.stock.view", "inventory.product.view"],
+    // stock.adjust lets a clerk RAISE an adjustment; it is only applied after the
+    // warehouse manager and inventory manager approve it.
+    ["inventory.stock.view", "inventory.product.view", "inventory.stock.adjust"],
     AccessScope.BRANCH,
   );
 
@@ -918,6 +998,9 @@ async function main() {
     "hr.recruitment.manage",
   ];
   await assignAll("hr_officer", hrOfficerPerms, AccessScope.BRANCH);
+  // The HR officer prepares and submits payroll; the HR manager approves it. (If the
+  // same person did both, segregation of duties would leave nobody to approve.)
+  await assignAll("hr_officer", ["hr.payroll.view", "hr.payroll.manage"], AccessScope.GLOBAL);
 
   // ==========================================================================
   // Organisation structure: head office oversees; each branch is independent
@@ -1158,8 +1241,16 @@ async function main() {
     ["cashier", ["sales.refund.request"], AccessScope.BRANCH],
     ["sales_rep", ["sales.refund.request"], AccessScope.BRANCH],
     ["branch_manager", ["workflow.refund.branch_approve"], AccessScope.BRANCH],
-    ["finance_manager", ["workflow.refund.finance_approve"], AccessScope.GLOBAL],
-    ["director", ["workflow.view_all"], AccessScope.GLOBAL],
+    ["finance_manager", ["workflow.refund.finance_approve", "workflow.payroll.finance_approve"], AccessScope.GLOBAL],
+    ["hr_manager", ["workflow.payroll.hr_approve"], AccessScope.GLOBAL],
+    ["ceo", ["workflow.payroll.md_approve"], AccessScope.GLOBAL],
+    ["sales_manager", ["workflow.price_override.sales_approve", "sales.price.override"], AccessScope.BRANCH],
+    ["branch_manager", ["workflow.price_override.branch_approve", "sales.price.override"], AccessScope.BRANCH],
+    ["warehouse_manager", ["workflow.stock_adjust.warehouse_approve"], AccessScope.BRANCH],
+    ["inventory_manager", ["workflow.stock_adjust.inventory_approve"], AccessScope.GLOBAL],
+    ["auditor", ["audit.finding.view", "audit.finding.manage", "audit.risk.view", "audit.risk.manage", "workflow.view_all"], AccessScope.GLOBAL],
+    ["ceo", ["audit.finding.view", "audit.risk.view", "audit.risk.manage"], AccessScope.GLOBAL],
+    ["director", ["audit.finding.view", "audit.risk.view", "workflow.view_all"], AccessScope.GLOBAL],
     ["ceo", ["workflow.view_all"], AccessScope.GLOBAL],
   ];
   for (const [roleCode, codes, scope] of wfGrants) {
@@ -1169,6 +1260,120 @@ async function main() {
     });
     if (!role) {
       console.log(`ℹ️  Role ${roleCode} not found - workflow grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // RFQs: officers run them, the purchasing manager awards (never the person who ran it).
+  const rfqGrants: [string, string[], AccessScope][] = [
+    ["purchasing_officer", ["purchasing.rfq.view", "purchasing.rfq.manage", "purchasing.vendor.view"], AccessScope.BRANCH],
+    ["purchasing_manager", ["purchasing.rfq.view", "purchasing.rfq.manage", "purchasing.rfq.award", "purchasing.vendor.view", "purchasing.vendor.evaluate"], AccessScope.GLOBAL],
+    ["warehouse_manager", ["purchasing.vendor.view", "purchasing.vendor.evaluate"], AccessScope.BRANCH],
+    ["branch_manager", ["purchasing.rfq.view"], AccessScope.BRANCH],
+    ["finance_manager", ["purchasing.rfq.view", "purchasing.vendor.view"], AccessScope.GLOBAL],
+    ["ceo", ["purchasing.rfq.view", "purchasing.rfq.award", "purchasing.vendor.view"], AccessScope.GLOBAL],
+    ["auditor", ["purchasing.rfq.view", "purchasing.vendor.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of rfqGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - RFQ grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      // Never downgrade a wider grant the role already has
+      const existing = await prisma.rolePermission.findUnique({ where: { roleId_permissionId: { roleId: role.id, permissionId } } });
+      if (existing && existing.scope === AccessScope.GLOBAL) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Stock counts: clerks count, the warehouse manager reviews and posts, the inventory manager approves.
+  const countGrants: [string, string[], AccessScope][] = [
+    ["store_clerk", ["inventory.count.view", "inventory.count.enter"], AccessScope.BRANCH],
+    ["warehouse_manager", ["inventory.count.view", "inventory.count.enter", "inventory.count.manage"], AccessScope.BRANCH],
+    ["inventory_manager", ["inventory.count.view", "inventory.count.enter", "inventory.count.manage"], AccessScope.GLOBAL],
+    ["branch_manager", ["inventory.count.view"], AccessScope.BRANCH],
+    ["finance_manager", ["inventory.count.view", "workflow.stock_count.approve_high"], AccessScope.GLOBAL],
+    ["ceo", ["inventory.count.view", "workflow.stock_count.approve_high"], AccessScope.GLOBAL],
+    ["auditor", ["inventory.count.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of countGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - stock count grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // People: HR officers draft contracts, the HR manager activates them (Segregation of Duties).
+  const peopleGrants: [string, string[], AccessScope][] = [
+    ["hr_manager", ["hr.contract.view", "hr.contract.manage", "hr.contract.activate", "hr.salary_structure.manage"], AccessScope.GLOBAL],
+    ["hr_officer", ["hr.contract.view", "hr.contract.manage"], AccessScope.GLOBAL],
+    ["finance_manager", ["hr.contract.view"], AccessScope.GLOBAL],
+    ["director", ["hr.contract.view"], AccessScope.GLOBAL],
+    ["branch_manager", ["hr.contract.view"], AccessScope.BRANCH],
+  ];
+  for (const [roleCode, codes, scope] of peopleGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - people grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Role dashboards. Head-office roles see every branch; branch roles see theirs.
+  const dashGrants: [string, string[], AccessScope][] = [
+    ["ceo", ["dashboard.executive.view", "dashboard.inventory.view", "dashboard.sales.view"], AccessScope.GLOBAL],
+    ["director", ["dashboard.executive.view", "dashboard.sales.view"], AccessScope.GLOBAL],
+    ["finance_manager", ["dashboard.executive.view"], AccessScope.GLOBAL],
+    ["manager", ["dashboard.executive.view", "dashboard.inventory.view", "dashboard.sales.view"], AccessScope.GLOBAL],
+    ["branch_manager", ["dashboard.executive.view", "dashboard.inventory.view", "dashboard.sales.view"], AccessScope.BRANCH],
+    ["sales_manager", ["dashboard.sales.view"], AccessScope.GLOBAL],
+    ["sales_rep", ["dashboard.sales.view"], AccessScope.OWN],
+    ["cashier", ["dashboard.sales.view"], AccessScope.OWN],
+    ["inventory_manager", ["dashboard.inventory.view"], AccessScope.GLOBAL],
+    ["warehouse_manager", ["dashboard.inventory.view"], AccessScope.BRANCH],
+    ["purchasing_manager", ["dashboard.inventory.view"], AccessScope.GLOBAL],
+    ["auditor", ["dashboard.executive.view", "dashboard.inventory.view", "dashboard.sales.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of dashGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - dashboard grants skipped`);
       continue;
     }
     for (const code of codes) {

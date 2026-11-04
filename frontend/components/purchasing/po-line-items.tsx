@@ -26,6 +26,8 @@ export interface POProduct {
 export interface POLineItem {
   id: string;
   product: POProduct | null;
+  description?: string;
+  lineType?: "STOCKED" | "NON_STOCK";
   quantity: number;
   unitPrice: number;
 }
@@ -238,7 +240,7 @@ export function POProductSearch({ token, vendorId, items, onChange, className }:
       className={className}
       onPick={(p) =>
         onChange([
-          ...items.filter((i) => i.product),
+          ...items.filter((i) => i.product || i.description),
           {
             id: newId(),
             product: p,
@@ -265,7 +267,7 @@ interface LineItemsProps {
  * numbering is automatic and updates when rows are removed.
  */
 export function POLineItemsTable({ items, onChange }: LineItemsProps) {
-  const rows = items.filter((i) => i.product);
+  const rows = items.filter((i) => i.product || i.description);
 
   const update = (id: string, patch: Partial<POLineItem>) =>
     onChange(items.map((i) => (i.id === id ? { ...i, ...patch } : i)));
@@ -294,8 +296,8 @@ export function POLineItemsTable({ items, onChange }: LineItemsProps) {
           rows.map((item, index) => (
             <TableRow key={item.id}>
               <TableCell>
-                <span className="font-medium text-foreground">{item.product!.name}</span>
-                <span className="ml-2 text-xs text-muted-foreground">{item.product!.sku}</span>
+                <span className="font-medium text-foreground">{item.product?.name ?? item.description}</span>
+                <span className="ml-2 text-xs text-muted-foreground">{item.lineType === "NON_STOCK" ? "Internal use" : item.product?.sku}</span>
               </TableCell>
               <TableCell>
                 <Input

@@ -16,7 +16,7 @@ const PROTECTED_ROUTES: { path: string; allowedRoles: string[] }[] = [
   { path: "/dashboard/fleet",      allowedRoles: ["admin", "super_admin", "driver", "manager", "branch_manager"] },
   { path: "/dashboard/pos",        allowedRoles: ["admin", "super_admin", "cashier", "manager", "branch_manager"] },
   { path: "/dashboard/inventory",  allowedRoles: ["admin", "super_admin", "warehouse_staff", "manager", "branch_manager"] },
-  { path: "/dashboard/purchasing", allowedRoles: ["admin", "super_admin", "procurement", "manager", "branch_manager"] },
+  { path: "/dashboard/purchasing", allowedRoles: ["admin", "super_admin", "procurement", "procurement_officer", "manager", "branch_manager"] },
   { path: "/dashboard/branches",   allowedRoles: ["admin", "super_admin"] },
 ];
 

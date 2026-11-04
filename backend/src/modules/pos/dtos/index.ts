@@ -16,6 +16,8 @@ export interface CreateSalesDTO {
   }>;
   payment_method: "cash" | "card" | "mpesa" | "cheque" | "bank_transfer";
   amount_paid?: number;
+  payment_reference?: string | null;
+  payment_confirmed?: boolean;
   discount?: number;
   discount_approved_by?: string; // Required for discounts > 10%
   tax?: number;

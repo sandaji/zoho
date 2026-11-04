@@ -1,4 +1,5 @@
 import { useAuth } from "@/lib/auth-context";
+import { hasAdminRole } from "@/lib/role-routing";
 import { useCallback } from "react";
 
 /**
@@ -6,24 +7,27 @@ import { useCallback } from "react";
  */
 export function useHasPermission() {
   const { user } = useAuth();
+  const isAdmin = hasAdminRole(user);
 
   /**
    * Check if user has a specific permission
    */
   const hasPermission = useCallback((permissionCode: string): boolean => {
+    if (isAdmin) return true;
     if (!user || !user.permissions) return false;
     
     return user.permissions.includes(permissionCode);
-  }, [user]);
+  }, [isAdmin, user]);
 
   /**
    * Check if user has any of the provided permissions
    */
   const hasAnyPermission = useCallback((permissionCodes: string[]): boolean => {
+    if (isAdmin) return true;
     if (!user || !user.permissions) return false;
 
     return permissionCodes.some(code => user.permissions.includes(code));
-  }, [user]);
+  }, [isAdmin, user]);
 
   return { hasPermission, hasAnyPermission };
 }

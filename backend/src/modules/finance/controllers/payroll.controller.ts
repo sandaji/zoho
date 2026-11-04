@@ -8,6 +8,7 @@ import { PayrollService } from "../services/payroll.service";
 import { PayrollRunDTO } from "../dtos";
 import { validationError } from "@core/errors/errors";
 import { HrService } from "../../hr/services";
+import { PayrollApprovalService } from "../services/payroll-approval.service";
 
 export class PayrollController {
   private service = new PayrollService();
@@ -54,6 +55,30 @@ export class PayrollController {
         success: true,
         data: result,
         message: `${result.payroll_count} draft payroll record(s) submitted for review`,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Send a month's draft payroll through the approval chain as one request
+   */
+  async submitForApproval(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      if (!req.user?.userId) throw validationError("Authentication context is missing");
+      const result = await PayrollApprovalService.submit(
+        { month: Number(req.body?.month), year: Number(req.body?.year) },
+        { userId: req.user.userId, branchId: req.user.branchId, authorizedBranchIds: req.authorizedBranchIds },
+      );
+      res.status(202).json({
+        success: true,
+        data: result,
+        message: `${result.count} payroll record(s) sent for approval (${result.approval.instanceNumber})`,
       });
     } catch (error) {
       next(error);

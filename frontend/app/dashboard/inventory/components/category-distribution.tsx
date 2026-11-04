@@ -22,7 +22,16 @@ interface CategoryDistributionProps {
   items: InventoryItem[];
 }
 
-const COLORS = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#f97316", "#84cc16"];
+const COLORS = [
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+  "var(--chart-7)",
+  "var(--chart-8)",
+];
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -85,8 +94,8 @@ export function CategoryDistribution({ items }: CategoryDistributionProps) {
       <CardHeader className="pb-4">
         <div className="space-y-1">
           <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-              <PieChart className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+              <PieChart className="h-4 w-4 text-primary" />
             </div>
             Category Distribution
           </CardTitle>
@@ -113,7 +122,7 @@ export function CategoryDistribution({ items }: CategoryDistributionProps) {
                   }}
                   outerRadius={80}
                   innerRadius={50}
-                  fill="#8884d8"
+                  fill="var(--chart-1)"
                   dataKey="value"
                   paddingAngle={2}
                 >
@@ -121,7 +130,7 @@ export function CategoryDistribution({ items }: CategoryDistributionProps) {
                     <Cell 
                       key={`cell-${index}`} 
                       fill={COLORS[index % COLORS.length]}
-                      stroke="#fff"
+                      stroke="var(--card)"
                       strokeWidth={2}
                     />
                   ))}
@@ -149,7 +158,7 @@ export function CategoryDistribution({ items }: CategoryDistributionProps) {
             </p>
           </div>
           <div className="space-y-1 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
-            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            <p className="text-2xl font-bold text-primary">
               {totalItems}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400">

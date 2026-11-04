@@ -66,6 +66,7 @@ export interface WfStageDef {
   approverPermission: string;
   branchScoped: boolean;
   minAmount?: number | null;
+  maxAmount?: number | null;
   escalateAfterHours?: number | null;
   escalateToPermission?: string | null;
 }

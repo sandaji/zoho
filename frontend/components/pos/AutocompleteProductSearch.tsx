@@ -61,6 +61,7 @@ export function AutocompleteProductSearch({
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const searchRequestIdRef = useRef(0);
 
   // Auto-focus on mount
   useEffect(() => {
@@ -112,29 +113,38 @@ export function AutocompleteProductSearch({
 
   // Fetch product suggestions with debouncing
   useEffect(() => {
+    const requestId = ++searchRequestIdRef.current;
+    const controller = new AbortController();
     const trimmedQuery = query.trim();
 
     if (!trimmedQuery) {
       setResults([]);
       setIsOpen(false);
       setError(null);
+      setLoading(false);
       return;
     }
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    setResults([]);
+    setIsOpen(false);
+    setActiveIndex(-1);
+    setError(null);
+    setLoading(true);
 
     debounceRef.current = setTimeout(async () => {
       try {
-        setLoading(true);
         setError(null);
 
         const res = await fetch(getApiUrl(API_ENDPOINTS.POS_PRODUCTS_SEARCH), {
           method: "POST",
           headers: getAuthHeadersWithToken(token),
           body: JSON.stringify({ search: trimmedQuery, branchId, combinedStock }),
+          signal: controller.signal,
         });
 
         const json = await res.json();
+        if (requestId !== searchRequestIdRef.current) return;
 
         if (!res.ok) {
           throw new Error(json.message || "Search failed");
@@ -145,26 +155,29 @@ export function AutocompleteProductSearch({
         const filtered = products.filter(Boolean).slice(0, 8); // Limit to 8 results
 
         setResults(filtered);
-        setIsOpen(filtered.length > 0);
+        setIsOpen(true);
         // Auto-highlight the best (top) match as the user keeps typing, so
         // Enter / Alt+A can add it immediately without requiring arrow-key
         // navigation first — the search box never loses focus while this
         // happens.
         setActiveIndex(filtered.length > 0 ? 0 : -1);
       } catch (err) {
+        if (controller.signal.aborted || requestId !== searchRequestIdRef.current) return;
         console.error("Search error:", err);
         setError(err instanceof Error ? err.message : "Search failed");
         setResults([]);
         setIsOpen(false);
       } finally {
-        setLoading(false);
+        if (requestId === searchRequestIdRef.current) setLoading(false);
       }
     }, 300);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (searchRequestIdRef.current === requestId) searchRequestIdRef.current += 1;
+      controller.abort();
     };
-  }, [query, branchId, token]);
+  }, [query, branchId, token, combinedStock]);
 
   // Keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -250,7 +263,6 @@ export function AutocompleteProductSearch({
           onKeyDown={handleKeyDown}
           onFocus={() => results.length > 0 && setIsOpen(true)}
           className="h-12 pl-10 pr-10 text-base"
-          disabled={loading}
         />
 
         {loading && (

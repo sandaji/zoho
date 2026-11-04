@@ -95,16 +95,6 @@ export class AuthService {
       );
     }
 
-    // Generate token
-    const token = generateToken({
-      userId: user.id,
-      email: user.email,
-      role: user.role as any,
-      branchId: user.branchId,
-    });
-
-    logger.info({ userId: user.id, email: user.email }, "User logged in");
-
     // Get user permissions and roles
     const permissions = await PermissionService.getUserPermissions(user.id);
     const roles = await PermissionService.getUserRoles(user.id);
@@ -113,6 +103,16 @@ export class AuthService {
     if (user.role && !roles.includes(user.role)) {
       roles.push(user.role);
     }
+
+    const token = generateToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role as any,
+      roles,
+      branchId: user.branchId,
+    });
+
+    logger.info({ userId: user.id, email: user.email }, "User logged in");
 
     return {
       token,
@@ -341,7 +341,9 @@ export class AuthService {
       throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
     }
 
-    if (user.role !== "admin" && user.role !== "super_admin") {
+    const roles = await PermissionService.getUserRoles(user.id);
+    if (user.role && !roles.includes(user.role)) roles.push(user.role);
+    if (!roles.includes("admin") && !roles.includes("super_admin")) {
       throw new AppError(
         ErrorCode.FORBIDDEN,
         403,
@@ -373,14 +375,12 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       role: user.role as any,
+      roles,
       branchId: actualTargetBranchId,
     };
 
     const token = generateToken(tokenPayload);
     const permissions = await PermissionService.getUserPermissions(user.id);
-    const roles = await PermissionService.getUserRoles(user.id);
-    if (user.role && !roles.includes(user.role)) roles.push(user.role);
-
     logger.info(
       { adminUserId, targetBranchId },
       "Admin switched branch context",
@@ -428,6 +428,7 @@ export class AuthService {
       userId: user.id,
       email: user.email,
       role: (user.role || "user") as any,
+      roles,
       branchId: user.branchId,
     };
 

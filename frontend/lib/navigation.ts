@@ -68,6 +68,10 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     pages: [
       { id: "dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
       { id: "approvals", label: "Approvals", href: "/dashboard/approvals", icon: ClipboardCheck },
+      { id: "my-profile", label: "My Profile", href: "/dashboard/my-profile", icon: Users },
+      { id: "contracts", label: "Contracts & Pay", href: "/dashboard/people/contracts", icon: Users, permissions: ["hr.contract.view", "hr.contract.manage", "hr.salary_structure.manage"] },
+      { id: "role-dashboards", label: "Dashboards", href: "/dashboard/executive", icon: BarChart3, permissions: ["dashboard.executive.view", "dashboard.inventory.view", "dashboard.sales.view"] },
+      { id: "audit-findings", label: "Audit Findings", href: "/dashboard/audit/findings", icon: Shield, permissions: ["audit.finding.view", "audit.finding.manage", "audit.risk.view", "audit.risk.manage"] },
     ],
   },
   {
@@ -89,11 +93,12 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: Package,
     section: "operations",
     accent: sharedAccent("text-sky-700 dark:text-sky-300", "text-sky-600 dark:text-sky-400", "bg-sky-50 text-sky-900 dark:bg-sky-500/20 dark:text-sky-200", "bg-sky-500 dark:bg-sky-400"),
-    permissions: ["inventory.product.view", "inventory.stock.adjust", "inventory.product.manage"],
+    permissions: ["inventory.product.view", "inventory.stock.adjust", "inventory.product.manage", "inventory.count.view"],
     summary: (stats) => stats.lowStockItems ? `${stats.lowStockItems} low stock` : undefined,
     pages: [
       { id: "inventory-overview", label: "Inventory Overview", href: "/dashboard/inventory", icon: Package },
       { id: "products", label: "Products", href: "/dashboard/products", icon: Package, permissions: ["inventory.product.view", "inventory.product.manage"] },
+      { id: "stock-counts", label: "Stock Counts", href: "/dashboard/inventory/counts", icon: ClipboardCheck, permissions: ["inventory.count.view", "inventory.count.enter", "inventory.count.manage"] },
       {
         id: "stock-transfers",
         label: "Stock Transfers",
@@ -129,6 +134,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
       "purchasing.vendor.view",
       "purchasing.requisition.view",
       "purchasing.requisition.create",
+      "purchasing.rfq.view",
     ],
     pages: [
       { id: "purchasing", label: "Purchasing Overview", href: "/dashboard/purchasing", icon: BookOpen },
@@ -148,6 +154,8 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
           "purchasing.requisition.convert",
         ],
       },
+      { id: "rfqs", label: "RFQs", href: "/dashboard/purchasing/rfqs", icon: ClipboardCheck, permissions: ["purchasing.rfq.view", "purchasing.rfq.manage", "purchasing.rfq.award"] },
+      { id: "supplier-scorecards", label: "Supplier Scorecards", href: "/dashboard/purchasing/suppliers", icon: BarChart3, permissions: ["purchasing.vendor.view", "purchasing.vendor.evaluate"] },
       { id: "purchase-approvals", label: "Approvals", href: "/dashboard/purchasing/approvals", icon: Shield, permissions: ["procurement.order.view", "admin.branch.manage"] },
     ],
   },

@@ -42,6 +42,10 @@ interface POSPaymentProps {
   setPaymentMethod: (method: PaymentMethod) => void;
   amountTendered: number;
   setAmountTendered: (amount: number) => void;
+  paymentReference: string;
+  setPaymentReference: (reference: string) => void;
+  paymentConfirmed: boolean;
+  setPaymentConfirmed: (confirmed: boolean) => void;
   changeAmount: number;
   onCheckout: () => void;
   loading: boolean;
@@ -65,6 +69,10 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   setPaymentMethod,
   amountTendered,
   setAmountTendered,
+  paymentReference,
+  setPaymentReference,
+  paymentConfirmed,
+  setPaymentConfirmed,
   changeAmount,
   onCheckout,
   loading,
@@ -100,6 +108,8 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
   // when converting a document — a direct sale is always paid in full.
   const availableMethods =
     docMode === "SALE" ? paymentMethods.filter((m) => m.value !== "credit") : paymentMethods;
+  const needsExternalConfirmation = paymentMethod !== "cash" && paymentMethod !== "credit";
+  const externalPaymentReady = paymentConfirmed && !!paymentReference.trim();
 
   const quickAmounts = [
     { label: "Exact", value: grandTotal },
@@ -203,6 +213,34 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
         </DropdownMenu>
       </div>}
 
+      {showPaymentControls && needsExternalConfirmation && (
+        <div className="space-y-3 rounded-xl border border-amber-200 bg-amber-50/70 p-4">
+          <div>
+            <Label htmlFor="paymentReference" className="text-sm font-semibold text-foreground">
+              Payment reference
+            </Label>
+            <Input
+              id="paymentReference"
+              value={paymentReference}
+              onChange={(e) => setPaymentReference(e.target.value)}
+              placeholder="M-Pesa code, card slip, cheque number…"
+              maxLength={120}
+              className="mt-2 bg-background"
+            />
+          </div>
+          <label htmlFor="paymentConfirmed" className="flex items-start gap-2 text-sm text-foreground">
+            <input
+              id="paymentConfirmed"
+              type="checkbox"
+              checked={paymentConfirmed}
+              onChange={(e) => setPaymentConfirmed(e.target.checked)}
+              className="mt-1 accent-primary"
+            />
+            <span>I confirm this payment has been received and verified.</span>
+          </label>
+        </div>
+      )}
+
       {/* Cash Payment Details */}
       {docMode === "SALE" && paymentMethod === "cash" && (
         <div className="space-y-3 rounded-xl border border-border/60 bg-muted/35 p-4">
@@ -288,6 +326,7 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           onClick={onCheckout}
           disabled={
             loading || cartCount === 0 || (paymentMethod === "cash" && amountTendered < grandTotal)
+            || (needsExternalConfirmation && !externalPaymentReady)
           }
           className="h-14 w-full text-lg font-bold"
           size="lg"
@@ -325,7 +364,16 @@ export const POSPayment: React.FC<POSPaymentProps> = ({
           )}
         </Button>
         {canConvertDocument && (
-          <Button onClick={onConvertDocument} disabled={loading || cartCount === 0} variant="outline" className="w-full h-12">
+          <Button
+            onClick={onConvertDocument}
+            disabled={
+              loading ||
+              cartCount === 0 ||
+              (amountTendered > 0 && needsExternalConfirmation && !externalPaymentReady)
+            }
+            variant="outline"
+            className="w-full h-12"
+          >
             Convert to Invoice
           </Button>
         )}

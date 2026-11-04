@@ -16,6 +16,7 @@ import { TokenPayload } from "../../../types";
 import { RBACService } from "@core/middleware/rbac.service";
 import workflow from "../../workflow/workflow.service";
 import { logger } from "@core/utils/logger";
+import { PermissionService } from "../../auth/services/permission.service";
 
 interface AuthenticatedRequest extends Request {
   user?: TokenPayload;
@@ -104,6 +105,7 @@ export class SalesController {
         type: input.type as any,
         status: input.status as SalesDocumentStatus | undefined,
         customerId: input.customerId || undefined,
+        discount: input.discount,
         paymentMethod: input.paymentMethod || undefined,
         issueDate: input.issueDate
           ? typeof input.issueDate === "string"
@@ -127,11 +129,29 @@ export class SalesController {
         })),
       };
 
+      // Selling below the catalogue price needs an approved, unused price override
+      // (or the sales.price.override permission).
+      const rawIds = (req.body as any)?.priceOverrideApprovalIds;
+      const overrideIds: string[] = Array.isArray(rawIds)
+        ? rawIds.filter((x: unknown): x is string => typeof x === "string")
+        : [];
+      const overridesUsed = await workflow.checkPriceOverrides(
+        userId,
+        await PermissionService.getUserPermissions(userId),
+        serviceInput.items.map((i) => ({ productId: i.productId, unitPrice: Number(i.unitPrice), quantity: Number(i.quantity) })),
+        overrideIds,
+      );
+
       const document = await SalesService.createDocument(
         serviceInput,
         branchId,
         userId,
       );
+      if (overridesUsed.length) {
+        await workflow
+          .consumePriceOverrides(overridesUsed, userId, String((document as any).documentId ?? (document as any).id))
+          .catch((e) => logger.error({ err: e }, "Could not mark price override as used"));
+      }
       res.status(201).json({ success: true, data: document });
     } catch (error) {
       next(error);
@@ -334,6 +354,7 @@ export class SalesController {
         {
           customerId: input.customerId,
           notes: input.notes,
+          discount: input.discount,
           allowStockOverride: input.allowStockOverride,
           items: input.items.map((item) => ({
             productId: item.productId,
@@ -400,6 +421,8 @@ export class SalesController {
         })),
         paymentMethod: input.payment_method,
         amountPaid: input.amount_paid,
+        paymentReference: input.payment_reference,
+        paymentConfirmed: input.payment_confirmed,
         notes: input.notes,
         customerId: input.customerId,
         discount: input.discount || 0,

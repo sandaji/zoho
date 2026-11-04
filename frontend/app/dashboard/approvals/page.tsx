@@ -557,6 +557,7 @@ function DefinitionEditor({ def, onSaved }: { def: WfDefinition; onSaved: () => 
       approverPermission: s.approverPermission,
       branchScoped: s.branchScoped,
       minAmount: s.minAmount ?? null,
+      maxAmount: s.maxAmount ?? null,
       escalateAfterHours: s.escalateAfterHours ?? null,
       escalateToPermission: s.escalateToPermission ?? null,
     })),
@@ -613,6 +614,14 @@ function DefinitionEditor({ def, onSaved }: { def: WfDefinition; onSaved: () => 
                 type="number"
                 value={s.minAmount ?? ""}
                 onChange={(e) => patch(i, { minAmount: num(e.target.value) })}
+              />
+            </div>
+            <div>
+              <Label className="text-xs">Below amount</Label>
+              <Input
+                type="number"
+                value={s.maxAmount ?? ""}
+                onChange={(e) => patch(i, { maxAmount: num(e.target.value) })}
               />
             </div>
             <div>

@@ -45,6 +45,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { useHasPermission } from "@/hooks/use-permissions";
+import { hasAdminRole } from "@/lib/role-routing";
 import { useStoredStringList } from "@/hooks/use-sidebar-preferences";
 import { API_BASE_URL, API_ENDPOINTS } from "@/lib/api-config";
 import { NAVIGATION_MODULES, canAccessNavigationItem } from "@/lib/navigation";
@@ -78,7 +79,7 @@ function SidebarContentInternal() {
   const pinnedModules = useStoredStringList("swiftpos.sidebar.pinned-modules");
 
   // Derived state
-  const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
+  const isAdminUser = hasAdminRole(user);
 
   // Load branches for admin users
   useEffect(() => {

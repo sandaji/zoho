@@ -144,7 +144,7 @@ export class PurchasingService {
       let y = tableTop + 25;
 
       po.items.forEach((item) => {
-        const productName = item.product.name;
+        const productName = item.product?.name ?? item.description;
         const subtotal = item.quantity * item.unitPrice;
 
         doc.text(productName, itemX, y);
@@ -307,7 +307,7 @@ export class PurchasingService {
       vendorId: string;
       warehouseId?: string; // Optional but recommended
       branchId?: string; // If not provided, will be resolved from warehouseId
-      items: { productId: string; quantity: number; unitPrice: number }[];
+      items: { productId?: string; description?: string; lineType?: "STOCKED" | "NON_STOCK"; quantity: number; unitPrice: number }[];
       notes?: string;
       expectedDeliveryDate?: string;
       // Only DRAFT and SUBMITTED are legal at creation time — anything
@@ -373,28 +373,19 @@ export class PurchasingService {
         // 3. Calculate Totals
         let subtotal = 0;
         const itemsData: Array<{
-          productId: string;
+          productId: string | null;
+          description: string;
+          lineType: "STOCKED" | "NON_STOCK";
           quantity: number;
           unitPrice: number;
           subtotal: number;
         }> = [];
 
         for (const item of data.items) {
-          // Enforce single-vendor logic: Check if product belongs to the PO vendor
-          const product = await tx.product.findUnique({
-            where: { id: item.productId },
-            select: { vendorId: true, name: true },
-          });
-
-          if (!product) {
-            throw new AppError(
-              ErrorCode.NOT_FOUND,
-              404,
-              `Product ${item.productId} not found`,
-            );
-          }
-
-          if (product.vendorId !== data.vendorId) {
+          const lineType = item.lineType ?? "STOCKED";
+          const product = lineType === "STOCKED" && item.productId ? await tx.product.findUnique({ where: { id: item.productId }, select: { vendorId: true, name: true } }) : null;
+          if (lineType === "STOCKED" && !product) throw new AppError(ErrorCode.NOT_FOUND, 404, `Product ${item.productId ?? ""} not found`);
+          if (product && product.vendorId !== data.vendorId) {
             throw new AppError(
               ErrorCode.VALIDATION_ERROR,
               400,
@@ -406,7 +397,9 @@ export class PurchasingService {
           subtotal += itemSubtotal;
 
           itemsData.push({
-            productId: item.productId,
+            productId: lineType === "STOCKED" ? item.productId! : null,
+            description: product?.name ?? item.description ?? "Internal-use item",
+            lineType,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
             subtotal: itemSubtotal,
@@ -468,7 +461,7 @@ export class PurchasingService {
     data: {
       vendorId?: string;
       warehouseId?: string;
-      items?: { productId: string; quantity: number; unitPrice: number }[];
+      items?: { productId?: string; description?: string; lineType?: "STOCKED" | "NON_STOCK"; quantity: number; unitPrice: number }[];
       notes?: string;
       expectedDeliveryDate?: string;
     },
@@ -551,27 +544,19 @@ export class PurchasingService {
         if (data.items) {
           let subtotal = 0;
           const itemsData: Array<{
-            productId: string;
+            productId: string | null;
+            description: string;
+            lineType: "STOCKED" | "NON_STOCK";
             quantity: number;
             unitPrice: number;
             subtotal: number;
           }> = [];
 
           for (const item of data.items) {
-            const product = await tx.product.findUnique({
-              where: { id: item.productId },
-              select: { vendorId: true, name: true },
-            });
-
-            if (!product) {
-              throw new AppError(
-                ErrorCode.NOT_FOUND,
-                404,
-                `Product ${item.productId} not found`,
-              );
-            }
-
-            if (product.vendorId !== vendorId) {
+            const lineType = item.lineType ?? "STOCKED";
+            const product = lineType === "STOCKED" && item.productId ? await tx.product.findUnique({ where: { id: item.productId }, select: { vendorId: true, name: true } }) : null;
+            if (lineType === "STOCKED" && !product) throw new AppError(ErrorCode.NOT_FOUND, 404, `Product ${item.productId ?? ""} not found`);
+            if (product && product.vendorId !== vendorId) {
               throw new AppError(
                 ErrorCode.VALIDATION_ERROR,
                 400,
@@ -583,7 +568,9 @@ export class PurchasingService {
             subtotal += itemSubtotal;
 
             itemsData.push({
-              productId: item.productId,
+              productId: lineType === "STOCKED" ? item.productId! : null,
+              description: product?.name ?? item.description ?? "Internal-use item",
+              lineType,
               quantity: item.quantity,
               unitPrice: item.unitPrice,
               subtotal: itemSubtotal,
@@ -648,6 +635,7 @@ export class PurchasingService {
             items: {
               include: {
                 product: true,
+                purchaseOrderItem: true,
               },
             },
           },
@@ -1107,8 +1095,8 @@ export class PurchasingService {
     id: string,
     userId: string,
     data: {
-      warehouseId: string;
-      items: { productId: string; quantity: number }[];
+      warehouseId?: string;
+      items: { poItemId: string; quantity: number }[];
       allowOverReceive?: boolean;
       notes?: string;
     },
@@ -1152,18 +1140,15 @@ export class PurchasingService {
         );
       }
 
-      // Check warehouse
-      const warehouse = await tx.warehouse.findUnique({
-        where: { id: data.warehouseId },
+      const receivingStock = data.items.some((entry) => {
+        const line = po.items.find((item) => item.id === entry.poItemId);
+        return line?.lineType === "STOCKED" && entry.quantity > 0;
       });
-      if (!warehouse)
-        throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
-      if (warehouse.branchId !== po.branchId) {
-        throw new AppError(
-          ErrorCode.VALIDATION_ERROR,
-          400,
-          "Warehouse must belong to the PO branch",
-        );
+      if (receivingStock && !data.warehouseId) throw new AppError(ErrorCode.BAD_REQUEST, 400, "Warehouse is required for stocked items");
+      if (data.warehouseId) {
+        const warehouse = await tx.warehouse.findUnique({ where: { id: data.warehouseId } });
+        if (!warehouse) throw new AppError(ErrorCode.NOT_FOUND, 404, "Warehouse not found");
+        if (warehouse.branchId !== po.branchId) throw new AppError(ErrorCode.VALIDATION_ERROR, 400, "Warehouse must belong to the PO branch");
       }
 
       // Generate GRN number
@@ -1192,21 +1177,17 @@ export class PurchasingService {
       });
 
       const grnItems = [];
-      let totalReceivedQty = 0;
-      let totalOrderedQty = 0;
       let billAmount = 0;
 
       for (const receivedItem of data.items) {
         if (receivedItem.quantity <= 0) continue;
 
-        const poItem = po.items.find(
-          (item) => item.productId === receivedItem.productId,
-        );
+        const poItem = po.items.find((item) => item.id === receivedItem.poItemId);
         if (!poItem) {
           throw new AppError(
             ErrorCode.VALIDATION_ERROR,
             400,
-            `Product ${receivedItem.productId} is not in this PO`,
+            `PO line ${receivedItem.poItemId} is not in this PO`,
           );
         }
 
@@ -1215,7 +1196,7 @@ export class PurchasingService {
           throw new AppError(
             ErrorCode.VALIDATION_ERROR,
             400,
-            `Cannot receive ${receivedItem.quantity} of ${poItem.product.name}. Only ${remaining} units remaining.`,
+            `Cannot receive ${receivedItem.quantity} of ${poItem.product?.name ?? poItem.description}. Only ${remaining} units remaining.`,
           );
         }
 
@@ -1232,7 +1213,7 @@ export class PurchasingService {
           data: {
             grnId: grn.id,
             poItemId: poItem.id,
-            productId: receivedItem.productId,
+            productId: poItem.productId,
             qtyReceived: receivedItem.quantity,
           },
         });
@@ -1250,24 +1231,23 @@ export class PurchasingService {
         // normal PO → GRN flow had a FIFO cost lot to deplete from — any
         // FIFO-based COGS calculation for that stock would have found zero
         // available batches.
-        await InventoryService.receiveStock(tx, {
-          productId: receivedItem.productId,
-          warehouseId: data.warehouseId,
-          quantity: receivedItem.quantity,
-          unitCost: poItem.unitPrice,
-          grnItemId: grnItem.id,
-          userId,
-          reference: `GRN ${grnNumber}`,
-        });
-
-        totalReceivedQty += newReceivedQty;
-        totalOrderedQty += poItem.quantity;
+        if (poItem.lineType === "STOCKED" && poItem.productId && data.warehouseId) {
+          await InventoryService.receiveStock(tx, {
+            productId: poItem.productId,
+            warehouseId: data.warehouseId,
+            quantity: receivedItem.quantity,
+            unitCost: poItem.unitPrice,
+            grnItemId: grnItem.id,
+            userId,
+            reference: `GRN ${grnNumber}`,
+          });
+        }
         billAmount += receivedItem.quantity * poItem.unitPrice;
       }
 
       // 4. Update PO Status
-      const newStatus =
-        totalReceivedQty === totalOrderedQty
+      const freshPoItems = await tx.purchaseOrderItem.findMany({ where: { purchaseOrderId: id } });
+      const newStatus = freshPoItems.every((item) => item.receivedQuantity >= item.quantity)
           ? PurchaseOrderStatus.RECEIVED
           : PurchaseOrderStatus.PARTIALLY_RECEIVED;
 

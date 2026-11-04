@@ -1,6 +1,7 @@
 import { prisma } from '@core/database/db';
 import { AppError, ErrorCode } from '@core/errors/errors';
 import { Prisma, TransactionType, ExpenseReportStatus } from "../../../generated";
+import workflow from "../../workflow/workflow.service";
 
 // ============================================================================
 // APPROVAL THRESHOLDS (KSH) — same three-tier structure as
@@ -107,7 +108,7 @@ export class ExpenseReportService {
       }
     }
 
-    return prisma.$transaction(async (tx) => {
+    const created = await prisma.$transaction(async (tx) => {
       const year = new Date().getFullYear();
       const count = await tx.expenseReport.count();
       const expenseNumber = `EXP-${year}-${(count + 1).toString().padStart(5, "0")}`;
@@ -148,6 +149,27 @@ export class ExpenseReportService {
           branch: true,
         },
       });
+    });
+
+    if (created.status === ExpenseReportStatus.SUBMITTED) {
+      await this.startApproval(created, userId);
+    }
+    return created;
+  }
+
+  /** Routes a submitted report through the approval engine (one approver chosen by the total). */
+  private async startApproval(
+    report: { id: string; expenseNumber: string; totalAmount: number; branchId: string | null; employeeId: string },
+    requestedById: string,
+  ) {
+    return workflow.start({
+      code: "EXPENSE_REPORT",
+      entityId: report.id,
+      title: `Expense report ${report.expenseNumber}`,
+      summary: `Total KSh ${report.totalAmount.toLocaleString("en-KE")}`,
+      amount: report.totalAmount,
+      branchId: report.branchId,
+      requestedById: report.employeeId || requestedById,
     });
   }
 
@@ -315,6 +337,7 @@ export class ExpenseReportService {
     userId: string,
     userPermissions: string[] = [],
     rejectionReason?: string,
+    opts: { viaWorkflow?: boolean } = {},
   ) {
     const report = await this.getExpenseReport(id);
 
@@ -326,7 +349,22 @@ export class ExpenseReportService {
       );
     }
 
-    if (status === ExpenseReportStatus.APPROVED) {
+    // Approving or rejecting is the approval chain's job. A report submitted before the
+    // engine existed has no open request, so one is started now and the caller is pointed to it.
+    if (
+      !opts.viaWorkflow &&
+      (status === ExpenseReportStatus.APPROVED || status === ExpenseReportStatus.REJECTED)
+    ) {
+      const pending = (await workflow.forEntity("EXPENSE_REPORT", id)).find((w: any) => w.status === "PENDING");
+      const inst = pending ?? (await this.startApproval(report, userId));
+      throw new AppError(
+        ErrorCode.FORBIDDEN,
+        403,
+        `Expense reports are decided from the Approvals page (${(inst as any).instanceNumber}).`,
+      );
+    }
+
+    if (status === ExpenseReportStatus.APPROVED && !opts.viaWorkflow) {
       if (report.employeeId === userId) {
         throw new AppError(
           ErrorCode.FORBIDDEN,
@@ -369,7 +407,7 @@ export class ExpenseReportService {
       updateData.rejectedReason = rejectionReason;
     }
 
-    return prisma.expenseReport.update({
+    const updated = await prisma.expenseReport.update({
       where: { id },
       data: updateData,
       include: {
@@ -379,6 +417,16 @@ export class ExpenseReportService {
         department: true,
       },
     });
+
+    if (status === ExpenseReportStatus.SUBMITTED) {
+      await this.startApproval(updated, userId);
+    } else if (
+      report.status === ExpenseReportStatus.SUBMITTED &&
+      (status === ExpenseReportStatus.DRAFT || status === ExpenseReportStatus.CANCELLED)
+    ) {
+      await workflow.cancelForEntity("EXPENSE_REPORT", id, userId, `Report moved to ${status}`);
+    }
+    return updated;
   }
 
   /**

@@ -9,7 +9,7 @@ export interface Branch {
   address:  string | null;
 }
 
-export type UserRole = "admin" | "super_admin" | "branch_manager" | "manager" | "accountant" | "hr" | "cashier" | "warehouse_staff" | "driver" | "procurement" | "user";
+export type UserRole = "admin" | "super_admin" | "branch_manager" | "manager" | "accountant" | "hr" | "cashier" | "warehouse_staff" | "driver" | "procurement" | "procurement_officer" | "user";
 
 export interface User {
   id: string;
@@ -104,7 +104,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Write cookies so Next.js edge proxy can read them for route protection
     const maxAge = 60 * 60 * 24 * 7; // 7 days — matches typical JWT expiry
     document.cookie = `auth_token=${newToken}; path=/; max-age=${maxAge}; SameSite=Lax`;
-    document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(newUser))}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    // Keep the proxy cookie small: admins can have hundreds of permissions,
+    // which can exceed the browser's per-cookie limit and silently drop the
+    // cookie. The proxy only needs role information for route gating; the full
+    // user object remains in localStorage for the client application.
+    const proxyUser = { role: newUser.role, roles: newUser.roles };
+    document.cookie = `auth_user=${encodeURIComponent(JSON.stringify(proxyUser))}; path=/; max-age=${maxAge}; SameSite=Lax`;
   };
 
   const logout = () => {

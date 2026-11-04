@@ -26,6 +26,7 @@ router.post("/instances/:id/comment", wf.comment);
 router.post("/instances/:id/cancel", wf.cancel);
 router.post("/instances/:id/retry-outcome", requirePermission("workflow.design.manage"), wf.retryOutcome);
 
+router.post("/price-override", wf.requestPriceOverride);
 router.post("/steps/:stepId/decision", wf.decide);
 router.post("/escalate", requirePermission("workflow.design.manage"), wf.escalate);
 

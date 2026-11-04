@@ -69,6 +69,7 @@ export interface TokenPayload {
   userId: string;
   email: string;
   role: UserRole;
+  roles?: string[];
   branchId?: string | null;
   iat?: number;
   exp?: number;

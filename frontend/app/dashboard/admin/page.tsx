@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { AdminBranchProvider } from "@/lib/AdminBranchContext";
 import { useHasPermission } from "@/hooks/use-permissions";
 import { ADMIN_SECTION_PERMISSIONS } from "@/lib/navigation";
+import { hasAdminRole } from "@/lib/role-routing";
 
 import AdminOverview from "@/components/admin/AdminOverview";
 import BranchesSection from "@/components/admin/BranchesSection";
@@ -78,7 +79,7 @@ export default function AdminDashboardPage() {
   const searchParams = useSearchParams();
   const section = searchParams.get("section") || "overview";
 
-  const isAdminUser = user?.role === "admin" || user?.role === "super_admin";
+  const isAdminUser = hasAdminRole(user);
 
   // Real RBAC: derive which admin sections this user's permissions actually
   // grant, from the single source of truth in lib/navigation.ts (the same

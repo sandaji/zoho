@@ -80,7 +80,7 @@ class RequisitionService {
     data: {
       vendorId: string;
       warehouseId?: string;
-      items: { requisitionItemId: string; productId: string; unitPrice: number }[];
+      items: { requisitionItemId: string; productId?: string; lineType?: "STOCKED" | "NON_STOCK"; unitPrice: number }[];
     },
   ) {
     const res = await apiClient.request(`/v1/purchasing/requisitions/${id}/convert`, "POST", data);

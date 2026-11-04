@@ -68,6 +68,7 @@ export default function RequisitionDetailPage() {
   const [vendors, setVendors] = useState<Array<{ id: string; name: string; code: string }>>([]);
   const [convertVendorId, setConvertVendorId] = useState("");
   const [convertProductIds, setConvertProductIds] = useState<Record<string, string>>({});
+  const [convertLineTypes, setConvertLineTypes] = useState<Record<string, "STOCKED" | "NON_STOCK">>({});
   const [convertProductNames, setConvertProductNames] = useState<Record<string, string>>({});
   const [convertUnitPrices, setConvertUnitPrices] = useState<Record<string, number>>({});
   const [warehouses, setWarehouses] = useState<Array<{ id: string; name: string; code: string }>>([]);
@@ -138,6 +139,7 @@ export default function RequisitionDetailPage() {
     if (vendorId === convertVendorId) return;
     setConvertVendorId(vendorId);
     setConvertProductIds({});
+    setConvertLineTypes({});
     setConvertProductNames({});
     setConvertUnitPrices({});
   };
@@ -160,11 +162,12 @@ export default function RequisitionDetailPage() {
     }
     const items = requisition.items.map((item) => ({
       requisitionItemId: item.id!,
-      productId: convertProductIds[item.id!] || "",
+      productId: convertLineTypes[item.id!] === "STOCKED" ? convertProductIds[item.id!] : undefined,
+      lineType: convertLineTypes[item.id!] ?? "NON_STOCK",
       unitPrice: convertUnitPrices[item.id!] ?? item.estimatedUnitCost,
     }));
-    if (items.some((i) => !i.productId)) {
-      toast.error("Select a catalog product for every line item");
+    if (items.some((i) => i.lineType === "STOCKED" && !i.productId)) {
+      toast.error("Choose a catalog product for each line marked as stocked");
       return;
     }
     try {
@@ -394,7 +397,7 @@ export default function RequisitionDetailPage() {
             </div>
             <div className="space-y-2">
               <label className="block text-sm font-medium text-slate-700">
-                Destination Warehouse
+                Destination Warehouse (needed for stocked items)
               </label>
               <Select value={convertWarehouseId} onValueChange={setConvertWarehouseId}>
                 <SelectTrigger className="w-full">
@@ -411,12 +414,19 @@ export default function RequisitionDetailPage() {
             </div>
             <div className="space-y-3">
               <p className="text-sm font-medium text-slate-700">
-                Pick a catalog product from that vendor for each line and confirm the price
+                Choose whether each line will enter inventory or be purchased for internal use.
               </p>
               {requisition.items.map((item) => (
-                <div key={item.id} className="grid grid-cols-3 gap-3 items-center border border-slate-200 rounded-lg p-3">
+                <div key={item.id} className="grid grid-cols-1 gap-3 items-center border border-slate-200 rounded-lg p-3 sm:grid-cols-4">
                   <div className="text-sm text-slate-700">{item.description}</div>
-                  <VendorProductCombobox
+                  <Select value={convertLineTypes[item.id!] ?? "NON_STOCK"} onValueChange={(value: "STOCKED" | "NON_STOCK") => setConvertLineTypes((prev) => ({ ...prev, [item.id!]: value }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="NON_STOCK">Internal use</SelectItem>
+                      <SelectItem value="STOCKED">Add to inventory</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {(convertLineTypes[item.id!] ?? "NON_STOCK") === "STOCKED" ? <VendorProductCombobox
                     token={token!}
                     vendorId={convertVendorId}
                     placeholder="Search vendor products..."
@@ -425,7 +435,7 @@ export default function RequisitionDetailPage() {
                       .filter(([lineId]) => lineId !== item.id)
                       .map(([, productId]) => productId)}
                     onPick={(p) => handlePickProduct(item.id!, p)}
-                  />
+                  /> : <div className="text-xs text-muted-foreground">No catalog product needed</div>}
                   <Input
                     type="number"
                     step="0.01"

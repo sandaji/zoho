@@ -12,4 +12,10 @@ router.get(
   (req, res, next) => auditController.getAuditLogs(req, res, next)
 );
 
+router.get(
+  '/entity/:entityType/:entityId',
+  hasAnyPermission(['audit.log.view', 'admin.user.manage']),
+  (req, res, next) => auditController.getEntityHistory(req, res, next)
+);
+
 export default router;

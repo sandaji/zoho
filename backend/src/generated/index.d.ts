@@ -514,6 +514,21 @@ export type WorkflowDelegation = $Result.DefaultSelection<Prisma.$WorkflowDelega
  * 
  */
 export type WorkflowEvent = $Result.DefaultSelection<Prisma.$WorkflowEventPayload>
+/**
+ * Model AuditFinding
+ * 
+ */
+export type AuditFinding = $Result.DefaultSelection<Prisma.$AuditFindingPayload>
+/**
+ * Model AuditFindingEvent
+ * 
+ */
+export type AuditFindingEvent = $Result.DefaultSelection<Prisma.$AuditFindingEventPayload>
+/**
+ * Model RiskRegisterEntry
+ * 
+ */
+export type RiskRegisterEntry = $Result.DefaultSelection<Prisma.$RiskRegisterEntryPayload>
 
 /**
  * Enums
@@ -2350,6 +2365,36 @@ export class PrismaClient<
     * ```
     */
   get workflowEvent(): Prisma.WorkflowEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.auditFinding`: Exposes CRUD operations for the **AuditFinding** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AuditFindings
+    * const auditFindings = await prisma.auditFinding.findMany()
+    * ```
+    */
+  get auditFinding(): Prisma.AuditFindingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.auditFindingEvent`: Exposes CRUD operations for the **AuditFindingEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AuditFindingEvents
+    * const auditFindingEvents = await prisma.auditFindingEvent.findMany()
+    * ```
+    */
+  get auditFindingEvent(): Prisma.AuditFindingEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.riskRegisterEntry`: Exposes CRUD operations for the **RiskRegisterEntry** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RiskRegisterEntries
+    * const riskRegisterEntries = await prisma.riskRegisterEntry.findMany()
+    * ```
+    */
+  get riskRegisterEntry(): Prisma.RiskRegisterEntryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -2894,7 +2939,10 @@ export namespace Prisma {
     WorkflowInstance: 'WorkflowInstance',
     WorkflowStep: 'WorkflowStep',
     WorkflowDelegation: 'WorkflowDelegation',
-    WorkflowEvent: 'WorkflowEvent'
+    WorkflowEvent: 'WorkflowEvent',
+    AuditFinding: 'AuditFinding',
+    AuditFindingEvent: 'AuditFindingEvent',
+    RiskRegisterEntry: 'RiskRegisterEntry'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -2910,7 +2958,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent" | "auditFinding" | "auditFindingEvent" | "riskRegisterEntry"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -10166,6 +10214,228 @@ export namespace Prisma {
           }
         }
       }
+      AuditFinding: {
+        payload: Prisma.$AuditFindingPayload<ExtArgs>
+        fields: Prisma.AuditFindingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AuditFindingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AuditFindingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+          }
+          findFirst: {
+            args: Prisma.AuditFindingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AuditFindingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+          }
+          findMany: {
+            args: Prisma.AuditFindingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>[]
+          }
+          create: {
+            args: Prisma.AuditFindingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+          }
+          createMany: {
+            args: Prisma.AuditFindingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AuditFindingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>[]
+          }
+          delete: {
+            args: Prisma.AuditFindingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+          }
+          update: {
+            args: Prisma.AuditFindingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+          }
+          deleteMany: {
+            args: Prisma.AuditFindingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AuditFindingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AuditFindingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>[]
+          }
+          upsert: {
+            args: Prisma.AuditFindingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingPayload>
+          }
+          aggregate: {
+            args: Prisma.AuditFindingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAuditFinding>
+          }
+          groupBy: {
+            args: Prisma.AuditFindingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AuditFindingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AuditFindingCountArgs<ExtArgs>
+            result: $Utils.Optional<AuditFindingCountAggregateOutputType> | number
+          }
+        }
+      }
+      AuditFindingEvent: {
+        payload: Prisma.$AuditFindingEventPayload<ExtArgs>
+        fields: Prisma.AuditFindingEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AuditFindingEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AuditFindingEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>
+          }
+          findFirst: {
+            args: Prisma.AuditFindingEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AuditFindingEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>
+          }
+          findMany: {
+            args: Prisma.AuditFindingEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>[]
+          }
+          create: {
+            args: Prisma.AuditFindingEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>
+          }
+          createMany: {
+            args: Prisma.AuditFindingEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AuditFindingEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>[]
+          }
+          delete: {
+            args: Prisma.AuditFindingEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>
+          }
+          update: {
+            args: Prisma.AuditFindingEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.AuditFindingEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AuditFindingEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AuditFindingEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.AuditFindingEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditFindingEventPayload>
+          }
+          aggregate: {
+            args: Prisma.AuditFindingEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAuditFindingEvent>
+          }
+          groupBy: {
+            args: Prisma.AuditFindingEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AuditFindingEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AuditFindingEventCountArgs<ExtArgs>
+            result: $Utils.Optional<AuditFindingEventCountAggregateOutputType> | number
+          }
+        }
+      }
+      RiskRegisterEntry: {
+        payload: Prisma.$RiskRegisterEntryPayload<ExtArgs>
+        fields: Prisma.RiskRegisterEntryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RiskRegisterEntryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RiskRegisterEntryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>
+          }
+          findFirst: {
+            args: Prisma.RiskRegisterEntryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RiskRegisterEntryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>
+          }
+          findMany: {
+            args: Prisma.RiskRegisterEntryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>[]
+          }
+          create: {
+            args: Prisma.RiskRegisterEntryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>
+          }
+          createMany: {
+            args: Prisma.RiskRegisterEntryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RiskRegisterEntryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>[]
+          }
+          delete: {
+            args: Prisma.RiskRegisterEntryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>
+          }
+          update: {
+            args: Prisma.RiskRegisterEntryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>
+          }
+          deleteMany: {
+            args: Prisma.RiskRegisterEntryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RiskRegisterEntryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RiskRegisterEntryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>[]
+          }
+          upsert: {
+            args: Prisma.RiskRegisterEntryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RiskRegisterEntryPayload>
+          }
+          aggregate: {
+            args: Prisma.RiskRegisterEntryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRiskRegisterEntry>
+          }
+          groupBy: {
+            args: Prisma.RiskRegisterEntryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RiskRegisterEntryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RiskRegisterEntryCountArgs<ExtArgs>
+            result: $Utils.Optional<RiskRegisterEntryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -10387,6 +10657,9 @@ export namespace Prisma {
     workflowStep?: WorkflowStepOmit
     workflowDelegation?: WorkflowDelegationOmit
     workflowEvent?: WorkflowEventOmit
+    auditFinding?: AuditFindingOmit
+    auditFindingEvent?: AuditFindingEventOmit
+    riskRegisterEntry?: RiskRegisterEntryOmit
   }
 
   /* Types for Logging */
@@ -126124,12 +126397,14 @@ export namespace Prisma {
   export type WorkflowStageAvgAggregateOutputType = {
     order: number | null
     minAmount: number | null
+    maxAmount: number | null
     escalateAfterHours: number | null
   }
 
   export type WorkflowStageSumAggregateOutputType = {
     order: number | null
     minAmount: number | null
+    maxAmount: number | null
     escalateAfterHours: number | null
   }
 
@@ -126141,6 +126416,7 @@ export namespace Prisma {
     approverPermission: string | null
     branchScoped: boolean | null
     minAmount: number | null
+    maxAmount: number | null
     escalateAfterHours: number | null
     escalateToPermission: string | null
     createdAt: Date | null
@@ -126154,6 +126430,7 @@ export namespace Prisma {
     approverPermission: string | null
     branchScoped: boolean | null
     minAmount: number | null
+    maxAmount: number | null
     escalateAfterHours: number | null
     escalateToPermission: string | null
     createdAt: Date | null
@@ -126167,6 +126444,7 @@ export namespace Prisma {
     approverPermission: number
     branchScoped: number
     minAmount: number
+    maxAmount: number
     escalateAfterHours: number
     escalateToPermission: number
     createdAt: number
@@ -126177,12 +126455,14 @@ export namespace Prisma {
   export type WorkflowStageAvgAggregateInputType = {
     order?: true
     minAmount?: true
+    maxAmount?: true
     escalateAfterHours?: true
   }
 
   export type WorkflowStageSumAggregateInputType = {
     order?: true
     minAmount?: true
+    maxAmount?: true
     escalateAfterHours?: true
   }
 
@@ -126194,6 +126474,7 @@ export namespace Prisma {
     approverPermission?: true
     branchScoped?: true
     minAmount?: true
+    maxAmount?: true
     escalateAfterHours?: true
     escalateToPermission?: true
     createdAt?: true
@@ -126207,6 +126488,7 @@ export namespace Prisma {
     approverPermission?: true
     branchScoped?: true
     minAmount?: true
+    maxAmount?: true
     escalateAfterHours?: true
     escalateToPermission?: true
     createdAt?: true
@@ -126220,6 +126502,7 @@ export namespace Prisma {
     approverPermission?: true
     branchScoped?: true
     minAmount?: true
+    maxAmount?: true
     escalateAfterHours?: true
     escalateToPermission?: true
     createdAt?: true
@@ -126320,6 +126603,7 @@ export namespace Prisma {
     approverPermission: string
     branchScoped: boolean
     minAmount: number | null
+    maxAmount: number | null
     escalateAfterHours: number | null
     escalateToPermission: string | null
     createdAt: Date
@@ -126352,6 +126636,7 @@ export namespace Prisma {
     approverPermission?: boolean
     branchScoped?: boolean
     minAmount?: boolean
+    maxAmount?: boolean
     escalateAfterHours?: boolean
     escalateToPermission?: boolean
     createdAt?: boolean
@@ -126365,6 +126650,7 @@ export namespace Prisma {
     approverPermission?: boolean
     branchScoped?: boolean
     minAmount?: boolean
+    maxAmount?: boolean
     escalateAfterHours?: boolean
     escalateToPermission?: boolean
     createdAt?: boolean
@@ -126378,6 +126664,7 @@ export namespace Prisma {
     approverPermission?: boolean
     branchScoped?: boolean
     minAmount?: boolean
+    maxAmount?: boolean
     escalateAfterHours?: boolean
     escalateToPermission?: boolean
     createdAt?: boolean
@@ -126391,12 +126678,13 @@ export namespace Prisma {
     approverPermission?: boolean
     branchScoped?: boolean
     minAmount?: boolean
+    maxAmount?: boolean
     escalateAfterHours?: boolean
     escalateToPermission?: boolean
     createdAt?: boolean
   }
 
-  export type WorkflowStageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "definitionId" | "order" | "name" | "approverPermission" | "branchScoped" | "minAmount" | "escalateAfterHours" | "escalateToPermission" | "createdAt", ExtArgs["result"]["workflowStage"]>
+  export type WorkflowStageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "definitionId" | "order" | "name" | "approverPermission" | "branchScoped" | "minAmount" | "maxAmount" | "escalateAfterHours" | "escalateToPermission" | "createdAt", ExtArgs["result"]["workflowStage"]>
 
   export type $WorkflowStagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "WorkflowStage"
@@ -126409,6 +126697,7 @@ export namespace Prisma {
       approverPermission: string
       branchScoped: boolean
       minAmount: number | null
+      maxAmount: number | null
       escalateAfterHours: number | null
       escalateToPermission: string | null
       createdAt: Date
@@ -126842,6 +127131,7 @@ export namespace Prisma {
     readonly approverPermission: FieldRef<"WorkflowStage", 'String'>
     readonly branchScoped: FieldRef<"WorkflowStage", 'Boolean'>
     readonly minAmount: FieldRef<"WorkflowStage", 'Float'>
+    readonly maxAmount: FieldRef<"WorkflowStage", 'Float'>
     readonly escalateAfterHours: FieldRef<"WorkflowStage", 'Int'>
     readonly escalateToPermission: FieldRef<"WorkflowStage", 'String'>
     readonly createdAt: FieldRef<"WorkflowStage", 'DateTime'>
@@ -131770,6 +132060,3425 @@ export namespace Prisma {
 
 
   /**
+   * Model AuditFinding
+   */
+
+  export type AggregateAuditFinding = {
+    _count: AuditFindingCountAggregateOutputType | null
+    _min: AuditFindingMinAggregateOutputType | null
+    _max: AuditFindingMaxAggregateOutputType | null
+  }
+
+  export type AuditFindingMinAggregateOutputType = {
+    id: string | null
+    findingNumber: string | null
+    title: string | null
+    description: string | null
+    severity: string | null
+    category: string | null
+    status: string | null
+    entityType: string | null
+    entityId: string | null
+    auditLogId: string | null
+    branchId: string | null
+    riskId: string | null
+    raisedById: string | null
+    ownerId: string | null
+    dueDate: Date | null
+    managementResponse: string | null
+    resolution: string | null
+    resolvedAt: Date | null
+    closedById: string | null
+    closedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AuditFindingMaxAggregateOutputType = {
+    id: string | null
+    findingNumber: string | null
+    title: string | null
+    description: string | null
+    severity: string | null
+    category: string | null
+    status: string | null
+    entityType: string | null
+    entityId: string | null
+    auditLogId: string | null
+    branchId: string | null
+    riskId: string | null
+    raisedById: string | null
+    ownerId: string | null
+    dueDate: Date | null
+    managementResponse: string | null
+    resolution: string | null
+    resolvedAt: Date | null
+    closedById: string | null
+    closedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type AuditFindingCountAggregateOutputType = {
+    id: number
+    findingNumber: number
+    title: number
+    description: number
+    severity: number
+    category: number
+    status: number
+    entityType: number
+    entityId: number
+    auditLogId: number
+    branchId: number
+    riskId: number
+    raisedById: number
+    ownerId: number
+    dueDate: number
+    managementResponse: number
+    resolution: number
+    resolvedAt: number
+    closedById: number
+    closedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type AuditFindingMinAggregateInputType = {
+    id?: true
+    findingNumber?: true
+    title?: true
+    description?: true
+    severity?: true
+    category?: true
+    status?: true
+    entityType?: true
+    entityId?: true
+    auditLogId?: true
+    branchId?: true
+    riskId?: true
+    raisedById?: true
+    ownerId?: true
+    dueDate?: true
+    managementResponse?: true
+    resolution?: true
+    resolvedAt?: true
+    closedById?: true
+    closedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AuditFindingMaxAggregateInputType = {
+    id?: true
+    findingNumber?: true
+    title?: true
+    description?: true
+    severity?: true
+    category?: true
+    status?: true
+    entityType?: true
+    entityId?: true
+    auditLogId?: true
+    branchId?: true
+    riskId?: true
+    raisedById?: true
+    ownerId?: true
+    dueDate?: true
+    managementResponse?: true
+    resolution?: true
+    resolvedAt?: true
+    closedById?: true
+    closedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type AuditFindingCountAggregateInputType = {
+    id?: true
+    findingNumber?: true
+    title?: true
+    description?: true
+    severity?: true
+    category?: true
+    status?: true
+    entityType?: true
+    entityId?: true
+    auditLogId?: true
+    branchId?: true
+    riskId?: true
+    raisedById?: true
+    ownerId?: true
+    dueDate?: true
+    managementResponse?: true
+    resolution?: true
+    resolvedAt?: true
+    closedById?: true
+    closedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type AuditFindingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditFinding to aggregate.
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindings to fetch.
+     */
+    orderBy?: AuditFindingOrderByWithRelationInput | AuditFindingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AuditFindingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AuditFindings
+    **/
+    _count?: true | AuditFindingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuditFindingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuditFindingMaxAggregateInputType
+  }
+
+  export type GetAuditFindingAggregateType<T extends AuditFindingAggregateArgs> = {
+        [P in keyof T & keyof AggregateAuditFinding]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAuditFinding[P]>
+      : GetScalarType<T[P], AggregateAuditFinding[P]>
+  }
+
+
+
+
+  export type AuditFindingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditFindingWhereInput
+    orderBy?: AuditFindingOrderByWithAggregationInput | AuditFindingOrderByWithAggregationInput[]
+    by: AuditFindingScalarFieldEnum[] | AuditFindingScalarFieldEnum
+    having?: AuditFindingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AuditFindingCountAggregateInputType | true
+    _min?: AuditFindingMinAggregateInputType
+    _max?: AuditFindingMaxAggregateInputType
+  }
+
+  export type AuditFindingGroupByOutputType = {
+    id: string
+    findingNumber: string
+    title: string
+    description: string
+    severity: string
+    category: string
+    status: string
+    entityType: string | null
+    entityId: string | null
+    auditLogId: string | null
+    branchId: string | null
+    riskId: string | null
+    raisedById: string
+    ownerId: string | null
+    dueDate: Date | null
+    managementResponse: string | null
+    resolution: string | null
+    resolvedAt: Date | null
+    closedById: string | null
+    closedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: AuditFindingCountAggregateOutputType | null
+    _min: AuditFindingMinAggregateOutputType | null
+    _max: AuditFindingMaxAggregateOutputType | null
+  }
+
+  type GetAuditFindingGroupByPayload<T extends AuditFindingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AuditFindingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AuditFindingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AuditFindingGroupByOutputType[P]>
+            : GetScalarType<T[P], AuditFindingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AuditFindingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    findingNumber?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    category?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    auditLogId?: boolean
+    branchId?: boolean
+    riskId?: boolean
+    raisedById?: boolean
+    ownerId?: boolean
+    dueDate?: boolean
+    managementResponse?: boolean
+    resolution?: boolean
+    resolvedAt?: boolean
+    closedById?: boolean
+    closedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["auditFinding"]>
+
+  export type AuditFindingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    findingNumber?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    category?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    auditLogId?: boolean
+    branchId?: boolean
+    riskId?: boolean
+    raisedById?: boolean
+    ownerId?: boolean
+    dueDate?: boolean
+    managementResponse?: boolean
+    resolution?: boolean
+    resolvedAt?: boolean
+    closedById?: boolean
+    closedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["auditFinding"]>
+
+  export type AuditFindingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    findingNumber?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    category?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    auditLogId?: boolean
+    branchId?: boolean
+    riskId?: boolean
+    raisedById?: boolean
+    ownerId?: boolean
+    dueDate?: boolean
+    managementResponse?: boolean
+    resolution?: boolean
+    resolvedAt?: boolean
+    closedById?: boolean
+    closedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["auditFinding"]>
+
+  export type AuditFindingSelectScalar = {
+    id?: boolean
+    findingNumber?: boolean
+    title?: boolean
+    description?: boolean
+    severity?: boolean
+    category?: boolean
+    status?: boolean
+    entityType?: boolean
+    entityId?: boolean
+    auditLogId?: boolean
+    branchId?: boolean
+    riskId?: boolean
+    raisedById?: boolean
+    ownerId?: boolean
+    dueDate?: boolean
+    managementResponse?: boolean
+    resolution?: boolean
+    resolvedAt?: boolean
+    closedById?: boolean
+    closedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type AuditFindingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "findingNumber" | "title" | "description" | "severity" | "category" | "status" | "entityType" | "entityId" | "auditLogId" | "branchId" | "riskId" | "raisedById" | "ownerId" | "dueDate" | "managementResponse" | "resolution" | "resolvedAt" | "closedById" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["auditFinding"]>
+
+  export type $AuditFindingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AuditFinding"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      findingNumber: string
+      title: string
+      description: string
+      severity: string
+      category: string
+      status: string
+      entityType: string | null
+      entityId: string | null
+      auditLogId: string | null
+      branchId: string | null
+      riskId: string | null
+      raisedById: string
+      ownerId: string | null
+      dueDate: Date | null
+      managementResponse: string | null
+      resolution: string | null
+      resolvedAt: Date | null
+      closedById: string | null
+      closedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["auditFinding"]>
+    composites: {}
+  }
+
+  type AuditFindingGetPayload<S extends boolean | null | undefined | AuditFindingDefaultArgs> = $Result.GetResult<Prisma.$AuditFindingPayload, S>
+
+  type AuditFindingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AuditFindingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AuditFindingCountAggregateInputType | true
+    }
+
+  export interface AuditFindingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AuditFinding'], meta: { name: 'AuditFinding' } }
+    /**
+     * Find zero or one AuditFinding that matches the filter.
+     * @param {AuditFindingFindUniqueArgs} args - Arguments to find a AuditFinding
+     * @example
+     * // Get one AuditFinding
+     * const auditFinding = await prisma.auditFinding.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AuditFindingFindUniqueArgs>(args: SelectSubset<T, AuditFindingFindUniqueArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AuditFinding that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AuditFindingFindUniqueOrThrowArgs} args - Arguments to find a AuditFinding
+     * @example
+     * // Get one AuditFinding
+     * const auditFinding = await prisma.auditFinding.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AuditFindingFindUniqueOrThrowArgs>(args: SelectSubset<T, AuditFindingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditFinding that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingFindFirstArgs} args - Arguments to find a AuditFinding
+     * @example
+     * // Get one AuditFinding
+     * const auditFinding = await prisma.auditFinding.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AuditFindingFindFirstArgs>(args?: SelectSubset<T, AuditFindingFindFirstArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditFinding that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingFindFirstOrThrowArgs} args - Arguments to find a AuditFinding
+     * @example
+     * // Get one AuditFinding
+     * const auditFinding = await prisma.auditFinding.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AuditFindingFindFirstOrThrowArgs>(args?: SelectSubset<T, AuditFindingFindFirstOrThrowArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AuditFindings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AuditFindings
+     * const auditFindings = await prisma.auditFinding.findMany()
+     * 
+     * // Get first 10 AuditFindings
+     * const auditFindings = await prisma.auditFinding.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const auditFindingWithIdOnly = await prisma.auditFinding.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AuditFindingFindManyArgs>(args?: SelectSubset<T, AuditFindingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AuditFinding.
+     * @param {AuditFindingCreateArgs} args - Arguments to create a AuditFinding.
+     * @example
+     * // Create one AuditFinding
+     * const AuditFinding = await prisma.auditFinding.create({
+     *   data: {
+     *     // ... data to create a AuditFinding
+     *   }
+     * })
+     * 
+     */
+    create<T extends AuditFindingCreateArgs>(args: SelectSubset<T, AuditFindingCreateArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AuditFindings.
+     * @param {AuditFindingCreateManyArgs} args - Arguments to create many AuditFindings.
+     * @example
+     * // Create many AuditFindings
+     * const auditFinding = await prisma.auditFinding.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AuditFindingCreateManyArgs>(args?: SelectSubset<T, AuditFindingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AuditFindings and returns the data saved in the database.
+     * @param {AuditFindingCreateManyAndReturnArgs} args - Arguments to create many AuditFindings.
+     * @example
+     * // Create many AuditFindings
+     * const auditFinding = await prisma.auditFinding.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AuditFindings and only return the `id`
+     * const auditFindingWithIdOnly = await prisma.auditFinding.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AuditFindingCreateManyAndReturnArgs>(args?: SelectSubset<T, AuditFindingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AuditFinding.
+     * @param {AuditFindingDeleteArgs} args - Arguments to delete one AuditFinding.
+     * @example
+     * // Delete one AuditFinding
+     * const AuditFinding = await prisma.auditFinding.delete({
+     *   where: {
+     *     // ... filter to delete one AuditFinding
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AuditFindingDeleteArgs>(args: SelectSubset<T, AuditFindingDeleteArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AuditFinding.
+     * @param {AuditFindingUpdateArgs} args - Arguments to update one AuditFinding.
+     * @example
+     * // Update one AuditFinding
+     * const auditFinding = await prisma.auditFinding.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AuditFindingUpdateArgs>(args: SelectSubset<T, AuditFindingUpdateArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AuditFindings.
+     * @param {AuditFindingDeleteManyArgs} args - Arguments to filter AuditFindings to delete.
+     * @example
+     * // Delete a few AuditFindings
+     * const { count } = await prisma.auditFinding.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AuditFindingDeleteManyArgs>(args?: SelectSubset<T, AuditFindingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditFindings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AuditFindings
+     * const auditFinding = await prisma.auditFinding.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AuditFindingUpdateManyArgs>(args: SelectSubset<T, AuditFindingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditFindings and returns the data updated in the database.
+     * @param {AuditFindingUpdateManyAndReturnArgs} args - Arguments to update many AuditFindings.
+     * @example
+     * // Update many AuditFindings
+     * const auditFinding = await prisma.auditFinding.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AuditFindings and only return the `id`
+     * const auditFindingWithIdOnly = await prisma.auditFinding.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AuditFindingUpdateManyAndReturnArgs>(args: SelectSubset<T, AuditFindingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AuditFinding.
+     * @param {AuditFindingUpsertArgs} args - Arguments to update or create a AuditFinding.
+     * @example
+     * // Update or create a AuditFinding
+     * const auditFinding = await prisma.auditFinding.upsert({
+     *   create: {
+     *     // ... data to create a AuditFinding
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AuditFinding we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AuditFindingUpsertArgs>(args: SelectSubset<T, AuditFindingUpsertArgs<ExtArgs>>): Prisma__AuditFindingClient<$Result.GetResult<Prisma.$AuditFindingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AuditFindings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingCountArgs} args - Arguments to filter AuditFindings to count.
+     * @example
+     * // Count the number of AuditFindings
+     * const count = await prisma.auditFinding.count({
+     *   where: {
+     *     // ... the filter for the AuditFindings we want to count
+     *   }
+     * })
+    **/
+    count<T extends AuditFindingCountArgs>(
+      args?: Subset<T, AuditFindingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AuditFindingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AuditFinding.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuditFindingAggregateArgs>(args: Subset<T, AuditFindingAggregateArgs>): Prisma.PrismaPromise<GetAuditFindingAggregateType<T>>
+
+    /**
+     * Group by AuditFinding.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AuditFindingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AuditFindingGroupByArgs['orderBy'] }
+        : { orderBy?: AuditFindingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AuditFindingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuditFindingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AuditFinding model
+   */
+  readonly fields: AuditFindingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AuditFinding.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AuditFindingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AuditFinding model
+   */
+  interface AuditFindingFieldRefs {
+    readonly id: FieldRef<"AuditFinding", 'String'>
+    readonly findingNumber: FieldRef<"AuditFinding", 'String'>
+    readonly title: FieldRef<"AuditFinding", 'String'>
+    readonly description: FieldRef<"AuditFinding", 'String'>
+    readonly severity: FieldRef<"AuditFinding", 'String'>
+    readonly category: FieldRef<"AuditFinding", 'String'>
+    readonly status: FieldRef<"AuditFinding", 'String'>
+    readonly entityType: FieldRef<"AuditFinding", 'String'>
+    readonly entityId: FieldRef<"AuditFinding", 'String'>
+    readonly auditLogId: FieldRef<"AuditFinding", 'String'>
+    readonly branchId: FieldRef<"AuditFinding", 'String'>
+    readonly riskId: FieldRef<"AuditFinding", 'String'>
+    readonly raisedById: FieldRef<"AuditFinding", 'String'>
+    readonly ownerId: FieldRef<"AuditFinding", 'String'>
+    readonly dueDate: FieldRef<"AuditFinding", 'DateTime'>
+    readonly managementResponse: FieldRef<"AuditFinding", 'String'>
+    readonly resolution: FieldRef<"AuditFinding", 'String'>
+    readonly resolvedAt: FieldRef<"AuditFinding", 'DateTime'>
+    readonly closedById: FieldRef<"AuditFinding", 'String'>
+    readonly closedAt: FieldRef<"AuditFinding", 'DateTime'>
+    readonly createdAt: FieldRef<"AuditFinding", 'DateTime'>
+    readonly updatedAt: FieldRef<"AuditFinding", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AuditFinding findUnique
+   */
+  export type AuditFindingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFinding to fetch.
+     */
+    where: AuditFindingWhereUniqueInput
+  }
+
+  /**
+   * AuditFinding findUniqueOrThrow
+   */
+  export type AuditFindingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFinding to fetch.
+     */
+    where: AuditFindingWhereUniqueInput
+  }
+
+  /**
+   * AuditFinding findFirst
+   */
+  export type AuditFindingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFinding to fetch.
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindings to fetch.
+     */
+    orderBy?: AuditFindingOrderByWithRelationInput | AuditFindingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditFindings.
+     */
+    cursor?: AuditFindingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditFindings.
+     */
+    distinct?: AuditFindingScalarFieldEnum | AuditFindingScalarFieldEnum[]
+  }
+
+  /**
+   * AuditFinding findFirstOrThrow
+   */
+  export type AuditFindingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFinding to fetch.
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindings to fetch.
+     */
+    orderBy?: AuditFindingOrderByWithRelationInput | AuditFindingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditFindings.
+     */
+    cursor?: AuditFindingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditFindings.
+     */
+    distinct?: AuditFindingScalarFieldEnum | AuditFindingScalarFieldEnum[]
+  }
+
+  /**
+   * AuditFinding findMany
+   */
+  export type AuditFindingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFindings to fetch.
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindings to fetch.
+     */
+    orderBy?: AuditFindingOrderByWithRelationInput | AuditFindingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AuditFindings.
+     */
+    cursor?: AuditFindingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditFindings.
+     */
+    distinct?: AuditFindingScalarFieldEnum | AuditFindingScalarFieldEnum[]
+  }
+
+  /**
+   * AuditFinding create
+   */
+  export type AuditFindingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AuditFinding.
+     */
+    data: XOR<AuditFindingCreateInput, AuditFindingUncheckedCreateInput>
+  }
+
+  /**
+   * AuditFinding createMany
+   */
+  export type AuditFindingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AuditFindings.
+     */
+    data: AuditFindingCreateManyInput | AuditFindingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditFinding createManyAndReturn
+   */
+  export type AuditFindingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * The data used to create many AuditFindings.
+     */
+    data: AuditFindingCreateManyInput | AuditFindingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditFinding update
+   */
+  export type AuditFindingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AuditFinding.
+     */
+    data: XOR<AuditFindingUpdateInput, AuditFindingUncheckedUpdateInput>
+    /**
+     * Choose, which AuditFinding to update.
+     */
+    where: AuditFindingWhereUniqueInput
+  }
+
+  /**
+   * AuditFinding updateMany
+   */
+  export type AuditFindingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AuditFindings.
+     */
+    data: XOR<AuditFindingUpdateManyMutationInput, AuditFindingUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditFindings to update
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * Limit how many AuditFindings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditFinding updateManyAndReturn
+   */
+  export type AuditFindingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * The data used to update AuditFindings.
+     */
+    data: XOR<AuditFindingUpdateManyMutationInput, AuditFindingUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditFindings to update
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * Limit how many AuditFindings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditFinding upsert
+   */
+  export type AuditFindingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AuditFinding to update in case it exists.
+     */
+    where: AuditFindingWhereUniqueInput
+    /**
+     * In case the AuditFinding found by the `where` argument doesn't exist, create a new AuditFinding with this data.
+     */
+    create: XOR<AuditFindingCreateInput, AuditFindingUncheckedCreateInput>
+    /**
+     * In case the AuditFinding was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AuditFindingUpdateInput, AuditFindingUncheckedUpdateInput>
+  }
+
+  /**
+   * AuditFinding delete
+   */
+  export type AuditFindingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+    /**
+     * Filter which AuditFinding to delete.
+     */
+    where: AuditFindingWhereUniqueInput
+  }
+
+  /**
+   * AuditFinding deleteMany
+   */
+  export type AuditFindingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditFindings to delete
+     */
+    where?: AuditFindingWhereInput
+    /**
+     * Limit how many AuditFindings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditFinding without action
+   */
+  export type AuditFindingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFinding
+     */
+    select?: AuditFindingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFinding
+     */
+    omit?: AuditFindingOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AuditFindingEvent
+   */
+
+  export type AggregateAuditFindingEvent = {
+    _count: AuditFindingEventCountAggregateOutputType | null
+    _min: AuditFindingEventMinAggregateOutputType | null
+    _max: AuditFindingEventMaxAggregateOutputType | null
+  }
+
+  export type AuditFindingEventMinAggregateOutputType = {
+    id: string | null
+    findingId: string | null
+    action: string | null
+    actorId: string | null
+    comment: string | null
+    createdAt: Date | null
+  }
+
+  export type AuditFindingEventMaxAggregateOutputType = {
+    id: string | null
+    findingId: string | null
+    action: string | null
+    actorId: string | null
+    comment: string | null
+    createdAt: Date | null
+  }
+
+  export type AuditFindingEventCountAggregateOutputType = {
+    id: number
+    findingId: number
+    action: number
+    actorId: number
+    comment: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AuditFindingEventMinAggregateInputType = {
+    id?: true
+    findingId?: true
+    action?: true
+    actorId?: true
+    comment?: true
+    createdAt?: true
+  }
+
+  export type AuditFindingEventMaxAggregateInputType = {
+    id?: true
+    findingId?: true
+    action?: true
+    actorId?: true
+    comment?: true
+    createdAt?: true
+  }
+
+  export type AuditFindingEventCountAggregateInputType = {
+    id?: true
+    findingId?: true
+    action?: true
+    actorId?: true
+    comment?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AuditFindingEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditFindingEvent to aggregate.
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindingEvents to fetch.
+     */
+    orderBy?: AuditFindingEventOrderByWithRelationInput | AuditFindingEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AuditFindingEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindingEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindingEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AuditFindingEvents
+    **/
+    _count?: true | AuditFindingEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuditFindingEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuditFindingEventMaxAggregateInputType
+  }
+
+  export type GetAuditFindingEventAggregateType<T extends AuditFindingEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateAuditFindingEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAuditFindingEvent[P]>
+      : GetScalarType<T[P], AggregateAuditFindingEvent[P]>
+  }
+
+
+
+
+  export type AuditFindingEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditFindingEventWhereInput
+    orderBy?: AuditFindingEventOrderByWithAggregationInput | AuditFindingEventOrderByWithAggregationInput[]
+    by: AuditFindingEventScalarFieldEnum[] | AuditFindingEventScalarFieldEnum
+    having?: AuditFindingEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AuditFindingEventCountAggregateInputType | true
+    _min?: AuditFindingEventMinAggregateInputType
+    _max?: AuditFindingEventMaxAggregateInputType
+  }
+
+  export type AuditFindingEventGroupByOutputType = {
+    id: string
+    findingId: string
+    action: string
+    actorId: string
+    comment: string | null
+    createdAt: Date
+    _count: AuditFindingEventCountAggregateOutputType | null
+    _min: AuditFindingEventMinAggregateOutputType | null
+    _max: AuditFindingEventMaxAggregateOutputType | null
+  }
+
+  type GetAuditFindingEventGroupByPayload<T extends AuditFindingEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AuditFindingEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AuditFindingEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AuditFindingEventGroupByOutputType[P]>
+            : GetScalarType<T[P], AuditFindingEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AuditFindingEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    findingId?: boolean
+    action?: boolean
+    actorId?: boolean
+    comment?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["auditFindingEvent"]>
+
+  export type AuditFindingEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    findingId?: boolean
+    action?: boolean
+    actorId?: boolean
+    comment?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["auditFindingEvent"]>
+
+  export type AuditFindingEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    findingId?: boolean
+    action?: boolean
+    actorId?: boolean
+    comment?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["auditFindingEvent"]>
+
+  export type AuditFindingEventSelectScalar = {
+    id?: boolean
+    findingId?: boolean
+    action?: boolean
+    actorId?: boolean
+    comment?: boolean
+    createdAt?: boolean
+  }
+
+  export type AuditFindingEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "findingId" | "action" | "actorId" | "comment" | "createdAt", ExtArgs["result"]["auditFindingEvent"]>
+
+  export type $AuditFindingEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AuditFindingEvent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      findingId: string
+      action: string
+      actorId: string
+      comment: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["auditFindingEvent"]>
+    composites: {}
+  }
+
+  type AuditFindingEventGetPayload<S extends boolean | null | undefined | AuditFindingEventDefaultArgs> = $Result.GetResult<Prisma.$AuditFindingEventPayload, S>
+
+  type AuditFindingEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AuditFindingEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AuditFindingEventCountAggregateInputType | true
+    }
+
+  export interface AuditFindingEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AuditFindingEvent'], meta: { name: 'AuditFindingEvent' } }
+    /**
+     * Find zero or one AuditFindingEvent that matches the filter.
+     * @param {AuditFindingEventFindUniqueArgs} args - Arguments to find a AuditFindingEvent
+     * @example
+     * // Get one AuditFindingEvent
+     * const auditFindingEvent = await prisma.auditFindingEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AuditFindingEventFindUniqueArgs>(args: SelectSubset<T, AuditFindingEventFindUniqueArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AuditFindingEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AuditFindingEventFindUniqueOrThrowArgs} args - Arguments to find a AuditFindingEvent
+     * @example
+     * // Get one AuditFindingEvent
+     * const auditFindingEvent = await prisma.auditFindingEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AuditFindingEventFindUniqueOrThrowArgs>(args: SelectSubset<T, AuditFindingEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditFindingEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventFindFirstArgs} args - Arguments to find a AuditFindingEvent
+     * @example
+     * // Get one AuditFindingEvent
+     * const auditFindingEvent = await prisma.auditFindingEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AuditFindingEventFindFirstArgs>(args?: SelectSubset<T, AuditFindingEventFindFirstArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditFindingEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventFindFirstOrThrowArgs} args - Arguments to find a AuditFindingEvent
+     * @example
+     * // Get one AuditFindingEvent
+     * const auditFindingEvent = await prisma.auditFindingEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AuditFindingEventFindFirstOrThrowArgs>(args?: SelectSubset<T, AuditFindingEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AuditFindingEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AuditFindingEvents
+     * const auditFindingEvents = await prisma.auditFindingEvent.findMany()
+     * 
+     * // Get first 10 AuditFindingEvents
+     * const auditFindingEvents = await prisma.auditFindingEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const auditFindingEventWithIdOnly = await prisma.auditFindingEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AuditFindingEventFindManyArgs>(args?: SelectSubset<T, AuditFindingEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AuditFindingEvent.
+     * @param {AuditFindingEventCreateArgs} args - Arguments to create a AuditFindingEvent.
+     * @example
+     * // Create one AuditFindingEvent
+     * const AuditFindingEvent = await prisma.auditFindingEvent.create({
+     *   data: {
+     *     // ... data to create a AuditFindingEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends AuditFindingEventCreateArgs>(args: SelectSubset<T, AuditFindingEventCreateArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AuditFindingEvents.
+     * @param {AuditFindingEventCreateManyArgs} args - Arguments to create many AuditFindingEvents.
+     * @example
+     * // Create many AuditFindingEvents
+     * const auditFindingEvent = await prisma.auditFindingEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AuditFindingEventCreateManyArgs>(args?: SelectSubset<T, AuditFindingEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AuditFindingEvents and returns the data saved in the database.
+     * @param {AuditFindingEventCreateManyAndReturnArgs} args - Arguments to create many AuditFindingEvents.
+     * @example
+     * // Create many AuditFindingEvents
+     * const auditFindingEvent = await prisma.auditFindingEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AuditFindingEvents and only return the `id`
+     * const auditFindingEventWithIdOnly = await prisma.auditFindingEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AuditFindingEventCreateManyAndReturnArgs>(args?: SelectSubset<T, AuditFindingEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AuditFindingEvent.
+     * @param {AuditFindingEventDeleteArgs} args - Arguments to delete one AuditFindingEvent.
+     * @example
+     * // Delete one AuditFindingEvent
+     * const AuditFindingEvent = await prisma.auditFindingEvent.delete({
+     *   where: {
+     *     // ... filter to delete one AuditFindingEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AuditFindingEventDeleteArgs>(args: SelectSubset<T, AuditFindingEventDeleteArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AuditFindingEvent.
+     * @param {AuditFindingEventUpdateArgs} args - Arguments to update one AuditFindingEvent.
+     * @example
+     * // Update one AuditFindingEvent
+     * const auditFindingEvent = await prisma.auditFindingEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AuditFindingEventUpdateArgs>(args: SelectSubset<T, AuditFindingEventUpdateArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AuditFindingEvents.
+     * @param {AuditFindingEventDeleteManyArgs} args - Arguments to filter AuditFindingEvents to delete.
+     * @example
+     * // Delete a few AuditFindingEvents
+     * const { count } = await prisma.auditFindingEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AuditFindingEventDeleteManyArgs>(args?: SelectSubset<T, AuditFindingEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditFindingEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AuditFindingEvents
+     * const auditFindingEvent = await prisma.auditFindingEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AuditFindingEventUpdateManyArgs>(args: SelectSubset<T, AuditFindingEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditFindingEvents and returns the data updated in the database.
+     * @param {AuditFindingEventUpdateManyAndReturnArgs} args - Arguments to update many AuditFindingEvents.
+     * @example
+     * // Update many AuditFindingEvents
+     * const auditFindingEvent = await prisma.auditFindingEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AuditFindingEvents and only return the `id`
+     * const auditFindingEventWithIdOnly = await prisma.auditFindingEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AuditFindingEventUpdateManyAndReturnArgs>(args: SelectSubset<T, AuditFindingEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AuditFindingEvent.
+     * @param {AuditFindingEventUpsertArgs} args - Arguments to update or create a AuditFindingEvent.
+     * @example
+     * // Update or create a AuditFindingEvent
+     * const auditFindingEvent = await prisma.auditFindingEvent.upsert({
+     *   create: {
+     *     // ... data to create a AuditFindingEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AuditFindingEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AuditFindingEventUpsertArgs>(args: SelectSubset<T, AuditFindingEventUpsertArgs<ExtArgs>>): Prisma__AuditFindingEventClient<$Result.GetResult<Prisma.$AuditFindingEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AuditFindingEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventCountArgs} args - Arguments to filter AuditFindingEvents to count.
+     * @example
+     * // Count the number of AuditFindingEvents
+     * const count = await prisma.auditFindingEvent.count({
+     *   where: {
+     *     // ... the filter for the AuditFindingEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends AuditFindingEventCountArgs>(
+      args?: Subset<T, AuditFindingEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AuditFindingEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AuditFindingEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuditFindingEventAggregateArgs>(args: Subset<T, AuditFindingEventAggregateArgs>): Prisma.PrismaPromise<GetAuditFindingEventAggregateType<T>>
+
+    /**
+     * Group by AuditFindingEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditFindingEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AuditFindingEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AuditFindingEventGroupByArgs['orderBy'] }
+        : { orderBy?: AuditFindingEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AuditFindingEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuditFindingEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AuditFindingEvent model
+   */
+  readonly fields: AuditFindingEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AuditFindingEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AuditFindingEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AuditFindingEvent model
+   */
+  interface AuditFindingEventFieldRefs {
+    readonly id: FieldRef<"AuditFindingEvent", 'String'>
+    readonly findingId: FieldRef<"AuditFindingEvent", 'String'>
+    readonly action: FieldRef<"AuditFindingEvent", 'String'>
+    readonly actorId: FieldRef<"AuditFindingEvent", 'String'>
+    readonly comment: FieldRef<"AuditFindingEvent", 'String'>
+    readonly createdAt: FieldRef<"AuditFindingEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AuditFindingEvent findUnique
+   */
+  export type AuditFindingEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFindingEvent to fetch.
+     */
+    where: AuditFindingEventWhereUniqueInput
+  }
+
+  /**
+   * AuditFindingEvent findUniqueOrThrow
+   */
+  export type AuditFindingEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFindingEvent to fetch.
+     */
+    where: AuditFindingEventWhereUniqueInput
+  }
+
+  /**
+   * AuditFindingEvent findFirst
+   */
+  export type AuditFindingEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFindingEvent to fetch.
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindingEvents to fetch.
+     */
+    orderBy?: AuditFindingEventOrderByWithRelationInput | AuditFindingEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditFindingEvents.
+     */
+    cursor?: AuditFindingEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindingEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindingEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditFindingEvents.
+     */
+    distinct?: AuditFindingEventScalarFieldEnum | AuditFindingEventScalarFieldEnum[]
+  }
+
+  /**
+   * AuditFindingEvent findFirstOrThrow
+   */
+  export type AuditFindingEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFindingEvent to fetch.
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindingEvents to fetch.
+     */
+    orderBy?: AuditFindingEventOrderByWithRelationInput | AuditFindingEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditFindingEvents.
+     */
+    cursor?: AuditFindingEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindingEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindingEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditFindingEvents.
+     */
+    distinct?: AuditFindingEventScalarFieldEnum | AuditFindingEventScalarFieldEnum[]
+  }
+
+  /**
+   * AuditFindingEvent findMany
+   */
+  export type AuditFindingEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditFindingEvents to fetch.
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditFindingEvents to fetch.
+     */
+    orderBy?: AuditFindingEventOrderByWithRelationInput | AuditFindingEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AuditFindingEvents.
+     */
+    cursor?: AuditFindingEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditFindingEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditFindingEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditFindingEvents.
+     */
+    distinct?: AuditFindingEventScalarFieldEnum | AuditFindingEventScalarFieldEnum[]
+  }
+
+  /**
+   * AuditFindingEvent create
+   */
+  export type AuditFindingEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AuditFindingEvent.
+     */
+    data: XOR<AuditFindingEventCreateInput, AuditFindingEventUncheckedCreateInput>
+  }
+
+  /**
+   * AuditFindingEvent createMany
+   */
+  export type AuditFindingEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AuditFindingEvents.
+     */
+    data: AuditFindingEventCreateManyInput | AuditFindingEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditFindingEvent createManyAndReturn
+   */
+  export type AuditFindingEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many AuditFindingEvents.
+     */
+    data: AuditFindingEventCreateManyInput | AuditFindingEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditFindingEvent update
+   */
+  export type AuditFindingEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AuditFindingEvent.
+     */
+    data: XOR<AuditFindingEventUpdateInput, AuditFindingEventUncheckedUpdateInput>
+    /**
+     * Choose, which AuditFindingEvent to update.
+     */
+    where: AuditFindingEventWhereUniqueInput
+  }
+
+  /**
+   * AuditFindingEvent updateMany
+   */
+  export type AuditFindingEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AuditFindingEvents.
+     */
+    data: XOR<AuditFindingEventUpdateManyMutationInput, AuditFindingEventUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditFindingEvents to update
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * Limit how many AuditFindingEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditFindingEvent updateManyAndReturn
+   */
+  export type AuditFindingEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * The data used to update AuditFindingEvents.
+     */
+    data: XOR<AuditFindingEventUpdateManyMutationInput, AuditFindingEventUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditFindingEvents to update
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * Limit how many AuditFindingEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditFindingEvent upsert
+   */
+  export type AuditFindingEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AuditFindingEvent to update in case it exists.
+     */
+    where: AuditFindingEventWhereUniqueInput
+    /**
+     * In case the AuditFindingEvent found by the `where` argument doesn't exist, create a new AuditFindingEvent with this data.
+     */
+    create: XOR<AuditFindingEventCreateInput, AuditFindingEventUncheckedCreateInput>
+    /**
+     * In case the AuditFindingEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AuditFindingEventUpdateInput, AuditFindingEventUncheckedUpdateInput>
+  }
+
+  /**
+   * AuditFindingEvent delete
+   */
+  export type AuditFindingEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+    /**
+     * Filter which AuditFindingEvent to delete.
+     */
+    where: AuditFindingEventWhereUniqueInput
+  }
+
+  /**
+   * AuditFindingEvent deleteMany
+   */
+  export type AuditFindingEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditFindingEvents to delete
+     */
+    where?: AuditFindingEventWhereInput
+    /**
+     * Limit how many AuditFindingEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditFindingEvent without action
+   */
+  export type AuditFindingEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditFindingEvent
+     */
+    select?: AuditFindingEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditFindingEvent
+     */
+    omit?: AuditFindingEventOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RiskRegisterEntry
+   */
+
+  export type AggregateRiskRegisterEntry = {
+    _count: RiskRegisterEntryCountAggregateOutputType | null
+    _avg: RiskRegisterEntryAvgAggregateOutputType | null
+    _sum: RiskRegisterEntrySumAggregateOutputType | null
+    _min: RiskRegisterEntryMinAggregateOutputType | null
+    _max: RiskRegisterEntryMaxAggregateOutputType | null
+  }
+
+  export type RiskRegisterEntryAvgAggregateOutputType = {
+    likelihood: number | null
+    impact: number | null
+    score: number | null
+  }
+
+  export type RiskRegisterEntrySumAggregateOutputType = {
+    likelihood: number | null
+    impact: number | null
+    score: number | null
+  }
+
+  export type RiskRegisterEntryMinAggregateOutputType = {
+    id: string | null
+    riskNumber: string | null
+    title: string | null
+    description: string | null
+    category: string | null
+    likelihood: number | null
+    impact: number | null
+    score: number | null
+    rating: string | null
+    status: string | null
+    ownerId: string | null
+    mitigation: string | null
+    reviewDate: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RiskRegisterEntryMaxAggregateOutputType = {
+    id: string | null
+    riskNumber: string | null
+    title: string | null
+    description: string | null
+    category: string | null
+    likelihood: number | null
+    impact: number | null
+    score: number | null
+    rating: string | null
+    status: string | null
+    ownerId: string | null
+    mitigation: string | null
+    reviewDate: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RiskRegisterEntryCountAggregateOutputType = {
+    id: number
+    riskNumber: number
+    title: number
+    description: number
+    category: number
+    likelihood: number
+    impact: number
+    score: number
+    rating: number
+    status: number
+    ownerId: number
+    mitigation: number
+    reviewDate: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RiskRegisterEntryAvgAggregateInputType = {
+    likelihood?: true
+    impact?: true
+    score?: true
+  }
+
+  export type RiskRegisterEntrySumAggregateInputType = {
+    likelihood?: true
+    impact?: true
+    score?: true
+  }
+
+  export type RiskRegisterEntryMinAggregateInputType = {
+    id?: true
+    riskNumber?: true
+    title?: true
+    description?: true
+    category?: true
+    likelihood?: true
+    impact?: true
+    score?: true
+    rating?: true
+    status?: true
+    ownerId?: true
+    mitigation?: true
+    reviewDate?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RiskRegisterEntryMaxAggregateInputType = {
+    id?: true
+    riskNumber?: true
+    title?: true
+    description?: true
+    category?: true
+    likelihood?: true
+    impact?: true
+    score?: true
+    rating?: true
+    status?: true
+    ownerId?: true
+    mitigation?: true
+    reviewDate?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RiskRegisterEntryCountAggregateInputType = {
+    id?: true
+    riskNumber?: true
+    title?: true
+    description?: true
+    category?: true
+    likelihood?: true
+    impact?: true
+    score?: true
+    rating?: true
+    status?: true
+    ownerId?: true
+    mitigation?: true
+    reviewDate?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RiskRegisterEntryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RiskRegisterEntry to aggregate.
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskRegisterEntries to fetch.
+     */
+    orderBy?: RiskRegisterEntryOrderByWithRelationInput | RiskRegisterEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RiskRegisterEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskRegisterEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskRegisterEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RiskRegisterEntries
+    **/
+    _count?: true | RiskRegisterEntryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RiskRegisterEntryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RiskRegisterEntrySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RiskRegisterEntryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RiskRegisterEntryMaxAggregateInputType
+  }
+
+  export type GetRiskRegisterEntryAggregateType<T extends RiskRegisterEntryAggregateArgs> = {
+        [P in keyof T & keyof AggregateRiskRegisterEntry]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRiskRegisterEntry[P]>
+      : GetScalarType<T[P], AggregateRiskRegisterEntry[P]>
+  }
+
+
+
+
+  export type RiskRegisterEntryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RiskRegisterEntryWhereInput
+    orderBy?: RiskRegisterEntryOrderByWithAggregationInput | RiskRegisterEntryOrderByWithAggregationInput[]
+    by: RiskRegisterEntryScalarFieldEnum[] | RiskRegisterEntryScalarFieldEnum
+    having?: RiskRegisterEntryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RiskRegisterEntryCountAggregateInputType | true
+    _avg?: RiskRegisterEntryAvgAggregateInputType
+    _sum?: RiskRegisterEntrySumAggregateInputType
+    _min?: RiskRegisterEntryMinAggregateInputType
+    _max?: RiskRegisterEntryMaxAggregateInputType
+  }
+
+  export type RiskRegisterEntryGroupByOutputType = {
+    id: string
+    riskNumber: string
+    title: string
+    description: string | null
+    category: string
+    likelihood: number
+    impact: number
+    score: number
+    rating: string
+    status: string
+    ownerId: string | null
+    mitigation: string | null
+    reviewDate: Date | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: RiskRegisterEntryCountAggregateOutputType | null
+    _avg: RiskRegisterEntryAvgAggregateOutputType | null
+    _sum: RiskRegisterEntrySumAggregateOutputType | null
+    _min: RiskRegisterEntryMinAggregateOutputType | null
+    _max: RiskRegisterEntryMaxAggregateOutputType | null
+  }
+
+  type GetRiskRegisterEntryGroupByPayload<T extends RiskRegisterEntryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RiskRegisterEntryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RiskRegisterEntryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RiskRegisterEntryGroupByOutputType[P]>
+            : GetScalarType<T[P], RiskRegisterEntryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RiskRegisterEntrySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    riskNumber?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    likelihood?: boolean
+    impact?: boolean
+    score?: boolean
+    rating?: boolean
+    status?: boolean
+    ownerId?: boolean
+    mitigation?: boolean
+    reviewDate?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["riskRegisterEntry"]>
+
+  export type RiskRegisterEntrySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    riskNumber?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    likelihood?: boolean
+    impact?: boolean
+    score?: boolean
+    rating?: boolean
+    status?: boolean
+    ownerId?: boolean
+    mitigation?: boolean
+    reviewDate?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["riskRegisterEntry"]>
+
+  export type RiskRegisterEntrySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    riskNumber?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    likelihood?: boolean
+    impact?: boolean
+    score?: boolean
+    rating?: boolean
+    status?: boolean
+    ownerId?: boolean
+    mitigation?: boolean
+    reviewDate?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["riskRegisterEntry"]>
+
+  export type RiskRegisterEntrySelectScalar = {
+    id?: boolean
+    riskNumber?: boolean
+    title?: boolean
+    description?: boolean
+    category?: boolean
+    likelihood?: boolean
+    impact?: boolean
+    score?: boolean
+    rating?: boolean
+    status?: boolean
+    ownerId?: boolean
+    mitigation?: boolean
+    reviewDate?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RiskRegisterEntryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "riskNumber" | "title" | "description" | "category" | "likelihood" | "impact" | "score" | "rating" | "status" | "ownerId" | "mitigation" | "reviewDate" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["riskRegisterEntry"]>
+
+  export type $RiskRegisterEntryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RiskRegisterEntry"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      riskNumber: string
+      title: string
+      description: string | null
+      category: string
+      likelihood: number
+      impact: number
+      score: number
+      rating: string
+      status: string
+      ownerId: string | null
+      mitigation: string | null
+      reviewDate: Date | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["riskRegisterEntry"]>
+    composites: {}
+  }
+
+  type RiskRegisterEntryGetPayload<S extends boolean | null | undefined | RiskRegisterEntryDefaultArgs> = $Result.GetResult<Prisma.$RiskRegisterEntryPayload, S>
+
+  type RiskRegisterEntryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RiskRegisterEntryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RiskRegisterEntryCountAggregateInputType | true
+    }
+
+  export interface RiskRegisterEntryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RiskRegisterEntry'], meta: { name: 'RiskRegisterEntry' } }
+    /**
+     * Find zero or one RiskRegisterEntry that matches the filter.
+     * @param {RiskRegisterEntryFindUniqueArgs} args - Arguments to find a RiskRegisterEntry
+     * @example
+     * // Get one RiskRegisterEntry
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RiskRegisterEntryFindUniqueArgs>(args: SelectSubset<T, RiskRegisterEntryFindUniqueArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RiskRegisterEntry that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RiskRegisterEntryFindUniqueOrThrowArgs} args - Arguments to find a RiskRegisterEntry
+     * @example
+     * // Get one RiskRegisterEntry
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RiskRegisterEntryFindUniqueOrThrowArgs>(args: SelectSubset<T, RiskRegisterEntryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RiskRegisterEntry that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryFindFirstArgs} args - Arguments to find a RiskRegisterEntry
+     * @example
+     * // Get one RiskRegisterEntry
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RiskRegisterEntryFindFirstArgs>(args?: SelectSubset<T, RiskRegisterEntryFindFirstArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RiskRegisterEntry that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryFindFirstOrThrowArgs} args - Arguments to find a RiskRegisterEntry
+     * @example
+     * // Get one RiskRegisterEntry
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RiskRegisterEntryFindFirstOrThrowArgs>(args?: SelectSubset<T, RiskRegisterEntryFindFirstOrThrowArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RiskRegisterEntries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RiskRegisterEntries
+     * const riskRegisterEntries = await prisma.riskRegisterEntry.findMany()
+     * 
+     * // Get first 10 RiskRegisterEntries
+     * const riskRegisterEntries = await prisma.riskRegisterEntry.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const riskRegisterEntryWithIdOnly = await prisma.riskRegisterEntry.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RiskRegisterEntryFindManyArgs>(args?: SelectSubset<T, RiskRegisterEntryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RiskRegisterEntry.
+     * @param {RiskRegisterEntryCreateArgs} args - Arguments to create a RiskRegisterEntry.
+     * @example
+     * // Create one RiskRegisterEntry
+     * const RiskRegisterEntry = await prisma.riskRegisterEntry.create({
+     *   data: {
+     *     // ... data to create a RiskRegisterEntry
+     *   }
+     * })
+     * 
+     */
+    create<T extends RiskRegisterEntryCreateArgs>(args: SelectSubset<T, RiskRegisterEntryCreateArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RiskRegisterEntries.
+     * @param {RiskRegisterEntryCreateManyArgs} args - Arguments to create many RiskRegisterEntries.
+     * @example
+     * // Create many RiskRegisterEntries
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RiskRegisterEntryCreateManyArgs>(args?: SelectSubset<T, RiskRegisterEntryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RiskRegisterEntries and returns the data saved in the database.
+     * @param {RiskRegisterEntryCreateManyAndReturnArgs} args - Arguments to create many RiskRegisterEntries.
+     * @example
+     * // Create many RiskRegisterEntries
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RiskRegisterEntries and only return the `id`
+     * const riskRegisterEntryWithIdOnly = await prisma.riskRegisterEntry.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RiskRegisterEntryCreateManyAndReturnArgs>(args?: SelectSubset<T, RiskRegisterEntryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RiskRegisterEntry.
+     * @param {RiskRegisterEntryDeleteArgs} args - Arguments to delete one RiskRegisterEntry.
+     * @example
+     * // Delete one RiskRegisterEntry
+     * const RiskRegisterEntry = await prisma.riskRegisterEntry.delete({
+     *   where: {
+     *     // ... filter to delete one RiskRegisterEntry
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RiskRegisterEntryDeleteArgs>(args: SelectSubset<T, RiskRegisterEntryDeleteArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RiskRegisterEntry.
+     * @param {RiskRegisterEntryUpdateArgs} args - Arguments to update one RiskRegisterEntry.
+     * @example
+     * // Update one RiskRegisterEntry
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RiskRegisterEntryUpdateArgs>(args: SelectSubset<T, RiskRegisterEntryUpdateArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RiskRegisterEntries.
+     * @param {RiskRegisterEntryDeleteManyArgs} args - Arguments to filter RiskRegisterEntries to delete.
+     * @example
+     * // Delete a few RiskRegisterEntries
+     * const { count } = await prisma.riskRegisterEntry.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RiskRegisterEntryDeleteManyArgs>(args?: SelectSubset<T, RiskRegisterEntryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RiskRegisterEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RiskRegisterEntries
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RiskRegisterEntryUpdateManyArgs>(args: SelectSubset<T, RiskRegisterEntryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RiskRegisterEntries and returns the data updated in the database.
+     * @param {RiskRegisterEntryUpdateManyAndReturnArgs} args - Arguments to update many RiskRegisterEntries.
+     * @example
+     * // Update many RiskRegisterEntries
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RiskRegisterEntries and only return the `id`
+     * const riskRegisterEntryWithIdOnly = await prisma.riskRegisterEntry.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RiskRegisterEntryUpdateManyAndReturnArgs>(args: SelectSubset<T, RiskRegisterEntryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RiskRegisterEntry.
+     * @param {RiskRegisterEntryUpsertArgs} args - Arguments to update or create a RiskRegisterEntry.
+     * @example
+     * // Update or create a RiskRegisterEntry
+     * const riskRegisterEntry = await prisma.riskRegisterEntry.upsert({
+     *   create: {
+     *     // ... data to create a RiskRegisterEntry
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RiskRegisterEntry we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RiskRegisterEntryUpsertArgs>(args: SelectSubset<T, RiskRegisterEntryUpsertArgs<ExtArgs>>): Prisma__RiskRegisterEntryClient<$Result.GetResult<Prisma.$RiskRegisterEntryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RiskRegisterEntries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryCountArgs} args - Arguments to filter RiskRegisterEntries to count.
+     * @example
+     * // Count the number of RiskRegisterEntries
+     * const count = await prisma.riskRegisterEntry.count({
+     *   where: {
+     *     // ... the filter for the RiskRegisterEntries we want to count
+     *   }
+     * })
+    **/
+    count<T extends RiskRegisterEntryCountArgs>(
+      args?: Subset<T, RiskRegisterEntryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RiskRegisterEntryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RiskRegisterEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RiskRegisterEntryAggregateArgs>(args: Subset<T, RiskRegisterEntryAggregateArgs>): Prisma.PrismaPromise<GetRiskRegisterEntryAggregateType<T>>
+
+    /**
+     * Group by RiskRegisterEntry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RiskRegisterEntryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RiskRegisterEntryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RiskRegisterEntryGroupByArgs['orderBy'] }
+        : { orderBy?: RiskRegisterEntryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RiskRegisterEntryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRiskRegisterEntryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RiskRegisterEntry model
+   */
+  readonly fields: RiskRegisterEntryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RiskRegisterEntry.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RiskRegisterEntryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RiskRegisterEntry model
+   */
+  interface RiskRegisterEntryFieldRefs {
+    readonly id: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly riskNumber: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly title: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly description: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly category: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly likelihood: FieldRef<"RiskRegisterEntry", 'Int'>
+    readonly impact: FieldRef<"RiskRegisterEntry", 'Int'>
+    readonly score: FieldRef<"RiskRegisterEntry", 'Int'>
+    readonly rating: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly status: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly ownerId: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly mitigation: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly reviewDate: FieldRef<"RiskRegisterEntry", 'DateTime'>
+    readonly createdById: FieldRef<"RiskRegisterEntry", 'String'>
+    readonly createdAt: FieldRef<"RiskRegisterEntry", 'DateTime'>
+    readonly updatedAt: FieldRef<"RiskRegisterEntry", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RiskRegisterEntry findUnique
+   */
+  export type RiskRegisterEntryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskRegisterEntry to fetch.
+     */
+    where: RiskRegisterEntryWhereUniqueInput
+  }
+
+  /**
+   * RiskRegisterEntry findUniqueOrThrow
+   */
+  export type RiskRegisterEntryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskRegisterEntry to fetch.
+     */
+    where: RiskRegisterEntryWhereUniqueInput
+  }
+
+  /**
+   * RiskRegisterEntry findFirst
+   */
+  export type RiskRegisterEntryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskRegisterEntry to fetch.
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskRegisterEntries to fetch.
+     */
+    orderBy?: RiskRegisterEntryOrderByWithRelationInput | RiskRegisterEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RiskRegisterEntries.
+     */
+    cursor?: RiskRegisterEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskRegisterEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskRegisterEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RiskRegisterEntries.
+     */
+    distinct?: RiskRegisterEntryScalarFieldEnum | RiskRegisterEntryScalarFieldEnum[]
+  }
+
+  /**
+   * RiskRegisterEntry findFirstOrThrow
+   */
+  export type RiskRegisterEntryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskRegisterEntry to fetch.
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskRegisterEntries to fetch.
+     */
+    orderBy?: RiskRegisterEntryOrderByWithRelationInput | RiskRegisterEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RiskRegisterEntries.
+     */
+    cursor?: RiskRegisterEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskRegisterEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskRegisterEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RiskRegisterEntries.
+     */
+    distinct?: RiskRegisterEntryScalarFieldEnum | RiskRegisterEntryScalarFieldEnum[]
+  }
+
+  /**
+   * RiskRegisterEntry findMany
+   */
+  export type RiskRegisterEntryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * Filter, which RiskRegisterEntries to fetch.
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RiskRegisterEntries to fetch.
+     */
+    orderBy?: RiskRegisterEntryOrderByWithRelationInput | RiskRegisterEntryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RiskRegisterEntries.
+     */
+    cursor?: RiskRegisterEntryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RiskRegisterEntries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RiskRegisterEntries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RiskRegisterEntries.
+     */
+    distinct?: RiskRegisterEntryScalarFieldEnum | RiskRegisterEntryScalarFieldEnum[]
+  }
+
+  /**
+   * RiskRegisterEntry create
+   */
+  export type RiskRegisterEntryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RiskRegisterEntry.
+     */
+    data: XOR<RiskRegisterEntryCreateInput, RiskRegisterEntryUncheckedCreateInput>
+  }
+
+  /**
+   * RiskRegisterEntry createMany
+   */
+  export type RiskRegisterEntryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RiskRegisterEntries.
+     */
+    data: RiskRegisterEntryCreateManyInput | RiskRegisterEntryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RiskRegisterEntry createManyAndReturn
+   */
+  export type RiskRegisterEntryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * The data used to create many RiskRegisterEntries.
+     */
+    data: RiskRegisterEntryCreateManyInput | RiskRegisterEntryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RiskRegisterEntry update
+   */
+  export type RiskRegisterEntryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RiskRegisterEntry.
+     */
+    data: XOR<RiskRegisterEntryUpdateInput, RiskRegisterEntryUncheckedUpdateInput>
+    /**
+     * Choose, which RiskRegisterEntry to update.
+     */
+    where: RiskRegisterEntryWhereUniqueInput
+  }
+
+  /**
+   * RiskRegisterEntry updateMany
+   */
+  export type RiskRegisterEntryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RiskRegisterEntries.
+     */
+    data: XOR<RiskRegisterEntryUpdateManyMutationInput, RiskRegisterEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which RiskRegisterEntries to update
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * Limit how many RiskRegisterEntries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RiskRegisterEntry updateManyAndReturn
+   */
+  export type RiskRegisterEntryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * The data used to update RiskRegisterEntries.
+     */
+    data: XOR<RiskRegisterEntryUpdateManyMutationInput, RiskRegisterEntryUncheckedUpdateManyInput>
+    /**
+     * Filter which RiskRegisterEntries to update
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * Limit how many RiskRegisterEntries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RiskRegisterEntry upsert
+   */
+  export type RiskRegisterEntryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RiskRegisterEntry to update in case it exists.
+     */
+    where: RiskRegisterEntryWhereUniqueInput
+    /**
+     * In case the RiskRegisterEntry found by the `where` argument doesn't exist, create a new RiskRegisterEntry with this data.
+     */
+    create: XOR<RiskRegisterEntryCreateInput, RiskRegisterEntryUncheckedCreateInput>
+    /**
+     * In case the RiskRegisterEntry was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RiskRegisterEntryUpdateInput, RiskRegisterEntryUncheckedUpdateInput>
+  }
+
+  /**
+   * RiskRegisterEntry delete
+   */
+  export type RiskRegisterEntryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+    /**
+     * Filter which RiskRegisterEntry to delete.
+     */
+    where: RiskRegisterEntryWhereUniqueInput
+  }
+
+  /**
+   * RiskRegisterEntry deleteMany
+   */
+  export type RiskRegisterEntryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RiskRegisterEntries to delete
+     */
+    where?: RiskRegisterEntryWhereInput
+    /**
+     * Limit how many RiskRegisterEntries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RiskRegisterEntry without action
+   */
+  export type RiskRegisterEntryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RiskRegisterEntry
+     */
+    select?: RiskRegisterEntrySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RiskRegisterEntry
+     */
+    omit?: RiskRegisterEntryOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -133414,6 +137123,7 @@ export namespace Prisma {
     approverPermission: 'approverPermission',
     branchScoped: 'branchScoped',
     minAmount: 'minAmount',
+    maxAmount: 'maxAmount',
     escalateAfterHours: 'escalateAfterHours',
     escalateToPermission: 'escalateToPermission',
     createdAt: 'createdAt'
@@ -133501,6 +137211,68 @@ export namespace Prisma {
   };
 
   export type WorkflowEventScalarFieldEnum = (typeof WorkflowEventScalarFieldEnum)[keyof typeof WorkflowEventScalarFieldEnum]
+
+
+  export const AuditFindingScalarFieldEnum: {
+    id: 'id',
+    findingNumber: 'findingNumber',
+    title: 'title',
+    description: 'description',
+    severity: 'severity',
+    category: 'category',
+    status: 'status',
+    entityType: 'entityType',
+    entityId: 'entityId',
+    auditLogId: 'auditLogId',
+    branchId: 'branchId',
+    riskId: 'riskId',
+    raisedById: 'raisedById',
+    ownerId: 'ownerId',
+    dueDate: 'dueDate',
+    managementResponse: 'managementResponse',
+    resolution: 'resolution',
+    resolvedAt: 'resolvedAt',
+    closedById: 'closedById',
+    closedAt: 'closedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type AuditFindingScalarFieldEnum = (typeof AuditFindingScalarFieldEnum)[keyof typeof AuditFindingScalarFieldEnum]
+
+
+  export const AuditFindingEventScalarFieldEnum: {
+    id: 'id',
+    findingId: 'findingId',
+    action: 'action',
+    actorId: 'actorId',
+    comment: 'comment',
+    createdAt: 'createdAt'
+  };
+
+  export type AuditFindingEventScalarFieldEnum = (typeof AuditFindingEventScalarFieldEnum)[keyof typeof AuditFindingEventScalarFieldEnum]
+
+
+  export const RiskRegisterEntryScalarFieldEnum: {
+    id: 'id',
+    riskNumber: 'riskNumber',
+    title: 'title',
+    description: 'description',
+    category: 'category',
+    likelihood: 'likelihood',
+    impact: 'impact',
+    score: 'score',
+    rating: 'rating',
+    status: 'status',
+    ownerId: 'ownerId',
+    mitigation: 'mitigation',
+    reviewDate: 'reviewDate',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RiskRegisterEntryScalarFieldEnum = (typeof RiskRegisterEntryScalarFieldEnum)[keyof typeof RiskRegisterEntryScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -143170,6 +146942,7 @@ export namespace Prisma {
     approverPermission?: StringFilter<"WorkflowStage"> | string
     branchScoped?: BoolFilter<"WorkflowStage"> | boolean
     minAmount?: FloatNullableFilter<"WorkflowStage"> | number | null
+    maxAmount?: FloatNullableFilter<"WorkflowStage"> | number | null
     escalateAfterHours?: IntNullableFilter<"WorkflowStage"> | number | null
     escalateToPermission?: StringNullableFilter<"WorkflowStage"> | string | null
     createdAt?: DateTimeFilter<"WorkflowStage"> | Date | string
@@ -143183,6 +146956,7 @@ export namespace Prisma {
     approverPermission?: SortOrder
     branchScoped?: SortOrder
     minAmount?: SortOrderInput | SortOrder
+    maxAmount?: SortOrderInput | SortOrder
     escalateAfterHours?: SortOrderInput | SortOrder
     escalateToPermission?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -143199,6 +146973,7 @@ export namespace Prisma {
     approverPermission?: StringFilter<"WorkflowStage"> | string
     branchScoped?: BoolFilter<"WorkflowStage"> | boolean
     minAmount?: FloatNullableFilter<"WorkflowStage"> | number | null
+    maxAmount?: FloatNullableFilter<"WorkflowStage"> | number | null
     escalateAfterHours?: IntNullableFilter<"WorkflowStage"> | number | null
     escalateToPermission?: StringNullableFilter<"WorkflowStage"> | string | null
     createdAt?: DateTimeFilter<"WorkflowStage"> | Date | string
@@ -143212,6 +146987,7 @@ export namespace Prisma {
     approverPermission?: SortOrder
     branchScoped?: SortOrder
     minAmount?: SortOrderInput | SortOrder
+    maxAmount?: SortOrderInput | SortOrder
     escalateAfterHours?: SortOrderInput | SortOrder
     escalateToPermission?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -143233,6 +147009,7 @@ export namespace Prisma {
     approverPermission?: StringWithAggregatesFilter<"WorkflowStage"> | string
     branchScoped?: BoolWithAggregatesFilter<"WorkflowStage"> | boolean
     minAmount?: FloatNullableWithAggregatesFilter<"WorkflowStage"> | number | null
+    maxAmount?: FloatNullableWithAggregatesFilter<"WorkflowStage"> | number | null
     escalateAfterHours?: IntNullableWithAggregatesFilter<"WorkflowStage"> | number | null
     escalateToPermission?: StringNullableWithAggregatesFilter<"WorkflowStage"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"WorkflowStage"> | Date | string
@@ -143633,6 +147410,309 @@ export namespace Prisma {
     prevHash?: StringNullableWithAggregatesFilter<"WorkflowEvent"> | string | null
     hash?: StringWithAggregatesFilter<"WorkflowEvent"> | string
     createdAt?: DateTimeWithAggregatesFilter<"WorkflowEvent"> | Date | string
+  }
+
+  export type AuditFindingWhereInput = {
+    AND?: AuditFindingWhereInput | AuditFindingWhereInput[]
+    OR?: AuditFindingWhereInput[]
+    NOT?: AuditFindingWhereInput | AuditFindingWhereInput[]
+    id?: StringFilter<"AuditFinding"> | string
+    findingNumber?: StringFilter<"AuditFinding"> | string
+    title?: StringFilter<"AuditFinding"> | string
+    description?: StringFilter<"AuditFinding"> | string
+    severity?: StringFilter<"AuditFinding"> | string
+    category?: StringFilter<"AuditFinding"> | string
+    status?: StringFilter<"AuditFinding"> | string
+    entityType?: StringNullableFilter<"AuditFinding"> | string | null
+    entityId?: StringNullableFilter<"AuditFinding"> | string | null
+    auditLogId?: StringNullableFilter<"AuditFinding"> | string | null
+    branchId?: StringNullableFilter<"AuditFinding"> | string | null
+    riskId?: StringNullableFilter<"AuditFinding"> | string | null
+    raisedById?: StringFilter<"AuditFinding"> | string
+    ownerId?: StringNullableFilter<"AuditFinding"> | string | null
+    dueDate?: DateTimeNullableFilter<"AuditFinding"> | Date | string | null
+    managementResponse?: StringNullableFilter<"AuditFinding"> | string | null
+    resolution?: StringNullableFilter<"AuditFinding"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"AuditFinding"> | Date | string | null
+    closedById?: StringNullableFilter<"AuditFinding"> | string | null
+    closedAt?: DateTimeNullableFilter<"AuditFinding"> | Date | string | null
+    createdAt?: DateTimeFilter<"AuditFinding"> | Date | string
+    updatedAt?: DateTimeFilter<"AuditFinding"> | Date | string
+  }
+
+  export type AuditFindingOrderByWithRelationInput = {
+    id?: SortOrder
+    findingNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    category?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrderInput | SortOrder
+    entityId?: SortOrderInput | SortOrder
+    auditLogId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    riskId?: SortOrderInput | SortOrder
+    raisedById?: SortOrder
+    ownerId?: SortOrderInput | SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    managementResponse?: SortOrderInput | SortOrder
+    resolution?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    closedById?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AuditFindingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    findingNumber?: string
+    AND?: AuditFindingWhereInput | AuditFindingWhereInput[]
+    OR?: AuditFindingWhereInput[]
+    NOT?: AuditFindingWhereInput | AuditFindingWhereInput[]
+    title?: StringFilter<"AuditFinding"> | string
+    description?: StringFilter<"AuditFinding"> | string
+    severity?: StringFilter<"AuditFinding"> | string
+    category?: StringFilter<"AuditFinding"> | string
+    status?: StringFilter<"AuditFinding"> | string
+    entityType?: StringNullableFilter<"AuditFinding"> | string | null
+    entityId?: StringNullableFilter<"AuditFinding"> | string | null
+    auditLogId?: StringNullableFilter<"AuditFinding"> | string | null
+    branchId?: StringNullableFilter<"AuditFinding"> | string | null
+    riskId?: StringNullableFilter<"AuditFinding"> | string | null
+    raisedById?: StringFilter<"AuditFinding"> | string
+    ownerId?: StringNullableFilter<"AuditFinding"> | string | null
+    dueDate?: DateTimeNullableFilter<"AuditFinding"> | Date | string | null
+    managementResponse?: StringNullableFilter<"AuditFinding"> | string | null
+    resolution?: StringNullableFilter<"AuditFinding"> | string | null
+    resolvedAt?: DateTimeNullableFilter<"AuditFinding"> | Date | string | null
+    closedById?: StringNullableFilter<"AuditFinding"> | string | null
+    closedAt?: DateTimeNullableFilter<"AuditFinding"> | Date | string | null
+    createdAt?: DateTimeFilter<"AuditFinding"> | Date | string
+    updatedAt?: DateTimeFilter<"AuditFinding"> | Date | string
+  }, "id" | "findingNumber">
+
+  export type AuditFindingOrderByWithAggregationInput = {
+    id?: SortOrder
+    findingNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    category?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrderInput | SortOrder
+    entityId?: SortOrderInput | SortOrder
+    auditLogId?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    riskId?: SortOrderInput | SortOrder
+    raisedById?: SortOrder
+    ownerId?: SortOrderInput | SortOrder
+    dueDate?: SortOrderInput | SortOrder
+    managementResponse?: SortOrderInput | SortOrder
+    resolution?: SortOrderInput | SortOrder
+    resolvedAt?: SortOrderInput | SortOrder
+    closedById?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: AuditFindingCountOrderByAggregateInput
+    _max?: AuditFindingMaxOrderByAggregateInput
+    _min?: AuditFindingMinOrderByAggregateInput
+  }
+
+  export type AuditFindingScalarWhereWithAggregatesInput = {
+    AND?: AuditFindingScalarWhereWithAggregatesInput | AuditFindingScalarWhereWithAggregatesInput[]
+    OR?: AuditFindingScalarWhereWithAggregatesInput[]
+    NOT?: AuditFindingScalarWhereWithAggregatesInput | AuditFindingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AuditFinding"> | string
+    findingNumber?: StringWithAggregatesFilter<"AuditFinding"> | string
+    title?: StringWithAggregatesFilter<"AuditFinding"> | string
+    description?: StringWithAggregatesFilter<"AuditFinding"> | string
+    severity?: StringWithAggregatesFilter<"AuditFinding"> | string
+    category?: StringWithAggregatesFilter<"AuditFinding"> | string
+    status?: StringWithAggregatesFilter<"AuditFinding"> | string
+    entityType?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    entityId?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    auditLogId?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    riskId?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    raisedById?: StringWithAggregatesFilter<"AuditFinding"> | string
+    ownerId?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    dueDate?: DateTimeNullableWithAggregatesFilter<"AuditFinding"> | Date | string | null
+    managementResponse?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    resolution?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    resolvedAt?: DateTimeNullableWithAggregatesFilter<"AuditFinding"> | Date | string | null
+    closedById?: StringNullableWithAggregatesFilter<"AuditFinding"> | string | null
+    closedAt?: DateTimeNullableWithAggregatesFilter<"AuditFinding"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AuditFinding"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"AuditFinding"> | Date | string
+  }
+
+  export type AuditFindingEventWhereInput = {
+    AND?: AuditFindingEventWhereInput | AuditFindingEventWhereInput[]
+    OR?: AuditFindingEventWhereInput[]
+    NOT?: AuditFindingEventWhereInput | AuditFindingEventWhereInput[]
+    id?: StringFilter<"AuditFindingEvent"> | string
+    findingId?: StringFilter<"AuditFindingEvent"> | string
+    action?: StringFilter<"AuditFindingEvent"> | string
+    actorId?: StringFilter<"AuditFindingEvent"> | string
+    comment?: StringNullableFilter<"AuditFindingEvent"> | string | null
+    createdAt?: DateTimeFilter<"AuditFindingEvent"> | Date | string
+  }
+
+  export type AuditFindingEventOrderByWithRelationInput = {
+    id?: SortOrder
+    findingId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AuditFindingEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AuditFindingEventWhereInput | AuditFindingEventWhereInput[]
+    OR?: AuditFindingEventWhereInput[]
+    NOT?: AuditFindingEventWhereInput | AuditFindingEventWhereInput[]
+    findingId?: StringFilter<"AuditFindingEvent"> | string
+    action?: StringFilter<"AuditFindingEvent"> | string
+    actorId?: StringFilter<"AuditFindingEvent"> | string
+    comment?: StringNullableFilter<"AuditFindingEvent"> | string | null
+    createdAt?: DateTimeFilter<"AuditFindingEvent"> | Date | string
+  }, "id">
+
+  export type AuditFindingEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    findingId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AuditFindingEventCountOrderByAggregateInput
+    _max?: AuditFindingEventMaxOrderByAggregateInput
+    _min?: AuditFindingEventMinOrderByAggregateInput
+  }
+
+  export type AuditFindingEventScalarWhereWithAggregatesInput = {
+    AND?: AuditFindingEventScalarWhereWithAggregatesInput | AuditFindingEventScalarWhereWithAggregatesInput[]
+    OR?: AuditFindingEventScalarWhereWithAggregatesInput[]
+    NOT?: AuditFindingEventScalarWhereWithAggregatesInput | AuditFindingEventScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AuditFindingEvent"> | string
+    findingId?: StringWithAggregatesFilter<"AuditFindingEvent"> | string
+    action?: StringWithAggregatesFilter<"AuditFindingEvent"> | string
+    actorId?: StringWithAggregatesFilter<"AuditFindingEvent"> | string
+    comment?: StringNullableWithAggregatesFilter<"AuditFindingEvent"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AuditFindingEvent"> | Date | string
+  }
+
+  export type RiskRegisterEntryWhereInput = {
+    AND?: RiskRegisterEntryWhereInput | RiskRegisterEntryWhereInput[]
+    OR?: RiskRegisterEntryWhereInput[]
+    NOT?: RiskRegisterEntryWhereInput | RiskRegisterEntryWhereInput[]
+    id?: StringFilter<"RiskRegisterEntry"> | string
+    riskNumber?: StringFilter<"RiskRegisterEntry"> | string
+    title?: StringFilter<"RiskRegisterEntry"> | string
+    description?: StringNullableFilter<"RiskRegisterEntry"> | string | null
+    category?: StringFilter<"RiskRegisterEntry"> | string
+    likelihood?: IntFilter<"RiskRegisterEntry"> | number
+    impact?: IntFilter<"RiskRegisterEntry"> | number
+    score?: IntFilter<"RiskRegisterEntry"> | number
+    rating?: StringFilter<"RiskRegisterEntry"> | string
+    status?: StringFilter<"RiskRegisterEntry"> | string
+    ownerId?: StringNullableFilter<"RiskRegisterEntry"> | string | null
+    mitigation?: StringNullableFilter<"RiskRegisterEntry"> | string | null
+    reviewDate?: DateTimeNullableFilter<"RiskRegisterEntry"> | Date | string | null
+    createdById?: StringFilter<"RiskRegisterEntry"> | string
+    createdAt?: DateTimeFilter<"RiskRegisterEntry"> | Date | string
+    updatedAt?: DateTimeFilter<"RiskRegisterEntry"> | Date | string
+  }
+
+  export type RiskRegisterEntryOrderByWithRelationInput = {
+    id?: SortOrder
+    riskNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
+    rating?: SortOrder
+    status?: SortOrder
+    ownerId?: SortOrderInput | SortOrder
+    mitigation?: SortOrderInput | SortOrder
+    reviewDate?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RiskRegisterEntryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    riskNumber?: string
+    AND?: RiskRegisterEntryWhereInput | RiskRegisterEntryWhereInput[]
+    OR?: RiskRegisterEntryWhereInput[]
+    NOT?: RiskRegisterEntryWhereInput | RiskRegisterEntryWhereInput[]
+    title?: StringFilter<"RiskRegisterEntry"> | string
+    description?: StringNullableFilter<"RiskRegisterEntry"> | string | null
+    category?: StringFilter<"RiskRegisterEntry"> | string
+    likelihood?: IntFilter<"RiskRegisterEntry"> | number
+    impact?: IntFilter<"RiskRegisterEntry"> | number
+    score?: IntFilter<"RiskRegisterEntry"> | number
+    rating?: StringFilter<"RiskRegisterEntry"> | string
+    status?: StringFilter<"RiskRegisterEntry"> | string
+    ownerId?: StringNullableFilter<"RiskRegisterEntry"> | string | null
+    mitigation?: StringNullableFilter<"RiskRegisterEntry"> | string | null
+    reviewDate?: DateTimeNullableFilter<"RiskRegisterEntry"> | Date | string | null
+    createdById?: StringFilter<"RiskRegisterEntry"> | string
+    createdAt?: DateTimeFilter<"RiskRegisterEntry"> | Date | string
+    updatedAt?: DateTimeFilter<"RiskRegisterEntry"> | Date | string
+  }, "id" | "riskNumber">
+
+  export type RiskRegisterEntryOrderByWithAggregationInput = {
+    id?: SortOrder
+    riskNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    category?: SortOrder
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
+    rating?: SortOrder
+    status?: SortOrder
+    ownerId?: SortOrderInput | SortOrder
+    mitigation?: SortOrderInput | SortOrder
+    reviewDate?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RiskRegisterEntryCountOrderByAggregateInput
+    _avg?: RiskRegisterEntryAvgOrderByAggregateInput
+    _max?: RiskRegisterEntryMaxOrderByAggregateInput
+    _min?: RiskRegisterEntryMinOrderByAggregateInput
+    _sum?: RiskRegisterEntrySumOrderByAggregateInput
+  }
+
+  export type RiskRegisterEntryScalarWhereWithAggregatesInput = {
+    AND?: RiskRegisterEntryScalarWhereWithAggregatesInput | RiskRegisterEntryScalarWhereWithAggregatesInput[]
+    OR?: RiskRegisterEntryScalarWhereWithAggregatesInput[]
+    NOT?: RiskRegisterEntryScalarWhereWithAggregatesInput | RiskRegisterEntryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    riskNumber?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    title?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    description?: StringNullableWithAggregatesFilter<"RiskRegisterEntry"> | string | null
+    category?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    likelihood?: IntWithAggregatesFilter<"RiskRegisterEntry"> | number
+    impact?: IntWithAggregatesFilter<"RiskRegisterEntry"> | number
+    score?: IntWithAggregatesFilter<"RiskRegisterEntry"> | number
+    rating?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    status?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    ownerId?: StringNullableWithAggregatesFilter<"RiskRegisterEntry"> | string | null
+    mitigation?: StringNullableWithAggregatesFilter<"RiskRegisterEntry"> | string | null
+    reviewDate?: DateTimeNullableWithAggregatesFilter<"RiskRegisterEntry"> | Date | string | null
+    createdById?: StringWithAggregatesFilter<"RiskRegisterEntry"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"RiskRegisterEntry"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RiskRegisterEntry"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -153478,6 +157558,7 @@ export namespace Prisma {
     approverPermission: string
     branchScoped?: boolean
     minAmount?: number | null
+    maxAmount?: number | null
     escalateAfterHours?: number | null
     escalateToPermission?: string | null
     createdAt?: Date | string
@@ -153491,6 +157572,7 @@ export namespace Prisma {
     approverPermission: string
     branchScoped?: boolean
     minAmount?: number | null
+    maxAmount?: number | null
     escalateAfterHours?: number | null
     escalateToPermission?: string | null
     createdAt?: Date | string
@@ -153504,6 +157586,7 @@ export namespace Prisma {
     approverPermission?: StringFieldUpdateOperationsInput | string
     branchScoped?: BoolFieldUpdateOperationsInput | boolean
     minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
     escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -153517,6 +157600,7 @@ export namespace Prisma {
     approverPermission?: StringFieldUpdateOperationsInput | string
     branchScoped?: BoolFieldUpdateOperationsInput | boolean
     minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
     escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -153530,6 +157614,7 @@ export namespace Prisma {
     approverPermission: string
     branchScoped?: boolean
     minAmount?: number | null
+    maxAmount?: number | null
     escalateAfterHours?: number | null
     escalateToPermission?: string | null
     createdAt?: Date | string
@@ -153543,6 +157628,7 @@ export namespace Prisma {
     approverPermission?: StringFieldUpdateOperationsInput | string
     branchScoped?: BoolFieldUpdateOperationsInput | boolean
     minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
     escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -153556,6 +157642,7 @@ export namespace Prisma {
     approverPermission?: StringFieldUpdateOperationsInput | string
     branchScoped?: BoolFieldUpdateOperationsInput | boolean
     minAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxAmount?: NullableFloatFieldUpdateOperationsInput | number | null
     escalateAfterHours?: NullableIntFieldUpdateOperationsInput | number | null
     escalateToPermission?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -154042,6 +158129,377 @@ export namespace Prisma {
     prevHash?: NullableStringFieldUpdateOperationsInput | string | null
     hash?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingCreateInput = {
+    id?: string
+    findingNumber: string
+    title: string
+    description: string
+    severity?: string
+    category?: string
+    status?: string
+    entityType?: string | null
+    entityId?: string | null
+    auditLogId?: string | null
+    branchId?: string | null
+    riskId?: string | null
+    raisedById: string
+    ownerId?: string | null
+    dueDate?: Date | string | null
+    managementResponse?: string | null
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    closedById?: string | null
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AuditFindingUncheckedCreateInput = {
+    id?: string
+    findingNumber: string
+    title: string
+    description: string
+    severity?: string
+    category?: string
+    status?: string
+    entityType?: string | null
+    entityId?: string | null
+    auditLogId?: string | null
+    branchId?: string | null
+    riskId?: string | null
+    raisedById: string
+    ownerId?: string | null
+    dueDate?: Date | string | null
+    managementResponse?: string | null
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    closedById?: string | null
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AuditFindingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    auditLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    riskId?: NullableStringFieldUpdateOperationsInput | string | null
+    raisedById?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managementResponse?: NullableStringFieldUpdateOperationsInput | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    auditLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    riskId?: NullableStringFieldUpdateOperationsInput | string | null
+    raisedById?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managementResponse?: NullableStringFieldUpdateOperationsInput | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingCreateManyInput = {
+    id?: string
+    findingNumber: string
+    title: string
+    description: string
+    severity?: string
+    category?: string
+    status?: string
+    entityType?: string | null
+    entityId?: string | null
+    auditLogId?: string | null
+    branchId?: string | null
+    riskId?: string | null
+    raisedById: string
+    ownerId?: string | null
+    dueDate?: Date | string | null
+    managementResponse?: string | null
+    resolution?: string | null
+    resolvedAt?: Date | string | null
+    closedById?: string | null
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AuditFindingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    auditLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    riskId?: NullableStringFieldUpdateOperationsInput | string | null
+    raisedById?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managementResponse?: NullableStringFieldUpdateOperationsInput | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    entityType?: NullableStringFieldUpdateOperationsInput | string | null
+    entityId?: NullableStringFieldUpdateOperationsInput | string | null
+    auditLogId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    riskId?: NullableStringFieldUpdateOperationsInput | string | null
+    raisedById?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managementResponse?: NullableStringFieldUpdateOperationsInput | string | null
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    resolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedById?: NullableStringFieldUpdateOperationsInput | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingEventCreateInput = {
+    id?: string
+    findingId: string
+    action: string
+    actorId: string
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditFindingEventUncheckedCreateInput = {
+    id?: string
+    findingId: string
+    action: string
+    actorId: string
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditFindingEventUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingEventUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingEventCreateManyInput = {
+    id?: string
+    findingId: string
+    action: string
+    actorId: string
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditFindingEventUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditFindingEventUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    findingId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    actorId?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskRegisterEntryCreateInput = {
+    id?: string
+    riskNumber: string
+    title: string
+    description?: string | null
+    category?: string
+    likelihood?: number
+    impact?: number
+    score?: number
+    rating?: string
+    status?: string
+    ownerId?: string | null
+    mitigation?: string | null
+    reviewDate?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RiskRegisterEntryUncheckedCreateInput = {
+    id?: string
+    riskNumber: string
+    title: string
+    description?: string | null
+    category?: string
+    likelihood?: number
+    impact?: number
+    score?: number
+    rating?: string
+    status?: string
+    ownerId?: string | null
+    mitigation?: string | null
+    reviewDate?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RiskRegisterEntryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    riskNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    likelihood?: IntFieldUpdateOperationsInput | number
+    impact?: IntFieldUpdateOperationsInput | number
+    score?: IntFieldUpdateOperationsInput | number
+    rating?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    mitigation?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskRegisterEntryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    riskNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    likelihood?: IntFieldUpdateOperationsInput | number
+    impact?: IntFieldUpdateOperationsInput | number
+    score?: IntFieldUpdateOperationsInput | number
+    rating?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    mitigation?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskRegisterEntryCreateManyInput = {
+    id?: string
+    riskNumber: string
+    title: string
+    description?: string | null
+    category?: string
+    likelihood?: number
+    impact?: number
+    score?: number
+    rating?: string
+    status?: string
+    ownerId?: string | null
+    mitigation?: string | null
+    reviewDate?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RiskRegisterEntryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    riskNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    likelihood?: IntFieldUpdateOperationsInput | number
+    impact?: IntFieldUpdateOperationsInput | number
+    score?: IntFieldUpdateOperationsInput | number
+    rating?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    mitigation?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RiskRegisterEntryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    riskNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: StringFieldUpdateOperationsInput | string
+    likelihood?: IntFieldUpdateOperationsInput | number
+    impact?: IntFieldUpdateOperationsInput | number
+    score?: IntFieldUpdateOperationsInput | number
+    rating?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    ownerId?: NullableStringFieldUpdateOperationsInput | string | null
+    mitigation?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -160974,6 +165432,7 @@ export namespace Prisma {
     approverPermission?: SortOrder
     branchScoped?: SortOrder
     minAmount?: SortOrder
+    maxAmount?: SortOrder
     escalateAfterHours?: SortOrder
     escalateToPermission?: SortOrder
     createdAt?: SortOrder
@@ -160982,6 +165441,7 @@ export namespace Prisma {
   export type WorkflowStageAvgOrderByAggregateInput = {
     order?: SortOrder
     minAmount?: SortOrder
+    maxAmount?: SortOrder
     escalateAfterHours?: SortOrder
   }
 
@@ -160993,6 +165453,7 @@ export namespace Prisma {
     approverPermission?: SortOrder
     branchScoped?: SortOrder
     minAmount?: SortOrder
+    maxAmount?: SortOrder
     escalateAfterHours?: SortOrder
     escalateToPermission?: SortOrder
     createdAt?: SortOrder
@@ -161006,6 +165467,7 @@ export namespace Prisma {
     approverPermission?: SortOrder
     branchScoped?: SortOrder
     minAmount?: SortOrder
+    maxAmount?: SortOrder
     escalateAfterHours?: SortOrder
     escalateToPermission?: SortOrder
     createdAt?: SortOrder
@@ -161014,6 +165476,7 @@ export namespace Prisma {
   export type WorkflowStageSumOrderByAggregateInput = {
     order?: SortOrder
     minAmount?: SortOrder
+    maxAmount?: SortOrder
     escalateAfterHours?: SortOrder
   }
 
@@ -161240,6 +165703,177 @@ export namespace Prisma {
     prevHash?: SortOrder
     hash?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type AuditFindingCountOrderByAggregateInput = {
+    id?: SortOrder
+    findingNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    category?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    auditLogId?: SortOrder
+    branchId?: SortOrder
+    riskId?: SortOrder
+    raisedById?: SortOrder
+    ownerId?: SortOrder
+    dueDate?: SortOrder
+    managementResponse?: SortOrder
+    resolution?: SortOrder
+    resolvedAt?: SortOrder
+    closedById?: SortOrder
+    closedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AuditFindingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    findingNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    category?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    auditLogId?: SortOrder
+    branchId?: SortOrder
+    riskId?: SortOrder
+    raisedById?: SortOrder
+    ownerId?: SortOrder
+    dueDate?: SortOrder
+    managementResponse?: SortOrder
+    resolution?: SortOrder
+    resolvedAt?: SortOrder
+    closedById?: SortOrder
+    closedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AuditFindingMinOrderByAggregateInput = {
+    id?: SortOrder
+    findingNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    severity?: SortOrder
+    category?: SortOrder
+    status?: SortOrder
+    entityType?: SortOrder
+    entityId?: SortOrder
+    auditLogId?: SortOrder
+    branchId?: SortOrder
+    riskId?: SortOrder
+    raisedById?: SortOrder
+    ownerId?: SortOrder
+    dueDate?: SortOrder
+    managementResponse?: SortOrder
+    resolution?: SortOrder
+    resolvedAt?: SortOrder
+    closedById?: SortOrder
+    closedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type AuditFindingEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    findingId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AuditFindingEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    findingId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AuditFindingEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    findingId?: SortOrder
+    action?: SortOrder
+    actorId?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RiskRegisterEntryCountOrderByAggregateInput = {
+    id?: SortOrder
+    riskNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
+    rating?: SortOrder
+    status?: SortOrder
+    ownerId?: SortOrder
+    mitigation?: SortOrder
+    reviewDate?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RiskRegisterEntryAvgOrderByAggregateInput = {
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
+  }
+
+  export type RiskRegisterEntryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    riskNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
+    rating?: SortOrder
+    status?: SortOrder
+    ownerId?: SortOrder
+    mitigation?: SortOrder
+    reviewDate?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RiskRegisterEntryMinOrderByAggregateInput = {
+    id?: SortOrder
+    riskNumber?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    category?: SortOrder
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
+    rating?: SortOrder
+    status?: SortOrder
+    ownerId?: SortOrder
+    mitigation?: SortOrder
+    reviewDate?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RiskRegisterEntrySumOrderByAggregateInput = {
+    likelihood?: SortOrder
+    impact?: SortOrder
+    score?: SortOrder
   }
 
   export type ApprovalRequestCreateNestedManyWithoutApprovedByInput = {

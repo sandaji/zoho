@@ -24,6 +24,13 @@ import {
 } from "../dtos";
 import { validationError } from "@core/errors/errors";
 import { logger } from "@core/utils/logger";
+import { randomUUID } from "crypto";
+import { prisma } from "@core/database/db";
+import workflow from "../../workflow/workflow.service";
+import "../../workflow/handlers";
+
+/** Reasons that remove or rewrite stock without a source document, so they need sign-off. */
+const APPROVAL_REASONS = ["damage", "theft", "count_variance", "expiry", "promotion", "other"];
 
 export class InventoryController {
   private service = new InventoryService();
@@ -158,6 +165,29 @@ export class InventoryController {
       if (!userId) {
         throw validationError("Authentication context is missing");
       }
+      if (APPROVAL_REASONS.includes(String(dto.reason))) {
+        const [product, warehouse] = await Promise.all([
+          prisma.product.findUnique({ where: { id: dto.productId }, select: { name: true } }),
+          prisma.warehouse.findUnique({ where: { id: dto.warehouseId }, select: { name: true } }),
+        ]);
+        if (!product || !warehouse) throw validationError("Product or warehouse not found");
+        const approval = await workflow.start({
+          code: "STOCK_ADJUSTMENT",
+          entityId: randomUUID(),
+          title: `Stock ${dto.adjustmentType}: ${dto.quantity} × ${product.name} @ ${warehouse.name}`,
+          summary: `Reason: ${dto.reason}${dto.notes ? ` — ${dto.notes}` : ""}`,
+          branchId: req.user?.branchId ?? null,
+          requestedById: userId,
+          payload: dto,
+        });
+        res.status(202).json({
+          success: true,
+          data: { pendingApproval: true, approval },
+          message: `Adjustment sent for approval (${approval.instanceNumber}). Stock changes once it is approved.`,
+        });
+        return;
+      }
+
       const result = await this.service.adjustInventory(dto, userId);
 
       res.status(200).json({
@@ -322,8 +352,22 @@ export class InventoryController {
       }
 
       const result = await this.service.requestTransfer(userId, dto);
+      let approval: unknown = null;
+      try {
+        const src = await prisma.warehouse.findUnique({ where: { id: dto.sourceWarehouseId }, select: { branchId: true } });
+        approval = await workflow.start({
+          code: "STOCK_TRANSFER",
+          entityId: result.id,
+          title: `Stock transfer ${result.documentId}`,
+          summary: `${dto.items.length} line(s)${dto.notes ? ` — ${dto.notes}` : ""}`,
+          branchId: src?.branchId ?? null,
+          requestedById: userId,
+        });
+      } catch (err) {
+        logger.error({ err, transferId: result.id }, "Could not start transfer approval");
+      }
       const withActions = await this.withAvailableActions(result, userId);
-      res.status(201).json({ success: true, data: withActions });
+      res.status(201).json({ success: true, data: { ...withActions, approval } });
     } catch (error) {
       next(error);
     }
@@ -344,15 +388,23 @@ export class InventoryController {
           "Authentication context or transfer id is missing",
         );
       }
-      const dto: ApproveTransferDTO = req.body;
-
-      const result = await this.service.approveTransfer(
-        userId,
-        transferId,
-        dto,
-      );
-      const withActions = await this.withAvailableActions(result, userId);
-      res.status(200).json({ success: true, data: withActions });
+      // Approval is decided from the Approvals page (segregation of duties, delegation,
+      // escalation, audit trail). A transfer requested before the engine existed gets a
+      // request started here so it shows up there.
+      const open = (await workflow.forEntity("STOCK_TRANSFER", transferId)).find((w: any) => w.status === "PENDING");
+      let number = (open as any)?.instanceNumber as string | undefined;
+      if (!number) {
+        const t = await this.service.getTransferById(transferId);
+        const started = await workflow.start({
+          code: "STOCK_TRANSFER",
+          entityId: transferId,
+          title: `Stock transfer ${t.documentId}`,
+          branchId: t.sourceWarehouse?.branchId ?? null,
+          requestedById: t.createdById,
+        });
+        number = started.instanceNumber;
+      }
+      throw validationError(`Transfers are approved from the Approvals page (${number}).`);
     } catch (error) {
       next(error);
     }

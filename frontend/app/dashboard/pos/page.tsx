@@ -33,16 +33,22 @@ export interface CartItem {
   discount_percent: number;
   available: number;
   tax_rate: number;
+  /** Server-calculated receipt values, present on completed sales. */
+  subtotal?: number;
+  tax_amount?: number;
+  amount?: number;
 }
 
 export interface SaleData {
   id: string;
   invoice_no: string;
   subtotal: number;
+  discount: number;
   tax: number;
   total: number;
   amount_paid: number;
   payment_method: PaymentMethod;
+  payment_reference?: string;
   items: CartItem[];
   created_at: string;
   branch?: {
@@ -71,11 +77,14 @@ export default function POSPage() {
     error: sessionError,
     openSession,
     closeSession,
+    refetch: refetchSession,
   } = useCashierSession();
 
   // Main states
   const [cart, setCart] = useState<CartItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cash");
+  const [paymentReference, setPaymentReference] = useState("");
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [amountTendered, setAmountTendered] = useState<number>(0);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [notes, setNotes] = useState("");
@@ -121,7 +130,12 @@ export default function POSPage() {
   // Any change to what is being sold invalidates the pending idempotency key.
   useEffect(() => {
     idempotencyKeyRef.current = null;
-  }, [cart, orderDiscount, paymentMethod, amountTendered, selectedCustomer, notes]);
+  }, [cart, orderDiscount, paymentMethod, paymentReference, paymentConfirmed, amountTendered, selectedCustomer, notes]);
+
+  useEffect(() => {
+    setPaymentReference("");
+    setPaymentConfirmed(paymentMethod === "cash" || paymentMethod === "credit");
+  }, [paymentMethod]);
 
   // ------------------ Totals ------------------
   // Same rules as the backend (see lib/sales-calculator.ts) so the total shown
@@ -229,6 +243,8 @@ export default function POSPage() {
     setNotes("");
     setAmountTendered(0);
     setPaymentMethod("cash");
+    setPaymentReference("");
+    setPaymentConfirmed(false);
     setOrderDiscount(0);
     toast("Cart cleared", "info");
   };
@@ -251,6 +267,14 @@ export default function POSPage() {
 
     if (paymentMethod === "cash" && amountTendered < grandTotal) {
       toast("Insufficient amount tendered", "warning");
+      return;
+    }
+
+    if (
+      paymentMethod !== "cash" &&
+      (!paymentConfirmed || !paymentReference.trim())
+    ) {
+      toast("Confirm the payment and enter its reference before checkout", "warning");
       return;
     }
 
@@ -281,6 +305,8 @@ export default function POSPage() {
           discount: clampedOrderDiscount,
           payment_method: paymentMethod,
           amount_paid: paymentMethod === "cash" ? amountTendered : grandTotal,
+          payment_reference: paymentMethod === "cash" ? undefined : paymentReference.trim(),
+          payment_confirmed: paymentMethod === "cash" ? undefined : paymentConfirmed,
           customerId: selectedCustomer?.id || undefined,
           notes: notes || undefined,
         }),
@@ -299,13 +325,33 @@ export default function POSPage() {
         invoice_no: json.data.invoice_no,
         // Show what the server actually recorded, falling back to local figures.
         subtotal: json.data.subtotal ?? subtotal,
+        discount: json.data.discount ?? totalDiscount + clampedOrderDiscount,
         tax: json.data.tax ?? tax,
         total: json.data.grand_total ?? grandTotal,
         amount_paid:
           json.data.amount_paid ?? (paymentMethod === "cash" ? amountTendered : grandTotal),
         payment_method: paymentMethod,
-        items: cart,
-        created_at: new Date().toISOString(),
+        payment_reference: paymentMethod === "cash" ? undefined : paymentReference.trim(),
+        items: Array.isArray(json.data.sales_items)
+          ? json.data.sales_items.map((line: any) => {
+              const original = cart.find((item) => item.productId === line.productId);
+              return {
+                productId: line.productId,
+                sku: original?.sku ?? "",
+                name: original?.name ?? line.product?.name ?? "Item",
+                unit_price: Number(line.unit_price) || 0,
+                quantity: Number(line.quantity) || 0,
+                discount: Number(line.discount) || 0,
+                discount_percent: 0,
+                available: original?.available ?? 0,
+                tax_rate: Number(line.tax_rate) || 0,
+                subtotal: Number(line.subtotal) || 0,
+                tax_amount: Number(line.tax_amount) || 0,
+                amount: Number(line.amount) || 0,
+              };
+            })
+          : cart,
+        created_at: json.data.created_date || new Date().toISOString(),
         branch: json.data.branch,
         customer: selectedCustomer
           ? {
@@ -316,6 +362,7 @@ export default function POSPage() {
       });
       idempotencyKeyRef.current = null;
       setShowSuccessModal(true);
+      void refetchSession();
     } catch (error) {
       toast("Checkout failed. Please try again.", "error");
       console.error("Checkout error:", error);
@@ -381,6 +428,13 @@ export default function POSPage() {
         tax_rate: item.taxRate || 0.16,
       }));
       setCart(cartItems);
+      const itemDiscountTotal = doc.items.reduce(
+        (sum: number, item: any) => sum + (Number(item.discount) || 0),
+        0,
+      );
+      setOrderDiscount(
+        Math.max(0, (Number(doc.discount) || 0) - itemDiscountTotal),
+      );
 
       // Set customer
       if (doc.customer) {
@@ -429,12 +483,14 @@ export default function POSPage() {
       const body = editingDocId
         ? {
             items,
+            discount: clampedOrderDiscount,
             customerId: selectedCustomer?.id || undefined,
             notes: notes || undefined,
           }
         : {
             type: docMode,
             status: "DRAFT",
+            discount: clampedOrderDiscount,
             customerId: selectedCustomer?.id || undefined,
             notes: notes || undefined,
             items,
@@ -475,6 +531,15 @@ export default function POSPage() {
 
   const handleConvertDocument = async () => {
     if (!editingDocId || !cart.length) return;
+    if (
+      amountTendered > 0 &&
+      paymentMethod !== "cash" &&
+      paymentMethod !== "credit" &&
+      (!paymentConfirmed || !paymentReference.trim())
+    ) {
+      toast("Confirm the payment and enter its reference before converting", "warning");
+      return;
+    }
     setLoading(true);
     try {
       const items = cart.map((c) => ({
@@ -490,7 +555,12 @@ export default function POSPage() {
         {
           method: "PATCH",
           headers,
-          body: JSON.stringify({ items, customerId: selectedCustomer?.id || null, notes }),
+          body: JSON.stringify({
+            items,
+            discount: clampedOrderDiscount,
+            customerId: selectedCustomer?.id || null,
+            notes,
+          }),
         }
       );
       const savedJson = await saved.json();
@@ -509,6 +579,8 @@ export default function POSPage() {
           notes,
           amountPaid: paymentMethod === "credit" ? 0 : Math.max(0, amountTendered),
           paymentMethod,
+          paymentReference: paymentReference.trim() || undefined,
+          paymentConfirmed,
         }),
       });
       const convertedJson = await converted.json();
@@ -520,6 +592,7 @@ export default function POSPage() {
         return;
       }
       toast(`Invoice created: ${convertedJson.data.documentId}`, "success");
+      void refetchSession();
       setDocMode("SALE");
       setEditingDocId(null);
       clearCart();
@@ -673,6 +746,10 @@ export default function POSPage() {
                 setPaymentMethod={setPaymentMethod}
                 amountTendered={amountTendered}
                 setAmountTendered={setAmountTendered}
+                paymentReference={paymentReference}
+                setPaymentReference={setPaymentReference}
+                paymentConfirmed={paymentConfirmed}
+                setPaymentConfirmed={setPaymentConfirmed}
                 changeAmount={changeAmount}
                 onCheckout={handleCheckout}
                 loading={loading}

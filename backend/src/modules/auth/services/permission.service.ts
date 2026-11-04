@@ -18,6 +18,27 @@ const SCOPE_PRIORITY: Record<AccessScope, number> = {
   OWN: 1,
 };
 
+// Earlier seeded roles use `procurement.*`; Purchasing routes now check
+// `purchasing.*`. Treat the former grants as aliases for their direct
+// equivalents so existing role assignments keep working without widening
+// access to unrelated purchasing actions.
+const PERMISSION_ALIASES: Record<string, string[]> = {
+  "purchasing.vendor.view": ["procurement.vendor.view"],
+  "purchasing.vendor.manage": ["procurement.vendor.manage"],
+  "purchasing.order.create": ["procurement.order.create"],
+  "purchasing.order.view_all": ["procurement.order.view"],
+  "purchasing.order.approve_standard": ["procurement.order.approve"],
+};
+
+function permissionCodesFor(code: string): string[] {
+  const aliases = PERMISSION_ALIASES[code] ?? [];
+  const canonical = Object.entries(PERMISSION_ALIASES)
+    .filter(([, legacyCodes]) => legacyCodes.includes(code))
+    .map(([canonicalCode]) => canonicalCode);
+
+  return [...new Set([code, ...aliases, ...canonical])];
+}
+
 export class PermissionService {
   /**
    * 🔹 Get all unique permission codes for a user across all assigned roles
@@ -49,6 +70,9 @@ export class PermissionService {
       for (const assignment of rows) {
         for (const rp of assignment.role.permissions) {
           permissionSet.add(rp.permission.code);
+          for (const alias of permissionCodesFor(rp.permission.code)) {
+            permissionSet.add(alias);
+          }
         }
       }
 
@@ -160,7 +184,7 @@ export class PermissionService {
             permissions: {
               some: {
                 permission: {
-                  code: permissionCode,
+                  code: { in: permissionCodesFor(permissionCode) },
                 },
               },
             },
@@ -172,7 +196,7 @@ export class PermissionService {
               permissions: {
                 where: {
                   permission: {
-                    code: permissionCode,
+                    code: { in: permissionCodesFor(permissionCode) },
                   },
                 },
                 select: {

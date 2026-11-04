@@ -24,6 +24,58 @@ import {
 // Service
 // -----------------------------
 export class SalesService {
+  /**
+   * Consume POS stock across active warehouses in a branch, oldest first.
+   * Validation and product search use the same warehouse set and aggregate
+   * availability, so stock in a secondary branch warehouse remains sellable.
+   */
+  private static async depleteStockAcrossWarehouses(
+    tx: Prisma.TransactionClient,
+    warehouses: Array<{ id: string }>,
+    input: {
+      productId: string;
+      quantity: number;
+      userId: string;
+      salesId: string;
+      reference: string;
+    },
+  ): Promise<number> {
+    let remaining = input.quantity;
+    let totalCost = 0;
+
+    for (const warehouse of warehouses) {
+      const inventory = await tx.inventory.findFirst({
+        where: { productId: input.productId, warehouseId: warehouse.id },
+        select: { available: true },
+      });
+      const available = Math.max(0, Math.floor(inventory?.available ?? 0));
+      const quantity = Math.min(remaining, available);
+      if (quantity <= 0) continue;
+
+      const depletion = await InventoryService.depleteStockFIFO(tx, {
+        productId: input.productId,
+        warehouseId: warehouse.id,
+        quantity,
+        userId: input.userId,
+        salesId: input.salesId,
+        reference: input.reference,
+      });
+      totalCost += depletion.totalCost.toNumber();
+      remaining -= quantity;
+      if (remaining === 0) break;
+    }
+
+    if (remaining > 0) {
+      throw new AppError(
+        ErrorCode.INSUFFICIENT_INVENTORY,
+        400,
+        `Insufficient active-warehouse stock for product ${input.productId}: ${remaining} more required`,
+      );
+    }
+
+    return totalCost;
+  }
+
   // =============================
   // Create Draft / Quote / Invoice
   // =============================
@@ -32,6 +84,8 @@ export class SalesService {
       type: SalesDocumentType;
       status?: SalesDocumentStatus;
       customerId?: string;
+      /** Whole-document discount applied after line discounts. */
+      discount?: number;
       issueDate?: Date;
       dueDate?: Date | null;
       notes?: string;
@@ -104,7 +158,10 @@ export class SalesService {
       };
     });
 
-    const totals = calculateDocumentTotals(preparedItems);
+    const totals = applyOrderDiscount(
+      calculateDocumentTotals(preparedItems),
+      input.discount ?? 0,
+    );
 
     let finalIssueDate = input.issueDate || new Date();
     let finalDueDate = input.dueDate;
@@ -158,13 +215,7 @@ export class SalesService {
     branchId: string,
     userId: string,
   ) {
-    // Validate stock availability (no override allowed for direct invoices)
-    await StockValidationService.validateOrThrow(
-      branchId,
-      input.items,
-      userId,
-      false,
-    );
+    await StockValidationService.validateOrThrow(branchId, input.items, userId);
 
     const documentId = await SequenceService.getNextNumber(
       SalesDocumentType.INVOICE,
@@ -190,6 +241,15 @@ export class SalesService {
 
     return prisma.$transaction(
       async (tx) => {
+        const transactionWarehouses = await tx.warehouse.findMany({
+          where: { branchId, isActive: true },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+          select: { id: true },
+        });
+        if (transactionWarehouses.length === 0) {
+          throw new AppError(ErrorCode.NOT_FOUND, 404, "No active warehouse found for this branch");
+        }
+
         // Create the invoice in SENT / UNPAID state — payment recorded separately
         const invoice = await tx.salesDocument.create({
           data: {
@@ -214,22 +274,11 @@ export class SalesService {
           include: { items: true, customer: true },
         });
 
-        // Resolve the branch's default warehouse
-        const warehouse = await tx.warehouse.findFirst({ where: { branchId } });
-        if (!warehouse) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            "No warehouse found for this branch — cannot deduct stock.",
-          );
-        }
-
         // Deduct stock using canonical FIFO — updates StockBatch, Inventory
         // ledger, writes StockMovement audit row, and re-syncs BranchInventory.
         for (const item of preparedItems) {
-          await InventoryService.depleteStockFIFO(tx, {
+          await this.depleteStockAcrossWarehouses(tx, transactionWarehouses, {
             productId: item.productId,
-            warehouseId: warehouse.id,
             quantity: item.quantity,
             userId,
             salesId: invoice.id,
@@ -258,7 +307,14 @@ export class SalesService {
     sourceId: string,
     branchId: string,
     userId: string,
-    options: { customerId?: string | null; notes?: string; amountPaid?: number; paymentMethod?: string } = {},
+    options: {
+      customerId?: string | null;
+      notes?: string;
+      amountPaid?: number;
+      paymentMethod?: string;
+      paymentReference?: string | null;
+      paymentConfirmed?: boolean;
+    } = {},
   ) {
     const source = await prisma.salesDocument.findUnique({
       where: { id: sourceId },
@@ -276,7 +332,22 @@ export class SalesService {
         "Cannot convert credit note to invoice",
       );
 
-    // REQUIREMENT 5: Validate stock before converting
+    const hasExternalPayment =
+      (options.amountPaid ?? 0) > 0 &&
+      !!options.paymentMethod &&
+      options.paymentMethod !== "cash" &&
+      options.paymentMethod !== "credit";
+    if (
+      hasExternalPayment &&
+      (!options.paymentConfirmed || !options.paymentReference?.trim())
+    ) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "Confirm the external payment and provide its reference before converting",
+      );
+    }
+
     await StockValidationService.validateOrThrow(
       branchId,
       source.items.map((item) => ({
@@ -294,6 +365,19 @@ export class SalesService {
 
     return prisma.$transaction(
       async (tx) => {
+        const transactionWarehouses = await tx.warehouse.findMany({
+          where: { branchId, isActive: true },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+          select: { id: true },
+        });
+        if (transactionWarehouses.length === 0) {
+          throw new AppError(ErrorCode.NOT_FOUND, 404, "No active warehouse found for this branch");
+        }
+        const session = await tx.cashierSession.findFirst({
+          where: { userId, branchId, status: "OPEN" },
+          select: { id: true },
+        });
+
         // Create invoice
         const invoice = await tx.salesDocument.create({
           data: {
@@ -311,6 +395,7 @@ export class SalesService {
             total: source.total,
             balance: Math.max(0, source.total - Math.min(options.amountPaid || 0, source.total)),
             paidAmount: Math.min(options.amountPaid || 0, source.total),
+            sessionId: session?.id ?? null,
             notes: [options.notes ?? source.notes, (options.amountPaid || 0) < source.total && (options.amountPaid || 0) > 0 ? `Payment short by ${Math.floor(source.total - (options.amountPaid || 0))}; balance remains on account.` : null, (options.amountPaid || 0) > source.total ? `Overpayment of ${Math.floor((options.amountPaid || 0) - source.total)} recorded as change.` : null].filter(Boolean).join("\n") || null,
             // sourceDocumentId is a self-referencing FK with onDelete: NoAction.
             // For a QUOTE we keep the source (marked CONVERTED below), so the
@@ -338,37 +423,47 @@ export class SalesService {
         });
 
         const received = Math.min(Math.max(0, options.amountPaid || 0), invoice.total);
+        const paymentMethod = options.paymentMethod || "cash";
         if (received > 0 || options.paymentMethod === "credit") {
           await tx.payment.create({
             data: {
               salesDocumentId: invoice.id,
               customerId: invoice.customerId,
               amount: Math.floor(received),
-              method: (options.paymentMethod || "cash") as PaymentMethod,
-              reference: (options.amountPaid || 0) > invoice.total ? `Overpayment ${Math.floor((options.amountPaid || 0) - invoice.total)} recorded as change` : null,
+              method: paymentMethod as PaymentMethod,
+              reference:
+                options.paymentReference?.trim() ||
+                ((options.amountPaid || 0) > invoice.total
+                  ? `Overpayment ${Math.floor((options.amountPaid || 0) - invoice.total)} recorded as change`
+                  : null),
               createdById: userId,
             },
           });
         }
 
-        // REQUIREMENT 5: Deduct stock when invoice is created
-        const warehouse = await tx.warehouse.findFirst({
-          where: { branchId },
-        });
-
-        if (!warehouse) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            "No warehouse found for this branch",
-          );
+        if (session) {
+          const receivedUpdate = { increment: Math.floor(received) };
+          await tx.cashierSession.update({
+            where: { id: session.id },
+            data: {
+              totalSalesCount: { increment: 1 },
+              totalSalesAmount: { increment: Math.floor(invoice.total) },
+              ...(paymentMethod === "cash"
+                ? { totalCashReceived: receivedUpdate }
+                : paymentMethod === "card"
+                  ? { totalCardReceived: receivedUpdate }
+                  : paymentMethod === "mpesa"
+                    ? { totalMpesaReceived: receivedUpdate }
+                    : { totalOtherReceived: receivedUpdate }),
+            },
+          });
         }
 
+        // REQUIREMENT 5: Deduct stock when invoice is created
         // Deduct stock using canonical FIFO
         for (const item of source.items) {
-          await InventoryService.depleteStockFIFO(tx, {
+          await this.depleteStockAcrossWarehouses(tx, transactionWarehouses, {
             productId: item.productId,
-            warehouseId: warehouse.id,
             quantity: item.quantity,
             userId,
             salesId: invoice.id,
@@ -424,6 +519,8 @@ export class SalesService {
     }[];
     paymentMethod: string;
     amountPaid: number;
+    paymentReference?: string | null;
+    paymentConfirmed?: boolean;
     notes?: string;
     customerId?: string;
     idempotencyKey?: string;
@@ -441,12 +538,25 @@ export class SalesService {
       items,
       paymentMethod,
       amountPaid,
+      paymentReference,
+      paymentConfirmed,
       notes,
       customerId,
       idempotencyKey,
       discount: orderDiscount = 0,
       requireSession = false,
     } = input;
+
+    if (
+      paymentMethod !== "cash" &&
+      (!paymentConfirmed || !paymentReference?.trim())
+    ) {
+      throw new AppError(
+        ErrorCode.VALIDATION_ERROR,
+        400,
+        "Confirm the external payment and provide its reference before completing the sale",
+      );
+    }
 
     // Idempotency check: if idempotency key provided, check for existing sale
     if (idempotencyKey) {
@@ -530,13 +640,7 @@ export class SalesService {
       };
     });
 
-    // Validate stock
-    await StockValidationService.validateOrThrow(
-      branchId,
-      pricedItems,
-      userId,
-      false,
-    );
+    await StockValidationService.validateOrThrow(branchId, pricedItems, userId);
 
     // Cashier session: link the sale to it so the session's totals (and the
     // expected cash at close) are correct. Non-admin users must have one open.
@@ -598,6 +702,14 @@ export class SalesService {
     try {
     return await prisma.$transaction(
       async (tx) => {
+        const transactionWarehouses = await tx.warehouse.findMany({
+          where: { branchId, isActive: true },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+          select: { id: true },
+        });
+        if (transactionWarehouses.length === 0) {
+          throw new AppError(ErrorCode.NOT_FOUND, 404, "No active warehouse found for this branch");
+        }
 
         const invoice = await tx.salesDocument.create({
           data: {
@@ -634,6 +746,7 @@ export class SalesService {
               customerId: customerId || null,
               amount: paidApplied,
               method: paymentMethod as PaymentMethod,
+              reference: paymentMethod === "cash" ? null : paymentReference?.trim() || null,
               paymentDate: new Date(),
               createdById: userId,
             },
@@ -670,32 +783,22 @@ export class SalesService {
           });
         }
 
-        // Resolve warehouse
-        const warehouse = await tx.warehouse.findFirst({
-          where: { branchId },
-        });
-
-        if (!warehouse) {
-          throw new AppError(
-            ErrorCode.NOT_FOUND,
-            404,
-            "No warehouse found for this branch",
-          );
-        }
-
         // Update inventory using canonical FIFO — correct COGS, StockBatch
         // depletion, audit trail, and BranchInventory sync all in one call.
         let totalCogs = 0;
         for (const item of preparedItems) {
-          const depletion = await InventoryService.depleteStockFIFO(tx, {
-            productId: item.productId,
-            warehouseId: warehouse.id,
-            quantity: item.quantity,
-            userId,
-            salesId: invoice.id,
-            reference: `POS Sale - ${invoice.documentId}`,
-          });
-          totalCogs += Math.floor(depletion.totalCost.toNumber());
+          const depletionCost = await this.depleteStockAcrossWarehouses(
+            tx,
+            transactionWarehouses,
+            {
+              productId: item.productId,
+              quantity: item.quantity,
+              userId,
+              salesId: invoice.id,
+              reference: `POS Sale - ${invoice.documentId}`,
+            },
+          );
+          totalCogs += Math.floor(depletionCost);
         }
 
         // Record financial transaction
@@ -1169,6 +1272,8 @@ export class SalesService {
     input: {
       customerId?: string | null;
       notes?: string;
+      /** Whole-document discount, separate from item discounts. */
+      discount?: number;
       allowStockOverride?: boolean;
       items: {
         productId: string;
@@ -1180,7 +1285,10 @@ export class SalesService {
       }[];
     },
   ) {
-    const existing = await prisma.salesDocument.findUnique({ where: { id } });
+    const existing = await prisma.salesDocument.findUnique({
+      where: { id },
+      include: { items: true },
+    });
     if (!existing)
       throw new AppError(ErrorCode.NOT_FOUND, 404, "Document not found");
 
@@ -1242,7 +1350,15 @@ export class SalesService {
       };
     });
 
-    const totals = calculateDocumentTotals(preparedItems);
+    const inheritedOrderDiscount = Math.max(
+      0,
+      Number(existing.discount) -
+        existing.items.reduce((sum, item) => sum + Number(item.discount), 0),
+    );
+    const totals = applyOrderDiscount(
+      calculateDocumentTotals(preparedItems),
+      input.discount ?? inheritedOrderDiscount,
+    );
 
     return prisma.$transaction(async (tx) => {
       // Full replace: delete old line items, insert the new set. Simpler and

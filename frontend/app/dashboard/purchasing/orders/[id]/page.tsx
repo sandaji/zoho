@@ -571,8 +571,8 @@ export default function PurchaseOrderDetailPage() {
                   <TableRow key={item.id} className="hover:bg-slate-50">
                     <TableCell className="py-4 pl-6">
                       <div>
-                        <div className="font-medium text-slate-900">{item.product.name}</div>
-                        <div className="text-sm text-slate-600">SKU: {item.product.sku}</div>
+                        <div className="font-medium text-slate-900">{item.product?.name ?? item.description}</div>
+                        <div className="text-sm text-slate-600">{item.lineType === "NON_STOCK" ? "Internal use" : `SKU: ${item.product?.sku ?? "—"}`}</div>
                       </div>
                     </TableCell>
                     <TableCell className="text-right py-4">{item.quantity}</TableCell>
@@ -649,7 +649,7 @@ export default function PurchaseOrderDetailPage() {
                       <ul className="space-y-1 ml-4">
                         {grn.items.map((item) => (
                           <li key={item.id} className="text-slate-600">
-                            {item.product.name}: {item.qtyReceived} units
+                            {item.product?.name ?? item.purchaseOrderItem?.description ?? "Received item"}: {item.qtyReceived} units
                           </li>
                         ))}
                       </ul>

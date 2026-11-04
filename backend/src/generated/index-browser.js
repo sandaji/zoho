@@ -1472,6 +1472,7 @@ exports.Prisma.WorkflowStageScalarFieldEnum = {
   approverPermission: 'approverPermission',
   branchScoped: 'branchScoped',
   minAmount: 'minAmount',
+  maxAmount: 'maxAmount',
   escalateAfterHours: 'escalateAfterHours',
   escalateToPermission: 'escalateToPermission',
   createdAt: 'createdAt'
@@ -1544,6 +1545,59 @@ exports.Prisma.WorkflowEventScalarFieldEnum = {
   prevHash: 'prevHash',
   hash: 'hash',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.AuditFindingScalarFieldEnum = {
+  id: 'id',
+  findingNumber: 'findingNumber',
+  title: 'title',
+  description: 'description',
+  severity: 'severity',
+  category: 'category',
+  status: 'status',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  auditLogId: 'auditLogId',
+  branchId: 'branchId',
+  riskId: 'riskId',
+  raisedById: 'raisedById',
+  ownerId: 'ownerId',
+  dueDate: 'dueDate',
+  managementResponse: 'managementResponse',
+  resolution: 'resolution',
+  resolvedAt: 'resolvedAt',
+  closedById: 'closedById',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AuditFindingEventScalarFieldEnum = {
+  id: 'id',
+  findingId: 'findingId',
+  action: 'action',
+  actorId: 'actorId',
+  comment: 'comment',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.RiskRegisterEntryScalarFieldEnum = {
+  id: 'id',
+  riskNumber: 'riskNumber',
+  title: 'title',
+  description: 'description',
+  category: 'category',
+  likelihood: 'likelihood',
+  impact: 'impact',
+  score: 'score',
+  rating: 'rating',
+  status: 'status',
+  ownerId: 'ownerId',
+  mitigation: 'mitigation',
+  reviewDate: 'reviewDate',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -2043,7 +2097,10 @@ exports.Prisma.ModelName = {
   WorkflowInstance: 'WorkflowInstance',
   WorkflowStep: 'WorkflowStep',
   WorkflowDelegation: 'WorkflowDelegation',
-  WorkflowEvent: 'WorkflowEvent'
+  WorkflowEvent: 'WorkflowEvent',
+  AuditFinding: 'AuditFinding',
+  AuditFindingEvent: 'AuditFindingEvent',
+  RiskRegisterEntry: 'RiskRegisterEntry'
 };
 
 /**

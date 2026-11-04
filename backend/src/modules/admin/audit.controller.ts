@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '@core/database/db';
+import { computeFieldChanges } from './audit-diff';
 
 export class AuditController {
   /**
@@ -61,8 +62,31 @@ export class AuditController {
 
       res.status(200).json({
         status: 'success',
-        data: logs,
+        data: logs.map((l) => ({ ...l, fieldChanges: computeFieldChanges(l.action as string, l.changes) })),
         pagination: { total, limit: take, offset: skip },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * GET /audit-logs/entity/:entityType/:entityId
+   * Everything that ever happened to one record, oldest first, with field-level old/new values.
+   */
+  async getEntityHistory(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const entityType = req.params.entityType as string;
+      const entityId = req.params.entityId as string;
+      const logs = await prisma.auditLog.findMany({
+        where: { entityType, entityId },
+        orderBy: { timestamp: 'asc' },
+        take: 500,
+        include: { user: { select: { id: true, name: true, email: true } } },
+      });
+      res.status(200).json({
+        status: 'success',
+        data: logs.map((l) => ({ ...l, fieldChanges: computeFieldChanges(l.action as string, l.changes) })),
       });
     } catch (error) {
       next(error);

@@ -23,9 +23,27 @@ export const createPosSaleSchema = z.object({
     .max(200, "Too many items in one sale"),
   payment_method: z.enum(["cash", "card", "mpesa", "cheque", "bank_transfer"]),
   amount_paid: z.number().finite().min(0).optional(),
+  payment_reference: z.string().trim().max(120).optional().nullable(),
+  payment_confirmed: z.boolean().optional(),
   discount: z.number().finite().min(0).optional(),
   customerId: z.string().min(1).optional().nullable(),
   notes: z.string().max(2000).optional().nullable(),
+}).superRefine((data, ctx) => {
+  if (data.payment_method === "cash") return;
+  if (!data.payment_confirmed) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["payment_confirmed"],
+      message: "Confirm the external payment has been received and verified",
+    });
+  }
+  if (!data.payment_reference?.trim()) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["payment_reference"],
+      message: "A payment reference is required for external payments",
+    });
+  }
 });
 
 export type CreatePosSaleBody = z.infer<typeof createPosSaleSchema>;

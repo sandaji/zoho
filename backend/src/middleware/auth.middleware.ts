@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '@core/utils/jwt';
 import { AppError, ErrorCode } from '@core/errors/errors';
+import { hasAdminRole, hasAnyRole } from '@core/utils/role.helper';
 
 /**
  * Middleware to authenticate JWT token from Authorization header
@@ -69,14 +70,14 @@ export const authorize = (requiredRoles: string[]) => {
     }
 
     // Super admin bypass
-    if (req.user.role === 'admin' || req.user.role === 'super_admin') {
+    if (hasAdminRole(req.user)) {
       next();
       return;
     }
 
     const userRole = req.user.role;
 
-    if (!requiredRoles.includes(userRole)) {
+    if (!hasAnyRole(req.user, requiredRoles)) {
       next(new AppError(
         ErrorCode.FORBIDDEN,
         403,
@@ -97,14 +98,14 @@ export const authorize = (requiredRoles: string[]) => {
 export const hasRole = (requiredRoles: string[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     // Super admin bypass
-    if (req.user?.role === 'admin' || req.user?.role === 'super_admin') {
+    if (req.user && hasAdminRole(req.user)) {
       next();
       return;
     }
 
-    const userRole = req.user?.role;
+    const user = req.user;
 
-    if (!userRole || !requiredRoles.includes(userRole)) {
+    if (!user || !hasAnyRole(user, requiredRoles)) {
       res.status(403).json({
         error: 'Forbidden: You do not have permission to perform this action.',
       });

@@ -11,7 +11,7 @@
    file. Scales are fixed (not theme-flipped); the `.dark` overrides further
    down still handle dark mode for the common neutral utilities.
      slate/gray/zinc/neutral/stone -> ERP cool neutrals
-     emerald/blue/indigo/sky       -> ERP primary blue (#1060D0)
+     blue/indigo/sky               -> ERP primary blue (#1060D0)
      green                         -> ERP success
      red/rose                      -> ERP destructive
      amber/yellow/orange           -> ERP warning
@@ -31,17 +31,17 @@
   --color-slate-950: #0A1522; --color-gray-950: #0A1522; --color-zinc-950: #0A1522; --color-neutral-950: #0A1522; --color-stone-950: #0A1522;
 
   /* Primary blue */
-  --color-emerald-50: #EAF2FD;  --color-blue-50: #EAF2FD;  --color-indigo-50: #EAF2FD;  --color-sky-50: #EAF2FD;
-  --color-emerald-100: #D6E6FA; --color-blue-100: #D6E6FA; --color-indigo-100: #D6E6FA; --color-sky-100: #D6E6FA;
-  --color-emerald-200: #B0CDF4; --color-blue-200: #B0CDF4; --color-indigo-200: #B0CDF4; --color-sky-200: #B0CDF4;
-  --color-emerald-300: #80AEEC; --color-blue-300: #80AEEC; --color-indigo-300: #80AEEC; --color-sky-300: #80AEEC;
-  --color-emerald-400: #4A87E0; --color-blue-400: #4A87E0; --color-indigo-400: #4A87E0; --color-sky-400: #4A87E0;
-  --color-emerald-500: #2A6FD8; --color-blue-500: #2A6FD8; --color-indigo-500: #2A6FD8; --color-sky-500: #2A6FD8;
-  --color-emerald-600: #1060D0; --color-blue-600: #1060D0; --color-indigo-600: #1060D0; --color-sky-600: #1060D0;
-  --color-emerald-700: #0D50AC; --color-blue-700: #0D50AC; --color-indigo-700: #0D50AC; --color-sky-700: #0D50AC;
-  --color-emerald-800: #0B4088; --color-blue-800: #0B4088; --color-indigo-800: #0B4088; --color-sky-800: #0B4088;
-  --color-emerald-900: #0A3366; --color-blue-900: #0A3366; --color-indigo-900: #0A3366; --color-sky-900: #0A3366;
-  --color-emerald-950: #071F40; --color-blue-950: #071F40; --color-indigo-950: #071F40; --color-sky-950: #071F40;
+  --color-blue-50: #EAF2FD;  --color-indigo-50: #EAF2FD;  --color-sky-50: #EAF2FD;
+  --color-blue-100: #D6E6FA; --color-indigo-100: #D6E6FA; --color-sky-100: #D6E6FA;
+  --color-blue-200: #B0CDF4; --color-indigo-200: #B0CDF4; --color-sky-200: #B0CDF4;
+  --color-blue-300: #80AEEC; --color-indigo-300: #80AEEC; --color-sky-300: #80AEEC;
+  --color-blue-400: #4A87E0; --color-indigo-400: #4A87E0; --color-sky-400: #4A87E0;
+  --color-blue-500: #2A6FD8; --color-indigo-500: #2A6FD8; --color-sky-500: #2A6FD8;
+  --color-blue-600: #1060D0; --color-indigo-600: #1060D0; --color-sky-600: #1060D0;
+  --color-blue-700: #0D50AC; --color-indigo-700: #0D50AC; --color-sky-700: #0D50AC;
+  --color-blue-800: #0B4088; --color-indigo-800: #0B4088; --color-sky-800: #0B4088;
+  --color-blue-900: #0A3366; --color-indigo-900: #0A3366; --color-sky-900: #0A3366;
+  --color-blue-950: #071F40; --color-indigo-950: #071F40; --color-sky-950: #071F40;
 
   /* Success green */
   --color-green-50: #EEF9F3;
@@ -145,6 +145,9 @@
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar: var(--sidebar);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+  --color-chart-7: var(--chart-7);
+  --color-chart-8: var(--chart-8);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
   --color-chart-2: var(--chart-2);
@@ -261,6 +264,9 @@ html {
   --chart-3: #168050;
   --chart-4: #D09020;
   --chart-5: #607080;
+  --chart-6: #8B5CF6;
+  --chart-7: #0891B2;
+  --chart-8: #C2410C;
 }
 
 .dark {
@@ -324,6 +330,15 @@ html {
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent-foreground: #F1F5F9;
   --sidebar-ring: #3B82F6;
+
+  --chart-1: #60A5FA;
+  --chart-2: #34D399;
+  --chart-3: #FBBF24;
+  --chart-4: #F87171;
+  --chart-5: #A78BFA;
+  --chart-6: #C084FC;
+  --chart-7: #22D3EE;
+  --chart-8: #FB923C;
 }
 
 /* Keep older utility-heavy screens readable when the shadcn theme is dark. */

@@ -282,6 +282,7 @@ export class HrService {
     id: string,
     dto: UpdatePayrollDTO,
     scope: { authorizedBranchIds?: string[]; onlyOwnedRecords?: boolean; userId?: string } = {},
+    opts: { viaWorkflow?: boolean } = {},
   ): Promise<PayrollResponseDTO> {
     try {
       const payroll = await this.prisma.payroll.findFirst({
@@ -311,6 +312,11 @@ export class HrService {
       };
       if (!transitions[payroll.status]?.includes(nextStatus)) {
         throw validationError(`Cannot transition payroll from ${payroll.status} to ${nextStatus}`);
+      }
+      if (nextStatus === "approved" && payroll.status !== "approved" && !opts.viaWorkflow) {
+        throw validationError(
+          "Payroll is approved through the approval chain (HR manager, finance manager, MD). Submit the month for approval instead.",
+        );
       }
 
       if (payroll.status !== "draft" && [dto.base_salary, dto.allowances, dto.deductions].some((value) => value !== undefined)) {

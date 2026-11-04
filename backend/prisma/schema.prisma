@@ -875,7 +875,9 @@ model ApprovalRequest {
 model PurchaseOrderItem {
   id               String        @id @default(cuid())
   purchaseOrderId  String
-  productId        String
+  productId        String?
+  description      String
+  lineType         PurchaseOrderLineType @default(STOCKED) @map("line_type")
   quantity         Int
   unitPrice        Float         @map("unit_price")
   subtotal         Float
@@ -883,7 +885,7 @@ model PurchaseOrderItem {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
   grnItems         GRNItem[]
-  product          Product       @relation(fields: [productId], references: [id])
+  product          Product?      @relation(fields: [productId], references: [id])
   purchaseOrder    PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
 
   @@index([purchaseOrderId])
@@ -918,13 +920,13 @@ model GRNItem {
   id                String            @id @default(cuid())
   grnId             String
   poItemId          String
-  productId         String
+  productId         String?
   qtyReceived       Int               @map("qty_received")
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   goodsReceiptNote  GoodsReceiptNote  @relation(fields: [grnId], references: [id], onDelete: Cascade)
   purchaseOrderItem PurchaseOrderItem @relation(fields: [poItemId], references: [id])
-  product           Product           @relation("GRNItemToProduct", fields: [productId], references: [id])
+  product           Product?          @relation("GRNItemToProduct", fields: [productId], references: [id])
   stockBatches      StockBatch[]      @relation("StockBatchToGRNItem")
 
   @@index([grnId])
@@ -2228,6 +2230,13 @@ enum ApprovalStatus {
   @@map("approval_status")
 }
 
+enum PurchaseOrderLineType {
+  STOCKED
+  NON_STOCK
+
+  @@map("purchase_order_line_type")
+}
+
 enum PurchaseOrderStatus {
   DRAFT
   SUBMITTED
@@ -2649,6 +2658,7 @@ model WorkflowStage {
   approverPermission  String   @map("approver_permission")
   branchScoped        Boolean  @default(false) @map("branch_scoped")
   minAmount           Float?   @map("min_amount")
+  maxAmount           Float?   @map("max_amount")
   escalateAfterHours  Int?     @map("escalate_after_hours")
   escalateToPermission String? @map("escalate_to_permission")
   createdAt           DateTime @default(now())
@@ -2741,6 +2751,323 @@ model WorkflowEvent {
 
   @@index([instanceId, createdAt])
   @@map("workflow_events")
+}
+
+// ============================================================================
+// AUDIT GOVERNANCE — findings raised by auditors and followed to closure, and
+// the risk register. Plain String ids (no User relations).
+// ============================================================================
+
+model AuditFinding {
+  id                 String    @id @default(uuid())
+  findingNumber      String    @unique @map("finding_number")
+  title              String
+  description        String
+  severity           String    @default("MEDIUM")
+  category           String    @default("CONTROL")
+  status             String    @default("OPEN")
+  entityType         String?   @map("entity_type")
+  entityId           String?   @map("entity_id")
+  auditLogId         String?   @map("audit_log_id")
+  branchId           String?   @map("branch_id")
+  riskId             String?   @map("risk_id")
+  raisedById         String    @map("raised_by_id")
+  ownerId            String?   @map("owner_id")
+  dueDate            DateTime? @map("due_date")
+  managementResponse String?   @map("management_response")
+  resolution         String?
+  resolvedAt         DateTime? @map("resolved_at")
+  closedById         String?   @map("closed_by_id")
+  closedAt           DateTime? @map("closed_at")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([status])
+  @@index([severity])
+  @@index([ownerId])
+  @@index([entityType, entityId])
+  @@index([riskId])
+  @@map("audit_findings")
+}
+
+model AuditFindingEvent {
+  id        String   @id @default(uuid())
+  findingId String   @map("finding_id")
+  action    String
+  actorId   String   @map("actor_id")
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@index([findingId, createdAt])
+  @@map("audit_finding_events")
+}
+
+model RiskRegisterEntry {
+  id          String    @id @default(uuid())
+  riskNumber  String    @unique @map("risk_number")
+  title       String
+  description String?
+  category    String    @default("OPERATIONAL")
+  likelihood  Int       @default(3)
+  impact      Int       @default(3)
+  score       Int       @default(9)
+  rating      String    @default("MEDIUM")
+  status      String    @default("OPEN")
+  ownerId     String?   @map("owner_id")
+  mitigation  String?
+  reviewDate  DateTime? @map("review_date")
+  createdById String    @map("created_by_id")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+  @@index([rating])
+  @@index([ownerId])
+  @@map("risk_register")
+}
+
+/// Salary grade / pay structure: a named set of allowance and deduction rules
+model SalaryStructure {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  description String?
+  minSalary   Float?   @map("min_salary")
+  maxSalary   Float?   @map("max_salary")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("salary_structures")
+}
+
+/// One pay rule inside a structure. kind: ALLOWANCE | DEDUCTION; calc: FIXED | PERCENT_OF_BASE
+model SalaryComponent {
+  id          String   @id @default(uuid())
+  structureId String   @map("structure_id")
+  name        String
+  kind        String
+  calc        String
+  value       Float
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([structureId])
+  @@map("salary_components")
+}
+
+/// An employee's terms of employment. One ACTIVE contract per employee at a time.
+model EmploymentContract {
+  id                String    @id @default(uuid())
+  contractNumber    String    @unique @map("contract_number")
+  userId            String    @map("user_id")
+  type              String
+  status            String    @default("DRAFT")
+  jobTitle          String    @map("job_title")
+  startDate         DateTime  @map("start_date")
+  endDate           DateTime? @map("end_date")
+  probationEndDate  DateTime? @map("probation_end_date")
+  noticeDays        Int       @default(30) @map("notice_days")
+  hoursPerWeek      Float     @default(40) @map("hours_per_week")
+  baseSalary        Float     @map("base_salary")
+  salaryStructureId String?   @map("salary_structure_id")
+  notes             String?
+  signedAt          DateTime? @map("signed_at")
+  terminatedAt      DateTime? @map("terminated_at")
+  terminationReason String?   @map("termination_reason")
+  createdById       String    @map("created_by_id")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId, status])
+  @@index([status, endDate])
+  @@map("employment_contracts")
+}
+
+/// Physical stock count of one warehouse (full or cycle). Variances post through an approval.
+model StockCount {
+  id                 String    @id @default(uuid())
+  countNumber        String    @unique @map("count_number")
+  warehouseId        String    @map("warehouse_id")
+  branchId           String?   @map("branch_id")
+  type               String
+  status             String    @default("DRAFT")
+  blind              Boolean   @default(true)
+  category           String?
+  notes              String?
+  createdById        String    @map("created_by_id")
+  startedAt          DateTime? @map("started_at")
+  submittedAt        DateTime? @map("submitted_at")
+  submittedById      String?   @map("submitted_by_id")
+  postedAt           DateTime? @map("posted_at")
+  totalVarianceValue Float?    @map("total_variance_value")
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([warehouseId, status])
+  @@index([branchId])
+  @@map("stock_counts")
+}
+
+model StockCountLine {
+  id          String    @id @default(uuid())
+  countId     String    @map("count_id")
+  productId   String    @map("product_id")
+  productName String    @map("product_name")
+  sku         String
+  unitCost    Float     @default(0) @map("unit_cost")
+  /// System quantity read at the moment the line was counted
+  systemQty   Int?      @map("system_qty")
+  countedQty  Int?      @map("counted_qty")
+  note        String?
+  countedById String?   @map("counted_by_id")
+  countedAt   DateTime? @map("counted_at")
+  appliedAt   DateTime? @map("applied_at")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([countId, productId])
+  @@index([countId])
+  @@map("stock_count_lines")
+}
+
+/// Request for quotation: items sent to several vendors, quotes compared, one awarded into a draft PO
+model Rfq {
+  id              String    @id @default(uuid())
+  rfqNumber       String    @unique @map("rfq_number")
+  title           String
+  requisitionId   String?   @map("requisition_id")
+  branchId        String    @map("branch_id")
+  warehouseId     String?   @map("warehouse_id")
+  status          String    @default("DRAFT")
+  closingDate     DateTime  @map("closing_date")
+  notes           String?
+  exceptionReason String?   @map("exception_reason")
+  createdById     String    @map("created_by_id")
+  sentAt          DateTime? @map("sent_at")
+  closedAt        DateTime? @map("closed_at")
+  awardedQuoteId  String?   @map("awarded_quote_id")
+  awardReason     String?   @map("award_reason")
+  awardedById     String?   @map("awarded_by_id")
+  awardedAt       DateTime? @map("awarded_at")
+  poId            String?   @map("po_id")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status, closingDate])
+  @@index([branchId])
+  @@map("rfqs")
+}
+
+model RfqItem {
+  id          String   @id @default(uuid())
+  rfqId       String   @map("rfq_id")
+  productId   String?  @map("product_id")
+  description String
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([rfqId])
+  @@map("rfq_items")
+}
+
+/// One vendor's response. status: INVITED | SUBMITTED | DECLINED
+model RfqQuote {
+  id           String    @id @default(uuid())
+  rfqId        String    @map("rfq_id")
+  vendorId     String    @map("vendor_id")
+  status       String    @default("INVITED")
+  leadTimeDays Int?      @map("lead_time_days")
+  paymentTerms String?   @map("payment_terms")
+  validUntil   DateTime? @map("valid_until")
+  notes        String?
+  submittedAt  DateTime? @map("submitted_at")
+  enteredById  String?   @map("entered_by_id")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([rfqId, vendorId])
+  @@index([rfqId])
+  @@map("rfq_quotes")
+}
+
+model RfqQuoteLine {
+  id        String   @id @default(uuid())
+  quoteId   String   @map("quote_id")
+  itemId    String   @map("item_id")
+  unitPrice Float    @map("unit_price")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([quoteId, itemId])
+  @@index([quoteId])
+  @@map("rfq_quote_lines")
+}
+
+/// A person's 1-5 rating of a supplier for a month (one per evaluator per month)
+model VendorEvaluation {
+  id          String   @id @default(uuid())
+  vendorId    String   @map("vendor_id")
+  evaluatorId String   @map("evaluator_id")
+  period      String
+  delivery    Int
+  quality     Int
+  price       Int
+  service     Int
+  overall     Float
+  comments    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([vendorId, evaluatorId, period])
+  @@index([vendorId])
+  @@map("vendor_evaluations")
+}
+
+/// Phase 1: promotions. Evaluated server-side at the till; never trusted from the client.
+model Promotion {
+  id             String   @id @default(uuid())
+  code           String   @unique
+  name           String
+  description    String?
+  type           String // PERCENT_OFF | AMOUNT_OFF | BUY_X_GET_Y
+  value          Float    @default(0)
+  buyQty         Int?     @map("buy_qty")
+  getQty         Int?     @map("get_qty")
+  scope          String   @default("ALL") // ALL | CATEGORY | PRODUCT
+  categories     String[]
+  productIds     String[] @map("product_ids")
+  branchIds      String[] @map("branch_ids")
+  minQuantity    Int      @default(1) @map("min_quantity")
+  startsAt       DateTime @map("starts_at")
+  endsAt         DateTime @map("ends_at")
+  allowBelowCost Boolean  @default(false) @map("allow_below_cost")
+  status         String   @default("DRAFT") // DRAFT | ACTIVE | PAUSED | ENDED
+  createdById    String   @map("created_by_id")
+  activatedById  String?  @map("activated_by_id")
+  activatedAt    DateTime? @map("activated_at")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status, startsAt, endsAt])
+  @@map("promotions")
+}
+
+model PromotionRedemption {
+  id              String   @id @default(uuid())
+  promotionId     String   @map("promotion_id")
+  salesDocumentId String   @map("sales_document_id")
+  productId       String   @map("product_id")
+  branchId        String?  @map("branch_id")
+  quantity        Int
+  amount          Float
+  createdAt       DateTime @default(now())
+
+  @@index([promotionId])
+  @@index([salesDocumentId])
+  @@map("promotion_redemptions")
 }
 
 enum VATType {

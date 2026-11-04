@@ -32,7 +32,10 @@ interface PurchaseOrderDetail {
   status: string;
   items: Array<{
     id: string;
-    product: { id: string; name: string; sku: string };
+    product?: { id: string; name: string; sku: string } | null;
+    productId?: string | null;
+    description: string;
+    lineType: "STOCKED" | "NON_STOCK";
     quantity: number;
     receivedQuantity: number;
   }>;
@@ -62,7 +65,6 @@ export default function ReceiveGoodsModal({
       string,
       {
         poItemId: string;
-        productId: string;
         qtyReceived: number;
         maxAvailable: number;
       }
@@ -106,7 +108,6 @@ export default function ReceiveGoodsModal({
       const remaining = item.quantity - item.receivedQuantity;
       initializeItems[item.id] = {
         poItemId: item.id,
-        productId: item.product.id,
         qtyReceived: 0,
         maxAvailable: remaining,
       };
@@ -129,7 +130,8 @@ export default function ReceiveGoodsModal({
   };
 
   const handleSubmit = async () => {
-    if (!selectedWarehouse) {
+    const containsStocked = purchaseOrder.items.some((poItem) => poItem.lineType === "STOCKED" && receiveItems[poItem.id]?.qtyReceived > 0);
+    if (containsStocked && !selectedWarehouse) {
       showToast("error", "Please select a warehouse");
       return;
     }
@@ -137,7 +139,7 @@ export default function ReceiveGoodsModal({
     const items = Object.values(receiveItems)
       .filter((item) => item.qtyReceived > 0)
       .map((item) => ({
-        productId: item.productId,
+        poItemId: item.poItemId,
         quantity: item.qtyReceived,
       }));
 
@@ -153,7 +155,7 @@ export default function ReceiveGoodsModal({
       if (receiveItem && receiveItem.qtyReceived > remaining && !allowOverReceive) {
         showToast(
           "error",
-          `Cannot receive ${receiveItem.qtyReceived} units of ${poItem.product.name}. Only ${remaining} units available.`
+          `Cannot receive ${receiveItem.qtyReceived} units of ${poItem.product?.name ?? poItem.description}. Only ${remaining} units available.`
         );
         return;
       }
@@ -173,11 +175,11 @@ export default function ReceiveGoodsModal({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          warehouseId: selectedWarehouse,
+          warehouseId: selectedWarehouse || undefined,
           items: Object.entries(receiveItems)
             .filter(([_, item]) => item.qtyReceived > 0)
             .map(([_, item]) => ({
-              productId: purchaseOrder.items.find((pi) => pi.id === item.poItemId)?.product.id,
+              poItemId: item.poItemId,
               quantity: item.qtyReceived,
             })),
           notes,
@@ -230,7 +232,7 @@ export default function ReceiveGoodsModal({
         <div className="space-y-6 py-4">
           {/* Warehouse Selection */}
           <div>
-            <Label className="text-base font-semibold mb-2 block">Destination Warehouse *</Label>
+            <Label className="text-base font-semibold mb-2 block">Destination Warehouse (for stocked lines)</Label>
             <Select value={selectedWarehouse} onValueChange={setSelectedWarehouse}>
               <SelectTrigger className="bg-white">
                 <SelectValue placeholder="Select a warehouse" />
@@ -278,8 +280,8 @@ export default function ReceiveGoodsModal({
                     <TableRow key={item.id} className="hover:bg-slate-50">
                       <TableCell>
                         <div>
-                          <div className="font-medium text-slate-900">{item.product.name}</div>
-                          <div className="text-xs text-slate-600">SKU: {item.product.sku}</div>
+                          <div className="font-medium text-slate-900">{item.product?.name ?? item.description}</div>
+                          <div className="text-xs text-slate-600">{item.lineType === "NON_STOCK" ? "Internal use" : `SKU: ${item.product?.sku ?? "—"}`}</div>
                         </div>
                       </TableCell>
                       <TableCell className="text-right">{item.quantity}</TableCell>

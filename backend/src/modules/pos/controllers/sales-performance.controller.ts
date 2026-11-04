@@ -18,6 +18,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from '@core/database/db';
 import { AppError, ErrorCode } from '@core/errors/errors';
+import { hasAdminRole } from "@core/utils/role.helper";
 import {
   SalesDocumentType,
   SalesDocumentStatus,
@@ -99,8 +100,7 @@ export class SalesPerformanceController {
       // branch filter because it happened to share this object by reference with
       // the salesDocument query (which db.ts mutates asynchronously). Making it
       // explicit removes that dependency.
-      const isAdmin =
-        req.user.role === "admin" || req.user.role === "super_admin";
+      const isAdmin = hasAdminRole(req.user);
       if (!isAdmin && req.user.branchId) {
         baseWhere.branchId = req.user.branchId;
       }

@@ -51,13 +51,13 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const getBarColor = (status: string) => {
   switch (status) {
     case "in_stock":
-      return "#10b981"; // emerald
+      return "var(--success)";
     case "low_stock":
-      return "#f59e0b"; // amber
+      return "var(--warning)";
     case "out_of_stock":
-      return "#ef4444"; // rose
+      return "var(--destructive)";
     default:
-      return "#6b7280"; // gray
+      return "var(--muted-foreground)";
   }
 };
 
@@ -90,20 +90,18 @@ export function StockLevelChart({ items }: StockLevelChartProps) {
       <CardContent>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 40 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" className="dark:stroke-slate-700" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
             <XAxis
               dataKey="name"
               angle={-45}
               textAnchor="end"
               height={80}
-              stroke="#64748b"
+              stroke="var(--muted-foreground)"
               fontSize={11}
-              className="dark:stroke-slate-400"
             />
             <YAxis
-              stroke="#64748b"
+              stroke="var(--muted-foreground)"
               fontSize={12}
-              className="dark:stroke-slate-400"
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar

@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { PermissionService } from "../modules/auth/services/permission.service";
 import { AppError, ErrorCode } from "@core/errors/errors";
 import { userHasCrossBranchAccess } from "@core/database/db";
+import { hasAdminRole } from "@core/utils/role.helper";
 
 /**
  * Middleware to enforce a specific permission
@@ -20,7 +21,7 @@ export const requirePermission = (permissionCode: string) => {
       }
 
       // Admin users have full access to all endpoints
-      if (req.user.role === "admin" || req.user.role === "super_admin") {
+      if (hasAdminRole(req.user)) {
         // Grant GLOBAL scope to admin users, unless they explicitly switched branch
         if (req.user.branchId) {
           req.authorizedBranchIds = [req.user.branchId];
@@ -89,7 +90,7 @@ export const hasAnyPermission = (permissionCodes: string[]) => {
       }
 
       // Admin users have full access to all endpoints
-      if (req.user.role === "admin" || req.user.role === "super_admin") {
+      if (hasAdminRole(req.user)) {
         next();
         return;
       }

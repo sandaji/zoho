@@ -20,6 +20,22 @@ interface StockValidationResult {
 
 export class StockValidationService {
   /**
+   * Return active branch warehouses in the same order POS uses when allocating
+   * stock. Search, validation, and FIFO depletion all use this set.
+   */
+  static async getActiveWarehouses(branchId: string) {
+    return prisma.warehouse.findMany({
+      where: { branchId, isActive: true },
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      select: { id: true, name: true, branchId: true },
+    });
+  }
+
+  static async getDefaultWarehouse(branchId: string) {
+    return (await this.getActiveWarehouses(branchId))[0] ?? null;
+  }
+
+  /**
    * Check if sufficient stock is available for a list of items
    * @param branchId - Branch ID to check stock in
    * @param items - Array of items with productId and quantity
@@ -28,13 +44,22 @@ export class StockValidationService {
   static async validateStock(
     branchId: string,
     items: Array<{ productId: string; quantity: number }>,
+    warehouseId?: string,
   ): Promise<StockValidationResult> {
-    // Get the warehouse for this branch
-    const warehouse = await prisma.warehouse.findFirst({
-      where: { branchId, isActive: true },
-    });
+    // POS can fulfill a line from more than one active warehouse in the same
+    // branch. An explicit warehouseId keeps single-location callers scoped.
+    let warehouses: Array<{ id: string }>;
+    if (warehouseId) {
+      const warehouse = await prisma.warehouse.findFirst({
+        where: { id: warehouseId, branchId, isActive: true },
+        select: { id: true },
+      });
+      warehouses = warehouse ? [warehouse] : [];
+    } else {
+      warehouses = await this.getActiveWarehouses(branchId);
+    }
 
-    if (!warehouse) {
+    if (warehouses.length === 0) {
       throw new AppError(
         ErrorCode.NOT_FOUND,
         404,
@@ -44,12 +69,23 @@ export class StockValidationService {
 
     const insufficientItems: StockCheckResult[] = [];
 
-    // Check stock for each item
+    const warehouseIds = warehouses.map((warehouse) => warehouse.id);
+
+    // Check total requested quantity per product across the active warehouses
+    // that POS can actually draw from. Drafts can contain repeated lines.
+    const requestedByProduct = new Map<string, number>();
     for (const item of items) {
-      const inventory = await prisma.inventory.findFirst({
+      requestedByProduct.set(
+        item.productId,
+        (requestedByProduct.get(item.productId) ?? 0) + item.quantity,
+      );
+    }
+
+    for (const [productId, requestedQuantity] of requestedByProduct) {
+      const inventories = await prisma.inventory.findMany({
         where: {
-          productId: item.productId,
-          warehouseId: warehouse.id,
+          productId,
+          warehouseId: { in: warehouseIds },
         },
         include: {
           product: {
@@ -61,14 +97,18 @@ export class StockValidationService {
         },
       });
 
-      if (!inventory || inventory.available < item.quantity) {
+      const availableQuantity = inventories.reduce(
+        (sum, inventory) => sum + (inventory.available || 0),
+        0,
+      );
+      if (availableQuantity < requestedQuantity) {
         insufficientItems.push({
           isAvailable: false,
-          productId: item.productId,
-          productName: inventory?.product.name || "Unknown Product",
-          requestedQuantity: item.quantity,
-          availableQuantity: inventory?.available || 0,
-          warehouseId: warehouse.id,
+          productId,
+          productName: inventories[0]?.product.name || "Unknown Product",
+          requestedQuantity,
+          availableQuantity,
+          warehouseId: warehouseIds.join(","),
         });
       }
     }
@@ -103,8 +143,9 @@ export class StockValidationService {
     items: Array<{ productId: string; quantity: number }>,
     userId: string,
     allowOverride: boolean = false,
+    warehouseId?: string,
   ): Promise<void> {
-    const validation = await this.validateStock(branchId, items);
+    const validation = await this.validateStock(branchId, items, warehouseId);
 
     if (!validation.isValid) {
       // Check if user can override
@@ -147,20 +188,17 @@ export class StockValidationService {
     productId: string,
     branchId: string,
   ): Promise<number> {
-    const warehouse = await prisma.warehouse.findFirst({
-      where: { branchId, isActive: true },
-    });
+    const warehouses = await this.getActiveWarehouses(branchId);
+    if (warehouses.length === 0) return 0;
 
-    if (!warehouse) return 0;
-
-    const inventory = await prisma.inventory.findFirst({
+    const inventory = await prisma.inventory.findMany({
       where: {
         productId,
-        warehouseId: warehouse.id,
+        warehouseId: { in: warehouses.map((warehouse) => warehouse.id) },
       },
     });
 
-    return inventory?.available || 0;
+    return inventory.reduce((sum, row) => sum + (row.available || 0), 0);
   }
 
   /**

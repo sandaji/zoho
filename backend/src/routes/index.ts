@@ -29,10 +29,19 @@ import purchasingRoutes from "../modules/purchasing/purchasing.routes";
 import cashierRoutes from "../modules/cashier/routes/session.routes";
 import crmRoutes from "../modules/crm/crm.routes";
 import workflowRoutes from "../modules/workflow/workflow.routes";
+import { findingsRouter, riskRouter } from "../modules/audit/audit-governance.routes";
+import { readOnlyRoleGuard } from "@core/middleware/read-only-guard";
+import dashboardsRoutes from "../modules/dashboards/dashboards.routes";
+import peopleRoutes from "../modules/people/people.routes";
+import stockCountRoutes from "../modules/inventory/stock-count.routes";
+import { rfqRouter, supplierRouter } from "../modules/purchasing/rfq.routes";
 import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import notificationController from "../modules/notifications/notification.controller";
 
 const router = Router();
+
+// Read-only roles (auditor) can never write business data
+router.use(readOnlyRoleGuard);
 
 // Initialize controllers
 const adminController = new AdminController();
@@ -804,6 +813,13 @@ router.post(
   (req: Request, res: Response, next: NextFunction) =>
     payrollController.runPayroll(req, res, next),
 );
+router.post(
+  "/payroll/submit-for-approval",
+  authMiddleware,
+  requirePermission("hr.payroll.manage"),
+  (req: Request, res: Response, next: NextFunction) =>
+    payrollController.submitForApproval(req, res, next),
+);
 router.get(
   "/payroll/:id",
   authMiddleware,
@@ -890,5 +906,16 @@ router.use("/crm", crmRoutes);
 // WORKFLOW ENGINE (approvals inbox, history, delegation, designer)
 // ============================================================================
 router.use("/workflow", workflowRoutes);
+
+// ============================================================================
+// AUDIT GOVERNANCE (findings, risk register)
+// ============================================================================
+router.use("/audit-findings", findingsRouter);
+router.use("/risk-register", riskRouter);
+router.use("/dashboards", dashboardsRoutes);
+router.use("/people", peopleRoutes);
+router.use("/stock-counts", stockCountRoutes);
+router.use("/rfqs", rfqRouter);
+router.use("/supplier-performance", supplierRouter);
 
 export default router;

@@ -52,6 +52,8 @@ export class WorkflowController {
   retryOutcome = wrap(async (req) => ok(await workflow.retryOutcome(id(req))));
   escalate = wrap(async () => ok(await workflow.escalateOverdue()));
 
+  requestPriceOverride = wrap(async (req, c) => created(await workflow.requestPriceOverride(c, req.body ?? {})));
+
   listDefinitions = wrap(async () => ok(await workflow.listDefinitions()));
   updateDefinition = wrap(async (req) => ok(await workflow.updateDefinition(req.params.code as string, req.body ?? {})));
 

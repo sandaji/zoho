@@ -43,13 +43,15 @@ interface PurchaseOrder {
     id: string;
     name: string;
   };
-  destinationWarehouse: DestinationWarehouse;
+  destinationWarehouse?: DestinationWarehouse | null;
   total: number;
   status: PurchaseOrderStatus;
   createdAt: string;
   items: Array<{
     id: string;
-    productId: string;
+    productId: string | null;
+    description: string;
+    lineType: "STOCKED" | "NON_STOCK";
     quantity: number;
     unitPrice: number;
   }>;

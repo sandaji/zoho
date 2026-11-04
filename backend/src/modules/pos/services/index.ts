@@ -15,6 +15,7 @@ import {
 } from "../dtos";
 import type { ReceiptDTO as DocumentReceiptDTO } from "@shared/document.service";
 import { AppError, ErrorCode, validationError } from "@core/errors/errors";
+import { StockValidationService } from "./stock-validation.service";
 
 export class PosService {
   private prisma = prisma;
@@ -31,19 +32,89 @@ export class PosService {
 
     const searchTerm = search.trim();
 
-    // Step 1: Find products matching the search (NO INCLUDES - clean query)
-    const products = await this.prisma.product.findMany({
-      where: {
-        OR: [
-          { sku: { contains: searchTerm, mode: "insensitive" } },
-          { barcode: { contains: searchTerm, mode: "insensitive" } },
-          { name: { contains: searchTerm, mode: "insensitive" } },
-          { description: { contains: searchTerm, mode: "insensitive" } },
-        ],
-        isActive: true,
-      },
-      take: 10,
-    });
+    // Fetch exact and high-priority code/name matches separately so a broad
+    // description match cannot push a scanned or prefix-matched product out
+    // of the candidate window before ranking.
+    const priorityWhere = {
+      OR: [
+        { sku: { startsWith: searchTerm, mode: "insensitive" as const } },
+        { barcode: { startsWith: searchTerm, mode: "insensitive" as const } },
+        { name: { equals: searchTerm, mode: "insensitive" as const } },
+        { name: { startsWith: searchTerm, mode: "insensitive" as const } },
+      ],
+      isActive: true,
+    };
+    const codeContainsWhere = {
+      OR: [
+        { sku: { contains: searchTerm, mode: "insensitive" as const } },
+        { barcode: { contains: searchTerm, mode: "insensitive" as const } },
+      ],
+      isActive: true,
+    };
+    const textContainsWhere = {
+      OR: [
+        { name: { contains: searchTerm, mode: "insensitive" as const } },
+        { description: { contains: searchTerm, mode: "insensitive" as const } },
+      ],
+      isActive: true,
+    };
+    const stableOrderBy = [{ name: "asc" as const }, { id: "asc" as const }];
+    const [exactMatches, priorityMatches, codeMatches, textCandidates] = await Promise.all([
+      this.prisma.product.findMany({
+        where: {
+          isActive: true,
+          OR: [
+            { sku: { equals: searchTerm, mode: "insensitive" } },
+            { barcode: { equals: searchTerm, mode: "insensitive" } },
+          ],
+        },
+        orderBy: stableOrderBy,
+        take: 10,
+      }),
+      this.prisma.product.findMany({
+        where: priorityWhere,
+        orderBy: stableOrderBy,
+        take: 50,
+      }),
+      this.prisma.product.findMany({
+        where: codeContainsWhere,
+        orderBy: stableOrderBy,
+        take: 50,
+      }),
+      this.prisma.product.findMany({
+        where: textContainsWhere,
+        orderBy: stableOrderBy,
+        take: 50,
+      }),
+    ]);
+
+    const productsById = new Map<string, (typeof textCandidates)[number]>();
+    for (const product of [
+      ...exactMatches,
+      ...priorityMatches,
+      ...codeMatches,
+      ...textCandidates,
+    ]) {
+      productsById.set(product.id, product);
+    }
+    const normalizedSearch = searchTerm.toLowerCase();
+    const rank = (product: (typeof textCandidates)[number]) => {
+      const sku = product.sku.toLowerCase();
+      const barcode = product.barcode?.toLowerCase() ?? "";
+      const name = product.name.toLowerCase();
+      if (barcode === normalizedSearch) return 0;
+      if (sku === normalizedSearch) return 1;
+      if (barcode.startsWith(normalizedSearch)) return 2;
+      if (sku.startsWith(normalizedSearch)) return 3;
+      if (name === normalizedSearch) return 4;
+      if (name.startsWith(normalizedSearch)) return 5;
+      if (barcode.includes(normalizedSearch) || sku.includes(normalizedSearch)) return 6;
+      if (name.includes(normalizedSearch)) return 7;
+      return 8;
+    };
+    const products = [...productsById.values()]
+      .sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name))
+      .slice(0, 10);
 
     if (!products || products.length === 0) {
       throw new AppError(
@@ -63,21 +134,13 @@ export class PosService {
     if (combinedStock) {
       warehouses = await this.prisma.warehouse.findMany({
         where: { isActive: true },
+        orderBy: [{ branchId: "asc" }, { createdAt: "asc" }, { id: "asc" }],
         select: { id: true, name: true },
       });
       warehouseIds = warehouses.map((w) => w.id);
     } else if (branchId) {
-      warehouses = await this.prisma.warehouse.findMany({
-        where: {
-          branchId,
-          isActive: true,
-        },
-        select: {
-          id: true,
-          name: true,
-        },
-      });
-      warehouseIds = warehouses.map((w) => w.id);
+      warehouses = await StockValidationService.getActiveWarehouses(branchId);
+      warehouseIds = warehouses.map((warehouse) => warehouse.id);
     }
 
     // Step 3: Process all products and fetch their inventory
@@ -167,6 +230,8 @@ export class PosService {
       items,
       payment_method,
       amount_paid,
+      payment_reference,
+      payment_confirmed,
       discount = 0,
       discount_approved_by,
       notes,
@@ -230,6 +295,8 @@ export class PosService {
       })),
       paymentMethod: payment_method,
       amountPaid,
+      paymentReference: payment_reference,
+      paymentConfirmed: payment_confirmed,
       notes,
     });
 
