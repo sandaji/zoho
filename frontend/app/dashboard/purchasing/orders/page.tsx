@@ -189,7 +189,7 @@ export default function PurchaseOrdersPage() {
         const matchesSearch =
           order.poNumber.toLowerCase().includes(search.toLowerCase()) ||
           order.vendor.name.toLowerCase().includes(search.toLowerCase()) ||
-          order.destinationWarehouse.name.toLowerCase().includes(search.toLowerCase());
+          (order.destinationWarehouse?.name ?? "").toLowerCase().includes(search.toLowerCase());
 
         const matchesStatus = statusFilter === "ALL" || order.status === statusFilter;
 

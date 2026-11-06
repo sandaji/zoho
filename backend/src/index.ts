@@ -4,6 +4,8 @@ import chalk from "chalk";
 import boxen from "boxen";
 import { createApp } from "./app";
 import { logger } from "./core/utils/logger";
+import { startMessageWorker } from "./modules/messaging/messaging.service";
+import { startWebhookWorker } from "./modules/integrations/webhook.service";
 
 const PORT = parseInt(process.env.PORT || "5000", 10);
 const NODE_ENV = process.env.NODE_ENV || "development";
@@ -18,6 +20,8 @@ async function bootstrap(): Promise<void> {
     const server = app.listen(PORT, () => {
       logger.info(`✅ Server running on http://localhost:${PORT}`);
       logger.info(`🔗 Health check: http://localhost:${PORT}/health`);
+      startMessageWorker();
+      startWebhookWorker();
 
       // Developer-friendly boxed banner using `chalk` and `boxen`
       const title = chalk.green.bold("🚀 ERP Backend up and running!");

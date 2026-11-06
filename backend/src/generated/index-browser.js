@@ -602,6 +602,8 @@ exports.Prisma.PurchaseOrderItemScalarFieldEnum = {
   id: 'id',
   purchaseOrderId: 'purchaseOrderId',
   productId: 'productId',
+  description: 'description',
+  lineType: 'lineType',
   quantity: 'quantity',
   unitPrice: 'unitPrice',
   subtotal: 'subtotal',
@@ -1600,6 +1602,198 @@ exports.Prisma.RiskRegisterEntryScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SalaryStructureScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  minSalary: 'minSalary',
+  maxSalary: 'maxSalary',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SalaryComponentScalarFieldEnum = {
+  id: 'id',
+  structureId: 'structureId',
+  name: 'name',
+  kind: 'kind',
+  calc: 'calc',
+  value: 'value',
+  sortOrder: 'sortOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EmploymentContractScalarFieldEnum = {
+  id: 'id',
+  contractNumber: 'contractNumber',
+  userId: 'userId',
+  type: 'type',
+  status: 'status',
+  jobTitle: 'jobTitle',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  probationEndDate: 'probationEndDate',
+  noticeDays: 'noticeDays',
+  hoursPerWeek: 'hoursPerWeek',
+  baseSalary: 'baseSalary',
+  salaryStructureId: 'salaryStructureId',
+  notes: 'notes',
+  signedAt: 'signedAt',
+  terminatedAt: 'terminatedAt',
+  terminationReason: 'terminationReason',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StockCountScalarFieldEnum = {
+  id: 'id',
+  countNumber: 'countNumber',
+  warehouseId: 'warehouseId',
+  branchId: 'branchId',
+  type: 'type',
+  status: 'status',
+  blind: 'blind',
+  category: 'category',
+  notes: 'notes',
+  createdById: 'createdById',
+  startedAt: 'startedAt',
+  submittedAt: 'submittedAt',
+  submittedById: 'submittedById',
+  postedAt: 'postedAt',
+  totalVarianceValue: 'totalVarianceValue',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.StockCountLineScalarFieldEnum = {
+  id: 'id',
+  countId: 'countId',
+  productId: 'productId',
+  productName: 'productName',
+  sku: 'sku',
+  unitCost: 'unitCost',
+  systemQty: 'systemQty',
+  countedQty: 'countedQty',
+  note: 'note',
+  countedById: 'countedById',
+  countedAt: 'countedAt',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RfqScalarFieldEnum = {
+  id: 'id',
+  rfqNumber: 'rfqNumber',
+  title: 'title',
+  requisitionId: 'requisitionId',
+  branchId: 'branchId',
+  warehouseId: 'warehouseId',
+  status: 'status',
+  closingDate: 'closingDate',
+  notes: 'notes',
+  exceptionReason: 'exceptionReason',
+  createdById: 'createdById',
+  sentAt: 'sentAt',
+  closedAt: 'closedAt',
+  awardedQuoteId: 'awardedQuoteId',
+  awardReason: 'awardReason',
+  awardedById: 'awardedById',
+  awardedAt: 'awardedAt',
+  poId: 'poId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RfqItemScalarFieldEnum = {
+  id: 'id',
+  rfqId: 'rfqId',
+  productId: 'productId',
+  description: 'description',
+  quantity: 'quantity',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RfqQuoteScalarFieldEnum = {
+  id: 'id',
+  rfqId: 'rfqId',
+  vendorId: 'vendorId',
+  status: 'status',
+  leadTimeDays: 'leadTimeDays',
+  paymentTerms: 'paymentTerms',
+  validUntil: 'validUntil',
+  notes: 'notes',
+  submittedAt: 'submittedAt',
+  enteredById: 'enteredById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RfqQuoteLineScalarFieldEnum = {
+  id: 'id',
+  quoteId: 'quoteId',
+  itemId: 'itemId',
+  unitPrice: 'unitPrice',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VendorEvaluationScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  evaluatorId: 'evaluatorId',
+  period: 'period',
+  delivery: 'delivery',
+  quality: 'quality',
+  price: 'price',
+  service: 'service',
+  overall: 'overall',
+  comments: 'comments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PromotionScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  description: 'description',
+  type: 'type',
+  value: 'value',
+  buyQty: 'buyQty',
+  getQty: 'getQty',
+  scope: 'scope',
+  categories: 'categories',
+  productIds: 'productIds',
+  branchIds: 'branchIds',
+  minQuantity: 'minQuantity',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  allowBelowCost: 'allowBelowCost',
+  status: 'status',
+  createdById: 'createdById',
+  activatedById: 'activatedById',
+  activatedAt: 'activatedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PromotionRedemptionScalarFieldEnum = {
+  id: 'id',
+  promotionId: 'promotionId',
+  salesDocumentId: 'salesDocumentId',
+  productId: 'productId',
+  branchId: 'branchId',
+  quantity: 'quantity',
+  amount: 'amount',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1769,6 +1963,11 @@ exports.ApprovalStatus = exports.$Enums.ApprovalStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
+};
+
+exports.PurchaseOrderLineType = exports.$Enums.PurchaseOrderLineType = {
+  STOCKED: 'STOCKED',
+  NON_STOCK: 'NON_STOCK'
 };
 
 exports.GRNStatus = exports.$Enums.GRNStatus = {
@@ -2100,7 +2299,19 @@ exports.Prisma.ModelName = {
   WorkflowEvent: 'WorkflowEvent',
   AuditFinding: 'AuditFinding',
   AuditFindingEvent: 'AuditFindingEvent',
-  RiskRegisterEntry: 'RiskRegisterEntry'
+  RiskRegisterEntry: 'RiskRegisterEntry',
+  SalaryStructure: 'SalaryStructure',
+  SalaryComponent: 'SalaryComponent',
+  EmploymentContract: 'EmploymentContract',
+  StockCount: 'StockCount',
+  StockCountLine: 'StockCountLine',
+  Rfq: 'Rfq',
+  RfqItem: 'RfqItem',
+  RfqQuote: 'RfqQuote',
+  RfqQuoteLine: 'RfqQuoteLine',
+  VendorEvaluation: 'VendorEvaluation',
+  Promotion: 'Promotion',
+  PromotionRedemption: 'PromotionRedemption'
 };
 
 /**

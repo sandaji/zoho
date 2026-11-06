@@ -36,6 +36,10 @@ import peopleRoutes from "../modules/people/people.routes";
 import stockCountRoutes from "../modules/inventory/stock-count.routes";
 import { rfqRouter, supplierRouter } from "../modules/purchasing/rfq.routes";
 import promotionRoutes from "../modules/promotions/promotion.routes";
+import messagingRoutes from "../modules/messaging/messaging.routes";
+import mpesaRoutes from "../modules/mpesa/mpesa.routes";
+import integrationsRoutes from "../modules/integrations/integrations.routes";
+import publicApiRoutes from "../modules/integrations/public.routes";
 import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import notificationController from "../modules/notifications/notification.controller";
 
@@ -919,5 +923,9 @@ router.use("/stock-counts", stockCountRoutes);
 router.use("/rfqs", rfqRouter);
 router.use("/supplier-performance", supplierRouter);
 router.use("/promotions", promotionRoutes);
+router.use("/messaging", messagingRoutes);
+router.use("/mpesa", mpesaRoutes);
+router.use("/integrations", integrationsRoutes);
+router.use("/public", publicApiRoutes);
 
 export default router;

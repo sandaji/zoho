@@ -27,6 +27,8 @@ async function main() {
     { code: "crm", name: "CRM" },
     { code: "workflow", name: "Workflow & Approvals" },
     { code: "dashboard", name: "Role Dashboards" },
+    { code: "messaging", name: "Messaging" },
+    { code: "integrations", name: "Integrations" },
   ];
 
   const moduleMap = new Map<string, string>();
@@ -45,6 +47,16 @@ async function main() {
   // 2. Define Permissions
   // ==========================================
   const permissions = [
+    // Integrations: API keys and webhooks
+    { code: "integrations.view", name: "View API Keys, Webhooks and Deliveries", module: "integrations" },
+    { code: "integrations.manage", name: "Create and Revoke API Keys and Webhooks", module: "integrations" },
+    // M-Pesa STK push
+    { code: "sales.mpesa.initiate", name: "Request M-Pesa Payments (STK Push)", module: "sales" },
+    { code: "sales.mpesa.view", name: "View All M-Pesa Requests", module: "sales" },
+    // Messaging (email / SMS / WhatsApp)
+    { code: "messaging.view", name: "View Message Log and Templates", module: "messaging" },
+    { code: "messaging.send", name: "Send Customer Messages and Receipts", module: "messaging" },
+    { code: "messaging.manage", name: "Manage Templates, Retry Messages, Opt-outs", module: "messaging" },
     // Promotions
     { code: "sales.promotion.view", name: "View Promotions", module: "sales" },
     { code: "sales.promotion.manage", name: "Create and Edit Promotions", module: "sales" },
@@ -1414,6 +1426,89 @@ async function main() {
       await prisma.rolePermission.upsert({
         where: { roleId_permissionId: { roleId: role.id, permissionId } },
         update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Integrations: technical staff only. Admins bypass; IT support and the MD get access.
+  const integGrants: [string, string[], AccessScope][] = [
+    ["it_support", ["integrations.view", "integrations.manage"], AccessScope.GLOBAL],
+    ["ceo", ["integrations.view"], AccessScope.GLOBAL],
+    ["auditor", ["integrations.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of integGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - integration grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: { scope },
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // M-Pesa: tills request payments; managers and finance see every request.
+  const mpesaGrants: [string, string[], AccessScope][] = [
+    ["cashier", ["sales.mpesa.initiate"], AccessScope.BRANCH],
+    ["sales_rep", ["sales.mpesa.initiate"], AccessScope.BRANCH],
+    ["sales_manager", ["sales.mpesa.initiate", "sales.mpesa.view"], AccessScope.GLOBAL],
+    ["branch_manager", ["sales.mpesa.initiate", "sales.mpesa.view"], AccessScope.BRANCH],
+    ["manager", ["sales.mpesa.initiate", "sales.mpesa.view"], AccessScope.GLOBAL],
+    ["finance_manager", ["sales.mpesa.view"], AccessScope.GLOBAL],
+    ["ceo", ["sales.mpesa.view"], AccessScope.GLOBAL],
+    ["director", ["sales.mpesa.view"], AccessScope.GLOBAL],
+    ["auditor", ["sales.mpesa.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of mpesaGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - M-Pesa grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: scope === AccessScope.GLOBAL ? { scope } : {},
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Messaging: front-line staff can send a receipt; managers see the log; IT / admins manage.
+  const msgGrants: [string, string[], AccessScope][] = [
+    ["cashier", ["messaging.send"], AccessScope.BRANCH],
+    ["sales_rep", ["messaging.send"], AccessScope.BRANCH],
+    ["sales_manager", ["messaging.send", "messaging.view"], AccessScope.GLOBAL],
+    ["branch_manager", ["messaging.send", "messaging.view"], AccessScope.BRANCH],
+    ["manager", ["messaging.send", "messaging.view", "messaging.manage"], AccessScope.GLOBAL],
+    ["finance_manager", ["messaging.send", "messaging.view"], AccessScope.GLOBAL],
+    ["it_support", ["messaging.view", "messaging.manage"], AccessScope.GLOBAL],
+    ["ceo", ["messaging.view"], AccessScope.GLOBAL],
+    ["director", ["messaging.view"], AccessScope.GLOBAL],
+    ["auditor", ["messaging.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of msgGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) {
+      console.log(`ℹ️  Role ${roleCode} not found - messaging grants skipped`);
+      continue;
+    }
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        // never narrow an existing wider grant
+        update: scope === AccessScope.GLOBAL ? { scope } : {},
         create: { roleId: role.id, permissionId, scope },
       });
     }

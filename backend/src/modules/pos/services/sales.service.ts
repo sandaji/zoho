@@ -14,6 +14,8 @@ import { StockValidationService } from "./stock-validation.service";
 import { AppError, ErrorCode } from "@core/errors/errors";
 import { logger } from "@core/utils/logger";
 import { PromotionService } from "../../promotions/promotion.service";
+import { MpesaService } from "../../mpesa/mpesa.service";
+import { WebhookService } from "../../integrations/webhook.service";
 import { InventoryService } from "../../inventory/services/inventory.service";
 import {
   calculateItemTotals,
@@ -766,6 +768,38 @@ export class SalesService {
             promotion: promoResult.get(i.productId)?.promotion ?? null,
           })),
         });
+
+        // An M-Pesa code can pay for one sale only; STK-push codes are tied to this sale.
+        if (paidApplied > 0) {
+          await MpesaService.claimReceipt(tx, {
+            method: paymentMethod,
+            reference: paymentReference,
+            salesDocumentId: invoice.id,
+            amount: paidApplied,
+          });
+        }
+
+        // Recorded in the same transaction, so an event exists only for a sale that really committed.
+        await WebhookService.emit(
+          "sale.created",
+          {
+            id: invoice.id,
+            number: invoice.documentId,
+            branchId: invoice.branchId,
+            customerId: invoice.customerId,
+            status: invoice.status,
+            subtotal: invoice.subtotal,
+            discount: invoice.discount,
+            tax: invoice.tax,
+            total: invoice.total,
+            paid: invoice.paidAmount,
+            balance: invoice.balance,
+            paymentMethod,
+            issuedAt: invoice.issueDate,
+            items: invoice.items.map((i) => ({ productId: i.productId, description: i.description, quantity: i.quantity, unitPrice: i.unitPrice, total: i.total })),
+          },
+          tx,
+        );
 
         if (paidApplied > 0) {
           await tx.payment.create({

@@ -17,11 +17,11 @@ interface GetOrdersResponse {
         id: string;
         name: string;
       };
-      destinationWarehouse: {
+      destinationWarehouse?: {
         id: string;
         name: string;
         code?: string;
-      };
+      } | null;
       total: number;
       status:
         | "DRAFT"
@@ -35,7 +35,9 @@ interface GetOrdersResponse {
       createdAt: string;
       items: Array<{
         id: string;
-        productId: string;
+        productId: string | null;
+        description: string;
+        lineType: "STOCKED" | "NON_STOCK";
         quantity: number;
         unitPrice: number;
       }>;

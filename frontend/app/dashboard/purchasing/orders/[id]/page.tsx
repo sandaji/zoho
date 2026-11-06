@@ -45,7 +45,10 @@ interface PurchaseOrderDetail {
   total: number;
   items: Array<{
     id: string;
-    product: { id: string; name: string; sku: string };
+    product?: { id: string; name: string; sku: string } | null;
+    productId?: string | null;
+    description: string;
+    lineType: "STOCKED" | "NON_STOCK";
     quantity: number;
     unitPrice: number;
     subtotal: number;
@@ -64,7 +67,8 @@ interface PurchaseOrderDetail {
     receivedBy: { id: string; email: string; name: string };
     items: Array<{
       id: string;
-      product: { name: string };
+      product?: { name: string } | null;
+      purchaseOrderItem?: { description: string } | null;
       qtyReceived: number;
     }>;
   }>;

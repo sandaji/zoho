@@ -529,6 +529,66 @@ export type AuditFindingEvent = $Result.DefaultSelection<Prisma.$AuditFindingEve
  * 
  */
 export type RiskRegisterEntry = $Result.DefaultSelection<Prisma.$RiskRegisterEntryPayload>
+/**
+ * Model SalaryStructure
+ * Salary grade / pay structure: a named set of allowance and deduction rules
+ */
+export type SalaryStructure = $Result.DefaultSelection<Prisma.$SalaryStructurePayload>
+/**
+ * Model SalaryComponent
+ * One pay rule inside a structure. kind: ALLOWANCE | DEDUCTION; calc: FIXED | PERCENT_OF_BASE
+ */
+export type SalaryComponent = $Result.DefaultSelection<Prisma.$SalaryComponentPayload>
+/**
+ * Model EmploymentContract
+ * An employee's terms of employment. One ACTIVE contract per employee at a time.
+ */
+export type EmploymentContract = $Result.DefaultSelection<Prisma.$EmploymentContractPayload>
+/**
+ * Model StockCount
+ * Physical stock count of one warehouse (full or cycle). Variances post through an approval.
+ */
+export type StockCount = $Result.DefaultSelection<Prisma.$StockCountPayload>
+/**
+ * Model StockCountLine
+ * 
+ */
+export type StockCountLine = $Result.DefaultSelection<Prisma.$StockCountLinePayload>
+/**
+ * Model Rfq
+ * Request for quotation: items sent to several vendors, quotes compared, one awarded into a draft PO
+ */
+export type Rfq = $Result.DefaultSelection<Prisma.$RfqPayload>
+/**
+ * Model RfqItem
+ * 
+ */
+export type RfqItem = $Result.DefaultSelection<Prisma.$RfqItemPayload>
+/**
+ * Model RfqQuote
+ * One vendor's response. status: INVITED | SUBMITTED | DECLINED
+ */
+export type RfqQuote = $Result.DefaultSelection<Prisma.$RfqQuotePayload>
+/**
+ * Model RfqQuoteLine
+ * 
+ */
+export type RfqQuoteLine = $Result.DefaultSelection<Prisma.$RfqQuoteLinePayload>
+/**
+ * Model VendorEvaluation
+ * A person's 1-5 rating of a supplier for a month (one per evaluator per month)
+ */
+export type VendorEvaluation = $Result.DefaultSelection<Prisma.$VendorEvaluationPayload>
+/**
+ * Model Promotion
+ * Phase 1: promotions. Evaluated server-side at the till; never trusted from the client.
+ */
+export type Promotion = $Result.DefaultSelection<Prisma.$PromotionPayload>
+/**
+ * Model PromotionRedemption
+ * 
+ */
+export type PromotionRedemption = $Result.DefaultSelection<Prisma.$PromotionRedemptionPayload>
 
 /**
  * Enums
@@ -762,6 +822,14 @@ export const ApprovalStatus: {
 };
 
 export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const PurchaseOrderLineType: {
+  STOCKED: 'STOCKED',
+  NON_STOCK: 'NON_STOCK'
+};
+
+export type PurchaseOrderLineType = (typeof PurchaseOrderLineType)[keyof typeof PurchaseOrderLineType]
 
 
 export const PurchaseOrderStatus: {
@@ -1148,6 +1216,10 @@ export const ApprovalType: typeof $Enums.ApprovalType
 export type ApprovalStatus = $Enums.ApprovalStatus
 
 export const ApprovalStatus: typeof $Enums.ApprovalStatus
+
+export type PurchaseOrderLineType = $Enums.PurchaseOrderLineType
+
+export const PurchaseOrderLineType: typeof $Enums.PurchaseOrderLineType
 
 export type PurchaseOrderStatus = $Enums.PurchaseOrderStatus
 
@@ -2395,6 +2467,126 @@ export class PrismaClient<
     * ```
     */
   get riskRegisterEntry(): Prisma.RiskRegisterEntryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.salaryStructure`: Exposes CRUD operations for the **SalaryStructure** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SalaryStructures
+    * const salaryStructures = await prisma.salaryStructure.findMany()
+    * ```
+    */
+  get salaryStructure(): Prisma.SalaryStructureDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.salaryComponent`: Exposes CRUD operations for the **SalaryComponent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SalaryComponents
+    * const salaryComponents = await prisma.salaryComponent.findMany()
+    * ```
+    */
+  get salaryComponent(): Prisma.SalaryComponentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.employmentContract`: Exposes CRUD operations for the **EmploymentContract** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EmploymentContracts
+    * const employmentContracts = await prisma.employmentContract.findMany()
+    * ```
+    */
+  get employmentContract(): Prisma.EmploymentContractDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockCount`: Exposes CRUD operations for the **StockCount** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockCounts
+    * const stockCounts = await prisma.stockCount.findMany()
+    * ```
+    */
+  get stockCount(): Prisma.StockCountDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.stockCountLine`: Exposes CRUD operations for the **StockCountLine** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more StockCountLines
+    * const stockCountLines = await prisma.stockCountLine.findMany()
+    * ```
+    */
+  get stockCountLine(): Prisma.StockCountLineDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rfq`: Exposes CRUD operations for the **Rfq** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Rfqs
+    * const rfqs = await prisma.rfq.findMany()
+    * ```
+    */
+  get rfq(): Prisma.RfqDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rfqItem`: Exposes CRUD operations for the **RfqItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RfqItems
+    * const rfqItems = await prisma.rfqItem.findMany()
+    * ```
+    */
+  get rfqItem(): Prisma.RfqItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rfqQuote`: Exposes CRUD operations for the **RfqQuote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RfqQuotes
+    * const rfqQuotes = await prisma.rfqQuote.findMany()
+    * ```
+    */
+  get rfqQuote(): Prisma.RfqQuoteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rfqQuoteLine`: Exposes CRUD operations for the **RfqQuoteLine** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RfqQuoteLines
+    * const rfqQuoteLines = await prisma.rfqQuoteLine.findMany()
+    * ```
+    */
+  get rfqQuoteLine(): Prisma.RfqQuoteLineDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.vendorEvaluation`: Exposes CRUD operations for the **VendorEvaluation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VendorEvaluations
+    * const vendorEvaluations = await prisma.vendorEvaluation.findMany()
+    * ```
+    */
+  get vendorEvaluation(): Prisma.VendorEvaluationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.promotion`: Exposes CRUD operations for the **Promotion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Promotions
+    * const promotions = await prisma.promotion.findMany()
+    * ```
+    */
+  get promotion(): Prisma.PromotionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.promotionRedemption`: Exposes CRUD operations for the **PromotionRedemption** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PromotionRedemptions
+    * const promotionRedemptions = await prisma.promotionRedemption.findMany()
+    * ```
+    */
+  get promotionRedemption(): Prisma.PromotionRedemptionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -2942,7 +3134,19 @@ export namespace Prisma {
     WorkflowEvent: 'WorkflowEvent',
     AuditFinding: 'AuditFinding',
     AuditFindingEvent: 'AuditFindingEvent',
-    RiskRegisterEntry: 'RiskRegisterEntry'
+    RiskRegisterEntry: 'RiskRegisterEntry',
+    SalaryStructure: 'SalaryStructure',
+    SalaryComponent: 'SalaryComponent',
+    EmploymentContract: 'EmploymentContract',
+    StockCount: 'StockCount',
+    StockCountLine: 'StockCountLine',
+    Rfq: 'Rfq',
+    RfqItem: 'RfqItem',
+    RfqQuote: 'RfqQuote',
+    RfqQuoteLine: 'RfqQuoteLine',
+    VendorEvaluation: 'VendorEvaluation',
+    Promotion: 'Promotion',
+    PromotionRedemption: 'PromotionRedemption'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -2958,7 +3162,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent" | "auditFinding" | "auditFindingEvent" | "riskRegisterEntry"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent" | "auditFinding" | "auditFindingEvent" | "riskRegisterEntry" | "salaryStructure" | "salaryComponent" | "employmentContract" | "stockCount" | "stockCountLine" | "rfq" | "rfqItem" | "rfqQuote" | "rfqQuoteLine" | "vendorEvaluation" | "promotion" | "promotionRedemption"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -10436,6 +10640,894 @@ export namespace Prisma {
           }
         }
       }
+      SalaryStructure: {
+        payload: Prisma.$SalaryStructurePayload<ExtArgs>
+        fields: Prisma.SalaryStructureFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SalaryStructureFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SalaryStructureFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>
+          }
+          findFirst: {
+            args: Prisma.SalaryStructureFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SalaryStructureFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>
+          }
+          findMany: {
+            args: Prisma.SalaryStructureFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>[]
+          }
+          create: {
+            args: Prisma.SalaryStructureCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>
+          }
+          createMany: {
+            args: Prisma.SalaryStructureCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SalaryStructureCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>[]
+          }
+          delete: {
+            args: Prisma.SalaryStructureDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>
+          }
+          update: {
+            args: Prisma.SalaryStructureUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>
+          }
+          deleteMany: {
+            args: Prisma.SalaryStructureDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SalaryStructureUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SalaryStructureUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>[]
+          }
+          upsert: {
+            args: Prisma.SalaryStructureUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryStructurePayload>
+          }
+          aggregate: {
+            args: Prisma.SalaryStructureAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSalaryStructure>
+          }
+          groupBy: {
+            args: Prisma.SalaryStructureGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SalaryStructureGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SalaryStructureCountArgs<ExtArgs>
+            result: $Utils.Optional<SalaryStructureCountAggregateOutputType> | number
+          }
+        }
+      }
+      SalaryComponent: {
+        payload: Prisma.$SalaryComponentPayload<ExtArgs>
+        fields: Prisma.SalaryComponentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SalaryComponentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SalaryComponentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>
+          }
+          findFirst: {
+            args: Prisma.SalaryComponentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SalaryComponentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>
+          }
+          findMany: {
+            args: Prisma.SalaryComponentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>[]
+          }
+          create: {
+            args: Prisma.SalaryComponentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>
+          }
+          createMany: {
+            args: Prisma.SalaryComponentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SalaryComponentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>[]
+          }
+          delete: {
+            args: Prisma.SalaryComponentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>
+          }
+          update: {
+            args: Prisma.SalaryComponentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>
+          }
+          deleteMany: {
+            args: Prisma.SalaryComponentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SalaryComponentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SalaryComponentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>[]
+          }
+          upsert: {
+            args: Prisma.SalaryComponentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SalaryComponentPayload>
+          }
+          aggregate: {
+            args: Prisma.SalaryComponentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSalaryComponent>
+          }
+          groupBy: {
+            args: Prisma.SalaryComponentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SalaryComponentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SalaryComponentCountArgs<ExtArgs>
+            result: $Utils.Optional<SalaryComponentCountAggregateOutputType> | number
+          }
+        }
+      }
+      EmploymentContract: {
+        payload: Prisma.$EmploymentContractPayload<ExtArgs>
+        fields: Prisma.EmploymentContractFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EmploymentContractFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EmploymentContractFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>
+          }
+          findFirst: {
+            args: Prisma.EmploymentContractFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EmploymentContractFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>
+          }
+          findMany: {
+            args: Prisma.EmploymentContractFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>[]
+          }
+          create: {
+            args: Prisma.EmploymentContractCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>
+          }
+          createMany: {
+            args: Prisma.EmploymentContractCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EmploymentContractCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>[]
+          }
+          delete: {
+            args: Prisma.EmploymentContractDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>
+          }
+          update: {
+            args: Prisma.EmploymentContractUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>
+          }
+          deleteMany: {
+            args: Prisma.EmploymentContractDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EmploymentContractUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EmploymentContractUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>[]
+          }
+          upsert: {
+            args: Prisma.EmploymentContractUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EmploymentContractPayload>
+          }
+          aggregate: {
+            args: Prisma.EmploymentContractAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEmploymentContract>
+          }
+          groupBy: {
+            args: Prisma.EmploymentContractGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EmploymentContractGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EmploymentContractCountArgs<ExtArgs>
+            result: $Utils.Optional<EmploymentContractCountAggregateOutputType> | number
+          }
+        }
+      }
+      StockCount: {
+        payload: Prisma.$StockCountPayload<ExtArgs>
+        fields: Prisma.StockCountFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockCountFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockCountFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>
+          }
+          findFirst: {
+            args: Prisma.StockCountFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockCountFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>
+          }
+          findMany: {
+            args: Prisma.StockCountFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>[]
+          }
+          create: {
+            args: Prisma.StockCountCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>
+          }
+          createMany: {
+            args: Prisma.StockCountCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockCountCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>[]
+          }
+          delete: {
+            args: Prisma.StockCountDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>
+          }
+          update: {
+            args: Prisma.StockCountUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>
+          }
+          deleteMany: {
+            args: Prisma.StockCountDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockCountUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockCountUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>[]
+          }
+          upsert: {
+            args: Prisma.StockCountUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountPayload>
+          }
+          aggregate: {
+            args: Prisma.StockCountAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockCount>
+          }
+          groupBy: {
+            args: Prisma.StockCountGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockCountGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockCountCountArgs<ExtArgs>
+            result: $Utils.Optional<StockCountCountAggregateOutputType> | number
+          }
+        }
+      }
+      StockCountLine: {
+        payload: Prisma.$StockCountLinePayload<ExtArgs>
+        fields: Prisma.StockCountLineFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StockCountLineFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StockCountLineFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>
+          }
+          findFirst: {
+            args: Prisma.StockCountLineFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StockCountLineFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>
+          }
+          findMany: {
+            args: Prisma.StockCountLineFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>[]
+          }
+          create: {
+            args: Prisma.StockCountLineCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>
+          }
+          createMany: {
+            args: Prisma.StockCountLineCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StockCountLineCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>[]
+          }
+          delete: {
+            args: Prisma.StockCountLineDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>
+          }
+          update: {
+            args: Prisma.StockCountLineUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>
+          }
+          deleteMany: {
+            args: Prisma.StockCountLineDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StockCountLineUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StockCountLineUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>[]
+          }
+          upsert: {
+            args: Prisma.StockCountLineUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StockCountLinePayload>
+          }
+          aggregate: {
+            args: Prisma.StockCountLineAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStockCountLine>
+          }
+          groupBy: {
+            args: Prisma.StockCountLineGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StockCountLineGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StockCountLineCountArgs<ExtArgs>
+            result: $Utils.Optional<StockCountLineCountAggregateOutputType> | number
+          }
+        }
+      }
+      Rfq: {
+        payload: Prisma.$RfqPayload<ExtArgs>
+        fields: Prisma.RfqFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RfqFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RfqFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>
+          }
+          findFirst: {
+            args: Prisma.RfqFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RfqFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>
+          }
+          findMany: {
+            args: Prisma.RfqFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>[]
+          }
+          create: {
+            args: Prisma.RfqCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>
+          }
+          createMany: {
+            args: Prisma.RfqCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RfqCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>[]
+          }
+          delete: {
+            args: Prisma.RfqDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>
+          }
+          update: {
+            args: Prisma.RfqUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>
+          }
+          deleteMany: {
+            args: Prisma.RfqDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RfqUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RfqUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>[]
+          }
+          upsert: {
+            args: Prisma.RfqUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqPayload>
+          }
+          aggregate: {
+            args: Prisma.RfqAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRfq>
+          }
+          groupBy: {
+            args: Prisma.RfqGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RfqGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RfqCountArgs<ExtArgs>
+            result: $Utils.Optional<RfqCountAggregateOutputType> | number
+          }
+        }
+      }
+      RfqItem: {
+        payload: Prisma.$RfqItemPayload<ExtArgs>
+        fields: Prisma.RfqItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RfqItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RfqItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>
+          }
+          findFirst: {
+            args: Prisma.RfqItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RfqItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>
+          }
+          findMany: {
+            args: Prisma.RfqItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>[]
+          }
+          create: {
+            args: Prisma.RfqItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>
+          }
+          createMany: {
+            args: Prisma.RfqItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RfqItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>[]
+          }
+          delete: {
+            args: Prisma.RfqItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>
+          }
+          update: {
+            args: Prisma.RfqItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.RfqItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RfqItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RfqItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.RfqItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqItemPayload>
+          }
+          aggregate: {
+            args: Prisma.RfqItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRfqItem>
+          }
+          groupBy: {
+            args: Prisma.RfqItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RfqItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RfqItemCountArgs<ExtArgs>
+            result: $Utils.Optional<RfqItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      RfqQuote: {
+        payload: Prisma.$RfqQuotePayload<ExtArgs>
+        fields: Prisma.RfqQuoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RfqQuoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RfqQuoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>
+          }
+          findFirst: {
+            args: Prisma.RfqQuoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RfqQuoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>
+          }
+          findMany: {
+            args: Prisma.RfqQuoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>[]
+          }
+          create: {
+            args: Prisma.RfqQuoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>
+          }
+          createMany: {
+            args: Prisma.RfqQuoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RfqQuoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>[]
+          }
+          delete: {
+            args: Prisma.RfqQuoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>
+          }
+          update: {
+            args: Prisma.RfqQuoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>
+          }
+          deleteMany: {
+            args: Prisma.RfqQuoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RfqQuoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RfqQuoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>[]
+          }
+          upsert: {
+            args: Prisma.RfqQuoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuotePayload>
+          }
+          aggregate: {
+            args: Prisma.RfqQuoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRfqQuote>
+          }
+          groupBy: {
+            args: Prisma.RfqQuoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RfqQuoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RfqQuoteCountArgs<ExtArgs>
+            result: $Utils.Optional<RfqQuoteCountAggregateOutputType> | number
+          }
+        }
+      }
+      RfqQuoteLine: {
+        payload: Prisma.$RfqQuoteLinePayload<ExtArgs>
+        fields: Prisma.RfqQuoteLineFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RfqQuoteLineFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RfqQuoteLineFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>
+          }
+          findFirst: {
+            args: Prisma.RfqQuoteLineFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RfqQuoteLineFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>
+          }
+          findMany: {
+            args: Prisma.RfqQuoteLineFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>[]
+          }
+          create: {
+            args: Prisma.RfqQuoteLineCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>
+          }
+          createMany: {
+            args: Prisma.RfqQuoteLineCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RfqQuoteLineCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>[]
+          }
+          delete: {
+            args: Prisma.RfqQuoteLineDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>
+          }
+          update: {
+            args: Prisma.RfqQuoteLineUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>
+          }
+          deleteMany: {
+            args: Prisma.RfqQuoteLineDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RfqQuoteLineUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RfqQuoteLineUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>[]
+          }
+          upsert: {
+            args: Prisma.RfqQuoteLineUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RfqQuoteLinePayload>
+          }
+          aggregate: {
+            args: Prisma.RfqQuoteLineAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRfqQuoteLine>
+          }
+          groupBy: {
+            args: Prisma.RfqQuoteLineGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RfqQuoteLineGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RfqQuoteLineCountArgs<ExtArgs>
+            result: $Utils.Optional<RfqQuoteLineCountAggregateOutputType> | number
+          }
+        }
+      }
+      VendorEvaluation: {
+        payload: Prisma.$VendorEvaluationPayload<ExtArgs>
+        fields: Prisma.VendorEvaluationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VendorEvaluationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VendorEvaluationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>
+          }
+          findFirst: {
+            args: Prisma.VendorEvaluationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VendorEvaluationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>
+          }
+          findMany: {
+            args: Prisma.VendorEvaluationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>[]
+          }
+          create: {
+            args: Prisma.VendorEvaluationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>
+          }
+          createMany: {
+            args: Prisma.VendorEvaluationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VendorEvaluationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>[]
+          }
+          delete: {
+            args: Prisma.VendorEvaluationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>
+          }
+          update: {
+            args: Prisma.VendorEvaluationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>
+          }
+          deleteMany: {
+            args: Prisma.VendorEvaluationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VendorEvaluationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VendorEvaluationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>[]
+          }
+          upsert: {
+            args: Prisma.VendorEvaluationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VendorEvaluationPayload>
+          }
+          aggregate: {
+            args: Prisma.VendorEvaluationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVendorEvaluation>
+          }
+          groupBy: {
+            args: Prisma.VendorEvaluationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VendorEvaluationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VendorEvaluationCountArgs<ExtArgs>
+            result: $Utils.Optional<VendorEvaluationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Promotion: {
+        payload: Prisma.$PromotionPayload<ExtArgs>
+        fields: Prisma.PromotionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PromotionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PromotionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>
+          }
+          findFirst: {
+            args: Prisma.PromotionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PromotionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>
+          }
+          findMany: {
+            args: Prisma.PromotionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>[]
+          }
+          create: {
+            args: Prisma.PromotionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>
+          }
+          createMany: {
+            args: Prisma.PromotionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PromotionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>[]
+          }
+          delete: {
+            args: Prisma.PromotionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>
+          }
+          update: {
+            args: Prisma.PromotionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>
+          }
+          deleteMany: {
+            args: Prisma.PromotionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PromotionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PromotionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>[]
+          }
+          upsert: {
+            args: Prisma.PromotionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionPayload>
+          }
+          aggregate: {
+            args: Prisma.PromotionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePromotion>
+          }
+          groupBy: {
+            args: Prisma.PromotionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PromotionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PromotionCountArgs<ExtArgs>
+            result: $Utils.Optional<PromotionCountAggregateOutputType> | number
+          }
+        }
+      }
+      PromotionRedemption: {
+        payload: Prisma.$PromotionRedemptionPayload<ExtArgs>
+        fields: Prisma.PromotionRedemptionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PromotionRedemptionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PromotionRedemptionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>
+          }
+          findFirst: {
+            args: Prisma.PromotionRedemptionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PromotionRedemptionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>
+          }
+          findMany: {
+            args: Prisma.PromotionRedemptionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>[]
+          }
+          create: {
+            args: Prisma.PromotionRedemptionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>
+          }
+          createMany: {
+            args: Prisma.PromotionRedemptionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PromotionRedemptionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>[]
+          }
+          delete: {
+            args: Prisma.PromotionRedemptionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>
+          }
+          update: {
+            args: Prisma.PromotionRedemptionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>
+          }
+          deleteMany: {
+            args: Prisma.PromotionRedemptionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PromotionRedemptionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PromotionRedemptionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>[]
+          }
+          upsert: {
+            args: Prisma.PromotionRedemptionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PromotionRedemptionPayload>
+          }
+          aggregate: {
+            args: Prisma.PromotionRedemptionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePromotionRedemption>
+          }
+          groupBy: {
+            args: Prisma.PromotionRedemptionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PromotionRedemptionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PromotionRedemptionCountArgs<ExtArgs>
+            result: $Utils.Optional<PromotionRedemptionCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -10660,6 +11752,18 @@ export namespace Prisma {
     auditFinding?: AuditFindingOmit
     auditFindingEvent?: AuditFindingEventOmit
     riskRegisterEntry?: RiskRegisterEntryOmit
+    salaryStructure?: SalaryStructureOmit
+    salaryComponent?: SalaryComponentOmit
+    employmentContract?: EmploymentContractOmit
+    stockCount?: StockCountOmit
+    stockCountLine?: StockCountLineOmit
+    rfq?: RfqOmit
+    rfqItem?: RfqItemOmit
+    rfqQuote?: RfqQuoteOmit
+    rfqQuoteLine?: RfqQuoteLineOmit
+    vendorEvaluation?: VendorEvaluationOmit
+    promotion?: PromotionOmit
+    promotionRedemption?: PromotionRedemptionOmit
   }
 
   /* Types for Logging */
@@ -53543,6 +54647,8 @@ export namespace Prisma {
     id: string | null
     purchaseOrderId: string | null
     productId: string | null
+    description: string | null
+    lineType: $Enums.PurchaseOrderLineType | null
     quantity: number | null
     unitPrice: number | null
     subtotal: number | null
@@ -53555,6 +54661,8 @@ export namespace Prisma {
     id: string | null
     purchaseOrderId: string | null
     productId: string | null
+    description: string | null
+    lineType: $Enums.PurchaseOrderLineType | null
     quantity: number | null
     unitPrice: number | null
     subtotal: number | null
@@ -53567,6 +54675,8 @@ export namespace Prisma {
     id: number
     purchaseOrderId: number
     productId: number
+    description: number
+    lineType: number
     quantity: number
     unitPrice: number
     subtotal: number
@@ -53595,6 +54705,8 @@ export namespace Prisma {
     id?: true
     purchaseOrderId?: true
     productId?: true
+    description?: true
+    lineType?: true
     quantity?: true
     unitPrice?: true
     subtotal?: true
@@ -53607,6 +54719,8 @@ export namespace Prisma {
     id?: true
     purchaseOrderId?: true
     productId?: true
+    description?: true
+    lineType?: true
     quantity?: true
     unitPrice?: true
     subtotal?: true
@@ -53619,6 +54733,8 @@ export namespace Prisma {
     id?: true
     purchaseOrderId?: true
     productId?: true
+    description?: true
+    lineType?: true
     quantity?: true
     unitPrice?: true
     subtotal?: true
@@ -53717,7 +54833,9 @@ export namespace Prisma {
   export type PurchaseOrderItemGroupByOutputType = {
     id: string
     purchaseOrderId: string
-    productId: string
+    productId: string | null
+    description: string
+    lineType: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -53749,6 +54867,8 @@ export namespace Prisma {
     id?: boolean
     purchaseOrderId?: boolean
     productId?: boolean
+    description?: boolean
+    lineType?: boolean
     quantity?: boolean
     unitPrice?: boolean
     subtotal?: boolean
@@ -53756,7 +54876,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     grnItems?: boolean | PurchaseOrderItem$grnItemsArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | PurchaseOrderItem$productArgs<ExtArgs>
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
     _count?: boolean | PurchaseOrderItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["purchaseOrderItem"]>
@@ -53765,13 +54885,15 @@ export namespace Prisma {
     id?: boolean
     purchaseOrderId?: boolean
     productId?: boolean
+    description?: boolean
+    lineType?: boolean
     quantity?: boolean
     unitPrice?: boolean
     subtotal?: boolean
     receivedQuantity?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | PurchaseOrderItem$productArgs<ExtArgs>
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["purchaseOrderItem"]>
 
@@ -53779,13 +54901,15 @@ export namespace Prisma {
     id?: boolean
     purchaseOrderId?: boolean
     productId?: boolean
+    description?: boolean
+    lineType?: boolean
     quantity?: boolean
     unitPrice?: boolean
     subtotal?: boolean
     receivedQuantity?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | PurchaseOrderItem$productArgs<ExtArgs>
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["purchaseOrderItem"]>
 
@@ -53793,6 +54917,8 @@ export namespace Prisma {
     id?: boolean
     purchaseOrderId?: boolean
     productId?: boolean
+    description?: boolean
+    lineType?: boolean
     quantity?: boolean
     unitPrice?: boolean
     subtotal?: boolean
@@ -53801,19 +54927,19 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type PurchaseOrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "purchaseOrderId" | "productId" | "quantity" | "unitPrice" | "subtotal" | "receivedQuantity" | "createdAt" | "updatedAt", ExtArgs["result"]["purchaseOrderItem"]>
+  export type PurchaseOrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "purchaseOrderId" | "productId" | "description" | "lineType" | "quantity" | "unitPrice" | "subtotal" | "receivedQuantity" | "createdAt" | "updatedAt", ExtArgs["result"]["purchaseOrderItem"]>
   export type PurchaseOrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     grnItems?: boolean | PurchaseOrderItem$grnItemsArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | PurchaseOrderItem$productArgs<ExtArgs>
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
     _count?: boolean | PurchaseOrderItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PurchaseOrderItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | PurchaseOrderItem$productArgs<ExtArgs>
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
   }
   export type PurchaseOrderItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | PurchaseOrderItem$productArgs<ExtArgs>
     purchaseOrder?: boolean | PurchaseOrderDefaultArgs<ExtArgs>
   }
 
@@ -53821,13 +54947,15 @@ export namespace Prisma {
     name: "PurchaseOrderItem"
     objects: {
       grnItems: Prisma.$GRNItemPayload<ExtArgs>[]
-      product: Prisma.$ProductPayload<ExtArgs>
+      product: Prisma.$ProductPayload<ExtArgs> | null
       purchaseOrder: Prisma.$PurchaseOrderPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       purchaseOrderId: string
-      productId: string
+      productId: string | null
+      description: string
+      lineType: $Enums.PurchaseOrderLineType
       quantity: number
       unitPrice: number
       subtotal: number
@@ -54229,7 +55357,7 @@ export namespace Prisma {
   export interface Prisma__PurchaseOrderItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     grnItems<T extends PurchaseOrderItem$grnItemsArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrderItem$grnItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GRNItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    product<T extends PurchaseOrderItem$productArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrderItem$productArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     purchaseOrder<T extends PurchaseOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrderDefaultArgs<ExtArgs>>): Prisma__PurchaseOrderClient<$Result.GetResult<Prisma.$PurchaseOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -54263,6 +55391,8 @@ export namespace Prisma {
     readonly id: FieldRef<"PurchaseOrderItem", 'String'>
     readonly purchaseOrderId: FieldRef<"PurchaseOrderItem", 'String'>
     readonly productId: FieldRef<"PurchaseOrderItem", 'String'>
+    readonly description: FieldRef<"PurchaseOrderItem", 'String'>
+    readonly lineType: FieldRef<"PurchaseOrderItem", 'PurchaseOrderLineType'>
     readonly quantity: FieldRef<"PurchaseOrderItem", 'Int'>
     readonly unitPrice: FieldRef<"PurchaseOrderItem", 'Float'>
     readonly subtotal: FieldRef<"PurchaseOrderItem", 'Float'>
@@ -54691,6 +55821,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GRNItemScalarFieldEnum | GRNItemScalarFieldEnum[]
+  }
+
+  /**
+   * PurchaseOrderItem.product
+   */
+  export type PurchaseOrderItem$productArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Product
+     */
+    select?: ProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Product
+     */
+    omit?: ProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductInclude<ExtArgs> | null
+    where?: ProductWhereInput
   }
 
   /**
@@ -56069,7 +57218,7 @@ export namespace Prisma {
     id: string
     grnId: string
     poItemId: string
-    productId: string
+    productId: string | null
     qtyReceived: number
     createdAt: Date
     updatedAt: Date
@@ -56104,7 +57253,7 @@ export namespace Prisma {
     updatedAt?: boolean
     goodsReceiptNote?: boolean | GoodsReceiptNoteDefaultArgs<ExtArgs>
     purchaseOrderItem?: boolean | PurchaseOrderItemDefaultArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | GRNItem$productArgs<ExtArgs>
     stockBatches?: boolean | GRNItem$stockBatchesArgs<ExtArgs>
     _count?: boolean | GRNItemCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["gRNItem"]>
@@ -56119,7 +57268,7 @@ export namespace Prisma {
     updatedAt?: boolean
     goodsReceiptNote?: boolean | GoodsReceiptNoteDefaultArgs<ExtArgs>
     purchaseOrderItem?: boolean | PurchaseOrderItemDefaultArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | GRNItem$productArgs<ExtArgs>
   }, ExtArgs["result"]["gRNItem"]>
 
   export type GRNItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -56132,7 +57281,7 @@ export namespace Prisma {
     updatedAt?: boolean
     goodsReceiptNote?: boolean | GoodsReceiptNoteDefaultArgs<ExtArgs>
     purchaseOrderItem?: boolean | PurchaseOrderItemDefaultArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | GRNItem$productArgs<ExtArgs>
   }, ExtArgs["result"]["gRNItem"]>
 
   export type GRNItemSelectScalar = {
@@ -56149,19 +57298,19 @@ export namespace Prisma {
   export type GRNItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     goodsReceiptNote?: boolean | GoodsReceiptNoteDefaultArgs<ExtArgs>
     purchaseOrderItem?: boolean | PurchaseOrderItemDefaultArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | GRNItem$productArgs<ExtArgs>
     stockBatches?: boolean | GRNItem$stockBatchesArgs<ExtArgs>
     _count?: boolean | GRNItemCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GRNItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     goodsReceiptNote?: boolean | GoodsReceiptNoteDefaultArgs<ExtArgs>
     purchaseOrderItem?: boolean | PurchaseOrderItemDefaultArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | GRNItem$productArgs<ExtArgs>
   }
   export type GRNItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     goodsReceiptNote?: boolean | GoodsReceiptNoteDefaultArgs<ExtArgs>
     purchaseOrderItem?: boolean | PurchaseOrderItemDefaultArgs<ExtArgs>
-    product?: boolean | ProductDefaultArgs<ExtArgs>
+    product?: boolean | GRNItem$productArgs<ExtArgs>
   }
 
   export type $GRNItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -56169,14 +57318,14 @@ export namespace Prisma {
     objects: {
       goodsReceiptNote: Prisma.$GoodsReceiptNotePayload<ExtArgs>
       purchaseOrderItem: Prisma.$PurchaseOrderItemPayload<ExtArgs>
-      product: Prisma.$ProductPayload<ExtArgs>
+      product: Prisma.$ProductPayload<ExtArgs> | null
       stockBatches: Prisma.$StockBatchPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       grnId: string
       poItemId: string
-      productId: string
+      productId: string | null
       qtyReceived: number
       createdAt: Date
       updatedAt: Date
@@ -56576,7 +57725,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     goodsReceiptNote<T extends GoodsReceiptNoteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GoodsReceiptNoteDefaultArgs<ExtArgs>>): Prisma__GoodsReceiptNoteClient<$Result.GetResult<Prisma.$GoodsReceiptNotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     purchaseOrderItem<T extends PurchaseOrderItemDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PurchaseOrderItemDefaultArgs<ExtArgs>>): Prisma__PurchaseOrderItemClient<$Result.GetResult<Prisma.$PurchaseOrderItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    product<T extends GRNItem$productArgs<ExtArgs> = {}>(args?: Subset<T, GRNItem$productArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     stockBatches<T extends GRNItem$stockBatchesArgs<ExtArgs> = {}>(args?: Subset<T, GRNItem$stockBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -57012,6 +58161,25 @@ export namespace Prisma {
      * Limit how many GRNItems to delete.
      */
     limit?: number
+  }
+
+  /**
+   * GRNItem.product
+   */
+  export type GRNItem$productArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Product
+     */
+    select?: ProductSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Product
+     */
+    omit?: ProductOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductInclude<ExtArgs> | null
+    where?: ProductWhereInput
   }
 
   /**
@@ -135479,6 +136647,13675 @@ export namespace Prisma {
 
 
   /**
+   * Model SalaryStructure
+   */
+
+  export type AggregateSalaryStructure = {
+    _count: SalaryStructureCountAggregateOutputType | null
+    _avg: SalaryStructureAvgAggregateOutputType | null
+    _sum: SalaryStructureSumAggregateOutputType | null
+    _min: SalaryStructureMinAggregateOutputType | null
+    _max: SalaryStructureMaxAggregateOutputType | null
+  }
+
+  export type SalaryStructureAvgAggregateOutputType = {
+    minSalary: number | null
+    maxSalary: number | null
+  }
+
+  export type SalaryStructureSumAggregateOutputType = {
+    minSalary: number | null
+    maxSalary: number | null
+  }
+
+  export type SalaryStructureMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    minSalary: number | null
+    maxSalary: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SalaryStructureMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    minSalary: number | null
+    maxSalary: number | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SalaryStructureCountAggregateOutputType = {
+    id: number
+    code: number
+    name: number
+    description: number
+    minSalary: number
+    maxSalary: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SalaryStructureAvgAggregateInputType = {
+    minSalary?: true
+    maxSalary?: true
+  }
+
+  export type SalaryStructureSumAggregateInputType = {
+    minSalary?: true
+    maxSalary?: true
+  }
+
+  export type SalaryStructureMinAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    minSalary?: true
+    maxSalary?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SalaryStructureMaxAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    minSalary?: true
+    maxSalary?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SalaryStructureCountAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    minSalary?: true
+    maxSalary?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SalaryStructureAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SalaryStructure to aggregate.
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryStructures to fetch.
+     */
+    orderBy?: SalaryStructureOrderByWithRelationInput | SalaryStructureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SalaryStructureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryStructures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryStructures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SalaryStructures
+    **/
+    _count?: true | SalaryStructureCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SalaryStructureAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SalaryStructureSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SalaryStructureMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SalaryStructureMaxAggregateInputType
+  }
+
+  export type GetSalaryStructureAggregateType<T extends SalaryStructureAggregateArgs> = {
+        [P in keyof T & keyof AggregateSalaryStructure]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSalaryStructure[P]>
+      : GetScalarType<T[P], AggregateSalaryStructure[P]>
+  }
+
+
+
+
+  export type SalaryStructureGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SalaryStructureWhereInput
+    orderBy?: SalaryStructureOrderByWithAggregationInput | SalaryStructureOrderByWithAggregationInput[]
+    by: SalaryStructureScalarFieldEnum[] | SalaryStructureScalarFieldEnum
+    having?: SalaryStructureScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SalaryStructureCountAggregateInputType | true
+    _avg?: SalaryStructureAvgAggregateInputType
+    _sum?: SalaryStructureSumAggregateInputType
+    _min?: SalaryStructureMinAggregateInputType
+    _max?: SalaryStructureMaxAggregateInputType
+  }
+
+  export type SalaryStructureGroupByOutputType = {
+    id: string
+    code: string
+    name: string
+    description: string | null
+    minSalary: number | null
+    maxSalary: number | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: SalaryStructureCountAggregateOutputType | null
+    _avg: SalaryStructureAvgAggregateOutputType | null
+    _sum: SalaryStructureSumAggregateOutputType | null
+    _min: SalaryStructureMinAggregateOutputType | null
+    _max: SalaryStructureMaxAggregateOutputType | null
+  }
+
+  type GetSalaryStructureGroupByPayload<T extends SalaryStructureGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SalaryStructureGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SalaryStructureGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SalaryStructureGroupByOutputType[P]>
+            : GetScalarType<T[P], SalaryStructureGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SalaryStructureSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    minSalary?: boolean
+    maxSalary?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["salaryStructure"]>
+
+  export type SalaryStructureSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    minSalary?: boolean
+    maxSalary?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["salaryStructure"]>
+
+  export type SalaryStructureSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    minSalary?: boolean
+    maxSalary?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["salaryStructure"]>
+
+  export type SalaryStructureSelectScalar = {
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    minSalary?: boolean
+    maxSalary?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SalaryStructureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "description" | "minSalary" | "maxSalary" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["salaryStructure"]>
+
+  export type $SalaryStructurePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SalaryStructure"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      name: string
+      description: string | null
+      minSalary: number | null
+      maxSalary: number | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["salaryStructure"]>
+    composites: {}
+  }
+
+  type SalaryStructureGetPayload<S extends boolean | null | undefined | SalaryStructureDefaultArgs> = $Result.GetResult<Prisma.$SalaryStructurePayload, S>
+
+  type SalaryStructureCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SalaryStructureFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SalaryStructureCountAggregateInputType | true
+    }
+
+  export interface SalaryStructureDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SalaryStructure'], meta: { name: 'SalaryStructure' } }
+    /**
+     * Find zero or one SalaryStructure that matches the filter.
+     * @param {SalaryStructureFindUniqueArgs} args - Arguments to find a SalaryStructure
+     * @example
+     * // Get one SalaryStructure
+     * const salaryStructure = await prisma.salaryStructure.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SalaryStructureFindUniqueArgs>(args: SelectSubset<T, SalaryStructureFindUniqueArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SalaryStructure that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SalaryStructureFindUniqueOrThrowArgs} args - Arguments to find a SalaryStructure
+     * @example
+     * // Get one SalaryStructure
+     * const salaryStructure = await prisma.salaryStructure.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SalaryStructureFindUniqueOrThrowArgs>(args: SelectSubset<T, SalaryStructureFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SalaryStructure that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureFindFirstArgs} args - Arguments to find a SalaryStructure
+     * @example
+     * // Get one SalaryStructure
+     * const salaryStructure = await prisma.salaryStructure.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SalaryStructureFindFirstArgs>(args?: SelectSubset<T, SalaryStructureFindFirstArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SalaryStructure that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureFindFirstOrThrowArgs} args - Arguments to find a SalaryStructure
+     * @example
+     * // Get one SalaryStructure
+     * const salaryStructure = await prisma.salaryStructure.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SalaryStructureFindFirstOrThrowArgs>(args?: SelectSubset<T, SalaryStructureFindFirstOrThrowArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SalaryStructures that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SalaryStructures
+     * const salaryStructures = await prisma.salaryStructure.findMany()
+     * 
+     * // Get first 10 SalaryStructures
+     * const salaryStructures = await prisma.salaryStructure.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const salaryStructureWithIdOnly = await prisma.salaryStructure.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SalaryStructureFindManyArgs>(args?: SelectSubset<T, SalaryStructureFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SalaryStructure.
+     * @param {SalaryStructureCreateArgs} args - Arguments to create a SalaryStructure.
+     * @example
+     * // Create one SalaryStructure
+     * const SalaryStructure = await prisma.salaryStructure.create({
+     *   data: {
+     *     // ... data to create a SalaryStructure
+     *   }
+     * })
+     * 
+     */
+    create<T extends SalaryStructureCreateArgs>(args: SelectSubset<T, SalaryStructureCreateArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SalaryStructures.
+     * @param {SalaryStructureCreateManyArgs} args - Arguments to create many SalaryStructures.
+     * @example
+     * // Create many SalaryStructures
+     * const salaryStructure = await prisma.salaryStructure.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SalaryStructureCreateManyArgs>(args?: SelectSubset<T, SalaryStructureCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SalaryStructures and returns the data saved in the database.
+     * @param {SalaryStructureCreateManyAndReturnArgs} args - Arguments to create many SalaryStructures.
+     * @example
+     * // Create many SalaryStructures
+     * const salaryStructure = await prisma.salaryStructure.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SalaryStructures and only return the `id`
+     * const salaryStructureWithIdOnly = await prisma.salaryStructure.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SalaryStructureCreateManyAndReturnArgs>(args?: SelectSubset<T, SalaryStructureCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SalaryStructure.
+     * @param {SalaryStructureDeleteArgs} args - Arguments to delete one SalaryStructure.
+     * @example
+     * // Delete one SalaryStructure
+     * const SalaryStructure = await prisma.salaryStructure.delete({
+     *   where: {
+     *     // ... filter to delete one SalaryStructure
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SalaryStructureDeleteArgs>(args: SelectSubset<T, SalaryStructureDeleteArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SalaryStructure.
+     * @param {SalaryStructureUpdateArgs} args - Arguments to update one SalaryStructure.
+     * @example
+     * // Update one SalaryStructure
+     * const salaryStructure = await prisma.salaryStructure.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SalaryStructureUpdateArgs>(args: SelectSubset<T, SalaryStructureUpdateArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SalaryStructures.
+     * @param {SalaryStructureDeleteManyArgs} args - Arguments to filter SalaryStructures to delete.
+     * @example
+     * // Delete a few SalaryStructures
+     * const { count } = await prisma.salaryStructure.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SalaryStructureDeleteManyArgs>(args?: SelectSubset<T, SalaryStructureDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SalaryStructures.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SalaryStructures
+     * const salaryStructure = await prisma.salaryStructure.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SalaryStructureUpdateManyArgs>(args: SelectSubset<T, SalaryStructureUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SalaryStructures and returns the data updated in the database.
+     * @param {SalaryStructureUpdateManyAndReturnArgs} args - Arguments to update many SalaryStructures.
+     * @example
+     * // Update many SalaryStructures
+     * const salaryStructure = await prisma.salaryStructure.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SalaryStructures and only return the `id`
+     * const salaryStructureWithIdOnly = await prisma.salaryStructure.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SalaryStructureUpdateManyAndReturnArgs>(args: SelectSubset<T, SalaryStructureUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SalaryStructure.
+     * @param {SalaryStructureUpsertArgs} args - Arguments to update or create a SalaryStructure.
+     * @example
+     * // Update or create a SalaryStructure
+     * const salaryStructure = await prisma.salaryStructure.upsert({
+     *   create: {
+     *     // ... data to create a SalaryStructure
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SalaryStructure we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SalaryStructureUpsertArgs>(args: SelectSubset<T, SalaryStructureUpsertArgs<ExtArgs>>): Prisma__SalaryStructureClient<$Result.GetResult<Prisma.$SalaryStructurePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SalaryStructures.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureCountArgs} args - Arguments to filter SalaryStructures to count.
+     * @example
+     * // Count the number of SalaryStructures
+     * const count = await prisma.salaryStructure.count({
+     *   where: {
+     *     // ... the filter for the SalaryStructures we want to count
+     *   }
+     * })
+    **/
+    count<T extends SalaryStructureCountArgs>(
+      args?: Subset<T, SalaryStructureCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SalaryStructureCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SalaryStructure.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SalaryStructureAggregateArgs>(args: Subset<T, SalaryStructureAggregateArgs>): Prisma.PrismaPromise<GetSalaryStructureAggregateType<T>>
+
+    /**
+     * Group by SalaryStructure.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryStructureGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SalaryStructureGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SalaryStructureGroupByArgs['orderBy'] }
+        : { orderBy?: SalaryStructureGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SalaryStructureGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSalaryStructureGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SalaryStructure model
+   */
+  readonly fields: SalaryStructureFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SalaryStructure.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SalaryStructureClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SalaryStructure model
+   */
+  interface SalaryStructureFieldRefs {
+    readonly id: FieldRef<"SalaryStructure", 'String'>
+    readonly code: FieldRef<"SalaryStructure", 'String'>
+    readonly name: FieldRef<"SalaryStructure", 'String'>
+    readonly description: FieldRef<"SalaryStructure", 'String'>
+    readonly minSalary: FieldRef<"SalaryStructure", 'Float'>
+    readonly maxSalary: FieldRef<"SalaryStructure", 'Float'>
+    readonly isActive: FieldRef<"SalaryStructure", 'Boolean'>
+    readonly createdAt: FieldRef<"SalaryStructure", 'DateTime'>
+    readonly updatedAt: FieldRef<"SalaryStructure", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SalaryStructure findUnique
+   */
+  export type SalaryStructureFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryStructure to fetch.
+     */
+    where: SalaryStructureWhereUniqueInput
+  }
+
+  /**
+   * SalaryStructure findUniqueOrThrow
+   */
+  export type SalaryStructureFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryStructure to fetch.
+     */
+    where: SalaryStructureWhereUniqueInput
+  }
+
+  /**
+   * SalaryStructure findFirst
+   */
+  export type SalaryStructureFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryStructure to fetch.
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryStructures to fetch.
+     */
+    orderBy?: SalaryStructureOrderByWithRelationInput | SalaryStructureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SalaryStructures.
+     */
+    cursor?: SalaryStructureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryStructures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryStructures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SalaryStructures.
+     */
+    distinct?: SalaryStructureScalarFieldEnum | SalaryStructureScalarFieldEnum[]
+  }
+
+  /**
+   * SalaryStructure findFirstOrThrow
+   */
+  export type SalaryStructureFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryStructure to fetch.
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryStructures to fetch.
+     */
+    orderBy?: SalaryStructureOrderByWithRelationInput | SalaryStructureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SalaryStructures.
+     */
+    cursor?: SalaryStructureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryStructures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryStructures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SalaryStructures.
+     */
+    distinct?: SalaryStructureScalarFieldEnum | SalaryStructureScalarFieldEnum[]
+  }
+
+  /**
+   * SalaryStructure findMany
+   */
+  export type SalaryStructureFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryStructures to fetch.
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryStructures to fetch.
+     */
+    orderBy?: SalaryStructureOrderByWithRelationInput | SalaryStructureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SalaryStructures.
+     */
+    cursor?: SalaryStructureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryStructures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryStructures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SalaryStructures.
+     */
+    distinct?: SalaryStructureScalarFieldEnum | SalaryStructureScalarFieldEnum[]
+  }
+
+  /**
+   * SalaryStructure create
+   */
+  export type SalaryStructureCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SalaryStructure.
+     */
+    data: XOR<SalaryStructureCreateInput, SalaryStructureUncheckedCreateInput>
+  }
+
+  /**
+   * SalaryStructure createMany
+   */
+  export type SalaryStructureCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SalaryStructures.
+     */
+    data: SalaryStructureCreateManyInput | SalaryStructureCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SalaryStructure createManyAndReturn
+   */
+  export type SalaryStructureCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * The data used to create many SalaryStructures.
+     */
+    data: SalaryStructureCreateManyInput | SalaryStructureCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SalaryStructure update
+   */
+  export type SalaryStructureUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SalaryStructure.
+     */
+    data: XOR<SalaryStructureUpdateInput, SalaryStructureUncheckedUpdateInput>
+    /**
+     * Choose, which SalaryStructure to update.
+     */
+    where: SalaryStructureWhereUniqueInput
+  }
+
+  /**
+   * SalaryStructure updateMany
+   */
+  export type SalaryStructureUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SalaryStructures.
+     */
+    data: XOR<SalaryStructureUpdateManyMutationInput, SalaryStructureUncheckedUpdateManyInput>
+    /**
+     * Filter which SalaryStructures to update
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * Limit how many SalaryStructures to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SalaryStructure updateManyAndReturn
+   */
+  export type SalaryStructureUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * The data used to update SalaryStructures.
+     */
+    data: XOR<SalaryStructureUpdateManyMutationInput, SalaryStructureUncheckedUpdateManyInput>
+    /**
+     * Filter which SalaryStructures to update
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * Limit how many SalaryStructures to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SalaryStructure upsert
+   */
+  export type SalaryStructureUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SalaryStructure to update in case it exists.
+     */
+    where: SalaryStructureWhereUniqueInput
+    /**
+     * In case the SalaryStructure found by the `where` argument doesn't exist, create a new SalaryStructure with this data.
+     */
+    create: XOR<SalaryStructureCreateInput, SalaryStructureUncheckedCreateInput>
+    /**
+     * In case the SalaryStructure was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SalaryStructureUpdateInput, SalaryStructureUncheckedUpdateInput>
+  }
+
+  /**
+   * SalaryStructure delete
+   */
+  export type SalaryStructureDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+    /**
+     * Filter which SalaryStructure to delete.
+     */
+    where: SalaryStructureWhereUniqueInput
+  }
+
+  /**
+   * SalaryStructure deleteMany
+   */
+  export type SalaryStructureDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SalaryStructures to delete
+     */
+    where?: SalaryStructureWhereInput
+    /**
+     * Limit how many SalaryStructures to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SalaryStructure without action
+   */
+  export type SalaryStructureDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryStructure
+     */
+    select?: SalaryStructureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryStructure
+     */
+    omit?: SalaryStructureOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SalaryComponent
+   */
+
+  export type AggregateSalaryComponent = {
+    _count: SalaryComponentCountAggregateOutputType | null
+    _avg: SalaryComponentAvgAggregateOutputType | null
+    _sum: SalaryComponentSumAggregateOutputType | null
+    _min: SalaryComponentMinAggregateOutputType | null
+    _max: SalaryComponentMaxAggregateOutputType | null
+  }
+
+  export type SalaryComponentAvgAggregateOutputType = {
+    value: number | null
+    sortOrder: number | null
+  }
+
+  export type SalaryComponentSumAggregateOutputType = {
+    value: number | null
+    sortOrder: number | null
+  }
+
+  export type SalaryComponentMinAggregateOutputType = {
+    id: string | null
+    structureId: string | null
+    name: string | null
+    kind: string | null
+    calc: string | null
+    value: number | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SalaryComponentMaxAggregateOutputType = {
+    id: string | null
+    structureId: string | null
+    name: string | null
+    kind: string | null
+    calc: string | null
+    value: number | null
+    sortOrder: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SalaryComponentCountAggregateOutputType = {
+    id: number
+    structureId: number
+    name: number
+    kind: number
+    calc: number
+    value: number
+    sortOrder: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SalaryComponentAvgAggregateInputType = {
+    value?: true
+    sortOrder?: true
+  }
+
+  export type SalaryComponentSumAggregateInputType = {
+    value?: true
+    sortOrder?: true
+  }
+
+  export type SalaryComponentMinAggregateInputType = {
+    id?: true
+    structureId?: true
+    name?: true
+    kind?: true
+    calc?: true
+    value?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SalaryComponentMaxAggregateInputType = {
+    id?: true
+    structureId?: true
+    name?: true
+    kind?: true
+    calc?: true
+    value?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SalaryComponentCountAggregateInputType = {
+    id?: true
+    structureId?: true
+    name?: true
+    kind?: true
+    calc?: true
+    value?: true
+    sortOrder?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SalaryComponentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SalaryComponent to aggregate.
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryComponents to fetch.
+     */
+    orderBy?: SalaryComponentOrderByWithRelationInput | SalaryComponentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SalaryComponentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryComponents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryComponents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SalaryComponents
+    **/
+    _count?: true | SalaryComponentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SalaryComponentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SalaryComponentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SalaryComponentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SalaryComponentMaxAggregateInputType
+  }
+
+  export type GetSalaryComponentAggregateType<T extends SalaryComponentAggregateArgs> = {
+        [P in keyof T & keyof AggregateSalaryComponent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSalaryComponent[P]>
+      : GetScalarType<T[P], AggregateSalaryComponent[P]>
+  }
+
+
+
+
+  export type SalaryComponentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SalaryComponentWhereInput
+    orderBy?: SalaryComponentOrderByWithAggregationInput | SalaryComponentOrderByWithAggregationInput[]
+    by: SalaryComponentScalarFieldEnum[] | SalaryComponentScalarFieldEnum
+    having?: SalaryComponentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SalaryComponentCountAggregateInputType | true
+    _avg?: SalaryComponentAvgAggregateInputType
+    _sum?: SalaryComponentSumAggregateInputType
+    _min?: SalaryComponentMinAggregateInputType
+    _max?: SalaryComponentMaxAggregateInputType
+  }
+
+  export type SalaryComponentGroupByOutputType = {
+    id: string
+    structureId: string
+    name: string
+    kind: string
+    calc: string
+    value: number
+    sortOrder: number
+    createdAt: Date
+    updatedAt: Date
+    _count: SalaryComponentCountAggregateOutputType | null
+    _avg: SalaryComponentAvgAggregateOutputType | null
+    _sum: SalaryComponentSumAggregateOutputType | null
+    _min: SalaryComponentMinAggregateOutputType | null
+    _max: SalaryComponentMaxAggregateOutputType | null
+  }
+
+  type GetSalaryComponentGroupByPayload<T extends SalaryComponentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SalaryComponentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SalaryComponentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SalaryComponentGroupByOutputType[P]>
+            : GetScalarType<T[P], SalaryComponentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SalaryComponentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    structureId?: boolean
+    name?: boolean
+    kind?: boolean
+    calc?: boolean
+    value?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["salaryComponent"]>
+
+  export type SalaryComponentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    structureId?: boolean
+    name?: boolean
+    kind?: boolean
+    calc?: boolean
+    value?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["salaryComponent"]>
+
+  export type SalaryComponentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    structureId?: boolean
+    name?: boolean
+    kind?: boolean
+    calc?: boolean
+    value?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["salaryComponent"]>
+
+  export type SalaryComponentSelectScalar = {
+    id?: boolean
+    structureId?: boolean
+    name?: boolean
+    kind?: boolean
+    calc?: boolean
+    value?: boolean
+    sortOrder?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SalaryComponentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "structureId" | "name" | "kind" | "calc" | "value" | "sortOrder" | "createdAt" | "updatedAt", ExtArgs["result"]["salaryComponent"]>
+
+  export type $SalaryComponentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SalaryComponent"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      structureId: string
+      name: string
+      kind: string
+      calc: string
+      value: number
+      sortOrder: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["salaryComponent"]>
+    composites: {}
+  }
+
+  type SalaryComponentGetPayload<S extends boolean | null | undefined | SalaryComponentDefaultArgs> = $Result.GetResult<Prisma.$SalaryComponentPayload, S>
+
+  type SalaryComponentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SalaryComponentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SalaryComponentCountAggregateInputType | true
+    }
+
+  export interface SalaryComponentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SalaryComponent'], meta: { name: 'SalaryComponent' } }
+    /**
+     * Find zero or one SalaryComponent that matches the filter.
+     * @param {SalaryComponentFindUniqueArgs} args - Arguments to find a SalaryComponent
+     * @example
+     * // Get one SalaryComponent
+     * const salaryComponent = await prisma.salaryComponent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SalaryComponentFindUniqueArgs>(args: SelectSubset<T, SalaryComponentFindUniqueArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SalaryComponent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SalaryComponentFindUniqueOrThrowArgs} args - Arguments to find a SalaryComponent
+     * @example
+     * // Get one SalaryComponent
+     * const salaryComponent = await prisma.salaryComponent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SalaryComponentFindUniqueOrThrowArgs>(args: SelectSubset<T, SalaryComponentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SalaryComponent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentFindFirstArgs} args - Arguments to find a SalaryComponent
+     * @example
+     * // Get one SalaryComponent
+     * const salaryComponent = await prisma.salaryComponent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SalaryComponentFindFirstArgs>(args?: SelectSubset<T, SalaryComponentFindFirstArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SalaryComponent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentFindFirstOrThrowArgs} args - Arguments to find a SalaryComponent
+     * @example
+     * // Get one SalaryComponent
+     * const salaryComponent = await prisma.salaryComponent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SalaryComponentFindFirstOrThrowArgs>(args?: SelectSubset<T, SalaryComponentFindFirstOrThrowArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SalaryComponents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SalaryComponents
+     * const salaryComponents = await prisma.salaryComponent.findMany()
+     * 
+     * // Get first 10 SalaryComponents
+     * const salaryComponents = await prisma.salaryComponent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const salaryComponentWithIdOnly = await prisma.salaryComponent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SalaryComponentFindManyArgs>(args?: SelectSubset<T, SalaryComponentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SalaryComponent.
+     * @param {SalaryComponentCreateArgs} args - Arguments to create a SalaryComponent.
+     * @example
+     * // Create one SalaryComponent
+     * const SalaryComponent = await prisma.salaryComponent.create({
+     *   data: {
+     *     // ... data to create a SalaryComponent
+     *   }
+     * })
+     * 
+     */
+    create<T extends SalaryComponentCreateArgs>(args: SelectSubset<T, SalaryComponentCreateArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SalaryComponents.
+     * @param {SalaryComponentCreateManyArgs} args - Arguments to create many SalaryComponents.
+     * @example
+     * // Create many SalaryComponents
+     * const salaryComponent = await prisma.salaryComponent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SalaryComponentCreateManyArgs>(args?: SelectSubset<T, SalaryComponentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SalaryComponents and returns the data saved in the database.
+     * @param {SalaryComponentCreateManyAndReturnArgs} args - Arguments to create many SalaryComponents.
+     * @example
+     * // Create many SalaryComponents
+     * const salaryComponent = await prisma.salaryComponent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SalaryComponents and only return the `id`
+     * const salaryComponentWithIdOnly = await prisma.salaryComponent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SalaryComponentCreateManyAndReturnArgs>(args?: SelectSubset<T, SalaryComponentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SalaryComponent.
+     * @param {SalaryComponentDeleteArgs} args - Arguments to delete one SalaryComponent.
+     * @example
+     * // Delete one SalaryComponent
+     * const SalaryComponent = await prisma.salaryComponent.delete({
+     *   where: {
+     *     // ... filter to delete one SalaryComponent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SalaryComponentDeleteArgs>(args: SelectSubset<T, SalaryComponentDeleteArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SalaryComponent.
+     * @param {SalaryComponentUpdateArgs} args - Arguments to update one SalaryComponent.
+     * @example
+     * // Update one SalaryComponent
+     * const salaryComponent = await prisma.salaryComponent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SalaryComponentUpdateArgs>(args: SelectSubset<T, SalaryComponentUpdateArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SalaryComponents.
+     * @param {SalaryComponentDeleteManyArgs} args - Arguments to filter SalaryComponents to delete.
+     * @example
+     * // Delete a few SalaryComponents
+     * const { count } = await prisma.salaryComponent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SalaryComponentDeleteManyArgs>(args?: SelectSubset<T, SalaryComponentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SalaryComponents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SalaryComponents
+     * const salaryComponent = await prisma.salaryComponent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SalaryComponentUpdateManyArgs>(args: SelectSubset<T, SalaryComponentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SalaryComponents and returns the data updated in the database.
+     * @param {SalaryComponentUpdateManyAndReturnArgs} args - Arguments to update many SalaryComponents.
+     * @example
+     * // Update many SalaryComponents
+     * const salaryComponent = await prisma.salaryComponent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SalaryComponents and only return the `id`
+     * const salaryComponentWithIdOnly = await prisma.salaryComponent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SalaryComponentUpdateManyAndReturnArgs>(args: SelectSubset<T, SalaryComponentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SalaryComponent.
+     * @param {SalaryComponentUpsertArgs} args - Arguments to update or create a SalaryComponent.
+     * @example
+     * // Update or create a SalaryComponent
+     * const salaryComponent = await prisma.salaryComponent.upsert({
+     *   create: {
+     *     // ... data to create a SalaryComponent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SalaryComponent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SalaryComponentUpsertArgs>(args: SelectSubset<T, SalaryComponentUpsertArgs<ExtArgs>>): Prisma__SalaryComponentClient<$Result.GetResult<Prisma.$SalaryComponentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SalaryComponents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentCountArgs} args - Arguments to filter SalaryComponents to count.
+     * @example
+     * // Count the number of SalaryComponents
+     * const count = await prisma.salaryComponent.count({
+     *   where: {
+     *     // ... the filter for the SalaryComponents we want to count
+     *   }
+     * })
+    **/
+    count<T extends SalaryComponentCountArgs>(
+      args?: Subset<T, SalaryComponentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SalaryComponentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SalaryComponent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SalaryComponentAggregateArgs>(args: Subset<T, SalaryComponentAggregateArgs>): Prisma.PrismaPromise<GetSalaryComponentAggregateType<T>>
+
+    /**
+     * Group by SalaryComponent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SalaryComponentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SalaryComponentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SalaryComponentGroupByArgs['orderBy'] }
+        : { orderBy?: SalaryComponentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SalaryComponentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSalaryComponentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SalaryComponent model
+   */
+  readonly fields: SalaryComponentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SalaryComponent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SalaryComponentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SalaryComponent model
+   */
+  interface SalaryComponentFieldRefs {
+    readonly id: FieldRef<"SalaryComponent", 'String'>
+    readonly structureId: FieldRef<"SalaryComponent", 'String'>
+    readonly name: FieldRef<"SalaryComponent", 'String'>
+    readonly kind: FieldRef<"SalaryComponent", 'String'>
+    readonly calc: FieldRef<"SalaryComponent", 'String'>
+    readonly value: FieldRef<"SalaryComponent", 'Float'>
+    readonly sortOrder: FieldRef<"SalaryComponent", 'Int'>
+    readonly createdAt: FieldRef<"SalaryComponent", 'DateTime'>
+    readonly updatedAt: FieldRef<"SalaryComponent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SalaryComponent findUnique
+   */
+  export type SalaryComponentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryComponent to fetch.
+     */
+    where: SalaryComponentWhereUniqueInput
+  }
+
+  /**
+   * SalaryComponent findUniqueOrThrow
+   */
+  export type SalaryComponentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryComponent to fetch.
+     */
+    where: SalaryComponentWhereUniqueInput
+  }
+
+  /**
+   * SalaryComponent findFirst
+   */
+  export type SalaryComponentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryComponent to fetch.
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryComponents to fetch.
+     */
+    orderBy?: SalaryComponentOrderByWithRelationInput | SalaryComponentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SalaryComponents.
+     */
+    cursor?: SalaryComponentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryComponents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryComponents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SalaryComponents.
+     */
+    distinct?: SalaryComponentScalarFieldEnum | SalaryComponentScalarFieldEnum[]
+  }
+
+  /**
+   * SalaryComponent findFirstOrThrow
+   */
+  export type SalaryComponentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryComponent to fetch.
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryComponents to fetch.
+     */
+    orderBy?: SalaryComponentOrderByWithRelationInput | SalaryComponentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SalaryComponents.
+     */
+    cursor?: SalaryComponentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryComponents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryComponents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SalaryComponents.
+     */
+    distinct?: SalaryComponentScalarFieldEnum | SalaryComponentScalarFieldEnum[]
+  }
+
+  /**
+   * SalaryComponent findMany
+   */
+  export type SalaryComponentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * Filter, which SalaryComponents to fetch.
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SalaryComponents to fetch.
+     */
+    orderBy?: SalaryComponentOrderByWithRelationInput | SalaryComponentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SalaryComponents.
+     */
+    cursor?: SalaryComponentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SalaryComponents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SalaryComponents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SalaryComponents.
+     */
+    distinct?: SalaryComponentScalarFieldEnum | SalaryComponentScalarFieldEnum[]
+  }
+
+  /**
+   * SalaryComponent create
+   */
+  export type SalaryComponentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SalaryComponent.
+     */
+    data: XOR<SalaryComponentCreateInput, SalaryComponentUncheckedCreateInput>
+  }
+
+  /**
+   * SalaryComponent createMany
+   */
+  export type SalaryComponentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SalaryComponents.
+     */
+    data: SalaryComponentCreateManyInput | SalaryComponentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SalaryComponent createManyAndReturn
+   */
+  export type SalaryComponentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * The data used to create many SalaryComponents.
+     */
+    data: SalaryComponentCreateManyInput | SalaryComponentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SalaryComponent update
+   */
+  export type SalaryComponentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SalaryComponent.
+     */
+    data: XOR<SalaryComponentUpdateInput, SalaryComponentUncheckedUpdateInput>
+    /**
+     * Choose, which SalaryComponent to update.
+     */
+    where: SalaryComponentWhereUniqueInput
+  }
+
+  /**
+   * SalaryComponent updateMany
+   */
+  export type SalaryComponentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SalaryComponents.
+     */
+    data: XOR<SalaryComponentUpdateManyMutationInput, SalaryComponentUncheckedUpdateManyInput>
+    /**
+     * Filter which SalaryComponents to update
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * Limit how many SalaryComponents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SalaryComponent updateManyAndReturn
+   */
+  export type SalaryComponentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * The data used to update SalaryComponents.
+     */
+    data: XOR<SalaryComponentUpdateManyMutationInput, SalaryComponentUncheckedUpdateManyInput>
+    /**
+     * Filter which SalaryComponents to update
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * Limit how many SalaryComponents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SalaryComponent upsert
+   */
+  export type SalaryComponentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SalaryComponent to update in case it exists.
+     */
+    where: SalaryComponentWhereUniqueInput
+    /**
+     * In case the SalaryComponent found by the `where` argument doesn't exist, create a new SalaryComponent with this data.
+     */
+    create: XOR<SalaryComponentCreateInput, SalaryComponentUncheckedCreateInput>
+    /**
+     * In case the SalaryComponent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SalaryComponentUpdateInput, SalaryComponentUncheckedUpdateInput>
+  }
+
+  /**
+   * SalaryComponent delete
+   */
+  export type SalaryComponentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+    /**
+     * Filter which SalaryComponent to delete.
+     */
+    where: SalaryComponentWhereUniqueInput
+  }
+
+  /**
+   * SalaryComponent deleteMany
+   */
+  export type SalaryComponentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SalaryComponents to delete
+     */
+    where?: SalaryComponentWhereInput
+    /**
+     * Limit how many SalaryComponents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SalaryComponent without action
+   */
+  export type SalaryComponentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SalaryComponent
+     */
+    select?: SalaryComponentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SalaryComponent
+     */
+    omit?: SalaryComponentOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model EmploymentContract
+   */
+
+  export type AggregateEmploymentContract = {
+    _count: EmploymentContractCountAggregateOutputType | null
+    _avg: EmploymentContractAvgAggregateOutputType | null
+    _sum: EmploymentContractSumAggregateOutputType | null
+    _min: EmploymentContractMinAggregateOutputType | null
+    _max: EmploymentContractMaxAggregateOutputType | null
+  }
+
+  export type EmploymentContractAvgAggregateOutputType = {
+    noticeDays: number | null
+    hoursPerWeek: number | null
+    baseSalary: number | null
+  }
+
+  export type EmploymentContractSumAggregateOutputType = {
+    noticeDays: number | null
+    hoursPerWeek: number | null
+    baseSalary: number | null
+  }
+
+  export type EmploymentContractMinAggregateOutputType = {
+    id: string | null
+    contractNumber: string | null
+    userId: string | null
+    type: string | null
+    status: string | null
+    jobTitle: string | null
+    startDate: Date | null
+    endDate: Date | null
+    probationEndDate: Date | null
+    noticeDays: number | null
+    hoursPerWeek: number | null
+    baseSalary: number | null
+    salaryStructureId: string | null
+    notes: string | null
+    signedAt: Date | null
+    terminatedAt: Date | null
+    terminationReason: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmploymentContractMaxAggregateOutputType = {
+    id: string | null
+    contractNumber: string | null
+    userId: string | null
+    type: string | null
+    status: string | null
+    jobTitle: string | null
+    startDate: Date | null
+    endDate: Date | null
+    probationEndDate: Date | null
+    noticeDays: number | null
+    hoursPerWeek: number | null
+    baseSalary: number | null
+    salaryStructureId: string | null
+    notes: string | null
+    signedAt: Date | null
+    terminatedAt: Date | null
+    terminationReason: string | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EmploymentContractCountAggregateOutputType = {
+    id: number
+    contractNumber: number
+    userId: number
+    type: number
+    status: number
+    jobTitle: number
+    startDate: number
+    endDate: number
+    probationEndDate: number
+    noticeDays: number
+    hoursPerWeek: number
+    baseSalary: number
+    salaryStructureId: number
+    notes: number
+    signedAt: number
+    terminatedAt: number
+    terminationReason: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EmploymentContractAvgAggregateInputType = {
+    noticeDays?: true
+    hoursPerWeek?: true
+    baseSalary?: true
+  }
+
+  export type EmploymentContractSumAggregateInputType = {
+    noticeDays?: true
+    hoursPerWeek?: true
+    baseSalary?: true
+  }
+
+  export type EmploymentContractMinAggregateInputType = {
+    id?: true
+    contractNumber?: true
+    userId?: true
+    type?: true
+    status?: true
+    jobTitle?: true
+    startDate?: true
+    endDate?: true
+    probationEndDate?: true
+    noticeDays?: true
+    hoursPerWeek?: true
+    baseSalary?: true
+    salaryStructureId?: true
+    notes?: true
+    signedAt?: true
+    terminatedAt?: true
+    terminationReason?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmploymentContractMaxAggregateInputType = {
+    id?: true
+    contractNumber?: true
+    userId?: true
+    type?: true
+    status?: true
+    jobTitle?: true
+    startDate?: true
+    endDate?: true
+    probationEndDate?: true
+    noticeDays?: true
+    hoursPerWeek?: true
+    baseSalary?: true
+    salaryStructureId?: true
+    notes?: true
+    signedAt?: true
+    terminatedAt?: true
+    terminationReason?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EmploymentContractCountAggregateInputType = {
+    id?: true
+    contractNumber?: true
+    userId?: true
+    type?: true
+    status?: true
+    jobTitle?: true
+    startDate?: true
+    endDate?: true
+    probationEndDate?: true
+    noticeDays?: true
+    hoursPerWeek?: true
+    baseSalary?: true
+    salaryStructureId?: true
+    notes?: true
+    signedAt?: true
+    terminatedAt?: true
+    terminationReason?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EmploymentContractAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmploymentContract to aggregate.
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmploymentContracts to fetch.
+     */
+    orderBy?: EmploymentContractOrderByWithRelationInput | EmploymentContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EmploymentContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmploymentContracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmploymentContracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EmploymentContracts
+    **/
+    _count?: true | EmploymentContractCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EmploymentContractAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EmploymentContractSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EmploymentContractMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EmploymentContractMaxAggregateInputType
+  }
+
+  export type GetEmploymentContractAggregateType<T extends EmploymentContractAggregateArgs> = {
+        [P in keyof T & keyof AggregateEmploymentContract]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEmploymentContract[P]>
+      : GetScalarType<T[P], AggregateEmploymentContract[P]>
+  }
+
+
+
+
+  export type EmploymentContractGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EmploymentContractWhereInput
+    orderBy?: EmploymentContractOrderByWithAggregationInput | EmploymentContractOrderByWithAggregationInput[]
+    by: EmploymentContractScalarFieldEnum[] | EmploymentContractScalarFieldEnum
+    having?: EmploymentContractScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EmploymentContractCountAggregateInputType | true
+    _avg?: EmploymentContractAvgAggregateInputType
+    _sum?: EmploymentContractSumAggregateInputType
+    _min?: EmploymentContractMinAggregateInputType
+    _max?: EmploymentContractMaxAggregateInputType
+  }
+
+  export type EmploymentContractGroupByOutputType = {
+    id: string
+    contractNumber: string
+    userId: string
+    type: string
+    status: string
+    jobTitle: string
+    startDate: Date
+    endDate: Date | null
+    probationEndDate: Date | null
+    noticeDays: number
+    hoursPerWeek: number
+    baseSalary: number
+    salaryStructureId: string | null
+    notes: string | null
+    signedAt: Date | null
+    terminatedAt: Date | null
+    terminationReason: string | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: EmploymentContractCountAggregateOutputType | null
+    _avg: EmploymentContractAvgAggregateOutputType | null
+    _sum: EmploymentContractSumAggregateOutputType | null
+    _min: EmploymentContractMinAggregateOutputType | null
+    _max: EmploymentContractMaxAggregateOutputType | null
+  }
+
+  type GetEmploymentContractGroupByPayload<T extends EmploymentContractGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EmploymentContractGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EmploymentContractGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EmploymentContractGroupByOutputType[P]>
+            : GetScalarType<T[P], EmploymentContractGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EmploymentContractSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractNumber?: boolean
+    userId?: boolean
+    type?: boolean
+    status?: boolean
+    jobTitle?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    probationEndDate?: boolean
+    noticeDays?: boolean
+    hoursPerWeek?: boolean
+    baseSalary?: boolean
+    salaryStructureId?: boolean
+    notes?: boolean
+    signedAt?: boolean
+    terminatedAt?: boolean
+    terminationReason?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employmentContract"]>
+
+  export type EmploymentContractSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractNumber?: boolean
+    userId?: boolean
+    type?: boolean
+    status?: boolean
+    jobTitle?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    probationEndDate?: boolean
+    noticeDays?: boolean
+    hoursPerWeek?: boolean
+    baseSalary?: boolean
+    salaryStructureId?: boolean
+    notes?: boolean
+    signedAt?: boolean
+    terminatedAt?: boolean
+    terminationReason?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employmentContract"]>
+
+  export type EmploymentContractSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    contractNumber?: boolean
+    userId?: boolean
+    type?: boolean
+    status?: boolean
+    jobTitle?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    probationEndDate?: boolean
+    noticeDays?: boolean
+    hoursPerWeek?: boolean
+    baseSalary?: boolean
+    salaryStructureId?: boolean
+    notes?: boolean
+    signedAt?: boolean
+    terminatedAt?: boolean
+    terminationReason?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["employmentContract"]>
+
+  export type EmploymentContractSelectScalar = {
+    id?: boolean
+    contractNumber?: boolean
+    userId?: boolean
+    type?: boolean
+    status?: boolean
+    jobTitle?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    probationEndDate?: boolean
+    noticeDays?: boolean
+    hoursPerWeek?: boolean
+    baseSalary?: boolean
+    salaryStructureId?: boolean
+    notes?: boolean
+    signedAt?: boolean
+    terminatedAt?: boolean
+    terminationReason?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EmploymentContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "contractNumber" | "userId" | "type" | "status" | "jobTitle" | "startDate" | "endDate" | "probationEndDate" | "noticeDays" | "hoursPerWeek" | "baseSalary" | "salaryStructureId" | "notes" | "signedAt" | "terminatedAt" | "terminationReason" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["employmentContract"]>
+
+  export type $EmploymentContractPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EmploymentContract"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      contractNumber: string
+      userId: string
+      type: string
+      status: string
+      jobTitle: string
+      startDate: Date
+      endDate: Date | null
+      probationEndDate: Date | null
+      noticeDays: number
+      hoursPerWeek: number
+      baseSalary: number
+      salaryStructureId: string | null
+      notes: string | null
+      signedAt: Date | null
+      terminatedAt: Date | null
+      terminationReason: string | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["employmentContract"]>
+    composites: {}
+  }
+
+  type EmploymentContractGetPayload<S extends boolean | null | undefined | EmploymentContractDefaultArgs> = $Result.GetResult<Prisma.$EmploymentContractPayload, S>
+
+  type EmploymentContractCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EmploymentContractFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EmploymentContractCountAggregateInputType | true
+    }
+
+  export interface EmploymentContractDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EmploymentContract'], meta: { name: 'EmploymentContract' } }
+    /**
+     * Find zero or one EmploymentContract that matches the filter.
+     * @param {EmploymentContractFindUniqueArgs} args - Arguments to find a EmploymentContract
+     * @example
+     * // Get one EmploymentContract
+     * const employmentContract = await prisma.employmentContract.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EmploymentContractFindUniqueArgs>(args: SelectSubset<T, EmploymentContractFindUniqueArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EmploymentContract that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EmploymentContractFindUniqueOrThrowArgs} args - Arguments to find a EmploymentContract
+     * @example
+     * // Get one EmploymentContract
+     * const employmentContract = await prisma.employmentContract.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EmploymentContractFindUniqueOrThrowArgs>(args: SelectSubset<T, EmploymentContractFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmploymentContract that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractFindFirstArgs} args - Arguments to find a EmploymentContract
+     * @example
+     * // Get one EmploymentContract
+     * const employmentContract = await prisma.employmentContract.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EmploymentContractFindFirstArgs>(args?: SelectSubset<T, EmploymentContractFindFirstArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EmploymentContract that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractFindFirstOrThrowArgs} args - Arguments to find a EmploymentContract
+     * @example
+     * // Get one EmploymentContract
+     * const employmentContract = await prisma.employmentContract.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EmploymentContractFindFirstOrThrowArgs>(args?: SelectSubset<T, EmploymentContractFindFirstOrThrowArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EmploymentContracts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EmploymentContracts
+     * const employmentContracts = await prisma.employmentContract.findMany()
+     * 
+     * // Get first 10 EmploymentContracts
+     * const employmentContracts = await prisma.employmentContract.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const employmentContractWithIdOnly = await prisma.employmentContract.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EmploymentContractFindManyArgs>(args?: SelectSubset<T, EmploymentContractFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EmploymentContract.
+     * @param {EmploymentContractCreateArgs} args - Arguments to create a EmploymentContract.
+     * @example
+     * // Create one EmploymentContract
+     * const EmploymentContract = await prisma.employmentContract.create({
+     *   data: {
+     *     // ... data to create a EmploymentContract
+     *   }
+     * })
+     * 
+     */
+    create<T extends EmploymentContractCreateArgs>(args: SelectSubset<T, EmploymentContractCreateArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EmploymentContracts.
+     * @param {EmploymentContractCreateManyArgs} args - Arguments to create many EmploymentContracts.
+     * @example
+     * // Create many EmploymentContracts
+     * const employmentContract = await prisma.employmentContract.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EmploymentContractCreateManyArgs>(args?: SelectSubset<T, EmploymentContractCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EmploymentContracts and returns the data saved in the database.
+     * @param {EmploymentContractCreateManyAndReturnArgs} args - Arguments to create many EmploymentContracts.
+     * @example
+     * // Create many EmploymentContracts
+     * const employmentContract = await prisma.employmentContract.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EmploymentContracts and only return the `id`
+     * const employmentContractWithIdOnly = await prisma.employmentContract.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EmploymentContractCreateManyAndReturnArgs>(args?: SelectSubset<T, EmploymentContractCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EmploymentContract.
+     * @param {EmploymentContractDeleteArgs} args - Arguments to delete one EmploymentContract.
+     * @example
+     * // Delete one EmploymentContract
+     * const EmploymentContract = await prisma.employmentContract.delete({
+     *   where: {
+     *     // ... filter to delete one EmploymentContract
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EmploymentContractDeleteArgs>(args: SelectSubset<T, EmploymentContractDeleteArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EmploymentContract.
+     * @param {EmploymentContractUpdateArgs} args - Arguments to update one EmploymentContract.
+     * @example
+     * // Update one EmploymentContract
+     * const employmentContract = await prisma.employmentContract.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EmploymentContractUpdateArgs>(args: SelectSubset<T, EmploymentContractUpdateArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EmploymentContracts.
+     * @param {EmploymentContractDeleteManyArgs} args - Arguments to filter EmploymentContracts to delete.
+     * @example
+     * // Delete a few EmploymentContracts
+     * const { count } = await prisma.employmentContract.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EmploymentContractDeleteManyArgs>(args?: SelectSubset<T, EmploymentContractDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmploymentContracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EmploymentContracts
+     * const employmentContract = await prisma.employmentContract.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EmploymentContractUpdateManyArgs>(args: SelectSubset<T, EmploymentContractUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EmploymentContracts and returns the data updated in the database.
+     * @param {EmploymentContractUpdateManyAndReturnArgs} args - Arguments to update many EmploymentContracts.
+     * @example
+     * // Update many EmploymentContracts
+     * const employmentContract = await prisma.employmentContract.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EmploymentContracts and only return the `id`
+     * const employmentContractWithIdOnly = await prisma.employmentContract.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EmploymentContractUpdateManyAndReturnArgs>(args: SelectSubset<T, EmploymentContractUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EmploymentContract.
+     * @param {EmploymentContractUpsertArgs} args - Arguments to update or create a EmploymentContract.
+     * @example
+     * // Update or create a EmploymentContract
+     * const employmentContract = await prisma.employmentContract.upsert({
+     *   create: {
+     *     // ... data to create a EmploymentContract
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EmploymentContract we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EmploymentContractUpsertArgs>(args: SelectSubset<T, EmploymentContractUpsertArgs<ExtArgs>>): Prisma__EmploymentContractClient<$Result.GetResult<Prisma.$EmploymentContractPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EmploymentContracts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractCountArgs} args - Arguments to filter EmploymentContracts to count.
+     * @example
+     * // Count the number of EmploymentContracts
+     * const count = await prisma.employmentContract.count({
+     *   where: {
+     *     // ... the filter for the EmploymentContracts we want to count
+     *   }
+     * })
+    **/
+    count<T extends EmploymentContractCountArgs>(
+      args?: Subset<T, EmploymentContractCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EmploymentContractCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EmploymentContract.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EmploymentContractAggregateArgs>(args: Subset<T, EmploymentContractAggregateArgs>): Prisma.PrismaPromise<GetEmploymentContractAggregateType<T>>
+
+    /**
+     * Group by EmploymentContract.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EmploymentContractGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EmploymentContractGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EmploymentContractGroupByArgs['orderBy'] }
+        : { orderBy?: EmploymentContractGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EmploymentContractGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEmploymentContractGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EmploymentContract model
+   */
+  readonly fields: EmploymentContractFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EmploymentContract.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EmploymentContractClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EmploymentContract model
+   */
+  interface EmploymentContractFieldRefs {
+    readonly id: FieldRef<"EmploymentContract", 'String'>
+    readonly contractNumber: FieldRef<"EmploymentContract", 'String'>
+    readonly userId: FieldRef<"EmploymentContract", 'String'>
+    readonly type: FieldRef<"EmploymentContract", 'String'>
+    readonly status: FieldRef<"EmploymentContract", 'String'>
+    readonly jobTitle: FieldRef<"EmploymentContract", 'String'>
+    readonly startDate: FieldRef<"EmploymentContract", 'DateTime'>
+    readonly endDate: FieldRef<"EmploymentContract", 'DateTime'>
+    readonly probationEndDate: FieldRef<"EmploymentContract", 'DateTime'>
+    readonly noticeDays: FieldRef<"EmploymentContract", 'Int'>
+    readonly hoursPerWeek: FieldRef<"EmploymentContract", 'Float'>
+    readonly baseSalary: FieldRef<"EmploymentContract", 'Float'>
+    readonly salaryStructureId: FieldRef<"EmploymentContract", 'String'>
+    readonly notes: FieldRef<"EmploymentContract", 'String'>
+    readonly signedAt: FieldRef<"EmploymentContract", 'DateTime'>
+    readonly terminatedAt: FieldRef<"EmploymentContract", 'DateTime'>
+    readonly terminationReason: FieldRef<"EmploymentContract", 'String'>
+    readonly createdById: FieldRef<"EmploymentContract", 'String'>
+    readonly createdAt: FieldRef<"EmploymentContract", 'DateTime'>
+    readonly updatedAt: FieldRef<"EmploymentContract", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EmploymentContract findUnique
+   */
+  export type EmploymentContractFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * Filter, which EmploymentContract to fetch.
+     */
+    where: EmploymentContractWhereUniqueInput
+  }
+
+  /**
+   * EmploymentContract findUniqueOrThrow
+   */
+  export type EmploymentContractFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * Filter, which EmploymentContract to fetch.
+     */
+    where: EmploymentContractWhereUniqueInput
+  }
+
+  /**
+   * EmploymentContract findFirst
+   */
+  export type EmploymentContractFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * Filter, which EmploymentContract to fetch.
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmploymentContracts to fetch.
+     */
+    orderBy?: EmploymentContractOrderByWithRelationInput | EmploymentContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmploymentContracts.
+     */
+    cursor?: EmploymentContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmploymentContracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmploymentContracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmploymentContracts.
+     */
+    distinct?: EmploymentContractScalarFieldEnum | EmploymentContractScalarFieldEnum[]
+  }
+
+  /**
+   * EmploymentContract findFirstOrThrow
+   */
+  export type EmploymentContractFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * Filter, which EmploymentContract to fetch.
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmploymentContracts to fetch.
+     */
+    orderBy?: EmploymentContractOrderByWithRelationInput | EmploymentContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EmploymentContracts.
+     */
+    cursor?: EmploymentContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmploymentContracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmploymentContracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmploymentContracts.
+     */
+    distinct?: EmploymentContractScalarFieldEnum | EmploymentContractScalarFieldEnum[]
+  }
+
+  /**
+   * EmploymentContract findMany
+   */
+  export type EmploymentContractFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * Filter, which EmploymentContracts to fetch.
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EmploymentContracts to fetch.
+     */
+    orderBy?: EmploymentContractOrderByWithRelationInput | EmploymentContractOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EmploymentContracts.
+     */
+    cursor?: EmploymentContractWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EmploymentContracts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EmploymentContracts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EmploymentContracts.
+     */
+    distinct?: EmploymentContractScalarFieldEnum | EmploymentContractScalarFieldEnum[]
+  }
+
+  /**
+   * EmploymentContract create
+   */
+  export type EmploymentContractCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * The data needed to create a EmploymentContract.
+     */
+    data: XOR<EmploymentContractCreateInput, EmploymentContractUncheckedCreateInput>
+  }
+
+  /**
+   * EmploymentContract createMany
+   */
+  export type EmploymentContractCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EmploymentContracts.
+     */
+    data: EmploymentContractCreateManyInput | EmploymentContractCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmploymentContract createManyAndReturn
+   */
+  export type EmploymentContractCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * The data used to create many EmploymentContracts.
+     */
+    data: EmploymentContractCreateManyInput | EmploymentContractCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EmploymentContract update
+   */
+  export type EmploymentContractUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * The data needed to update a EmploymentContract.
+     */
+    data: XOR<EmploymentContractUpdateInput, EmploymentContractUncheckedUpdateInput>
+    /**
+     * Choose, which EmploymentContract to update.
+     */
+    where: EmploymentContractWhereUniqueInput
+  }
+
+  /**
+   * EmploymentContract updateMany
+   */
+  export type EmploymentContractUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EmploymentContracts.
+     */
+    data: XOR<EmploymentContractUpdateManyMutationInput, EmploymentContractUncheckedUpdateManyInput>
+    /**
+     * Filter which EmploymentContracts to update
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * Limit how many EmploymentContracts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmploymentContract updateManyAndReturn
+   */
+  export type EmploymentContractUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * The data used to update EmploymentContracts.
+     */
+    data: XOR<EmploymentContractUpdateManyMutationInput, EmploymentContractUncheckedUpdateManyInput>
+    /**
+     * Filter which EmploymentContracts to update
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * Limit how many EmploymentContracts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmploymentContract upsert
+   */
+  export type EmploymentContractUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * The filter to search for the EmploymentContract to update in case it exists.
+     */
+    where: EmploymentContractWhereUniqueInput
+    /**
+     * In case the EmploymentContract found by the `where` argument doesn't exist, create a new EmploymentContract with this data.
+     */
+    create: XOR<EmploymentContractCreateInput, EmploymentContractUncheckedCreateInput>
+    /**
+     * In case the EmploymentContract was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EmploymentContractUpdateInput, EmploymentContractUncheckedUpdateInput>
+  }
+
+  /**
+   * EmploymentContract delete
+   */
+  export type EmploymentContractDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+    /**
+     * Filter which EmploymentContract to delete.
+     */
+    where: EmploymentContractWhereUniqueInput
+  }
+
+  /**
+   * EmploymentContract deleteMany
+   */
+  export type EmploymentContractDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EmploymentContracts to delete
+     */
+    where?: EmploymentContractWhereInput
+    /**
+     * Limit how many EmploymentContracts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EmploymentContract without action
+   */
+  export type EmploymentContractDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EmploymentContract
+     */
+    select?: EmploymentContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EmploymentContract
+     */
+    omit?: EmploymentContractOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StockCount
+   */
+
+  export type AggregateStockCount = {
+    _count: StockCountCountAggregateOutputType | null
+    _avg: StockCountAvgAggregateOutputType | null
+    _sum: StockCountSumAggregateOutputType | null
+    _min: StockCountMinAggregateOutputType | null
+    _max: StockCountMaxAggregateOutputType | null
+  }
+
+  export type StockCountAvgAggregateOutputType = {
+    totalVarianceValue: number | null
+  }
+
+  export type StockCountSumAggregateOutputType = {
+    totalVarianceValue: number | null
+  }
+
+  export type StockCountMinAggregateOutputType = {
+    id: string | null
+    countNumber: string | null
+    warehouseId: string | null
+    branchId: string | null
+    type: string | null
+    status: string | null
+    blind: boolean | null
+    category: string | null
+    notes: string | null
+    createdById: string | null
+    startedAt: Date | null
+    submittedAt: Date | null
+    submittedById: string | null
+    postedAt: Date | null
+    totalVarianceValue: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StockCountMaxAggregateOutputType = {
+    id: string | null
+    countNumber: string | null
+    warehouseId: string | null
+    branchId: string | null
+    type: string | null
+    status: string | null
+    blind: boolean | null
+    category: string | null
+    notes: string | null
+    createdById: string | null
+    startedAt: Date | null
+    submittedAt: Date | null
+    submittedById: string | null
+    postedAt: Date | null
+    totalVarianceValue: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StockCountCountAggregateOutputType = {
+    id: number
+    countNumber: number
+    warehouseId: number
+    branchId: number
+    type: number
+    status: number
+    blind: number
+    category: number
+    notes: number
+    createdById: number
+    startedAt: number
+    submittedAt: number
+    submittedById: number
+    postedAt: number
+    totalVarianceValue: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StockCountAvgAggregateInputType = {
+    totalVarianceValue?: true
+  }
+
+  export type StockCountSumAggregateInputType = {
+    totalVarianceValue?: true
+  }
+
+  export type StockCountMinAggregateInputType = {
+    id?: true
+    countNumber?: true
+    warehouseId?: true
+    branchId?: true
+    type?: true
+    status?: true
+    blind?: true
+    category?: true
+    notes?: true
+    createdById?: true
+    startedAt?: true
+    submittedAt?: true
+    submittedById?: true
+    postedAt?: true
+    totalVarianceValue?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StockCountMaxAggregateInputType = {
+    id?: true
+    countNumber?: true
+    warehouseId?: true
+    branchId?: true
+    type?: true
+    status?: true
+    blind?: true
+    category?: true
+    notes?: true
+    createdById?: true
+    startedAt?: true
+    submittedAt?: true
+    submittedById?: true
+    postedAt?: true
+    totalVarianceValue?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StockCountCountAggregateInputType = {
+    id?: true
+    countNumber?: true
+    warehouseId?: true
+    branchId?: true
+    type?: true
+    status?: true
+    blind?: true
+    category?: true
+    notes?: true
+    createdById?: true
+    startedAt?: true
+    submittedAt?: true
+    submittedById?: true
+    postedAt?: true
+    totalVarianceValue?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StockCountAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockCount to aggregate.
+     */
+    where?: StockCountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCounts to fetch.
+     */
+    orderBy?: StockCountOrderByWithRelationInput | StockCountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockCountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockCounts
+    **/
+    _count?: true | StockCountCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockCountAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockCountSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockCountMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockCountMaxAggregateInputType
+  }
+
+  export type GetStockCountAggregateType<T extends StockCountAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockCount]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockCount[P]>
+      : GetScalarType<T[P], AggregateStockCount[P]>
+  }
+
+
+
+
+  export type StockCountGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockCountWhereInput
+    orderBy?: StockCountOrderByWithAggregationInput | StockCountOrderByWithAggregationInput[]
+    by: StockCountScalarFieldEnum[] | StockCountScalarFieldEnum
+    having?: StockCountScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockCountCountAggregateInputType | true
+    _avg?: StockCountAvgAggregateInputType
+    _sum?: StockCountSumAggregateInputType
+    _min?: StockCountMinAggregateInputType
+    _max?: StockCountMaxAggregateInputType
+  }
+
+  export type StockCountGroupByOutputType = {
+    id: string
+    countNumber: string
+    warehouseId: string
+    branchId: string | null
+    type: string
+    status: string
+    blind: boolean
+    category: string | null
+    notes: string | null
+    createdById: string
+    startedAt: Date | null
+    submittedAt: Date | null
+    submittedById: string | null
+    postedAt: Date | null
+    totalVarianceValue: number | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StockCountCountAggregateOutputType | null
+    _avg: StockCountAvgAggregateOutputType | null
+    _sum: StockCountSumAggregateOutputType | null
+    _min: StockCountMinAggregateOutputType | null
+    _max: StockCountMaxAggregateOutputType | null
+  }
+
+  type GetStockCountGroupByPayload<T extends StockCountGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockCountGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockCountGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockCountGroupByOutputType[P]>
+            : GetScalarType<T[P], StockCountGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockCountSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    countNumber?: boolean
+    warehouseId?: boolean
+    branchId?: boolean
+    type?: boolean
+    status?: boolean
+    blind?: boolean
+    category?: boolean
+    notes?: boolean
+    createdById?: boolean
+    startedAt?: boolean
+    submittedAt?: boolean
+    submittedById?: boolean
+    postedAt?: boolean
+    totalVarianceValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stockCount"]>
+
+  export type StockCountSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    countNumber?: boolean
+    warehouseId?: boolean
+    branchId?: boolean
+    type?: boolean
+    status?: boolean
+    blind?: boolean
+    category?: boolean
+    notes?: boolean
+    createdById?: boolean
+    startedAt?: boolean
+    submittedAt?: boolean
+    submittedById?: boolean
+    postedAt?: boolean
+    totalVarianceValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stockCount"]>
+
+  export type StockCountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    countNumber?: boolean
+    warehouseId?: boolean
+    branchId?: boolean
+    type?: boolean
+    status?: boolean
+    blind?: boolean
+    category?: boolean
+    notes?: boolean
+    createdById?: boolean
+    startedAt?: boolean
+    submittedAt?: boolean
+    submittedById?: boolean
+    postedAt?: boolean
+    totalVarianceValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stockCount"]>
+
+  export type StockCountSelectScalar = {
+    id?: boolean
+    countNumber?: boolean
+    warehouseId?: boolean
+    branchId?: boolean
+    type?: boolean
+    status?: boolean
+    blind?: boolean
+    category?: boolean
+    notes?: boolean
+    createdById?: boolean
+    startedAt?: boolean
+    submittedAt?: boolean
+    submittedById?: boolean
+    postedAt?: boolean
+    totalVarianceValue?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StockCountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "countNumber" | "warehouseId" | "branchId" | "type" | "status" | "blind" | "category" | "notes" | "createdById" | "startedAt" | "submittedAt" | "submittedById" | "postedAt" | "totalVarianceValue" | "createdAt" | "updatedAt", ExtArgs["result"]["stockCount"]>
+
+  export type $StockCountPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockCount"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      countNumber: string
+      warehouseId: string
+      branchId: string | null
+      type: string
+      status: string
+      blind: boolean
+      category: string | null
+      notes: string | null
+      createdById: string
+      startedAt: Date | null
+      submittedAt: Date | null
+      submittedById: string | null
+      postedAt: Date | null
+      totalVarianceValue: number | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["stockCount"]>
+    composites: {}
+  }
+
+  type StockCountGetPayload<S extends boolean | null | undefined | StockCountDefaultArgs> = $Result.GetResult<Prisma.$StockCountPayload, S>
+
+  type StockCountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockCountFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockCountCountAggregateInputType | true
+    }
+
+  export interface StockCountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockCount'], meta: { name: 'StockCount' } }
+    /**
+     * Find zero or one StockCount that matches the filter.
+     * @param {StockCountFindUniqueArgs} args - Arguments to find a StockCount
+     * @example
+     * // Get one StockCount
+     * const stockCount = await prisma.stockCount.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockCountFindUniqueArgs>(args: SelectSubset<T, StockCountFindUniqueArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockCount that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockCountFindUniqueOrThrowArgs} args - Arguments to find a StockCount
+     * @example
+     * // Get one StockCount
+     * const stockCount = await prisma.stockCount.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockCountFindUniqueOrThrowArgs>(args: SelectSubset<T, StockCountFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockCount that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountFindFirstArgs} args - Arguments to find a StockCount
+     * @example
+     * // Get one StockCount
+     * const stockCount = await prisma.stockCount.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockCountFindFirstArgs>(args?: SelectSubset<T, StockCountFindFirstArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockCount that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountFindFirstOrThrowArgs} args - Arguments to find a StockCount
+     * @example
+     * // Get one StockCount
+     * const stockCount = await prisma.stockCount.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockCountFindFirstOrThrowArgs>(args?: SelectSubset<T, StockCountFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockCounts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockCounts
+     * const stockCounts = await prisma.stockCount.findMany()
+     * 
+     * // Get first 10 StockCounts
+     * const stockCounts = await prisma.stockCount.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockCountWithIdOnly = await prisma.stockCount.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockCountFindManyArgs>(args?: SelectSubset<T, StockCountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockCount.
+     * @param {StockCountCreateArgs} args - Arguments to create a StockCount.
+     * @example
+     * // Create one StockCount
+     * const StockCount = await prisma.stockCount.create({
+     *   data: {
+     *     // ... data to create a StockCount
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockCountCreateArgs>(args: SelectSubset<T, StockCountCreateArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockCounts.
+     * @param {StockCountCreateManyArgs} args - Arguments to create many StockCounts.
+     * @example
+     * // Create many StockCounts
+     * const stockCount = await prisma.stockCount.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockCountCreateManyArgs>(args?: SelectSubset<T, StockCountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockCounts and returns the data saved in the database.
+     * @param {StockCountCreateManyAndReturnArgs} args - Arguments to create many StockCounts.
+     * @example
+     * // Create many StockCounts
+     * const stockCount = await prisma.stockCount.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockCounts and only return the `id`
+     * const stockCountWithIdOnly = await prisma.stockCount.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockCountCreateManyAndReturnArgs>(args?: SelectSubset<T, StockCountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockCount.
+     * @param {StockCountDeleteArgs} args - Arguments to delete one StockCount.
+     * @example
+     * // Delete one StockCount
+     * const StockCount = await prisma.stockCount.delete({
+     *   where: {
+     *     // ... filter to delete one StockCount
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockCountDeleteArgs>(args: SelectSubset<T, StockCountDeleteArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockCount.
+     * @param {StockCountUpdateArgs} args - Arguments to update one StockCount.
+     * @example
+     * // Update one StockCount
+     * const stockCount = await prisma.stockCount.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockCountUpdateArgs>(args: SelectSubset<T, StockCountUpdateArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockCounts.
+     * @param {StockCountDeleteManyArgs} args - Arguments to filter StockCounts to delete.
+     * @example
+     * // Delete a few StockCounts
+     * const { count } = await prisma.stockCount.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockCountDeleteManyArgs>(args?: SelectSubset<T, StockCountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockCounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockCounts
+     * const stockCount = await prisma.stockCount.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockCountUpdateManyArgs>(args: SelectSubset<T, StockCountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockCounts and returns the data updated in the database.
+     * @param {StockCountUpdateManyAndReturnArgs} args - Arguments to update many StockCounts.
+     * @example
+     * // Update many StockCounts
+     * const stockCount = await prisma.stockCount.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockCounts and only return the `id`
+     * const stockCountWithIdOnly = await prisma.stockCount.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockCountUpdateManyAndReturnArgs>(args: SelectSubset<T, StockCountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockCount.
+     * @param {StockCountUpsertArgs} args - Arguments to update or create a StockCount.
+     * @example
+     * // Update or create a StockCount
+     * const stockCount = await prisma.stockCount.upsert({
+     *   create: {
+     *     // ... data to create a StockCount
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockCount we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockCountUpsertArgs>(args: SelectSubset<T, StockCountUpsertArgs<ExtArgs>>): Prisma__StockCountClient<$Result.GetResult<Prisma.$StockCountPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockCounts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountCountArgs} args - Arguments to filter StockCounts to count.
+     * @example
+     * // Count the number of StockCounts
+     * const count = await prisma.stockCount.count({
+     *   where: {
+     *     // ... the filter for the StockCounts we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockCountCountArgs>(
+      args?: Subset<T, StockCountCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockCountCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockCount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockCountAggregateArgs>(args: Subset<T, StockCountAggregateArgs>): Prisma.PrismaPromise<GetStockCountAggregateType<T>>
+
+    /**
+     * Group by StockCount.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockCountGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockCountGroupByArgs['orderBy'] }
+        : { orderBy?: StockCountGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockCountGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockCountGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockCount model
+   */
+  readonly fields: StockCountFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockCount.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockCountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockCount model
+   */
+  interface StockCountFieldRefs {
+    readonly id: FieldRef<"StockCount", 'String'>
+    readonly countNumber: FieldRef<"StockCount", 'String'>
+    readonly warehouseId: FieldRef<"StockCount", 'String'>
+    readonly branchId: FieldRef<"StockCount", 'String'>
+    readonly type: FieldRef<"StockCount", 'String'>
+    readonly status: FieldRef<"StockCount", 'String'>
+    readonly blind: FieldRef<"StockCount", 'Boolean'>
+    readonly category: FieldRef<"StockCount", 'String'>
+    readonly notes: FieldRef<"StockCount", 'String'>
+    readonly createdById: FieldRef<"StockCount", 'String'>
+    readonly startedAt: FieldRef<"StockCount", 'DateTime'>
+    readonly submittedAt: FieldRef<"StockCount", 'DateTime'>
+    readonly submittedById: FieldRef<"StockCount", 'String'>
+    readonly postedAt: FieldRef<"StockCount", 'DateTime'>
+    readonly totalVarianceValue: FieldRef<"StockCount", 'Float'>
+    readonly createdAt: FieldRef<"StockCount", 'DateTime'>
+    readonly updatedAt: FieldRef<"StockCount", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockCount findUnique
+   */
+  export type StockCountFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCount to fetch.
+     */
+    where: StockCountWhereUniqueInput
+  }
+
+  /**
+   * StockCount findUniqueOrThrow
+   */
+  export type StockCountFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCount to fetch.
+     */
+    where: StockCountWhereUniqueInput
+  }
+
+  /**
+   * StockCount findFirst
+   */
+  export type StockCountFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCount to fetch.
+     */
+    where?: StockCountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCounts to fetch.
+     */
+    orderBy?: StockCountOrderByWithRelationInput | StockCountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockCounts.
+     */
+    cursor?: StockCountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockCounts.
+     */
+    distinct?: StockCountScalarFieldEnum | StockCountScalarFieldEnum[]
+  }
+
+  /**
+   * StockCount findFirstOrThrow
+   */
+  export type StockCountFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCount to fetch.
+     */
+    where?: StockCountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCounts to fetch.
+     */
+    orderBy?: StockCountOrderByWithRelationInput | StockCountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockCounts.
+     */
+    cursor?: StockCountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockCounts.
+     */
+    distinct?: StockCountScalarFieldEnum | StockCountScalarFieldEnum[]
+  }
+
+  /**
+   * StockCount findMany
+   */
+  export type StockCountFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCounts to fetch.
+     */
+    where?: StockCountWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCounts to fetch.
+     */
+    orderBy?: StockCountOrderByWithRelationInput | StockCountOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockCounts.
+     */
+    cursor?: StockCountWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCounts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCounts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockCounts.
+     */
+    distinct?: StockCountScalarFieldEnum | StockCountScalarFieldEnum[]
+  }
+
+  /**
+   * StockCount create
+   */
+  export type StockCountCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * The data needed to create a StockCount.
+     */
+    data: XOR<StockCountCreateInput, StockCountUncheckedCreateInput>
+  }
+
+  /**
+   * StockCount createMany
+   */
+  export type StockCountCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockCounts.
+     */
+    data: StockCountCreateManyInput | StockCountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockCount createManyAndReturn
+   */
+  export type StockCountCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockCounts.
+     */
+    data: StockCountCreateManyInput | StockCountCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockCount update
+   */
+  export type StockCountUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * The data needed to update a StockCount.
+     */
+    data: XOR<StockCountUpdateInput, StockCountUncheckedUpdateInput>
+    /**
+     * Choose, which StockCount to update.
+     */
+    where: StockCountWhereUniqueInput
+  }
+
+  /**
+   * StockCount updateMany
+   */
+  export type StockCountUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockCounts.
+     */
+    data: XOR<StockCountUpdateManyMutationInput, StockCountUncheckedUpdateManyInput>
+    /**
+     * Filter which StockCounts to update
+     */
+    where?: StockCountWhereInput
+    /**
+     * Limit how many StockCounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockCount updateManyAndReturn
+   */
+  export type StockCountUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * The data used to update StockCounts.
+     */
+    data: XOR<StockCountUpdateManyMutationInput, StockCountUncheckedUpdateManyInput>
+    /**
+     * Filter which StockCounts to update
+     */
+    where?: StockCountWhereInput
+    /**
+     * Limit how many StockCounts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockCount upsert
+   */
+  export type StockCountUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * The filter to search for the StockCount to update in case it exists.
+     */
+    where: StockCountWhereUniqueInput
+    /**
+     * In case the StockCount found by the `where` argument doesn't exist, create a new StockCount with this data.
+     */
+    create: XOR<StockCountCreateInput, StockCountUncheckedCreateInput>
+    /**
+     * In case the StockCount was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockCountUpdateInput, StockCountUncheckedUpdateInput>
+  }
+
+  /**
+   * StockCount delete
+   */
+  export type StockCountDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+    /**
+     * Filter which StockCount to delete.
+     */
+    where: StockCountWhereUniqueInput
+  }
+
+  /**
+   * StockCount deleteMany
+   */
+  export type StockCountDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockCounts to delete
+     */
+    where?: StockCountWhereInput
+    /**
+     * Limit how many StockCounts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockCount without action
+   */
+  export type StockCountDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCount
+     */
+    select?: StockCountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCount
+     */
+    omit?: StockCountOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model StockCountLine
+   */
+
+  export type AggregateStockCountLine = {
+    _count: StockCountLineCountAggregateOutputType | null
+    _avg: StockCountLineAvgAggregateOutputType | null
+    _sum: StockCountLineSumAggregateOutputType | null
+    _min: StockCountLineMinAggregateOutputType | null
+    _max: StockCountLineMaxAggregateOutputType | null
+  }
+
+  export type StockCountLineAvgAggregateOutputType = {
+    unitCost: number | null
+    systemQty: number | null
+    countedQty: number | null
+  }
+
+  export type StockCountLineSumAggregateOutputType = {
+    unitCost: number | null
+    systemQty: number | null
+    countedQty: number | null
+  }
+
+  export type StockCountLineMinAggregateOutputType = {
+    id: string | null
+    countId: string | null
+    productId: string | null
+    productName: string | null
+    sku: string | null
+    unitCost: number | null
+    systemQty: number | null
+    countedQty: number | null
+    note: string | null
+    countedById: string | null
+    countedAt: Date | null
+    appliedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StockCountLineMaxAggregateOutputType = {
+    id: string | null
+    countId: string | null
+    productId: string | null
+    productName: string | null
+    sku: string | null
+    unitCost: number | null
+    systemQty: number | null
+    countedQty: number | null
+    note: string | null
+    countedById: string | null
+    countedAt: Date | null
+    appliedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StockCountLineCountAggregateOutputType = {
+    id: number
+    countId: number
+    productId: number
+    productName: number
+    sku: number
+    unitCost: number
+    systemQty: number
+    countedQty: number
+    note: number
+    countedById: number
+    countedAt: number
+    appliedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StockCountLineAvgAggregateInputType = {
+    unitCost?: true
+    systemQty?: true
+    countedQty?: true
+  }
+
+  export type StockCountLineSumAggregateInputType = {
+    unitCost?: true
+    systemQty?: true
+    countedQty?: true
+  }
+
+  export type StockCountLineMinAggregateInputType = {
+    id?: true
+    countId?: true
+    productId?: true
+    productName?: true
+    sku?: true
+    unitCost?: true
+    systemQty?: true
+    countedQty?: true
+    note?: true
+    countedById?: true
+    countedAt?: true
+    appliedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StockCountLineMaxAggregateInputType = {
+    id?: true
+    countId?: true
+    productId?: true
+    productName?: true
+    sku?: true
+    unitCost?: true
+    systemQty?: true
+    countedQty?: true
+    note?: true
+    countedById?: true
+    countedAt?: true
+    appliedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StockCountLineCountAggregateInputType = {
+    id?: true
+    countId?: true
+    productId?: true
+    productName?: true
+    sku?: true
+    unitCost?: true
+    systemQty?: true
+    countedQty?: true
+    note?: true
+    countedById?: true
+    countedAt?: true
+    appliedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StockCountLineAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockCountLine to aggregate.
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCountLines to fetch.
+     */
+    orderBy?: StockCountLineOrderByWithRelationInput | StockCountLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StockCountLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCountLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCountLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned StockCountLines
+    **/
+    _count?: true | StockCountLineCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StockCountLineAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StockCountLineSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StockCountLineMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StockCountLineMaxAggregateInputType
+  }
+
+  export type GetStockCountLineAggregateType<T extends StockCountLineAggregateArgs> = {
+        [P in keyof T & keyof AggregateStockCountLine]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStockCountLine[P]>
+      : GetScalarType<T[P], AggregateStockCountLine[P]>
+  }
+
+
+
+
+  export type StockCountLineGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StockCountLineWhereInput
+    orderBy?: StockCountLineOrderByWithAggregationInput | StockCountLineOrderByWithAggregationInput[]
+    by: StockCountLineScalarFieldEnum[] | StockCountLineScalarFieldEnum
+    having?: StockCountLineScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StockCountLineCountAggregateInputType | true
+    _avg?: StockCountLineAvgAggregateInputType
+    _sum?: StockCountLineSumAggregateInputType
+    _min?: StockCountLineMinAggregateInputType
+    _max?: StockCountLineMaxAggregateInputType
+  }
+
+  export type StockCountLineGroupByOutputType = {
+    id: string
+    countId: string
+    productId: string
+    productName: string
+    sku: string
+    unitCost: number
+    systemQty: number | null
+    countedQty: number | null
+    note: string | null
+    countedById: string | null
+    countedAt: Date | null
+    appliedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: StockCountLineCountAggregateOutputType | null
+    _avg: StockCountLineAvgAggregateOutputType | null
+    _sum: StockCountLineSumAggregateOutputType | null
+    _min: StockCountLineMinAggregateOutputType | null
+    _max: StockCountLineMaxAggregateOutputType | null
+  }
+
+  type GetStockCountLineGroupByPayload<T extends StockCountLineGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StockCountLineGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StockCountLineGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StockCountLineGroupByOutputType[P]>
+            : GetScalarType<T[P], StockCountLineGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StockCountLineSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    countId?: boolean
+    productId?: boolean
+    productName?: boolean
+    sku?: boolean
+    unitCost?: boolean
+    systemQty?: boolean
+    countedQty?: boolean
+    note?: boolean
+    countedById?: boolean
+    countedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stockCountLine"]>
+
+  export type StockCountLineSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    countId?: boolean
+    productId?: boolean
+    productName?: boolean
+    sku?: boolean
+    unitCost?: boolean
+    systemQty?: boolean
+    countedQty?: boolean
+    note?: boolean
+    countedById?: boolean
+    countedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stockCountLine"]>
+
+  export type StockCountLineSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    countId?: boolean
+    productId?: boolean
+    productName?: boolean
+    sku?: boolean
+    unitCost?: boolean
+    systemQty?: boolean
+    countedQty?: boolean
+    note?: boolean
+    countedById?: boolean
+    countedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["stockCountLine"]>
+
+  export type StockCountLineSelectScalar = {
+    id?: boolean
+    countId?: boolean
+    productId?: boolean
+    productName?: boolean
+    sku?: boolean
+    unitCost?: boolean
+    systemQty?: boolean
+    countedQty?: boolean
+    note?: boolean
+    countedById?: boolean
+    countedAt?: boolean
+    appliedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StockCountLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "countId" | "productId" | "productName" | "sku" | "unitCost" | "systemQty" | "countedQty" | "note" | "countedById" | "countedAt" | "appliedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["stockCountLine"]>
+
+  export type $StockCountLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "StockCountLine"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      countId: string
+      productId: string
+      productName: string
+      sku: string
+      unitCost: number
+      /**
+       * System quantity read at the moment the line was counted
+       */
+      systemQty: number | null
+      countedQty: number | null
+      note: string | null
+      countedById: string | null
+      countedAt: Date | null
+      appliedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["stockCountLine"]>
+    composites: {}
+  }
+
+  type StockCountLineGetPayload<S extends boolean | null | undefined | StockCountLineDefaultArgs> = $Result.GetResult<Prisma.$StockCountLinePayload, S>
+
+  type StockCountLineCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StockCountLineFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StockCountLineCountAggregateInputType | true
+    }
+
+  export interface StockCountLineDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['StockCountLine'], meta: { name: 'StockCountLine' } }
+    /**
+     * Find zero or one StockCountLine that matches the filter.
+     * @param {StockCountLineFindUniqueArgs} args - Arguments to find a StockCountLine
+     * @example
+     * // Get one StockCountLine
+     * const stockCountLine = await prisma.stockCountLine.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StockCountLineFindUniqueArgs>(args: SelectSubset<T, StockCountLineFindUniqueArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one StockCountLine that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StockCountLineFindUniqueOrThrowArgs} args - Arguments to find a StockCountLine
+     * @example
+     * // Get one StockCountLine
+     * const stockCountLine = await prisma.stockCountLine.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StockCountLineFindUniqueOrThrowArgs>(args: SelectSubset<T, StockCountLineFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockCountLine that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineFindFirstArgs} args - Arguments to find a StockCountLine
+     * @example
+     * // Get one StockCountLine
+     * const stockCountLine = await prisma.stockCountLine.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StockCountLineFindFirstArgs>(args?: SelectSubset<T, StockCountLineFindFirstArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first StockCountLine that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineFindFirstOrThrowArgs} args - Arguments to find a StockCountLine
+     * @example
+     * // Get one StockCountLine
+     * const stockCountLine = await prisma.stockCountLine.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StockCountLineFindFirstOrThrowArgs>(args?: SelectSubset<T, StockCountLineFindFirstOrThrowArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more StockCountLines that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StockCountLines
+     * const stockCountLines = await prisma.stockCountLine.findMany()
+     * 
+     * // Get first 10 StockCountLines
+     * const stockCountLines = await prisma.stockCountLine.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const stockCountLineWithIdOnly = await prisma.stockCountLine.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StockCountLineFindManyArgs>(args?: SelectSubset<T, StockCountLineFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a StockCountLine.
+     * @param {StockCountLineCreateArgs} args - Arguments to create a StockCountLine.
+     * @example
+     * // Create one StockCountLine
+     * const StockCountLine = await prisma.stockCountLine.create({
+     *   data: {
+     *     // ... data to create a StockCountLine
+     *   }
+     * })
+     * 
+     */
+    create<T extends StockCountLineCreateArgs>(args: SelectSubset<T, StockCountLineCreateArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many StockCountLines.
+     * @param {StockCountLineCreateManyArgs} args - Arguments to create many StockCountLines.
+     * @example
+     * // Create many StockCountLines
+     * const stockCountLine = await prisma.stockCountLine.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StockCountLineCreateManyArgs>(args?: SelectSubset<T, StockCountLineCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many StockCountLines and returns the data saved in the database.
+     * @param {StockCountLineCreateManyAndReturnArgs} args - Arguments to create many StockCountLines.
+     * @example
+     * // Create many StockCountLines
+     * const stockCountLine = await prisma.stockCountLine.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many StockCountLines and only return the `id`
+     * const stockCountLineWithIdOnly = await prisma.stockCountLine.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StockCountLineCreateManyAndReturnArgs>(args?: SelectSubset<T, StockCountLineCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a StockCountLine.
+     * @param {StockCountLineDeleteArgs} args - Arguments to delete one StockCountLine.
+     * @example
+     * // Delete one StockCountLine
+     * const StockCountLine = await prisma.stockCountLine.delete({
+     *   where: {
+     *     // ... filter to delete one StockCountLine
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StockCountLineDeleteArgs>(args: SelectSubset<T, StockCountLineDeleteArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one StockCountLine.
+     * @param {StockCountLineUpdateArgs} args - Arguments to update one StockCountLine.
+     * @example
+     * // Update one StockCountLine
+     * const stockCountLine = await prisma.stockCountLine.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StockCountLineUpdateArgs>(args: SelectSubset<T, StockCountLineUpdateArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more StockCountLines.
+     * @param {StockCountLineDeleteManyArgs} args - Arguments to filter StockCountLines to delete.
+     * @example
+     * // Delete a few StockCountLines
+     * const { count } = await prisma.stockCountLine.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StockCountLineDeleteManyArgs>(args?: SelectSubset<T, StockCountLineDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockCountLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StockCountLines
+     * const stockCountLine = await prisma.stockCountLine.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StockCountLineUpdateManyArgs>(args: SelectSubset<T, StockCountLineUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more StockCountLines and returns the data updated in the database.
+     * @param {StockCountLineUpdateManyAndReturnArgs} args - Arguments to update many StockCountLines.
+     * @example
+     * // Update many StockCountLines
+     * const stockCountLine = await prisma.stockCountLine.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more StockCountLines and only return the `id`
+     * const stockCountLineWithIdOnly = await prisma.stockCountLine.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StockCountLineUpdateManyAndReturnArgs>(args: SelectSubset<T, StockCountLineUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one StockCountLine.
+     * @param {StockCountLineUpsertArgs} args - Arguments to update or create a StockCountLine.
+     * @example
+     * // Update or create a StockCountLine
+     * const stockCountLine = await prisma.stockCountLine.upsert({
+     *   create: {
+     *     // ... data to create a StockCountLine
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StockCountLine we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StockCountLineUpsertArgs>(args: SelectSubset<T, StockCountLineUpsertArgs<ExtArgs>>): Prisma__StockCountLineClient<$Result.GetResult<Prisma.$StockCountLinePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of StockCountLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineCountArgs} args - Arguments to filter StockCountLines to count.
+     * @example
+     * // Count the number of StockCountLines
+     * const count = await prisma.stockCountLine.count({
+     *   where: {
+     *     // ... the filter for the StockCountLines we want to count
+     *   }
+     * })
+    **/
+    count<T extends StockCountLineCountArgs>(
+      args?: Subset<T, StockCountLineCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StockCountLineCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a StockCountLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StockCountLineAggregateArgs>(args: Subset<T, StockCountLineAggregateArgs>): Prisma.PrismaPromise<GetStockCountLineAggregateType<T>>
+
+    /**
+     * Group by StockCountLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StockCountLineGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StockCountLineGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StockCountLineGroupByArgs['orderBy'] }
+        : { orderBy?: StockCountLineGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StockCountLineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStockCountLineGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the StockCountLine model
+   */
+  readonly fields: StockCountLineFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for StockCountLine.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StockCountLineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the StockCountLine model
+   */
+  interface StockCountLineFieldRefs {
+    readonly id: FieldRef<"StockCountLine", 'String'>
+    readonly countId: FieldRef<"StockCountLine", 'String'>
+    readonly productId: FieldRef<"StockCountLine", 'String'>
+    readonly productName: FieldRef<"StockCountLine", 'String'>
+    readonly sku: FieldRef<"StockCountLine", 'String'>
+    readonly unitCost: FieldRef<"StockCountLine", 'Float'>
+    readonly systemQty: FieldRef<"StockCountLine", 'Int'>
+    readonly countedQty: FieldRef<"StockCountLine", 'Int'>
+    readonly note: FieldRef<"StockCountLine", 'String'>
+    readonly countedById: FieldRef<"StockCountLine", 'String'>
+    readonly countedAt: FieldRef<"StockCountLine", 'DateTime'>
+    readonly appliedAt: FieldRef<"StockCountLine", 'DateTime'>
+    readonly createdAt: FieldRef<"StockCountLine", 'DateTime'>
+    readonly updatedAt: FieldRef<"StockCountLine", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * StockCountLine findUnique
+   */
+  export type StockCountLineFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCountLine to fetch.
+     */
+    where: StockCountLineWhereUniqueInput
+  }
+
+  /**
+   * StockCountLine findUniqueOrThrow
+   */
+  export type StockCountLineFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCountLine to fetch.
+     */
+    where: StockCountLineWhereUniqueInput
+  }
+
+  /**
+   * StockCountLine findFirst
+   */
+  export type StockCountLineFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCountLine to fetch.
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCountLines to fetch.
+     */
+    orderBy?: StockCountLineOrderByWithRelationInput | StockCountLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockCountLines.
+     */
+    cursor?: StockCountLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCountLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCountLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockCountLines.
+     */
+    distinct?: StockCountLineScalarFieldEnum | StockCountLineScalarFieldEnum[]
+  }
+
+  /**
+   * StockCountLine findFirstOrThrow
+   */
+  export type StockCountLineFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCountLine to fetch.
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCountLines to fetch.
+     */
+    orderBy?: StockCountLineOrderByWithRelationInput | StockCountLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for StockCountLines.
+     */
+    cursor?: StockCountLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCountLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCountLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockCountLines.
+     */
+    distinct?: StockCountLineScalarFieldEnum | StockCountLineScalarFieldEnum[]
+  }
+
+  /**
+   * StockCountLine findMany
+   */
+  export type StockCountLineFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * Filter, which StockCountLines to fetch.
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of StockCountLines to fetch.
+     */
+    orderBy?: StockCountLineOrderByWithRelationInput | StockCountLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing StockCountLines.
+     */
+    cursor?: StockCountLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` StockCountLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` StockCountLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of StockCountLines.
+     */
+    distinct?: StockCountLineScalarFieldEnum | StockCountLineScalarFieldEnum[]
+  }
+
+  /**
+   * StockCountLine create
+   */
+  export type StockCountLineCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * The data needed to create a StockCountLine.
+     */
+    data: XOR<StockCountLineCreateInput, StockCountLineUncheckedCreateInput>
+  }
+
+  /**
+   * StockCountLine createMany
+   */
+  export type StockCountLineCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StockCountLines.
+     */
+    data: StockCountLineCreateManyInput | StockCountLineCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockCountLine createManyAndReturn
+   */
+  export type StockCountLineCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * The data used to create many StockCountLines.
+     */
+    data: StockCountLineCreateManyInput | StockCountLineCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * StockCountLine update
+   */
+  export type StockCountLineUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * The data needed to update a StockCountLine.
+     */
+    data: XOR<StockCountLineUpdateInput, StockCountLineUncheckedUpdateInput>
+    /**
+     * Choose, which StockCountLine to update.
+     */
+    where: StockCountLineWhereUniqueInput
+  }
+
+  /**
+   * StockCountLine updateMany
+   */
+  export type StockCountLineUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StockCountLines.
+     */
+    data: XOR<StockCountLineUpdateManyMutationInput, StockCountLineUncheckedUpdateManyInput>
+    /**
+     * Filter which StockCountLines to update
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * Limit how many StockCountLines to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockCountLine updateManyAndReturn
+   */
+  export type StockCountLineUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * The data used to update StockCountLines.
+     */
+    data: XOR<StockCountLineUpdateManyMutationInput, StockCountLineUncheckedUpdateManyInput>
+    /**
+     * Filter which StockCountLines to update
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * Limit how many StockCountLines to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockCountLine upsert
+   */
+  export type StockCountLineUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * The filter to search for the StockCountLine to update in case it exists.
+     */
+    where: StockCountLineWhereUniqueInput
+    /**
+     * In case the StockCountLine found by the `where` argument doesn't exist, create a new StockCountLine with this data.
+     */
+    create: XOR<StockCountLineCreateInput, StockCountLineUncheckedCreateInput>
+    /**
+     * In case the StockCountLine was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StockCountLineUpdateInput, StockCountLineUncheckedUpdateInput>
+  }
+
+  /**
+   * StockCountLine delete
+   */
+  export type StockCountLineDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+    /**
+     * Filter which StockCountLine to delete.
+     */
+    where: StockCountLineWhereUniqueInput
+  }
+
+  /**
+   * StockCountLine deleteMany
+   */
+  export type StockCountLineDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which StockCountLines to delete
+     */
+    where?: StockCountLineWhereInput
+    /**
+     * Limit how many StockCountLines to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * StockCountLine without action
+   */
+  export type StockCountLineDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StockCountLine
+     */
+    select?: StockCountLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the StockCountLine
+     */
+    omit?: StockCountLineOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Rfq
+   */
+
+  export type AggregateRfq = {
+    _count: RfqCountAggregateOutputType | null
+    _min: RfqMinAggregateOutputType | null
+    _max: RfqMaxAggregateOutputType | null
+  }
+
+  export type RfqMinAggregateOutputType = {
+    id: string | null
+    rfqNumber: string | null
+    title: string | null
+    requisitionId: string | null
+    branchId: string | null
+    warehouseId: string | null
+    status: string | null
+    closingDate: Date | null
+    notes: string | null
+    exceptionReason: string | null
+    createdById: string | null
+    sentAt: Date | null
+    closedAt: Date | null
+    awardedQuoteId: string | null
+    awardReason: string | null
+    awardedById: string | null
+    awardedAt: Date | null
+    poId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqMaxAggregateOutputType = {
+    id: string | null
+    rfqNumber: string | null
+    title: string | null
+    requisitionId: string | null
+    branchId: string | null
+    warehouseId: string | null
+    status: string | null
+    closingDate: Date | null
+    notes: string | null
+    exceptionReason: string | null
+    createdById: string | null
+    sentAt: Date | null
+    closedAt: Date | null
+    awardedQuoteId: string | null
+    awardReason: string | null
+    awardedById: string | null
+    awardedAt: Date | null
+    poId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqCountAggregateOutputType = {
+    id: number
+    rfqNumber: number
+    title: number
+    requisitionId: number
+    branchId: number
+    warehouseId: number
+    status: number
+    closingDate: number
+    notes: number
+    exceptionReason: number
+    createdById: number
+    sentAt: number
+    closedAt: number
+    awardedQuoteId: number
+    awardReason: number
+    awardedById: number
+    awardedAt: number
+    poId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RfqMinAggregateInputType = {
+    id?: true
+    rfqNumber?: true
+    title?: true
+    requisitionId?: true
+    branchId?: true
+    warehouseId?: true
+    status?: true
+    closingDate?: true
+    notes?: true
+    exceptionReason?: true
+    createdById?: true
+    sentAt?: true
+    closedAt?: true
+    awardedQuoteId?: true
+    awardReason?: true
+    awardedById?: true
+    awardedAt?: true
+    poId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqMaxAggregateInputType = {
+    id?: true
+    rfqNumber?: true
+    title?: true
+    requisitionId?: true
+    branchId?: true
+    warehouseId?: true
+    status?: true
+    closingDate?: true
+    notes?: true
+    exceptionReason?: true
+    createdById?: true
+    sentAt?: true
+    closedAt?: true
+    awardedQuoteId?: true
+    awardReason?: true
+    awardedById?: true
+    awardedAt?: true
+    poId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqCountAggregateInputType = {
+    id?: true
+    rfqNumber?: true
+    title?: true
+    requisitionId?: true
+    branchId?: true
+    warehouseId?: true
+    status?: true
+    closingDate?: true
+    notes?: true
+    exceptionReason?: true
+    createdById?: true
+    sentAt?: true
+    closedAt?: true
+    awardedQuoteId?: true
+    awardReason?: true
+    awardedById?: true
+    awardedAt?: true
+    poId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RfqAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Rfq to aggregate.
+     */
+    where?: RfqWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rfqs to fetch.
+     */
+    orderBy?: RfqOrderByWithRelationInput | RfqOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RfqWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rfqs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rfqs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Rfqs
+    **/
+    _count?: true | RfqCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RfqMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RfqMaxAggregateInputType
+  }
+
+  export type GetRfqAggregateType<T extends RfqAggregateArgs> = {
+        [P in keyof T & keyof AggregateRfq]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRfq[P]>
+      : GetScalarType<T[P], AggregateRfq[P]>
+  }
+
+
+
+
+  export type RfqGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RfqWhereInput
+    orderBy?: RfqOrderByWithAggregationInput | RfqOrderByWithAggregationInput[]
+    by: RfqScalarFieldEnum[] | RfqScalarFieldEnum
+    having?: RfqScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RfqCountAggregateInputType | true
+    _min?: RfqMinAggregateInputType
+    _max?: RfqMaxAggregateInputType
+  }
+
+  export type RfqGroupByOutputType = {
+    id: string
+    rfqNumber: string
+    title: string
+    requisitionId: string | null
+    branchId: string
+    warehouseId: string | null
+    status: string
+    closingDate: Date
+    notes: string | null
+    exceptionReason: string | null
+    createdById: string
+    sentAt: Date | null
+    closedAt: Date | null
+    awardedQuoteId: string | null
+    awardReason: string | null
+    awardedById: string | null
+    awardedAt: Date | null
+    poId: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: RfqCountAggregateOutputType | null
+    _min: RfqMinAggregateOutputType | null
+    _max: RfqMaxAggregateOutputType | null
+  }
+
+  type GetRfqGroupByPayload<T extends RfqGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RfqGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RfqGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RfqGroupByOutputType[P]>
+            : GetScalarType<T[P], RfqGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RfqSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqNumber?: boolean
+    title?: boolean
+    requisitionId?: boolean
+    branchId?: boolean
+    warehouseId?: boolean
+    status?: boolean
+    closingDate?: boolean
+    notes?: boolean
+    exceptionReason?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    closedAt?: boolean
+    awardedQuoteId?: boolean
+    awardReason?: boolean
+    awardedById?: boolean
+    awardedAt?: boolean
+    poId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfq"]>
+
+  export type RfqSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqNumber?: boolean
+    title?: boolean
+    requisitionId?: boolean
+    branchId?: boolean
+    warehouseId?: boolean
+    status?: boolean
+    closingDate?: boolean
+    notes?: boolean
+    exceptionReason?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    closedAt?: boolean
+    awardedQuoteId?: boolean
+    awardReason?: boolean
+    awardedById?: boolean
+    awardedAt?: boolean
+    poId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfq"]>
+
+  export type RfqSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqNumber?: boolean
+    title?: boolean
+    requisitionId?: boolean
+    branchId?: boolean
+    warehouseId?: boolean
+    status?: boolean
+    closingDate?: boolean
+    notes?: boolean
+    exceptionReason?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    closedAt?: boolean
+    awardedQuoteId?: boolean
+    awardReason?: boolean
+    awardedById?: boolean
+    awardedAt?: boolean
+    poId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfq"]>
+
+  export type RfqSelectScalar = {
+    id?: boolean
+    rfqNumber?: boolean
+    title?: boolean
+    requisitionId?: boolean
+    branchId?: boolean
+    warehouseId?: boolean
+    status?: boolean
+    closingDate?: boolean
+    notes?: boolean
+    exceptionReason?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    closedAt?: boolean
+    awardedQuoteId?: boolean
+    awardReason?: boolean
+    awardedById?: boolean
+    awardedAt?: boolean
+    poId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RfqOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "rfqNumber" | "title" | "requisitionId" | "branchId" | "warehouseId" | "status" | "closingDate" | "notes" | "exceptionReason" | "createdById" | "sentAt" | "closedAt" | "awardedQuoteId" | "awardReason" | "awardedById" | "awardedAt" | "poId" | "createdAt" | "updatedAt", ExtArgs["result"]["rfq"]>
+
+  export type $RfqPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Rfq"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      rfqNumber: string
+      title: string
+      requisitionId: string | null
+      branchId: string
+      warehouseId: string | null
+      status: string
+      closingDate: Date
+      notes: string | null
+      exceptionReason: string | null
+      createdById: string
+      sentAt: Date | null
+      closedAt: Date | null
+      awardedQuoteId: string | null
+      awardReason: string | null
+      awardedById: string | null
+      awardedAt: Date | null
+      poId: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["rfq"]>
+    composites: {}
+  }
+
+  type RfqGetPayload<S extends boolean | null | undefined | RfqDefaultArgs> = $Result.GetResult<Prisma.$RfqPayload, S>
+
+  type RfqCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RfqFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RfqCountAggregateInputType | true
+    }
+
+  export interface RfqDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Rfq'], meta: { name: 'Rfq' } }
+    /**
+     * Find zero or one Rfq that matches the filter.
+     * @param {RfqFindUniqueArgs} args - Arguments to find a Rfq
+     * @example
+     * // Get one Rfq
+     * const rfq = await prisma.rfq.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RfqFindUniqueArgs>(args: SelectSubset<T, RfqFindUniqueArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Rfq that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RfqFindUniqueOrThrowArgs} args - Arguments to find a Rfq
+     * @example
+     * // Get one Rfq
+     * const rfq = await prisma.rfq.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RfqFindUniqueOrThrowArgs>(args: SelectSubset<T, RfqFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Rfq that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqFindFirstArgs} args - Arguments to find a Rfq
+     * @example
+     * // Get one Rfq
+     * const rfq = await prisma.rfq.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RfqFindFirstArgs>(args?: SelectSubset<T, RfqFindFirstArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Rfq that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqFindFirstOrThrowArgs} args - Arguments to find a Rfq
+     * @example
+     * // Get one Rfq
+     * const rfq = await prisma.rfq.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RfqFindFirstOrThrowArgs>(args?: SelectSubset<T, RfqFindFirstOrThrowArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Rfqs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Rfqs
+     * const rfqs = await prisma.rfq.findMany()
+     * 
+     * // Get first 10 Rfqs
+     * const rfqs = await prisma.rfq.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rfqWithIdOnly = await prisma.rfq.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RfqFindManyArgs>(args?: SelectSubset<T, RfqFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Rfq.
+     * @param {RfqCreateArgs} args - Arguments to create a Rfq.
+     * @example
+     * // Create one Rfq
+     * const Rfq = await prisma.rfq.create({
+     *   data: {
+     *     // ... data to create a Rfq
+     *   }
+     * })
+     * 
+     */
+    create<T extends RfqCreateArgs>(args: SelectSubset<T, RfqCreateArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Rfqs.
+     * @param {RfqCreateManyArgs} args - Arguments to create many Rfqs.
+     * @example
+     * // Create many Rfqs
+     * const rfq = await prisma.rfq.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RfqCreateManyArgs>(args?: SelectSubset<T, RfqCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Rfqs and returns the data saved in the database.
+     * @param {RfqCreateManyAndReturnArgs} args - Arguments to create many Rfqs.
+     * @example
+     * // Create many Rfqs
+     * const rfq = await prisma.rfq.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Rfqs and only return the `id`
+     * const rfqWithIdOnly = await prisma.rfq.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RfqCreateManyAndReturnArgs>(args?: SelectSubset<T, RfqCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Rfq.
+     * @param {RfqDeleteArgs} args - Arguments to delete one Rfq.
+     * @example
+     * // Delete one Rfq
+     * const Rfq = await prisma.rfq.delete({
+     *   where: {
+     *     // ... filter to delete one Rfq
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RfqDeleteArgs>(args: SelectSubset<T, RfqDeleteArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Rfq.
+     * @param {RfqUpdateArgs} args - Arguments to update one Rfq.
+     * @example
+     * // Update one Rfq
+     * const rfq = await prisma.rfq.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RfqUpdateArgs>(args: SelectSubset<T, RfqUpdateArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Rfqs.
+     * @param {RfqDeleteManyArgs} args - Arguments to filter Rfqs to delete.
+     * @example
+     * // Delete a few Rfqs
+     * const { count } = await prisma.rfq.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RfqDeleteManyArgs>(args?: SelectSubset<T, RfqDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Rfqs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Rfqs
+     * const rfq = await prisma.rfq.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RfqUpdateManyArgs>(args: SelectSubset<T, RfqUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Rfqs and returns the data updated in the database.
+     * @param {RfqUpdateManyAndReturnArgs} args - Arguments to update many Rfqs.
+     * @example
+     * // Update many Rfqs
+     * const rfq = await prisma.rfq.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Rfqs and only return the `id`
+     * const rfqWithIdOnly = await prisma.rfq.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RfqUpdateManyAndReturnArgs>(args: SelectSubset<T, RfqUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Rfq.
+     * @param {RfqUpsertArgs} args - Arguments to update or create a Rfq.
+     * @example
+     * // Update or create a Rfq
+     * const rfq = await prisma.rfq.upsert({
+     *   create: {
+     *     // ... data to create a Rfq
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Rfq we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RfqUpsertArgs>(args: SelectSubset<T, RfqUpsertArgs<ExtArgs>>): Prisma__RfqClient<$Result.GetResult<Prisma.$RfqPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Rfqs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqCountArgs} args - Arguments to filter Rfqs to count.
+     * @example
+     * // Count the number of Rfqs
+     * const count = await prisma.rfq.count({
+     *   where: {
+     *     // ... the filter for the Rfqs we want to count
+     *   }
+     * })
+    **/
+    count<T extends RfqCountArgs>(
+      args?: Subset<T, RfqCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RfqCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Rfq.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RfqAggregateArgs>(args: Subset<T, RfqAggregateArgs>): Prisma.PrismaPromise<GetRfqAggregateType<T>>
+
+    /**
+     * Group by Rfq.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RfqGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RfqGroupByArgs['orderBy'] }
+        : { orderBy?: RfqGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RfqGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRfqGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Rfq model
+   */
+  readonly fields: RfqFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Rfq.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RfqClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Rfq model
+   */
+  interface RfqFieldRefs {
+    readonly id: FieldRef<"Rfq", 'String'>
+    readonly rfqNumber: FieldRef<"Rfq", 'String'>
+    readonly title: FieldRef<"Rfq", 'String'>
+    readonly requisitionId: FieldRef<"Rfq", 'String'>
+    readonly branchId: FieldRef<"Rfq", 'String'>
+    readonly warehouseId: FieldRef<"Rfq", 'String'>
+    readonly status: FieldRef<"Rfq", 'String'>
+    readonly closingDate: FieldRef<"Rfq", 'DateTime'>
+    readonly notes: FieldRef<"Rfq", 'String'>
+    readonly exceptionReason: FieldRef<"Rfq", 'String'>
+    readonly createdById: FieldRef<"Rfq", 'String'>
+    readonly sentAt: FieldRef<"Rfq", 'DateTime'>
+    readonly closedAt: FieldRef<"Rfq", 'DateTime'>
+    readonly awardedQuoteId: FieldRef<"Rfq", 'String'>
+    readonly awardReason: FieldRef<"Rfq", 'String'>
+    readonly awardedById: FieldRef<"Rfq", 'String'>
+    readonly awardedAt: FieldRef<"Rfq", 'DateTime'>
+    readonly poId: FieldRef<"Rfq", 'String'>
+    readonly createdAt: FieldRef<"Rfq", 'DateTime'>
+    readonly updatedAt: FieldRef<"Rfq", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Rfq findUnique
+   */
+  export type RfqFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * Filter, which Rfq to fetch.
+     */
+    where: RfqWhereUniqueInput
+  }
+
+  /**
+   * Rfq findUniqueOrThrow
+   */
+  export type RfqFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * Filter, which Rfq to fetch.
+     */
+    where: RfqWhereUniqueInput
+  }
+
+  /**
+   * Rfq findFirst
+   */
+  export type RfqFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * Filter, which Rfq to fetch.
+     */
+    where?: RfqWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rfqs to fetch.
+     */
+    orderBy?: RfqOrderByWithRelationInput | RfqOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Rfqs.
+     */
+    cursor?: RfqWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rfqs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rfqs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Rfqs.
+     */
+    distinct?: RfqScalarFieldEnum | RfqScalarFieldEnum[]
+  }
+
+  /**
+   * Rfq findFirstOrThrow
+   */
+  export type RfqFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * Filter, which Rfq to fetch.
+     */
+    where?: RfqWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rfqs to fetch.
+     */
+    orderBy?: RfqOrderByWithRelationInput | RfqOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Rfqs.
+     */
+    cursor?: RfqWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rfqs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rfqs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Rfqs.
+     */
+    distinct?: RfqScalarFieldEnum | RfqScalarFieldEnum[]
+  }
+
+  /**
+   * Rfq findMany
+   */
+  export type RfqFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * Filter, which Rfqs to fetch.
+     */
+    where?: RfqWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Rfqs to fetch.
+     */
+    orderBy?: RfqOrderByWithRelationInput | RfqOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Rfqs.
+     */
+    cursor?: RfqWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Rfqs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Rfqs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Rfqs.
+     */
+    distinct?: RfqScalarFieldEnum | RfqScalarFieldEnum[]
+  }
+
+  /**
+   * Rfq create
+   */
+  export type RfqCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Rfq.
+     */
+    data: XOR<RfqCreateInput, RfqUncheckedCreateInput>
+  }
+
+  /**
+   * Rfq createMany
+   */
+  export type RfqCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Rfqs.
+     */
+    data: RfqCreateManyInput | RfqCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Rfq createManyAndReturn
+   */
+  export type RfqCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * The data used to create many Rfqs.
+     */
+    data: RfqCreateManyInput | RfqCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Rfq update
+   */
+  export type RfqUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Rfq.
+     */
+    data: XOR<RfqUpdateInput, RfqUncheckedUpdateInput>
+    /**
+     * Choose, which Rfq to update.
+     */
+    where: RfqWhereUniqueInput
+  }
+
+  /**
+   * Rfq updateMany
+   */
+  export type RfqUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Rfqs.
+     */
+    data: XOR<RfqUpdateManyMutationInput, RfqUncheckedUpdateManyInput>
+    /**
+     * Filter which Rfqs to update
+     */
+    where?: RfqWhereInput
+    /**
+     * Limit how many Rfqs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Rfq updateManyAndReturn
+   */
+  export type RfqUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * The data used to update Rfqs.
+     */
+    data: XOR<RfqUpdateManyMutationInput, RfqUncheckedUpdateManyInput>
+    /**
+     * Filter which Rfqs to update
+     */
+    where?: RfqWhereInput
+    /**
+     * Limit how many Rfqs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Rfq upsert
+   */
+  export type RfqUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Rfq to update in case it exists.
+     */
+    where: RfqWhereUniqueInput
+    /**
+     * In case the Rfq found by the `where` argument doesn't exist, create a new Rfq with this data.
+     */
+    create: XOR<RfqCreateInput, RfqUncheckedCreateInput>
+    /**
+     * In case the Rfq was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RfqUpdateInput, RfqUncheckedUpdateInput>
+  }
+
+  /**
+   * Rfq delete
+   */
+  export type RfqDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+    /**
+     * Filter which Rfq to delete.
+     */
+    where: RfqWhereUniqueInput
+  }
+
+  /**
+   * Rfq deleteMany
+   */
+  export type RfqDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Rfqs to delete
+     */
+    where?: RfqWhereInput
+    /**
+     * Limit how many Rfqs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Rfq without action
+   */
+  export type RfqDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Rfq
+     */
+    select?: RfqSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Rfq
+     */
+    omit?: RfqOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RfqItem
+   */
+
+  export type AggregateRfqItem = {
+    _count: RfqItemCountAggregateOutputType | null
+    _avg: RfqItemAvgAggregateOutputType | null
+    _sum: RfqItemSumAggregateOutputType | null
+    _min: RfqItemMinAggregateOutputType | null
+    _max: RfqItemMaxAggregateOutputType | null
+  }
+
+  export type RfqItemAvgAggregateOutputType = {
+    quantity: number | null
+  }
+
+  export type RfqItemSumAggregateOutputType = {
+    quantity: number | null
+  }
+
+  export type RfqItemMinAggregateOutputType = {
+    id: string | null
+    rfqId: string | null
+    productId: string | null
+    description: string | null
+    quantity: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqItemMaxAggregateOutputType = {
+    id: string | null
+    rfqId: string | null
+    productId: string | null
+    description: string | null
+    quantity: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqItemCountAggregateOutputType = {
+    id: number
+    rfqId: number
+    productId: number
+    description: number
+    quantity: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RfqItemAvgAggregateInputType = {
+    quantity?: true
+  }
+
+  export type RfqItemSumAggregateInputType = {
+    quantity?: true
+  }
+
+  export type RfqItemMinAggregateInputType = {
+    id?: true
+    rfqId?: true
+    productId?: true
+    description?: true
+    quantity?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqItemMaxAggregateInputType = {
+    id?: true
+    rfqId?: true
+    productId?: true
+    description?: true
+    quantity?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqItemCountAggregateInputType = {
+    id?: true
+    rfqId?: true
+    productId?: true
+    description?: true
+    quantity?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RfqItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RfqItem to aggregate.
+     */
+    where?: RfqItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqItems to fetch.
+     */
+    orderBy?: RfqItemOrderByWithRelationInput | RfqItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RfqItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RfqItems
+    **/
+    _count?: true | RfqItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RfqItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RfqItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RfqItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RfqItemMaxAggregateInputType
+  }
+
+  export type GetRfqItemAggregateType<T extends RfqItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateRfqItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRfqItem[P]>
+      : GetScalarType<T[P], AggregateRfqItem[P]>
+  }
+
+
+
+
+  export type RfqItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RfqItemWhereInput
+    orderBy?: RfqItemOrderByWithAggregationInput | RfqItemOrderByWithAggregationInput[]
+    by: RfqItemScalarFieldEnum[] | RfqItemScalarFieldEnum
+    having?: RfqItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RfqItemCountAggregateInputType | true
+    _avg?: RfqItemAvgAggregateInputType
+    _sum?: RfqItemSumAggregateInputType
+    _min?: RfqItemMinAggregateInputType
+    _max?: RfqItemMaxAggregateInputType
+  }
+
+  export type RfqItemGroupByOutputType = {
+    id: string
+    rfqId: string
+    productId: string | null
+    description: string
+    quantity: number
+    createdAt: Date
+    updatedAt: Date
+    _count: RfqItemCountAggregateOutputType | null
+    _avg: RfqItemAvgAggregateOutputType | null
+    _sum: RfqItemSumAggregateOutputType | null
+    _min: RfqItemMinAggregateOutputType | null
+    _max: RfqItemMaxAggregateOutputType | null
+  }
+
+  type GetRfqItemGroupByPayload<T extends RfqItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RfqItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RfqItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RfqItemGroupByOutputType[P]>
+            : GetScalarType<T[P], RfqItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RfqItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqId?: boolean
+    productId?: boolean
+    description?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqItem"]>
+
+  export type RfqItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqId?: boolean
+    productId?: boolean
+    description?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqItem"]>
+
+  export type RfqItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqId?: boolean
+    productId?: boolean
+    description?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqItem"]>
+
+  export type RfqItemSelectScalar = {
+    id?: boolean
+    rfqId?: boolean
+    productId?: boolean
+    description?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RfqItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "rfqId" | "productId" | "description" | "quantity" | "createdAt" | "updatedAt", ExtArgs["result"]["rfqItem"]>
+
+  export type $RfqItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RfqItem"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      rfqId: string
+      productId: string | null
+      description: string
+      quantity: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["rfqItem"]>
+    composites: {}
+  }
+
+  type RfqItemGetPayload<S extends boolean | null | undefined | RfqItemDefaultArgs> = $Result.GetResult<Prisma.$RfqItemPayload, S>
+
+  type RfqItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RfqItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RfqItemCountAggregateInputType | true
+    }
+
+  export interface RfqItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RfqItem'], meta: { name: 'RfqItem' } }
+    /**
+     * Find zero or one RfqItem that matches the filter.
+     * @param {RfqItemFindUniqueArgs} args - Arguments to find a RfqItem
+     * @example
+     * // Get one RfqItem
+     * const rfqItem = await prisma.rfqItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RfqItemFindUniqueArgs>(args: SelectSubset<T, RfqItemFindUniqueArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RfqItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RfqItemFindUniqueOrThrowArgs} args - Arguments to find a RfqItem
+     * @example
+     * // Get one RfqItem
+     * const rfqItem = await prisma.rfqItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RfqItemFindUniqueOrThrowArgs>(args: SelectSubset<T, RfqItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RfqItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemFindFirstArgs} args - Arguments to find a RfqItem
+     * @example
+     * // Get one RfqItem
+     * const rfqItem = await prisma.rfqItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RfqItemFindFirstArgs>(args?: SelectSubset<T, RfqItemFindFirstArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RfqItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemFindFirstOrThrowArgs} args - Arguments to find a RfqItem
+     * @example
+     * // Get one RfqItem
+     * const rfqItem = await prisma.rfqItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RfqItemFindFirstOrThrowArgs>(args?: SelectSubset<T, RfqItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RfqItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RfqItems
+     * const rfqItems = await prisma.rfqItem.findMany()
+     * 
+     * // Get first 10 RfqItems
+     * const rfqItems = await prisma.rfqItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rfqItemWithIdOnly = await prisma.rfqItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RfqItemFindManyArgs>(args?: SelectSubset<T, RfqItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RfqItem.
+     * @param {RfqItemCreateArgs} args - Arguments to create a RfqItem.
+     * @example
+     * // Create one RfqItem
+     * const RfqItem = await prisma.rfqItem.create({
+     *   data: {
+     *     // ... data to create a RfqItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends RfqItemCreateArgs>(args: SelectSubset<T, RfqItemCreateArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RfqItems.
+     * @param {RfqItemCreateManyArgs} args - Arguments to create many RfqItems.
+     * @example
+     * // Create many RfqItems
+     * const rfqItem = await prisma.rfqItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RfqItemCreateManyArgs>(args?: SelectSubset<T, RfqItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RfqItems and returns the data saved in the database.
+     * @param {RfqItemCreateManyAndReturnArgs} args - Arguments to create many RfqItems.
+     * @example
+     * // Create many RfqItems
+     * const rfqItem = await prisma.rfqItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RfqItems and only return the `id`
+     * const rfqItemWithIdOnly = await prisma.rfqItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RfqItemCreateManyAndReturnArgs>(args?: SelectSubset<T, RfqItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RfqItem.
+     * @param {RfqItemDeleteArgs} args - Arguments to delete one RfqItem.
+     * @example
+     * // Delete one RfqItem
+     * const RfqItem = await prisma.rfqItem.delete({
+     *   where: {
+     *     // ... filter to delete one RfqItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RfqItemDeleteArgs>(args: SelectSubset<T, RfqItemDeleteArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RfqItem.
+     * @param {RfqItemUpdateArgs} args - Arguments to update one RfqItem.
+     * @example
+     * // Update one RfqItem
+     * const rfqItem = await prisma.rfqItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RfqItemUpdateArgs>(args: SelectSubset<T, RfqItemUpdateArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RfqItems.
+     * @param {RfqItemDeleteManyArgs} args - Arguments to filter RfqItems to delete.
+     * @example
+     * // Delete a few RfqItems
+     * const { count } = await prisma.rfqItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RfqItemDeleteManyArgs>(args?: SelectSubset<T, RfqItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RfqItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RfqItems
+     * const rfqItem = await prisma.rfqItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RfqItemUpdateManyArgs>(args: SelectSubset<T, RfqItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RfqItems and returns the data updated in the database.
+     * @param {RfqItemUpdateManyAndReturnArgs} args - Arguments to update many RfqItems.
+     * @example
+     * // Update many RfqItems
+     * const rfqItem = await prisma.rfqItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RfqItems and only return the `id`
+     * const rfqItemWithIdOnly = await prisma.rfqItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RfqItemUpdateManyAndReturnArgs>(args: SelectSubset<T, RfqItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RfqItem.
+     * @param {RfqItemUpsertArgs} args - Arguments to update or create a RfqItem.
+     * @example
+     * // Update or create a RfqItem
+     * const rfqItem = await prisma.rfqItem.upsert({
+     *   create: {
+     *     // ... data to create a RfqItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RfqItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RfqItemUpsertArgs>(args: SelectSubset<T, RfqItemUpsertArgs<ExtArgs>>): Prisma__RfqItemClient<$Result.GetResult<Prisma.$RfqItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RfqItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemCountArgs} args - Arguments to filter RfqItems to count.
+     * @example
+     * // Count the number of RfqItems
+     * const count = await prisma.rfqItem.count({
+     *   where: {
+     *     // ... the filter for the RfqItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends RfqItemCountArgs>(
+      args?: Subset<T, RfqItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RfqItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RfqItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RfqItemAggregateArgs>(args: Subset<T, RfqItemAggregateArgs>): Prisma.PrismaPromise<GetRfqItemAggregateType<T>>
+
+    /**
+     * Group by RfqItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RfqItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RfqItemGroupByArgs['orderBy'] }
+        : { orderBy?: RfqItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RfqItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRfqItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RfqItem model
+   */
+  readonly fields: RfqItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RfqItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RfqItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RfqItem model
+   */
+  interface RfqItemFieldRefs {
+    readonly id: FieldRef<"RfqItem", 'String'>
+    readonly rfqId: FieldRef<"RfqItem", 'String'>
+    readonly productId: FieldRef<"RfqItem", 'String'>
+    readonly description: FieldRef<"RfqItem", 'String'>
+    readonly quantity: FieldRef<"RfqItem", 'Int'>
+    readonly createdAt: FieldRef<"RfqItem", 'DateTime'>
+    readonly updatedAt: FieldRef<"RfqItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RfqItem findUnique
+   */
+  export type RfqItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqItem to fetch.
+     */
+    where: RfqItemWhereUniqueInput
+  }
+
+  /**
+   * RfqItem findUniqueOrThrow
+   */
+  export type RfqItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqItem to fetch.
+     */
+    where: RfqItemWhereUniqueInput
+  }
+
+  /**
+   * RfqItem findFirst
+   */
+  export type RfqItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqItem to fetch.
+     */
+    where?: RfqItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqItems to fetch.
+     */
+    orderBy?: RfqItemOrderByWithRelationInput | RfqItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RfqItems.
+     */
+    cursor?: RfqItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqItems.
+     */
+    distinct?: RfqItemScalarFieldEnum | RfqItemScalarFieldEnum[]
+  }
+
+  /**
+   * RfqItem findFirstOrThrow
+   */
+  export type RfqItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqItem to fetch.
+     */
+    where?: RfqItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqItems to fetch.
+     */
+    orderBy?: RfqItemOrderByWithRelationInput | RfqItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RfqItems.
+     */
+    cursor?: RfqItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqItems.
+     */
+    distinct?: RfqItemScalarFieldEnum | RfqItemScalarFieldEnum[]
+  }
+
+  /**
+   * RfqItem findMany
+   */
+  export type RfqItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqItems to fetch.
+     */
+    where?: RfqItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqItems to fetch.
+     */
+    orderBy?: RfqItemOrderByWithRelationInput | RfqItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RfqItems.
+     */
+    cursor?: RfqItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqItems.
+     */
+    distinct?: RfqItemScalarFieldEnum | RfqItemScalarFieldEnum[]
+  }
+
+  /**
+   * RfqItem create
+   */
+  export type RfqItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RfqItem.
+     */
+    data: XOR<RfqItemCreateInput, RfqItemUncheckedCreateInput>
+  }
+
+  /**
+   * RfqItem createMany
+   */
+  export type RfqItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RfqItems.
+     */
+    data: RfqItemCreateManyInput | RfqItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RfqItem createManyAndReturn
+   */
+  export type RfqItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many RfqItems.
+     */
+    data: RfqItemCreateManyInput | RfqItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RfqItem update
+   */
+  export type RfqItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RfqItem.
+     */
+    data: XOR<RfqItemUpdateInput, RfqItemUncheckedUpdateInput>
+    /**
+     * Choose, which RfqItem to update.
+     */
+    where: RfqItemWhereUniqueInput
+  }
+
+  /**
+   * RfqItem updateMany
+   */
+  export type RfqItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RfqItems.
+     */
+    data: XOR<RfqItemUpdateManyMutationInput, RfqItemUncheckedUpdateManyInput>
+    /**
+     * Filter which RfqItems to update
+     */
+    where?: RfqItemWhereInput
+    /**
+     * Limit how many RfqItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqItem updateManyAndReturn
+   */
+  export type RfqItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * The data used to update RfqItems.
+     */
+    data: XOR<RfqItemUpdateManyMutationInput, RfqItemUncheckedUpdateManyInput>
+    /**
+     * Filter which RfqItems to update
+     */
+    where?: RfqItemWhereInput
+    /**
+     * Limit how many RfqItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqItem upsert
+   */
+  export type RfqItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RfqItem to update in case it exists.
+     */
+    where: RfqItemWhereUniqueInput
+    /**
+     * In case the RfqItem found by the `where` argument doesn't exist, create a new RfqItem with this data.
+     */
+    create: XOR<RfqItemCreateInput, RfqItemUncheckedCreateInput>
+    /**
+     * In case the RfqItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RfqItemUpdateInput, RfqItemUncheckedUpdateInput>
+  }
+
+  /**
+   * RfqItem delete
+   */
+  export type RfqItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+    /**
+     * Filter which RfqItem to delete.
+     */
+    where: RfqItemWhereUniqueInput
+  }
+
+  /**
+   * RfqItem deleteMany
+   */
+  export type RfqItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RfqItems to delete
+     */
+    where?: RfqItemWhereInput
+    /**
+     * Limit how many RfqItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqItem without action
+   */
+  export type RfqItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqItem
+     */
+    select?: RfqItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqItem
+     */
+    omit?: RfqItemOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RfqQuote
+   */
+
+  export type AggregateRfqQuote = {
+    _count: RfqQuoteCountAggregateOutputType | null
+    _avg: RfqQuoteAvgAggregateOutputType | null
+    _sum: RfqQuoteSumAggregateOutputType | null
+    _min: RfqQuoteMinAggregateOutputType | null
+    _max: RfqQuoteMaxAggregateOutputType | null
+  }
+
+  export type RfqQuoteAvgAggregateOutputType = {
+    leadTimeDays: number | null
+  }
+
+  export type RfqQuoteSumAggregateOutputType = {
+    leadTimeDays: number | null
+  }
+
+  export type RfqQuoteMinAggregateOutputType = {
+    id: string | null
+    rfqId: string | null
+    vendorId: string | null
+    status: string | null
+    leadTimeDays: number | null
+    paymentTerms: string | null
+    validUntil: Date | null
+    notes: string | null
+    submittedAt: Date | null
+    enteredById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqQuoteMaxAggregateOutputType = {
+    id: string | null
+    rfqId: string | null
+    vendorId: string | null
+    status: string | null
+    leadTimeDays: number | null
+    paymentTerms: string | null
+    validUntil: Date | null
+    notes: string | null
+    submittedAt: Date | null
+    enteredById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqQuoteCountAggregateOutputType = {
+    id: number
+    rfqId: number
+    vendorId: number
+    status: number
+    leadTimeDays: number
+    paymentTerms: number
+    validUntil: number
+    notes: number
+    submittedAt: number
+    enteredById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RfqQuoteAvgAggregateInputType = {
+    leadTimeDays?: true
+  }
+
+  export type RfqQuoteSumAggregateInputType = {
+    leadTimeDays?: true
+  }
+
+  export type RfqQuoteMinAggregateInputType = {
+    id?: true
+    rfqId?: true
+    vendorId?: true
+    status?: true
+    leadTimeDays?: true
+    paymentTerms?: true
+    validUntil?: true
+    notes?: true
+    submittedAt?: true
+    enteredById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqQuoteMaxAggregateInputType = {
+    id?: true
+    rfqId?: true
+    vendorId?: true
+    status?: true
+    leadTimeDays?: true
+    paymentTerms?: true
+    validUntil?: true
+    notes?: true
+    submittedAt?: true
+    enteredById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqQuoteCountAggregateInputType = {
+    id?: true
+    rfqId?: true
+    vendorId?: true
+    status?: true
+    leadTimeDays?: true
+    paymentTerms?: true
+    validUntil?: true
+    notes?: true
+    submittedAt?: true
+    enteredById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RfqQuoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RfqQuote to aggregate.
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuotes to fetch.
+     */
+    orderBy?: RfqQuoteOrderByWithRelationInput | RfqQuoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RfqQuoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RfqQuotes
+    **/
+    _count?: true | RfqQuoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RfqQuoteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RfqQuoteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RfqQuoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RfqQuoteMaxAggregateInputType
+  }
+
+  export type GetRfqQuoteAggregateType<T extends RfqQuoteAggregateArgs> = {
+        [P in keyof T & keyof AggregateRfqQuote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRfqQuote[P]>
+      : GetScalarType<T[P], AggregateRfqQuote[P]>
+  }
+
+
+
+
+  export type RfqQuoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RfqQuoteWhereInput
+    orderBy?: RfqQuoteOrderByWithAggregationInput | RfqQuoteOrderByWithAggregationInput[]
+    by: RfqQuoteScalarFieldEnum[] | RfqQuoteScalarFieldEnum
+    having?: RfqQuoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RfqQuoteCountAggregateInputType | true
+    _avg?: RfqQuoteAvgAggregateInputType
+    _sum?: RfqQuoteSumAggregateInputType
+    _min?: RfqQuoteMinAggregateInputType
+    _max?: RfqQuoteMaxAggregateInputType
+  }
+
+  export type RfqQuoteGroupByOutputType = {
+    id: string
+    rfqId: string
+    vendorId: string
+    status: string
+    leadTimeDays: number | null
+    paymentTerms: string | null
+    validUntil: Date | null
+    notes: string | null
+    submittedAt: Date | null
+    enteredById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: RfqQuoteCountAggregateOutputType | null
+    _avg: RfqQuoteAvgAggregateOutputType | null
+    _sum: RfqQuoteSumAggregateOutputType | null
+    _min: RfqQuoteMinAggregateOutputType | null
+    _max: RfqQuoteMaxAggregateOutputType | null
+  }
+
+  type GetRfqQuoteGroupByPayload<T extends RfqQuoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RfqQuoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RfqQuoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RfqQuoteGroupByOutputType[P]>
+            : GetScalarType<T[P], RfqQuoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RfqQuoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqId?: boolean
+    vendorId?: boolean
+    status?: boolean
+    leadTimeDays?: boolean
+    paymentTerms?: boolean
+    validUntil?: boolean
+    notes?: boolean
+    submittedAt?: boolean
+    enteredById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqQuote"]>
+
+  export type RfqQuoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqId?: boolean
+    vendorId?: boolean
+    status?: boolean
+    leadTimeDays?: boolean
+    paymentTerms?: boolean
+    validUntil?: boolean
+    notes?: boolean
+    submittedAt?: boolean
+    enteredById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqQuote"]>
+
+  export type RfqQuoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    rfqId?: boolean
+    vendorId?: boolean
+    status?: boolean
+    leadTimeDays?: boolean
+    paymentTerms?: boolean
+    validUntil?: boolean
+    notes?: boolean
+    submittedAt?: boolean
+    enteredById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqQuote"]>
+
+  export type RfqQuoteSelectScalar = {
+    id?: boolean
+    rfqId?: boolean
+    vendorId?: boolean
+    status?: boolean
+    leadTimeDays?: boolean
+    paymentTerms?: boolean
+    validUntil?: boolean
+    notes?: boolean
+    submittedAt?: boolean
+    enteredById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RfqQuoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "rfqId" | "vendorId" | "status" | "leadTimeDays" | "paymentTerms" | "validUntil" | "notes" | "submittedAt" | "enteredById" | "createdAt" | "updatedAt", ExtArgs["result"]["rfqQuote"]>
+
+  export type $RfqQuotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RfqQuote"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      rfqId: string
+      vendorId: string
+      status: string
+      leadTimeDays: number | null
+      paymentTerms: string | null
+      validUntil: Date | null
+      notes: string | null
+      submittedAt: Date | null
+      enteredById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["rfqQuote"]>
+    composites: {}
+  }
+
+  type RfqQuoteGetPayload<S extends boolean | null | undefined | RfqQuoteDefaultArgs> = $Result.GetResult<Prisma.$RfqQuotePayload, S>
+
+  type RfqQuoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RfqQuoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RfqQuoteCountAggregateInputType | true
+    }
+
+  export interface RfqQuoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RfqQuote'], meta: { name: 'RfqQuote' } }
+    /**
+     * Find zero or one RfqQuote that matches the filter.
+     * @param {RfqQuoteFindUniqueArgs} args - Arguments to find a RfqQuote
+     * @example
+     * // Get one RfqQuote
+     * const rfqQuote = await prisma.rfqQuote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RfqQuoteFindUniqueArgs>(args: SelectSubset<T, RfqQuoteFindUniqueArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RfqQuote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RfqQuoteFindUniqueOrThrowArgs} args - Arguments to find a RfqQuote
+     * @example
+     * // Get one RfqQuote
+     * const rfqQuote = await prisma.rfqQuote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RfqQuoteFindUniqueOrThrowArgs>(args: SelectSubset<T, RfqQuoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RfqQuote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteFindFirstArgs} args - Arguments to find a RfqQuote
+     * @example
+     * // Get one RfqQuote
+     * const rfqQuote = await prisma.rfqQuote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RfqQuoteFindFirstArgs>(args?: SelectSubset<T, RfqQuoteFindFirstArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RfqQuote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteFindFirstOrThrowArgs} args - Arguments to find a RfqQuote
+     * @example
+     * // Get one RfqQuote
+     * const rfqQuote = await prisma.rfqQuote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RfqQuoteFindFirstOrThrowArgs>(args?: SelectSubset<T, RfqQuoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RfqQuotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RfqQuotes
+     * const rfqQuotes = await prisma.rfqQuote.findMany()
+     * 
+     * // Get first 10 RfqQuotes
+     * const rfqQuotes = await prisma.rfqQuote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rfqQuoteWithIdOnly = await prisma.rfqQuote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RfqQuoteFindManyArgs>(args?: SelectSubset<T, RfqQuoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RfqQuote.
+     * @param {RfqQuoteCreateArgs} args - Arguments to create a RfqQuote.
+     * @example
+     * // Create one RfqQuote
+     * const RfqQuote = await prisma.rfqQuote.create({
+     *   data: {
+     *     // ... data to create a RfqQuote
+     *   }
+     * })
+     * 
+     */
+    create<T extends RfqQuoteCreateArgs>(args: SelectSubset<T, RfqQuoteCreateArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RfqQuotes.
+     * @param {RfqQuoteCreateManyArgs} args - Arguments to create many RfqQuotes.
+     * @example
+     * // Create many RfqQuotes
+     * const rfqQuote = await prisma.rfqQuote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RfqQuoteCreateManyArgs>(args?: SelectSubset<T, RfqQuoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RfqQuotes and returns the data saved in the database.
+     * @param {RfqQuoteCreateManyAndReturnArgs} args - Arguments to create many RfqQuotes.
+     * @example
+     * // Create many RfqQuotes
+     * const rfqQuote = await prisma.rfqQuote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RfqQuotes and only return the `id`
+     * const rfqQuoteWithIdOnly = await prisma.rfqQuote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RfqQuoteCreateManyAndReturnArgs>(args?: SelectSubset<T, RfqQuoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RfqQuote.
+     * @param {RfqQuoteDeleteArgs} args - Arguments to delete one RfqQuote.
+     * @example
+     * // Delete one RfqQuote
+     * const RfqQuote = await prisma.rfqQuote.delete({
+     *   where: {
+     *     // ... filter to delete one RfqQuote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RfqQuoteDeleteArgs>(args: SelectSubset<T, RfqQuoteDeleteArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RfqQuote.
+     * @param {RfqQuoteUpdateArgs} args - Arguments to update one RfqQuote.
+     * @example
+     * // Update one RfqQuote
+     * const rfqQuote = await prisma.rfqQuote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RfqQuoteUpdateArgs>(args: SelectSubset<T, RfqQuoteUpdateArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RfqQuotes.
+     * @param {RfqQuoteDeleteManyArgs} args - Arguments to filter RfqQuotes to delete.
+     * @example
+     * // Delete a few RfqQuotes
+     * const { count } = await prisma.rfqQuote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RfqQuoteDeleteManyArgs>(args?: SelectSubset<T, RfqQuoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RfqQuotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RfqQuotes
+     * const rfqQuote = await prisma.rfqQuote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RfqQuoteUpdateManyArgs>(args: SelectSubset<T, RfqQuoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RfqQuotes and returns the data updated in the database.
+     * @param {RfqQuoteUpdateManyAndReturnArgs} args - Arguments to update many RfqQuotes.
+     * @example
+     * // Update many RfqQuotes
+     * const rfqQuote = await prisma.rfqQuote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RfqQuotes and only return the `id`
+     * const rfqQuoteWithIdOnly = await prisma.rfqQuote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RfqQuoteUpdateManyAndReturnArgs>(args: SelectSubset<T, RfqQuoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RfqQuote.
+     * @param {RfqQuoteUpsertArgs} args - Arguments to update or create a RfqQuote.
+     * @example
+     * // Update or create a RfqQuote
+     * const rfqQuote = await prisma.rfqQuote.upsert({
+     *   create: {
+     *     // ... data to create a RfqQuote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RfqQuote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RfqQuoteUpsertArgs>(args: SelectSubset<T, RfqQuoteUpsertArgs<ExtArgs>>): Prisma__RfqQuoteClient<$Result.GetResult<Prisma.$RfqQuotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RfqQuotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteCountArgs} args - Arguments to filter RfqQuotes to count.
+     * @example
+     * // Count the number of RfqQuotes
+     * const count = await prisma.rfqQuote.count({
+     *   where: {
+     *     // ... the filter for the RfqQuotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends RfqQuoteCountArgs>(
+      args?: Subset<T, RfqQuoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RfqQuoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RfqQuote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RfqQuoteAggregateArgs>(args: Subset<T, RfqQuoteAggregateArgs>): Prisma.PrismaPromise<GetRfqQuoteAggregateType<T>>
+
+    /**
+     * Group by RfqQuote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RfqQuoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RfqQuoteGroupByArgs['orderBy'] }
+        : { orderBy?: RfqQuoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RfqQuoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRfqQuoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RfqQuote model
+   */
+  readonly fields: RfqQuoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RfqQuote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RfqQuoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RfqQuote model
+   */
+  interface RfqQuoteFieldRefs {
+    readonly id: FieldRef<"RfqQuote", 'String'>
+    readonly rfqId: FieldRef<"RfqQuote", 'String'>
+    readonly vendorId: FieldRef<"RfqQuote", 'String'>
+    readonly status: FieldRef<"RfqQuote", 'String'>
+    readonly leadTimeDays: FieldRef<"RfqQuote", 'Int'>
+    readonly paymentTerms: FieldRef<"RfqQuote", 'String'>
+    readonly validUntil: FieldRef<"RfqQuote", 'DateTime'>
+    readonly notes: FieldRef<"RfqQuote", 'String'>
+    readonly submittedAt: FieldRef<"RfqQuote", 'DateTime'>
+    readonly enteredById: FieldRef<"RfqQuote", 'String'>
+    readonly createdAt: FieldRef<"RfqQuote", 'DateTime'>
+    readonly updatedAt: FieldRef<"RfqQuote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RfqQuote findUnique
+   */
+  export type RfqQuoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuote to fetch.
+     */
+    where: RfqQuoteWhereUniqueInput
+  }
+
+  /**
+   * RfqQuote findUniqueOrThrow
+   */
+  export type RfqQuoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuote to fetch.
+     */
+    where: RfqQuoteWhereUniqueInput
+  }
+
+  /**
+   * RfqQuote findFirst
+   */
+  export type RfqQuoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuote to fetch.
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuotes to fetch.
+     */
+    orderBy?: RfqQuoteOrderByWithRelationInput | RfqQuoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RfqQuotes.
+     */
+    cursor?: RfqQuoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqQuotes.
+     */
+    distinct?: RfqQuoteScalarFieldEnum | RfqQuoteScalarFieldEnum[]
+  }
+
+  /**
+   * RfqQuote findFirstOrThrow
+   */
+  export type RfqQuoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuote to fetch.
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuotes to fetch.
+     */
+    orderBy?: RfqQuoteOrderByWithRelationInput | RfqQuoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RfqQuotes.
+     */
+    cursor?: RfqQuoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqQuotes.
+     */
+    distinct?: RfqQuoteScalarFieldEnum | RfqQuoteScalarFieldEnum[]
+  }
+
+  /**
+   * RfqQuote findMany
+   */
+  export type RfqQuoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuotes to fetch.
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuotes to fetch.
+     */
+    orderBy?: RfqQuoteOrderByWithRelationInput | RfqQuoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RfqQuotes.
+     */
+    cursor?: RfqQuoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqQuotes.
+     */
+    distinct?: RfqQuoteScalarFieldEnum | RfqQuoteScalarFieldEnum[]
+  }
+
+  /**
+   * RfqQuote create
+   */
+  export type RfqQuoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RfqQuote.
+     */
+    data: XOR<RfqQuoteCreateInput, RfqQuoteUncheckedCreateInput>
+  }
+
+  /**
+   * RfqQuote createMany
+   */
+  export type RfqQuoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RfqQuotes.
+     */
+    data: RfqQuoteCreateManyInput | RfqQuoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RfqQuote createManyAndReturn
+   */
+  export type RfqQuoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many RfqQuotes.
+     */
+    data: RfqQuoteCreateManyInput | RfqQuoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RfqQuote update
+   */
+  export type RfqQuoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RfqQuote.
+     */
+    data: XOR<RfqQuoteUpdateInput, RfqQuoteUncheckedUpdateInput>
+    /**
+     * Choose, which RfqQuote to update.
+     */
+    where: RfqQuoteWhereUniqueInput
+  }
+
+  /**
+   * RfqQuote updateMany
+   */
+  export type RfqQuoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RfqQuotes.
+     */
+    data: XOR<RfqQuoteUpdateManyMutationInput, RfqQuoteUncheckedUpdateManyInput>
+    /**
+     * Filter which RfqQuotes to update
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * Limit how many RfqQuotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqQuote updateManyAndReturn
+   */
+  export type RfqQuoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * The data used to update RfqQuotes.
+     */
+    data: XOR<RfqQuoteUpdateManyMutationInput, RfqQuoteUncheckedUpdateManyInput>
+    /**
+     * Filter which RfqQuotes to update
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * Limit how many RfqQuotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqQuote upsert
+   */
+  export type RfqQuoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RfqQuote to update in case it exists.
+     */
+    where: RfqQuoteWhereUniqueInput
+    /**
+     * In case the RfqQuote found by the `where` argument doesn't exist, create a new RfqQuote with this data.
+     */
+    create: XOR<RfqQuoteCreateInput, RfqQuoteUncheckedCreateInput>
+    /**
+     * In case the RfqQuote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RfqQuoteUpdateInput, RfqQuoteUncheckedUpdateInput>
+  }
+
+  /**
+   * RfqQuote delete
+   */
+  export type RfqQuoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+    /**
+     * Filter which RfqQuote to delete.
+     */
+    where: RfqQuoteWhereUniqueInput
+  }
+
+  /**
+   * RfqQuote deleteMany
+   */
+  export type RfqQuoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RfqQuotes to delete
+     */
+    where?: RfqQuoteWhereInput
+    /**
+     * Limit how many RfqQuotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqQuote without action
+   */
+  export type RfqQuoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuote
+     */
+    select?: RfqQuoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuote
+     */
+    omit?: RfqQuoteOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RfqQuoteLine
+   */
+
+  export type AggregateRfqQuoteLine = {
+    _count: RfqQuoteLineCountAggregateOutputType | null
+    _avg: RfqQuoteLineAvgAggregateOutputType | null
+    _sum: RfqQuoteLineSumAggregateOutputType | null
+    _min: RfqQuoteLineMinAggregateOutputType | null
+    _max: RfqQuoteLineMaxAggregateOutputType | null
+  }
+
+  export type RfqQuoteLineAvgAggregateOutputType = {
+    unitPrice: number | null
+  }
+
+  export type RfqQuoteLineSumAggregateOutputType = {
+    unitPrice: number | null
+  }
+
+  export type RfqQuoteLineMinAggregateOutputType = {
+    id: string | null
+    quoteId: string | null
+    itemId: string | null
+    unitPrice: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqQuoteLineMaxAggregateOutputType = {
+    id: string | null
+    quoteId: string | null
+    itemId: string | null
+    unitPrice: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type RfqQuoteLineCountAggregateOutputType = {
+    id: number
+    quoteId: number
+    itemId: number
+    unitPrice: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type RfqQuoteLineAvgAggregateInputType = {
+    unitPrice?: true
+  }
+
+  export type RfqQuoteLineSumAggregateInputType = {
+    unitPrice?: true
+  }
+
+  export type RfqQuoteLineMinAggregateInputType = {
+    id?: true
+    quoteId?: true
+    itemId?: true
+    unitPrice?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqQuoteLineMaxAggregateInputType = {
+    id?: true
+    quoteId?: true
+    itemId?: true
+    unitPrice?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type RfqQuoteLineCountAggregateInputType = {
+    id?: true
+    quoteId?: true
+    itemId?: true
+    unitPrice?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type RfqQuoteLineAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RfqQuoteLine to aggregate.
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuoteLines to fetch.
+     */
+    orderBy?: RfqQuoteLineOrderByWithRelationInput | RfqQuoteLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RfqQuoteLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuoteLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuoteLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RfqQuoteLines
+    **/
+    _count?: true | RfqQuoteLineCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RfqQuoteLineAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RfqQuoteLineSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RfqQuoteLineMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RfqQuoteLineMaxAggregateInputType
+  }
+
+  export type GetRfqQuoteLineAggregateType<T extends RfqQuoteLineAggregateArgs> = {
+        [P in keyof T & keyof AggregateRfqQuoteLine]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRfqQuoteLine[P]>
+      : GetScalarType<T[P], AggregateRfqQuoteLine[P]>
+  }
+
+
+
+
+  export type RfqQuoteLineGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RfqQuoteLineWhereInput
+    orderBy?: RfqQuoteLineOrderByWithAggregationInput | RfqQuoteLineOrderByWithAggregationInput[]
+    by: RfqQuoteLineScalarFieldEnum[] | RfqQuoteLineScalarFieldEnum
+    having?: RfqQuoteLineScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RfqQuoteLineCountAggregateInputType | true
+    _avg?: RfqQuoteLineAvgAggregateInputType
+    _sum?: RfqQuoteLineSumAggregateInputType
+    _min?: RfqQuoteLineMinAggregateInputType
+    _max?: RfqQuoteLineMaxAggregateInputType
+  }
+
+  export type RfqQuoteLineGroupByOutputType = {
+    id: string
+    quoteId: string
+    itemId: string
+    unitPrice: number
+    createdAt: Date
+    updatedAt: Date
+    _count: RfqQuoteLineCountAggregateOutputType | null
+    _avg: RfqQuoteLineAvgAggregateOutputType | null
+    _sum: RfqQuoteLineSumAggregateOutputType | null
+    _min: RfqQuoteLineMinAggregateOutputType | null
+    _max: RfqQuoteLineMaxAggregateOutputType | null
+  }
+
+  type GetRfqQuoteLineGroupByPayload<T extends RfqQuoteLineGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RfqQuoteLineGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RfqQuoteLineGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RfqQuoteLineGroupByOutputType[P]>
+            : GetScalarType<T[P], RfqQuoteLineGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RfqQuoteLineSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    quoteId?: boolean
+    itemId?: boolean
+    unitPrice?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqQuoteLine"]>
+
+  export type RfqQuoteLineSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    quoteId?: boolean
+    itemId?: boolean
+    unitPrice?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqQuoteLine"]>
+
+  export type RfqQuoteLineSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    quoteId?: boolean
+    itemId?: boolean
+    unitPrice?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["rfqQuoteLine"]>
+
+  export type RfqQuoteLineSelectScalar = {
+    id?: boolean
+    quoteId?: boolean
+    itemId?: boolean
+    unitPrice?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type RfqQuoteLineOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "quoteId" | "itemId" | "unitPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["rfqQuoteLine"]>
+
+  export type $RfqQuoteLinePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RfqQuoteLine"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      quoteId: string
+      itemId: string
+      unitPrice: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["rfqQuoteLine"]>
+    composites: {}
+  }
+
+  type RfqQuoteLineGetPayload<S extends boolean | null | undefined | RfqQuoteLineDefaultArgs> = $Result.GetResult<Prisma.$RfqQuoteLinePayload, S>
+
+  type RfqQuoteLineCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RfqQuoteLineFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RfqQuoteLineCountAggregateInputType | true
+    }
+
+  export interface RfqQuoteLineDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RfqQuoteLine'], meta: { name: 'RfqQuoteLine' } }
+    /**
+     * Find zero or one RfqQuoteLine that matches the filter.
+     * @param {RfqQuoteLineFindUniqueArgs} args - Arguments to find a RfqQuoteLine
+     * @example
+     * // Get one RfqQuoteLine
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RfqQuoteLineFindUniqueArgs>(args: SelectSubset<T, RfqQuoteLineFindUniqueArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RfqQuoteLine that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RfqQuoteLineFindUniqueOrThrowArgs} args - Arguments to find a RfqQuoteLine
+     * @example
+     * // Get one RfqQuoteLine
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RfqQuoteLineFindUniqueOrThrowArgs>(args: SelectSubset<T, RfqQuoteLineFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RfqQuoteLine that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineFindFirstArgs} args - Arguments to find a RfqQuoteLine
+     * @example
+     * // Get one RfqQuoteLine
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RfqQuoteLineFindFirstArgs>(args?: SelectSubset<T, RfqQuoteLineFindFirstArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RfqQuoteLine that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineFindFirstOrThrowArgs} args - Arguments to find a RfqQuoteLine
+     * @example
+     * // Get one RfqQuoteLine
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RfqQuoteLineFindFirstOrThrowArgs>(args?: SelectSubset<T, RfqQuoteLineFindFirstOrThrowArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RfqQuoteLines that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RfqQuoteLines
+     * const rfqQuoteLines = await prisma.rfqQuoteLine.findMany()
+     * 
+     * // Get first 10 RfqQuoteLines
+     * const rfqQuoteLines = await prisma.rfqQuoteLine.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rfqQuoteLineWithIdOnly = await prisma.rfqQuoteLine.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RfqQuoteLineFindManyArgs>(args?: SelectSubset<T, RfqQuoteLineFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RfqQuoteLine.
+     * @param {RfqQuoteLineCreateArgs} args - Arguments to create a RfqQuoteLine.
+     * @example
+     * // Create one RfqQuoteLine
+     * const RfqQuoteLine = await prisma.rfqQuoteLine.create({
+     *   data: {
+     *     // ... data to create a RfqQuoteLine
+     *   }
+     * })
+     * 
+     */
+    create<T extends RfqQuoteLineCreateArgs>(args: SelectSubset<T, RfqQuoteLineCreateArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RfqQuoteLines.
+     * @param {RfqQuoteLineCreateManyArgs} args - Arguments to create many RfqQuoteLines.
+     * @example
+     * // Create many RfqQuoteLines
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RfqQuoteLineCreateManyArgs>(args?: SelectSubset<T, RfqQuoteLineCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RfqQuoteLines and returns the data saved in the database.
+     * @param {RfqQuoteLineCreateManyAndReturnArgs} args - Arguments to create many RfqQuoteLines.
+     * @example
+     * // Create many RfqQuoteLines
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RfqQuoteLines and only return the `id`
+     * const rfqQuoteLineWithIdOnly = await prisma.rfqQuoteLine.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RfqQuoteLineCreateManyAndReturnArgs>(args?: SelectSubset<T, RfqQuoteLineCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RfqQuoteLine.
+     * @param {RfqQuoteLineDeleteArgs} args - Arguments to delete one RfqQuoteLine.
+     * @example
+     * // Delete one RfqQuoteLine
+     * const RfqQuoteLine = await prisma.rfqQuoteLine.delete({
+     *   where: {
+     *     // ... filter to delete one RfqQuoteLine
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RfqQuoteLineDeleteArgs>(args: SelectSubset<T, RfqQuoteLineDeleteArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RfqQuoteLine.
+     * @param {RfqQuoteLineUpdateArgs} args - Arguments to update one RfqQuoteLine.
+     * @example
+     * // Update one RfqQuoteLine
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RfqQuoteLineUpdateArgs>(args: SelectSubset<T, RfqQuoteLineUpdateArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RfqQuoteLines.
+     * @param {RfqQuoteLineDeleteManyArgs} args - Arguments to filter RfqQuoteLines to delete.
+     * @example
+     * // Delete a few RfqQuoteLines
+     * const { count } = await prisma.rfqQuoteLine.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RfqQuoteLineDeleteManyArgs>(args?: SelectSubset<T, RfqQuoteLineDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RfqQuoteLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RfqQuoteLines
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RfqQuoteLineUpdateManyArgs>(args: SelectSubset<T, RfqQuoteLineUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RfqQuoteLines and returns the data updated in the database.
+     * @param {RfqQuoteLineUpdateManyAndReturnArgs} args - Arguments to update many RfqQuoteLines.
+     * @example
+     * // Update many RfqQuoteLines
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RfqQuoteLines and only return the `id`
+     * const rfqQuoteLineWithIdOnly = await prisma.rfqQuoteLine.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RfqQuoteLineUpdateManyAndReturnArgs>(args: SelectSubset<T, RfqQuoteLineUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RfqQuoteLine.
+     * @param {RfqQuoteLineUpsertArgs} args - Arguments to update or create a RfqQuoteLine.
+     * @example
+     * // Update or create a RfqQuoteLine
+     * const rfqQuoteLine = await prisma.rfqQuoteLine.upsert({
+     *   create: {
+     *     // ... data to create a RfqQuoteLine
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RfqQuoteLine we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RfqQuoteLineUpsertArgs>(args: SelectSubset<T, RfqQuoteLineUpsertArgs<ExtArgs>>): Prisma__RfqQuoteLineClient<$Result.GetResult<Prisma.$RfqQuoteLinePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RfqQuoteLines.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineCountArgs} args - Arguments to filter RfqQuoteLines to count.
+     * @example
+     * // Count the number of RfqQuoteLines
+     * const count = await prisma.rfqQuoteLine.count({
+     *   where: {
+     *     // ... the filter for the RfqQuoteLines we want to count
+     *   }
+     * })
+    **/
+    count<T extends RfqQuoteLineCountArgs>(
+      args?: Subset<T, RfqQuoteLineCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RfqQuoteLineCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RfqQuoteLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RfqQuoteLineAggregateArgs>(args: Subset<T, RfqQuoteLineAggregateArgs>): Prisma.PrismaPromise<GetRfqQuoteLineAggregateType<T>>
+
+    /**
+     * Group by RfqQuoteLine.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RfqQuoteLineGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RfqQuoteLineGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RfqQuoteLineGroupByArgs['orderBy'] }
+        : { orderBy?: RfqQuoteLineGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RfqQuoteLineGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRfqQuoteLineGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RfqQuoteLine model
+   */
+  readonly fields: RfqQuoteLineFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RfqQuoteLine.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RfqQuoteLineClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RfqQuoteLine model
+   */
+  interface RfqQuoteLineFieldRefs {
+    readonly id: FieldRef<"RfqQuoteLine", 'String'>
+    readonly quoteId: FieldRef<"RfqQuoteLine", 'String'>
+    readonly itemId: FieldRef<"RfqQuoteLine", 'String'>
+    readonly unitPrice: FieldRef<"RfqQuoteLine", 'Float'>
+    readonly createdAt: FieldRef<"RfqQuoteLine", 'DateTime'>
+    readonly updatedAt: FieldRef<"RfqQuoteLine", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RfqQuoteLine findUnique
+   */
+  export type RfqQuoteLineFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuoteLine to fetch.
+     */
+    where: RfqQuoteLineWhereUniqueInput
+  }
+
+  /**
+   * RfqQuoteLine findUniqueOrThrow
+   */
+  export type RfqQuoteLineFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuoteLine to fetch.
+     */
+    where: RfqQuoteLineWhereUniqueInput
+  }
+
+  /**
+   * RfqQuoteLine findFirst
+   */
+  export type RfqQuoteLineFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuoteLine to fetch.
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuoteLines to fetch.
+     */
+    orderBy?: RfqQuoteLineOrderByWithRelationInput | RfqQuoteLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RfqQuoteLines.
+     */
+    cursor?: RfqQuoteLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuoteLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuoteLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqQuoteLines.
+     */
+    distinct?: RfqQuoteLineScalarFieldEnum | RfqQuoteLineScalarFieldEnum[]
+  }
+
+  /**
+   * RfqQuoteLine findFirstOrThrow
+   */
+  export type RfqQuoteLineFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuoteLine to fetch.
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuoteLines to fetch.
+     */
+    orderBy?: RfqQuoteLineOrderByWithRelationInput | RfqQuoteLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RfqQuoteLines.
+     */
+    cursor?: RfqQuoteLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuoteLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuoteLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqQuoteLines.
+     */
+    distinct?: RfqQuoteLineScalarFieldEnum | RfqQuoteLineScalarFieldEnum[]
+  }
+
+  /**
+   * RfqQuoteLine findMany
+   */
+  export type RfqQuoteLineFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * Filter, which RfqQuoteLines to fetch.
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RfqQuoteLines to fetch.
+     */
+    orderBy?: RfqQuoteLineOrderByWithRelationInput | RfqQuoteLineOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RfqQuoteLines.
+     */
+    cursor?: RfqQuoteLineWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RfqQuoteLines from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RfqQuoteLines.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RfqQuoteLines.
+     */
+    distinct?: RfqQuoteLineScalarFieldEnum | RfqQuoteLineScalarFieldEnum[]
+  }
+
+  /**
+   * RfqQuoteLine create
+   */
+  export type RfqQuoteLineCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RfqQuoteLine.
+     */
+    data: XOR<RfqQuoteLineCreateInput, RfqQuoteLineUncheckedCreateInput>
+  }
+
+  /**
+   * RfqQuoteLine createMany
+   */
+  export type RfqQuoteLineCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RfqQuoteLines.
+     */
+    data: RfqQuoteLineCreateManyInput | RfqQuoteLineCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RfqQuoteLine createManyAndReturn
+   */
+  export type RfqQuoteLineCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * The data used to create many RfqQuoteLines.
+     */
+    data: RfqQuoteLineCreateManyInput | RfqQuoteLineCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RfqQuoteLine update
+   */
+  export type RfqQuoteLineUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RfqQuoteLine.
+     */
+    data: XOR<RfqQuoteLineUpdateInput, RfqQuoteLineUncheckedUpdateInput>
+    /**
+     * Choose, which RfqQuoteLine to update.
+     */
+    where: RfqQuoteLineWhereUniqueInput
+  }
+
+  /**
+   * RfqQuoteLine updateMany
+   */
+  export type RfqQuoteLineUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RfqQuoteLines.
+     */
+    data: XOR<RfqQuoteLineUpdateManyMutationInput, RfqQuoteLineUncheckedUpdateManyInput>
+    /**
+     * Filter which RfqQuoteLines to update
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * Limit how many RfqQuoteLines to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqQuoteLine updateManyAndReturn
+   */
+  export type RfqQuoteLineUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * The data used to update RfqQuoteLines.
+     */
+    data: XOR<RfqQuoteLineUpdateManyMutationInput, RfqQuoteLineUncheckedUpdateManyInput>
+    /**
+     * Filter which RfqQuoteLines to update
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * Limit how many RfqQuoteLines to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqQuoteLine upsert
+   */
+  export type RfqQuoteLineUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RfqQuoteLine to update in case it exists.
+     */
+    where: RfqQuoteLineWhereUniqueInput
+    /**
+     * In case the RfqQuoteLine found by the `where` argument doesn't exist, create a new RfqQuoteLine with this data.
+     */
+    create: XOR<RfqQuoteLineCreateInput, RfqQuoteLineUncheckedCreateInput>
+    /**
+     * In case the RfqQuoteLine was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RfqQuoteLineUpdateInput, RfqQuoteLineUncheckedUpdateInput>
+  }
+
+  /**
+   * RfqQuoteLine delete
+   */
+  export type RfqQuoteLineDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+    /**
+     * Filter which RfqQuoteLine to delete.
+     */
+    where: RfqQuoteLineWhereUniqueInput
+  }
+
+  /**
+   * RfqQuoteLine deleteMany
+   */
+  export type RfqQuoteLineDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RfqQuoteLines to delete
+     */
+    where?: RfqQuoteLineWhereInput
+    /**
+     * Limit how many RfqQuoteLines to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RfqQuoteLine without action
+   */
+  export type RfqQuoteLineDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RfqQuoteLine
+     */
+    select?: RfqQuoteLineSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RfqQuoteLine
+     */
+    omit?: RfqQuoteLineOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model VendorEvaluation
+   */
+
+  export type AggregateVendorEvaluation = {
+    _count: VendorEvaluationCountAggregateOutputType | null
+    _avg: VendorEvaluationAvgAggregateOutputType | null
+    _sum: VendorEvaluationSumAggregateOutputType | null
+    _min: VendorEvaluationMinAggregateOutputType | null
+    _max: VendorEvaluationMaxAggregateOutputType | null
+  }
+
+  export type VendorEvaluationAvgAggregateOutputType = {
+    delivery: number | null
+    quality: number | null
+    price: number | null
+    service: number | null
+    overall: number | null
+  }
+
+  export type VendorEvaluationSumAggregateOutputType = {
+    delivery: number | null
+    quality: number | null
+    price: number | null
+    service: number | null
+    overall: number | null
+  }
+
+  export type VendorEvaluationMinAggregateOutputType = {
+    id: string | null
+    vendorId: string | null
+    evaluatorId: string | null
+    period: string | null
+    delivery: number | null
+    quality: number | null
+    price: number | null
+    service: number | null
+    overall: number | null
+    comments: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VendorEvaluationMaxAggregateOutputType = {
+    id: string | null
+    vendorId: string | null
+    evaluatorId: string | null
+    period: string | null
+    delivery: number | null
+    quality: number | null
+    price: number | null
+    service: number | null
+    overall: number | null
+    comments: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VendorEvaluationCountAggregateOutputType = {
+    id: number
+    vendorId: number
+    evaluatorId: number
+    period: number
+    delivery: number
+    quality: number
+    price: number
+    service: number
+    overall: number
+    comments: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type VendorEvaluationAvgAggregateInputType = {
+    delivery?: true
+    quality?: true
+    price?: true
+    service?: true
+    overall?: true
+  }
+
+  export type VendorEvaluationSumAggregateInputType = {
+    delivery?: true
+    quality?: true
+    price?: true
+    service?: true
+    overall?: true
+  }
+
+  export type VendorEvaluationMinAggregateInputType = {
+    id?: true
+    vendorId?: true
+    evaluatorId?: true
+    period?: true
+    delivery?: true
+    quality?: true
+    price?: true
+    service?: true
+    overall?: true
+    comments?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VendorEvaluationMaxAggregateInputType = {
+    id?: true
+    vendorId?: true
+    evaluatorId?: true
+    period?: true
+    delivery?: true
+    quality?: true
+    price?: true
+    service?: true
+    overall?: true
+    comments?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VendorEvaluationCountAggregateInputType = {
+    id?: true
+    vendorId?: true
+    evaluatorId?: true
+    period?: true
+    delivery?: true
+    quality?: true
+    price?: true
+    service?: true
+    overall?: true
+    comments?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type VendorEvaluationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VendorEvaluation to aggregate.
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VendorEvaluations to fetch.
+     */
+    orderBy?: VendorEvaluationOrderByWithRelationInput | VendorEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VendorEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VendorEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VendorEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VendorEvaluations
+    **/
+    _count?: true | VendorEvaluationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: VendorEvaluationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: VendorEvaluationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VendorEvaluationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VendorEvaluationMaxAggregateInputType
+  }
+
+  export type GetVendorEvaluationAggregateType<T extends VendorEvaluationAggregateArgs> = {
+        [P in keyof T & keyof AggregateVendorEvaluation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVendorEvaluation[P]>
+      : GetScalarType<T[P], AggregateVendorEvaluation[P]>
+  }
+
+
+
+
+  export type VendorEvaluationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VendorEvaluationWhereInput
+    orderBy?: VendorEvaluationOrderByWithAggregationInput | VendorEvaluationOrderByWithAggregationInput[]
+    by: VendorEvaluationScalarFieldEnum[] | VendorEvaluationScalarFieldEnum
+    having?: VendorEvaluationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VendorEvaluationCountAggregateInputType | true
+    _avg?: VendorEvaluationAvgAggregateInputType
+    _sum?: VendorEvaluationSumAggregateInputType
+    _min?: VendorEvaluationMinAggregateInputType
+    _max?: VendorEvaluationMaxAggregateInputType
+  }
+
+  export type VendorEvaluationGroupByOutputType = {
+    id: string
+    vendorId: string
+    evaluatorId: string
+    period: string
+    delivery: number
+    quality: number
+    price: number
+    service: number
+    overall: number
+    comments: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: VendorEvaluationCountAggregateOutputType | null
+    _avg: VendorEvaluationAvgAggregateOutputType | null
+    _sum: VendorEvaluationSumAggregateOutputType | null
+    _min: VendorEvaluationMinAggregateOutputType | null
+    _max: VendorEvaluationMaxAggregateOutputType | null
+  }
+
+  type GetVendorEvaluationGroupByPayload<T extends VendorEvaluationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VendorEvaluationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VendorEvaluationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VendorEvaluationGroupByOutputType[P]>
+            : GetScalarType<T[P], VendorEvaluationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VendorEvaluationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    vendorId?: boolean
+    evaluatorId?: boolean
+    period?: boolean
+    delivery?: boolean
+    quality?: boolean
+    price?: boolean
+    service?: boolean
+    overall?: boolean
+    comments?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["vendorEvaluation"]>
+
+  export type VendorEvaluationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    vendorId?: boolean
+    evaluatorId?: boolean
+    period?: boolean
+    delivery?: boolean
+    quality?: boolean
+    price?: boolean
+    service?: boolean
+    overall?: boolean
+    comments?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["vendorEvaluation"]>
+
+  export type VendorEvaluationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    vendorId?: boolean
+    evaluatorId?: boolean
+    period?: boolean
+    delivery?: boolean
+    quality?: boolean
+    price?: boolean
+    service?: boolean
+    overall?: boolean
+    comments?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["vendorEvaluation"]>
+
+  export type VendorEvaluationSelectScalar = {
+    id?: boolean
+    vendorId?: boolean
+    evaluatorId?: boolean
+    period?: boolean
+    delivery?: boolean
+    quality?: boolean
+    price?: boolean
+    service?: boolean
+    overall?: boolean
+    comments?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type VendorEvaluationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "vendorId" | "evaluatorId" | "period" | "delivery" | "quality" | "price" | "service" | "overall" | "comments" | "createdAt" | "updatedAt", ExtArgs["result"]["vendorEvaluation"]>
+
+  export type $VendorEvaluationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VendorEvaluation"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      vendorId: string
+      evaluatorId: string
+      period: string
+      delivery: number
+      quality: number
+      price: number
+      service: number
+      overall: number
+      comments: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["vendorEvaluation"]>
+    composites: {}
+  }
+
+  type VendorEvaluationGetPayload<S extends boolean | null | undefined | VendorEvaluationDefaultArgs> = $Result.GetResult<Prisma.$VendorEvaluationPayload, S>
+
+  type VendorEvaluationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VendorEvaluationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VendorEvaluationCountAggregateInputType | true
+    }
+
+  export interface VendorEvaluationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VendorEvaluation'], meta: { name: 'VendorEvaluation' } }
+    /**
+     * Find zero or one VendorEvaluation that matches the filter.
+     * @param {VendorEvaluationFindUniqueArgs} args - Arguments to find a VendorEvaluation
+     * @example
+     * // Get one VendorEvaluation
+     * const vendorEvaluation = await prisma.vendorEvaluation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VendorEvaluationFindUniqueArgs>(args: SelectSubset<T, VendorEvaluationFindUniqueArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VendorEvaluation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VendorEvaluationFindUniqueOrThrowArgs} args - Arguments to find a VendorEvaluation
+     * @example
+     * // Get one VendorEvaluation
+     * const vendorEvaluation = await prisma.vendorEvaluation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VendorEvaluationFindUniqueOrThrowArgs>(args: SelectSubset<T, VendorEvaluationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VendorEvaluation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationFindFirstArgs} args - Arguments to find a VendorEvaluation
+     * @example
+     * // Get one VendorEvaluation
+     * const vendorEvaluation = await prisma.vendorEvaluation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VendorEvaluationFindFirstArgs>(args?: SelectSubset<T, VendorEvaluationFindFirstArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VendorEvaluation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationFindFirstOrThrowArgs} args - Arguments to find a VendorEvaluation
+     * @example
+     * // Get one VendorEvaluation
+     * const vendorEvaluation = await prisma.vendorEvaluation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VendorEvaluationFindFirstOrThrowArgs>(args?: SelectSubset<T, VendorEvaluationFindFirstOrThrowArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VendorEvaluations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VendorEvaluations
+     * const vendorEvaluations = await prisma.vendorEvaluation.findMany()
+     * 
+     * // Get first 10 VendorEvaluations
+     * const vendorEvaluations = await prisma.vendorEvaluation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const vendorEvaluationWithIdOnly = await prisma.vendorEvaluation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VendorEvaluationFindManyArgs>(args?: SelectSubset<T, VendorEvaluationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VendorEvaluation.
+     * @param {VendorEvaluationCreateArgs} args - Arguments to create a VendorEvaluation.
+     * @example
+     * // Create one VendorEvaluation
+     * const VendorEvaluation = await prisma.vendorEvaluation.create({
+     *   data: {
+     *     // ... data to create a VendorEvaluation
+     *   }
+     * })
+     * 
+     */
+    create<T extends VendorEvaluationCreateArgs>(args: SelectSubset<T, VendorEvaluationCreateArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VendorEvaluations.
+     * @param {VendorEvaluationCreateManyArgs} args - Arguments to create many VendorEvaluations.
+     * @example
+     * // Create many VendorEvaluations
+     * const vendorEvaluation = await prisma.vendorEvaluation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VendorEvaluationCreateManyArgs>(args?: SelectSubset<T, VendorEvaluationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VendorEvaluations and returns the data saved in the database.
+     * @param {VendorEvaluationCreateManyAndReturnArgs} args - Arguments to create many VendorEvaluations.
+     * @example
+     * // Create many VendorEvaluations
+     * const vendorEvaluation = await prisma.vendorEvaluation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VendorEvaluations and only return the `id`
+     * const vendorEvaluationWithIdOnly = await prisma.vendorEvaluation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VendorEvaluationCreateManyAndReturnArgs>(args?: SelectSubset<T, VendorEvaluationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VendorEvaluation.
+     * @param {VendorEvaluationDeleteArgs} args - Arguments to delete one VendorEvaluation.
+     * @example
+     * // Delete one VendorEvaluation
+     * const VendorEvaluation = await prisma.vendorEvaluation.delete({
+     *   where: {
+     *     // ... filter to delete one VendorEvaluation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VendorEvaluationDeleteArgs>(args: SelectSubset<T, VendorEvaluationDeleteArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VendorEvaluation.
+     * @param {VendorEvaluationUpdateArgs} args - Arguments to update one VendorEvaluation.
+     * @example
+     * // Update one VendorEvaluation
+     * const vendorEvaluation = await prisma.vendorEvaluation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VendorEvaluationUpdateArgs>(args: SelectSubset<T, VendorEvaluationUpdateArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VendorEvaluations.
+     * @param {VendorEvaluationDeleteManyArgs} args - Arguments to filter VendorEvaluations to delete.
+     * @example
+     * // Delete a few VendorEvaluations
+     * const { count } = await prisma.vendorEvaluation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VendorEvaluationDeleteManyArgs>(args?: SelectSubset<T, VendorEvaluationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VendorEvaluations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VendorEvaluations
+     * const vendorEvaluation = await prisma.vendorEvaluation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VendorEvaluationUpdateManyArgs>(args: SelectSubset<T, VendorEvaluationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VendorEvaluations and returns the data updated in the database.
+     * @param {VendorEvaluationUpdateManyAndReturnArgs} args - Arguments to update many VendorEvaluations.
+     * @example
+     * // Update many VendorEvaluations
+     * const vendorEvaluation = await prisma.vendorEvaluation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VendorEvaluations and only return the `id`
+     * const vendorEvaluationWithIdOnly = await prisma.vendorEvaluation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VendorEvaluationUpdateManyAndReturnArgs>(args: SelectSubset<T, VendorEvaluationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VendorEvaluation.
+     * @param {VendorEvaluationUpsertArgs} args - Arguments to update or create a VendorEvaluation.
+     * @example
+     * // Update or create a VendorEvaluation
+     * const vendorEvaluation = await prisma.vendorEvaluation.upsert({
+     *   create: {
+     *     // ... data to create a VendorEvaluation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VendorEvaluation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VendorEvaluationUpsertArgs>(args: SelectSubset<T, VendorEvaluationUpsertArgs<ExtArgs>>): Prisma__VendorEvaluationClient<$Result.GetResult<Prisma.$VendorEvaluationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VendorEvaluations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationCountArgs} args - Arguments to filter VendorEvaluations to count.
+     * @example
+     * // Count the number of VendorEvaluations
+     * const count = await prisma.vendorEvaluation.count({
+     *   where: {
+     *     // ... the filter for the VendorEvaluations we want to count
+     *   }
+     * })
+    **/
+    count<T extends VendorEvaluationCountArgs>(
+      args?: Subset<T, VendorEvaluationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VendorEvaluationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VendorEvaluation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VendorEvaluationAggregateArgs>(args: Subset<T, VendorEvaluationAggregateArgs>): Prisma.PrismaPromise<GetVendorEvaluationAggregateType<T>>
+
+    /**
+     * Group by VendorEvaluation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VendorEvaluationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VendorEvaluationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VendorEvaluationGroupByArgs['orderBy'] }
+        : { orderBy?: VendorEvaluationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VendorEvaluationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVendorEvaluationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VendorEvaluation model
+   */
+  readonly fields: VendorEvaluationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VendorEvaluation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VendorEvaluationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VendorEvaluation model
+   */
+  interface VendorEvaluationFieldRefs {
+    readonly id: FieldRef<"VendorEvaluation", 'String'>
+    readonly vendorId: FieldRef<"VendorEvaluation", 'String'>
+    readonly evaluatorId: FieldRef<"VendorEvaluation", 'String'>
+    readonly period: FieldRef<"VendorEvaluation", 'String'>
+    readonly delivery: FieldRef<"VendorEvaluation", 'Int'>
+    readonly quality: FieldRef<"VendorEvaluation", 'Int'>
+    readonly price: FieldRef<"VendorEvaluation", 'Int'>
+    readonly service: FieldRef<"VendorEvaluation", 'Int'>
+    readonly overall: FieldRef<"VendorEvaluation", 'Float'>
+    readonly comments: FieldRef<"VendorEvaluation", 'String'>
+    readonly createdAt: FieldRef<"VendorEvaluation", 'DateTime'>
+    readonly updatedAt: FieldRef<"VendorEvaluation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VendorEvaluation findUnique
+   */
+  export type VendorEvaluationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * Filter, which VendorEvaluation to fetch.
+     */
+    where: VendorEvaluationWhereUniqueInput
+  }
+
+  /**
+   * VendorEvaluation findUniqueOrThrow
+   */
+  export type VendorEvaluationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * Filter, which VendorEvaluation to fetch.
+     */
+    where: VendorEvaluationWhereUniqueInput
+  }
+
+  /**
+   * VendorEvaluation findFirst
+   */
+  export type VendorEvaluationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * Filter, which VendorEvaluation to fetch.
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VendorEvaluations to fetch.
+     */
+    orderBy?: VendorEvaluationOrderByWithRelationInput | VendorEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VendorEvaluations.
+     */
+    cursor?: VendorEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VendorEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VendorEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VendorEvaluations.
+     */
+    distinct?: VendorEvaluationScalarFieldEnum | VendorEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * VendorEvaluation findFirstOrThrow
+   */
+  export type VendorEvaluationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * Filter, which VendorEvaluation to fetch.
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VendorEvaluations to fetch.
+     */
+    orderBy?: VendorEvaluationOrderByWithRelationInput | VendorEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VendorEvaluations.
+     */
+    cursor?: VendorEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VendorEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VendorEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VendorEvaluations.
+     */
+    distinct?: VendorEvaluationScalarFieldEnum | VendorEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * VendorEvaluation findMany
+   */
+  export type VendorEvaluationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * Filter, which VendorEvaluations to fetch.
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VendorEvaluations to fetch.
+     */
+    orderBy?: VendorEvaluationOrderByWithRelationInput | VendorEvaluationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VendorEvaluations.
+     */
+    cursor?: VendorEvaluationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VendorEvaluations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VendorEvaluations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VendorEvaluations.
+     */
+    distinct?: VendorEvaluationScalarFieldEnum | VendorEvaluationScalarFieldEnum[]
+  }
+
+  /**
+   * VendorEvaluation create
+   */
+  export type VendorEvaluationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a VendorEvaluation.
+     */
+    data: XOR<VendorEvaluationCreateInput, VendorEvaluationUncheckedCreateInput>
+  }
+
+  /**
+   * VendorEvaluation createMany
+   */
+  export type VendorEvaluationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VendorEvaluations.
+     */
+    data: VendorEvaluationCreateManyInput | VendorEvaluationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VendorEvaluation createManyAndReturn
+   */
+  export type VendorEvaluationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * The data used to create many VendorEvaluations.
+     */
+    data: VendorEvaluationCreateManyInput | VendorEvaluationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VendorEvaluation update
+   */
+  export type VendorEvaluationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a VendorEvaluation.
+     */
+    data: XOR<VendorEvaluationUpdateInput, VendorEvaluationUncheckedUpdateInput>
+    /**
+     * Choose, which VendorEvaluation to update.
+     */
+    where: VendorEvaluationWhereUniqueInput
+  }
+
+  /**
+   * VendorEvaluation updateMany
+   */
+  export type VendorEvaluationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VendorEvaluations.
+     */
+    data: XOR<VendorEvaluationUpdateManyMutationInput, VendorEvaluationUncheckedUpdateManyInput>
+    /**
+     * Filter which VendorEvaluations to update
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * Limit how many VendorEvaluations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VendorEvaluation updateManyAndReturn
+   */
+  export type VendorEvaluationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * The data used to update VendorEvaluations.
+     */
+    data: XOR<VendorEvaluationUpdateManyMutationInput, VendorEvaluationUncheckedUpdateManyInput>
+    /**
+     * Filter which VendorEvaluations to update
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * Limit how many VendorEvaluations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VendorEvaluation upsert
+   */
+  export type VendorEvaluationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the VendorEvaluation to update in case it exists.
+     */
+    where: VendorEvaluationWhereUniqueInput
+    /**
+     * In case the VendorEvaluation found by the `where` argument doesn't exist, create a new VendorEvaluation with this data.
+     */
+    create: XOR<VendorEvaluationCreateInput, VendorEvaluationUncheckedCreateInput>
+    /**
+     * In case the VendorEvaluation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VendorEvaluationUpdateInput, VendorEvaluationUncheckedUpdateInput>
+  }
+
+  /**
+   * VendorEvaluation delete
+   */
+  export type VendorEvaluationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+    /**
+     * Filter which VendorEvaluation to delete.
+     */
+    where: VendorEvaluationWhereUniqueInput
+  }
+
+  /**
+   * VendorEvaluation deleteMany
+   */
+  export type VendorEvaluationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VendorEvaluations to delete
+     */
+    where?: VendorEvaluationWhereInput
+    /**
+     * Limit how many VendorEvaluations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VendorEvaluation without action
+   */
+  export type VendorEvaluationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VendorEvaluation
+     */
+    select?: VendorEvaluationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VendorEvaluation
+     */
+    omit?: VendorEvaluationOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Promotion
+   */
+
+  export type AggregatePromotion = {
+    _count: PromotionCountAggregateOutputType | null
+    _avg: PromotionAvgAggregateOutputType | null
+    _sum: PromotionSumAggregateOutputType | null
+    _min: PromotionMinAggregateOutputType | null
+    _max: PromotionMaxAggregateOutputType | null
+  }
+
+  export type PromotionAvgAggregateOutputType = {
+    value: number | null
+    buyQty: number | null
+    getQty: number | null
+    minQuantity: number | null
+  }
+
+  export type PromotionSumAggregateOutputType = {
+    value: number | null
+    buyQty: number | null
+    getQty: number | null
+    minQuantity: number | null
+  }
+
+  export type PromotionMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    type: string | null
+    value: number | null
+    buyQty: number | null
+    getQty: number | null
+    scope: string | null
+    minQuantity: number | null
+    startsAt: Date | null
+    endsAt: Date | null
+    allowBelowCost: boolean | null
+    status: string | null
+    createdById: string | null
+    activatedById: string | null
+    activatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PromotionMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    description: string | null
+    type: string | null
+    value: number | null
+    buyQty: number | null
+    getQty: number | null
+    scope: string | null
+    minQuantity: number | null
+    startsAt: Date | null
+    endsAt: Date | null
+    allowBelowCost: boolean | null
+    status: string | null
+    createdById: string | null
+    activatedById: string | null
+    activatedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PromotionCountAggregateOutputType = {
+    id: number
+    code: number
+    name: number
+    description: number
+    type: number
+    value: number
+    buyQty: number
+    getQty: number
+    scope: number
+    categories: number
+    productIds: number
+    branchIds: number
+    minQuantity: number
+    startsAt: number
+    endsAt: number
+    allowBelowCost: number
+    status: number
+    createdById: number
+    activatedById: number
+    activatedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PromotionAvgAggregateInputType = {
+    value?: true
+    buyQty?: true
+    getQty?: true
+    minQuantity?: true
+  }
+
+  export type PromotionSumAggregateInputType = {
+    value?: true
+    buyQty?: true
+    getQty?: true
+    minQuantity?: true
+  }
+
+  export type PromotionMinAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    type?: true
+    value?: true
+    buyQty?: true
+    getQty?: true
+    scope?: true
+    minQuantity?: true
+    startsAt?: true
+    endsAt?: true
+    allowBelowCost?: true
+    status?: true
+    createdById?: true
+    activatedById?: true
+    activatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PromotionMaxAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    type?: true
+    value?: true
+    buyQty?: true
+    getQty?: true
+    scope?: true
+    minQuantity?: true
+    startsAt?: true
+    endsAt?: true
+    allowBelowCost?: true
+    status?: true
+    createdById?: true
+    activatedById?: true
+    activatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PromotionCountAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    description?: true
+    type?: true
+    value?: true
+    buyQty?: true
+    getQty?: true
+    scope?: true
+    categories?: true
+    productIds?: true
+    branchIds?: true
+    minQuantity?: true
+    startsAt?: true
+    endsAt?: true
+    allowBelowCost?: true
+    status?: true
+    createdById?: true
+    activatedById?: true
+    activatedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PromotionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Promotion to aggregate.
+     */
+    where?: PromotionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Promotions to fetch.
+     */
+    orderBy?: PromotionOrderByWithRelationInput | PromotionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PromotionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Promotions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Promotions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Promotions
+    **/
+    _count?: true | PromotionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PromotionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PromotionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PromotionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PromotionMaxAggregateInputType
+  }
+
+  export type GetPromotionAggregateType<T extends PromotionAggregateArgs> = {
+        [P in keyof T & keyof AggregatePromotion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePromotion[P]>
+      : GetScalarType<T[P], AggregatePromotion[P]>
+  }
+
+
+
+
+  export type PromotionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PromotionWhereInput
+    orderBy?: PromotionOrderByWithAggregationInput | PromotionOrderByWithAggregationInput[]
+    by: PromotionScalarFieldEnum[] | PromotionScalarFieldEnum
+    having?: PromotionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PromotionCountAggregateInputType | true
+    _avg?: PromotionAvgAggregateInputType
+    _sum?: PromotionSumAggregateInputType
+    _min?: PromotionMinAggregateInputType
+    _max?: PromotionMaxAggregateInputType
+  }
+
+  export type PromotionGroupByOutputType = {
+    id: string
+    code: string
+    name: string
+    description: string | null
+    type: string
+    value: number
+    buyQty: number | null
+    getQty: number | null
+    scope: string
+    categories: string[]
+    productIds: string[]
+    branchIds: string[]
+    minQuantity: number
+    startsAt: Date
+    endsAt: Date
+    allowBelowCost: boolean
+    status: string
+    createdById: string
+    activatedById: string | null
+    activatedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PromotionCountAggregateOutputType | null
+    _avg: PromotionAvgAggregateOutputType | null
+    _sum: PromotionSumAggregateOutputType | null
+    _min: PromotionMinAggregateOutputType | null
+    _max: PromotionMaxAggregateOutputType | null
+  }
+
+  type GetPromotionGroupByPayload<T extends PromotionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PromotionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PromotionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PromotionGroupByOutputType[P]>
+            : GetScalarType<T[P], PromotionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PromotionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    value?: boolean
+    buyQty?: boolean
+    getQty?: boolean
+    scope?: boolean
+    categories?: boolean
+    productIds?: boolean
+    branchIds?: boolean
+    minQuantity?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    allowBelowCost?: boolean
+    status?: boolean
+    createdById?: boolean
+    activatedById?: boolean
+    activatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["promotion"]>
+
+  export type PromotionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    value?: boolean
+    buyQty?: boolean
+    getQty?: boolean
+    scope?: boolean
+    categories?: boolean
+    productIds?: boolean
+    branchIds?: boolean
+    minQuantity?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    allowBelowCost?: boolean
+    status?: boolean
+    createdById?: boolean
+    activatedById?: boolean
+    activatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["promotion"]>
+
+  export type PromotionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    value?: boolean
+    buyQty?: boolean
+    getQty?: boolean
+    scope?: boolean
+    categories?: boolean
+    productIds?: boolean
+    branchIds?: boolean
+    minQuantity?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    allowBelowCost?: boolean
+    status?: boolean
+    createdById?: boolean
+    activatedById?: boolean
+    activatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["promotion"]>
+
+  export type PromotionSelectScalar = {
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    description?: boolean
+    type?: boolean
+    value?: boolean
+    buyQty?: boolean
+    getQty?: boolean
+    scope?: boolean
+    categories?: boolean
+    productIds?: boolean
+    branchIds?: boolean
+    minQuantity?: boolean
+    startsAt?: boolean
+    endsAt?: boolean
+    allowBelowCost?: boolean
+    status?: boolean
+    createdById?: boolean
+    activatedById?: boolean
+    activatedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PromotionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "description" | "type" | "value" | "buyQty" | "getQty" | "scope" | "categories" | "productIds" | "branchIds" | "minQuantity" | "startsAt" | "endsAt" | "allowBelowCost" | "status" | "createdById" | "activatedById" | "activatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["promotion"]>
+
+  export type $PromotionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Promotion"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      name: string
+      description: string | null
+      type: string
+      value: number
+      buyQty: number | null
+      getQty: number | null
+      scope: string
+      categories: string[]
+      productIds: string[]
+      branchIds: string[]
+      minQuantity: number
+      startsAt: Date
+      endsAt: Date
+      allowBelowCost: boolean
+      status: string
+      createdById: string
+      activatedById: string | null
+      activatedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["promotion"]>
+    composites: {}
+  }
+
+  type PromotionGetPayload<S extends boolean | null | undefined | PromotionDefaultArgs> = $Result.GetResult<Prisma.$PromotionPayload, S>
+
+  type PromotionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PromotionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PromotionCountAggregateInputType | true
+    }
+
+  export interface PromotionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Promotion'], meta: { name: 'Promotion' } }
+    /**
+     * Find zero or one Promotion that matches the filter.
+     * @param {PromotionFindUniqueArgs} args - Arguments to find a Promotion
+     * @example
+     * // Get one Promotion
+     * const promotion = await prisma.promotion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PromotionFindUniqueArgs>(args: SelectSubset<T, PromotionFindUniqueArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Promotion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PromotionFindUniqueOrThrowArgs} args - Arguments to find a Promotion
+     * @example
+     * // Get one Promotion
+     * const promotion = await prisma.promotion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PromotionFindUniqueOrThrowArgs>(args: SelectSubset<T, PromotionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Promotion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionFindFirstArgs} args - Arguments to find a Promotion
+     * @example
+     * // Get one Promotion
+     * const promotion = await prisma.promotion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PromotionFindFirstArgs>(args?: SelectSubset<T, PromotionFindFirstArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Promotion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionFindFirstOrThrowArgs} args - Arguments to find a Promotion
+     * @example
+     * // Get one Promotion
+     * const promotion = await prisma.promotion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PromotionFindFirstOrThrowArgs>(args?: SelectSubset<T, PromotionFindFirstOrThrowArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Promotions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Promotions
+     * const promotions = await prisma.promotion.findMany()
+     * 
+     * // Get first 10 Promotions
+     * const promotions = await prisma.promotion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const promotionWithIdOnly = await prisma.promotion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PromotionFindManyArgs>(args?: SelectSubset<T, PromotionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Promotion.
+     * @param {PromotionCreateArgs} args - Arguments to create a Promotion.
+     * @example
+     * // Create one Promotion
+     * const Promotion = await prisma.promotion.create({
+     *   data: {
+     *     // ... data to create a Promotion
+     *   }
+     * })
+     * 
+     */
+    create<T extends PromotionCreateArgs>(args: SelectSubset<T, PromotionCreateArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Promotions.
+     * @param {PromotionCreateManyArgs} args - Arguments to create many Promotions.
+     * @example
+     * // Create many Promotions
+     * const promotion = await prisma.promotion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PromotionCreateManyArgs>(args?: SelectSubset<T, PromotionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Promotions and returns the data saved in the database.
+     * @param {PromotionCreateManyAndReturnArgs} args - Arguments to create many Promotions.
+     * @example
+     * // Create many Promotions
+     * const promotion = await prisma.promotion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Promotions and only return the `id`
+     * const promotionWithIdOnly = await prisma.promotion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PromotionCreateManyAndReturnArgs>(args?: SelectSubset<T, PromotionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Promotion.
+     * @param {PromotionDeleteArgs} args - Arguments to delete one Promotion.
+     * @example
+     * // Delete one Promotion
+     * const Promotion = await prisma.promotion.delete({
+     *   where: {
+     *     // ... filter to delete one Promotion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PromotionDeleteArgs>(args: SelectSubset<T, PromotionDeleteArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Promotion.
+     * @param {PromotionUpdateArgs} args - Arguments to update one Promotion.
+     * @example
+     * // Update one Promotion
+     * const promotion = await prisma.promotion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PromotionUpdateArgs>(args: SelectSubset<T, PromotionUpdateArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Promotions.
+     * @param {PromotionDeleteManyArgs} args - Arguments to filter Promotions to delete.
+     * @example
+     * // Delete a few Promotions
+     * const { count } = await prisma.promotion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PromotionDeleteManyArgs>(args?: SelectSubset<T, PromotionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Promotions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Promotions
+     * const promotion = await prisma.promotion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PromotionUpdateManyArgs>(args: SelectSubset<T, PromotionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Promotions and returns the data updated in the database.
+     * @param {PromotionUpdateManyAndReturnArgs} args - Arguments to update many Promotions.
+     * @example
+     * // Update many Promotions
+     * const promotion = await prisma.promotion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Promotions and only return the `id`
+     * const promotionWithIdOnly = await prisma.promotion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PromotionUpdateManyAndReturnArgs>(args: SelectSubset<T, PromotionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Promotion.
+     * @param {PromotionUpsertArgs} args - Arguments to update or create a Promotion.
+     * @example
+     * // Update or create a Promotion
+     * const promotion = await prisma.promotion.upsert({
+     *   create: {
+     *     // ... data to create a Promotion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Promotion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PromotionUpsertArgs>(args: SelectSubset<T, PromotionUpsertArgs<ExtArgs>>): Prisma__PromotionClient<$Result.GetResult<Prisma.$PromotionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Promotions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionCountArgs} args - Arguments to filter Promotions to count.
+     * @example
+     * // Count the number of Promotions
+     * const count = await prisma.promotion.count({
+     *   where: {
+     *     // ... the filter for the Promotions we want to count
+     *   }
+     * })
+    **/
+    count<T extends PromotionCountArgs>(
+      args?: Subset<T, PromotionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PromotionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Promotion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PromotionAggregateArgs>(args: Subset<T, PromotionAggregateArgs>): Prisma.PrismaPromise<GetPromotionAggregateType<T>>
+
+    /**
+     * Group by Promotion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PromotionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PromotionGroupByArgs['orderBy'] }
+        : { orderBy?: PromotionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PromotionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPromotionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Promotion model
+   */
+  readonly fields: PromotionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Promotion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PromotionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Promotion model
+   */
+  interface PromotionFieldRefs {
+    readonly id: FieldRef<"Promotion", 'String'>
+    readonly code: FieldRef<"Promotion", 'String'>
+    readonly name: FieldRef<"Promotion", 'String'>
+    readonly description: FieldRef<"Promotion", 'String'>
+    readonly type: FieldRef<"Promotion", 'String'>
+    readonly value: FieldRef<"Promotion", 'Float'>
+    readonly buyQty: FieldRef<"Promotion", 'Int'>
+    readonly getQty: FieldRef<"Promotion", 'Int'>
+    readonly scope: FieldRef<"Promotion", 'String'>
+    readonly categories: FieldRef<"Promotion", 'String[]'>
+    readonly productIds: FieldRef<"Promotion", 'String[]'>
+    readonly branchIds: FieldRef<"Promotion", 'String[]'>
+    readonly minQuantity: FieldRef<"Promotion", 'Int'>
+    readonly startsAt: FieldRef<"Promotion", 'DateTime'>
+    readonly endsAt: FieldRef<"Promotion", 'DateTime'>
+    readonly allowBelowCost: FieldRef<"Promotion", 'Boolean'>
+    readonly status: FieldRef<"Promotion", 'String'>
+    readonly createdById: FieldRef<"Promotion", 'String'>
+    readonly activatedById: FieldRef<"Promotion", 'String'>
+    readonly activatedAt: FieldRef<"Promotion", 'DateTime'>
+    readonly createdAt: FieldRef<"Promotion", 'DateTime'>
+    readonly updatedAt: FieldRef<"Promotion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Promotion findUnique
+   */
+  export type PromotionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * Filter, which Promotion to fetch.
+     */
+    where: PromotionWhereUniqueInput
+  }
+
+  /**
+   * Promotion findUniqueOrThrow
+   */
+  export type PromotionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * Filter, which Promotion to fetch.
+     */
+    where: PromotionWhereUniqueInput
+  }
+
+  /**
+   * Promotion findFirst
+   */
+  export type PromotionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * Filter, which Promotion to fetch.
+     */
+    where?: PromotionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Promotions to fetch.
+     */
+    orderBy?: PromotionOrderByWithRelationInput | PromotionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Promotions.
+     */
+    cursor?: PromotionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Promotions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Promotions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Promotions.
+     */
+    distinct?: PromotionScalarFieldEnum | PromotionScalarFieldEnum[]
+  }
+
+  /**
+   * Promotion findFirstOrThrow
+   */
+  export type PromotionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * Filter, which Promotion to fetch.
+     */
+    where?: PromotionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Promotions to fetch.
+     */
+    orderBy?: PromotionOrderByWithRelationInput | PromotionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Promotions.
+     */
+    cursor?: PromotionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Promotions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Promotions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Promotions.
+     */
+    distinct?: PromotionScalarFieldEnum | PromotionScalarFieldEnum[]
+  }
+
+  /**
+   * Promotion findMany
+   */
+  export type PromotionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * Filter, which Promotions to fetch.
+     */
+    where?: PromotionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Promotions to fetch.
+     */
+    orderBy?: PromotionOrderByWithRelationInput | PromotionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Promotions.
+     */
+    cursor?: PromotionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Promotions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Promotions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Promotions.
+     */
+    distinct?: PromotionScalarFieldEnum | PromotionScalarFieldEnum[]
+  }
+
+  /**
+   * Promotion create
+   */
+  export type PromotionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Promotion.
+     */
+    data: XOR<PromotionCreateInput, PromotionUncheckedCreateInput>
+  }
+
+  /**
+   * Promotion createMany
+   */
+  export type PromotionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Promotions.
+     */
+    data: PromotionCreateManyInput | PromotionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Promotion createManyAndReturn
+   */
+  export type PromotionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Promotions.
+     */
+    data: PromotionCreateManyInput | PromotionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Promotion update
+   */
+  export type PromotionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Promotion.
+     */
+    data: XOR<PromotionUpdateInput, PromotionUncheckedUpdateInput>
+    /**
+     * Choose, which Promotion to update.
+     */
+    where: PromotionWhereUniqueInput
+  }
+
+  /**
+   * Promotion updateMany
+   */
+  export type PromotionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Promotions.
+     */
+    data: XOR<PromotionUpdateManyMutationInput, PromotionUncheckedUpdateManyInput>
+    /**
+     * Filter which Promotions to update
+     */
+    where?: PromotionWhereInput
+    /**
+     * Limit how many Promotions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Promotion updateManyAndReturn
+   */
+  export type PromotionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * The data used to update Promotions.
+     */
+    data: XOR<PromotionUpdateManyMutationInput, PromotionUncheckedUpdateManyInput>
+    /**
+     * Filter which Promotions to update
+     */
+    where?: PromotionWhereInput
+    /**
+     * Limit how many Promotions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Promotion upsert
+   */
+  export type PromotionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Promotion to update in case it exists.
+     */
+    where: PromotionWhereUniqueInput
+    /**
+     * In case the Promotion found by the `where` argument doesn't exist, create a new Promotion with this data.
+     */
+    create: XOR<PromotionCreateInput, PromotionUncheckedCreateInput>
+    /**
+     * In case the Promotion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PromotionUpdateInput, PromotionUncheckedUpdateInput>
+  }
+
+  /**
+   * Promotion delete
+   */
+  export type PromotionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+    /**
+     * Filter which Promotion to delete.
+     */
+    where: PromotionWhereUniqueInput
+  }
+
+  /**
+   * Promotion deleteMany
+   */
+  export type PromotionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Promotions to delete
+     */
+    where?: PromotionWhereInput
+    /**
+     * Limit how many Promotions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Promotion without action
+   */
+  export type PromotionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Promotion
+     */
+    select?: PromotionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Promotion
+     */
+    omit?: PromotionOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PromotionRedemption
+   */
+
+  export type AggregatePromotionRedemption = {
+    _count: PromotionRedemptionCountAggregateOutputType | null
+    _avg: PromotionRedemptionAvgAggregateOutputType | null
+    _sum: PromotionRedemptionSumAggregateOutputType | null
+    _min: PromotionRedemptionMinAggregateOutputType | null
+    _max: PromotionRedemptionMaxAggregateOutputType | null
+  }
+
+  export type PromotionRedemptionAvgAggregateOutputType = {
+    quantity: number | null
+    amount: number | null
+  }
+
+  export type PromotionRedemptionSumAggregateOutputType = {
+    quantity: number | null
+    amount: number | null
+  }
+
+  export type PromotionRedemptionMinAggregateOutputType = {
+    id: string | null
+    promotionId: string | null
+    salesDocumentId: string | null
+    productId: string | null
+    branchId: string | null
+    quantity: number | null
+    amount: number | null
+    createdAt: Date | null
+  }
+
+  export type PromotionRedemptionMaxAggregateOutputType = {
+    id: string | null
+    promotionId: string | null
+    salesDocumentId: string | null
+    productId: string | null
+    branchId: string | null
+    quantity: number | null
+    amount: number | null
+    createdAt: Date | null
+  }
+
+  export type PromotionRedemptionCountAggregateOutputType = {
+    id: number
+    promotionId: number
+    salesDocumentId: number
+    productId: number
+    branchId: number
+    quantity: number
+    amount: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PromotionRedemptionAvgAggregateInputType = {
+    quantity?: true
+    amount?: true
+  }
+
+  export type PromotionRedemptionSumAggregateInputType = {
+    quantity?: true
+    amount?: true
+  }
+
+  export type PromotionRedemptionMinAggregateInputType = {
+    id?: true
+    promotionId?: true
+    salesDocumentId?: true
+    productId?: true
+    branchId?: true
+    quantity?: true
+    amount?: true
+    createdAt?: true
+  }
+
+  export type PromotionRedemptionMaxAggregateInputType = {
+    id?: true
+    promotionId?: true
+    salesDocumentId?: true
+    productId?: true
+    branchId?: true
+    quantity?: true
+    amount?: true
+    createdAt?: true
+  }
+
+  export type PromotionRedemptionCountAggregateInputType = {
+    id?: true
+    promotionId?: true
+    salesDocumentId?: true
+    productId?: true
+    branchId?: true
+    quantity?: true
+    amount?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PromotionRedemptionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PromotionRedemption to aggregate.
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PromotionRedemptions to fetch.
+     */
+    orderBy?: PromotionRedemptionOrderByWithRelationInput | PromotionRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PromotionRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PromotionRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PromotionRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PromotionRedemptions
+    **/
+    _count?: true | PromotionRedemptionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PromotionRedemptionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PromotionRedemptionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PromotionRedemptionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PromotionRedemptionMaxAggregateInputType
+  }
+
+  export type GetPromotionRedemptionAggregateType<T extends PromotionRedemptionAggregateArgs> = {
+        [P in keyof T & keyof AggregatePromotionRedemption]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePromotionRedemption[P]>
+      : GetScalarType<T[P], AggregatePromotionRedemption[P]>
+  }
+
+
+
+
+  export type PromotionRedemptionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PromotionRedemptionWhereInput
+    orderBy?: PromotionRedemptionOrderByWithAggregationInput | PromotionRedemptionOrderByWithAggregationInput[]
+    by: PromotionRedemptionScalarFieldEnum[] | PromotionRedemptionScalarFieldEnum
+    having?: PromotionRedemptionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PromotionRedemptionCountAggregateInputType | true
+    _avg?: PromotionRedemptionAvgAggregateInputType
+    _sum?: PromotionRedemptionSumAggregateInputType
+    _min?: PromotionRedemptionMinAggregateInputType
+    _max?: PromotionRedemptionMaxAggregateInputType
+  }
+
+  export type PromotionRedemptionGroupByOutputType = {
+    id: string
+    promotionId: string
+    salesDocumentId: string
+    productId: string
+    branchId: string | null
+    quantity: number
+    amount: number
+    createdAt: Date
+    _count: PromotionRedemptionCountAggregateOutputType | null
+    _avg: PromotionRedemptionAvgAggregateOutputType | null
+    _sum: PromotionRedemptionSumAggregateOutputType | null
+    _min: PromotionRedemptionMinAggregateOutputType | null
+    _max: PromotionRedemptionMaxAggregateOutputType | null
+  }
+
+  type GetPromotionRedemptionGroupByPayload<T extends PromotionRedemptionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PromotionRedemptionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PromotionRedemptionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PromotionRedemptionGroupByOutputType[P]>
+            : GetScalarType<T[P], PromotionRedemptionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PromotionRedemptionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    promotionId?: boolean
+    salesDocumentId?: boolean
+    productId?: boolean
+    branchId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["promotionRedemption"]>
+
+  export type PromotionRedemptionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    promotionId?: boolean
+    salesDocumentId?: boolean
+    productId?: boolean
+    branchId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["promotionRedemption"]>
+
+  export type PromotionRedemptionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    promotionId?: boolean
+    salesDocumentId?: boolean
+    productId?: boolean
+    branchId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["promotionRedemption"]>
+
+  export type PromotionRedemptionSelectScalar = {
+    id?: boolean
+    promotionId?: boolean
+    salesDocumentId?: boolean
+    productId?: boolean
+    branchId?: boolean
+    quantity?: boolean
+    amount?: boolean
+    createdAt?: boolean
+  }
+
+  export type PromotionRedemptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "promotionId" | "salesDocumentId" | "productId" | "branchId" | "quantity" | "amount" | "createdAt", ExtArgs["result"]["promotionRedemption"]>
+
+  export type $PromotionRedemptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PromotionRedemption"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      promotionId: string
+      salesDocumentId: string
+      productId: string
+      branchId: string | null
+      quantity: number
+      amount: number
+      createdAt: Date
+    }, ExtArgs["result"]["promotionRedemption"]>
+    composites: {}
+  }
+
+  type PromotionRedemptionGetPayload<S extends boolean | null | undefined | PromotionRedemptionDefaultArgs> = $Result.GetResult<Prisma.$PromotionRedemptionPayload, S>
+
+  type PromotionRedemptionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PromotionRedemptionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PromotionRedemptionCountAggregateInputType | true
+    }
+
+  export interface PromotionRedemptionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PromotionRedemption'], meta: { name: 'PromotionRedemption' } }
+    /**
+     * Find zero or one PromotionRedemption that matches the filter.
+     * @param {PromotionRedemptionFindUniqueArgs} args - Arguments to find a PromotionRedemption
+     * @example
+     * // Get one PromotionRedemption
+     * const promotionRedemption = await prisma.promotionRedemption.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PromotionRedemptionFindUniqueArgs>(args: SelectSubset<T, PromotionRedemptionFindUniqueArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PromotionRedemption that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PromotionRedemptionFindUniqueOrThrowArgs} args - Arguments to find a PromotionRedemption
+     * @example
+     * // Get one PromotionRedemption
+     * const promotionRedemption = await prisma.promotionRedemption.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PromotionRedemptionFindUniqueOrThrowArgs>(args: SelectSubset<T, PromotionRedemptionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PromotionRedemption that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionFindFirstArgs} args - Arguments to find a PromotionRedemption
+     * @example
+     * // Get one PromotionRedemption
+     * const promotionRedemption = await prisma.promotionRedemption.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PromotionRedemptionFindFirstArgs>(args?: SelectSubset<T, PromotionRedemptionFindFirstArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PromotionRedemption that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionFindFirstOrThrowArgs} args - Arguments to find a PromotionRedemption
+     * @example
+     * // Get one PromotionRedemption
+     * const promotionRedemption = await prisma.promotionRedemption.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PromotionRedemptionFindFirstOrThrowArgs>(args?: SelectSubset<T, PromotionRedemptionFindFirstOrThrowArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PromotionRedemptions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PromotionRedemptions
+     * const promotionRedemptions = await prisma.promotionRedemption.findMany()
+     * 
+     * // Get first 10 PromotionRedemptions
+     * const promotionRedemptions = await prisma.promotionRedemption.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const promotionRedemptionWithIdOnly = await prisma.promotionRedemption.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PromotionRedemptionFindManyArgs>(args?: SelectSubset<T, PromotionRedemptionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PromotionRedemption.
+     * @param {PromotionRedemptionCreateArgs} args - Arguments to create a PromotionRedemption.
+     * @example
+     * // Create one PromotionRedemption
+     * const PromotionRedemption = await prisma.promotionRedemption.create({
+     *   data: {
+     *     // ... data to create a PromotionRedemption
+     *   }
+     * })
+     * 
+     */
+    create<T extends PromotionRedemptionCreateArgs>(args: SelectSubset<T, PromotionRedemptionCreateArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PromotionRedemptions.
+     * @param {PromotionRedemptionCreateManyArgs} args - Arguments to create many PromotionRedemptions.
+     * @example
+     * // Create many PromotionRedemptions
+     * const promotionRedemption = await prisma.promotionRedemption.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PromotionRedemptionCreateManyArgs>(args?: SelectSubset<T, PromotionRedemptionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PromotionRedemptions and returns the data saved in the database.
+     * @param {PromotionRedemptionCreateManyAndReturnArgs} args - Arguments to create many PromotionRedemptions.
+     * @example
+     * // Create many PromotionRedemptions
+     * const promotionRedemption = await prisma.promotionRedemption.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PromotionRedemptions and only return the `id`
+     * const promotionRedemptionWithIdOnly = await prisma.promotionRedemption.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PromotionRedemptionCreateManyAndReturnArgs>(args?: SelectSubset<T, PromotionRedemptionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PromotionRedemption.
+     * @param {PromotionRedemptionDeleteArgs} args - Arguments to delete one PromotionRedemption.
+     * @example
+     * // Delete one PromotionRedemption
+     * const PromotionRedemption = await prisma.promotionRedemption.delete({
+     *   where: {
+     *     // ... filter to delete one PromotionRedemption
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PromotionRedemptionDeleteArgs>(args: SelectSubset<T, PromotionRedemptionDeleteArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PromotionRedemption.
+     * @param {PromotionRedemptionUpdateArgs} args - Arguments to update one PromotionRedemption.
+     * @example
+     * // Update one PromotionRedemption
+     * const promotionRedemption = await prisma.promotionRedemption.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PromotionRedemptionUpdateArgs>(args: SelectSubset<T, PromotionRedemptionUpdateArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PromotionRedemptions.
+     * @param {PromotionRedemptionDeleteManyArgs} args - Arguments to filter PromotionRedemptions to delete.
+     * @example
+     * // Delete a few PromotionRedemptions
+     * const { count } = await prisma.promotionRedemption.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PromotionRedemptionDeleteManyArgs>(args?: SelectSubset<T, PromotionRedemptionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PromotionRedemptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PromotionRedemptions
+     * const promotionRedemption = await prisma.promotionRedemption.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PromotionRedemptionUpdateManyArgs>(args: SelectSubset<T, PromotionRedemptionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PromotionRedemptions and returns the data updated in the database.
+     * @param {PromotionRedemptionUpdateManyAndReturnArgs} args - Arguments to update many PromotionRedemptions.
+     * @example
+     * // Update many PromotionRedemptions
+     * const promotionRedemption = await prisma.promotionRedemption.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PromotionRedemptions and only return the `id`
+     * const promotionRedemptionWithIdOnly = await prisma.promotionRedemption.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PromotionRedemptionUpdateManyAndReturnArgs>(args: SelectSubset<T, PromotionRedemptionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PromotionRedemption.
+     * @param {PromotionRedemptionUpsertArgs} args - Arguments to update or create a PromotionRedemption.
+     * @example
+     * // Update or create a PromotionRedemption
+     * const promotionRedemption = await prisma.promotionRedemption.upsert({
+     *   create: {
+     *     // ... data to create a PromotionRedemption
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PromotionRedemption we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PromotionRedemptionUpsertArgs>(args: SelectSubset<T, PromotionRedemptionUpsertArgs<ExtArgs>>): Prisma__PromotionRedemptionClient<$Result.GetResult<Prisma.$PromotionRedemptionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PromotionRedemptions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionCountArgs} args - Arguments to filter PromotionRedemptions to count.
+     * @example
+     * // Count the number of PromotionRedemptions
+     * const count = await prisma.promotionRedemption.count({
+     *   where: {
+     *     // ... the filter for the PromotionRedemptions we want to count
+     *   }
+     * })
+    **/
+    count<T extends PromotionRedemptionCountArgs>(
+      args?: Subset<T, PromotionRedemptionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PromotionRedemptionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PromotionRedemption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PromotionRedemptionAggregateArgs>(args: Subset<T, PromotionRedemptionAggregateArgs>): Prisma.PrismaPromise<GetPromotionRedemptionAggregateType<T>>
+
+    /**
+     * Group by PromotionRedemption.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PromotionRedemptionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PromotionRedemptionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PromotionRedemptionGroupByArgs['orderBy'] }
+        : { orderBy?: PromotionRedemptionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PromotionRedemptionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPromotionRedemptionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PromotionRedemption model
+   */
+  readonly fields: PromotionRedemptionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PromotionRedemption.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PromotionRedemptionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PromotionRedemption model
+   */
+  interface PromotionRedemptionFieldRefs {
+    readonly id: FieldRef<"PromotionRedemption", 'String'>
+    readonly promotionId: FieldRef<"PromotionRedemption", 'String'>
+    readonly salesDocumentId: FieldRef<"PromotionRedemption", 'String'>
+    readonly productId: FieldRef<"PromotionRedemption", 'String'>
+    readonly branchId: FieldRef<"PromotionRedemption", 'String'>
+    readonly quantity: FieldRef<"PromotionRedemption", 'Int'>
+    readonly amount: FieldRef<"PromotionRedemption", 'Float'>
+    readonly createdAt: FieldRef<"PromotionRedemption", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PromotionRedemption findUnique
+   */
+  export type PromotionRedemptionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * Filter, which PromotionRedemption to fetch.
+     */
+    where: PromotionRedemptionWhereUniqueInput
+  }
+
+  /**
+   * PromotionRedemption findUniqueOrThrow
+   */
+  export type PromotionRedemptionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * Filter, which PromotionRedemption to fetch.
+     */
+    where: PromotionRedemptionWhereUniqueInput
+  }
+
+  /**
+   * PromotionRedemption findFirst
+   */
+  export type PromotionRedemptionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * Filter, which PromotionRedemption to fetch.
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PromotionRedemptions to fetch.
+     */
+    orderBy?: PromotionRedemptionOrderByWithRelationInput | PromotionRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PromotionRedemptions.
+     */
+    cursor?: PromotionRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PromotionRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PromotionRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PromotionRedemptions.
+     */
+    distinct?: PromotionRedemptionScalarFieldEnum | PromotionRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * PromotionRedemption findFirstOrThrow
+   */
+  export type PromotionRedemptionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * Filter, which PromotionRedemption to fetch.
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PromotionRedemptions to fetch.
+     */
+    orderBy?: PromotionRedemptionOrderByWithRelationInput | PromotionRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PromotionRedemptions.
+     */
+    cursor?: PromotionRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PromotionRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PromotionRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PromotionRedemptions.
+     */
+    distinct?: PromotionRedemptionScalarFieldEnum | PromotionRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * PromotionRedemption findMany
+   */
+  export type PromotionRedemptionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * Filter, which PromotionRedemptions to fetch.
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PromotionRedemptions to fetch.
+     */
+    orderBy?: PromotionRedemptionOrderByWithRelationInput | PromotionRedemptionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PromotionRedemptions.
+     */
+    cursor?: PromotionRedemptionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PromotionRedemptions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PromotionRedemptions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PromotionRedemptions.
+     */
+    distinct?: PromotionRedemptionScalarFieldEnum | PromotionRedemptionScalarFieldEnum[]
+  }
+
+  /**
+   * PromotionRedemption create
+   */
+  export type PromotionRedemptionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PromotionRedemption.
+     */
+    data: XOR<PromotionRedemptionCreateInput, PromotionRedemptionUncheckedCreateInput>
+  }
+
+  /**
+   * PromotionRedemption createMany
+   */
+  export type PromotionRedemptionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PromotionRedemptions.
+     */
+    data: PromotionRedemptionCreateManyInput | PromotionRedemptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PromotionRedemption createManyAndReturn
+   */
+  export type PromotionRedemptionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * The data used to create many PromotionRedemptions.
+     */
+    data: PromotionRedemptionCreateManyInput | PromotionRedemptionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PromotionRedemption update
+   */
+  export type PromotionRedemptionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PromotionRedemption.
+     */
+    data: XOR<PromotionRedemptionUpdateInput, PromotionRedemptionUncheckedUpdateInput>
+    /**
+     * Choose, which PromotionRedemption to update.
+     */
+    where: PromotionRedemptionWhereUniqueInput
+  }
+
+  /**
+   * PromotionRedemption updateMany
+   */
+  export type PromotionRedemptionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PromotionRedemptions.
+     */
+    data: XOR<PromotionRedemptionUpdateManyMutationInput, PromotionRedemptionUncheckedUpdateManyInput>
+    /**
+     * Filter which PromotionRedemptions to update
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * Limit how many PromotionRedemptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PromotionRedemption updateManyAndReturn
+   */
+  export type PromotionRedemptionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * The data used to update PromotionRedemptions.
+     */
+    data: XOR<PromotionRedemptionUpdateManyMutationInput, PromotionRedemptionUncheckedUpdateManyInput>
+    /**
+     * Filter which PromotionRedemptions to update
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * Limit how many PromotionRedemptions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PromotionRedemption upsert
+   */
+  export type PromotionRedemptionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PromotionRedemption to update in case it exists.
+     */
+    where: PromotionRedemptionWhereUniqueInput
+    /**
+     * In case the PromotionRedemption found by the `where` argument doesn't exist, create a new PromotionRedemption with this data.
+     */
+    create: XOR<PromotionRedemptionCreateInput, PromotionRedemptionUncheckedCreateInput>
+    /**
+     * In case the PromotionRedemption was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PromotionRedemptionUpdateInput, PromotionRedemptionUncheckedUpdateInput>
+  }
+
+  /**
+   * PromotionRedemption delete
+   */
+  export type PromotionRedemptionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+    /**
+     * Filter which PromotionRedemption to delete.
+     */
+    where: PromotionRedemptionWhereUniqueInput
+  }
+
+  /**
+   * PromotionRedemption deleteMany
+   */
+  export type PromotionRedemptionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PromotionRedemptions to delete
+     */
+    where?: PromotionRedemptionWhereInput
+    /**
+     * Limit how many PromotionRedemptions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PromotionRedemption without action
+   */
+  export type PromotionRedemptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PromotionRedemption
+     */
+    select?: PromotionRedemptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PromotionRedemption
+     */
+    omit?: PromotionRedemptionOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -136067,6 +150904,8 @@ export namespace Prisma {
     id: 'id',
     purchaseOrderId: 'purchaseOrderId',
     productId: 'productId',
+    description: 'description',
+    lineType: 'lineType',
     quantity: 'quantity',
     unitPrice: 'unitPrice',
     subtotal: 'subtotal',
@@ -137275,6 +152114,234 @@ export namespace Prisma {
   export type RiskRegisterEntryScalarFieldEnum = (typeof RiskRegisterEntryScalarFieldEnum)[keyof typeof RiskRegisterEntryScalarFieldEnum]
 
 
+  export const SalaryStructureScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    minSalary: 'minSalary',
+    maxSalary: 'maxSalary',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SalaryStructureScalarFieldEnum = (typeof SalaryStructureScalarFieldEnum)[keyof typeof SalaryStructureScalarFieldEnum]
+
+
+  export const SalaryComponentScalarFieldEnum: {
+    id: 'id',
+    structureId: 'structureId',
+    name: 'name',
+    kind: 'kind',
+    calc: 'calc',
+    value: 'value',
+    sortOrder: 'sortOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SalaryComponentScalarFieldEnum = (typeof SalaryComponentScalarFieldEnum)[keyof typeof SalaryComponentScalarFieldEnum]
+
+
+  export const EmploymentContractScalarFieldEnum: {
+    id: 'id',
+    contractNumber: 'contractNumber',
+    userId: 'userId',
+    type: 'type',
+    status: 'status',
+    jobTitle: 'jobTitle',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    probationEndDate: 'probationEndDate',
+    noticeDays: 'noticeDays',
+    hoursPerWeek: 'hoursPerWeek',
+    baseSalary: 'baseSalary',
+    salaryStructureId: 'salaryStructureId',
+    notes: 'notes',
+    signedAt: 'signedAt',
+    terminatedAt: 'terminatedAt',
+    terminationReason: 'terminationReason',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EmploymentContractScalarFieldEnum = (typeof EmploymentContractScalarFieldEnum)[keyof typeof EmploymentContractScalarFieldEnum]
+
+
+  export const StockCountScalarFieldEnum: {
+    id: 'id',
+    countNumber: 'countNumber',
+    warehouseId: 'warehouseId',
+    branchId: 'branchId',
+    type: 'type',
+    status: 'status',
+    blind: 'blind',
+    category: 'category',
+    notes: 'notes',
+    createdById: 'createdById',
+    startedAt: 'startedAt',
+    submittedAt: 'submittedAt',
+    submittedById: 'submittedById',
+    postedAt: 'postedAt',
+    totalVarianceValue: 'totalVarianceValue',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StockCountScalarFieldEnum = (typeof StockCountScalarFieldEnum)[keyof typeof StockCountScalarFieldEnum]
+
+
+  export const StockCountLineScalarFieldEnum: {
+    id: 'id',
+    countId: 'countId',
+    productId: 'productId',
+    productName: 'productName',
+    sku: 'sku',
+    unitCost: 'unitCost',
+    systemQty: 'systemQty',
+    countedQty: 'countedQty',
+    note: 'note',
+    countedById: 'countedById',
+    countedAt: 'countedAt',
+    appliedAt: 'appliedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StockCountLineScalarFieldEnum = (typeof StockCountLineScalarFieldEnum)[keyof typeof StockCountLineScalarFieldEnum]
+
+
+  export const RfqScalarFieldEnum: {
+    id: 'id',
+    rfqNumber: 'rfqNumber',
+    title: 'title',
+    requisitionId: 'requisitionId',
+    branchId: 'branchId',
+    warehouseId: 'warehouseId',
+    status: 'status',
+    closingDate: 'closingDate',
+    notes: 'notes',
+    exceptionReason: 'exceptionReason',
+    createdById: 'createdById',
+    sentAt: 'sentAt',
+    closedAt: 'closedAt',
+    awardedQuoteId: 'awardedQuoteId',
+    awardReason: 'awardReason',
+    awardedById: 'awardedById',
+    awardedAt: 'awardedAt',
+    poId: 'poId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RfqScalarFieldEnum = (typeof RfqScalarFieldEnum)[keyof typeof RfqScalarFieldEnum]
+
+
+  export const RfqItemScalarFieldEnum: {
+    id: 'id',
+    rfqId: 'rfqId',
+    productId: 'productId',
+    description: 'description',
+    quantity: 'quantity',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RfqItemScalarFieldEnum = (typeof RfqItemScalarFieldEnum)[keyof typeof RfqItemScalarFieldEnum]
+
+
+  export const RfqQuoteScalarFieldEnum: {
+    id: 'id',
+    rfqId: 'rfqId',
+    vendorId: 'vendorId',
+    status: 'status',
+    leadTimeDays: 'leadTimeDays',
+    paymentTerms: 'paymentTerms',
+    validUntil: 'validUntil',
+    notes: 'notes',
+    submittedAt: 'submittedAt',
+    enteredById: 'enteredById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RfqQuoteScalarFieldEnum = (typeof RfqQuoteScalarFieldEnum)[keyof typeof RfqQuoteScalarFieldEnum]
+
+
+  export const RfqQuoteLineScalarFieldEnum: {
+    id: 'id',
+    quoteId: 'quoteId',
+    itemId: 'itemId',
+    unitPrice: 'unitPrice',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type RfqQuoteLineScalarFieldEnum = (typeof RfqQuoteLineScalarFieldEnum)[keyof typeof RfqQuoteLineScalarFieldEnum]
+
+
+  export const VendorEvaluationScalarFieldEnum: {
+    id: 'id',
+    vendorId: 'vendorId',
+    evaluatorId: 'evaluatorId',
+    period: 'period',
+    delivery: 'delivery',
+    quality: 'quality',
+    price: 'price',
+    service: 'service',
+    overall: 'overall',
+    comments: 'comments',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type VendorEvaluationScalarFieldEnum = (typeof VendorEvaluationScalarFieldEnum)[keyof typeof VendorEvaluationScalarFieldEnum]
+
+
+  export const PromotionScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    name: 'name',
+    description: 'description',
+    type: 'type',
+    value: 'value',
+    buyQty: 'buyQty',
+    getQty: 'getQty',
+    scope: 'scope',
+    categories: 'categories',
+    productIds: 'productIds',
+    branchIds: 'branchIds',
+    minQuantity: 'minQuantity',
+    startsAt: 'startsAt',
+    endsAt: 'endsAt',
+    allowBelowCost: 'allowBelowCost',
+    status: 'status',
+    createdById: 'createdById',
+    activatedById: 'activatedById',
+    activatedAt: 'activatedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PromotionScalarFieldEnum = (typeof PromotionScalarFieldEnum)[keyof typeof PromotionScalarFieldEnum]
+
+
+  export const PromotionRedemptionScalarFieldEnum: {
+    id: 'id',
+    promotionId: 'promotionId',
+    salesDocumentId: 'salesDocumentId',
+    productId: 'productId',
+    branchId: 'branchId',
+    quantity: 'quantity',
+    amount: 'amount',
+    createdAt: 'createdAt'
+  };
+
+  export type PromotionRedemptionScalarFieldEnum = (typeof PromotionRedemptionScalarFieldEnum)[keyof typeof PromotionRedemptionScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -137654,6 +152721,20 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'PurchaseOrderLineType'
+   */
+  export type EnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PurchaseOrderLineType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PurchaseOrderLineType[]'
+   */
+  export type ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PurchaseOrderLineType[]'>
     
 
 
@@ -141463,7 +156544,9 @@ export namespace Prisma {
     NOT?: PurchaseOrderItemWhereInput | PurchaseOrderItemWhereInput[]
     id?: StringFilter<"PurchaseOrderItem"> | string
     purchaseOrderId?: StringFilter<"PurchaseOrderItem"> | string
-    productId?: StringFilter<"PurchaseOrderItem"> | string
+    productId?: StringNullableFilter<"PurchaseOrderItem"> | string | null
+    description?: StringFilter<"PurchaseOrderItem"> | string
+    lineType?: EnumPurchaseOrderLineTypeFilter<"PurchaseOrderItem"> | $Enums.PurchaseOrderLineType
     quantity?: IntFilter<"PurchaseOrderItem"> | number
     unitPrice?: FloatFilter<"PurchaseOrderItem"> | number
     subtotal?: FloatFilter<"PurchaseOrderItem"> | number
@@ -141471,14 +156554,16 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PurchaseOrderItem"> | Date | string
     updatedAt?: DateTimeFilter<"PurchaseOrderItem"> | Date | string
     grnItems?: GRNItemListRelationFilter
-    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     purchaseOrder?: XOR<PurchaseOrderScalarRelationFilter, PurchaseOrderWhereInput>
   }
 
   export type PurchaseOrderItemOrderByWithRelationInput = {
     id?: SortOrder
     purchaseOrderId?: SortOrder
-    productId?: SortOrder
+    productId?: SortOrderInput | SortOrder
+    description?: SortOrder
+    lineType?: SortOrder
     quantity?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
@@ -141496,7 +156581,9 @@ export namespace Prisma {
     OR?: PurchaseOrderItemWhereInput[]
     NOT?: PurchaseOrderItemWhereInput | PurchaseOrderItemWhereInput[]
     purchaseOrderId?: StringFilter<"PurchaseOrderItem"> | string
-    productId?: StringFilter<"PurchaseOrderItem"> | string
+    productId?: StringNullableFilter<"PurchaseOrderItem"> | string | null
+    description?: StringFilter<"PurchaseOrderItem"> | string
+    lineType?: EnumPurchaseOrderLineTypeFilter<"PurchaseOrderItem"> | $Enums.PurchaseOrderLineType
     quantity?: IntFilter<"PurchaseOrderItem"> | number
     unitPrice?: FloatFilter<"PurchaseOrderItem"> | number
     subtotal?: FloatFilter<"PurchaseOrderItem"> | number
@@ -141504,14 +156591,16 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PurchaseOrderItem"> | Date | string
     updatedAt?: DateTimeFilter<"PurchaseOrderItem"> | Date | string
     grnItems?: GRNItemListRelationFilter
-    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     purchaseOrder?: XOR<PurchaseOrderScalarRelationFilter, PurchaseOrderWhereInput>
   }, "id">
 
   export type PurchaseOrderItemOrderByWithAggregationInput = {
     id?: SortOrder
     purchaseOrderId?: SortOrder
-    productId?: SortOrder
+    productId?: SortOrderInput | SortOrder
+    description?: SortOrder
+    lineType?: SortOrder
     quantity?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
@@ -141531,7 +156620,9 @@ export namespace Prisma {
     NOT?: PurchaseOrderItemScalarWhereWithAggregatesInput | PurchaseOrderItemScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"PurchaseOrderItem"> | string
     purchaseOrderId?: StringWithAggregatesFilter<"PurchaseOrderItem"> | string
-    productId?: StringWithAggregatesFilter<"PurchaseOrderItem"> | string
+    productId?: StringNullableWithAggregatesFilter<"PurchaseOrderItem"> | string | null
+    description?: StringWithAggregatesFilter<"PurchaseOrderItem"> | string
+    lineType?: EnumPurchaseOrderLineTypeWithAggregatesFilter<"PurchaseOrderItem"> | $Enums.PurchaseOrderLineType
     quantity?: IntWithAggregatesFilter<"PurchaseOrderItem"> | number
     unitPrice?: FloatWithAggregatesFilter<"PurchaseOrderItem"> | number
     subtotal?: FloatWithAggregatesFilter<"PurchaseOrderItem"> | number
@@ -141631,13 +156722,13 @@ export namespace Prisma {
     id?: StringFilter<"GRNItem"> | string
     grnId?: StringFilter<"GRNItem"> | string
     poItemId?: StringFilter<"GRNItem"> | string
-    productId?: StringFilter<"GRNItem"> | string
+    productId?: StringNullableFilter<"GRNItem"> | string | null
     qtyReceived?: IntFilter<"GRNItem"> | number
     createdAt?: DateTimeFilter<"GRNItem"> | Date | string
     updatedAt?: DateTimeFilter<"GRNItem"> | Date | string
     goodsReceiptNote?: XOR<GoodsReceiptNoteScalarRelationFilter, GoodsReceiptNoteWhereInput>
     purchaseOrderItem?: XOR<PurchaseOrderItemScalarRelationFilter, PurchaseOrderItemWhereInput>
-    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     stockBatches?: StockBatchListRelationFilter
   }
 
@@ -141645,7 +156736,7 @@ export namespace Prisma {
     id?: SortOrder
     grnId?: SortOrder
     poItemId?: SortOrder
-    productId?: SortOrder
+    productId?: SortOrderInput | SortOrder
     qtyReceived?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -141662,13 +156753,13 @@ export namespace Prisma {
     NOT?: GRNItemWhereInput | GRNItemWhereInput[]
     grnId?: StringFilter<"GRNItem"> | string
     poItemId?: StringFilter<"GRNItem"> | string
-    productId?: StringFilter<"GRNItem"> | string
+    productId?: StringNullableFilter<"GRNItem"> | string | null
     qtyReceived?: IntFilter<"GRNItem"> | number
     createdAt?: DateTimeFilter<"GRNItem"> | Date | string
     updatedAt?: DateTimeFilter<"GRNItem"> | Date | string
     goodsReceiptNote?: XOR<GoodsReceiptNoteScalarRelationFilter, GoodsReceiptNoteWhereInput>
     purchaseOrderItem?: XOR<PurchaseOrderItemScalarRelationFilter, PurchaseOrderItemWhereInput>
-    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    product?: XOR<ProductNullableScalarRelationFilter, ProductWhereInput> | null
     stockBatches?: StockBatchListRelationFilter
   }, "id">
 
@@ -141676,7 +156767,7 @@ export namespace Prisma {
     id?: SortOrder
     grnId?: SortOrder
     poItemId?: SortOrder
-    productId?: SortOrder
+    productId?: SortOrderInput | SortOrder
     qtyReceived?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -141694,7 +156785,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"GRNItem"> | string
     grnId?: StringWithAggregatesFilter<"GRNItem"> | string
     poItemId?: StringWithAggregatesFilter<"GRNItem"> | string
-    productId?: StringWithAggregatesFilter<"GRNItem"> | string
+    productId?: StringNullableWithAggregatesFilter<"GRNItem"> | string | null
     qtyReceived?: IntWithAggregatesFilter<"GRNItem"> | number
     createdAt?: DateTimeWithAggregatesFilter<"GRNItem"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"GRNItem"> | Date | string
@@ -147715,6 +162806,1136 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"RiskRegisterEntry"> | Date | string
   }
 
+  export type SalaryStructureWhereInput = {
+    AND?: SalaryStructureWhereInput | SalaryStructureWhereInput[]
+    OR?: SalaryStructureWhereInput[]
+    NOT?: SalaryStructureWhereInput | SalaryStructureWhereInput[]
+    id?: StringFilter<"SalaryStructure"> | string
+    code?: StringFilter<"SalaryStructure"> | string
+    name?: StringFilter<"SalaryStructure"> | string
+    description?: StringNullableFilter<"SalaryStructure"> | string | null
+    minSalary?: FloatNullableFilter<"SalaryStructure"> | number | null
+    maxSalary?: FloatNullableFilter<"SalaryStructure"> | number | null
+    isActive?: BoolFilter<"SalaryStructure"> | boolean
+    createdAt?: DateTimeFilter<"SalaryStructure"> | Date | string
+    updatedAt?: DateTimeFilter<"SalaryStructure"> | Date | string
+  }
+
+  export type SalaryStructureOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    minSalary?: SortOrderInput | SortOrder
+    maxSalary?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryStructureWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: SalaryStructureWhereInput | SalaryStructureWhereInput[]
+    OR?: SalaryStructureWhereInput[]
+    NOT?: SalaryStructureWhereInput | SalaryStructureWhereInput[]
+    name?: StringFilter<"SalaryStructure"> | string
+    description?: StringNullableFilter<"SalaryStructure"> | string | null
+    minSalary?: FloatNullableFilter<"SalaryStructure"> | number | null
+    maxSalary?: FloatNullableFilter<"SalaryStructure"> | number | null
+    isActive?: BoolFilter<"SalaryStructure"> | boolean
+    createdAt?: DateTimeFilter<"SalaryStructure"> | Date | string
+    updatedAt?: DateTimeFilter<"SalaryStructure"> | Date | string
+  }, "id" | "code">
+
+  export type SalaryStructureOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    minSalary?: SortOrderInput | SortOrder
+    maxSalary?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SalaryStructureCountOrderByAggregateInput
+    _avg?: SalaryStructureAvgOrderByAggregateInput
+    _max?: SalaryStructureMaxOrderByAggregateInput
+    _min?: SalaryStructureMinOrderByAggregateInput
+    _sum?: SalaryStructureSumOrderByAggregateInput
+  }
+
+  export type SalaryStructureScalarWhereWithAggregatesInput = {
+    AND?: SalaryStructureScalarWhereWithAggregatesInput | SalaryStructureScalarWhereWithAggregatesInput[]
+    OR?: SalaryStructureScalarWhereWithAggregatesInput[]
+    NOT?: SalaryStructureScalarWhereWithAggregatesInput | SalaryStructureScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SalaryStructure"> | string
+    code?: StringWithAggregatesFilter<"SalaryStructure"> | string
+    name?: StringWithAggregatesFilter<"SalaryStructure"> | string
+    description?: StringNullableWithAggregatesFilter<"SalaryStructure"> | string | null
+    minSalary?: FloatNullableWithAggregatesFilter<"SalaryStructure"> | number | null
+    maxSalary?: FloatNullableWithAggregatesFilter<"SalaryStructure"> | number | null
+    isActive?: BoolWithAggregatesFilter<"SalaryStructure"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"SalaryStructure"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SalaryStructure"> | Date | string
+  }
+
+  export type SalaryComponentWhereInput = {
+    AND?: SalaryComponentWhereInput | SalaryComponentWhereInput[]
+    OR?: SalaryComponentWhereInput[]
+    NOT?: SalaryComponentWhereInput | SalaryComponentWhereInput[]
+    id?: StringFilter<"SalaryComponent"> | string
+    structureId?: StringFilter<"SalaryComponent"> | string
+    name?: StringFilter<"SalaryComponent"> | string
+    kind?: StringFilter<"SalaryComponent"> | string
+    calc?: StringFilter<"SalaryComponent"> | string
+    value?: FloatFilter<"SalaryComponent"> | number
+    sortOrder?: IntFilter<"SalaryComponent"> | number
+    createdAt?: DateTimeFilter<"SalaryComponent"> | Date | string
+    updatedAt?: DateTimeFilter<"SalaryComponent"> | Date | string
+  }
+
+  export type SalaryComponentOrderByWithRelationInput = {
+    id?: SortOrder
+    structureId?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    calc?: SortOrder
+    value?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryComponentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SalaryComponentWhereInput | SalaryComponentWhereInput[]
+    OR?: SalaryComponentWhereInput[]
+    NOT?: SalaryComponentWhereInput | SalaryComponentWhereInput[]
+    structureId?: StringFilter<"SalaryComponent"> | string
+    name?: StringFilter<"SalaryComponent"> | string
+    kind?: StringFilter<"SalaryComponent"> | string
+    calc?: StringFilter<"SalaryComponent"> | string
+    value?: FloatFilter<"SalaryComponent"> | number
+    sortOrder?: IntFilter<"SalaryComponent"> | number
+    createdAt?: DateTimeFilter<"SalaryComponent"> | Date | string
+    updatedAt?: DateTimeFilter<"SalaryComponent"> | Date | string
+  }, "id">
+
+  export type SalaryComponentOrderByWithAggregationInput = {
+    id?: SortOrder
+    structureId?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    calc?: SortOrder
+    value?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SalaryComponentCountOrderByAggregateInput
+    _avg?: SalaryComponentAvgOrderByAggregateInput
+    _max?: SalaryComponentMaxOrderByAggregateInput
+    _min?: SalaryComponentMinOrderByAggregateInput
+    _sum?: SalaryComponentSumOrderByAggregateInput
+  }
+
+  export type SalaryComponentScalarWhereWithAggregatesInput = {
+    AND?: SalaryComponentScalarWhereWithAggregatesInput | SalaryComponentScalarWhereWithAggregatesInput[]
+    OR?: SalaryComponentScalarWhereWithAggregatesInput[]
+    NOT?: SalaryComponentScalarWhereWithAggregatesInput | SalaryComponentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SalaryComponent"> | string
+    structureId?: StringWithAggregatesFilter<"SalaryComponent"> | string
+    name?: StringWithAggregatesFilter<"SalaryComponent"> | string
+    kind?: StringWithAggregatesFilter<"SalaryComponent"> | string
+    calc?: StringWithAggregatesFilter<"SalaryComponent"> | string
+    value?: FloatWithAggregatesFilter<"SalaryComponent"> | number
+    sortOrder?: IntWithAggregatesFilter<"SalaryComponent"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"SalaryComponent"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SalaryComponent"> | Date | string
+  }
+
+  export type EmploymentContractWhereInput = {
+    AND?: EmploymentContractWhereInput | EmploymentContractWhereInput[]
+    OR?: EmploymentContractWhereInput[]
+    NOT?: EmploymentContractWhereInput | EmploymentContractWhereInput[]
+    id?: StringFilter<"EmploymentContract"> | string
+    contractNumber?: StringFilter<"EmploymentContract"> | string
+    userId?: StringFilter<"EmploymentContract"> | string
+    type?: StringFilter<"EmploymentContract"> | string
+    status?: StringFilter<"EmploymentContract"> | string
+    jobTitle?: StringFilter<"EmploymentContract"> | string
+    startDate?: DateTimeFilter<"EmploymentContract"> | Date | string
+    endDate?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    probationEndDate?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    noticeDays?: IntFilter<"EmploymentContract"> | number
+    hoursPerWeek?: FloatFilter<"EmploymentContract"> | number
+    baseSalary?: FloatFilter<"EmploymentContract"> | number
+    salaryStructureId?: StringNullableFilter<"EmploymentContract"> | string | null
+    notes?: StringNullableFilter<"EmploymentContract"> | string | null
+    signedAt?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    terminatedAt?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    terminationReason?: StringNullableFilter<"EmploymentContract"> | string | null
+    createdById?: StringFilter<"EmploymentContract"> | string
+    createdAt?: DateTimeFilter<"EmploymentContract"> | Date | string
+    updatedAt?: DateTimeFilter<"EmploymentContract"> | Date | string
+  }
+
+  export type EmploymentContractOrderByWithRelationInput = {
+    id?: SortOrder
+    contractNumber?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    jobTitle?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    probationEndDate?: SortOrderInput | SortOrder
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+    salaryStructureId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    signedAt?: SortOrderInput | SortOrder
+    terminatedAt?: SortOrderInput | SortOrder
+    terminationReason?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmploymentContractWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    contractNumber?: string
+    AND?: EmploymentContractWhereInput | EmploymentContractWhereInput[]
+    OR?: EmploymentContractWhereInput[]
+    NOT?: EmploymentContractWhereInput | EmploymentContractWhereInput[]
+    userId?: StringFilter<"EmploymentContract"> | string
+    type?: StringFilter<"EmploymentContract"> | string
+    status?: StringFilter<"EmploymentContract"> | string
+    jobTitle?: StringFilter<"EmploymentContract"> | string
+    startDate?: DateTimeFilter<"EmploymentContract"> | Date | string
+    endDate?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    probationEndDate?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    noticeDays?: IntFilter<"EmploymentContract"> | number
+    hoursPerWeek?: FloatFilter<"EmploymentContract"> | number
+    baseSalary?: FloatFilter<"EmploymentContract"> | number
+    salaryStructureId?: StringNullableFilter<"EmploymentContract"> | string | null
+    notes?: StringNullableFilter<"EmploymentContract"> | string | null
+    signedAt?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    terminatedAt?: DateTimeNullableFilter<"EmploymentContract"> | Date | string | null
+    terminationReason?: StringNullableFilter<"EmploymentContract"> | string | null
+    createdById?: StringFilter<"EmploymentContract"> | string
+    createdAt?: DateTimeFilter<"EmploymentContract"> | Date | string
+    updatedAt?: DateTimeFilter<"EmploymentContract"> | Date | string
+  }, "id" | "contractNumber">
+
+  export type EmploymentContractOrderByWithAggregationInput = {
+    id?: SortOrder
+    contractNumber?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    jobTitle?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrderInput | SortOrder
+    probationEndDate?: SortOrderInput | SortOrder
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+    salaryStructureId?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    signedAt?: SortOrderInput | SortOrder
+    terminatedAt?: SortOrderInput | SortOrder
+    terminationReason?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EmploymentContractCountOrderByAggregateInput
+    _avg?: EmploymentContractAvgOrderByAggregateInput
+    _max?: EmploymentContractMaxOrderByAggregateInput
+    _min?: EmploymentContractMinOrderByAggregateInput
+    _sum?: EmploymentContractSumOrderByAggregateInput
+  }
+
+  export type EmploymentContractScalarWhereWithAggregatesInput = {
+    AND?: EmploymentContractScalarWhereWithAggregatesInput | EmploymentContractScalarWhereWithAggregatesInput[]
+    OR?: EmploymentContractScalarWhereWithAggregatesInput[]
+    NOT?: EmploymentContractScalarWhereWithAggregatesInput | EmploymentContractScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    contractNumber?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    userId?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    type?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    status?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    jobTitle?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    startDate?: DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
+    endDate?: DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+    probationEndDate?: DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+    noticeDays?: IntWithAggregatesFilter<"EmploymentContract"> | number
+    hoursPerWeek?: FloatWithAggregatesFilter<"EmploymentContract"> | number
+    baseSalary?: FloatWithAggregatesFilter<"EmploymentContract"> | number
+    salaryStructureId?: StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+    signedAt?: DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+    terminatedAt?: DateTimeNullableWithAggregatesFilter<"EmploymentContract"> | Date | string | null
+    terminationReason?: StringNullableWithAggregatesFilter<"EmploymentContract"> | string | null
+    createdById?: StringWithAggregatesFilter<"EmploymentContract"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EmploymentContract"> | Date | string
+  }
+
+  export type StockCountWhereInput = {
+    AND?: StockCountWhereInput | StockCountWhereInput[]
+    OR?: StockCountWhereInput[]
+    NOT?: StockCountWhereInput | StockCountWhereInput[]
+    id?: StringFilter<"StockCount"> | string
+    countNumber?: StringFilter<"StockCount"> | string
+    warehouseId?: StringFilter<"StockCount"> | string
+    branchId?: StringNullableFilter<"StockCount"> | string | null
+    type?: StringFilter<"StockCount"> | string
+    status?: StringFilter<"StockCount"> | string
+    blind?: BoolFilter<"StockCount"> | boolean
+    category?: StringNullableFilter<"StockCount"> | string | null
+    notes?: StringNullableFilter<"StockCount"> | string | null
+    createdById?: StringFilter<"StockCount"> | string
+    startedAt?: DateTimeNullableFilter<"StockCount"> | Date | string | null
+    submittedAt?: DateTimeNullableFilter<"StockCount"> | Date | string | null
+    submittedById?: StringNullableFilter<"StockCount"> | string | null
+    postedAt?: DateTimeNullableFilter<"StockCount"> | Date | string | null
+    totalVarianceValue?: FloatNullableFilter<"StockCount"> | number | null
+    createdAt?: DateTimeFilter<"StockCount"> | Date | string
+    updatedAt?: DateTimeFilter<"StockCount"> | Date | string
+  }
+
+  export type StockCountOrderByWithRelationInput = {
+    id?: SortOrder
+    countNumber?: SortOrder
+    warehouseId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    blind?: SortOrder
+    category?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    submittedById?: SortOrderInput | SortOrder
+    postedAt?: SortOrderInput | SortOrder
+    totalVarianceValue?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    countNumber?: string
+    AND?: StockCountWhereInput | StockCountWhereInput[]
+    OR?: StockCountWhereInput[]
+    NOT?: StockCountWhereInput | StockCountWhereInput[]
+    warehouseId?: StringFilter<"StockCount"> | string
+    branchId?: StringNullableFilter<"StockCount"> | string | null
+    type?: StringFilter<"StockCount"> | string
+    status?: StringFilter<"StockCount"> | string
+    blind?: BoolFilter<"StockCount"> | boolean
+    category?: StringNullableFilter<"StockCount"> | string | null
+    notes?: StringNullableFilter<"StockCount"> | string | null
+    createdById?: StringFilter<"StockCount"> | string
+    startedAt?: DateTimeNullableFilter<"StockCount"> | Date | string | null
+    submittedAt?: DateTimeNullableFilter<"StockCount"> | Date | string | null
+    submittedById?: StringNullableFilter<"StockCount"> | string | null
+    postedAt?: DateTimeNullableFilter<"StockCount"> | Date | string | null
+    totalVarianceValue?: FloatNullableFilter<"StockCount"> | number | null
+    createdAt?: DateTimeFilter<"StockCount"> | Date | string
+    updatedAt?: DateTimeFilter<"StockCount"> | Date | string
+  }, "id" | "countNumber">
+
+  export type StockCountOrderByWithAggregationInput = {
+    id?: SortOrder
+    countNumber?: SortOrder
+    warehouseId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    blind?: SortOrder
+    category?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    startedAt?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    submittedById?: SortOrderInput | SortOrder
+    postedAt?: SortOrderInput | SortOrder
+    totalVarianceValue?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StockCountCountOrderByAggregateInput
+    _avg?: StockCountAvgOrderByAggregateInput
+    _max?: StockCountMaxOrderByAggregateInput
+    _min?: StockCountMinOrderByAggregateInput
+    _sum?: StockCountSumOrderByAggregateInput
+  }
+
+  export type StockCountScalarWhereWithAggregatesInput = {
+    AND?: StockCountScalarWhereWithAggregatesInput | StockCountScalarWhereWithAggregatesInput[]
+    OR?: StockCountScalarWhereWithAggregatesInput[]
+    NOT?: StockCountScalarWhereWithAggregatesInput | StockCountScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StockCount"> | string
+    countNumber?: StringWithAggregatesFilter<"StockCount"> | string
+    warehouseId?: StringWithAggregatesFilter<"StockCount"> | string
+    branchId?: StringNullableWithAggregatesFilter<"StockCount"> | string | null
+    type?: StringWithAggregatesFilter<"StockCount"> | string
+    status?: StringWithAggregatesFilter<"StockCount"> | string
+    blind?: BoolWithAggregatesFilter<"StockCount"> | boolean
+    category?: StringNullableWithAggregatesFilter<"StockCount"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"StockCount"> | string | null
+    createdById?: StringWithAggregatesFilter<"StockCount"> | string
+    startedAt?: DateTimeNullableWithAggregatesFilter<"StockCount"> | Date | string | null
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"StockCount"> | Date | string | null
+    submittedById?: StringNullableWithAggregatesFilter<"StockCount"> | string | null
+    postedAt?: DateTimeNullableWithAggregatesFilter<"StockCount"> | Date | string | null
+    totalVarianceValue?: FloatNullableWithAggregatesFilter<"StockCount"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"StockCount"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StockCount"> | Date | string
+  }
+
+  export type StockCountLineWhereInput = {
+    AND?: StockCountLineWhereInput | StockCountLineWhereInput[]
+    OR?: StockCountLineWhereInput[]
+    NOT?: StockCountLineWhereInput | StockCountLineWhereInput[]
+    id?: StringFilter<"StockCountLine"> | string
+    countId?: StringFilter<"StockCountLine"> | string
+    productId?: StringFilter<"StockCountLine"> | string
+    productName?: StringFilter<"StockCountLine"> | string
+    sku?: StringFilter<"StockCountLine"> | string
+    unitCost?: FloatFilter<"StockCountLine"> | number
+    systemQty?: IntNullableFilter<"StockCountLine"> | number | null
+    countedQty?: IntNullableFilter<"StockCountLine"> | number | null
+    note?: StringNullableFilter<"StockCountLine"> | string | null
+    countedById?: StringNullableFilter<"StockCountLine"> | string | null
+    countedAt?: DateTimeNullableFilter<"StockCountLine"> | Date | string | null
+    appliedAt?: DateTimeNullableFilter<"StockCountLine"> | Date | string | null
+    createdAt?: DateTimeFilter<"StockCountLine"> | Date | string
+    updatedAt?: DateTimeFilter<"StockCountLine"> | Date | string
+  }
+
+  export type StockCountLineOrderByWithRelationInput = {
+    id?: SortOrder
+    countId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    sku?: SortOrder
+    unitCost?: SortOrder
+    systemQty?: SortOrderInput | SortOrder
+    countedQty?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    countedById?: SortOrderInput | SortOrder
+    countedAt?: SortOrderInput | SortOrder
+    appliedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountLineWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    countId_productId?: StockCountLineCountIdProductIdCompoundUniqueInput
+    AND?: StockCountLineWhereInput | StockCountLineWhereInput[]
+    OR?: StockCountLineWhereInput[]
+    NOT?: StockCountLineWhereInput | StockCountLineWhereInput[]
+    countId?: StringFilter<"StockCountLine"> | string
+    productId?: StringFilter<"StockCountLine"> | string
+    productName?: StringFilter<"StockCountLine"> | string
+    sku?: StringFilter<"StockCountLine"> | string
+    unitCost?: FloatFilter<"StockCountLine"> | number
+    systemQty?: IntNullableFilter<"StockCountLine"> | number | null
+    countedQty?: IntNullableFilter<"StockCountLine"> | number | null
+    note?: StringNullableFilter<"StockCountLine"> | string | null
+    countedById?: StringNullableFilter<"StockCountLine"> | string | null
+    countedAt?: DateTimeNullableFilter<"StockCountLine"> | Date | string | null
+    appliedAt?: DateTimeNullableFilter<"StockCountLine"> | Date | string | null
+    createdAt?: DateTimeFilter<"StockCountLine"> | Date | string
+    updatedAt?: DateTimeFilter<"StockCountLine"> | Date | string
+  }, "id" | "countId_productId">
+
+  export type StockCountLineOrderByWithAggregationInput = {
+    id?: SortOrder
+    countId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    sku?: SortOrder
+    unitCost?: SortOrder
+    systemQty?: SortOrderInput | SortOrder
+    countedQty?: SortOrderInput | SortOrder
+    note?: SortOrderInput | SortOrder
+    countedById?: SortOrderInput | SortOrder
+    countedAt?: SortOrderInput | SortOrder
+    appliedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StockCountLineCountOrderByAggregateInput
+    _avg?: StockCountLineAvgOrderByAggregateInput
+    _max?: StockCountLineMaxOrderByAggregateInput
+    _min?: StockCountLineMinOrderByAggregateInput
+    _sum?: StockCountLineSumOrderByAggregateInput
+  }
+
+  export type StockCountLineScalarWhereWithAggregatesInput = {
+    AND?: StockCountLineScalarWhereWithAggregatesInput | StockCountLineScalarWhereWithAggregatesInput[]
+    OR?: StockCountLineScalarWhereWithAggregatesInput[]
+    NOT?: StockCountLineScalarWhereWithAggregatesInput | StockCountLineScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"StockCountLine"> | string
+    countId?: StringWithAggregatesFilter<"StockCountLine"> | string
+    productId?: StringWithAggregatesFilter<"StockCountLine"> | string
+    productName?: StringWithAggregatesFilter<"StockCountLine"> | string
+    sku?: StringWithAggregatesFilter<"StockCountLine"> | string
+    unitCost?: FloatWithAggregatesFilter<"StockCountLine"> | number
+    systemQty?: IntNullableWithAggregatesFilter<"StockCountLine"> | number | null
+    countedQty?: IntNullableWithAggregatesFilter<"StockCountLine"> | number | null
+    note?: StringNullableWithAggregatesFilter<"StockCountLine"> | string | null
+    countedById?: StringNullableWithAggregatesFilter<"StockCountLine"> | string | null
+    countedAt?: DateTimeNullableWithAggregatesFilter<"StockCountLine"> | Date | string | null
+    appliedAt?: DateTimeNullableWithAggregatesFilter<"StockCountLine"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"StockCountLine"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"StockCountLine"> | Date | string
+  }
+
+  export type RfqWhereInput = {
+    AND?: RfqWhereInput | RfqWhereInput[]
+    OR?: RfqWhereInput[]
+    NOT?: RfqWhereInput | RfqWhereInput[]
+    id?: StringFilter<"Rfq"> | string
+    rfqNumber?: StringFilter<"Rfq"> | string
+    title?: StringFilter<"Rfq"> | string
+    requisitionId?: StringNullableFilter<"Rfq"> | string | null
+    branchId?: StringFilter<"Rfq"> | string
+    warehouseId?: StringNullableFilter<"Rfq"> | string | null
+    status?: StringFilter<"Rfq"> | string
+    closingDate?: DateTimeFilter<"Rfq"> | Date | string
+    notes?: StringNullableFilter<"Rfq"> | string | null
+    exceptionReason?: StringNullableFilter<"Rfq"> | string | null
+    createdById?: StringFilter<"Rfq"> | string
+    sentAt?: DateTimeNullableFilter<"Rfq"> | Date | string | null
+    closedAt?: DateTimeNullableFilter<"Rfq"> | Date | string | null
+    awardedQuoteId?: StringNullableFilter<"Rfq"> | string | null
+    awardReason?: StringNullableFilter<"Rfq"> | string | null
+    awardedById?: StringNullableFilter<"Rfq"> | string | null
+    awardedAt?: DateTimeNullableFilter<"Rfq"> | Date | string | null
+    poId?: StringNullableFilter<"Rfq"> | string | null
+    createdAt?: DateTimeFilter<"Rfq"> | Date | string
+    updatedAt?: DateTimeFilter<"Rfq"> | Date | string
+  }
+
+  export type RfqOrderByWithRelationInput = {
+    id?: SortOrder
+    rfqNumber?: SortOrder
+    title?: SortOrder
+    requisitionId?: SortOrderInput | SortOrder
+    branchId?: SortOrder
+    warehouseId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    closingDate?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    exceptionReason?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    awardedQuoteId?: SortOrderInput | SortOrder
+    awardReason?: SortOrderInput | SortOrder
+    awardedById?: SortOrderInput | SortOrder
+    awardedAt?: SortOrderInput | SortOrder
+    poId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    rfqNumber?: string
+    AND?: RfqWhereInput | RfqWhereInput[]
+    OR?: RfqWhereInput[]
+    NOT?: RfqWhereInput | RfqWhereInput[]
+    title?: StringFilter<"Rfq"> | string
+    requisitionId?: StringNullableFilter<"Rfq"> | string | null
+    branchId?: StringFilter<"Rfq"> | string
+    warehouseId?: StringNullableFilter<"Rfq"> | string | null
+    status?: StringFilter<"Rfq"> | string
+    closingDate?: DateTimeFilter<"Rfq"> | Date | string
+    notes?: StringNullableFilter<"Rfq"> | string | null
+    exceptionReason?: StringNullableFilter<"Rfq"> | string | null
+    createdById?: StringFilter<"Rfq"> | string
+    sentAt?: DateTimeNullableFilter<"Rfq"> | Date | string | null
+    closedAt?: DateTimeNullableFilter<"Rfq"> | Date | string | null
+    awardedQuoteId?: StringNullableFilter<"Rfq"> | string | null
+    awardReason?: StringNullableFilter<"Rfq"> | string | null
+    awardedById?: StringNullableFilter<"Rfq"> | string | null
+    awardedAt?: DateTimeNullableFilter<"Rfq"> | Date | string | null
+    poId?: StringNullableFilter<"Rfq"> | string | null
+    createdAt?: DateTimeFilter<"Rfq"> | Date | string
+    updatedAt?: DateTimeFilter<"Rfq"> | Date | string
+  }, "id" | "rfqNumber">
+
+  export type RfqOrderByWithAggregationInput = {
+    id?: SortOrder
+    rfqNumber?: SortOrder
+    title?: SortOrder
+    requisitionId?: SortOrderInput | SortOrder
+    branchId?: SortOrder
+    warehouseId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    closingDate?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    exceptionReason?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    awardedQuoteId?: SortOrderInput | SortOrder
+    awardReason?: SortOrderInput | SortOrder
+    awardedById?: SortOrderInput | SortOrder
+    awardedAt?: SortOrderInput | SortOrder
+    poId?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RfqCountOrderByAggregateInput
+    _max?: RfqMaxOrderByAggregateInput
+    _min?: RfqMinOrderByAggregateInput
+  }
+
+  export type RfqScalarWhereWithAggregatesInput = {
+    AND?: RfqScalarWhereWithAggregatesInput | RfqScalarWhereWithAggregatesInput[]
+    OR?: RfqScalarWhereWithAggregatesInput[]
+    NOT?: RfqScalarWhereWithAggregatesInput | RfqScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Rfq"> | string
+    rfqNumber?: StringWithAggregatesFilter<"Rfq"> | string
+    title?: StringWithAggregatesFilter<"Rfq"> | string
+    requisitionId?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    branchId?: StringWithAggregatesFilter<"Rfq"> | string
+    warehouseId?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    status?: StringWithAggregatesFilter<"Rfq"> | string
+    closingDate?: DateTimeWithAggregatesFilter<"Rfq"> | Date | string
+    notes?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    exceptionReason?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    createdById?: StringWithAggregatesFilter<"Rfq"> | string
+    sentAt?: DateTimeNullableWithAggregatesFilter<"Rfq"> | Date | string | null
+    closedAt?: DateTimeNullableWithAggregatesFilter<"Rfq"> | Date | string | null
+    awardedQuoteId?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    awardReason?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    awardedById?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    awardedAt?: DateTimeNullableWithAggregatesFilter<"Rfq"> | Date | string | null
+    poId?: StringNullableWithAggregatesFilter<"Rfq"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Rfq"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Rfq"> | Date | string
+  }
+
+  export type RfqItemWhereInput = {
+    AND?: RfqItemWhereInput | RfqItemWhereInput[]
+    OR?: RfqItemWhereInput[]
+    NOT?: RfqItemWhereInput | RfqItemWhereInput[]
+    id?: StringFilter<"RfqItem"> | string
+    rfqId?: StringFilter<"RfqItem"> | string
+    productId?: StringNullableFilter<"RfqItem"> | string | null
+    description?: StringFilter<"RfqItem"> | string
+    quantity?: IntFilter<"RfqItem"> | number
+    createdAt?: DateTimeFilter<"RfqItem"> | Date | string
+    updatedAt?: DateTimeFilter<"RfqItem"> | Date | string
+  }
+
+  export type RfqItemOrderByWithRelationInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    productId?: SortOrderInput | SortOrder
+    description?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: RfqItemWhereInput | RfqItemWhereInput[]
+    OR?: RfqItemWhereInput[]
+    NOT?: RfqItemWhereInput | RfqItemWhereInput[]
+    rfqId?: StringFilter<"RfqItem"> | string
+    productId?: StringNullableFilter<"RfqItem"> | string | null
+    description?: StringFilter<"RfqItem"> | string
+    quantity?: IntFilter<"RfqItem"> | number
+    createdAt?: DateTimeFilter<"RfqItem"> | Date | string
+    updatedAt?: DateTimeFilter<"RfqItem"> | Date | string
+  }, "id">
+
+  export type RfqItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    productId?: SortOrderInput | SortOrder
+    description?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RfqItemCountOrderByAggregateInput
+    _avg?: RfqItemAvgOrderByAggregateInput
+    _max?: RfqItemMaxOrderByAggregateInput
+    _min?: RfqItemMinOrderByAggregateInput
+    _sum?: RfqItemSumOrderByAggregateInput
+  }
+
+  export type RfqItemScalarWhereWithAggregatesInput = {
+    AND?: RfqItemScalarWhereWithAggregatesInput | RfqItemScalarWhereWithAggregatesInput[]
+    OR?: RfqItemScalarWhereWithAggregatesInput[]
+    NOT?: RfqItemScalarWhereWithAggregatesInput | RfqItemScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RfqItem"> | string
+    rfqId?: StringWithAggregatesFilter<"RfqItem"> | string
+    productId?: StringNullableWithAggregatesFilter<"RfqItem"> | string | null
+    description?: StringWithAggregatesFilter<"RfqItem"> | string
+    quantity?: IntWithAggregatesFilter<"RfqItem"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"RfqItem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RfqItem"> | Date | string
+  }
+
+  export type RfqQuoteWhereInput = {
+    AND?: RfqQuoteWhereInput | RfqQuoteWhereInput[]
+    OR?: RfqQuoteWhereInput[]
+    NOT?: RfqQuoteWhereInput | RfqQuoteWhereInput[]
+    id?: StringFilter<"RfqQuote"> | string
+    rfqId?: StringFilter<"RfqQuote"> | string
+    vendorId?: StringFilter<"RfqQuote"> | string
+    status?: StringFilter<"RfqQuote"> | string
+    leadTimeDays?: IntNullableFilter<"RfqQuote"> | number | null
+    paymentTerms?: StringNullableFilter<"RfqQuote"> | string | null
+    validUntil?: DateTimeNullableFilter<"RfqQuote"> | Date | string | null
+    notes?: StringNullableFilter<"RfqQuote"> | string | null
+    submittedAt?: DateTimeNullableFilter<"RfqQuote"> | Date | string | null
+    enteredById?: StringNullableFilter<"RfqQuote"> | string | null
+    createdAt?: DateTimeFilter<"RfqQuote"> | Date | string
+    updatedAt?: DateTimeFilter<"RfqQuote"> | Date | string
+  }
+
+  export type RfqQuoteOrderByWithRelationInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    vendorId?: SortOrder
+    status?: SortOrder
+    leadTimeDays?: SortOrderInput | SortOrder
+    paymentTerms?: SortOrderInput | SortOrder
+    validUntil?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    enteredById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    rfqId_vendorId?: RfqQuoteRfqIdVendorIdCompoundUniqueInput
+    AND?: RfqQuoteWhereInput | RfqQuoteWhereInput[]
+    OR?: RfqQuoteWhereInput[]
+    NOT?: RfqQuoteWhereInput | RfqQuoteWhereInput[]
+    rfqId?: StringFilter<"RfqQuote"> | string
+    vendorId?: StringFilter<"RfqQuote"> | string
+    status?: StringFilter<"RfqQuote"> | string
+    leadTimeDays?: IntNullableFilter<"RfqQuote"> | number | null
+    paymentTerms?: StringNullableFilter<"RfqQuote"> | string | null
+    validUntil?: DateTimeNullableFilter<"RfqQuote"> | Date | string | null
+    notes?: StringNullableFilter<"RfqQuote"> | string | null
+    submittedAt?: DateTimeNullableFilter<"RfqQuote"> | Date | string | null
+    enteredById?: StringNullableFilter<"RfqQuote"> | string | null
+    createdAt?: DateTimeFilter<"RfqQuote"> | Date | string
+    updatedAt?: DateTimeFilter<"RfqQuote"> | Date | string
+  }, "id" | "rfqId_vendorId">
+
+  export type RfqQuoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    vendorId?: SortOrder
+    status?: SortOrder
+    leadTimeDays?: SortOrderInput | SortOrder
+    paymentTerms?: SortOrderInput | SortOrder
+    validUntil?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    submittedAt?: SortOrderInput | SortOrder
+    enteredById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RfqQuoteCountOrderByAggregateInput
+    _avg?: RfqQuoteAvgOrderByAggregateInput
+    _max?: RfqQuoteMaxOrderByAggregateInput
+    _min?: RfqQuoteMinOrderByAggregateInput
+    _sum?: RfqQuoteSumOrderByAggregateInput
+  }
+
+  export type RfqQuoteScalarWhereWithAggregatesInput = {
+    AND?: RfqQuoteScalarWhereWithAggregatesInput | RfqQuoteScalarWhereWithAggregatesInput[]
+    OR?: RfqQuoteScalarWhereWithAggregatesInput[]
+    NOT?: RfqQuoteScalarWhereWithAggregatesInput | RfqQuoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RfqQuote"> | string
+    rfqId?: StringWithAggregatesFilter<"RfqQuote"> | string
+    vendorId?: StringWithAggregatesFilter<"RfqQuote"> | string
+    status?: StringWithAggregatesFilter<"RfqQuote"> | string
+    leadTimeDays?: IntNullableWithAggregatesFilter<"RfqQuote"> | number | null
+    paymentTerms?: StringNullableWithAggregatesFilter<"RfqQuote"> | string | null
+    validUntil?: DateTimeNullableWithAggregatesFilter<"RfqQuote"> | Date | string | null
+    notes?: StringNullableWithAggregatesFilter<"RfqQuote"> | string | null
+    submittedAt?: DateTimeNullableWithAggregatesFilter<"RfqQuote"> | Date | string | null
+    enteredById?: StringNullableWithAggregatesFilter<"RfqQuote"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"RfqQuote"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RfqQuote"> | Date | string
+  }
+
+  export type RfqQuoteLineWhereInput = {
+    AND?: RfqQuoteLineWhereInput | RfqQuoteLineWhereInput[]
+    OR?: RfqQuoteLineWhereInput[]
+    NOT?: RfqQuoteLineWhereInput | RfqQuoteLineWhereInput[]
+    id?: StringFilter<"RfqQuoteLine"> | string
+    quoteId?: StringFilter<"RfqQuoteLine"> | string
+    itemId?: StringFilter<"RfqQuoteLine"> | string
+    unitPrice?: FloatFilter<"RfqQuoteLine"> | number
+    createdAt?: DateTimeFilter<"RfqQuoteLine"> | Date | string
+    updatedAt?: DateTimeFilter<"RfqQuoteLine"> | Date | string
+  }
+
+  export type RfqQuoteLineOrderByWithRelationInput = {
+    id?: SortOrder
+    quoteId?: SortOrder
+    itemId?: SortOrder
+    unitPrice?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteLineWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    quoteId_itemId?: RfqQuoteLineQuoteIdItemIdCompoundUniqueInput
+    AND?: RfqQuoteLineWhereInput | RfqQuoteLineWhereInput[]
+    OR?: RfqQuoteLineWhereInput[]
+    NOT?: RfqQuoteLineWhereInput | RfqQuoteLineWhereInput[]
+    quoteId?: StringFilter<"RfqQuoteLine"> | string
+    itemId?: StringFilter<"RfqQuoteLine"> | string
+    unitPrice?: FloatFilter<"RfqQuoteLine"> | number
+    createdAt?: DateTimeFilter<"RfqQuoteLine"> | Date | string
+    updatedAt?: DateTimeFilter<"RfqQuoteLine"> | Date | string
+  }, "id" | "quoteId_itemId">
+
+  export type RfqQuoteLineOrderByWithAggregationInput = {
+    id?: SortOrder
+    quoteId?: SortOrder
+    itemId?: SortOrder
+    unitPrice?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: RfqQuoteLineCountOrderByAggregateInput
+    _avg?: RfqQuoteLineAvgOrderByAggregateInput
+    _max?: RfqQuoteLineMaxOrderByAggregateInput
+    _min?: RfqQuoteLineMinOrderByAggregateInput
+    _sum?: RfqQuoteLineSumOrderByAggregateInput
+  }
+
+  export type RfqQuoteLineScalarWhereWithAggregatesInput = {
+    AND?: RfqQuoteLineScalarWhereWithAggregatesInput | RfqQuoteLineScalarWhereWithAggregatesInput[]
+    OR?: RfqQuoteLineScalarWhereWithAggregatesInput[]
+    NOT?: RfqQuoteLineScalarWhereWithAggregatesInput | RfqQuoteLineScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"RfqQuoteLine"> | string
+    quoteId?: StringWithAggregatesFilter<"RfqQuoteLine"> | string
+    itemId?: StringWithAggregatesFilter<"RfqQuoteLine"> | string
+    unitPrice?: FloatWithAggregatesFilter<"RfqQuoteLine"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"RfqQuoteLine"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"RfqQuoteLine"> | Date | string
+  }
+
+  export type VendorEvaluationWhereInput = {
+    AND?: VendorEvaluationWhereInput | VendorEvaluationWhereInput[]
+    OR?: VendorEvaluationWhereInput[]
+    NOT?: VendorEvaluationWhereInput | VendorEvaluationWhereInput[]
+    id?: StringFilter<"VendorEvaluation"> | string
+    vendorId?: StringFilter<"VendorEvaluation"> | string
+    evaluatorId?: StringFilter<"VendorEvaluation"> | string
+    period?: StringFilter<"VendorEvaluation"> | string
+    delivery?: IntFilter<"VendorEvaluation"> | number
+    quality?: IntFilter<"VendorEvaluation"> | number
+    price?: IntFilter<"VendorEvaluation"> | number
+    service?: IntFilter<"VendorEvaluation"> | number
+    overall?: FloatFilter<"VendorEvaluation"> | number
+    comments?: StringNullableFilter<"VendorEvaluation"> | string | null
+    createdAt?: DateTimeFilter<"VendorEvaluation"> | Date | string
+    updatedAt?: DateTimeFilter<"VendorEvaluation"> | Date | string
+  }
+
+  export type VendorEvaluationOrderByWithRelationInput = {
+    id?: SortOrder
+    vendorId?: SortOrder
+    evaluatorId?: SortOrder
+    period?: SortOrder
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+    comments?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VendorEvaluationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    vendorId_evaluatorId_period?: VendorEvaluationVendorIdEvaluatorIdPeriodCompoundUniqueInput
+    AND?: VendorEvaluationWhereInput | VendorEvaluationWhereInput[]
+    OR?: VendorEvaluationWhereInput[]
+    NOT?: VendorEvaluationWhereInput | VendorEvaluationWhereInput[]
+    vendorId?: StringFilter<"VendorEvaluation"> | string
+    evaluatorId?: StringFilter<"VendorEvaluation"> | string
+    period?: StringFilter<"VendorEvaluation"> | string
+    delivery?: IntFilter<"VendorEvaluation"> | number
+    quality?: IntFilter<"VendorEvaluation"> | number
+    price?: IntFilter<"VendorEvaluation"> | number
+    service?: IntFilter<"VendorEvaluation"> | number
+    overall?: FloatFilter<"VendorEvaluation"> | number
+    comments?: StringNullableFilter<"VendorEvaluation"> | string | null
+    createdAt?: DateTimeFilter<"VendorEvaluation"> | Date | string
+    updatedAt?: DateTimeFilter<"VendorEvaluation"> | Date | string
+  }, "id" | "vendorId_evaluatorId_period">
+
+  export type VendorEvaluationOrderByWithAggregationInput = {
+    id?: SortOrder
+    vendorId?: SortOrder
+    evaluatorId?: SortOrder
+    period?: SortOrder
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+    comments?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: VendorEvaluationCountOrderByAggregateInput
+    _avg?: VendorEvaluationAvgOrderByAggregateInput
+    _max?: VendorEvaluationMaxOrderByAggregateInput
+    _min?: VendorEvaluationMinOrderByAggregateInput
+    _sum?: VendorEvaluationSumOrderByAggregateInput
+  }
+
+  export type VendorEvaluationScalarWhereWithAggregatesInput = {
+    AND?: VendorEvaluationScalarWhereWithAggregatesInput | VendorEvaluationScalarWhereWithAggregatesInput[]
+    OR?: VendorEvaluationScalarWhereWithAggregatesInput[]
+    NOT?: VendorEvaluationScalarWhereWithAggregatesInput | VendorEvaluationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"VendorEvaluation"> | string
+    vendorId?: StringWithAggregatesFilter<"VendorEvaluation"> | string
+    evaluatorId?: StringWithAggregatesFilter<"VendorEvaluation"> | string
+    period?: StringWithAggregatesFilter<"VendorEvaluation"> | string
+    delivery?: IntWithAggregatesFilter<"VendorEvaluation"> | number
+    quality?: IntWithAggregatesFilter<"VendorEvaluation"> | number
+    price?: IntWithAggregatesFilter<"VendorEvaluation"> | number
+    service?: IntWithAggregatesFilter<"VendorEvaluation"> | number
+    overall?: FloatWithAggregatesFilter<"VendorEvaluation"> | number
+    comments?: StringNullableWithAggregatesFilter<"VendorEvaluation"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"VendorEvaluation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"VendorEvaluation"> | Date | string
+  }
+
+  export type PromotionWhereInput = {
+    AND?: PromotionWhereInput | PromotionWhereInput[]
+    OR?: PromotionWhereInput[]
+    NOT?: PromotionWhereInput | PromotionWhereInput[]
+    id?: StringFilter<"Promotion"> | string
+    code?: StringFilter<"Promotion"> | string
+    name?: StringFilter<"Promotion"> | string
+    description?: StringNullableFilter<"Promotion"> | string | null
+    type?: StringFilter<"Promotion"> | string
+    value?: FloatFilter<"Promotion"> | number
+    buyQty?: IntNullableFilter<"Promotion"> | number | null
+    getQty?: IntNullableFilter<"Promotion"> | number | null
+    scope?: StringFilter<"Promotion"> | string
+    categories?: StringNullableListFilter<"Promotion">
+    productIds?: StringNullableListFilter<"Promotion">
+    branchIds?: StringNullableListFilter<"Promotion">
+    minQuantity?: IntFilter<"Promotion"> | number
+    startsAt?: DateTimeFilter<"Promotion"> | Date | string
+    endsAt?: DateTimeFilter<"Promotion"> | Date | string
+    allowBelowCost?: BoolFilter<"Promotion"> | boolean
+    status?: StringFilter<"Promotion"> | string
+    createdById?: StringFilter<"Promotion"> | string
+    activatedById?: StringNullableFilter<"Promotion"> | string | null
+    activatedAt?: DateTimeNullableFilter<"Promotion"> | Date | string | null
+    createdAt?: DateTimeFilter<"Promotion"> | Date | string
+    updatedAt?: DateTimeFilter<"Promotion"> | Date | string
+  }
+
+  export type PromotionOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    type?: SortOrder
+    value?: SortOrder
+    buyQty?: SortOrderInput | SortOrder
+    getQty?: SortOrderInput | SortOrder
+    scope?: SortOrder
+    categories?: SortOrder
+    productIds?: SortOrder
+    branchIds?: SortOrder
+    minQuantity?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    allowBelowCost?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    activatedById?: SortOrderInput | SortOrder
+    activatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PromotionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: PromotionWhereInput | PromotionWhereInput[]
+    OR?: PromotionWhereInput[]
+    NOT?: PromotionWhereInput | PromotionWhereInput[]
+    name?: StringFilter<"Promotion"> | string
+    description?: StringNullableFilter<"Promotion"> | string | null
+    type?: StringFilter<"Promotion"> | string
+    value?: FloatFilter<"Promotion"> | number
+    buyQty?: IntNullableFilter<"Promotion"> | number | null
+    getQty?: IntNullableFilter<"Promotion"> | number | null
+    scope?: StringFilter<"Promotion"> | string
+    categories?: StringNullableListFilter<"Promotion">
+    productIds?: StringNullableListFilter<"Promotion">
+    branchIds?: StringNullableListFilter<"Promotion">
+    minQuantity?: IntFilter<"Promotion"> | number
+    startsAt?: DateTimeFilter<"Promotion"> | Date | string
+    endsAt?: DateTimeFilter<"Promotion"> | Date | string
+    allowBelowCost?: BoolFilter<"Promotion"> | boolean
+    status?: StringFilter<"Promotion"> | string
+    createdById?: StringFilter<"Promotion"> | string
+    activatedById?: StringNullableFilter<"Promotion"> | string | null
+    activatedAt?: DateTimeNullableFilter<"Promotion"> | Date | string | null
+    createdAt?: DateTimeFilter<"Promotion"> | Date | string
+    updatedAt?: DateTimeFilter<"Promotion"> | Date | string
+  }, "id" | "code">
+
+  export type PromotionOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    type?: SortOrder
+    value?: SortOrder
+    buyQty?: SortOrderInput | SortOrder
+    getQty?: SortOrderInput | SortOrder
+    scope?: SortOrder
+    categories?: SortOrder
+    productIds?: SortOrder
+    branchIds?: SortOrder
+    minQuantity?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    allowBelowCost?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    activatedById?: SortOrderInput | SortOrder
+    activatedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PromotionCountOrderByAggregateInput
+    _avg?: PromotionAvgOrderByAggregateInput
+    _max?: PromotionMaxOrderByAggregateInput
+    _min?: PromotionMinOrderByAggregateInput
+    _sum?: PromotionSumOrderByAggregateInput
+  }
+
+  export type PromotionScalarWhereWithAggregatesInput = {
+    AND?: PromotionScalarWhereWithAggregatesInput | PromotionScalarWhereWithAggregatesInput[]
+    OR?: PromotionScalarWhereWithAggregatesInput[]
+    NOT?: PromotionScalarWhereWithAggregatesInput | PromotionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Promotion"> | string
+    code?: StringWithAggregatesFilter<"Promotion"> | string
+    name?: StringWithAggregatesFilter<"Promotion"> | string
+    description?: StringNullableWithAggregatesFilter<"Promotion"> | string | null
+    type?: StringWithAggregatesFilter<"Promotion"> | string
+    value?: FloatWithAggregatesFilter<"Promotion"> | number
+    buyQty?: IntNullableWithAggregatesFilter<"Promotion"> | number | null
+    getQty?: IntNullableWithAggregatesFilter<"Promotion"> | number | null
+    scope?: StringWithAggregatesFilter<"Promotion"> | string
+    categories?: StringNullableListFilter<"Promotion">
+    productIds?: StringNullableListFilter<"Promotion">
+    branchIds?: StringNullableListFilter<"Promotion">
+    minQuantity?: IntWithAggregatesFilter<"Promotion"> | number
+    startsAt?: DateTimeWithAggregatesFilter<"Promotion"> | Date | string
+    endsAt?: DateTimeWithAggregatesFilter<"Promotion"> | Date | string
+    allowBelowCost?: BoolWithAggregatesFilter<"Promotion"> | boolean
+    status?: StringWithAggregatesFilter<"Promotion"> | string
+    createdById?: StringWithAggregatesFilter<"Promotion"> | string
+    activatedById?: StringNullableWithAggregatesFilter<"Promotion"> | string | null
+    activatedAt?: DateTimeNullableWithAggregatesFilter<"Promotion"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Promotion"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Promotion"> | Date | string
+  }
+
+  export type PromotionRedemptionWhereInput = {
+    AND?: PromotionRedemptionWhereInput | PromotionRedemptionWhereInput[]
+    OR?: PromotionRedemptionWhereInput[]
+    NOT?: PromotionRedemptionWhereInput | PromotionRedemptionWhereInput[]
+    id?: StringFilter<"PromotionRedemption"> | string
+    promotionId?: StringFilter<"PromotionRedemption"> | string
+    salesDocumentId?: StringFilter<"PromotionRedemption"> | string
+    productId?: StringFilter<"PromotionRedemption"> | string
+    branchId?: StringNullableFilter<"PromotionRedemption"> | string | null
+    quantity?: IntFilter<"PromotionRedemption"> | number
+    amount?: FloatFilter<"PromotionRedemption"> | number
+    createdAt?: DateTimeFilter<"PromotionRedemption"> | Date | string
+  }
+
+  export type PromotionRedemptionOrderByWithRelationInput = {
+    id?: SortOrder
+    promotionId?: SortOrder
+    salesDocumentId?: SortOrder
+    productId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PromotionRedemptionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PromotionRedemptionWhereInput | PromotionRedemptionWhereInput[]
+    OR?: PromotionRedemptionWhereInput[]
+    NOT?: PromotionRedemptionWhereInput | PromotionRedemptionWhereInput[]
+    promotionId?: StringFilter<"PromotionRedemption"> | string
+    salesDocumentId?: StringFilter<"PromotionRedemption"> | string
+    productId?: StringFilter<"PromotionRedemption"> | string
+    branchId?: StringNullableFilter<"PromotionRedemption"> | string | null
+    quantity?: IntFilter<"PromotionRedemption"> | number
+    amount?: FloatFilter<"PromotionRedemption"> | number
+    createdAt?: DateTimeFilter<"PromotionRedemption"> | Date | string
+  }, "id">
+
+  export type PromotionRedemptionOrderByWithAggregationInput = {
+    id?: SortOrder
+    promotionId?: SortOrder
+    salesDocumentId?: SortOrder
+    productId?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    createdAt?: SortOrder
+    _count?: PromotionRedemptionCountOrderByAggregateInput
+    _avg?: PromotionRedemptionAvgOrderByAggregateInput
+    _max?: PromotionRedemptionMaxOrderByAggregateInput
+    _min?: PromotionRedemptionMinOrderByAggregateInput
+    _sum?: PromotionRedemptionSumOrderByAggregateInput
+  }
+
+  export type PromotionRedemptionScalarWhereWithAggregatesInput = {
+    AND?: PromotionRedemptionScalarWhereWithAggregatesInput | PromotionRedemptionScalarWhereWithAggregatesInput[]
+    OR?: PromotionRedemptionScalarWhereWithAggregatesInput[]
+    NOT?: PromotionRedemptionScalarWhereWithAggregatesInput | PromotionRedemptionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PromotionRedemption"> | string
+    promotionId?: StringWithAggregatesFilter<"PromotionRedemption"> | string
+    salesDocumentId?: StringWithAggregatesFilter<"PromotionRedemption"> | string
+    productId?: StringWithAggregatesFilter<"PromotionRedemption"> | string
+    branchId?: StringNullableWithAggregatesFilter<"PromotionRedemption"> | string | null
+    quantity?: IntWithAggregatesFilter<"PromotionRedemption"> | number
+    amount?: FloatWithAggregatesFilter<"PromotionRedemption"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"PromotionRedemption"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     email: string
@@ -151399,6 +167620,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemCreateInput = {
     id?: string
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -151406,14 +167629,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     grnItems?: GRNItemCreateNestedManyWithoutPurchaseOrderItemInput
-    product: ProductCreateNestedOneWithoutPurchaseOrderItemsInput
+    product?: ProductCreateNestedOneWithoutPurchaseOrderItemsInput
     purchaseOrder: PurchaseOrderCreateNestedOneWithoutItemsInput
   }
 
   export type PurchaseOrderItemUncheckedCreateInput = {
     id?: string
     purchaseOrderId: string
-    productId: string
+    productId?: string | null
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -151425,6 +167650,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -151432,14 +167659,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     grnItems?: GRNItemUpdateManyWithoutPurchaseOrderItemNestedInput
-    product?: ProductUpdateOneRequiredWithoutPurchaseOrderItemsNestedInput
+    product?: ProductUpdateOneWithoutPurchaseOrderItemsNestedInput
     purchaseOrder?: PurchaseOrderUpdateOneRequiredWithoutItemsNestedInput
   }
 
   export type PurchaseOrderItemUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     purchaseOrderId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -151452,7 +167681,9 @@ export namespace Prisma {
   export type PurchaseOrderItemCreateManyInput = {
     id?: string
     purchaseOrderId: string
-    productId: string
+    productId?: string | null
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -151463,6 +167694,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -151474,7 +167707,9 @@ export namespace Prisma {
   export type PurchaseOrderItemUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     purchaseOrderId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -151580,7 +167815,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     goodsReceiptNote: GoodsReceiptNoteCreateNestedOneWithoutItemsInput
     purchaseOrderItem: PurchaseOrderItemCreateNestedOneWithoutGrnItemsInput
-    product: ProductCreateNestedOneWithoutGrnItemsInput
+    product?: ProductCreateNestedOneWithoutGrnItemsInput
     stockBatches?: StockBatchCreateNestedManyWithoutGrnItemInput
   }
 
@@ -151588,7 +167823,7 @@ export namespace Prisma {
     id?: string
     grnId: string
     poItemId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -151602,7 +167837,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     goodsReceiptNote?: GoodsReceiptNoteUpdateOneRequiredWithoutItemsNestedInput
     purchaseOrderItem?: PurchaseOrderItemUpdateOneRequiredWithoutGrnItemsNestedInput
-    product?: ProductUpdateOneRequiredWithoutGrnItemsNestedInput
+    product?: ProductUpdateOneWithoutGrnItemsNestedInput
     stockBatches?: StockBatchUpdateManyWithoutGrnItemNestedInput
   }
 
@@ -151610,7 +167845,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     grnId?: StringFieldUpdateOperationsInput | string
     poItemId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -151621,7 +167856,7 @@ export namespace Prisma {
     id?: string
     grnId: string
     poItemId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -151638,7 +167873,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     grnId?: StringFieldUpdateOperationsInput | string
     poItemId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -158502,6 +174737,1350 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type SalaryStructureCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    minSalary?: number | null
+    maxSalary?: number | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SalaryStructureUncheckedCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    minSalary?: number | null
+    maxSalary?: number | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SalaryStructureUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    minSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryStructureUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    minSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryStructureCreateManyInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    minSalary?: number | null
+    maxSalary?: number | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SalaryStructureUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    minSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryStructureUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    minSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    maxSalary?: NullableFloatFieldUpdateOperationsInput | number | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryComponentCreateInput = {
+    id?: string
+    structureId: string
+    name: string
+    kind: string
+    calc: string
+    value: number
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SalaryComponentUncheckedCreateInput = {
+    id?: string
+    structureId: string
+    name: string
+    kind: string
+    calc: string
+    value: number
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SalaryComponentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    structureId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    calc?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryComponentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    structureId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    calc?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryComponentCreateManyInput = {
+    id?: string
+    structureId: string
+    name: string
+    kind: string
+    calc: string
+    value: number
+    sortOrder?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SalaryComponentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    structureId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    calc?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaryComponentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    structureId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    calc?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    sortOrder?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmploymentContractCreateInput = {
+    id?: string
+    contractNumber: string
+    userId: string
+    type: string
+    status?: string
+    jobTitle: string
+    startDate: Date | string
+    endDate?: Date | string | null
+    probationEndDate?: Date | string | null
+    noticeDays?: number
+    hoursPerWeek?: number
+    baseSalary: number
+    salaryStructureId?: string | null
+    notes?: string | null
+    signedAt?: Date | string | null
+    terminatedAt?: Date | string | null
+    terminationReason?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmploymentContractUncheckedCreateInput = {
+    id?: string
+    contractNumber: string
+    userId: string
+    type: string
+    status?: string
+    jobTitle: string
+    startDate: Date | string
+    endDate?: Date | string | null
+    probationEndDate?: Date | string | null
+    noticeDays?: number
+    hoursPerWeek?: number
+    baseSalary: number
+    salaryStructureId?: string | null
+    notes?: string | null
+    signedAt?: Date | string | null
+    terminatedAt?: Date | string | null
+    terminationReason?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmploymentContractUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    probationEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    noticeDays?: IntFieldUpdateOperationsInput | number
+    hoursPerWeek?: FloatFieldUpdateOperationsInput | number
+    baseSalary?: FloatFieldUpdateOperationsInput | number
+    salaryStructureId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmploymentContractUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    probationEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    noticeDays?: IntFieldUpdateOperationsInput | number
+    hoursPerWeek?: FloatFieldUpdateOperationsInput | number
+    baseSalary?: FloatFieldUpdateOperationsInput | number
+    salaryStructureId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmploymentContractCreateManyInput = {
+    id?: string
+    contractNumber: string
+    userId: string
+    type: string
+    status?: string
+    jobTitle: string
+    startDate: Date | string
+    endDate?: Date | string | null
+    probationEndDate?: Date | string | null
+    noticeDays?: number
+    hoursPerWeek?: number
+    baseSalary: number
+    salaryStructureId?: string | null
+    notes?: string | null
+    signedAt?: Date | string | null
+    terminatedAt?: Date | string | null
+    terminationReason?: string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EmploymentContractUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    probationEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    noticeDays?: IntFieldUpdateOperationsInput | number
+    hoursPerWeek?: FloatFieldUpdateOperationsInput | number
+    baseSalary?: FloatFieldUpdateOperationsInput | number
+    salaryStructureId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EmploymentContractUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    jobTitle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    probationEndDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    noticeDays?: IntFieldUpdateOperationsInput | number
+    hoursPerWeek?: FloatFieldUpdateOperationsInput | number
+    baseSalary?: FloatFieldUpdateOperationsInput | number
+    salaryStructureId?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terminationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountCreateInput = {
+    id?: string
+    countNumber: string
+    warehouseId: string
+    branchId?: string | null
+    type: string
+    status?: string
+    blind?: boolean
+    category?: string | null
+    notes?: string | null
+    createdById: string
+    startedAt?: Date | string | null
+    submittedAt?: Date | string | null
+    submittedById?: string | null
+    postedAt?: Date | string | null
+    totalVarianceValue?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockCountUncheckedCreateInput = {
+    id?: string
+    countNumber: string
+    warehouseId: string
+    branchId?: string | null
+    type: string
+    status?: string
+    blind?: boolean
+    category?: string | null
+    notes?: string | null
+    createdById: string
+    startedAt?: Date | string | null
+    submittedAt?: Date | string | null
+    submittedById?: string | null
+    postedAt?: Date | string | null
+    totalVarianceValue?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockCountUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countNumber?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    blind?: BoolFieldUpdateOperationsInput | boolean
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalVarianceValue?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countNumber?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    blind?: BoolFieldUpdateOperationsInput | boolean
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalVarianceValue?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountCreateManyInput = {
+    id?: string
+    countNumber: string
+    warehouseId: string
+    branchId?: string | null
+    type: string
+    status?: string
+    blind?: boolean
+    category?: string | null
+    notes?: string | null
+    createdById: string
+    startedAt?: Date | string | null
+    submittedAt?: Date | string | null
+    submittedById?: string | null
+    postedAt?: Date | string | null
+    totalVarianceValue?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockCountUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countNumber?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    blind?: BoolFieldUpdateOperationsInput | boolean
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalVarianceValue?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countNumber?: StringFieldUpdateOperationsInput | string
+    warehouseId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    blind?: BoolFieldUpdateOperationsInput | boolean
+    category?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    startedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    submittedById?: NullableStringFieldUpdateOperationsInput | string | null
+    postedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalVarianceValue?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountLineCreateInput = {
+    id?: string
+    countId: string
+    productId: string
+    productName: string
+    sku: string
+    unitCost?: number
+    systemQty?: number | null
+    countedQty?: number | null
+    note?: string | null
+    countedById?: string | null
+    countedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockCountLineUncheckedCreateInput = {
+    id?: string
+    countId: string
+    productId: string
+    productName: string
+    sku: string
+    unitCost?: number
+    systemQty?: number | null
+    countedQty?: number | null
+    note?: string | null
+    countedById?: string | null
+    countedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockCountLineUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    productName?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    systemQty?: NullableIntFieldUpdateOperationsInput | number | null
+    countedQty?: NullableIntFieldUpdateOperationsInput | number | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    countedById?: NullableStringFieldUpdateOperationsInput | string | null
+    countedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountLineUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    productName?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    systemQty?: NullableIntFieldUpdateOperationsInput | number | null
+    countedQty?: NullableIntFieldUpdateOperationsInput | number | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    countedById?: NullableStringFieldUpdateOperationsInput | string | null
+    countedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountLineCreateManyInput = {
+    id?: string
+    countId: string
+    productId: string
+    productName: string
+    sku: string
+    unitCost?: number
+    systemQty?: number | null
+    countedQty?: number | null
+    note?: string | null
+    countedById?: string | null
+    countedAt?: Date | string | null
+    appliedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StockCountLineUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    productName?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    systemQty?: NullableIntFieldUpdateOperationsInput | number | null
+    countedQty?: NullableIntFieldUpdateOperationsInput | number | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    countedById?: NullableStringFieldUpdateOperationsInput | string | null
+    countedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StockCountLineUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    countId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    productName?: StringFieldUpdateOperationsInput | string
+    sku?: StringFieldUpdateOperationsInput | string
+    unitCost?: FloatFieldUpdateOperationsInput | number
+    systemQty?: NullableIntFieldUpdateOperationsInput | number | null
+    countedQty?: NullableIntFieldUpdateOperationsInput | number | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    countedById?: NullableStringFieldUpdateOperationsInput | string | null
+    countedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    appliedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqCreateInput = {
+    id?: string
+    rfqNumber: string
+    title: string
+    requisitionId?: string | null
+    branchId: string
+    warehouseId?: string | null
+    status?: string
+    closingDate: Date | string
+    notes?: string | null
+    exceptionReason?: string | null
+    createdById: string
+    sentAt?: Date | string | null
+    closedAt?: Date | string | null
+    awardedQuoteId?: string | null
+    awardReason?: string | null
+    awardedById?: string | null
+    awardedAt?: Date | string | null
+    poId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqUncheckedCreateInput = {
+    id?: string
+    rfqNumber: string
+    title: string
+    requisitionId?: string | null
+    branchId: string
+    warehouseId?: string | null
+    status?: string
+    closingDate: Date | string
+    notes?: string | null
+    exceptionReason?: string | null
+    createdById: string
+    sentAt?: Date | string | null
+    closedAt?: Date | string | null
+    awardedQuoteId?: string | null
+    awardReason?: string | null
+    awardedById?: string | null
+    awardedAt?: Date | string | null
+    poId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requisitionId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: StringFieldUpdateOperationsInput | string
+    warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    closingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    exceptionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    awardedQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    awardReason?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedById?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    poId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requisitionId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: StringFieldUpdateOperationsInput | string
+    warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    closingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    exceptionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    awardedQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    awardReason?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedById?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    poId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqCreateManyInput = {
+    id?: string
+    rfqNumber: string
+    title: string
+    requisitionId?: string | null
+    branchId: string
+    warehouseId?: string | null
+    status?: string
+    closingDate: Date | string
+    notes?: string | null
+    exceptionReason?: string | null
+    createdById: string
+    sentAt?: Date | string | null
+    closedAt?: Date | string | null
+    awardedQuoteId?: string | null
+    awardReason?: string | null
+    awardedById?: string | null
+    awardedAt?: Date | string | null
+    poId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requisitionId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: StringFieldUpdateOperationsInput | string
+    warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    closingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    exceptionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    awardedQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    awardReason?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedById?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    poId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    requisitionId?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: StringFieldUpdateOperationsInput | string
+    warehouseId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    closingDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    exceptionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    awardedQuoteId?: NullableStringFieldUpdateOperationsInput | string | null
+    awardReason?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedById?: NullableStringFieldUpdateOperationsInput | string | null
+    awardedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    poId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqItemCreateInput = {
+    id?: string
+    rfqId: string
+    productId?: string | null
+    description: string
+    quantity: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqItemUncheckedCreateInput = {
+    id?: string
+    rfqId: string
+    productId?: string | null
+    description: string
+    quantity: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqItemCreateManyInput = {
+    id?: string
+    rfqId: string
+    productId?: string | null
+    description: string
+    quantity: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteCreateInput = {
+    id?: string
+    rfqId: string
+    vendorId: string
+    status?: string
+    leadTimeDays?: number | null
+    paymentTerms?: string | null
+    validUntil?: Date | string | null
+    notes?: string | null
+    submittedAt?: Date | string | null
+    enteredById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqQuoteUncheckedCreateInput = {
+    id?: string
+    rfqId: string
+    vendorId: string
+    status?: string
+    leadTimeDays?: number | null
+    paymentTerms?: string | null
+    validUntil?: Date | string | null
+    notes?: string | null
+    submittedAt?: Date | string | null
+    enteredById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqQuoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentTerms?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    enteredById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentTerms?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    enteredById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteCreateManyInput = {
+    id?: string
+    rfqId: string
+    vendorId: string
+    status?: string
+    leadTimeDays?: number | null
+    paymentTerms?: string | null
+    validUntil?: Date | string | null
+    notes?: string | null
+    submittedAt?: Date | string | null
+    enteredById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqQuoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentTerms?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    enteredById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    rfqId?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    leadTimeDays?: NullableIntFieldUpdateOperationsInput | number | null
+    paymentTerms?: NullableStringFieldUpdateOperationsInput | string | null
+    validUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    enteredById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteLineCreateInput = {
+    id?: string
+    quoteId: string
+    itemId: string
+    unitPrice: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqQuoteLineUncheckedCreateInput = {
+    id?: string
+    quoteId: string
+    itemId: string
+    unitPrice: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqQuoteLineUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quoteId?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteLineUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quoteId?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteLineCreateManyInput = {
+    id?: string
+    quoteId: string
+    itemId: string
+    unitPrice: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type RfqQuoteLineUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quoteId?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RfqQuoteLineUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    quoteId?: StringFieldUpdateOperationsInput | string
+    itemId?: StringFieldUpdateOperationsInput | string
+    unitPrice?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VendorEvaluationCreateInput = {
+    id?: string
+    vendorId: string
+    evaluatorId: string
+    period: string
+    delivery: number
+    quality: number
+    price: number
+    service: number
+    overall: number
+    comments?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VendorEvaluationUncheckedCreateInput = {
+    id?: string
+    vendorId: string
+    evaluatorId: string
+    period: string
+    delivery: number
+    quality: number
+    price: number
+    service: number
+    overall: number
+    comments?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VendorEvaluationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    evaluatorId?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    delivery?: IntFieldUpdateOperationsInput | number
+    quality?: IntFieldUpdateOperationsInput | number
+    price?: IntFieldUpdateOperationsInput | number
+    service?: IntFieldUpdateOperationsInput | number
+    overall?: FloatFieldUpdateOperationsInput | number
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VendorEvaluationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    evaluatorId?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    delivery?: IntFieldUpdateOperationsInput | number
+    quality?: IntFieldUpdateOperationsInput | number
+    price?: IntFieldUpdateOperationsInput | number
+    service?: IntFieldUpdateOperationsInput | number
+    overall?: FloatFieldUpdateOperationsInput | number
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VendorEvaluationCreateManyInput = {
+    id?: string
+    vendorId: string
+    evaluatorId: string
+    period: string
+    delivery: number
+    quality: number
+    price: number
+    service: number
+    overall: number
+    comments?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VendorEvaluationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    evaluatorId?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    delivery?: IntFieldUpdateOperationsInput | number
+    quality?: IntFieldUpdateOperationsInput | number
+    price?: IntFieldUpdateOperationsInput | number
+    service?: IntFieldUpdateOperationsInput | number
+    overall?: FloatFieldUpdateOperationsInput | number
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VendorEvaluationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    vendorId?: StringFieldUpdateOperationsInput | string
+    evaluatorId?: StringFieldUpdateOperationsInput | string
+    period?: StringFieldUpdateOperationsInput | string
+    delivery?: IntFieldUpdateOperationsInput | number
+    quality?: IntFieldUpdateOperationsInput | number
+    price?: IntFieldUpdateOperationsInput | number
+    service?: IntFieldUpdateOperationsInput | number
+    overall?: FloatFieldUpdateOperationsInput | number
+    comments?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    value?: number
+    buyQty?: number | null
+    getQty?: number | null
+    scope?: string
+    categories?: PromotionCreatecategoriesInput | string[]
+    productIds?: PromotionCreateproductIdsInput | string[]
+    branchIds?: PromotionCreatebranchIdsInput | string[]
+    minQuantity?: number
+    startsAt: Date | string
+    endsAt: Date | string
+    allowBelowCost?: boolean
+    status?: string
+    createdById: string
+    activatedById?: string | null
+    activatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PromotionUncheckedCreateInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    value?: number
+    buyQty?: number | null
+    getQty?: number | null
+    scope?: string
+    categories?: PromotionCreatecategoriesInput | string[]
+    productIds?: PromotionCreateproductIdsInput | string[]
+    branchIds?: PromotionCreatebranchIdsInput | string[]
+    minQuantity?: number
+    startsAt: Date | string
+    endsAt: Date | string
+    allowBelowCost?: boolean
+    status?: string
+    createdById: string
+    activatedById?: string | null
+    activatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PromotionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    buyQty?: NullableIntFieldUpdateOperationsInput | number | null
+    getQty?: NullableIntFieldUpdateOperationsInput | number | null
+    scope?: StringFieldUpdateOperationsInput | string
+    categories?: PromotionUpdatecategoriesInput | string[]
+    productIds?: PromotionUpdateproductIdsInput | string[]
+    branchIds?: PromotionUpdatebranchIdsInput | string[]
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    allowBelowCost?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    activatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    buyQty?: NullableIntFieldUpdateOperationsInput | number | null
+    getQty?: NullableIntFieldUpdateOperationsInput | number | null
+    scope?: StringFieldUpdateOperationsInput | string
+    categories?: PromotionUpdatecategoriesInput | string[]
+    productIds?: PromotionUpdateproductIdsInput | string[]
+    branchIds?: PromotionUpdatebranchIdsInput | string[]
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    allowBelowCost?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    activatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionCreateManyInput = {
+    id?: string
+    code: string
+    name: string
+    description?: string | null
+    type: string
+    value?: number
+    buyQty?: number | null
+    getQty?: number | null
+    scope?: string
+    categories?: PromotionCreatecategoriesInput | string[]
+    productIds?: PromotionCreateproductIdsInput | string[]
+    branchIds?: PromotionCreatebranchIdsInput | string[]
+    minQuantity?: number
+    startsAt: Date | string
+    endsAt: Date | string
+    allowBelowCost?: boolean
+    status?: string
+    createdById: string
+    activatedById?: string | null
+    activatedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PromotionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    buyQty?: NullableIntFieldUpdateOperationsInput | number | null
+    getQty?: NullableIntFieldUpdateOperationsInput | number | null
+    scope?: StringFieldUpdateOperationsInput | string
+    categories?: PromotionUpdatecategoriesInput | string[]
+    productIds?: PromotionUpdateproductIdsInput | string[]
+    branchIds?: PromotionUpdatebranchIdsInput | string[]
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    allowBelowCost?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    activatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    buyQty?: NullableIntFieldUpdateOperationsInput | number | null
+    getQty?: NullableIntFieldUpdateOperationsInput | number | null
+    scope?: StringFieldUpdateOperationsInput | string
+    categories?: PromotionUpdatecategoriesInput | string[]
+    productIds?: PromotionUpdateproductIdsInput | string[]
+    branchIds?: PromotionUpdatebranchIdsInput | string[]
+    minQuantity?: IntFieldUpdateOperationsInput | number
+    startsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    endsAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    allowBelowCost?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
+    createdById?: StringFieldUpdateOperationsInput | string
+    activatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    activatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionRedemptionCreateInput = {
+    id?: string
+    promotionId: string
+    salesDocumentId: string
+    productId: string
+    branchId?: string | null
+    quantity: number
+    amount: number
+    createdAt?: Date | string
+  }
+
+  export type PromotionRedemptionUncheckedCreateInput = {
+    id?: string
+    promotionId: string
+    salesDocumentId: string
+    productId: string
+    branchId?: string | null
+    quantity: number
+    amount: number
+    createdAt?: Date | string
+  }
+
+  export type PromotionRedemptionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    promotionId?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionRedemptionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    promotionId?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionRedemptionCreateManyInput = {
+    id?: string
+    promotionId: string
+    salesDocumentId: string
+    productId: string
+    branchId?: string | null
+    quantity: number
+    amount: number
+    createdAt?: Date | string
+  }
+
+  export type PromotionRedemptionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    promotionId?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PromotionRedemptionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    promotionId?: StringFieldUpdateOperationsInput | string
+    salesDocumentId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    amount?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -161535,6 +179114,13 @@ export namespace Prisma {
     _max?: NestedJsonFilter<$PrismaModel>
   }
 
+  export type EnumPurchaseOrderLineTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseOrderLineType | EnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel> | $Enums.PurchaseOrderLineType
+  }
+
   export type PurchaseOrderScalarRelationFilter = {
     is?: PurchaseOrderWhereInput
     isNot?: PurchaseOrderWhereInput
@@ -161544,6 +179130,8 @@ export namespace Prisma {
     id?: SortOrder
     purchaseOrderId?: SortOrder
     productId?: SortOrder
+    description?: SortOrder
+    lineType?: SortOrder
     quantity?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
@@ -161563,6 +179151,8 @@ export namespace Prisma {
     id?: SortOrder
     purchaseOrderId?: SortOrder
     productId?: SortOrder
+    description?: SortOrder
+    lineType?: SortOrder
     quantity?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
@@ -161575,6 +179165,8 @@ export namespace Prisma {
     id?: SortOrder
     purchaseOrderId?: SortOrder
     productId?: SortOrder
+    description?: SortOrder
+    lineType?: SortOrder
     quantity?: SortOrder
     unitPrice?: SortOrder
     subtotal?: SortOrder
@@ -161588,6 +179180,16 @@ export namespace Prisma {
     unitPrice?: SortOrder
     subtotal?: SortOrder
     receivedQuantity?: SortOrder
+  }
+
+  export type EnumPurchaseOrderLineTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseOrderLineType | EnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseOrderLineTypeWithAggregatesFilter<$PrismaModel> | $Enums.PurchaseOrderLineType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel>
+    _max?: NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel>
   }
 
   export type EnumGRNStatusFilter<$PrismaModel = never> = {
@@ -165874,6 +183476,721 @@ export namespace Prisma {
     likelihood?: SortOrder
     impact?: SortOrder
     score?: SortOrder
+  }
+
+  export type SalaryStructureCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    minSalary?: SortOrder
+    maxSalary?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryStructureAvgOrderByAggregateInput = {
+    minSalary?: SortOrder
+    maxSalary?: SortOrder
+  }
+
+  export type SalaryStructureMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    minSalary?: SortOrder
+    maxSalary?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryStructureMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    minSalary?: SortOrder
+    maxSalary?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryStructureSumOrderByAggregateInput = {
+    minSalary?: SortOrder
+    maxSalary?: SortOrder
+  }
+
+  export type SalaryComponentCountOrderByAggregateInput = {
+    id?: SortOrder
+    structureId?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    calc?: SortOrder
+    value?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryComponentAvgOrderByAggregateInput = {
+    value?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type SalaryComponentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    structureId?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    calc?: SortOrder
+    value?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryComponentMinOrderByAggregateInput = {
+    id?: SortOrder
+    structureId?: SortOrder
+    name?: SortOrder
+    kind?: SortOrder
+    calc?: SortOrder
+    value?: SortOrder
+    sortOrder?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SalaryComponentSumOrderByAggregateInput = {
+    value?: SortOrder
+    sortOrder?: SortOrder
+  }
+
+  export type EmploymentContractCountOrderByAggregateInput = {
+    id?: SortOrder
+    contractNumber?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    jobTitle?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    probationEndDate?: SortOrder
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+    salaryStructureId?: SortOrder
+    notes?: SortOrder
+    signedAt?: SortOrder
+    terminatedAt?: SortOrder
+    terminationReason?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmploymentContractAvgOrderByAggregateInput = {
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+  }
+
+  export type EmploymentContractMaxOrderByAggregateInput = {
+    id?: SortOrder
+    contractNumber?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    jobTitle?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    probationEndDate?: SortOrder
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+    salaryStructureId?: SortOrder
+    notes?: SortOrder
+    signedAt?: SortOrder
+    terminatedAt?: SortOrder
+    terminationReason?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmploymentContractMinOrderByAggregateInput = {
+    id?: SortOrder
+    contractNumber?: SortOrder
+    userId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    jobTitle?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    probationEndDate?: SortOrder
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+    salaryStructureId?: SortOrder
+    notes?: SortOrder
+    signedAt?: SortOrder
+    terminatedAt?: SortOrder
+    terminationReason?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EmploymentContractSumOrderByAggregateInput = {
+    noticeDays?: SortOrder
+    hoursPerWeek?: SortOrder
+    baseSalary?: SortOrder
+  }
+
+  export type StockCountCountOrderByAggregateInput = {
+    id?: SortOrder
+    countNumber?: SortOrder
+    warehouseId?: SortOrder
+    branchId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    blind?: SortOrder
+    category?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    startedAt?: SortOrder
+    submittedAt?: SortOrder
+    submittedById?: SortOrder
+    postedAt?: SortOrder
+    totalVarianceValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountAvgOrderByAggregateInput = {
+    totalVarianceValue?: SortOrder
+  }
+
+  export type StockCountMaxOrderByAggregateInput = {
+    id?: SortOrder
+    countNumber?: SortOrder
+    warehouseId?: SortOrder
+    branchId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    blind?: SortOrder
+    category?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    startedAt?: SortOrder
+    submittedAt?: SortOrder
+    submittedById?: SortOrder
+    postedAt?: SortOrder
+    totalVarianceValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountMinOrderByAggregateInput = {
+    id?: SortOrder
+    countNumber?: SortOrder
+    warehouseId?: SortOrder
+    branchId?: SortOrder
+    type?: SortOrder
+    status?: SortOrder
+    blind?: SortOrder
+    category?: SortOrder
+    notes?: SortOrder
+    createdById?: SortOrder
+    startedAt?: SortOrder
+    submittedAt?: SortOrder
+    submittedById?: SortOrder
+    postedAt?: SortOrder
+    totalVarianceValue?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountSumOrderByAggregateInput = {
+    totalVarianceValue?: SortOrder
+  }
+
+  export type StockCountLineCountIdProductIdCompoundUniqueInput = {
+    countId: string
+    productId: string
+  }
+
+  export type StockCountLineCountOrderByAggregateInput = {
+    id?: SortOrder
+    countId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    sku?: SortOrder
+    unitCost?: SortOrder
+    systemQty?: SortOrder
+    countedQty?: SortOrder
+    note?: SortOrder
+    countedById?: SortOrder
+    countedAt?: SortOrder
+    appliedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountLineAvgOrderByAggregateInput = {
+    unitCost?: SortOrder
+    systemQty?: SortOrder
+    countedQty?: SortOrder
+  }
+
+  export type StockCountLineMaxOrderByAggregateInput = {
+    id?: SortOrder
+    countId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    sku?: SortOrder
+    unitCost?: SortOrder
+    systemQty?: SortOrder
+    countedQty?: SortOrder
+    note?: SortOrder
+    countedById?: SortOrder
+    countedAt?: SortOrder
+    appliedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountLineMinOrderByAggregateInput = {
+    id?: SortOrder
+    countId?: SortOrder
+    productId?: SortOrder
+    productName?: SortOrder
+    sku?: SortOrder
+    unitCost?: SortOrder
+    systemQty?: SortOrder
+    countedQty?: SortOrder
+    note?: SortOrder
+    countedById?: SortOrder
+    countedAt?: SortOrder
+    appliedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StockCountLineSumOrderByAggregateInput = {
+    unitCost?: SortOrder
+    systemQty?: SortOrder
+    countedQty?: SortOrder
+  }
+
+  export type RfqCountOrderByAggregateInput = {
+    id?: SortOrder
+    rfqNumber?: SortOrder
+    title?: SortOrder
+    requisitionId?: SortOrder
+    branchId?: SortOrder
+    warehouseId?: SortOrder
+    status?: SortOrder
+    closingDate?: SortOrder
+    notes?: SortOrder
+    exceptionReason?: SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrder
+    closedAt?: SortOrder
+    awardedQuoteId?: SortOrder
+    awardReason?: SortOrder
+    awardedById?: SortOrder
+    awardedAt?: SortOrder
+    poId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rfqNumber?: SortOrder
+    title?: SortOrder
+    requisitionId?: SortOrder
+    branchId?: SortOrder
+    warehouseId?: SortOrder
+    status?: SortOrder
+    closingDate?: SortOrder
+    notes?: SortOrder
+    exceptionReason?: SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrder
+    closedAt?: SortOrder
+    awardedQuoteId?: SortOrder
+    awardReason?: SortOrder
+    awardedById?: SortOrder
+    awardedAt?: SortOrder
+    poId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqMinOrderByAggregateInput = {
+    id?: SortOrder
+    rfqNumber?: SortOrder
+    title?: SortOrder
+    requisitionId?: SortOrder
+    branchId?: SortOrder
+    warehouseId?: SortOrder
+    status?: SortOrder
+    closingDate?: SortOrder
+    notes?: SortOrder
+    exceptionReason?: SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrder
+    closedAt?: SortOrder
+    awardedQuoteId?: SortOrder
+    awardReason?: SortOrder
+    awardedById?: SortOrder
+    awardedAt?: SortOrder
+    poId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    productId?: SortOrder
+    description?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqItemAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+  }
+
+  export type RfqItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    productId?: SortOrder
+    description?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    productId?: SortOrder
+    description?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqItemSumOrderByAggregateInput = {
+    quantity?: SortOrder
+  }
+
+  export type RfqQuoteRfqIdVendorIdCompoundUniqueInput = {
+    rfqId: string
+    vendorId: string
+  }
+
+  export type RfqQuoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    vendorId?: SortOrder
+    status?: SortOrder
+    leadTimeDays?: SortOrder
+    paymentTerms?: SortOrder
+    validUntil?: SortOrder
+    notes?: SortOrder
+    submittedAt?: SortOrder
+    enteredById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteAvgOrderByAggregateInput = {
+    leadTimeDays?: SortOrder
+  }
+
+  export type RfqQuoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    vendorId?: SortOrder
+    status?: SortOrder
+    leadTimeDays?: SortOrder
+    paymentTerms?: SortOrder
+    validUntil?: SortOrder
+    notes?: SortOrder
+    submittedAt?: SortOrder
+    enteredById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    rfqId?: SortOrder
+    vendorId?: SortOrder
+    status?: SortOrder
+    leadTimeDays?: SortOrder
+    paymentTerms?: SortOrder
+    validUntil?: SortOrder
+    notes?: SortOrder
+    submittedAt?: SortOrder
+    enteredById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteSumOrderByAggregateInput = {
+    leadTimeDays?: SortOrder
+  }
+
+  export type RfqQuoteLineQuoteIdItemIdCompoundUniqueInput = {
+    quoteId: string
+    itemId: string
+  }
+
+  export type RfqQuoteLineCountOrderByAggregateInput = {
+    id?: SortOrder
+    quoteId?: SortOrder
+    itemId?: SortOrder
+    unitPrice?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteLineAvgOrderByAggregateInput = {
+    unitPrice?: SortOrder
+  }
+
+  export type RfqQuoteLineMaxOrderByAggregateInput = {
+    id?: SortOrder
+    quoteId?: SortOrder
+    itemId?: SortOrder
+    unitPrice?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteLineMinOrderByAggregateInput = {
+    id?: SortOrder
+    quoteId?: SortOrder
+    itemId?: SortOrder
+    unitPrice?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type RfqQuoteLineSumOrderByAggregateInput = {
+    unitPrice?: SortOrder
+  }
+
+  export type VendorEvaluationVendorIdEvaluatorIdPeriodCompoundUniqueInput = {
+    vendorId: string
+    evaluatorId: string
+    period: string
+  }
+
+  export type VendorEvaluationCountOrderByAggregateInput = {
+    id?: SortOrder
+    vendorId?: SortOrder
+    evaluatorId?: SortOrder
+    period?: SortOrder
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+    comments?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VendorEvaluationAvgOrderByAggregateInput = {
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+  }
+
+  export type VendorEvaluationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    vendorId?: SortOrder
+    evaluatorId?: SortOrder
+    period?: SortOrder
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+    comments?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VendorEvaluationMinOrderByAggregateInput = {
+    id?: SortOrder
+    vendorId?: SortOrder
+    evaluatorId?: SortOrder
+    period?: SortOrder
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+    comments?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VendorEvaluationSumOrderByAggregateInput = {
+    delivery?: SortOrder
+    quality?: SortOrder
+    price?: SortOrder
+    service?: SortOrder
+    overall?: SortOrder
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type PromotionCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    value?: SortOrder
+    buyQty?: SortOrder
+    getQty?: SortOrder
+    scope?: SortOrder
+    categories?: SortOrder
+    productIds?: SortOrder
+    branchIds?: SortOrder
+    minQuantity?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    allowBelowCost?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    activatedById?: SortOrder
+    activatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PromotionAvgOrderByAggregateInput = {
+    value?: SortOrder
+    buyQty?: SortOrder
+    getQty?: SortOrder
+    minQuantity?: SortOrder
+  }
+
+  export type PromotionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    value?: SortOrder
+    buyQty?: SortOrder
+    getQty?: SortOrder
+    scope?: SortOrder
+    minQuantity?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    allowBelowCost?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    activatedById?: SortOrder
+    activatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PromotionMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    type?: SortOrder
+    value?: SortOrder
+    buyQty?: SortOrder
+    getQty?: SortOrder
+    scope?: SortOrder
+    minQuantity?: SortOrder
+    startsAt?: SortOrder
+    endsAt?: SortOrder
+    allowBelowCost?: SortOrder
+    status?: SortOrder
+    createdById?: SortOrder
+    activatedById?: SortOrder
+    activatedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PromotionSumOrderByAggregateInput = {
+    value?: SortOrder
+    buyQty?: SortOrder
+    getQty?: SortOrder
+    minQuantity?: SortOrder
+  }
+
+  export type PromotionRedemptionCountOrderByAggregateInput = {
+    id?: SortOrder
+    promotionId?: SortOrder
+    salesDocumentId?: SortOrder
+    productId?: SortOrder
+    branchId?: SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PromotionRedemptionAvgOrderByAggregateInput = {
+    quantity?: SortOrder
+    amount?: SortOrder
+  }
+
+  export type PromotionRedemptionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    promotionId?: SortOrder
+    salesDocumentId?: SortOrder
+    productId?: SortOrder
+    branchId?: SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PromotionRedemptionMinOrderByAggregateInput = {
+    id?: SortOrder
+    promotionId?: SortOrder
+    salesDocumentId?: SortOrder
+    productId?: SortOrder
+    branchId?: SortOrder
+    quantity?: SortOrder
+    amount?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PromotionRedemptionSumOrderByAggregateInput = {
+    quantity?: SortOrder
+    amount?: SortOrder
   }
 
   export type ApprovalRequestCreateNestedManyWithoutApprovedByInput = {
@@ -171478,6 +189795,10 @@ export namespace Prisma {
     connect?: GRNItemWhereUniqueInput | GRNItemWhereUniqueInput[]
   }
 
+  export type EnumPurchaseOrderLineTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PurchaseOrderLineType
+  }
+
   export type GRNItemUpdateManyWithoutPurchaseOrderItemNestedInput = {
     create?: XOR<GRNItemCreateWithoutPurchaseOrderItemInput, GRNItemUncheckedCreateWithoutPurchaseOrderItemInput> | GRNItemCreateWithoutPurchaseOrderItemInput[] | GRNItemUncheckedCreateWithoutPurchaseOrderItemInput[]
     connectOrCreate?: GRNItemCreateOrConnectWithoutPurchaseOrderItemInput | GRNItemCreateOrConnectWithoutPurchaseOrderItemInput[]
@@ -171492,10 +189813,12 @@ export namespace Prisma {
     deleteMany?: GRNItemScalarWhereInput | GRNItemScalarWhereInput[]
   }
 
-  export type ProductUpdateOneRequiredWithoutPurchaseOrderItemsNestedInput = {
+  export type ProductUpdateOneWithoutPurchaseOrderItemsNestedInput = {
     create?: XOR<ProductCreateWithoutPurchaseOrderItemsInput, ProductUncheckedCreateWithoutPurchaseOrderItemsInput>
     connectOrCreate?: ProductCreateOrConnectWithoutPurchaseOrderItemsInput
     upsert?: ProductUpsertWithoutPurchaseOrderItemsInput
+    disconnect?: ProductWhereInput | boolean
+    delete?: ProductWhereInput | boolean
     connect?: ProductWhereUniqueInput
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutPurchaseOrderItemsInput, ProductUpdateWithoutPurchaseOrderItemsInput>, ProductUncheckedUpdateWithoutPurchaseOrderItemsInput>
   }
@@ -171676,10 +189999,12 @@ export namespace Prisma {
     update?: XOR<XOR<PurchaseOrderItemUpdateToOneWithWhereWithoutGrnItemsInput, PurchaseOrderItemUpdateWithoutGrnItemsInput>, PurchaseOrderItemUncheckedUpdateWithoutGrnItemsInput>
   }
 
-  export type ProductUpdateOneRequiredWithoutGrnItemsNestedInput = {
+  export type ProductUpdateOneWithoutGrnItemsNestedInput = {
     create?: XOR<ProductCreateWithoutGrnItemsInput, ProductUncheckedCreateWithoutGrnItemsInput>
     connectOrCreate?: ProductCreateOrConnectWithoutGrnItemsInput
     upsert?: ProductUpsertWithoutGrnItemsInput
+    disconnect?: ProductWhereInput | boolean
+    delete?: ProductWhereInput | boolean
     connect?: ProductWhereUniqueInput
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutGrnItemsInput, ProductUpdateWithoutGrnItemsInput>, ProductUncheckedUpdateWithoutGrnItemsInput>
   }
@@ -174162,6 +192487,33 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutApprovalStepsInput, UserUpdateWithoutApprovalStepsInput>, UserUncheckedUpdateWithoutApprovalStepsInput>
   }
 
+  export type PromotionCreatecategoriesInput = {
+    set: string[]
+  }
+
+  export type PromotionCreateproductIdsInput = {
+    set: string[]
+  }
+
+  export type PromotionCreatebranchIdsInput = {
+    set: string[]
+  }
+
+  export type PromotionUpdatecategoriesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PromotionUpdateproductIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type PromotionUpdatebranchIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -174759,6 +193111,23 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseOrderLineType | EnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel> | $Enums.PurchaseOrderLineType
+  }
+
+  export type NestedEnumPurchaseOrderLineTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PurchaseOrderLineType | EnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PurchaseOrderLineType[] | ListEnumPurchaseOrderLineTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPurchaseOrderLineTypeWithAggregatesFilter<$PrismaModel> | $Enums.PurchaseOrderLineType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel>
+    _max?: NestedEnumPurchaseOrderLineTypeFilter<$PrismaModel>
   }
 
   export type NestedEnumGRNStatusFilter<$PrismaModel = never> = {
@@ -181622,6 +199991,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemCreateWithoutProductInput = {
     id?: string
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -181635,6 +200006,8 @@ export namespace Prisma {
   export type PurchaseOrderItemUncheckedCreateWithoutProductInput = {
     id?: string
     purchaseOrderId: string
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -181931,7 +200304,7 @@ export namespace Prisma {
     id?: StringFilter<"GRNItem"> | string
     grnId?: StringFilter<"GRNItem"> | string
     poItemId?: StringFilter<"GRNItem"> | string
-    productId?: StringFilter<"GRNItem"> | string
+    productId?: StringNullableFilter<"GRNItem"> | string | null
     qtyReceived?: IntFilter<"GRNItem"> | number
     createdAt?: DateTimeFilter<"GRNItem"> | Date | string
     updatedAt?: DateTimeFilter<"GRNItem"> | Date | string
@@ -182024,7 +200397,9 @@ export namespace Prisma {
     NOT?: PurchaseOrderItemScalarWhereInput | PurchaseOrderItemScalarWhereInput[]
     id?: StringFilter<"PurchaseOrderItem"> | string
     purchaseOrderId?: StringFilter<"PurchaseOrderItem"> | string
-    productId?: StringFilter<"PurchaseOrderItem"> | string
+    productId?: StringNullableFilter<"PurchaseOrderItem"> | string | null
+    description?: StringFilter<"PurchaseOrderItem"> | string
+    lineType?: EnumPurchaseOrderLineTypeFilter<"PurchaseOrderItem"> | $Enums.PurchaseOrderLineType
     quantity?: IntFilter<"PurchaseOrderItem"> | number
     unitPrice?: FloatFilter<"PurchaseOrderItem"> | number
     subtotal?: FloatFilter<"PurchaseOrderItem"> | number
@@ -182871,14 +201246,14 @@ export namespace Prisma {
     updatedAt?: Date | string
     goodsReceiptNote: GoodsReceiptNoteCreateNestedOneWithoutItemsInput
     purchaseOrderItem: PurchaseOrderItemCreateNestedOneWithoutGrnItemsInput
-    product: ProductCreateNestedOneWithoutGrnItemsInput
+    product?: ProductCreateNestedOneWithoutGrnItemsInput
   }
 
   export type GRNItemUncheckedCreateWithoutStockBatchesInput = {
     id?: string
     grnId: string
     poItemId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -183031,14 +201406,14 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     goodsReceiptNote?: GoodsReceiptNoteUpdateOneRequiredWithoutItemsNestedInput
     purchaseOrderItem?: PurchaseOrderItemUpdateOneRequiredWithoutGrnItemsNestedInput
-    product?: ProductUpdateOneRequiredWithoutGrnItemsNestedInput
+    product?: ProductUpdateOneWithoutGrnItemsNestedInput
   }
 
   export type GRNItemUncheckedUpdateWithoutStockBatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
     grnId?: StringFieldUpdateOperationsInput | string
     poItemId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -192182,6 +210557,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemCreateWithoutPurchaseOrderInput = {
     id?: string
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -192189,12 +210566,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     grnItems?: GRNItemCreateNestedManyWithoutPurchaseOrderItemInput
-    product: ProductCreateNestedOneWithoutPurchaseOrderItemsInput
+    product?: ProductCreateNestedOneWithoutPurchaseOrderItemsInput
   }
 
   export type PurchaseOrderItemUncheckedCreateWithoutPurchaseOrderInput = {
     id?: string
-    productId: string
+    productId?: string | null
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -195140,14 +213519,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     goodsReceiptNote: GoodsReceiptNoteCreateNestedOneWithoutItemsInput
-    product: ProductCreateNestedOneWithoutGrnItemsInput
+    product?: ProductCreateNestedOneWithoutGrnItemsInput
     stockBatches?: StockBatchCreateNestedManyWithoutGrnItemInput
   }
 
   export type GRNItemUncheckedCreateWithoutPurchaseOrderItemInput = {
     id?: string
     grnId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -195668,14 +214047,14 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     purchaseOrderItem: PurchaseOrderItemCreateNestedOneWithoutGrnItemsInput
-    product: ProductCreateNestedOneWithoutGrnItemsInput
+    product?: ProductCreateNestedOneWithoutGrnItemsInput
     stockBatches?: StockBatchCreateNestedManyWithoutGrnItemInput
   }
 
   export type GRNItemUncheckedCreateWithoutGoodsReceiptNoteInput = {
     id?: string
     poItemId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -196039,20 +214418,24 @@ export namespace Prisma {
 
   export type PurchaseOrderItemCreateWithoutGrnItemsInput = {
     id?: string
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
     receivedQuantity?: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    product: ProductCreateNestedOneWithoutPurchaseOrderItemsInput
+    product?: ProductCreateNestedOneWithoutPurchaseOrderItemsInput
     purchaseOrder: PurchaseOrderCreateNestedOneWithoutItemsInput
   }
 
   export type PurchaseOrderItemUncheckedCreateWithoutGrnItemsInput = {
     id?: string
     purchaseOrderId: string
-    productId: string
+    productId?: string | null
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -196237,20 +214620,24 @@ export namespace Prisma {
 
   export type PurchaseOrderItemUpdateWithoutGrnItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
     receivedQuantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    product?: ProductUpdateOneRequiredWithoutPurchaseOrderItemsNestedInput
+    product?: ProductUpdateOneWithoutPurchaseOrderItemsNestedInput
     purchaseOrder?: PurchaseOrderUpdateOneRequiredWithoutItemsNestedInput
   }
 
   export type PurchaseOrderItemUncheckedUpdateWithoutGrnItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
     purchaseOrderId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -211649,6 +230036,8 @@ export namespace Prisma {
   export type PurchaseOrderItemCreateManyProductInput = {
     id?: string
     purchaseOrderId: string
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -211875,6 +230264,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -211888,6 +230279,8 @@ export namespace Prisma {
   export type PurchaseOrderItemUncheckedUpdateWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -211900,6 +230293,8 @@ export namespace Prisma {
   export type PurchaseOrderItemUncheckedUpdateManyWithoutProductInput = {
     id?: StringFieldUpdateOperationsInput | string
     purchaseOrderId?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -213508,7 +231903,9 @@ export namespace Prisma {
 
   export type PurchaseOrderItemCreateManyPurchaseOrderInput = {
     id?: string
-    productId: string
+    productId?: string | null
+    description: string
+    lineType?: $Enums.PurchaseOrderLineType
     quantity: number
     unitPrice: number
     subtotal: number
@@ -213556,6 +231953,8 @@ export namespace Prisma {
 
   export type PurchaseOrderItemUpdateWithoutPurchaseOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -213563,12 +231962,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     grnItems?: GRNItemUpdateManyWithoutPurchaseOrderItemNestedInput
-    product?: ProductUpdateOneRequiredWithoutPurchaseOrderItemsNestedInput
+    product?: ProductUpdateOneWithoutPurchaseOrderItemsNestedInput
   }
 
   export type PurchaseOrderItemUncheckedUpdateWithoutPurchaseOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -213580,7 +231981,9 @@ export namespace Prisma {
 
   export type PurchaseOrderItemUncheckedUpdateManyWithoutPurchaseOrderInput = {
     id?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    lineType?: EnumPurchaseOrderLineTypeFieldUpdateOperationsInput | $Enums.PurchaseOrderLineType
     quantity?: IntFieldUpdateOperationsInput | number
     unitPrice?: FloatFieldUpdateOperationsInput | number
     subtotal?: FloatFieldUpdateOperationsInput | number
@@ -213636,7 +232039,7 @@ export namespace Prisma {
   export type GRNItemCreateManyPurchaseOrderItemInput = {
     id?: string
     grnId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -213648,14 +232051,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     goodsReceiptNote?: GoodsReceiptNoteUpdateOneRequiredWithoutItemsNestedInput
-    product?: ProductUpdateOneRequiredWithoutGrnItemsNestedInput
+    product?: ProductUpdateOneWithoutGrnItemsNestedInput
     stockBatches?: StockBatchUpdateManyWithoutGrnItemNestedInput
   }
 
   export type GRNItemUncheckedUpdateWithoutPurchaseOrderItemInput = {
     id?: StringFieldUpdateOperationsInput | string
     grnId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -213665,7 +232068,7 @@ export namespace Prisma {
   export type GRNItemUncheckedUpdateManyWithoutPurchaseOrderItemInput = {
     id?: StringFieldUpdateOperationsInput | string
     grnId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -213674,7 +232077,7 @@ export namespace Prisma {
   export type GRNItemCreateManyGoodsReceiptNoteInput = {
     id?: string
     poItemId: string
-    productId: string
+    productId?: string | null
     qtyReceived: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -213686,14 +232089,14 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     purchaseOrderItem?: PurchaseOrderItemUpdateOneRequiredWithoutGrnItemsNestedInput
-    product?: ProductUpdateOneRequiredWithoutGrnItemsNestedInput
+    product?: ProductUpdateOneWithoutGrnItemsNestedInput
     stockBatches?: StockBatchUpdateManyWithoutGrnItemNestedInput
   }
 
   export type GRNItemUncheckedUpdateWithoutGoodsReceiptNoteInput = {
     id?: StringFieldUpdateOperationsInput | string
     poItemId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -213703,7 +232106,7 @@ export namespace Prisma {
   export type GRNItemUncheckedUpdateManyWithoutGoodsReceiptNoteInput = {
     id?: StringFieldUpdateOperationsInput | string
     poItemId?: StringFieldUpdateOperationsInput | string
-    productId?: StringFieldUpdateOperationsInput | string
+    productId?: NullableStringFieldUpdateOperationsInput | string | null
     qtyReceived?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
