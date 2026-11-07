@@ -40,6 +40,7 @@ import messagingRoutes from "../modules/messaging/messaging.routes";
 import mpesaRoutes from "../modules/mpesa/mpesa.routes";
 import integrationsRoutes from "../modules/integrations/integrations.routes";
 import publicApiRoutes from "../modules/integrations/public.routes";
+import forecastRoutes from "../modules/forecasting/forecast.routes";
 import { PDFController } from "../modules/pos/controllers/pdf.controller";
 import notificationController from "../modules/notifications/notification.controller";
 
@@ -927,5 +928,6 @@ router.use("/messaging", messagingRoutes);
 router.use("/mpesa", mpesaRoutes);
 router.use("/integrations", integrationsRoutes);
 router.use("/public", publicApiRoutes);
+router.use("/forecast", forecastRoutes);
 
 export default router;

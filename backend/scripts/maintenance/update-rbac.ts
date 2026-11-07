@@ -47,6 +47,9 @@ async function main() {
   // 2. Define Permissions
   // ==========================================
   const permissions = [
+    // Demand forecasting
+    { code: "purchasing.forecast.view", name: "View Demand Forecast and Reorder Suggestions", module: "purchasing" },
+    { code: "purchasing.forecast.requisition", name: "Raise Draft Requisitions from Forecast", module: "purchasing" },
     // Integrations: API keys and webhooks
     { code: "integrations.view", name: "View API Keys, Webhooks and Deliveries", module: "integrations" },
     { code: "integrations.manage", name: "Create and Revoke API Keys and Webhooks", module: "integrations" },
@@ -1509,6 +1512,32 @@ async function main() {
         where: { roleId_permissionId: { roleId: role.id, permissionId } },
         // never narrow an existing wider grant
         update: scope === AccessScope.GLOBAL ? { scope } : {},
+        create: { roleId: role.id, permissionId, scope },
+      });
+    }
+  }
+
+  // Forecasting: purchasing and stock people plan; leadership reads.
+  const forecastGrants: [string, string[], AccessScope][] = [
+    ["purchasing_officer", ["purchasing.forecast.view", "purchasing.forecast.requisition"], AccessScope.GLOBAL],
+    ["procurement_officer", ["purchasing.forecast.view", "purchasing.forecast.requisition"], AccessScope.GLOBAL],
+    ["warehouse_manager", ["purchasing.forecast.view", "purchasing.forecast.requisition"], AccessScope.GLOBAL],
+    ["inventory_manager", ["purchasing.forecast.view", "purchasing.forecast.requisition"], AccessScope.GLOBAL],
+    ["manager", ["purchasing.forecast.view"], AccessScope.GLOBAL],
+    ["ceo", ["purchasing.forecast.view"], AccessScope.GLOBAL],
+    ["director", ["purchasing.forecast.view"], AccessScope.GLOBAL],
+    ["finance_manager", ["purchasing.forecast.view"], AccessScope.GLOBAL],
+    ["auditor", ["purchasing.forecast.view"], AccessScope.GLOBAL],
+  ];
+  for (const [roleCode, codes, scope] of forecastGrants) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    if (!role) continue;
+    for (const code of codes) {
+      const permissionId = permissionMap.get(code);
+      if (!permissionId) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId: role.id, permissionId } },
+        update: {},
         create: { roleId: role.id, permissionId, scope },
       });
     }

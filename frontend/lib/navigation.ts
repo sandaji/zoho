@@ -139,6 +139,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
       "purchasing.requisition.view",
       "purchasing.requisition.create",
       "purchasing.rfq.view",
+      "purchasing.forecast.view",
     ],
     pages: [
       { id: "purchasing", label: "Purchasing Overview", href: "/dashboard/purchasing", icon: BookOpen },
@@ -158,6 +159,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
           "purchasing.requisition.convert",
         ],
       },
+      { id: "demand-forecast", label: "Demand Forecast", href: "/dashboard/purchasing/forecast", icon: BarChart3, permissions: ["purchasing.forecast.view"] },
       { id: "rfqs", label: "RFQs", href: "/dashboard/purchasing/rfqs", icon: ClipboardCheck, permissions: ["purchasing.rfq.view", "purchasing.rfq.manage", "purchasing.rfq.award"] },
       { id: "supplier-scorecards", label: "Supplier Scorecards", href: "/dashboard/purchasing/suppliers", icon: BarChart3, permissions: ["purchasing.vendor.view", "purchasing.vendor.evaluate"] },
       { id: "purchase-approvals", label: "Approvals", href: "/dashboard/purchasing/approvals", icon: Shield, permissions: ["procurement.order.view", "admin.branch.manage"] },

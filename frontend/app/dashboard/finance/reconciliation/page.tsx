@@ -61,7 +61,8 @@ export default function ReconciliationDashboard() {
       setUploading(true);
       const content = await file.text();
       
-      const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_UPLOAD), {
+      // v2 import: skips rows already imported and auto-matches by amount/date.
+      const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_UPLOAD.replace(/\/upload$/, "/import")), {
         method: "POST",
         headers: {
             ...getAuthHeaders(),
@@ -74,9 +75,16 @@ export default function ReconciliationDashboard() {
         })
       });
 
-      if (!res.ok) throw new Error("Upload failed");
-      
-      toast("Statement uploaded successfully", "success");
+      const json = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(json?.error?.message || json?.message || "Upload failed");
+
+      const d = json?.data;
+      toast(
+        d
+          ? `Imported ${d.imported} lines, ${d.duplicates} duplicates skipped, ${d.autoMatched} auto-matched`
+          : "Statement uploaded successfully",
+        "success",
+      );
       router.push(`/dashboard/finance/reconciliation/${selectedAccountId}`);
     } catch (error) {
       toast("Failed to upload statement", "error");

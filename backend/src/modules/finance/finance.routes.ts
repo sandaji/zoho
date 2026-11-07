@@ -9,6 +9,7 @@ import {
   hasAnyPermission,
 } from "../../middleware/rbac.middleware";
 import { validateFiscalPeriod } from "../../middleware/fiscal-period.middleware";
+import { bankImportService } from "./services/bank-import.service";
 
 const router = Router();
 
@@ -101,6 +102,41 @@ router.post(
   "/bank/upload",
   requirePermission("finance.gl.create"),
   (req, res, next) => financeController.uploadBankStatement(req, res, next),
+);
+// Statement import v2: preview -> commit (dedupe) -> auto-match
+const bankImportRoute =
+  (fn: (req: any) => Promise<unknown>) => async (req: any, res: any, next: any) => {
+    try {
+      res.json({ status: "success", data: await fn(req) });
+    } catch (e) {
+      next(e);
+    }
+  };
+router.post(
+  "/bank/import/preview",
+  requirePermission("finance.gl.create"),
+  bankImportRoute((req) =>
+    bankImportService.preview(String(req.body?.accountId ?? ""), String(req.body?.fileContent ?? "")),
+  ),
+);
+router.post(
+  "/bank/import",
+  requirePermission("finance.gl.create"),
+  bankImportRoute((req) =>
+    bankImportService.commit(
+      String(req.body?.accountId ?? ""),
+      String(req.body?.fileContent ?? ""),
+      String(req.body?.filename ?? "statement.csv"),
+      req.body?.autoMatch !== false,
+    ),
+  ),
+);
+router.post(
+  "/bank/auto-match/:accountId",
+  requirePermission("finance.gl.create"),
+  bankImportRoute((req) =>
+    bankImportService.autoMatch(req.params.accountId, req.body?.apply === true),
+  ),
 );
 router.get(
   "/bank/reconciliation/:accountId",
