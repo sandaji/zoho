@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.10.0
- * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
+ * Prisma Client JS version: 7.10.1
+ * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
  */
 Prisma.prismaVersion = {
-  client: "7.10.0",
-  engine: "0edf323efd1d98336f3f0a68684b56f689b900d3"
+  client: "7.10.1",
+  engine: "d1b3f377ca835d73fd50954a5e22128b9ebdd6b8"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -1794,6 +1794,115 @@ exports.Prisma.PromotionRedemptionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MessageTemplateScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  channel: 'channel',
+  subject: 'subject',
+  body: 'body',
+  isActive: 'isActive',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageOutboxScalarFieldEnum = {
+  id: 'id',
+  channel: 'channel',
+  category: 'category',
+  recipient: 'recipient',
+  subject: 'subject',
+  body: 'body',
+  status: 'status',
+  attempts: 'attempts',
+  maxAttempts: 'maxAttempts',
+  nextAttemptAt: 'nextAttemptAt',
+  lastError: 'lastError',
+  provider: 'provider',
+  providerMessageId: 'providerMessageId',
+  templateCode: 'templateCode',
+  relatedType: 'relatedType',
+  relatedId: 'relatedId',
+  createdById: 'createdById',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageOptOutScalarFieldEnum = {
+  id: 'id',
+  recipient: 'recipient',
+  channel: 'channel',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MpesaRequestScalarFieldEnum = {
+  id: 'id',
+  checkoutRequestId: 'checkoutRequestId',
+  merchantRequestId: 'merchantRequestId',
+  phone: 'phone',
+  amount: 'amount',
+  accountReference: 'accountReference',
+  description: 'description',
+  branchId: 'branchId',
+  salesDocumentId: 'salesDocumentId',
+  status: 'status',
+  resultCode: 'resultCode',
+  resultDesc: 'resultDesc',
+  receiptNumber: 'receiptNumber',
+  paidAmount: 'paidAmount',
+  transactionDate: 'transactionDate',
+  createdById: 'createdById',
+  callbackRaw: 'callbackRaw',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApiKeyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  keyPrefix: 'keyPrefix',
+  keyHash: 'keyHash',
+  scopes: 'scopes',
+  branchId: 'branchId',
+  rateLimitPerMin: 'rateLimitPerMin',
+  isActive: 'isActive',
+  expiresAt: 'expiresAt',
+  lastUsedAt: 'lastUsedAt',
+  revokedAt: 'revokedAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WebhookEndpointScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  url: 'url',
+  secret: 'secret',
+  events: 'events',
+  isActive: 'isActive',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WebhookDeliveryScalarFieldEnum = {
+  id: 'id',
+  endpointId: 'endpointId',
+  event: 'event',
+  payload: 'payload',
+  status: 'status',
+  attempts: 'attempts',
+  nextAttemptAt: 'nextAttemptAt',
+  lastStatusCode: 'lastStatusCode',
+  lastError: 'lastError',
+  deliveredAt: 'deliveredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2311,7 +2420,14 @@ exports.Prisma.ModelName = {
   RfqQuoteLine: 'RfqQuoteLine',
   VendorEvaluation: 'VendorEvaluation',
   Promotion: 'Promotion',
-  PromotionRedemption: 'PromotionRedemption'
+  PromotionRedemption: 'PromotionRedemption',
+  MessageTemplate: 'MessageTemplate',
+  MessageOutbox: 'MessageOutbox',
+  MessageOptOut: 'MessageOptOut',
+  MpesaRequest: 'MpesaRequest',
+  ApiKey: 'ApiKey',
+  WebhookEndpoint: 'WebhookEndpoint',
+  WebhookDelivery: 'WebhookDelivery'
 };
 
 /**

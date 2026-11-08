@@ -106,14 +106,14 @@ export function apiKeyAuth(scope: ApiScope) {
     try {
       const header = req.header("x-api-key") ?? (req.header("authorization") ?? "").replace(/^Bearer\s+/i, "");
       const principal = header ? await ApiKeyService.authenticate(header.trim()) : null;
-      if (!principal) return fail(res, 401, "Missing or invalid API key");
-      if (!principal.scopes.includes(scope)) return fail(res, 403, `This key does not have the ${scope} scope`);
+      if (!principal) return void fail(res, 401, "Missing or invalid API key");
+      if (!principal.scopes.includes(scope)) return void fail(res, 403, `This key does not have the ${scope} scope`);
       const rl = allow(principal.id, principal.rateLimitPerMin);
       res.setHeader("X-RateLimit-Limit", String(principal.rateLimitPerMin));
       res.setHeader("X-RateLimit-Remaining", String(rl.remaining));
       if (!rl.ok) {
         res.setHeader("Retry-After", String(rl.retryAfter));
-        return fail(res, 429, "Rate limit exceeded");
+        return void fail(res, 429, "Rate limit exceeded");
       }
       (req as any).apiKey = principal as ApiPrincipal;
       next();

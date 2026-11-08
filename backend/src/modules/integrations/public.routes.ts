@@ -93,7 +93,7 @@ router.get(
   wrap(async (req, res) => {
     const p = principal(req);
     const row = await prisma.product.findFirst({ where: { id: req.params.id as string, isActive: true }, select: PRODUCT_FIELDS });
-    if (!row) return res.status(404).json({ status: "error", error: { message: "Product not found" } });
+    if (!row) return void res.status(404).json({ status: "error", error: { message: "Product not found" } });
     const avail = p.scopes.includes("stock:read") ? await availability(p, [row.id]) : undefined;
     send(res, shape(row, avail));
   }),
@@ -105,7 +105,7 @@ router.get(
   wrap(async (req, res) => {
     const p = principal(req);
     const skus = String(req.query.sku ?? "").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 100);
-    if (skus.length === 0) return res.status(400).json({ status: "error", error: { message: "Pass ?sku=SKU1,SKU2 (up to 100)" } });
+    if (skus.length === 0) return void res.status(400).json({ status: "error", error: { message: "Pass ?sku=SKU1,SKU2 (up to 100)" } });
     const rows = await prisma.product.findMany({ where: { sku: { in: skus }, isActive: true }, select: { id: true, sku: true } });
     const avail = await availability(p, rows.map((r) => r.id));
     send(res, rows.map((r) => ({ sku: r.sku, available: avail.get(r.id) ?? 0 })));

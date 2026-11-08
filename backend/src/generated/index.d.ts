@@ -589,6 +589,41 @@ export type Promotion = $Result.DefaultSelection<Prisma.$PromotionPayload>
  * 
  */
 export type PromotionRedemption = $Result.DefaultSelection<Prisma.$PromotionRedemptionPayload>
+/**
+ * Model MessageTemplate
+ * Phase 11a: outbound messaging (email / SMS / WhatsApp) with a retrying outbox.
+ */
+export type MessageTemplate = $Result.DefaultSelection<Prisma.$MessageTemplatePayload>
+/**
+ * Model MessageOutbox
+ * 
+ */
+export type MessageOutbox = $Result.DefaultSelection<Prisma.$MessageOutboxPayload>
+/**
+ * Model MessageOptOut
+ * 
+ */
+export type MessageOptOut = $Result.DefaultSelection<Prisma.$MessageOptOutPayload>
+/**
+ * Model MpesaRequest
+ * Phase 11b: M-Pesa STK push requests (Safaricom Daraja) and their callbacks.
+ */
+export type MpesaRequest = $Result.DefaultSelection<Prisma.$MpesaRequestPayload>
+/**
+ * Model ApiKey
+ * Phase 11c: public API keys and outbound webhooks.
+ */
+export type ApiKey = $Result.DefaultSelection<Prisma.$ApiKeyPayload>
+/**
+ * Model WebhookEndpoint
+ * 
+ */
+export type WebhookEndpoint = $Result.DefaultSelection<Prisma.$WebhookEndpointPayload>
+/**
+ * Model WebhookDelivery
+ * 
+ */
+export type WebhookDelivery = $Result.DefaultSelection<Prisma.$WebhookDeliveryPayload>
 
 /**
  * Enums
@@ -2587,6 +2622,76 @@ export class PrismaClient<
     * ```
     */
   get promotionRedemption(): Prisma.PromotionRedemptionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.messageTemplate`: Exposes CRUD operations for the **MessageTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MessageTemplates
+    * const messageTemplates = await prisma.messageTemplate.findMany()
+    * ```
+    */
+  get messageTemplate(): Prisma.MessageTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.messageOutbox`: Exposes CRUD operations for the **MessageOutbox** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MessageOutboxes
+    * const messageOutboxes = await prisma.messageOutbox.findMany()
+    * ```
+    */
+  get messageOutbox(): Prisma.MessageOutboxDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.messageOptOut`: Exposes CRUD operations for the **MessageOptOut** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MessageOptOuts
+    * const messageOptOuts = await prisma.messageOptOut.findMany()
+    * ```
+    */
+  get messageOptOut(): Prisma.MessageOptOutDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.mpesaRequest`: Exposes CRUD operations for the **MpesaRequest** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MpesaRequests
+    * const mpesaRequests = await prisma.mpesaRequest.findMany()
+    * ```
+    */
+  get mpesaRequest(): Prisma.MpesaRequestDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.apiKey`: Exposes CRUD operations for the **ApiKey** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ApiKeys
+    * const apiKeys = await prisma.apiKey.findMany()
+    * ```
+    */
+  get apiKey(): Prisma.ApiKeyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.webhookEndpoint`: Exposes CRUD operations for the **WebhookEndpoint** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WebhookEndpoints
+    * const webhookEndpoints = await prisma.webhookEndpoint.findMany()
+    * ```
+    */
+  get webhookEndpoint(): Prisma.WebhookEndpointDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.webhookDelivery`: Exposes CRUD operations for the **WebhookDelivery** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WebhookDeliveries
+    * const webhookDeliveries = await prisma.webhookDelivery.findMany()
+    * ```
+    */
+  get webhookDelivery(): Prisma.WebhookDeliveryDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -2637,8 +2742,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.10.0
-   * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
+   * Prisma Client JS version: 7.10.1
+   * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
    */
   export type PrismaVersion = {
     client: string
@@ -3146,7 +3251,14 @@ export namespace Prisma {
     RfqQuoteLine: 'RfqQuoteLine',
     VendorEvaluation: 'VendorEvaluation',
     Promotion: 'Promotion',
-    PromotionRedemption: 'PromotionRedemption'
+    PromotionRedemption: 'PromotionRedemption',
+    MessageTemplate: 'MessageTemplate',
+    MessageOutbox: 'MessageOutbox',
+    MessageOptOut: 'MessageOptOut',
+    MpesaRequest: 'MpesaRequest',
+    ApiKey: 'ApiKey',
+    WebhookEndpoint: 'WebhookEndpoint',
+    WebhookDelivery: 'WebhookDelivery'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -3162,7 +3274,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent" | "auditFinding" | "auditFindingEvent" | "riskRegisterEntry" | "salaryStructure" | "salaryComponent" | "employmentContract" | "stockCount" | "stockCountLine" | "rfq" | "rfqItem" | "rfqQuote" | "rfqQuoteLine" | "vendorEvaluation" | "promotion" | "promotionRedemption"
+      modelProps: "user" | "branch" | "employeeTransfer" | "warehouse" | "product" | "category" | "subcategory" | "branchInventory" | "inventory" | "stockBatch" | "stockMovement" | "stockTransfer" | "transferIssue" | "transferItem" | "notification" | "customer" | "customerCodeSetting" | "salesDocument" | "salesDocumentItem" | "payment" | "documentSequence" | "salesOrder" | "sOItem" | "dispatchNote" | "dispatchItem" | "cashierSession" | "vendor" | "purchaseOrder" | "purchaseRequisition" | "purchaseRequisitionItem" | "approvalRequest" | "purchaseOrderItem" | "goodsReceiptNote" | "gRNItem" | "truck" | "delivery" | "deliveryDispatchNote" | "pettyCashFund" | "pettyCashEntry" | "paymentVoucher" | "financeTransaction" | "expenseReport" | "expenseReportItem" | "savingsGoal" | "dailySpendingLimit" | "payroll" | "chartOfAccount" | "journal" | "fiscalYear" | "fiscalPeriod" | "journalEntry" | "budget" | "bankStatement" | "bankStatementLine" | "accountReceivable" | "aRPayment" | "accountPayable" | "aPPayment" | "bankAccount" | "bankTransaction" | "financialForecast" | "financialAlert" | "taxRecord" | "leaveType" | "leaveAllocation" | "leaveRequest" | "jobPosting" | "applicant" | "interview" | "goal" | "performanceEvaluation" | "developmentPlan" | "benefit" | "benefitEnrollment" | "module" | "permission" | "role" | "rolePermission" | "roleAssignment" | "auditLog" | "journalHeader" | "journalLine" | "vATTransaction" | "department" | "approvalStep" | "crmTerritory" | "crmTerritoryMember" | "crmLead" | "crmOpportunity" | "crmInteraction" | "crmTask" | "crmSalesTarget" | "workflowDefinition" | "workflowStage" | "workflowInstance" | "workflowStep" | "workflowDelegation" | "workflowEvent" | "auditFinding" | "auditFindingEvent" | "riskRegisterEntry" | "salaryStructure" | "salaryComponent" | "employmentContract" | "stockCount" | "stockCountLine" | "rfq" | "rfqItem" | "rfqQuote" | "rfqQuoteLine" | "vendorEvaluation" | "promotion" | "promotionRedemption" | "messageTemplate" | "messageOutbox" | "messageOptOut" | "mpesaRequest" | "apiKey" | "webhookEndpoint" | "webhookDelivery"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -11528,6 +11640,524 @@ export namespace Prisma {
           }
         }
       }
+      MessageTemplate: {
+        payload: Prisma.$MessageTemplatePayload<ExtArgs>
+        fields: Prisma.MessageTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.MessageTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.MessageTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.MessageTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.MessageTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.MessageTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>
+          }
+          update: {
+            args: Prisma.MessageTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.MessageTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessageTemplate>
+          }
+          groupBy: {
+            args: Prisma.MessageTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      MessageOutbox: {
+        payload: Prisma.$MessageOutboxPayload<ExtArgs>
+        fields: Prisma.MessageOutboxFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageOutboxFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageOutboxFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>
+          }
+          findFirst: {
+            args: Prisma.MessageOutboxFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageOutboxFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>
+          }
+          findMany: {
+            args: Prisma.MessageOutboxFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>[]
+          }
+          create: {
+            args: Prisma.MessageOutboxCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>
+          }
+          createMany: {
+            args: Prisma.MessageOutboxCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageOutboxCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>[]
+          }
+          delete: {
+            args: Prisma.MessageOutboxDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>
+          }
+          update: {
+            args: Prisma.MessageOutboxUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageOutboxDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageOutboxUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageOutboxUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageOutboxUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOutboxPayload>
+          }
+          aggregate: {
+            args: Prisma.MessageOutboxAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessageOutbox>
+          }
+          groupBy: {
+            args: Prisma.MessageOutboxGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageOutboxGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageOutboxCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageOutboxCountAggregateOutputType> | number
+          }
+        }
+      }
+      MessageOptOut: {
+        payload: Prisma.$MessageOptOutPayload<ExtArgs>
+        fields: Prisma.MessageOptOutFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageOptOutFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageOptOutFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>
+          }
+          findFirst: {
+            args: Prisma.MessageOptOutFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageOptOutFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>
+          }
+          findMany: {
+            args: Prisma.MessageOptOutFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>[]
+          }
+          create: {
+            args: Prisma.MessageOptOutCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>
+          }
+          createMany: {
+            args: Prisma.MessageOptOutCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageOptOutCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>[]
+          }
+          delete: {
+            args: Prisma.MessageOptOutDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>
+          }
+          update: {
+            args: Prisma.MessageOptOutUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageOptOutDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageOptOutUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageOptOutUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageOptOutUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessageOptOutPayload>
+          }
+          aggregate: {
+            args: Prisma.MessageOptOutAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessageOptOut>
+          }
+          groupBy: {
+            args: Prisma.MessageOptOutGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageOptOutGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageOptOutCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageOptOutCountAggregateOutputType> | number
+          }
+        }
+      }
+      MpesaRequest: {
+        payload: Prisma.$MpesaRequestPayload<ExtArgs>
+        fields: Prisma.MpesaRequestFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MpesaRequestFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MpesaRequestFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>
+          }
+          findFirst: {
+            args: Prisma.MpesaRequestFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MpesaRequestFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>
+          }
+          findMany: {
+            args: Prisma.MpesaRequestFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>[]
+          }
+          create: {
+            args: Prisma.MpesaRequestCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>
+          }
+          createMany: {
+            args: Prisma.MpesaRequestCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MpesaRequestCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>[]
+          }
+          delete: {
+            args: Prisma.MpesaRequestDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>
+          }
+          update: {
+            args: Prisma.MpesaRequestUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>
+          }
+          deleteMany: {
+            args: Prisma.MpesaRequestDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MpesaRequestUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MpesaRequestUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>[]
+          }
+          upsert: {
+            args: Prisma.MpesaRequestUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MpesaRequestPayload>
+          }
+          aggregate: {
+            args: Prisma.MpesaRequestAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMpesaRequest>
+          }
+          groupBy: {
+            args: Prisma.MpesaRequestGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MpesaRequestGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MpesaRequestCountArgs<ExtArgs>
+            result: $Utils.Optional<MpesaRequestCountAggregateOutputType> | number
+          }
+        }
+      }
+      ApiKey: {
+        payload: Prisma.$ApiKeyPayload<ExtArgs>
+        fields: Prisma.ApiKeyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ApiKeyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ApiKeyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          findFirst: {
+            args: Prisma.ApiKeyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ApiKeyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          findMany: {
+            args: Prisma.ApiKeyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+          }
+          create: {
+            args: Prisma.ApiKeyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          createMany: {
+            args: Prisma.ApiKeyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ApiKeyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+          }
+          delete: {
+            args: Prisma.ApiKeyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          update: {
+            args: Prisma.ApiKeyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          deleteMany: {
+            args: Prisma.ApiKeyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ApiKeyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ApiKeyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>[]
+          }
+          upsert: {
+            args: Prisma.ApiKeyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ApiKeyPayload>
+          }
+          aggregate: {
+            args: Prisma.ApiKeyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateApiKey>
+          }
+          groupBy: {
+            args: Prisma.ApiKeyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ApiKeyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ApiKeyCountArgs<ExtArgs>
+            result: $Utils.Optional<ApiKeyCountAggregateOutputType> | number
+          }
+        }
+      }
+      WebhookEndpoint: {
+        payload: Prisma.$WebhookEndpointPayload<ExtArgs>
+        fields: Prisma.WebhookEndpointFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WebhookEndpointFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WebhookEndpointFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+          }
+          findFirst: {
+            args: Prisma.WebhookEndpointFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WebhookEndpointFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+          }
+          findMany: {
+            args: Prisma.WebhookEndpointFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>[]
+          }
+          create: {
+            args: Prisma.WebhookEndpointCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+          }
+          createMany: {
+            args: Prisma.WebhookEndpointCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WebhookEndpointCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>[]
+          }
+          delete: {
+            args: Prisma.WebhookEndpointDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+          }
+          update: {
+            args: Prisma.WebhookEndpointUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+          }
+          deleteMany: {
+            args: Prisma.WebhookEndpointDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WebhookEndpointUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WebhookEndpointUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>[]
+          }
+          upsert: {
+            args: Prisma.WebhookEndpointUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+          }
+          aggregate: {
+            args: Prisma.WebhookEndpointAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWebhookEndpoint>
+          }
+          groupBy: {
+            args: Prisma.WebhookEndpointGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WebhookEndpointGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WebhookEndpointCountArgs<ExtArgs>
+            result: $Utils.Optional<WebhookEndpointCountAggregateOutputType> | number
+          }
+        }
+      }
+      WebhookDelivery: {
+        payload: Prisma.$WebhookDeliveryPayload<ExtArgs>
+        fields: Prisma.WebhookDeliveryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WebhookDeliveryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WebhookDeliveryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>
+          }
+          findFirst: {
+            args: Prisma.WebhookDeliveryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WebhookDeliveryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>
+          }
+          findMany: {
+            args: Prisma.WebhookDeliveryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>[]
+          }
+          create: {
+            args: Prisma.WebhookDeliveryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>
+          }
+          createMany: {
+            args: Prisma.WebhookDeliveryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.WebhookDeliveryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>[]
+          }
+          delete: {
+            args: Prisma.WebhookDeliveryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>
+          }
+          update: {
+            args: Prisma.WebhookDeliveryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>
+          }
+          deleteMany: {
+            args: Prisma.WebhookDeliveryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WebhookDeliveryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.WebhookDeliveryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>[]
+          }
+          upsert: {
+            args: Prisma.WebhookDeliveryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WebhookDeliveryPayload>
+          }
+          aggregate: {
+            args: Prisma.WebhookDeliveryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWebhookDelivery>
+          }
+          groupBy: {
+            args: Prisma.WebhookDeliveryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WebhookDeliveryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WebhookDeliveryCountArgs<ExtArgs>
+            result: $Utils.Optional<WebhookDeliveryCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -11764,6 +12394,13 @@ export namespace Prisma {
     vendorEvaluation?: VendorEvaluationOmit
     promotion?: PromotionOmit
     promotionRedemption?: PromotionRedemptionOmit
+    messageTemplate?: MessageTemplateOmit
+    messageOutbox?: MessageOutboxOmit
+    messageOptOut?: MessageOptOutOmit
+    mpesaRequest?: MpesaRequestOmit
+    apiKey?: ApiKeyOmit
+    webhookEndpoint?: WebhookEndpointOmit
+    webhookDelivery?: WebhookDeliveryOmit
   }
 
   /* Types for Logging */
@@ -150316,6 +150953,7831 @@ export namespace Prisma {
 
 
   /**
+   * Model MessageTemplate
+   */
+
+  export type AggregateMessageTemplate = {
+    _count: MessageTemplateCountAggregateOutputType | null
+    _min: MessageTemplateMinAggregateOutputType | null
+    _max: MessageTemplateMaxAggregateOutputType | null
+  }
+
+  export type MessageTemplateMinAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    channel: string | null
+    subject: string | null
+    body: string | null
+    isActive: boolean | null
+    updatedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MessageTemplateMaxAggregateOutputType = {
+    id: string | null
+    code: string | null
+    name: string | null
+    channel: string | null
+    subject: string | null
+    body: string | null
+    isActive: boolean | null
+    updatedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MessageTemplateCountAggregateOutputType = {
+    id: number
+    code: number
+    name: number
+    channel: number
+    subject: number
+    body: number
+    isActive: number
+    updatedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MessageTemplateMinAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    channel?: true
+    subject?: true
+    body?: true
+    isActive?: true
+    updatedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MessageTemplateMaxAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    channel?: true
+    subject?: true
+    body?: true
+    isActive?: true
+    updatedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MessageTemplateCountAggregateInputType = {
+    id?: true
+    code?: true
+    name?: true
+    channel?: true
+    subject?: true
+    body?: true
+    isActive?: true
+    updatedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MessageTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageTemplate to aggregate.
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageTemplates to fetch.
+     */
+    orderBy?: MessageTemplateOrderByWithRelationInput | MessageTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MessageTemplates
+    **/
+    _count?: true | MessageTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageTemplateMaxAggregateInputType
+  }
+
+  export type GetMessageTemplateAggregateType<T extends MessageTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessageTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessageTemplate[P]>
+      : GetScalarType<T[P], AggregateMessageTemplate[P]>
+  }
+
+
+
+
+  export type MessageTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageTemplateWhereInput
+    orderBy?: MessageTemplateOrderByWithAggregationInput | MessageTemplateOrderByWithAggregationInput[]
+    by: MessageTemplateScalarFieldEnum[] | MessageTemplateScalarFieldEnum
+    having?: MessageTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageTemplateCountAggregateInputType | true
+    _min?: MessageTemplateMinAggregateInputType
+    _max?: MessageTemplateMaxAggregateInputType
+  }
+
+  export type MessageTemplateGroupByOutputType = {
+    id: string
+    code: string
+    name: string
+    channel: string
+    subject: string | null
+    body: string
+    isActive: boolean
+    updatedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MessageTemplateCountAggregateOutputType | null
+    _min: MessageTemplateMinAggregateOutputType | null
+    _max: MessageTemplateMaxAggregateOutputType | null
+  }
+
+  type GetMessageTemplateGroupByPayload<T extends MessageTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    channel?: boolean
+    subject?: boolean
+    body?: boolean
+    isActive?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["messageTemplate"]>
+
+  export type MessageTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    channel?: boolean
+    subject?: boolean
+    body?: boolean
+    isActive?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["messageTemplate"]>
+
+  export type MessageTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    channel?: boolean
+    subject?: boolean
+    body?: boolean
+    isActive?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["messageTemplate"]>
+
+  export type MessageTemplateSelectScalar = {
+    id?: boolean
+    code?: boolean
+    name?: boolean
+    channel?: boolean
+    subject?: boolean
+    body?: boolean
+    isActive?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MessageTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "channel" | "subject" | "body" | "isActive" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["messageTemplate"]>
+
+  export type $MessageTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MessageTemplate"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      code: string
+      name: string
+      channel: string
+      subject: string | null
+      body: string
+      isActive: boolean
+      updatedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["messageTemplate"]>
+    composites: {}
+  }
+
+  type MessageTemplateGetPayload<S extends boolean | null | undefined | MessageTemplateDefaultArgs> = $Result.GetResult<Prisma.$MessageTemplatePayload, S>
+
+  type MessageTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageTemplateCountAggregateInputType | true
+    }
+
+  export interface MessageTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MessageTemplate'], meta: { name: 'MessageTemplate' } }
+    /**
+     * Find zero or one MessageTemplate that matches the filter.
+     * @param {MessageTemplateFindUniqueArgs} args - Arguments to find a MessageTemplate
+     * @example
+     * // Get one MessageTemplate
+     * const messageTemplate = await prisma.messageTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageTemplateFindUniqueArgs>(args: SelectSubset<T, MessageTemplateFindUniqueArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MessageTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageTemplateFindUniqueOrThrowArgs} args - Arguments to find a MessageTemplate
+     * @example
+     * // Get one MessageTemplate
+     * const messageTemplate = await prisma.messageTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateFindFirstArgs} args - Arguments to find a MessageTemplate
+     * @example
+     * // Get one MessageTemplate
+     * const messageTemplate = await prisma.messageTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageTemplateFindFirstArgs>(args?: SelectSubset<T, MessageTemplateFindFirstArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateFindFirstOrThrowArgs} args - Arguments to find a MessageTemplate
+     * @example
+     * // Get one MessageTemplate
+     * const messageTemplate = await prisma.messageTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MessageTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MessageTemplates
+     * const messageTemplates = await prisma.messageTemplate.findMany()
+     * 
+     * // Get first 10 MessageTemplates
+     * const messageTemplates = await prisma.messageTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageTemplateWithIdOnly = await prisma.messageTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageTemplateFindManyArgs>(args?: SelectSubset<T, MessageTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MessageTemplate.
+     * @param {MessageTemplateCreateArgs} args - Arguments to create a MessageTemplate.
+     * @example
+     * // Create one MessageTemplate
+     * const MessageTemplate = await prisma.messageTemplate.create({
+     *   data: {
+     *     // ... data to create a MessageTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageTemplateCreateArgs>(args: SelectSubset<T, MessageTemplateCreateArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MessageTemplates.
+     * @param {MessageTemplateCreateManyArgs} args - Arguments to create many MessageTemplates.
+     * @example
+     * // Create many MessageTemplates
+     * const messageTemplate = await prisma.messageTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageTemplateCreateManyArgs>(args?: SelectSubset<T, MessageTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MessageTemplates and returns the data saved in the database.
+     * @param {MessageTemplateCreateManyAndReturnArgs} args - Arguments to create many MessageTemplates.
+     * @example
+     * // Create many MessageTemplates
+     * const messageTemplate = await prisma.messageTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MessageTemplates and only return the `id`
+     * const messageTemplateWithIdOnly = await prisma.messageTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MessageTemplate.
+     * @param {MessageTemplateDeleteArgs} args - Arguments to delete one MessageTemplate.
+     * @example
+     * // Delete one MessageTemplate
+     * const MessageTemplate = await prisma.messageTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one MessageTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageTemplateDeleteArgs>(args: SelectSubset<T, MessageTemplateDeleteArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MessageTemplate.
+     * @param {MessageTemplateUpdateArgs} args - Arguments to update one MessageTemplate.
+     * @example
+     * // Update one MessageTemplate
+     * const messageTemplate = await prisma.messageTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageTemplateUpdateArgs>(args: SelectSubset<T, MessageTemplateUpdateArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MessageTemplates.
+     * @param {MessageTemplateDeleteManyArgs} args - Arguments to filter MessageTemplates to delete.
+     * @example
+     * // Delete a few MessageTemplates
+     * const { count } = await prisma.messageTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageTemplateDeleteManyArgs>(args?: SelectSubset<T, MessageTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MessageTemplates
+     * const messageTemplate = await prisma.messageTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageTemplateUpdateManyArgs>(args: SelectSubset<T, MessageTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageTemplates and returns the data updated in the database.
+     * @param {MessageTemplateUpdateManyAndReturnArgs} args - Arguments to update many MessageTemplates.
+     * @example
+     * // Update many MessageTemplates
+     * const messageTemplate = await prisma.messageTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MessageTemplates and only return the `id`
+     * const messageTemplateWithIdOnly = await prisma.messageTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MessageTemplate.
+     * @param {MessageTemplateUpsertArgs} args - Arguments to update or create a MessageTemplate.
+     * @example
+     * // Update or create a MessageTemplate
+     * const messageTemplate = await prisma.messageTemplate.upsert({
+     *   create: {
+     *     // ... data to create a MessageTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MessageTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageTemplateUpsertArgs>(args: SelectSubset<T, MessageTemplateUpsertArgs<ExtArgs>>): Prisma__MessageTemplateClient<$Result.GetResult<Prisma.$MessageTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MessageTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateCountArgs} args - Arguments to filter MessageTemplates to count.
+     * @example
+     * // Count the number of MessageTemplates
+     * const count = await prisma.messageTemplate.count({
+     *   where: {
+     *     // ... the filter for the MessageTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageTemplateCountArgs>(
+      args?: Subset<T, MessageTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MessageTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageTemplateAggregateArgs>(args: Subset<T, MessageTemplateAggregateArgs>): Prisma.PrismaPromise<GetMessageTemplateAggregateType<T>>
+
+    /**
+     * Group by MessageTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: MessageTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MessageTemplate model
+   */
+  readonly fields: MessageTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MessageTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MessageTemplate model
+   */
+  interface MessageTemplateFieldRefs {
+    readonly id: FieldRef<"MessageTemplate", 'String'>
+    readonly code: FieldRef<"MessageTemplate", 'String'>
+    readonly name: FieldRef<"MessageTemplate", 'String'>
+    readonly channel: FieldRef<"MessageTemplate", 'String'>
+    readonly subject: FieldRef<"MessageTemplate", 'String'>
+    readonly body: FieldRef<"MessageTemplate", 'String'>
+    readonly isActive: FieldRef<"MessageTemplate", 'Boolean'>
+    readonly updatedById: FieldRef<"MessageTemplate", 'String'>
+    readonly createdAt: FieldRef<"MessageTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"MessageTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MessageTemplate findUnique
+   */
+  export type MessageTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageTemplate to fetch.
+     */
+    where: MessageTemplateWhereUniqueInput
+  }
+
+  /**
+   * MessageTemplate findUniqueOrThrow
+   */
+  export type MessageTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageTemplate to fetch.
+     */
+    where: MessageTemplateWhereUniqueInput
+  }
+
+  /**
+   * MessageTemplate findFirst
+   */
+  export type MessageTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageTemplate to fetch.
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageTemplates to fetch.
+     */
+    orderBy?: MessageTemplateOrderByWithRelationInput | MessageTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageTemplates.
+     */
+    cursor?: MessageTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageTemplates.
+     */
+    distinct?: MessageTemplateScalarFieldEnum | MessageTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * MessageTemplate findFirstOrThrow
+   */
+  export type MessageTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageTemplate to fetch.
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageTemplates to fetch.
+     */
+    orderBy?: MessageTemplateOrderByWithRelationInput | MessageTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageTemplates.
+     */
+    cursor?: MessageTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageTemplates.
+     */
+    distinct?: MessageTemplateScalarFieldEnum | MessageTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * MessageTemplate findMany
+   */
+  export type MessageTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageTemplates to fetch.
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageTemplates to fetch.
+     */
+    orderBy?: MessageTemplateOrderByWithRelationInput | MessageTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MessageTemplates.
+     */
+    cursor?: MessageTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageTemplates.
+     */
+    distinct?: MessageTemplateScalarFieldEnum | MessageTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * MessageTemplate create
+   */
+  export type MessageTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to create a MessageTemplate.
+     */
+    data: XOR<MessageTemplateCreateInput, MessageTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * MessageTemplate createMany
+   */
+  export type MessageTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MessageTemplates.
+     */
+    data: MessageTemplateCreateManyInput | MessageTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageTemplate createManyAndReturn
+   */
+  export type MessageTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many MessageTemplates.
+     */
+    data: MessageTemplateCreateManyInput | MessageTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageTemplate update
+   */
+  export type MessageTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to update a MessageTemplate.
+     */
+    data: XOR<MessageTemplateUpdateInput, MessageTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which MessageTemplate to update.
+     */
+    where: MessageTemplateWhereUniqueInput
+  }
+
+  /**
+   * MessageTemplate updateMany
+   */
+  export type MessageTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MessageTemplates.
+     */
+    data: XOR<MessageTemplateUpdateManyMutationInput, MessageTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageTemplates to update
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * Limit how many MessageTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageTemplate updateManyAndReturn
+   */
+  export type MessageTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update MessageTemplates.
+     */
+    data: XOR<MessageTemplateUpdateManyMutationInput, MessageTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageTemplates to update
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * Limit how many MessageTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageTemplate upsert
+   */
+  export type MessageTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * The filter to search for the MessageTemplate to update in case it exists.
+     */
+    where: MessageTemplateWhereUniqueInput
+    /**
+     * In case the MessageTemplate found by the `where` argument doesn't exist, create a new MessageTemplate with this data.
+     */
+    create: XOR<MessageTemplateCreateInput, MessageTemplateUncheckedCreateInput>
+    /**
+     * In case the MessageTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageTemplateUpdateInput, MessageTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * MessageTemplate delete
+   */
+  export type MessageTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+    /**
+     * Filter which MessageTemplate to delete.
+     */
+    where: MessageTemplateWhereUniqueInput
+  }
+
+  /**
+   * MessageTemplate deleteMany
+   */
+  export type MessageTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageTemplates to delete
+     */
+    where?: MessageTemplateWhereInput
+    /**
+     * Limit how many MessageTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageTemplate without action
+   */
+  export type MessageTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageTemplate
+     */
+    select?: MessageTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageTemplate
+     */
+    omit?: MessageTemplateOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MessageOutbox
+   */
+
+  export type AggregateMessageOutbox = {
+    _count: MessageOutboxCountAggregateOutputType | null
+    _avg: MessageOutboxAvgAggregateOutputType | null
+    _sum: MessageOutboxSumAggregateOutputType | null
+    _min: MessageOutboxMinAggregateOutputType | null
+    _max: MessageOutboxMaxAggregateOutputType | null
+  }
+
+  export type MessageOutboxAvgAggregateOutputType = {
+    attempts: number | null
+    maxAttempts: number | null
+  }
+
+  export type MessageOutboxSumAggregateOutputType = {
+    attempts: number | null
+    maxAttempts: number | null
+  }
+
+  export type MessageOutboxMinAggregateOutputType = {
+    id: string | null
+    channel: string | null
+    category: string | null
+    recipient: string | null
+    subject: string | null
+    body: string | null
+    status: string | null
+    attempts: number | null
+    maxAttempts: number | null
+    nextAttemptAt: Date | null
+    lastError: string | null
+    provider: string | null
+    providerMessageId: string | null
+    templateCode: string | null
+    relatedType: string | null
+    relatedId: string | null
+    createdById: string | null
+    sentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MessageOutboxMaxAggregateOutputType = {
+    id: string | null
+    channel: string | null
+    category: string | null
+    recipient: string | null
+    subject: string | null
+    body: string | null
+    status: string | null
+    attempts: number | null
+    maxAttempts: number | null
+    nextAttemptAt: Date | null
+    lastError: string | null
+    provider: string | null
+    providerMessageId: string | null
+    templateCode: string | null
+    relatedType: string | null
+    relatedId: string | null
+    createdById: string | null
+    sentAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MessageOutboxCountAggregateOutputType = {
+    id: number
+    channel: number
+    category: number
+    recipient: number
+    subject: number
+    body: number
+    status: number
+    attempts: number
+    maxAttempts: number
+    nextAttemptAt: number
+    lastError: number
+    provider: number
+    providerMessageId: number
+    templateCode: number
+    relatedType: number
+    relatedId: number
+    createdById: number
+    sentAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MessageOutboxAvgAggregateInputType = {
+    attempts?: true
+    maxAttempts?: true
+  }
+
+  export type MessageOutboxSumAggregateInputType = {
+    attempts?: true
+    maxAttempts?: true
+  }
+
+  export type MessageOutboxMinAggregateInputType = {
+    id?: true
+    channel?: true
+    category?: true
+    recipient?: true
+    subject?: true
+    body?: true
+    status?: true
+    attempts?: true
+    maxAttempts?: true
+    nextAttemptAt?: true
+    lastError?: true
+    provider?: true
+    providerMessageId?: true
+    templateCode?: true
+    relatedType?: true
+    relatedId?: true
+    createdById?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MessageOutboxMaxAggregateInputType = {
+    id?: true
+    channel?: true
+    category?: true
+    recipient?: true
+    subject?: true
+    body?: true
+    status?: true
+    attempts?: true
+    maxAttempts?: true
+    nextAttemptAt?: true
+    lastError?: true
+    provider?: true
+    providerMessageId?: true
+    templateCode?: true
+    relatedType?: true
+    relatedId?: true
+    createdById?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MessageOutboxCountAggregateInputType = {
+    id?: true
+    channel?: true
+    category?: true
+    recipient?: true
+    subject?: true
+    body?: true
+    status?: true
+    attempts?: true
+    maxAttempts?: true
+    nextAttemptAt?: true
+    lastError?: true
+    provider?: true
+    providerMessageId?: true
+    templateCode?: true
+    relatedType?: true
+    relatedId?: true
+    createdById?: true
+    sentAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MessageOutboxAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageOutbox to aggregate.
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOutboxes to fetch.
+     */
+    orderBy?: MessageOutboxOrderByWithRelationInput | MessageOutboxOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageOutboxWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOutboxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOutboxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MessageOutboxes
+    **/
+    _count?: true | MessageOutboxCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MessageOutboxAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MessageOutboxSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageOutboxMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageOutboxMaxAggregateInputType
+  }
+
+  export type GetMessageOutboxAggregateType<T extends MessageOutboxAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessageOutbox]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessageOutbox[P]>
+      : GetScalarType<T[P], AggregateMessageOutbox[P]>
+  }
+
+
+
+
+  export type MessageOutboxGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageOutboxWhereInput
+    orderBy?: MessageOutboxOrderByWithAggregationInput | MessageOutboxOrderByWithAggregationInput[]
+    by: MessageOutboxScalarFieldEnum[] | MessageOutboxScalarFieldEnum
+    having?: MessageOutboxScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageOutboxCountAggregateInputType | true
+    _avg?: MessageOutboxAvgAggregateInputType
+    _sum?: MessageOutboxSumAggregateInputType
+    _min?: MessageOutboxMinAggregateInputType
+    _max?: MessageOutboxMaxAggregateInputType
+  }
+
+  export type MessageOutboxGroupByOutputType = {
+    id: string
+    channel: string
+    category: string
+    recipient: string
+    subject: string | null
+    body: string
+    status: string
+    attempts: number
+    maxAttempts: number
+    nextAttemptAt: Date
+    lastError: string | null
+    provider: string | null
+    providerMessageId: string | null
+    templateCode: string | null
+    relatedType: string | null
+    relatedId: string | null
+    createdById: string | null
+    sentAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MessageOutboxCountAggregateOutputType | null
+    _avg: MessageOutboxAvgAggregateOutputType | null
+    _sum: MessageOutboxSumAggregateOutputType | null
+    _min: MessageOutboxMinAggregateOutputType | null
+    _max: MessageOutboxMaxAggregateOutputType | null
+  }
+
+  type GetMessageOutboxGroupByPayload<T extends MessageOutboxGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageOutboxGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageOutboxGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageOutboxGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageOutboxGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageOutboxSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    channel?: boolean
+    category?: boolean
+    recipient?: boolean
+    subject?: boolean
+    body?: boolean
+    status?: boolean
+    attempts?: boolean
+    maxAttempts?: boolean
+    nextAttemptAt?: boolean
+    lastError?: boolean
+    provider?: boolean
+    providerMessageId?: boolean
+    templateCode?: boolean
+    relatedType?: boolean
+    relatedId?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["messageOutbox"]>
+
+  export type MessageOutboxSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    channel?: boolean
+    category?: boolean
+    recipient?: boolean
+    subject?: boolean
+    body?: boolean
+    status?: boolean
+    attempts?: boolean
+    maxAttempts?: boolean
+    nextAttemptAt?: boolean
+    lastError?: boolean
+    provider?: boolean
+    providerMessageId?: boolean
+    templateCode?: boolean
+    relatedType?: boolean
+    relatedId?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["messageOutbox"]>
+
+  export type MessageOutboxSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    channel?: boolean
+    category?: boolean
+    recipient?: boolean
+    subject?: boolean
+    body?: boolean
+    status?: boolean
+    attempts?: boolean
+    maxAttempts?: boolean
+    nextAttemptAt?: boolean
+    lastError?: boolean
+    provider?: boolean
+    providerMessageId?: boolean
+    templateCode?: boolean
+    relatedType?: boolean
+    relatedId?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["messageOutbox"]>
+
+  export type MessageOutboxSelectScalar = {
+    id?: boolean
+    channel?: boolean
+    category?: boolean
+    recipient?: boolean
+    subject?: boolean
+    body?: boolean
+    status?: boolean
+    attempts?: boolean
+    maxAttempts?: boolean
+    nextAttemptAt?: boolean
+    lastError?: boolean
+    provider?: boolean
+    providerMessageId?: boolean
+    templateCode?: boolean
+    relatedType?: boolean
+    relatedId?: boolean
+    createdById?: boolean
+    sentAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MessageOutboxOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "channel" | "category" | "recipient" | "subject" | "body" | "status" | "attempts" | "maxAttempts" | "nextAttemptAt" | "lastError" | "provider" | "providerMessageId" | "templateCode" | "relatedType" | "relatedId" | "createdById" | "sentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["messageOutbox"]>
+
+  export type $MessageOutboxPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MessageOutbox"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      channel: string
+      category: string
+      recipient: string
+      subject: string | null
+      body: string
+      status: string
+      attempts: number
+      maxAttempts: number
+      nextAttemptAt: Date
+      lastError: string | null
+      provider: string | null
+      providerMessageId: string | null
+      templateCode: string | null
+      relatedType: string | null
+      relatedId: string | null
+      createdById: string | null
+      sentAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["messageOutbox"]>
+    composites: {}
+  }
+
+  type MessageOutboxGetPayload<S extends boolean | null | undefined | MessageOutboxDefaultArgs> = $Result.GetResult<Prisma.$MessageOutboxPayload, S>
+
+  type MessageOutboxCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageOutboxFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageOutboxCountAggregateInputType | true
+    }
+
+  export interface MessageOutboxDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MessageOutbox'], meta: { name: 'MessageOutbox' } }
+    /**
+     * Find zero or one MessageOutbox that matches the filter.
+     * @param {MessageOutboxFindUniqueArgs} args - Arguments to find a MessageOutbox
+     * @example
+     * // Get one MessageOutbox
+     * const messageOutbox = await prisma.messageOutbox.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageOutboxFindUniqueArgs>(args: SelectSubset<T, MessageOutboxFindUniqueArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MessageOutbox that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageOutboxFindUniqueOrThrowArgs} args - Arguments to find a MessageOutbox
+     * @example
+     * // Get one MessageOutbox
+     * const messageOutbox = await prisma.messageOutbox.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageOutboxFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageOutboxFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageOutbox that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxFindFirstArgs} args - Arguments to find a MessageOutbox
+     * @example
+     * // Get one MessageOutbox
+     * const messageOutbox = await prisma.messageOutbox.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageOutboxFindFirstArgs>(args?: SelectSubset<T, MessageOutboxFindFirstArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageOutbox that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxFindFirstOrThrowArgs} args - Arguments to find a MessageOutbox
+     * @example
+     * // Get one MessageOutbox
+     * const messageOutbox = await prisma.messageOutbox.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageOutboxFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageOutboxFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MessageOutboxes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MessageOutboxes
+     * const messageOutboxes = await prisma.messageOutbox.findMany()
+     * 
+     * // Get first 10 MessageOutboxes
+     * const messageOutboxes = await prisma.messageOutbox.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageOutboxWithIdOnly = await prisma.messageOutbox.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageOutboxFindManyArgs>(args?: SelectSubset<T, MessageOutboxFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MessageOutbox.
+     * @param {MessageOutboxCreateArgs} args - Arguments to create a MessageOutbox.
+     * @example
+     * // Create one MessageOutbox
+     * const MessageOutbox = await prisma.messageOutbox.create({
+     *   data: {
+     *     // ... data to create a MessageOutbox
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageOutboxCreateArgs>(args: SelectSubset<T, MessageOutboxCreateArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MessageOutboxes.
+     * @param {MessageOutboxCreateManyArgs} args - Arguments to create many MessageOutboxes.
+     * @example
+     * // Create many MessageOutboxes
+     * const messageOutbox = await prisma.messageOutbox.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageOutboxCreateManyArgs>(args?: SelectSubset<T, MessageOutboxCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MessageOutboxes and returns the data saved in the database.
+     * @param {MessageOutboxCreateManyAndReturnArgs} args - Arguments to create many MessageOutboxes.
+     * @example
+     * // Create many MessageOutboxes
+     * const messageOutbox = await prisma.messageOutbox.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MessageOutboxes and only return the `id`
+     * const messageOutboxWithIdOnly = await prisma.messageOutbox.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageOutboxCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageOutboxCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MessageOutbox.
+     * @param {MessageOutboxDeleteArgs} args - Arguments to delete one MessageOutbox.
+     * @example
+     * // Delete one MessageOutbox
+     * const MessageOutbox = await prisma.messageOutbox.delete({
+     *   where: {
+     *     // ... filter to delete one MessageOutbox
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageOutboxDeleteArgs>(args: SelectSubset<T, MessageOutboxDeleteArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MessageOutbox.
+     * @param {MessageOutboxUpdateArgs} args - Arguments to update one MessageOutbox.
+     * @example
+     * // Update one MessageOutbox
+     * const messageOutbox = await prisma.messageOutbox.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageOutboxUpdateArgs>(args: SelectSubset<T, MessageOutboxUpdateArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MessageOutboxes.
+     * @param {MessageOutboxDeleteManyArgs} args - Arguments to filter MessageOutboxes to delete.
+     * @example
+     * // Delete a few MessageOutboxes
+     * const { count } = await prisma.messageOutbox.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageOutboxDeleteManyArgs>(args?: SelectSubset<T, MessageOutboxDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageOutboxes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MessageOutboxes
+     * const messageOutbox = await prisma.messageOutbox.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageOutboxUpdateManyArgs>(args: SelectSubset<T, MessageOutboxUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageOutboxes and returns the data updated in the database.
+     * @param {MessageOutboxUpdateManyAndReturnArgs} args - Arguments to update many MessageOutboxes.
+     * @example
+     * // Update many MessageOutboxes
+     * const messageOutbox = await prisma.messageOutbox.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MessageOutboxes and only return the `id`
+     * const messageOutboxWithIdOnly = await prisma.messageOutbox.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageOutboxUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageOutboxUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MessageOutbox.
+     * @param {MessageOutboxUpsertArgs} args - Arguments to update or create a MessageOutbox.
+     * @example
+     * // Update or create a MessageOutbox
+     * const messageOutbox = await prisma.messageOutbox.upsert({
+     *   create: {
+     *     // ... data to create a MessageOutbox
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MessageOutbox we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageOutboxUpsertArgs>(args: SelectSubset<T, MessageOutboxUpsertArgs<ExtArgs>>): Prisma__MessageOutboxClient<$Result.GetResult<Prisma.$MessageOutboxPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MessageOutboxes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxCountArgs} args - Arguments to filter MessageOutboxes to count.
+     * @example
+     * // Count the number of MessageOutboxes
+     * const count = await prisma.messageOutbox.count({
+     *   where: {
+     *     // ... the filter for the MessageOutboxes we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageOutboxCountArgs>(
+      args?: Subset<T, MessageOutboxCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageOutboxCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MessageOutbox.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageOutboxAggregateArgs>(args: Subset<T, MessageOutboxAggregateArgs>): Prisma.PrismaPromise<GetMessageOutboxAggregateType<T>>
+
+    /**
+     * Group by MessageOutbox.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOutboxGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageOutboxGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageOutboxGroupByArgs['orderBy'] }
+        : { orderBy?: MessageOutboxGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageOutboxGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageOutboxGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MessageOutbox model
+   */
+  readonly fields: MessageOutboxFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MessageOutbox.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageOutboxClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MessageOutbox model
+   */
+  interface MessageOutboxFieldRefs {
+    readonly id: FieldRef<"MessageOutbox", 'String'>
+    readonly channel: FieldRef<"MessageOutbox", 'String'>
+    readonly category: FieldRef<"MessageOutbox", 'String'>
+    readonly recipient: FieldRef<"MessageOutbox", 'String'>
+    readonly subject: FieldRef<"MessageOutbox", 'String'>
+    readonly body: FieldRef<"MessageOutbox", 'String'>
+    readonly status: FieldRef<"MessageOutbox", 'String'>
+    readonly attempts: FieldRef<"MessageOutbox", 'Int'>
+    readonly maxAttempts: FieldRef<"MessageOutbox", 'Int'>
+    readonly nextAttemptAt: FieldRef<"MessageOutbox", 'DateTime'>
+    readonly lastError: FieldRef<"MessageOutbox", 'String'>
+    readonly provider: FieldRef<"MessageOutbox", 'String'>
+    readonly providerMessageId: FieldRef<"MessageOutbox", 'String'>
+    readonly templateCode: FieldRef<"MessageOutbox", 'String'>
+    readonly relatedType: FieldRef<"MessageOutbox", 'String'>
+    readonly relatedId: FieldRef<"MessageOutbox", 'String'>
+    readonly createdById: FieldRef<"MessageOutbox", 'String'>
+    readonly sentAt: FieldRef<"MessageOutbox", 'DateTime'>
+    readonly createdAt: FieldRef<"MessageOutbox", 'DateTime'>
+    readonly updatedAt: FieldRef<"MessageOutbox", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MessageOutbox findUnique
+   */
+  export type MessageOutboxFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOutbox to fetch.
+     */
+    where: MessageOutboxWhereUniqueInput
+  }
+
+  /**
+   * MessageOutbox findUniqueOrThrow
+   */
+  export type MessageOutboxFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOutbox to fetch.
+     */
+    where: MessageOutboxWhereUniqueInput
+  }
+
+  /**
+   * MessageOutbox findFirst
+   */
+  export type MessageOutboxFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOutbox to fetch.
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOutboxes to fetch.
+     */
+    orderBy?: MessageOutboxOrderByWithRelationInput | MessageOutboxOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageOutboxes.
+     */
+    cursor?: MessageOutboxWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOutboxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOutboxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageOutboxes.
+     */
+    distinct?: MessageOutboxScalarFieldEnum | MessageOutboxScalarFieldEnum[]
+  }
+
+  /**
+   * MessageOutbox findFirstOrThrow
+   */
+  export type MessageOutboxFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOutbox to fetch.
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOutboxes to fetch.
+     */
+    orderBy?: MessageOutboxOrderByWithRelationInput | MessageOutboxOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageOutboxes.
+     */
+    cursor?: MessageOutboxWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOutboxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOutboxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageOutboxes.
+     */
+    distinct?: MessageOutboxScalarFieldEnum | MessageOutboxScalarFieldEnum[]
+  }
+
+  /**
+   * MessageOutbox findMany
+   */
+  export type MessageOutboxFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOutboxes to fetch.
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOutboxes to fetch.
+     */
+    orderBy?: MessageOutboxOrderByWithRelationInput | MessageOutboxOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MessageOutboxes.
+     */
+    cursor?: MessageOutboxWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOutboxes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOutboxes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageOutboxes.
+     */
+    distinct?: MessageOutboxScalarFieldEnum | MessageOutboxScalarFieldEnum[]
+  }
+
+  /**
+   * MessageOutbox create
+   */
+  export type MessageOutboxCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * The data needed to create a MessageOutbox.
+     */
+    data: XOR<MessageOutboxCreateInput, MessageOutboxUncheckedCreateInput>
+  }
+
+  /**
+   * MessageOutbox createMany
+   */
+  export type MessageOutboxCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MessageOutboxes.
+     */
+    data: MessageOutboxCreateManyInput | MessageOutboxCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageOutbox createManyAndReturn
+   */
+  export type MessageOutboxCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * The data used to create many MessageOutboxes.
+     */
+    data: MessageOutboxCreateManyInput | MessageOutboxCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageOutbox update
+   */
+  export type MessageOutboxUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * The data needed to update a MessageOutbox.
+     */
+    data: XOR<MessageOutboxUpdateInput, MessageOutboxUncheckedUpdateInput>
+    /**
+     * Choose, which MessageOutbox to update.
+     */
+    where: MessageOutboxWhereUniqueInput
+  }
+
+  /**
+   * MessageOutbox updateMany
+   */
+  export type MessageOutboxUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MessageOutboxes.
+     */
+    data: XOR<MessageOutboxUpdateManyMutationInput, MessageOutboxUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageOutboxes to update
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * Limit how many MessageOutboxes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageOutbox updateManyAndReturn
+   */
+  export type MessageOutboxUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * The data used to update MessageOutboxes.
+     */
+    data: XOR<MessageOutboxUpdateManyMutationInput, MessageOutboxUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageOutboxes to update
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * Limit how many MessageOutboxes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageOutbox upsert
+   */
+  export type MessageOutboxUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * The filter to search for the MessageOutbox to update in case it exists.
+     */
+    where: MessageOutboxWhereUniqueInput
+    /**
+     * In case the MessageOutbox found by the `where` argument doesn't exist, create a new MessageOutbox with this data.
+     */
+    create: XOR<MessageOutboxCreateInput, MessageOutboxUncheckedCreateInput>
+    /**
+     * In case the MessageOutbox was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageOutboxUpdateInput, MessageOutboxUncheckedUpdateInput>
+  }
+
+  /**
+   * MessageOutbox delete
+   */
+  export type MessageOutboxDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+    /**
+     * Filter which MessageOutbox to delete.
+     */
+    where: MessageOutboxWhereUniqueInput
+  }
+
+  /**
+   * MessageOutbox deleteMany
+   */
+  export type MessageOutboxDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageOutboxes to delete
+     */
+    where?: MessageOutboxWhereInput
+    /**
+     * Limit how many MessageOutboxes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageOutbox without action
+   */
+  export type MessageOutboxDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOutbox
+     */
+    select?: MessageOutboxSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOutbox
+     */
+    omit?: MessageOutboxOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MessageOptOut
+   */
+
+  export type AggregateMessageOptOut = {
+    _count: MessageOptOutCountAggregateOutputType | null
+    _min: MessageOptOutMinAggregateOutputType | null
+    _max: MessageOptOutMaxAggregateOutputType | null
+  }
+
+  export type MessageOptOutMinAggregateOutputType = {
+    id: string | null
+    recipient: string | null
+    channel: string | null
+    createdAt: Date | null
+  }
+
+  export type MessageOptOutMaxAggregateOutputType = {
+    id: string | null
+    recipient: string | null
+    channel: string | null
+    createdAt: Date | null
+  }
+
+  export type MessageOptOutCountAggregateOutputType = {
+    id: number
+    recipient: number
+    channel: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type MessageOptOutMinAggregateInputType = {
+    id?: true
+    recipient?: true
+    channel?: true
+    createdAt?: true
+  }
+
+  export type MessageOptOutMaxAggregateInputType = {
+    id?: true
+    recipient?: true
+    channel?: true
+    createdAt?: true
+  }
+
+  export type MessageOptOutCountAggregateInputType = {
+    id?: true
+    recipient?: true
+    channel?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type MessageOptOutAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageOptOut to aggregate.
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOptOuts to fetch.
+     */
+    orderBy?: MessageOptOutOrderByWithRelationInput | MessageOptOutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageOptOutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOptOuts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOptOuts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MessageOptOuts
+    **/
+    _count?: true | MessageOptOutCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageOptOutMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageOptOutMaxAggregateInputType
+  }
+
+  export type GetMessageOptOutAggregateType<T extends MessageOptOutAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessageOptOut]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessageOptOut[P]>
+      : GetScalarType<T[P], AggregateMessageOptOut[P]>
+  }
+
+
+
+
+  export type MessageOptOutGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageOptOutWhereInput
+    orderBy?: MessageOptOutOrderByWithAggregationInput | MessageOptOutOrderByWithAggregationInput[]
+    by: MessageOptOutScalarFieldEnum[] | MessageOptOutScalarFieldEnum
+    having?: MessageOptOutScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageOptOutCountAggregateInputType | true
+    _min?: MessageOptOutMinAggregateInputType
+    _max?: MessageOptOutMaxAggregateInputType
+  }
+
+  export type MessageOptOutGroupByOutputType = {
+    id: string
+    recipient: string
+    channel: string
+    createdAt: Date
+    _count: MessageOptOutCountAggregateOutputType | null
+    _min: MessageOptOutMinAggregateOutputType | null
+    _max: MessageOptOutMaxAggregateOutputType | null
+  }
+
+  type GetMessageOptOutGroupByPayload<T extends MessageOptOutGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageOptOutGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageOptOutGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageOptOutGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageOptOutGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageOptOutSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipient?: boolean
+    channel?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["messageOptOut"]>
+
+  export type MessageOptOutSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipient?: boolean
+    channel?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["messageOptOut"]>
+
+  export type MessageOptOutSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipient?: boolean
+    channel?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["messageOptOut"]>
+
+  export type MessageOptOutSelectScalar = {
+    id?: boolean
+    recipient?: boolean
+    channel?: boolean
+    createdAt?: boolean
+  }
+
+  export type MessageOptOutOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipient" | "channel" | "createdAt", ExtArgs["result"]["messageOptOut"]>
+
+  export type $MessageOptOutPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MessageOptOut"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      recipient: string
+      channel: string
+      createdAt: Date
+    }, ExtArgs["result"]["messageOptOut"]>
+    composites: {}
+  }
+
+  type MessageOptOutGetPayload<S extends boolean | null | undefined | MessageOptOutDefaultArgs> = $Result.GetResult<Prisma.$MessageOptOutPayload, S>
+
+  type MessageOptOutCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageOptOutFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageOptOutCountAggregateInputType | true
+    }
+
+  export interface MessageOptOutDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MessageOptOut'], meta: { name: 'MessageOptOut' } }
+    /**
+     * Find zero or one MessageOptOut that matches the filter.
+     * @param {MessageOptOutFindUniqueArgs} args - Arguments to find a MessageOptOut
+     * @example
+     * // Get one MessageOptOut
+     * const messageOptOut = await prisma.messageOptOut.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageOptOutFindUniqueArgs>(args: SelectSubset<T, MessageOptOutFindUniqueArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MessageOptOut that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageOptOutFindUniqueOrThrowArgs} args - Arguments to find a MessageOptOut
+     * @example
+     * // Get one MessageOptOut
+     * const messageOptOut = await prisma.messageOptOut.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageOptOutFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageOptOutFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageOptOut that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutFindFirstArgs} args - Arguments to find a MessageOptOut
+     * @example
+     * // Get one MessageOptOut
+     * const messageOptOut = await prisma.messageOptOut.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageOptOutFindFirstArgs>(args?: SelectSubset<T, MessageOptOutFindFirstArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MessageOptOut that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutFindFirstOrThrowArgs} args - Arguments to find a MessageOptOut
+     * @example
+     * // Get one MessageOptOut
+     * const messageOptOut = await prisma.messageOptOut.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageOptOutFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageOptOutFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MessageOptOuts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MessageOptOuts
+     * const messageOptOuts = await prisma.messageOptOut.findMany()
+     * 
+     * // Get first 10 MessageOptOuts
+     * const messageOptOuts = await prisma.messageOptOut.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageOptOutWithIdOnly = await prisma.messageOptOut.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageOptOutFindManyArgs>(args?: SelectSubset<T, MessageOptOutFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MessageOptOut.
+     * @param {MessageOptOutCreateArgs} args - Arguments to create a MessageOptOut.
+     * @example
+     * // Create one MessageOptOut
+     * const MessageOptOut = await prisma.messageOptOut.create({
+     *   data: {
+     *     // ... data to create a MessageOptOut
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageOptOutCreateArgs>(args: SelectSubset<T, MessageOptOutCreateArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MessageOptOuts.
+     * @param {MessageOptOutCreateManyArgs} args - Arguments to create many MessageOptOuts.
+     * @example
+     * // Create many MessageOptOuts
+     * const messageOptOut = await prisma.messageOptOut.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageOptOutCreateManyArgs>(args?: SelectSubset<T, MessageOptOutCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MessageOptOuts and returns the data saved in the database.
+     * @param {MessageOptOutCreateManyAndReturnArgs} args - Arguments to create many MessageOptOuts.
+     * @example
+     * // Create many MessageOptOuts
+     * const messageOptOut = await prisma.messageOptOut.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MessageOptOuts and only return the `id`
+     * const messageOptOutWithIdOnly = await prisma.messageOptOut.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageOptOutCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageOptOutCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MessageOptOut.
+     * @param {MessageOptOutDeleteArgs} args - Arguments to delete one MessageOptOut.
+     * @example
+     * // Delete one MessageOptOut
+     * const MessageOptOut = await prisma.messageOptOut.delete({
+     *   where: {
+     *     // ... filter to delete one MessageOptOut
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageOptOutDeleteArgs>(args: SelectSubset<T, MessageOptOutDeleteArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MessageOptOut.
+     * @param {MessageOptOutUpdateArgs} args - Arguments to update one MessageOptOut.
+     * @example
+     * // Update one MessageOptOut
+     * const messageOptOut = await prisma.messageOptOut.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageOptOutUpdateArgs>(args: SelectSubset<T, MessageOptOutUpdateArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MessageOptOuts.
+     * @param {MessageOptOutDeleteManyArgs} args - Arguments to filter MessageOptOuts to delete.
+     * @example
+     * // Delete a few MessageOptOuts
+     * const { count } = await prisma.messageOptOut.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageOptOutDeleteManyArgs>(args?: SelectSubset<T, MessageOptOutDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageOptOuts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MessageOptOuts
+     * const messageOptOut = await prisma.messageOptOut.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageOptOutUpdateManyArgs>(args: SelectSubset<T, MessageOptOutUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MessageOptOuts and returns the data updated in the database.
+     * @param {MessageOptOutUpdateManyAndReturnArgs} args - Arguments to update many MessageOptOuts.
+     * @example
+     * // Update many MessageOptOuts
+     * const messageOptOut = await prisma.messageOptOut.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MessageOptOuts and only return the `id`
+     * const messageOptOutWithIdOnly = await prisma.messageOptOut.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageOptOutUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageOptOutUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MessageOptOut.
+     * @param {MessageOptOutUpsertArgs} args - Arguments to update or create a MessageOptOut.
+     * @example
+     * // Update or create a MessageOptOut
+     * const messageOptOut = await prisma.messageOptOut.upsert({
+     *   create: {
+     *     // ... data to create a MessageOptOut
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MessageOptOut we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageOptOutUpsertArgs>(args: SelectSubset<T, MessageOptOutUpsertArgs<ExtArgs>>): Prisma__MessageOptOutClient<$Result.GetResult<Prisma.$MessageOptOutPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MessageOptOuts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutCountArgs} args - Arguments to filter MessageOptOuts to count.
+     * @example
+     * // Count the number of MessageOptOuts
+     * const count = await prisma.messageOptOut.count({
+     *   where: {
+     *     // ... the filter for the MessageOptOuts we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageOptOutCountArgs>(
+      args?: Subset<T, MessageOptOutCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageOptOutCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MessageOptOut.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageOptOutAggregateArgs>(args: Subset<T, MessageOptOutAggregateArgs>): Prisma.PrismaPromise<GetMessageOptOutAggregateType<T>>
+
+    /**
+     * Group by MessageOptOut.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageOptOutGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageOptOutGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageOptOutGroupByArgs['orderBy'] }
+        : { orderBy?: MessageOptOutGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageOptOutGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageOptOutGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MessageOptOut model
+   */
+  readonly fields: MessageOptOutFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MessageOptOut.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageOptOutClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MessageOptOut model
+   */
+  interface MessageOptOutFieldRefs {
+    readonly id: FieldRef<"MessageOptOut", 'String'>
+    readonly recipient: FieldRef<"MessageOptOut", 'String'>
+    readonly channel: FieldRef<"MessageOptOut", 'String'>
+    readonly createdAt: FieldRef<"MessageOptOut", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MessageOptOut findUnique
+   */
+  export type MessageOptOutFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOptOut to fetch.
+     */
+    where: MessageOptOutWhereUniqueInput
+  }
+
+  /**
+   * MessageOptOut findUniqueOrThrow
+   */
+  export type MessageOptOutFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOptOut to fetch.
+     */
+    where: MessageOptOutWhereUniqueInput
+  }
+
+  /**
+   * MessageOptOut findFirst
+   */
+  export type MessageOptOutFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOptOut to fetch.
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOptOuts to fetch.
+     */
+    orderBy?: MessageOptOutOrderByWithRelationInput | MessageOptOutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageOptOuts.
+     */
+    cursor?: MessageOptOutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOptOuts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOptOuts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageOptOuts.
+     */
+    distinct?: MessageOptOutScalarFieldEnum | MessageOptOutScalarFieldEnum[]
+  }
+
+  /**
+   * MessageOptOut findFirstOrThrow
+   */
+  export type MessageOptOutFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOptOut to fetch.
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOptOuts to fetch.
+     */
+    orderBy?: MessageOptOutOrderByWithRelationInput | MessageOptOutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MessageOptOuts.
+     */
+    cursor?: MessageOptOutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOptOuts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOptOuts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageOptOuts.
+     */
+    distinct?: MessageOptOutScalarFieldEnum | MessageOptOutScalarFieldEnum[]
+  }
+
+  /**
+   * MessageOptOut findMany
+   */
+  export type MessageOptOutFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * Filter, which MessageOptOuts to fetch.
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MessageOptOuts to fetch.
+     */
+    orderBy?: MessageOptOutOrderByWithRelationInput | MessageOptOutOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MessageOptOuts.
+     */
+    cursor?: MessageOptOutWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MessageOptOuts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MessageOptOuts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MessageOptOuts.
+     */
+    distinct?: MessageOptOutScalarFieldEnum | MessageOptOutScalarFieldEnum[]
+  }
+
+  /**
+   * MessageOptOut create
+   */
+  export type MessageOptOutCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * The data needed to create a MessageOptOut.
+     */
+    data: XOR<MessageOptOutCreateInput, MessageOptOutUncheckedCreateInput>
+  }
+
+  /**
+   * MessageOptOut createMany
+   */
+  export type MessageOptOutCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MessageOptOuts.
+     */
+    data: MessageOptOutCreateManyInput | MessageOptOutCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageOptOut createManyAndReturn
+   */
+  export type MessageOptOutCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * The data used to create many MessageOptOuts.
+     */
+    data: MessageOptOutCreateManyInput | MessageOptOutCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MessageOptOut update
+   */
+  export type MessageOptOutUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * The data needed to update a MessageOptOut.
+     */
+    data: XOR<MessageOptOutUpdateInput, MessageOptOutUncheckedUpdateInput>
+    /**
+     * Choose, which MessageOptOut to update.
+     */
+    where: MessageOptOutWhereUniqueInput
+  }
+
+  /**
+   * MessageOptOut updateMany
+   */
+  export type MessageOptOutUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MessageOptOuts.
+     */
+    data: XOR<MessageOptOutUpdateManyMutationInput, MessageOptOutUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageOptOuts to update
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * Limit how many MessageOptOuts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageOptOut updateManyAndReturn
+   */
+  export type MessageOptOutUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * The data used to update MessageOptOuts.
+     */
+    data: XOR<MessageOptOutUpdateManyMutationInput, MessageOptOutUncheckedUpdateManyInput>
+    /**
+     * Filter which MessageOptOuts to update
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * Limit how many MessageOptOuts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageOptOut upsert
+   */
+  export type MessageOptOutUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * The filter to search for the MessageOptOut to update in case it exists.
+     */
+    where: MessageOptOutWhereUniqueInput
+    /**
+     * In case the MessageOptOut found by the `where` argument doesn't exist, create a new MessageOptOut with this data.
+     */
+    create: XOR<MessageOptOutCreateInput, MessageOptOutUncheckedCreateInput>
+    /**
+     * In case the MessageOptOut was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageOptOutUpdateInput, MessageOptOutUncheckedUpdateInput>
+  }
+
+  /**
+   * MessageOptOut delete
+   */
+  export type MessageOptOutDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+    /**
+     * Filter which MessageOptOut to delete.
+     */
+    where: MessageOptOutWhereUniqueInput
+  }
+
+  /**
+   * MessageOptOut deleteMany
+   */
+  export type MessageOptOutDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MessageOptOuts to delete
+     */
+    where?: MessageOptOutWhereInput
+    /**
+     * Limit how many MessageOptOuts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MessageOptOut without action
+   */
+  export type MessageOptOutDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MessageOptOut
+     */
+    select?: MessageOptOutSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MessageOptOut
+     */
+    omit?: MessageOptOutOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MpesaRequest
+   */
+
+  export type AggregateMpesaRequest = {
+    _count: MpesaRequestCountAggregateOutputType | null
+    _avg: MpesaRequestAvgAggregateOutputType | null
+    _sum: MpesaRequestSumAggregateOutputType | null
+    _min: MpesaRequestMinAggregateOutputType | null
+    _max: MpesaRequestMaxAggregateOutputType | null
+  }
+
+  export type MpesaRequestAvgAggregateOutputType = {
+    amount: number | null
+    resultCode: number | null
+    paidAmount: number | null
+  }
+
+  export type MpesaRequestSumAggregateOutputType = {
+    amount: number | null
+    resultCode: number | null
+    paidAmount: number | null
+  }
+
+  export type MpesaRequestMinAggregateOutputType = {
+    id: string | null
+    checkoutRequestId: string | null
+    merchantRequestId: string | null
+    phone: string | null
+    amount: number | null
+    accountReference: string | null
+    description: string | null
+    branchId: string | null
+    salesDocumentId: string | null
+    status: string | null
+    resultCode: number | null
+    resultDesc: string | null
+    receiptNumber: string | null
+    paidAmount: number | null
+    transactionDate: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MpesaRequestMaxAggregateOutputType = {
+    id: string | null
+    checkoutRequestId: string | null
+    merchantRequestId: string | null
+    phone: string | null
+    amount: number | null
+    accountReference: string | null
+    description: string | null
+    branchId: string | null
+    salesDocumentId: string | null
+    status: string | null
+    resultCode: number | null
+    resultDesc: string | null
+    receiptNumber: string | null
+    paidAmount: number | null
+    transactionDate: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MpesaRequestCountAggregateOutputType = {
+    id: number
+    checkoutRequestId: number
+    merchantRequestId: number
+    phone: number
+    amount: number
+    accountReference: number
+    description: number
+    branchId: number
+    salesDocumentId: number
+    status: number
+    resultCode: number
+    resultDesc: number
+    receiptNumber: number
+    paidAmount: number
+    transactionDate: number
+    createdById: number
+    callbackRaw: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MpesaRequestAvgAggregateInputType = {
+    amount?: true
+    resultCode?: true
+    paidAmount?: true
+  }
+
+  export type MpesaRequestSumAggregateInputType = {
+    amount?: true
+    resultCode?: true
+    paidAmount?: true
+  }
+
+  export type MpesaRequestMinAggregateInputType = {
+    id?: true
+    checkoutRequestId?: true
+    merchantRequestId?: true
+    phone?: true
+    amount?: true
+    accountReference?: true
+    description?: true
+    branchId?: true
+    salesDocumentId?: true
+    status?: true
+    resultCode?: true
+    resultDesc?: true
+    receiptNumber?: true
+    paidAmount?: true
+    transactionDate?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MpesaRequestMaxAggregateInputType = {
+    id?: true
+    checkoutRequestId?: true
+    merchantRequestId?: true
+    phone?: true
+    amount?: true
+    accountReference?: true
+    description?: true
+    branchId?: true
+    salesDocumentId?: true
+    status?: true
+    resultCode?: true
+    resultDesc?: true
+    receiptNumber?: true
+    paidAmount?: true
+    transactionDate?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MpesaRequestCountAggregateInputType = {
+    id?: true
+    checkoutRequestId?: true
+    merchantRequestId?: true
+    phone?: true
+    amount?: true
+    accountReference?: true
+    description?: true
+    branchId?: true
+    salesDocumentId?: true
+    status?: true
+    resultCode?: true
+    resultDesc?: true
+    receiptNumber?: true
+    paidAmount?: true
+    transactionDate?: true
+    createdById?: true
+    callbackRaw?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MpesaRequestAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MpesaRequest to aggregate.
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MpesaRequests to fetch.
+     */
+    orderBy?: MpesaRequestOrderByWithRelationInput | MpesaRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MpesaRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MpesaRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MpesaRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MpesaRequests
+    **/
+    _count?: true | MpesaRequestCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MpesaRequestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MpesaRequestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MpesaRequestMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MpesaRequestMaxAggregateInputType
+  }
+
+  export type GetMpesaRequestAggregateType<T extends MpesaRequestAggregateArgs> = {
+        [P in keyof T & keyof AggregateMpesaRequest]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMpesaRequest[P]>
+      : GetScalarType<T[P], AggregateMpesaRequest[P]>
+  }
+
+
+
+
+  export type MpesaRequestGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MpesaRequestWhereInput
+    orderBy?: MpesaRequestOrderByWithAggregationInput | MpesaRequestOrderByWithAggregationInput[]
+    by: MpesaRequestScalarFieldEnum[] | MpesaRequestScalarFieldEnum
+    having?: MpesaRequestScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MpesaRequestCountAggregateInputType | true
+    _avg?: MpesaRequestAvgAggregateInputType
+    _sum?: MpesaRequestSumAggregateInputType
+    _min?: MpesaRequestMinAggregateInputType
+    _max?: MpesaRequestMaxAggregateInputType
+  }
+
+  export type MpesaRequestGroupByOutputType = {
+    id: string
+    checkoutRequestId: string | null
+    merchantRequestId: string | null
+    phone: string
+    amount: number
+    accountReference: string
+    description: string | null
+    branchId: string | null
+    salesDocumentId: string | null
+    status: string
+    resultCode: number | null
+    resultDesc: string | null
+    receiptNumber: string | null
+    paidAmount: number | null
+    transactionDate: Date | null
+    createdById: string
+    callbackRaw: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MpesaRequestCountAggregateOutputType | null
+    _avg: MpesaRequestAvgAggregateOutputType | null
+    _sum: MpesaRequestSumAggregateOutputType | null
+    _min: MpesaRequestMinAggregateOutputType | null
+    _max: MpesaRequestMaxAggregateOutputType | null
+  }
+
+  type GetMpesaRequestGroupByPayload<T extends MpesaRequestGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MpesaRequestGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MpesaRequestGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MpesaRequestGroupByOutputType[P]>
+            : GetScalarType<T[P], MpesaRequestGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MpesaRequestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    checkoutRequestId?: boolean
+    merchantRequestId?: boolean
+    phone?: boolean
+    amount?: boolean
+    accountReference?: boolean
+    description?: boolean
+    branchId?: boolean
+    salesDocumentId?: boolean
+    status?: boolean
+    resultCode?: boolean
+    resultDesc?: boolean
+    receiptNumber?: boolean
+    paidAmount?: boolean
+    transactionDate?: boolean
+    createdById?: boolean
+    callbackRaw?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["mpesaRequest"]>
+
+  export type MpesaRequestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    checkoutRequestId?: boolean
+    merchantRequestId?: boolean
+    phone?: boolean
+    amount?: boolean
+    accountReference?: boolean
+    description?: boolean
+    branchId?: boolean
+    salesDocumentId?: boolean
+    status?: boolean
+    resultCode?: boolean
+    resultDesc?: boolean
+    receiptNumber?: boolean
+    paidAmount?: boolean
+    transactionDate?: boolean
+    createdById?: boolean
+    callbackRaw?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["mpesaRequest"]>
+
+  export type MpesaRequestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    checkoutRequestId?: boolean
+    merchantRequestId?: boolean
+    phone?: boolean
+    amount?: boolean
+    accountReference?: boolean
+    description?: boolean
+    branchId?: boolean
+    salesDocumentId?: boolean
+    status?: boolean
+    resultCode?: boolean
+    resultDesc?: boolean
+    receiptNumber?: boolean
+    paidAmount?: boolean
+    transactionDate?: boolean
+    createdById?: boolean
+    callbackRaw?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["mpesaRequest"]>
+
+  export type MpesaRequestSelectScalar = {
+    id?: boolean
+    checkoutRequestId?: boolean
+    merchantRequestId?: boolean
+    phone?: boolean
+    amount?: boolean
+    accountReference?: boolean
+    description?: boolean
+    branchId?: boolean
+    salesDocumentId?: boolean
+    status?: boolean
+    resultCode?: boolean
+    resultDesc?: boolean
+    receiptNumber?: boolean
+    paidAmount?: boolean
+    transactionDate?: boolean
+    createdById?: boolean
+    callbackRaw?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MpesaRequestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "checkoutRequestId" | "merchantRequestId" | "phone" | "amount" | "accountReference" | "description" | "branchId" | "salesDocumentId" | "status" | "resultCode" | "resultDesc" | "receiptNumber" | "paidAmount" | "transactionDate" | "createdById" | "callbackRaw" | "createdAt" | "updatedAt", ExtArgs["result"]["mpesaRequest"]>
+
+  export type $MpesaRequestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MpesaRequest"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      checkoutRequestId: string | null
+      merchantRequestId: string | null
+      phone: string
+      amount: number
+      accountReference: string
+      description: string | null
+      branchId: string | null
+      salesDocumentId: string | null
+      status: string
+      resultCode: number | null
+      resultDesc: string | null
+      receiptNumber: string | null
+      paidAmount: number | null
+      transactionDate: Date | null
+      createdById: string
+      callbackRaw: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["mpesaRequest"]>
+    composites: {}
+  }
+
+  type MpesaRequestGetPayload<S extends boolean | null | undefined | MpesaRequestDefaultArgs> = $Result.GetResult<Prisma.$MpesaRequestPayload, S>
+
+  type MpesaRequestCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MpesaRequestFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MpesaRequestCountAggregateInputType | true
+    }
+
+  export interface MpesaRequestDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MpesaRequest'], meta: { name: 'MpesaRequest' } }
+    /**
+     * Find zero or one MpesaRequest that matches the filter.
+     * @param {MpesaRequestFindUniqueArgs} args - Arguments to find a MpesaRequest
+     * @example
+     * // Get one MpesaRequest
+     * const mpesaRequest = await prisma.mpesaRequest.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MpesaRequestFindUniqueArgs>(args: SelectSubset<T, MpesaRequestFindUniqueArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MpesaRequest that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MpesaRequestFindUniqueOrThrowArgs} args - Arguments to find a MpesaRequest
+     * @example
+     * // Get one MpesaRequest
+     * const mpesaRequest = await prisma.mpesaRequest.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MpesaRequestFindUniqueOrThrowArgs>(args: SelectSubset<T, MpesaRequestFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MpesaRequest that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestFindFirstArgs} args - Arguments to find a MpesaRequest
+     * @example
+     * // Get one MpesaRequest
+     * const mpesaRequest = await prisma.mpesaRequest.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MpesaRequestFindFirstArgs>(args?: SelectSubset<T, MpesaRequestFindFirstArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MpesaRequest that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestFindFirstOrThrowArgs} args - Arguments to find a MpesaRequest
+     * @example
+     * // Get one MpesaRequest
+     * const mpesaRequest = await prisma.mpesaRequest.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MpesaRequestFindFirstOrThrowArgs>(args?: SelectSubset<T, MpesaRequestFindFirstOrThrowArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MpesaRequests that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MpesaRequests
+     * const mpesaRequests = await prisma.mpesaRequest.findMany()
+     * 
+     * // Get first 10 MpesaRequests
+     * const mpesaRequests = await prisma.mpesaRequest.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const mpesaRequestWithIdOnly = await prisma.mpesaRequest.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MpesaRequestFindManyArgs>(args?: SelectSubset<T, MpesaRequestFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MpesaRequest.
+     * @param {MpesaRequestCreateArgs} args - Arguments to create a MpesaRequest.
+     * @example
+     * // Create one MpesaRequest
+     * const MpesaRequest = await prisma.mpesaRequest.create({
+     *   data: {
+     *     // ... data to create a MpesaRequest
+     *   }
+     * })
+     * 
+     */
+    create<T extends MpesaRequestCreateArgs>(args: SelectSubset<T, MpesaRequestCreateArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MpesaRequests.
+     * @param {MpesaRequestCreateManyArgs} args - Arguments to create many MpesaRequests.
+     * @example
+     * // Create many MpesaRequests
+     * const mpesaRequest = await prisma.mpesaRequest.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MpesaRequestCreateManyArgs>(args?: SelectSubset<T, MpesaRequestCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MpesaRequests and returns the data saved in the database.
+     * @param {MpesaRequestCreateManyAndReturnArgs} args - Arguments to create many MpesaRequests.
+     * @example
+     * // Create many MpesaRequests
+     * const mpesaRequest = await prisma.mpesaRequest.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MpesaRequests and only return the `id`
+     * const mpesaRequestWithIdOnly = await prisma.mpesaRequest.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MpesaRequestCreateManyAndReturnArgs>(args?: SelectSubset<T, MpesaRequestCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MpesaRequest.
+     * @param {MpesaRequestDeleteArgs} args - Arguments to delete one MpesaRequest.
+     * @example
+     * // Delete one MpesaRequest
+     * const MpesaRequest = await prisma.mpesaRequest.delete({
+     *   where: {
+     *     // ... filter to delete one MpesaRequest
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MpesaRequestDeleteArgs>(args: SelectSubset<T, MpesaRequestDeleteArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MpesaRequest.
+     * @param {MpesaRequestUpdateArgs} args - Arguments to update one MpesaRequest.
+     * @example
+     * // Update one MpesaRequest
+     * const mpesaRequest = await prisma.mpesaRequest.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MpesaRequestUpdateArgs>(args: SelectSubset<T, MpesaRequestUpdateArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MpesaRequests.
+     * @param {MpesaRequestDeleteManyArgs} args - Arguments to filter MpesaRequests to delete.
+     * @example
+     * // Delete a few MpesaRequests
+     * const { count } = await prisma.mpesaRequest.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MpesaRequestDeleteManyArgs>(args?: SelectSubset<T, MpesaRequestDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MpesaRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MpesaRequests
+     * const mpesaRequest = await prisma.mpesaRequest.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MpesaRequestUpdateManyArgs>(args: SelectSubset<T, MpesaRequestUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MpesaRequests and returns the data updated in the database.
+     * @param {MpesaRequestUpdateManyAndReturnArgs} args - Arguments to update many MpesaRequests.
+     * @example
+     * // Update many MpesaRequests
+     * const mpesaRequest = await prisma.mpesaRequest.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MpesaRequests and only return the `id`
+     * const mpesaRequestWithIdOnly = await prisma.mpesaRequest.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MpesaRequestUpdateManyAndReturnArgs>(args: SelectSubset<T, MpesaRequestUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MpesaRequest.
+     * @param {MpesaRequestUpsertArgs} args - Arguments to update or create a MpesaRequest.
+     * @example
+     * // Update or create a MpesaRequest
+     * const mpesaRequest = await prisma.mpesaRequest.upsert({
+     *   create: {
+     *     // ... data to create a MpesaRequest
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MpesaRequest we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MpesaRequestUpsertArgs>(args: SelectSubset<T, MpesaRequestUpsertArgs<ExtArgs>>): Prisma__MpesaRequestClient<$Result.GetResult<Prisma.$MpesaRequestPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MpesaRequests.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestCountArgs} args - Arguments to filter MpesaRequests to count.
+     * @example
+     * // Count the number of MpesaRequests
+     * const count = await prisma.mpesaRequest.count({
+     *   where: {
+     *     // ... the filter for the MpesaRequests we want to count
+     *   }
+     * })
+    **/
+    count<T extends MpesaRequestCountArgs>(
+      args?: Subset<T, MpesaRequestCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MpesaRequestCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MpesaRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MpesaRequestAggregateArgs>(args: Subset<T, MpesaRequestAggregateArgs>): Prisma.PrismaPromise<GetMpesaRequestAggregateType<T>>
+
+    /**
+     * Group by MpesaRequest.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MpesaRequestGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MpesaRequestGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MpesaRequestGroupByArgs['orderBy'] }
+        : { orderBy?: MpesaRequestGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MpesaRequestGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMpesaRequestGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MpesaRequest model
+   */
+  readonly fields: MpesaRequestFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MpesaRequest.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MpesaRequestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MpesaRequest model
+   */
+  interface MpesaRequestFieldRefs {
+    readonly id: FieldRef<"MpesaRequest", 'String'>
+    readonly checkoutRequestId: FieldRef<"MpesaRequest", 'String'>
+    readonly merchantRequestId: FieldRef<"MpesaRequest", 'String'>
+    readonly phone: FieldRef<"MpesaRequest", 'String'>
+    readonly amount: FieldRef<"MpesaRequest", 'Int'>
+    readonly accountReference: FieldRef<"MpesaRequest", 'String'>
+    readonly description: FieldRef<"MpesaRequest", 'String'>
+    readonly branchId: FieldRef<"MpesaRequest", 'String'>
+    readonly salesDocumentId: FieldRef<"MpesaRequest", 'String'>
+    readonly status: FieldRef<"MpesaRequest", 'String'>
+    readonly resultCode: FieldRef<"MpesaRequest", 'Int'>
+    readonly resultDesc: FieldRef<"MpesaRequest", 'String'>
+    readonly receiptNumber: FieldRef<"MpesaRequest", 'String'>
+    readonly paidAmount: FieldRef<"MpesaRequest", 'Float'>
+    readonly transactionDate: FieldRef<"MpesaRequest", 'DateTime'>
+    readonly createdById: FieldRef<"MpesaRequest", 'String'>
+    readonly callbackRaw: FieldRef<"MpesaRequest", 'Json'>
+    readonly createdAt: FieldRef<"MpesaRequest", 'DateTime'>
+    readonly updatedAt: FieldRef<"MpesaRequest", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MpesaRequest findUnique
+   */
+  export type MpesaRequestFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which MpesaRequest to fetch.
+     */
+    where: MpesaRequestWhereUniqueInput
+  }
+
+  /**
+   * MpesaRequest findUniqueOrThrow
+   */
+  export type MpesaRequestFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which MpesaRequest to fetch.
+     */
+    where: MpesaRequestWhereUniqueInput
+  }
+
+  /**
+   * MpesaRequest findFirst
+   */
+  export type MpesaRequestFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which MpesaRequest to fetch.
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MpesaRequests to fetch.
+     */
+    orderBy?: MpesaRequestOrderByWithRelationInput | MpesaRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MpesaRequests.
+     */
+    cursor?: MpesaRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MpesaRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MpesaRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MpesaRequests.
+     */
+    distinct?: MpesaRequestScalarFieldEnum | MpesaRequestScalarFieldEnum[]
+  }
+
+  /**
+   * MpesaRequest findFirstOrThrow
+   */
+  export type MpesaRequestFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which MpesaRequest to fetch.
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MpesaRequests to fetch.
+     */
+    orderBy?: MpesaRequestOrderByWithRelationInput | MpesaRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MpesaRequests.
+     */
+    cursor?: MpesaRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MpesaRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MpesaRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MpesaRequests.
+     */
+    distinct?: MpesaRequestScalarFieldEnum | MpesaRequestScalarFieldEnum[]
+  }
+
+  /**
+   * MpesaRequest findMany
+   */
+  export type MpesaRequestFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * Filter, which MpesaRequests to fetch.
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MpesaRequests to fetch.
+     */
+    orderBy?: MpesaRequestOrderByWithRelationInput | MpesaRequestOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MpesaRequests.
+     */
+    cursor?: MpesaRequestWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MpesaRequests from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MpesaRequests.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MpesaRequests.
+     */
+    distinct?: MpesaRequestScalarFieldEnum | MpesaRequestScalarFieldEnum[]
+  }
+
+  /**
+   * MpesaRequest create
+   */
+  export type MpesaRequestCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * The data needed to create a MpesaRequest.
+     */
+    data: XOR<MpesaRequestCreateInput, MpesaRequestUncheckedCreateInput>
+  }
+
+  /**
+   * MpesaRequest createMany
+   */
+  export type MpesaRequestCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MpesaRequests.
+     */
+    data: MpesaRequestCreateManyInput | MpesaRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MpesaRequest createManyAndReturn
+   */
+  export type MpesaRequestCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * The data used to create many MpesaRequests.
+     */
+    data: MpesaRequestCreateManyInput | MpesaRequestCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MpesaRequest update
+   */
+  export type MpesaRequestUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * The data needed to update a MpesaRequest.
+     */
+    data: XOR<MpesaRequestUpdateInput, MpesaRequestUncheckedUpdateInput>
+    /**
+     * Choose, which MpesaRequest to update.
+     */
+    where: MpesaRequestWhereUniqueInput
+  }
+
+  /**
+   * MpesaRequest updateMany
+   */
+  export type MpesaRequestUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MpesaRequests.
+     */
+    data: XOR<MpesaRequestUpdateManyMutationInput, MpesaRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which MpesaRequests to update
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * Limit how many MpesaRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MpesaRequest updateManyAndReturn
+   */
+  export type MpesaRequestUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * The data used to update MpesaRequests.
+     */
+    data: XOR<MpesaRequestUpdateManyMutationInput, MpesaRequestUncheckedUpdateManyInput>
+    /**
+     * Filter which MpesaRequests to update
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * Limit how many MpesaRequests to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MpesaRequest upsert
+   */
+  export type MpesaRequestUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * The filter to search for the MpesaRequest to update in case it exists.
+     */
+    where: MpesaRequestWhereUniqueInput
+    /**
+     * In case the MpesaRequest found by the `where` argument doesn't exist, create a new MpesaRequest with this data.
+     */
+    create: XOR<MpesaRequestCreateInput, MpesaRequestUncheckedCreateInput>
+    /**
+     * In case the MpesaRequest was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MpesaRequestUpdateInput, MpesaRequestUncheckedUpdateInput>
+  }
+
+  /**
+   * MpesaRequest delete
+   */
+  export type MpesaRequestDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+    /**
+     * Filter which MpesaRequest to delete.
+     */
+    where: MpesaRequestWhereUniqueInput
+  }
+
+  /**
+   * MpesaRequest deleteMany
+   */
+  export type MpesaRequestDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MpesaRequests to delete
+     */
+    where?: MpesaRequestWhereInput
+    /**
+     * Limit how many MpesaRequests to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MpesaRequest without action
+   */
+  export type MpesaRequestDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MpesaRequest
+     */
+    select?: MpesaRequestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MpesaRequest
+     */
+    omit?: MpesaRequestOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ApiKey
+   */
+
+  export type AggregateApiKey = {
+    _count: ApiKeyCountAggregateOutputType | null
+    _avg: ApiKeyAvgAggregateOutputType | null
+    _sum: ApiKeySumAggregateOutputType | null
+    _min: ApiKeyMinAggregateOutputType | null
+    _max: ApiKeyMaxAggregateOutputType | null
+  }
+
+  export type ApiKeyAvgAggregateOutputType = {
+    rateLimitPerMin: number | null
+  }
+
+  export type ApiKeySumAggregateOutputType = {
+    rateLimitPerMin: number | null
+  }
+
+  export type ApiKeyMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    keyPrefix: string | null
+    keyHash: string | null
+    branchId: string | null
+    rateLimitPerMin: number | null
+    isActive: boolean | null
+    expiresAt: Date | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApiKeyMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    keyPrefix: string | null
+    keyHash: string | null
+    branchId: string | null
+    rateLimitPerMin: number | null
+    isActive: boolean | null
+    expiresAt: Date | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ApiKeyCountAggregateOutputType = {
+    id: number
+    name: number
+    keyPrefix: number
+    keyHash: number
+    scopes: number
+    branchId: number
+    rateLimitPerMin: number
+    isActive: number
+    expiresAt: number
+    lastUsedAt: number
+    revokedAt: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ApiKeyAvgAggregateInputType = {
+    rateLimitPerMin?: true
+  }
+
+  export type ApiKeySumAggregateInputType = {
+    rateLimitPerMin?: true
+  }
+
+  export type ApiKeyMinAggregateInputType = {
+    id?: true
+    name?: true
+    keyPrefix?: true
+    keyHash?: true
+    branchId?: true
+    rateLimitPerMin?: true
+    isActive?: true
+    expiresAt?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApiKeyMaxAggregateInputType = {
+    id?: true
+    name?: true
+    keyPrefix?: true
+    keyHash?: true
+    branchId?: true
+    rateLimitPerMin?: true
+    isActive?: true
+    expiresAt?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ApiKeyCountAggregateInputType = {
+    id?: true
+    name?: true
+    keyPrefix?: true
+    keyHash?: true
+    scopes?: true
+    branchId?: true
+    rateLimitPerMin?: true
+    isActive?: true
+    expiresAt?: true
+    lastUsedAt?: true
+    revokedAt?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ApiKeyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiKey to aggregate.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ApiKeys
+    **/
+    _count?: true | ApiKeyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ApiKeyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ApiKeySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApiKeyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApiKeyMaxAggregateInputType
+  }
+
+  export type GetApiKeyAggregateType<T extends ApiKeyAggregateArgs> = {
+        [P in keyof T & keyof AggregateApiKey]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateApiKey[P]>
+      : GetScalarType<T[P], AggregateApiKey[P]>
+  }
+
+
+
+
+  export type ApiKeyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ApiKeyWhereInput
+    orderBy?: ApiKeyOrderByWithAggregationInput | ApiKeyOrderByWithAggregationInput[]
+    by: ApiKeyScalarFieldEnum[] | ApiKeyScalarFieldEnum
+    having?: ApiKeyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ApiKeyCountAggregateInputType | true
+    _avg?: ApiKeyAvgAggregateInputType
+    _sum?: ApiKeySumAggregateInputType
+    _min?: ApiKeyMinAggregateInputType
+    _max?: ApiKeyMaxAggregateInputType
+  }
+
+  export type ApiKeyGroupByOutputType = {
+    id: string
+    name: string
+    keyPrefix: string
+    keyHash: string
+    scopes: string[]
+    branchId: string | null
+    rateLimitPerMin: number
+    isActive: boolean
+    expiresAt: Date | null
+    lastUsedAt: Date | null
+    revokedAt: Date | null
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ApiKeyCountAggregateOutputType | null
+    _avg: ApiKeyAvgAggregateOutputType | null
+    _sum: ApiKeySumAggregateOutputType | null
+    _min: ApiKeyMinAggregateOutputType | null
+    _max: ApiKeyMaxAggregateOutputType | null
+  }
+
+  type GetApiKeyGroupByPayload<T extends ApiKeyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ApiKeyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ApiKeyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ApiKeyGroupByOutputType[P]>
+            : GetScalarType<T[P], ApiKeyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ApiKeySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    scopes?: boolean
+    branchId?: boolean
+    rateLimitPerMin?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["apiKey"]>
+
+  export type ApiKeySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    scopes?: boolean
+    branchId?: boolean
+    rateLimitPerMin?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["apiKey"]>
+
+  export type ApiKeySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    scopes?: boolean
+    branchId?: boolean
+    rateLimitPerMin?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["apiKey"]>
+
+  export type ApiKeySelectScalar = {
+    id?: boolean
+    name?: boolean
+    keyPrefix?: boolean
+    keyHash?: boolean
+    scopes?: boolean
+    branchId?: boolean
+    rateLimitPerMin?: boolean
+    isActive?: boolean
+    expiresAt?: boolean
+    lastUsedAt?: boolean
+    revokedAt?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ApiKeyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "keyPrefix" | "keyHash" | "scopes" | "branchId" | "rateLimitPerMin" | "isActive" | "expiresAt" | "lastUsedAt" | "revokedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["apiKey"]>
+
+  export type $ApiKeyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ApiKey"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      keyPrefix: string
+      keyHash: string
+      scopes: string[]
+      branchId: string | null
+      rateLimitPerMin: number
+      isActive: boolean
+      expiresAt: Date | null
+      lastUsedAt: Date | null
+      revokedAt: Date | null
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["apiKey"]>
+    composites: {}
+  }
+
+  type ApiKeyGetPayload<S extends boolean | null | undefined | ApiKeyDefaultArgs> = $Result.GetResult<Prisma.$ApiKeyPayload, S>
+
+  type ApiKeyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ApiKeyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ApiKeyCountAggregateInputType | true
+    }
+
+  export interface ApiKeyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ApiKey'], meta: { name: 'ApiKey' } }
+    /**
+     * Find zero or one ApiKey that matches the filter.
+     * @param {ApiKeyFindUniqueArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApiKeyFindUniqueArgs>(args: SelectSubset<T, ApiKeyFindUniqueArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ApiKey that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApiKeyFindUniqueOrThrowArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApiKeyFindUniqueOrThrowArgs>(args: SelectSubset<T, ApiKeyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApiKey that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyFindFirstArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApiKeyFindFirstArgs>(args?: SelectSubset<T, ApiKeyFindFirstArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ApiKey that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyFindFirstOrThrowArgs} args - Arguments to find a ApiKey
+     * @example
+     * // Get one ApiKey
+     * const apiKey = await prisma.apiKey.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApiKeyFindFirstOrThrowArgs>(args?: SelectSubset<T, ApiKeyFindFirstOrThrowArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ApiKeys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApiKeys
+     * const apiKeys = await prisma.apiKey.findMany()
+     * 
+     * // Get first 10 ApiKeys
+     * const apiKeys = await prisma.apiKey.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const apiKeyWithIdOnly = await prisma.apiKey.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ApiKeyFindManyArgs>(args?: SelectSubset<T, ApiKeyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ApiKey.
+     * @param {ApiKeyCreateArgs} args - Arguments to create a ApiKey.
+     * @example
+     * // Create one ApiKey
+     * const ApiKey = await prisma.apiKey.create({
+     *   data: {
+     *     // ... data to create a ApiKey
+     *   }
+     * })
+     * 
+     */
+    create<T extends ApiKeyCreateArgs>(args: SelectSubset<T, ApiKeyCreateArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ApiKeys.
+     * @param {ApiKeyCreateManyArgs} args - Arguments to create many ApiKeys.
+     * @example
+     * // Create many ApiKeys
+     * const apiKey = await prisma.apiKey.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ApiKeyCreateManyArgs>(args?: SelectSubset<T, ApiKeyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ApiKeys and returns the data saved in the database.
+     * @param {ApiKeyCreateManyAndReturnArgs} args - Arguments to create many ApiKeys.
+     * @example
+     * // Create many ApiKeys
+     * const apiKey = await prisma.apiKey.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ApiKeys and only return the `id`
+     * const apiKeyWithIdOnly = await prisma.apiKey.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ApiKeyCreateManyAndReturnArgs>(args?: SelectSubset<T, ApiKeyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ApiKey.
+     * @param {ApiKeyDeleteArgs} args - Arguments to delete one ApiKey.
+     * @example
+     * // Delete one ApiKey
+     * const ApiKey = await prisma.apiKey.delete({
+     *   where: {
+     *     // ... filter to delete one ApiKey
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ApiKeyDeleteArgs>(args: SelectSubset<T, ApiKeyDeleteArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ApiKey.
+     * @param {ApiKeyUpdateArgs} args - Arguments to update one ApiKey.
+     * @example
+     * // Update one ApiKey
+     * const apiKey = await prisma.apiKey.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ApiKeyUpdateArgs>(args: SelectSubset<T, ApiKeyUpdateArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ApiKeys.
+     * @param {ApiKeyDeleteManyArgs} args - Arguments to filter ApiKeys to delete.
+     * @example
+     * // Delete a few ApiKeys
+     * const { count } = await prisma.apiKey.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ApiKeyDeleteManyArgs>(args?: SelectSubset<T, ApiKeyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApiKeys
+     * const apiKey = await prisma.apiKey.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ApiKeyUpdateManyArgs>(args: SelectSubset<T, ApiKeyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ApiKeys and returns the data updated in the database.
+     * @param {ApiKeyUpdateManyAndReturnArgs} args - Arguments to update many ApiKeys.
+     * @example
+     * // Update many ApiKeys
+     * const apiKey = await prisma.apiKey.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ApiKeys and only return the `id`
+     * const apiKeyWithIdOnly = await prisma.apiKey.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ApiKeyUpdateManyAndReturnArgs>(args: SelectSubset<T, ApiKeyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ApiKey.
+     * @param {ApiKeyUpsertArgs} args - Arguments to update or create a ApiKey.
+     * @example
+     * // Update or create a ApiKey
+     * const apiKey = await prisma.apiKey.upsert({
+     *   create: {
+     *     // ... data to create a ApiKey
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApiKey we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApiKeyUpsertArgs>(args: SelectSubset<T, ApiKeyUpsertArgs<ExtArgs>>): Prisma__ApiKeyClient<$Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ApiKeys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyCountArgs} args - Arguments to filter ApiKeys to count.
+     * @example
+     * // Count the number of ApiKeys
+     * const count = await prisma.apiKey.count({
+     *   where: {
+     *     // ... the filter for the ApiKeys we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApiKeyCountArgs>(
+      args?: Subset<T, ApiKeyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ApiKeyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ApiKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApiKeyAggregateArgs>(args: Subset<T, ApiKeyAggregateArgs>): Prisma.PrismaPromise<GetApiKeyAggregateType<T>>
+
+    /**
+     * Group by ApiKey.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApiKeyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ApiKeyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ApiKeyGroupByArgs['orderBy'] }
+        : { orderBy?: ApiKeyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ApiKeyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApiKeyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ApiKey model
+   */
+  readonly fields: ApiKeyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ApiKey.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ApiKeyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ApiKey model
+   */
+  interface ApiKeyFieldRefs {
+    readonly id: FieldRef<"ApiKey", 'String'>
+    readonly name: FieldRef<"ApiKey", 'String'>
+    readonly keyPrefix: FieldRef<"ApiKey", 'String'>
+    readonly keyHash: FieldRef<"ApiKey", 'String'>
+    readonly scopes: FieldRef<"ApiKey", 'String[]'>
+    readonly branchId: FieldRef<"ApiKey", 'String'>
+    readonly rateLimitPerMin: FieldRef<"ApiKey", 'Int'>
+    readonly isActive: FieldRef<"ApiKey", 'Boolean'>
+    readonly expiresAt: FieldRef<"ApiKey", 'DateTime'>
+    readonly lastUsedAt: FieldRef<"ApiKey", 'DateTime'>
+    readonly revokedAt: FieldRef<"ApiKey", 'DateTime'>
+    readonly createdById: FieldRef<"ApiKey", 'String'>
+    readonly createdAt: FieldRef<"ApiKey", 'DateTime'>
+    readonly updatedAt: FieldRef<"ApiKey", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ApiKey findUnique
+   */
+  export type ApiKeyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey findUniqueOrThrow
+   */
+  export type ApiKeyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey findFirst
+   */
+  export type ApiKeyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiKeys.
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiKeys.
+     */
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ApiKey findFirstOrThrow
+   */
+  export type ApiKeyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiKey to fetch.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ApiKeys.
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiKeys.
+     */
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ApiKey findMany
+   */
+  export type ApiKeyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Filter, which ApiKeys to fetch.
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ApiKeys to fetch.
+     */
+    orderBy?: ApiKeyOrderByWithRelationInput | ApiKeyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ApiKeys.
+     */
+    cursor?: ApiKeyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ApiKeys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ApiKeys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ApiKeys.
+     */
+    distinct?: ApiKeyScalarFieldEnum | ApiKeyScalarFieldEnum[]
+  }
+
+  /**
+   * ApiKey create
+   */
+  export type ApiKeyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * The data needed to create a ApiKey.
+     */
+    data: XOR<ApiKeyCreateInput, ApiKeyUncheckedCreateInput>
+  }
+
+  /**
+   * ApiKey createMany
+   */
+  export type ApiKeyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApiKeys.
+     */
+    data: ApiKeyCreateManyInput | ApiKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiKey createManyAndReturn
+   */
+  export type ApiKeyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * The data used to create many ApiKeys.
+     */
+    data: ApiKeyCreateManyInput | ApiKeyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ApiKey update
+   */
+  export type ApiKeyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * The data needed to update a ApiKey.
+     */
+    data: XOR<ApiKeyUpdateInput, ApiKeyUncheckedUpdateInput>
+    /**
+     * Choose, which ApiKey to update.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey updateMany
+   */
+  export type ApiKeyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApiKeys.
+     */
+    data: XOR<ApiKeyUpdateManyMutationInput, ApiKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiKeys to update
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * Limit how many ApiKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiKey updateManyAndReturn
+   */
+  export type ApiKeyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * The data used to update ApiKeys.
+     */
+    data: XOR<ApiKeyUpdateManyMutationInput, ApiKeyUncheckedUpdateManyInput>
+    /**
+     * Filter which ApiKeys to update
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * Limit how many ApiKeys to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiKey upsert
+   */
+  export type ApiKeyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * The filter to search for the ApiKey to update in case it exists.
+     */
+    where: ApiKeyWhereUniqueInput
+    /**
+     * In case the ApiKey found by the `where` argument doesn't exist, create a new ApiKey with this data.
+     */
+    create: XOR<ApiKeyCreateInput, ApiKeyUncheckedCreateInput>
+    /**
+     * In case the ApiKey was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ApiKeyUpdateInput, ApiKeyUncheckedUpdateInput>
+  }
+
+  /**
+   * ApiKey delete
+   */
+  export type ApiKeyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+    /**
+     * Filter which ApiKey to delete.
+     */
+    where: ApiKeyWhereUniqueInput
+  }
+
+  /**
+   * ApiKey deleteMany
+   */
+  export type ApiKeyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApiKeys to delete
+     */
+    where?: ApiKeyWhereInput
+    /**
+     * Limit how many ApiKeys to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ApiKey without action
+   */
+  export type ApiKeyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApiKey
+     */
+    select?: ApiKeySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ApiKey
+     */
+    omit?: ApiKeyOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WebhookEndpoint
+   */
+
+  export type AggregateWebhookEndpoint = {
+    _count: WebhookEndpointCountAggregateOutputType | null
+    _min: WebhookEndpointMinAggregateOutputType | null
+    _max: WebhookEndpointMaxAggregateOutputType | null
+  }
+
+  export type WebhookEndpointMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    url: string | null
+    secret: string | null
+    isActive: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WebhookEndpointMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    url: string | null
+    secret: string | null
+    isActive: boolean | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WebhookEndpointCountAggregateOutputType = {
+    id: number
+    name: number
+    url: number
+    secret: number
+    events: number
+    isActive: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WebhookEndpointMinAggregateInputType = {
+    id?: true
+    name?: true
+    url?: true
+    secret?: true
+    isActive?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WebhookEndpointMaxAggregateInputType = {
+    id?: true
+    name?: true
+    url?: true
+    secret?: true
+    isActive?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WebhookEndpointCountAggregateInputType = {
+    id?: true
+    name?: true
+    url?: true
+    secret?: true
+    events?: true
+    isActive?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WebhookEndpointAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebhookEndpoint to aggregate.
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookEndpoints to fetch.
+     */
+    orderBy?: WebhookEndpointOrderByWithRelationInput | WebhookEndpointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WebhookEndpointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookEndpoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookEndpoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WebhookEndpoints
+    **/
+    _count?: true | WebhookEndpointCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WebhookEndpointMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WebhookEndpointMaxAggregateInputType
+  }
+
+  export type GetWebhookEndpointAggregateType<T extends WebhookEndpointAggregateArgs> = {
+        [P in keyof T & keyof AggregateWebhookEndpoint]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWebhookEndpoint[P]>
+      : GetScalarType<T[P], AggregateWebhookEndpoint[P]>
+  }
+
+
+
+
+  export type WebhookEndpointGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebhookEndpointWhereInput
+    orderBy?: WebhookEndpointOrderByWithAggregationInput | WebhookEndpointOrderByWithAggregationInput[]
+    by: WebhookEndpointScalarFieldEnum[] | WebhookEndpointScalarFieldEnum
+    having?: WebhookEndpointScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WebhookEndpointCountAggregateInputType | true
+    _min?: WebhookEndpointMinAggregateInputType
+    _max?: WebhookEndpointMaxAggregateInputType
+  }
+
+  export type WebhookEndpointGroupByOutputType = {
+    id: string
+    name: string
+    url: string
+    secret: string
+    events: string[]
+    isActive: boolean
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: WebhookEndpointCountAggregateOutputType | null
+    _min: WebhookEndpointMinAggregateOutputType | null
+    _max: WebhookEndpointMaxAggregateOutputType | null
+  }
+
+  type GetWebhookEndpointGroupByPayload<T extends WebhookEndpointGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WebhookEndpointGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WebhookEndpointGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WebhookEndpointGroupByOutputType[P]>
+            : GetScalarType<T[P], WebhookEndpointGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WebhookEndpointSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    url?: boolean
+    secret?: boolean
+    events?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webhookEndpoint"]>
+
+  export type WebhookEndpointSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    url?: boolean
+    secret?: boolean
+    events?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webhookEndpoint"]>
+
+  export type WebhookEndpointSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    url?: boolean
+    secret?: boolean
+    events?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webhookEndpoint"]>
+
+  export type WebhookEndpointSelectScalar = {
+    id?: boolean
+    name?: boolean
+    url?: boolean
+    secret?: boolean
+    events?: boolean
+    isActive?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WebhookEndpointOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "secret" | "events" | "isActive" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["webhookEndpoint"]>
+
+  export type $WebhookEndpointPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WebhookEndpoint"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      url: string
+      secret: string
+      events: string[]
+      isActive: boolean
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["webhookEndpoint"]>
+    composites: {}
+  }
+
+  type WebhookEndpointGetPayload<S extends boolean | null | undefined | WebhookEndpointDefaultArgs> = $Result.GetResult<Prisma.$WebhookEndpointPayload, S>
+
+  type WebhookEndpointCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WebhookEndpointFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WebhookEndpointCountAggregateInputType | true
+    }
+
+  export interface WebhookEndpointDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WebhookEndpoint'], meta: { name: 'WebhookEndpoint' } }
+    /**
+     * Find zero or one WebhookEndpoint that matches the filter.
+     * @param {WebhookEndpointFindUniqueArgs} args - Arguments to find a WebhookEndpoint
+     * @example
+     * // Get one WebhookEndpoint
+     * const webhookEndpoint = await prisma.webhookEndpoint.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WebhookEndpointFindUniqueArgs>(args: SelectSubset<T, WebhookEndpointFindUniqueArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WebhookEndpoint that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WebhookEndpointFindUniqueOrThrowArgs} args - Arguments to find a WebhookEndpoint
+     * @example
+     * // Get one WebhookEndpoint
+     * const webhookEndpoint = await prisma.webhookEndpoint.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WebhookEndpointFindUniqueOrThrowArgs>(args: SelectSubset<T, WebhookEndpointFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebhookEndpoint that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointFindFirstArgs} args - Arguments to find a WebhookEndpoint
+     * @example
+     * // Get one WebhookEndpoint
+     * const webhookEndpoint = await prisma.webhookEndpoint.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WebhookEndpointFindFirstArgs>(args?: SelectSubset<T, WebhookEndpointFindFirstArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebhookEndpoint that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointFindFirstOrThrowArgs} args - Arguments to find a WebhookEndpoint
+     * @example
+     * // Get one WebhookEndpoint
+     * const webhookEndpoint = await prisma.webhookEndpoint.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WebhookEndpointFindFirstOrThrowArgs>(args?: SelectSubset<T, WebhookEndpointFindFirstOrThrowArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WebhookEndpoints that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WebhookEndpoints
+     * const webhookEndpoints = await prisma.webhookEndpoint.findMany()
+     * 
+     * // Get first 10 WebhookEndpoints
+     * const webhookEndpoints = await prisma.webhookEndpoint.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const webhookEndpointWithIdOnly = await prisma.webhookEndpoint.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WebhookEndpointFindManyArgs>(args?: SelectSubset<T, WebhookEndpointFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WebhookEndpoint.
+     * @param {WebhookEndpointCreateArgs} args - Arguments to create a WebhookEndpoint.
+     * @example
+     * // Create one WebhookEndpoint
+     * const WebhookEndpoint = await prisma.webhookEndpoint.create({
+     *   data: {
+     *     // ... data to create a WebhookEndpoint
+     *   }
+     * })
+     * 
+     */
+    create<T extends WebhookEndpointCreateArgs>(args: SelectSubset<T, WebhookEndpointCreateArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WebhookEndpoints.
+     * @param {WebhookEndpointCreateManyArgs} args - Arguments to create many WebhookEndpoints.
+     * @example
+     * // Create many WebhookEndpoints
+     * const webhookEndpoint = await prisma.webhookEndpoint.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WebhookEndpointCreateManyArgs>(args?: SelectSubset<T, WebhookEndpointCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WebhookEndpoints and returns the data saved in the database.
+     * @param {WebhookEndpointCreateManyAndReturnArgs} args - Arguments to create many WebhookEndpoints.
+     * @example
+     * // Create many WebhookEndpoints
+     * const webhookEndpoint = await prisma.webhookEndpoint.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WebhookEndpoints and only return the `id`
+     * const webhookEndpointWithIdOnly = await prisma.webhookEndpoint.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WebhookEndpointCreateManyAndReturnArgs>(args?: SelectSubset<T, WebhookEndpointCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WebhookEndpoint.
+     * @param {WebhookEndpointDeleteArgs} args - Arguments to delete one WebhookEndpoint.
+     * @example
+     * // Delete one WebhookEndpoint
+     * const WebhookEndpoint = await prisma.webhookEndpoint.delete({
+     *   where: {
+     *     // ... filter to delete one WebhookEndpoint
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WebhookEndpointDeleteArgs>(args: SelectSubset<T, WebhookEndpointDeleteArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WebhookEndpoint.
+     * @param {WebhookEndpointUpdateArgs} args - Arguments to update one WebhookEndpoint.
+     * @example
+     * // Update one WebhookEndpoint
+     * const webhookEndpoint = await prisma.webhookEndpoint.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WebhookEndpointUpdateArgs>(args: SelectSubset<T, WebhookEndpointUpdateArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WebhookEndpoints.
+     * @param {WebhookEndpointDeleteManyArgs} args - Arguments to filter WebhookEndpoints to delete.
+     * @example
+     * // Delete a few WebhookEndpoints
+     * const { count } = await prisma.webhookEndpoint.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WebhookEndpointDeleteManyArgs>(args?: SelectSubset<T, WebhookEndpointDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebhookEndpoints.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WebhookEndpoints
+     * const webhookEndpoint = await prisma.webhookEndpoint.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WebhookEndpointUpdateManyArgs>(args: SelectSubset<T, WebhookEndpointUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebhookEndpoints and returns the data updated in the database.
+     * @param {WebhookEndpointUpdateManyAndReturnArgs} args - Arguments to update many WebhookEndpoints.
+     * @example
+     * // Update many WebhookEndpoints
+     * const webhookEndpoint = await prisma.webhookEndpoint.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WebhookEndpoints and only return the `id`
+     * const webhookEndpointWithIdOnly = await prisma.webhookEndpoint.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WebhookEndpointUpdateManyAndReturnArgs>(args: SelectSubset<T, WebhookEndpointUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WebhookEndpoint.
+     * @param {WebhookEndpointUpsertArgs} args - Arguments to update or create a WebhookEndpoint.
+     * @example
+     * // Update or create a WebhookEndpoint
+     * const webhookEndpoint = await prisma.webhookEndpoint.upsert({
+     *   create: {
+     *     // ... data to create a WebhookEndpoint
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WebhookEndpoint we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WebhookEndpointUpsertArgs>(args: SelectSubset<T, WebhookEndpointUpsertArgs<ExtArgs>>): Prisma__WebhookEndpointClient<$Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WebhookEndpoints.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointCountArgs} args - Arguments to filter WebhookEndpoints to count.
+     * @example
+     * // Count the number of WebhookEndpoints
+     * const count = await prisma.webhookEndpoint.count({
+     *   where: {
+     *     // ... the filter for the WebhookEndpoints we want to count
+     *   }
+     * })
+    **/
+    count<T extends WebhookEndpointCountArgs>(
+      args?: Subset<T, WebhookEndpointCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WebhookEndpointCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WebhookEndpoint.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WebhookEndpointAggregateArgs>(args: Subset<T, WebhookEndpointAggregateArgs>): Prisma.PrismaPromise<GetWebhookEndpointAggregateType<T>>
+
+    /**
+     * Group by WebhookEndpoint.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookEndpointGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WebhookEndpointGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WebhookEndpointGroupByArgs['orderBy'] }
+        : { orderBy?: WebhookEndpointGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WebhookEndpointGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWebhookEndpointGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WebhookEndpoint model
+   */
+  readonly fields: WebhookEndpointFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WebhookEndpoint.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WebhookEndpointClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WebhookEndpoint model
+   */
+  interface WebhookEndpointFieldRefs {
+    readonly id: FieldRef<"WebhookEndpoint", 'String'>
+    readonly name: FieldRef<"WebhookEndpoint", 'String'>
+    readonly url: FieldRef<"WebhookEndpoint", 'String'>
+    readonly secret: FieldRef<"WebhookEndpoint", 'String'>
+    readonly events: FieldRef<"WebhookEndpoint", 'String[]'>
+    readonly isActive: FieldRef<"WebhookEndpoint", 'Boolean'>
+    readonly createdById: FieldRef<"WebhookEndpoint", 'String'>
+    readonly createdAt: FieldRef<"WebhookEndpoint", 'DateTime'>
+    readonly updatedAt: FieldRef<"WebhookEndpoint", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WebhookEndpoint findUnique
+   */
+  export type WebhookEndpointFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookEndpoint to fetch.
+     */
+    where: WebhookEndpointWhereUniqueInput
+  }
+
+  /**
+   * WebhookEndpoint findUniqueOrThrow
+   */
+  export type WebhookEndpointFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookEndpoint to fetch.
+     */
+    where: WebhookEndpointWhereUniqueInput
+  }
+
+  /**
+   * WebhookEndpoint findFirst
+   */
+  export type WebhookEndpointFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookEndpoint to fetch.
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookEndpoints to fetch.
+     */
+    orderBy?: WebhookEndpointOrderByWithRelationInput | WebhookEndpointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebhookEndpoints.
+     */
+    cursor?: WebhookEndpointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookEndpoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookEndpoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebhookEndpoints.
+     */
+    distinct?: WebhookEndpointScalarFieldEnum | WebhookEndpointScalarFieldEnum[]
+  }
+
+  /**
+   * WebhookEndpoint findFirstOrThrow
+   */
+  export type WebhookEndpointFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookEndpoint to fetch.
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookEndpoints to fetch.
+     */
+    orderBy?: WebhookEndpointOrderByWithRelationInput | WebhookEndpointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebhookEndpoints.
+     */
+    cursor?: WebhookEndpointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookEndpoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookEndpoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebhookEndpoints.
+     */
+    distinct?: WebhookEndpointScalarFieldEnum | WebhookEndpointScalarFieldEnum[]
+  }
+
+  /**
+   * WebhookEndpoint findMany
+   */
+  export type WebhookEndpointFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookEndpoints to fetch.
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookEndpoints to fetch.
+     */
+    orderBy?: WebhookEndpointOrderByWithRelationInput | WebhookEndpointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WebhookEndpoints.
+     */
+    cursor?: WebhookEndpointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookEndpoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookEndpoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebhookEndpoints.
+     */
+    distinct?: WebhookEndpointScalarFieldEnum | WebhookEndpointScalarFieldEnum[]
+  }
+
+  /**
+   * WebhookEndpoint create
+   */
+  export type WebhookEndpointCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WebhookEndpoint.
+     */
+    data: XOR<WebhookEndpointCreateInput, WebhookEndpointUncheckedCreateInput>
+  }
+
+  /**
+   * WebhookEndpoint createMany
+   */
+  export type WebhookEndpointCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WebhookEndpoints.
+     */
+    data: WebhookEndpointCreateManyInput | WebhookEndpointCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebhookEndpoint createManyAndReturn
+   */
+  export type WebhookEndpointCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * The data used to create many WebhookEndpoints.
+     */
+    data: WebhookEndpointCreateManyInput | WebhookEndpointCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebhookEndpoint update
+   */
+  export type WebhookEndpointUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WebhookEndpoint.
+     */
+    data: XOR<WebhookEndpointUpdateInput, WebhookEndpointUncheckedUpdateInput>
+    /**
+     * Choose, which WebhookEndpoint to update.
+     */
+    where: WebhookEndpointWhereUniqueInput
+  }
+
+  /**
+   * WebhookEndpoint updateMany
+   */
+  export type WebhookEndpointUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WebhookEndpoints.
+     */
+    data: XOR<WebhookEndpointUpdateManyMutationInput, WebhookEndpointUncheckedUpdateManyInput>
+    /**
+     * Filter which WebhookEndpoints to update
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * Limit how many WebhookEndpoints to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebhookEndpoint updateManyAndReturn
+   */
+  export type WebhookEndpointUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * The data used to update WebhookEndpoints.
+     */
+    data: XOR<WebhookEndpointUpdateManyMutationInput, WebhookEndpointUncheckedUpdateManyInput>
+    /**
+     * Filter which WebhookEndpoints to update
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * Limit how many WebhookEndpoints to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebhookEndpoint upsert
+   */
+  export type WebhookEndpointUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WebhookEndpoint to update in case it exists.
+     */
+    where: WebhookEndpointWhereUniqueInput
+    /**
+     * In case the WebhookEndpoint found by the `where` argument doesn't exist, create a new WebhookEndpoint with this data.
+     */
+    create: XOR<WebhookEndpointCreateInput, WebhookEndpointUncheckedCreateInput>
+    /**
+     * In case the WebhookEndpoint was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WebhookEndpointUpdateInput, WebhookEndpointUncheckedUpdateInput>
+  }
+
+  /**
+   * WebhookEndpoint delete
+   */
+  export type WebhookEndpointDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+    /**
+     * Filter which WebhookEndpoint to delete.
+     */
+    where: WebhookEndpointWhereUniqueInput
+  }
+
+  /**
+   * WebhookEndpoint deleteMany
+   */
+  export type WebhookEndpointDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebhookEndpoints to delete
+     */
+    where?: WebhookEndpointWhereInput
+    /**
+     * Limit how many WebhookEndpoints to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebhookEndpoint without action
+   */
+  export type WebhookEndpointDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookEndpoint
+     */
+    select?: WebhookEndpointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookEndpoint
+     */
+    omit?: WebhookEndpointOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WebhookDelivery
+   */
+
+  export type AggregateWebhookDelivery = {
+    _count: WebhookDeliveryCountAggregateOutputType | null
+    _avg: WebhookDeliveryAvgAggregateOutputType | null
+    _sum: WebhookDeliverySumAggregateOutputType | null
+    _min: WebhookDeliveryMinAggregateOutputType | null
+    _max: WebhookDeliveryMaxAggregateOutputType | null
+  }
+
+  export type WebhookDeliveryAvgAggregateOutputType = {
+    attempts: number | null
+    lastStatusCode: number | null
+  }
+
+  export type WebhookDeliverySumAggregateOutputType = {
+    attempts: number | null
+    lastStatusCode: number | null
+  }
+
+  export type WebhookDeliveryMinAggregateOutputType = {
+    id: string | null
+    endpointId: string | null
+    event: string | null
+    status: string | null
+    attempts: number | null
+    nextAttemptAt: Date | null
+    lastStatusCode: number | null
+    lastError: string | null
+    deliveredAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WebhookDeliveryMaxAggregateOutputType = {
+    id: string | null
+    endpointId: string | null
+    event: string | null
+    status: string | null
+    attempts: number | null
+    nextAttemptAt: Date | null
+    lastStatusCode: number | null
+    lastError: string | null
+    deliveredAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WebhookDeliveryCountAggregateOutputType = {
+    id: number
+    endpointId: number
+    event: number
+    payload: number
+    status: number
+    attempts: number
+    nextAttemptAt: number
+    lastStatusCode: number
+    lastError: number
+    deliveredAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WebhookDeliveryAvgAggregateInputType = {
+    attempts?: true
+    lastStatusCode?: true
+  }
+
+  export type WebhookDeliverySumAggregateInputType = {
+    attempts?: true
+    lastStatusCode?: true
+  }
+
+  export type WebhookDeliveryMinAggregateInputType = {
+    id?: true
+    endpointId?: true
+    event?: true
+    status?: true
+    attempts?: true
+    nextAttemptAt?: true
+    lastStatusCode?: true
+    lastError?: true
+    deliveredAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WebhookDeliveryMaxAggregateInputType = {
+    id?: true
+    endpointId?: true
+    event?: true
+    status?: true
+    attempts?: true
+    nextAttemptAt?: true
+    lastStatusCode?: true
+    lastError?: true
+    deliveredAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WebhookDeliveryCountAggregateInputType = {
+    id?: true
+    endpointId?: true
+    event?: true
+    payload?: true
+    status?: true
+    attempts?: true
+    nextAttemptAt?: true
+    lastStatusCode?: true
+    lastError?: true
+    deliveredAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WebhookDeliveryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebhookDelivery to aggregate.
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookDeliveries to fetch.
+     */
+    orderBy?: WebhookDeliveryOrderByWithRelationInput | WebhookDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WebhookDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WebhookDeliveries
+    **/
+    _count?: true | WebhookDeliveryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WebhookDeliveryAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WebhookDeliverySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WebhookDeliveryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WebhookDeliveryMaxAggregateInputType
+  }
+
+  export type GetWebhookDeliveryAggregateType<T extends WebhookDeliveryAggregateArgs> = {
+        [P in keyof T & keyof AggregateWebhookDelivery]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWebhookDelivery[P]>
+      : GetScalarType<T[P], AggregateWebhookDelivery[P]>
+  }
+
+
+
+
+  export type WebhookDeliveryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WebhookDeliveryWhereInput
+    orderBy?: WebhookDeliveryOrderByWithAggregationInput | WebhookDeliveryOrderByWithAggregationInput[]
+    by: WebhookDeliveryScalarFieldEnum[] | WebhookDeliveryScalarFieldEnum
+    having?: WebhookDeliveryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WebhookDeliveryCountAggregateInputType | true
+    _avg?: WebhookDeliveryAvgAggregateInputType
+    _sum?: WebhookDeliverySumAggregateInputType
+    _min?: WebhookDeliveryMinAggregateInputType
+    _max?: WebhookDeliveryMaxAggregateInputType
+  }
+
+  export type WebhookDeliveryGroupByOutputType = {
+    id: string
+    endpointId: string
+    event: string
+    payload: JsonValue
+    status: string
+    attempts: number
+    nextAttemptAt: Date
+    lastStatusCode: number | null
+    lastError: string | null
+    deliveredAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: WebhookDeliveryCountAggregateOutputType | null
+    _avg: WebhookDeliveryAvgAggregateOutputType | null
+    _sum: WebhookDeliverySumAggregateOutputType | null
+    _min: WebhookDeliveryMinAggregateOutputType | null
+    _max: WebhookDeliveryMaxAggregateOutputType | null
+  }
+
+  type GetWebhookDeliveryGroupByPayload<T extends WebhookDeliveryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WebhookDeliveryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WebhookDeliveryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WebhookDeliveryGroupByOutputType[P]>
+            : GetScalarType<T[P], WebhookDeliveryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WebhookDeliverySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    endpointId?: boolean
+    event?: boolean
+    payload?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextAttemptAt?: boolean
+    lastStatusCode?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webhookDelivery"]>
+
+  export type WebhookDeliverySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    endpointId?: boolean
+    event?: boolean
+    payload?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextAttemptAt?: boolean
+    lastStatusCode?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webhookDelivery"]>
+
+  export type WebhookDeliverySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    endpointId?: boolean
+    event?: boolean
+    payload?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextAttemptAt?: boolean
+    lastStatusCode?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["webhookDelivery"]>
+
+  export type WebhookDeliverySelectScalar = {
+    id?: boolean
+    endpointId?: boolean
+    event?: boolean
+    payload?: boolean
+    status?: boolean
+    attempts?: boolean
+    nextAttemptAt?: boolean
+    lastStatusCode?: boolean
+    lastError?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WebhookDeliveryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "endpointId" | "event" | "payload" | "status" | "attempts" | "nextAttemptAt" | "lastStatusCode" | "lastError" | "deliveredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["webhookDelivery"]>
+
+  export type $WebhookDeliveryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WebhookDelivery"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      endpointId: string
+      event: string
+      payload: Prisma.JsonValue
+      status: string
+      attempts: number
+      nextAttemptAt: Date
+      lastStatusCode: number | null
+      lastError: string | null
+      deliveredAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["webhookDelivery"]>
+    composites: {}
+  }
+
+  type WebhookDeliveryGetPayload<S extends boolean | null | undefined | WebhookDeliveryDefaultArgs> = $Result.GetResult<Prisma.$WebhookDeliveryPayload, S>
+
+  type WebhookDeliveryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WebhookDeliveryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WebhookDeliveryCountAggregateInputType | true
+    }
+
+  export interface WebhookDeliveryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WebhookDelivery'], meta: { name: 'WebhookDelivery' } }
+    /**
+     * Find zero or one WebhookDelivery that matches the filter.
+     * @param {WebhookDeliveryFindUniqueArgs} args - Arguments to find a WebhookDelivery
+     * @example
+     * // Get one WebhookDelivery
+     * const webhookDelivery = await prisma.webhookDelivery.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WebhookDeliveryFindUniqueArgs>(args: SelectSubset<T, WebhookDeliveryFindUniqueArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WebhookDelivery that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WebhookDeliveryFindUniqueOrThrowArgs} args - Arguments to find a WebhookDelivery
+     * @example
+     * // Get one WebhookDelivery
+     * const webhookDelivery = await prisma.webhookDelivery.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WebhookDeliveryFindUniqueOrThrowArgs>(args: SelectSubset<T, WebhookDeliveryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebhookDelivery that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryFindFirstArgs} args - Arguments to find a WebhookDelivery
+     * @example
+     * // Get one WebhookDelivery
+     * const webhookDelivery = await prisma.webhookDelivery.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WebhookDeliveryFindFirstArgs>(args?: SelectSubset<T, WebhookDeliveryFindFirstArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WebhookDelivery that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryFindFirstOrThrowArgs} args - Arguments to find a WebhookDelivery
+     * @example
+     * // Get one WebhookDelivery
+     * const webhookDelivery = await prisma.webhookDelivery.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WebhookDeliveryFindFirstOrThrowArgs>(args?: SelectSubset<T, WebhookDeliveryFindFirstOrThrowArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WebhookDeliveries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WebhookDeliveries
+     * const webhookDeliveries = await prisma.webhookDelivery.findMany()
+     * 
+     * // Get first 10 WebhookDeliveries
+     * const webhookDeliveries = await prisma.webhookDelivery.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const webhookDeliveryWithIdOnly = await prisma.webhookDelivery.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WebhookDeliveryFindManyArgs>(args?: SelectSubset<T, WebhookDeliveryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WebhookDelivery.
+     * @param {WebhookDeliveryCreateArgs} args - Arguments to create a WebhookDelivery.
+     * @example
+     * // Create one WebhookDelivery
+     * const WebhookDelivery = await prisma.webhookDelivery.create({
+     *   data: {
+     *     // ... data to create a WebhookDelivery
+     *   }
+     * })
+     * 
+     */
+    create<T extends WebhookDeliveryCreateArgs>(args: SelectSubset<T, WebhookDeliveryCreateArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WebhookDeliveries.
+     * @param {WebhookDeliveryCreateManyArgs} args - Arguments to create many WebhookDeliveries.
+     * @example
+     * // Create many WebhookDeliveries
+     * const webhookDelivery = await prisma.webhookDelivery.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WebhookDeliveryCreateManyArgs>(args?: SelectSubset<T, WebhookDeliveryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many WebhookDeliveries and returns the data saved in the database.
+     * @param {WebhookDeliveryCreateManyAndReturnArgs} args - Arguments to create many WebhookDeliveries.
+     * @example
+     * // Create many WebhookDeliveries
+     * const webhookDelivery = await prisma.webhookDelivery.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many WebhookDeliveries and only return the `id`
+     * const webhookDeliveryWithIdOnly = await prisma.webhookDelivery.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends WebhookDeliveryCreateManyAndReturnArgs>(args?: SelectSubset<T, WebhookDeliveryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a WebhookDelivery.
+     * @param {WebhookDeliveryDeleteArgs} args - Arguments to delete one WebhookDelivery.
+     * @example
+     * // Delete one WebhookDelivery
+     * const WebhookDelivery = await prisma.webhookDelivery.delete({
+     *   where: {
+     *     // ... filter to delete one WebhookDelivery
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WebhookDeliveryDeleteArgs>(args: SelectSubset<T, WebhookDeliveryDeleteArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WebhookDelivery.
+     * @param {WebhookDeliveryUpdateArgs} args - Arguments to update one WebhookDelivery.
+     * @example
+     * // Update one WebhookDelivery
+     * const webhookDelivery = await prisma.webhookDelivery.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WebhookDeliveryUpdateArgs>(args: SelectSubset<T, WebhookDeliveryUpdateArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WebhookDeliveries.
+     * @param {WebhookDeliveryDeleteManyArgs} args - Arguments to filter WebhookDeliveries to delete.
+     * @example
+     * // Delete a few WebhookDeliveries
+     * const { count } = await prisma.webhookDelivery.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WebhookDeliveryDeleteManyArgs>(args?: SelectSubset<T, WebhookDeliveryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebhookDeliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WebhookDeliveries
+     * const webhookDelivery = await prisma.webhookDelivery.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WebhookDeliveryUpdateManyArgs>(args: SelectSubset<T, WebhookDeliveryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WebhookDeliveries and returns the data updated in the database.
+     * @param {WebhookDeliveryUpdateManyAndReturnArgs} args - Arguments to update many WebhookDeliveries.
+     * @example
+     * // Update many WebhookDeliveries
+     * const webhookDelivery = await prisma.webhookDelivery.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more WebhookDeliveries and only return the `id`
+     * const webhookDeliveryWithIdOnly = await prisma.webhookDelivery.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends WebhookDeliveryUpdateManyAndReturnArgs>(args: SelectSubset<T, WebhookDeliveryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one WebhookDelivery.
+     * @param {WebhookDeliveryUpsertArgs} args - Arguments to update or create a WebhookDelivery.
+     * @example
+     * // Update or create a WebhookDelivery
+     * const webhookDelivery = await prisma.webhookDelivery.upsert({
+     *   create: {
+     *     // ... data to create a WebhookDelivery
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WebhookDelivery we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WebhookDeliveryUpsertArgs>(args: SelectSubset<T, WebhookDeliveryUpsertArgs<ExtArgs>>): Prisma__WebhookDeliveryClient<$Result.GetResult<Prisma.$WebhookDeliveryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WebhookDeliveries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryCountArgs} args - Arguments to filter WebhookDeliveries to count.
+     * @example
+     * // Count the number of WebhookDeliveries
+     * const count = await prisma.webhookDelivery.count({
+     *   where: {
+     *     // ... the filter for the WebhookDeliveries we want to count
+     *   }
+     * })
+    **/
+    count<T extends WebhookDeliveryCountArgs>(
+      args?: Subset<T, WebhookDeliveryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WebhookDeliveryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WebhookDelivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WebhookDeliveryAggregateArgs>(args: Subset<T, WebhookDeliveryAggregateArgs>): Prisma.PrismaPromise<GetWebhookDeliveryAggregateType<T>>
+
+    /**
+     * Group by WebhookDelivery.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WebhookDeliveryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WebhookDeliveryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WebhookDeliveryGroupByArgs['orderBy'] }
+        : { orderBy?: WebhookDeliveryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WebhookDeliveryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWebhookDeliveryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WebhookDelivery model
+   */
+  readonly fields: WebhookDeliveryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WebhookDelivery.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WebhookDeliveryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WebhookDelivery model
+   */
+  interface WebhookDeliveryFieldRefs {
+    readonly id: FieldRef<"WebhookDelivery", 'String'>
+    readonly endpointId: FieldRef<"WebhookDelivery", 'String'>
+    readonly event: FieldRef<"WebhookDelivery", 'String'>
+    readonly payload: FieldRef<"WebhookDelivery", 'Json'>
+    readonly status: FieldRef<"WebhookDelivery", 'String'>
+    readonly attempts: FieldRef<"WebhookDelivery", 'Int'>
+    readonly nextAttemptAt: FieldRef<"WebhookDelivery", 'DateTime'>
+    readonly lastStatusCode: FieldRef<"WebhookDelivery", 'Int'>
+    readonly lastError: FieldRef<"WebhookDelivery", 'String'>
+    readonly deliveredAt: FieldRef<"WebhookDelivery", 'DateTime'>
+    readonly createdAt: FieldRef<"WebhookDelivery", 'DateTime'>
+    readonly updatedAt: FieldRef<"WebhookDelivery", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WebhookDelivery findUnique
+   */
+  export type WebhookDeliveryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookDelivery to fetch.
+     */
+    where: WebhookDeliveryWhereUniqueInput
+  }
+
+  /**
+   * WebhookDelivery findUniqueOrThrow
+   */
+  export type WebhookDeliveryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookDelivery to fetch.
+     */
+    where: WebhookDeliveryWhereUniqueInput
+  }
+
+  /**
+   * WebhookDelivery findFirst
+   */
+  export type WebhookDeliveryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookDelivery to fetch.
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookDeliveries to fetch.
+     */
+    orderBy?: WebhookDeliveryOrderByWithRelationInput | WebhookDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebhookDeliveries.
+     */
+    cursor?: WebhookDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebhookDeliveries.
+     */
+    distinct?: WebhookDeliveryScalarFieldEnum | WebhookDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * WebhookDelivery findFirstOrThrow
+   */
+  export type WebhookDeliveryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookDelivery to fetch.
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookDeliveries to fetch.
+     */
+    orderBy?: WebhookDeliveryOrderByWithRelationInput | WebhookDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WebhookDeliveries.
+     */
+    cursor?: WebhookDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebhookDeliveries.
+     */
+    distinct?: WebhookDeliveryScalarFieldEnum | WebhookDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * WebhookDelivery findMany
+   */
+  export type WebhookDeliveryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * Filter, which WebhookDeliveries to fetch.
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WebhookDeliveries to fetch.
+     */
+    orderBy?: WebhookDeliveryOrderByWithRelationInput | WebhookDeliveryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WebhookDeliveries.
+     */
+    cursor?: WebhookDeliveryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WebhookDeliveries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WebhookDeliveries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WebhookDeliveries.
+     */
+    distinct?: WebhookDeliveryScalarFieldEnum | WebhookDeliveryScalarFieldEnum[]
+  }
+
+  /**
+   * WebhookDelivery create
+   */
+  export type WebhookDeliveryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * The data needed to create a WebhookDelivery.
+     */
+    data: XOR<WebhookDeliveryCreateInput, WebhookDeliveryUncheckedCreateInput>
+  }
+
+  /**
+   * WebhookDelivery createMany
+   */
+  export type WebhookDeliveryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WebhookDeliveries.
+     */
+    data: WebhookDeliveryCreateManyInput | WebhookDeliveryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebhookDelivery createManyAndReturn
+   */
+  export type WebhookDeliveryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * The data used to create many WebhookDeliveries.
+     */
+    data: WebhookDeliveryCreateManyInput | WebhookDeliveryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WebhookDelivery update
+   */
+  export type WebhookDeliveryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * The data needed to update a WebhookDelivery.
+     */
+    data: XOR<WebhookDeliveryUpdateInput, WebhookDeliveryUncheckedUpdateInput>
+    /**
+     * Choose, which WebhookDelivery to update.
+     */
+    where: WebhookDeliveryWhereUniqueInput
+  }
+
+  /**
+   * WebhookDelivery updateMany
+   */
+  export type WebhookDeliveryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WebhookDeliveries.
+     */
+    data: XOR<WebhookDeliveryUpdateManyMutationInput, WebhookDeliveryUncheckedUpdateManyInput>
+    /**
+     * Filter which WebhookDeliveries to update
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * Limit how many WebhookDeliveries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebhookDelivery updateManyAndReturn
+   */
+  export type WebhookDeliveryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * The data used to update WebhookDeliveries.
+     */
+    data: XOR<WebhookDeliveryUpdateManyMutationInput, WebhookDeliveryUncheckedUpdateManyInput>
+    /**
+     * Filter which WebhookDeliveries to update
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * Limit how many WebhookDeliveries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebhookDelivery upsert
+   */
+  export type WebhookDeliveryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * The filter to search for the WebhookDelivery to update in case it exists.
+     */
+    where: WebhookDeliveryWhereUniqueInput
+    /**
+     * In case the WebhookDelivery found by the `where` argument doesn't exist, create a new WebhookDelivery with this data.
+     */
+    create: XOR<WebhookDeliveryCreateInput, WebhookDeliveryUncheckedCreateInput>
+    /**
+     * In case the WebhookDelivery was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WebhookDeliveryUpdateInput, WebhookDeliveryUncheckedUpdateInput>
+  }
+
+  /**
+   * WebhookDelivery delete
+   */
+  export type WebhookDeliveryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+    /**
+     * Filter which WebhookDelivery to delete.
+     */
+    where: WebhookDeliveryWhereUniqueInput
+  }
+
+  /**
+   * WebhookDelivery deleteMany
+   */
+  export type WebhookDeliveryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WebhookDeliveries to delete
+     */
+    where?: WebhookDeliveryWhereInput
+    /**
+     * Limit how many WebhookDeliveries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WebhookDelivery without action
+   */
+  export type WebhookDeliveryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WebhookDelivery
+     */
+    select?: WebhookDeliverySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WebhookDelivery
+     */
+    omit?: WebhookDeliveryOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -152340,6 +160802,136 @@ export namespace Prisma {
   };
 
   export type PromotionRedemptionScalarFieldEnum = (typeof PromotionRedemptionScalarFieldEnum)[keyof typeof PromotionRedemptionScalarFieldEnum]
+
+
+  export const MessageTemplateScalarFieldEnum: {
+    id: 'id',
+    code: 'code',
+    name: 'name',
+    channel: 'channel',
+    subject: 'subject',
+    body: 'body',
+    isActive: 'isActive',
+    updatedById: 'updatedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MessageTemplateScalarFieldEnum = (typeof MessageTemplateScalarFieldEnum)[keyof typeof MessageTemplateScalarFieldEnum]
+
+
+  export const MessageOutboxScalarFieldEnum: {
+    id: 'id',
+    channel: 'channel',
+    category: 'category',
+    recipient: 'recipient',
+    subject: 'subject',
+    body: 'body',
+    status: 'status',
+    attempts: 'attempts',
+    maxAttempts: 'maxAttempts',
+    nextAttemptAt: 'nextAttemptAt',
+    lastError: 'lastError',
+    provider: 'provider',
+    providerMessageId: 'providerMessageId',
+    templateCode: 'templateCode',
+    relatedType: 'relatedType',
+    relatedId: 'relatedId',
+    createdById: 'createdById',
+    sentAt: 'sentAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MessageOutboxScalarFieldEnum = (typeof MessageOutboxScalarFieldEnum)[keyof typeof MessageOutboxScalarFieldEnum]
+
+
+  export const MessageOptOutScalarFieldEnum: {
+    id: 'id',
+    recipient: 'recipient',
+    channel: 'channel',
+    createdAt: 'createdAt'
+  };
+
+  export type MessageOptOutScalarFieldEnum = (typeof MessageOptOutScalarFieldEnum)[keyof typeof MessageOptOutScalarFieldEnum]
+
+
+  export const MpesaRequestScalarFieldEnum: {
+    id: 'id',
+    checkoutRequestId: 'checkoutRequestId',
+    merchantRequestId: 'merchantRequestId',
+    phone: 'phone',
+    amount: 'amount',
+    accountReference: 'accountReference',
+    description: 'description',
+    branchId: 'branchId',
+    salesDocumentId: 'salesDocumentId',
+    status: 'status',
+    resultCode: 'resultCode',
+    resultDesc: 'resultDesc',
+    receiptNumber: 'receiptNumber',
+    paidAmount: 'paidAmount',
+    transactionDate: 'transactionDate',
+    createdById: 'createdById',
+    callbackRaw: 'callbackRaw',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MpesaRequestScalarFieldEnum = (typeof MpesaRequestScalarFieldEnum)[keyof typeof MpesaRequestScalarFieldEnum]
+
+
+  export const ApiKeyScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    keyPrefix: 'keyPrefix',
+    keyHash: 'keyHash',
+    scopes: 'scopes',
+    branchId: 'branchId',
+    rateLimitPerMin: 'rateLimitPerMin',
+    isActive: 'isActive',
+    expiresAt: 'expiresAt',
+    lastUsedAt: 'lastUsedAt',
+    revokedAt: 'revokedAt',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ApiKeyScalarFieldEnum = (typeof ApiKeyScalarFieldEnum)[keyof typeof ApiKeyScalarFieldEnum]
+
+
+  export const WebhookEndpointScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    url: 'url',
+    secret: 'secret',
+    events: 'events',
+    isActive: 'isActive',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WebhookEndpointScalarFieldEnum = (typeof WebhookEndpointScalarFieldEnum)[keyof typeof WebhookEndpointScalarFieldEnum]
+
+
+  export const WebhookDeliveryScalarFieldEnum: {
+    id: 'id',
+    endpointId: 'endpointId',
+    event: 'event',
+    payload: 'payload',
+    status: 'status',
+    attempts: 'attempts',
+    nextAttemptAt: 'nextAttemptAt',
+    lastStatusCode: 'lastStatusCode',
+    lastError: 'lastError',
+    deliveredAt: 'deliveredAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WebhookDeliveryScalarFieldEnum = (typeof WebhookDeliveryScalarFieldEnum)[keyof typeof WebhookDeliveryScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -163934,6 +172526,644 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"PromotionRedemption"> | number
     amount?: FloatWithAggregatesFilter<"PromotionRedemption"> | number
     createdAt?: DateTimeWithAggregatesFilter<"PromotionRedemption"> | Date | string
+  }
+
+  export type MessageTemplateWhereInput = {
+    AND?: MessageTemplateWhereInput | MessageTemplateWhereInput[]
+    OR?: MessageTemplateWhereInput[]
+    NOT?: MessageTemplateWhereInput | MessageTemplateWhereInput[]
+    id?: StringFilter<"MessageTemplate"> | string
+    code?: StringFilter<"MessageTemplate"> | string
+    name?: StringFilter<"MessageTemplate"> | string
+    channel?: StringFilter<"MessageTemplate"> | string
+    subject?: StringNullableFilter<"MessageTemplate"> | string | null
+    body?: StringFilter<"MessageTemplate"> | string
+    isActive?: BoolFilter<"MessageTemplate"> | boolean
+    updatedById?: StringNullableFilter<"MessageTemplate"> | string | null
+    createdAt?: DateTimeFilter<"MessageTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"MessageTemplate"> | Date | string
+  }
+
+  export type MessageTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    channel?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    body?: SortOrder
+    isActive?: SortOrder
+    updatedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    code?: string
+    AND?: MessageTemplateWhereInput | MessageTemplateWhereInput[]
+    OR?: MessageTemplateWhereInput[]
+    NOT?: MessageTemplateWhereInput | MessageTemplateWhereInput[]
+    name?: StringFilter<"MessageTemplate"> | string
+    channel?: StringFilter<"MessageTemplate"> | string
+    subject?: StringNullableFilter<"MessageTemplate"> | string | null
+    body?: StringFilter<"MessageTemplate"> | string
+    isActive?: BoolFilter<"MessageTemplate"> | boolean
+    updatedById?: StringNullableFilter<"MessageTemplate"> | string | null
+    createdAt?: DateTimeFilter<"MessageTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"MessageTemplate"> | Date | string
+  }, "id" | "code">
+
+  export type MessageTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    channel?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    body?: SortOrder
+    isActive?: SortOrder
+    updatedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MessageTemplateCountOrderByAggregateInput
+    _max?: MessageTemplateMaxOrderByAggregateInput
+    _min?: MessageTemplateMinOrderByAggregateInput
+  }
+
+  export type MessageTemplateScalarWhereWithAggregatesInput = {
+    AND?: MessageTemplateScalarWhereWithAggregatesInput | MessageTemplateScalarWhereWithAggregatesInput[]
+    OR?: MessageTemplateScalarWhereWithAggregatesInput[]
+    NOT?: MessageTemplateScalarWhereWithAggregatesInput | MessageTemplateScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MessageTemplate"> | string
+    code?: StringWithAggregatesFilter<"MessageTemplate"> | string
+    name?: StringWithAggregatesFilter<"MessageTemplate"> | string
+    channel?: StringWithAggregatesFilter<"MessageTemplate"> | string
+    subject?: StringNullableWithAggregatesFilter<"MessageTemplate"> | string | null
+    body?: StringWithAggregatesFilter<"MessageTemplate"> | string
+    isActive?: BoolWithAggregatesFilter<"MessageTemplate"> | boolean
+    updatedById?: StringNullableWithAggregatesFilter<"MessageTemplate"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MessageTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MessageTemplate"> | Date | string
+  }
+
+  export type MessageOutboxWhereInput = {
+    AND?: MessageOutboxWhereInput | MessageOutboxWhereInput[]
+    OR?: MessageOutboxWhereInput[]
+    NOT?: MessageOutboxWhereInput | MessageOutboxWhereInput[]
+    id?: StringFilter<"MessageOutbox"> | string
+    channel?: StringFilter<"MessageOutbox"> | string
+    category?: StringFilter<"MessageOutbox"> | string
+    recipient?: StringFilter<"MessageOutbox"> | string
+    subject?: StringNullableFilter<"MessageOutbox"> | string | null
+    body?: StringFilter<"MessageOutbox"> | string
+    status?: StringFilter<"MessageOutbox"> | string
+    attempts?: IntFilter<"MessageOutbox"> | number
+    maxAttempts?: IntFilter<"MessageOutbox"> | number
+    nextAttemptAt?: DateTimeFilter<"MessageOutbox"> | Date | string
+    lastError?: StringNullableFilter<"MessageOutbox"> | string | null
+    provider?: StringNullableFilter<"MessageOutbox"> | string | null
+    providerMessageId?: StringNullableFilter<"MessageOutbox"> | string | null
+    templateCode?: StringNullableFilter<"MessageOutbox"> | string | null
+    relatedType?: StringNullableFilter<"MessageOutbox"> | string | null
+    relatedId?: StringNullableFilter<"MessageOutbox"> | string | null
+    createdById?: StringNullableFilter<"MessageOutbox"> | string | null
+    sentAt?: DateTimeNullableFilter<"MessageOutbox"> | Date | string | null
+    createdAt?: DateTimeFilter<"MessageOutbox"> | Date | string
+    updatedAt?: DateTimeFilter<"MessageOutbox"> | Date | string
+  }
+
+  export type MessageOutboxOrderByWithRelationInput = {
+    id?: SortOrder
+    channel?: SortOrder
+    category?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    provider?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    templateCode?: SortOrderInput | SortOrder
+    relatedType?: SortOrderInput | SortOrder
+    relatedId?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageOutboxWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MessageOutboxWhereInput | MessageOutboxWhereInput[]
+    OR?: MessageOutboxWhereInput[]
+    NOT?: MessageOutboxWhereInput | MessageOutboxWhereInput[]
+    channel?: StringFilter<"MessageOutbox"> | string
+    category?: StringFilter<"MessageOutbox"> | string
+    recipient?: StringFilter<"MessageOutbox"> | string
+    subject?: StringNullableFilter<"MessageOutbox"> | string | null
+    body?: StringFilter<"MessageOutbox"> | string
+    status?: StringFilter<"MessageOutbox"> | string
+    attempts?: IntFilter<"MessageOutbox"> | number
+    maxAttempts?: IntFilter<"MessageOutbox"> | number
+    nextAttemptAt?: DateTimeFilter<"MessageOutbox"> | Date | string
+    lastError?: StringNullableFilter<"MessageOutbox"> | string | null
+    provider?: StringNullableFilter<"MessageOutbox"> | string | null
+    providerMessageId?: StringNullableFilter<"MessageOutbox"> | string | null
+    templateCode?: StringNullableFilter<"MessageOutbox"> | string | null
+    relatedType?: StringNullableFilter<"MessageOutbox"> | string | null
+    relatedId?: StringNullableFilter<"MessageOutbox"> | string | null
+    createdById?: StringNullableFilter<"MessageOutbox"> | string | null
+    sentAt?: DateTimeNullableFilter<"MessageOutbox"> | Date | string | null
+    createdAt?: DateTimeFilter<"MessageOutbox"> | Date | string
+    updatedAt?: DateTimeFilter<"MessageOutbox"> | Date | string
+  }, "id">
+
+  export type MessageOutboxOrderByWithAggregationInput = {
+    id?: SortOrder
+    channel?: SortOrder
+    category?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrderInput | SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastError?: SortOrderInput | SortOrder
+    provider?: SortOrderInput | SortOrder
+    providerMessageId?: SortOrderInput | SortOrder
+    templateCode?: SortOrderInput | SortOrder
+    relatedType?: SortOrderInput | SortOrder
+    relatedId?: SortOrderInput | SortOrder
+    createdById?: SortOrderInput | SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MessageOutboxCountOrderByAggregateInput
+    _avg?: MessageOutboxAvgOrderByAggregateInput
+    _max?: MessageOutboxMaxOrderByAggregateInput
+    _min?: MessageOutboxMinOrderByAggregateInput
+    _sum?: MessageOutboxSumOrderByAggregateInput
+  }
+
+  export type MessageOutboxScalarWhereWithAggregatesInput = {
+    AND?: MessageOutboxScalarWhereWithAggregatesInput | MessageOutboxScalarWhereWithAggregatesInput[]
+    OR?: MessageOutboxScalarWhereWithAggregatesInput[]
+    NOT?: MessageOutboxScalarWhereWithAggregatesInput | MessageOutboxScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MessageOutbox"> | string
+    channel?: StringWithAggregatesFilter<"MessageOutbox"> | string
+    category?: StringWithAggregatesFilter<"MessageOutbox"> | string
+    recipient?: StringWithAggregatesFilter<"MessageOutbox"> | string
+    subject?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    body?: StringWithAggregatesFilter<"MessageOutbox"> | string
+    status?: StringWithAggregatesFilter<"MessageOutbox"> | string
+    attempts?: IntWithAggregatesFilter<"MessageOutbox"> | number
+    maxAttempts?: IntWithAggregatesFilter<"MessageOutbox"> | number
+    nextAttemptAt?: DateTimeWithAggregatesFilter<"MessageOutbox"> | Date | string
+    lastError?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    provider?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    providerMessageId?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    templateCode?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    relatedType?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    relatedId?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    createdById?: StringNullableWithAggregatesFilter<"MessageOutbox"> | string | null
+    sentAt?: DateTimeNullableWithAggregatesFilter<"MessageOutbox"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MessageOutbox"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MessageOutbox"> | Date | string
+  }
+
+  export type MessageOptOutWhereInput = {
+    AND?: MessageOptOutWhereInput | MessageOptOutWhereInput[]
+    OR?: MessageOptOutWhereInput[]
+    NOT?: MessageOptOutWhereInput | MessageOptOutWhereInput[]
+    id?: StringFilter<"MessageOptOut"> | string
+    recipient?: StringFilter<"MessageOptOut"> | string
+    channel?: StringFilter<"MessageOptOut"> | string
+    createdAt?: DateTimeFilter<"MessageOptOut"> | Date | string
+  }
+
+  export type MessageOptOutOrderByWithRelationInput = {
+    id?: SortOrder
+    recipient?: SortOrder
+    channel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageOptOutWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    recipient_channel?: MessageOptOutRecipientChannelCompoundUniqueInput
+    AND?: MessageOptOutWhereInput | MessageOptOutWhereInput[]
+    OR?: MessageOptOutWhereInput[]
+    NOT?: MessageOptOutWhereInput | MessageOptOutWhereInput[]
+    recipient?: StringFilter<"MessageOptOut"> | string
+    channel?: StringFilter<"MessageOptOut"> | string
+    createdAt?: DateTimeFilter<"MessageOptOut"> | Date | string
+  }, "id" | "recipient_channel">
+
+  export type MessageOptOutOrderByWithAggregationInput = {
+    id?: SortOrder
+    recipient?: SortOrder
+    channel?: SortOrder
+    createdAt?: SortOrder
+    _count?: MessageOptOutCountOrderByAggregateInput
+    _max?: MessageOptOutMaxOrderByAggregateInput
+    _min?: MessageOptOutMinOrderByAggregateInput
+  }
+
+  export type MessageOptOutScalarWhereWithAggregatesInput = {
+    AND?: MessageOptOutScalarWhereWithAggregatesInput | MessageOptOutScalarWhereWithAggregatesInput[]
+    OR?: MessageOptOutScalarWhereWithAggregatesInput[]
+    NOT?: MessageOptOutScalarWhereWithAggregatesInput | MessageOptOutScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MessageOptOut"> | string
+    recipient?: StringWithAggregatesFilter<"MessageOptOut"> | string
+    channel?: StringWithAggregatesFilter<"MessageOptOut"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"MessageOptOut"> | Date | string
+  }
+
+  export type MpesaRequestWhereInput = {
+    AND?: MpesaRequestWhereInput | MpesaRequestWhereInput[]
+    OR?: MpesaRequestWhereInput[]
+    NOT?: MpesaRequestWhereInput | MpesaRequestWhereInput[]
+    id?: StringFilter<"MpesaRequest"> | string
+    checkoutRequestId?: StringNullableFilter<"MpesaRequest"> | string | null
+    merchantRequestId?: StringNullableFilter<"MpesaRequest"> | string | null
+    phone?: StringFilter<"MpesaRequest"> | string
+    amount?: IntFilter<"MpesaRequest"> | number
+    accountReference?: StringFilter<"MpesaRequest"> | string
+    description?: StringNullableFilter<"MpesaRequest"> | string | null
+    branchId?: StringNullableFilter<"MpesaRequest"> | string | null
+    salesDocumentId?: StringNullableFilter<"MpesaRequest"> | string | null
+    status?: StringFilter<"MpesaRequest"> | string
+    resultCode?: IntNullableFilter<"MpesaRequest"> | number | null
+    resultDesc?: StringNullableFilter<"MpesaRequest"> | string | null
+    receiptNumber?: StringNullableFilter<"MpesaRequest"> | string | null
+    paidAmount?: FloatNullableFilter<"MpesaRequest"> | number | null
+    transactionDate?: DateTimeNullableFilter<"MpesaRequest"> | Date | string | null
+    createdById?: StringFilter<"MpesaRequest"> | string
+    callbackRaw?: JsonNullableFilter<"MpesaRequest">
+    createdAt?: DateTimeFilter<"MpesaRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"MpesaRequest"> | Date | string
+  }
+
+  export type MpesaRequestOrderByWithRelationInput = {
+    id?: SortOrder
+    checkoutRequestId?: SortOrderInput | SortOrder
+    merchantRequestId?: SortOrderInput | SortOrder
+    phone?: SortOrder
+    amount?: SortOrder
+    accountReference?: SortOrder
+    description?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    salesDocumentId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    resultCode?: SortOrderInput | SortOrder
+    resultDesc?: SortOrderInput | SortOrder
+    receiptNumber?: SortOrderInput | SortOrder
+    paidAmount?: SortOrderInput | SortOrder
+    transactionDate?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    callbackRaw?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MpesaRequestWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    checkoutRequestId?: string
+    receiptNumber?: string
+    AND?: MpesaRequestWhereInput | MpesaRequestWhereInput[]
+    OR?: MpesaRequestWhereInput[]
+    NOT?: MpesaRequestWhereInput | MpesaRequestWhereInput[]
+    merchantRequestId?: StringNullableFilter<"MpesaRequest"> | string | null
+    phone?: StringFilter<"MpesaRequest"> | string
+    amount?: IntFilter<"MpesaRequest"> | number
+    accountReference?: StringFilter<"MpesaRequest"> | string
+    description?: StringNullableFilter<"MpesaRequest"> | string | null
+    branchId?: StringNullableFilter<"MpesaRequest"> | string | null
+    salesDocumentId?: StringNullableFilter<"MpesaRequest"> | string | null
+    status?: StringFilter<"MpesaRequest"> | string
+    resultCode?: IntNullableFilter<"MpesaRequest"> | number | null
+    resultDesc?: StringNullableFilter<"MpesaRequest"> | string | null
+    paidAmount?: FloatNullableFilter<"MpesaRequest"> | number | null
+    transactionDate?: DateTimeNullableFilter<"MpesaRequest"> | Date | string | null
+    createdById?: StringFilter<"MpesaRequest"> | string
+    callbackRaw?: JsonNullableFilter<"MpesaRequest">
+    createdAt?: DateTimeFilter<"MpesaRequest"> | Date | string
+    updatedAt?: DateTimeFilter<"MpesaRequest"> | Date | string
+  }, "id" | "checkoutRequestId" | "receiptNumber">
+
+  export type MpesaRequestOrderByWithAggregationInput = {
+    id?: SortOrder
+    checkoutRequestId?: SortOrderInput | SortOrder
+    merchantRequestId?: SortOrderInput | SortOrder
+    phone?: SortOrder
+    amount?: SortOrder
+    accountReference?: SortOrder
+    description?: SortOrderInput | SortOrder
+    branchId?: SortOrderInput | SortOrder
+    salesDocumentId?: SortOrderInput | SortOrder
+    status?: SortOrder
+    resultCode?: SortOrderInput | SortOrder
+    resultDesc?: SortOrderInput | SortOrder
+    receiptNumber?: SortOrderInput | SortOrder
+    paidAmount?: SortOrderInput | SortOrder
+    transactionDate?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    callbackRaw?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MpesaRequestCountOrderByAggregateInput
+    _avg?: MpesaRequestAvgOrderByAggregateInput
+    _max?: MpesaRequestMaxOrderByAggregateInput
+    _min?: MpesaRequestMinOrderByAggregateInput
+    _sum?: MpesaRequestSumOrderByAggregateInput
+  }
+
+  export type MpesaRequestScalarWhereWithAggregatesInput = {
+    AND?: MpesaRequestScalarWhereWithAggregatesInput | MpesaRequestScalarWhereWithAggregatesInput[]
+    OR?: MpesaRequestScalarWhereWithAggregatesInput[]
+    NOT?: MpesaRequestScalarWhereWithAggregatesInput | MpesaRequestScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MpesaRequest"> | string
+    checkoutRequestId?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    merchantRequestId?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    phone?: StringWithAggregatesFilter<"MpesaRequest"> | string
+    amount?: IntWithAggregatesFilter<"MpesaRequest"> | number
+    accountReference?: StringWithAggregatesFilter<"MpesaRequest"> | string
+    description?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    branchId?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    salesDocumentId?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    status?: StringWithAggregatesFilter<"MpesaRequest"> | string
+    resultCode?: IntNullableWithAggregatesFilter<"MpesaRequest"> | number | null
+    resultDesc?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    receiptNumber?: StringNullableWithAggregatesFilter<"MpesaRequest"> | string | null
+    paidAmount?: FloatNullableWithAggregatesFilter<"MpesaRequest"> | number | null
+    transactionDate?: DateTimeNullableWithAggregatesFilter<"MpesaRequest"> | Date | string | null
+    createdById?: StringWithAggregatesFilter<"MpesaRequest"> | string
+    callbackRaw?: JsonNullableWithAggregatesFilter<"MpesaRequest">
+    createdAt?: DateTimeWithAggregatesFilter<"MpesaRequest"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MpesaRequest"> | Date | string
+  }
+
+  export type ApiKeyWhereInput = {
+    AND?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    OR?: ApiKeyWhereInput[]
+    NOT?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    id?: StringFilter<"ApiKey"> | string
+    name?: StringFilter<"ApiKey"> | string
+    keyPrefix?: StringFilter<"ApiKey"> | string
+    keyHash?: StringFilter<"ApiKey"> | string
+    scopes?: StringNullableListFilter<"ApiKey">
+    branchId?: StringNullableFilter<"ApiKey"> | string | null
+    rateLimitPerMin?: IntFilter<"ApiKey"> | number
+    isActive?: BoolFilter<"ApiKey"> | boolean
+    expiresAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    lastUsedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    createdById?: StringFilter<"ApiKey"> | string
+    createdAt?: DateTimeFilter<"ApiKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ApiKey"> | Date | string
+  }
+
+  export type ApiKeyOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    scopes?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    rateLimitPerMin?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiKeyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    keyHash?: string
+    AND?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    OR?: ApiKeyWhereInput[]
+    NOT?: ApiKeyWhereInput | ApiKeyWhereInput[]
+    name?: StringFilter<"ApiKey"> | string
+    keyPrefix?: StringFilter<"ApiKey"> | string
+    scopes?: StringNullableListFilter<"ApiKey">
+    branchId?: StringNullableFilter<"ApiKey"> | string | null
+    rateLimitPerMin?: IntFilter<"ApiKey"> | number
+    isActive?: BoolFilter<"ApiKey"> | boolean
+    expiresAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    lastUsedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    revokedAt?: DateTimeNullableFilter<"ApiKey"> | Date | string | null
+    createdById?: StringFilter<"ApiKey"> | string
+    createdAt?: DateTimeFilter<"ApiKey"> | Date | string
+    updatedAt?: DateTimeFilter<"ApiKey"> | Date | string
+  }, "id" | "keyHash">
+
+  export type ApiKeyOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    scopes?: SortOrder
+    branchId?: SortOrderInput | SortOrder
+    rateLimitPerMin?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    lastUsedAt?: SortOrderInput | SortOrder
+    revokedAt?: SortOrderInput | SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ApiKeyCountOrderByAggregateInput
+    _avg?: ApiKeyAvgOrderByAggregateInput
+    _max?: ApiKeyMaxOrderByAggregateInput
+    _min?: ApiKeyMinOrderByAggregateInput
+    _sum?: ApiKeySumOrderByAggregateInput
+  }
+
+  export type ApiKeyScalarWhereWithAggregatesInput = {
+    AND?: ApiKeyScalarWhereWithAggregatesInput | ApiKeyScalarWhereWithAggregatesInput[]
+    OR?: ApiKeyScalarWhereWithAggregatesInput[]
+    NOT?: ApiKeyScalarWhereWithAggregatesInput | ApiKeyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ApiKey"> | string
+    name?: StringWithAggregatesFilter<"ApiKey"> | string
+    keyPrefix?: StringWithAggregatesFilter<"ApiKey"> | string
+    keyHash?: StringWithAggregatesFilter<"ApiKey"> | string
+    scopes?: StringNullableListFilter<"ApiKey">
+    branchId?: StringNullableWithAggregatesFilter<"ApiKey"> | string | null
+    rateLimitPerMin?: IntWithAggregatesFilter<"ApiKey"> | number
+    isActive?: BoolWithAggregatesFilter<"ApiKey"> | boolean
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"ApiKey"> | Date | string | null
+    lastUsedAt?: DateTimeNullableWithAggregatesFilter<"ApiKey"> | Date | string | null
+    revokedAt?: DateTimeNullableWithAggregatesFilter<"ApiKey"> | Date | string | null
+    createdById?: StringWithAggregatesFilter<"ApiKey"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"ApiKey"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ApiKey"> | Date | string
+  }
+
+  export type WebhookEndpointWhereInput = {
+    AND?: WebhookEndpointWhereInput | WebhookEndpointWhereInput[]
+    OR?: WebhookEndpointWhereInput[]
+    NOT?: WebhookEndpointWhereInput | WebhookEndpointWhereInput[]
+    id?: StringFilter<"WebhookEndpoint"> | string
+    name?: StringFilter<"WebhookEndpoint"> | string
+    url?: StringFilter<"WebhookEndpoint"> | string
+    secret?: StringFilter<"WebhookEndpoint"> | string
+    events?: StringNullableListFilter<"WebhookEndpoint">
+    isActive?: BoolFilter<"WebhookEndpoint"> | boolean
+    createdById?: StringFilter<"WebhookEndpoint"> | string
+    createdAt?: DateTimeFilter<"WebhookEndpoint"> | Date | string
+    updatedAt?: DateTimeFilter<"WebhookEndpoint"> | Date | string
+  }
+
+  export type WebhookEndpointOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    url?: SortOrder
+    secret?: SortOrder
+    events?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookEndpointWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WebhookEndpointWhereInput | WebhookEndpointWhereInput[]
+    OR?: WebhookEndpointWhereInput[]
+    NOT?: WebhookEndpointWhereInput | WebhookEndpointWhereInput[]
+    name?: StringFilter<"WebhookEndpoint"> | string
+    url?: StringFilter<"WebhookEndpoint"> | string
+    secret?: StringFilter<"WebhookEndpoint"> | string
+    events?: StringNullableListFilter<"WebhookEndpoint">
+    isActive?: BoolFilter<"WebhookEndpoint"> | boolean
+    createdById?: StringFilter<"WebhookEndpoint"> | string
+    createdAt?: DateTimeFilter<"WebhookEndpoint"> | Date | string
+    updatedAt?: DateTimeFilter<"WebhookEndpoint"> | Date | string
+  }, "id">
+
+  export type WebhookEndpointOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    url?: SortOrder
+    secret?: SortOrder
+    events?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WebhookEndpointCountOrderByAggregateInput
+    _max?: WebhookEndpointMaxOrderByAggregateInput
+    _min?: WebhookEndpointMinOrderByAggregateInput
+  }
+
+  export type WebhookEndpointScalarWhereWithAggregatesInput = {
+    AND?: WebhookEndpointScalarWhereWithAggregatesInput | WebhookEndpointScalarWhereWithAggregatesInput[]
+    OR?: WebhookEndpointScalarWhereWithAggregatesInput[]
+    NOT?: WebhookEndpointScalarWhereWithAggregatesInput | WebhookEndpointScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WebhookEndpoint"> | string
+    name?: StringWithAggregatesFilter<"WebhookEndpoint"> | string
+    url?: StringWithAggregatesFilter<"WebhookEndpoint"> | string
+    secret?: StringWithAggregatesFilter<"WebhookEndpoint"> | string
+    events?: StringNullableListFilter<"WebhookEndpoint">
+    isActive?: BoolWithAggregatesFilter<"WebhookEndpoint"> | boolean
+    createdById?: StringWithAggregatesFilter<"WebhookEndpoint"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"WebhookEndpoint"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WebhookEndpoint"> | Date | string
+  }
+
+  export type WebhookDeliveryWhereInput = {
+    AND?: WebhookDeliveryWhereInput | WebhookDeliveryWhereInput[]
+    OR?: WebhookDeliveryWhereInput[]
+    NOT?: WebhookDeliveryWhereInput | WebhookDeliveryWhereInput[]
+    id?: StringFilter<"WebhookDelivery"> | string
+    endpointId?: StringFilter<"WebhookDelivery"> | string
+    event?: StringFilter<"WebhookDelivery"> | string
+    payload?: JsonFilter<"WebhookDelivery">
+    status?: StringFilter<"WebhookDelivery"> | string
+    attempts?: IntFilter<"WebhookDelivery"> | number
+    nextAttemptAt?: DateTimeFilter<"WebhookDelivery"> | Date | string
+    lastStatusCode?: IntNullableFilter<"WebhookDelivery"> | number | null
+    lastError?: StringNullableFilter<"WebhookDelivery"> | string | null
+    deliveredAt?: DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
+    createdAt?: DateTimeFilter<"WebhookDelivery"> | Date | string
+    updatedAt?: DateTimeFilter<"WebhookDelivery"> | Date | string
+  }
+
+  export type WebhookDeliveryOrderByWithRelationInput = {
+    id?: SortOrder
+    endpointId?: SortOrder
+    event?: SortOrder
+    payload?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastStatusCode?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookDeliveryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: WebhookDeliveryWhereInput | WebhookDeliveryWhereInput[]
+    OR?: WebhookDeliveryWhereInput[]
+    NOT?: WebhookDeliveryWhereInput | WebhookDeliveryWhereInput[]
+    endpointId?: StringFilter<"WebhookDelivery"> | string
+    event?: StringFilter<"WebhookDelivery"> | string
+    payload?: JsonFilter<"WebhookDelivery">
+    status?: StringFilter<"WebhookDelivery"> | string
+    attempts?: IntFilter<"WebhookDelivery"> | number
+    nextAttemptAt?: DateTimeFilter<"WebhookDelivery"> | Date | string
+    lastStatusCode?: IntNullableFilter<"WebhookDelivery"> | number | null
+    lastError?: StringNullableFilter<"WebhookDelivery"> | string | null
+    deliveredAt?: DateTimeNullableFilter<"WebhookDelivery"> | Date | string | null
+    createdAt?: DateTimeFilter<"WebhookDelivery"> | Date | string
+    updatedAt?: DateTimeFilter<"WebhookDelivery"> | Date | string
+  }, "id">
+
+  export type WebhookDeliveryOrderByWithAggregationInput = {
+    id?: SortOrder
+    endpointId?: SortOrder
+    event?: SortOrder
+    payload?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastStatusCode?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WebhookDeliveryCountOrderByAggregateInput
+    _avg?: WebhookDeliveryAvgOrderByAggregateInput
+    _max?: WebhookDeliveryMaxOrderByAggregateInput
+    _min?: WebhookDeliveryMinOrderByAggregateInput
+    _sum?: WebhookDeliverySumOrderByAggregateInput
+  }
+
+  export type WebhookDeliveryScalarWhereWithAggregatesInput = {
+    AND?: WebhookDeliveryScalarWhereWithAggregatesInput | WebhookDeliveryScalarWhereWithAggregatesInput[]
+    OR?: WebhookDeliveryScalarWhereWithAggregatesInput[]
+    NOT?: WebhookDeliveryScalarWhereWithAggregatesInput | WebhookDeliveryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"WebhookDelivery"> | string
+    endpointId?: StringWithAggregatesFilter<"WebhookDelivery"> | string
+    event?: StringWithAggregatesFilter<"WebhookDelivery"> | string
+    payload?: JsonWithAggregatesFilter<"WebhookDelivery">
+    status?: StringWithAggregatesFilter<"WebhookDelivery"> | string
+    attempts?: IntWithAggregatesFilter<"WebhookDelivery"> | number
+    nextAttemptAt?: DateTimeWithAggregatesFilter<"WebhookDelivery"> | Date | string
+    lastStatusCode?: IntNullableWithAggregatesFilter<"WebhookDelivery"> | number | null
+    lastError?: StringNullableWithAggregatesFilter<"WebhookDelivery"> | string | null
+    deliveredAt?: DateTimeNullableWithAggregatesFilter<"WebhookDelivery"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WebhookDelivery"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"WebhookDelivery"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -176081,6 +185311,769 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MessageTemplateCreateInput = {
+    id?: string
+    code: string
+    name: string
+    channel: string
+    subject?: string | null
+    body: string
+    isActive?: boolean
+    updatedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MessageTemplateUncheckedCreateInput = {
+    id?: string
+    code: string
+    name: string
+    channel: string
+    subject?: string | null
+    body: string
+    isActive?: boolean
+    updatedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MessageTemplateUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageTemplateUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageTemplateCreateManyInput = {
+    id?: string
+    code: string
+    name: string
+    channel: string
+    subject?: string | null
+    body: string
+    isActive?: boolean
+    updatedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MessageTemplateUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageTemplateUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOutboxCreateInput = {
+    id?: string
+    channel: string
+    category?: string
+    recipient: string
+    subject?: string | null
+    body: string
+    status?: string
+    attempts?: number
+    maxAttempts?: number
+    nextAttemptAt?: Date | string
+    lastError?: string | null
+    provider?: string | null
+    providerMessageId?: string | null
+    templateCode?: string | null
+    relatedType?: string | null
+    relatedId?: string | null
+    createdById?: string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MessageOutboxUncheckedCreateInput = {
+    id?: string
+    channel: string
+    category?: string
+    recipient: string
+    subject?: string | null
+    body: string
+    status?: string
+    attempts?: number
+    maxAttempts?: number
+    nextAttemptAt?: Date | string
+    lastError?: string | null
+    provider?: string | null
+    providerMessageId?: string | null
+    templateCode?: string | null
+    relatedType?: string | null
+    relatedId?: string | null
+    createdById?: string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MessageOutboxUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    maxAttempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedType?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOutboxUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    maxAttempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedType?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOutboxCreateManyInput = {
+    id?: string
+    channel: string
+    category?: string
+    recipient: string
+    subject?: string | null
+    body: string
+    status?: string
+    attempts?: number
+    maxAttempts?: number
+    nextAttemptAt?: Date | string
+    lastError?: string | null
+    provider?: string | null
+    providerMessageId?: string | null
+    templateCode?: string | null
+    relatedType?: string | null
+    relatedId?: string | null
+    createdById?: string | null
+    sentAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MessageOutboxUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    maxAttempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedType?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOutboxUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    body?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    maxAttempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    providerMessageId?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedType?: NullableStringFieldUpdateOperationsInput | string | null
+    relatedId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOptOutCreateInput = {
+    id?: string
+    recipient: string
+    channel: string
+    createdAt?: Date | string
+  }
+
+  export type MessageOptOutUncheckedCreateInput = {
+    id?: string
+    recipient: string
+    channel: string
+    createdAt?: Date | string
+  }
+
+  export type MessageOptOutUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOptOutUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOptOutCreateManyInput = {
+    id?: string
+    recipient: string
+    channel: string
+    createdAt?: Date | string
+  }
+
+  export type MessageOptOutUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageOptOutUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipient?: StringFieldUpdateOperationsInput | string
+    channel?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MpesaRequestCreateInput = {
+    id?: string
+    checkoutRequestId?: string | null
+    merchantRequestId?: string | null
+    phone: string
+    amount: number
+    accountReference: string
+    description?: string | null
+    branchId?: string | null
+    salesDocumentId?: string | null
+    status?: string
+    resultCode?: number | null
+    resultDesc?: string | null
+    receiptNumber?: string | null
+    paidAmount?: number | null
+    transactionDate?: Date | string | null
+    createdById: string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MpesaRequestUncheckedCreateInput = {
+    id?: string
+    checkoutRequestId?: string | null
+    merchantRequestId?: string | null
+    phone: string
+    amount: number
+    accountReference: string
+    description?: string | null
+    branchId?: string | null
+    salesDocumentId?: string | null
+    status?: string
+    resultCode?: number | null
+    resultDesc?: string | null
+    receiptNumber?: string | null
+    paidAmount?: number | null
+    transactionDate?: Date | string | null
+    createdById: string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MpesaRequestUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    accountReference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    resultCode?: NullableIntFieldUpdateOperationsInput | number | null
+    resultDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    receiptNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    transactionDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MpesaRequestUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    accountReference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    resultCode?: NullableIntFieldUpdateOperationsInput | number | null
+    resultDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    receiptNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    transactionDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MpesaRequestCreateManyInput = {
+    id?: string
+    checkoutRequestId?: string | null
+    merchantRequestId?: string | null
+    phone: string
+    amount: number
+    accountReference: string
+    description?: string | null
+    branchId?: string | null
+    salesDocumentId?: string | null
+    status?: string
+    resultCode?: number | null
+    resultDesc?: string | null
+    receiptNumber?: string | null
+    paidAmount?: number | null
+    transactionDate?: Date | string | null
+    createdById: string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MpesaRequestUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    accountReference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    resultCode?: NullableIntFieldUpdateOperationsInput | number | null
+    resultDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    receiptNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    transactionDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MpesaRequestUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    merchantRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: StringFieldUpdateOperationsInput | string
+    amount?: IntFieldUpdateOperationsInput | number
+    accountReference?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    salesDocumentId?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    resultCode?: NullableIntFieldUpdateOperationsInput | number | null
+    resultDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    receiptNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAmount?: NullableFloatFieldUpdateOperationsInput | number | null
+    transactionDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    callbackRaw?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiKeyCreateInput = {
+    id?: string
+    name: string
+    keyPrefix: string
+    keyHash: string
+    scopes?: ApiKeyCreatescopesInput | string[]
+    branchId?: string | null
+    rateLimitPerMin?: number
+    isActive?: boolean
+    expiresAt?: Date | string | null
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApiKeyUncheckedCreateInput = {
+    id?: string
+    name: string
+    keyPrefix: string
+    keyHash: string
+    scopes?: ApiKeyCreatescopesInput | string[]
+    branchId?: string | null
+    rateLimitPerMin?: number
+    isActive?: boolean
+    expiresAt?: Date | string | null
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApiKeyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    scopes?: ApiKeyUpdatescopesInput | string[]
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    rateLimitPerMin?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiKeyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    scopes?: ApiKeyUpdatescopesInput | string[]
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    rateLimitPerMin?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiKeyCreateManyInput = {
+    id?: string
+    name: string
+    keyPrefix: string
+    keyHash: string
+    scopes?: ApiKeyCreatescopesInput | string[]
+    branchId?: string | null
+    rateLimitPerMin?: number
+    isActive?: boolean
+    expiresAt?: Date | string | null
+    lastUsedAt?: Date | string | null
+    revokedAt?: Date | string | null
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ApiKeyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    scopes?: ApiKeyUpdatescopesInput | string[]
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    rateLimitPerMin?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ApiKeyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    scopes?: ApiKeyUpdatescopesInput | string[]
+    branchId?: NullableStringFieldUpdateOperationsInput | string | null
+    rateLimitPerMin?: IntFieldUpdateOperationsInput | number
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastUsedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    revokedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookEndpointCreateInput = {
+    id?: string
+    name: string
+    url: string
+    secret: string
+    events?: WebhookEndpointCreateeventsInput | string[]
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookEndpointUncheckedCreateInput = {
+    id?: string
+    name: string
+    url: string
+    secret: string
+    events?: WebhookEndpointCreateeventsInput | string[]
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookEndpointUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    secret?: StringFieldUpdateOperationsInput | string
+    events?: WebhookEndpointUpdateeventsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookEndpointUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    secret?: StringFieldUpdateOperationsInput | string
+    events?: WebhookEndpointUpdateeventsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookEndpointCreateManyInput = {
+    id?: string
+    name: string
+    url: string
+    secret: string
+    events?: WebhookEndpointCreateeventsInput | string[]
+    isActive?: boolean
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookEndpointUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    secret?: StringFieldUpdateOperationsInput | string
+    events?: WebhookEndpointUpdateeventsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookEndpointUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    secret?: StringFieldUpdateOperationsInput | string
+    events?: WebhookEndpointUpdateeventsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookDeliveryCreateInput = {
+    id?: string
+    endpointId: string
+    event: string
+    payload: JsonNullValueInput | InputJsonValue
+    status?: string
+    attempts?: number
+    nextAttemptAt?: Date | string
+    lastStatusCode?: number | null
+    lastError?: string | null
+    deliveredAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookDeliveryUncheckedCreateInput = {
+    id?: string
+    endpointId: string
+    event: string
+    payload: JsonNullValueInput | InputJsonValue
+    status?: string
+    attempts?: number
+    nextAttemptAt?: Date | string
+    lastStatusCode?: number | null
+    lastError?: string | null
+    deliveredAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookDeliveryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpointId?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastStatusCode?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookDeliveryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpointId?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastStatusCode?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookDeliveryCreateManyInput = {
+    id?: string
+    endpointId: string
+    event: string
+    payload: JsonNullValueInput | InputJsonValue
+    status?: string
+    attempts?: number
+    nextAttemptAt?: Date | string
+    lastStatusCode?: number | null
+    lastError?: string | null
+    deliveredAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WebhookDeliveryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpointId?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastStatusCode?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WebhookDeliveryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    endpointId?: StringFieldUpdateOperationsInput | string
+    event?: StringFieldUpdateOperationsInput | string
+    payload?: JsonNullValueInput | InputJsonValue
+    status?: StringFieldUpdateOperationsInput | string
+    attempts?: IntFieldUpdateOperationsInput | number
+    nextAttemptAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lastStatusCode?: NullableIntFieldUpdateOperationsInput | number | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -184191,6 +194184,370 @@ export namespace Prisma {
   export type PromotionRedemptionSumOrderByAggregateInput = {
     quantity?: SortOrder
     amount?: SortOrder
+  }
+
+  export type MessageTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    channel?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    isActive?: SortOrder
+    updatedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    channel?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    isActive?: SortOrder
+    updatedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    code?: SortOrder
+    name?: SortOrder
+    channel?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    isActive?: SortOrder
+    updatedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageOutboxCountOrderByAggregateInput = {
+    id?: SortOrder
+    channel?: SortOrder
+    category?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastError?: SortOrder
+    provider?: SortOrder
+    providerMessageId?: SortOrder
+    templateCode?: SortOrder
+    relatedType?: SortOrder
+    relatedId?: SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageOutboxAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+  }
+
+  export type MessageOutboxMaxOrderByAggregateInput = {
+    id?: SortOrder
+    channel?: SortOrder
+    category?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastError?: SortOrder
+    provider?: SortOrder
+    providerMessageId?: SortOrder
+    templateCode?: SortOrder
+    relatedType?: SortOrder
+    relatedId?: SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageOutboxMinOrderByAggregateInput = {
+    id?: SortOrder
+    channel?: SortOrder
+    category?: SortOrder
+    recipient?: SortOrder
+    subject?: SortOrder
+    body?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastError?: SortOrder
+    provider?: SortOrder
+    providerMessageId?: SortOrder
+    templateCode?: SortOrder
+    relatedType?: SortOrder
+    relatedId?: SortOrder
+    createdById?: SortOrder
+    sentAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MessageOutboxSumOrderByAggregateInput = {
+    attempts?: SortOrder
+    maxAttempts?: SortOrder
+  }
+
+  export type MessageOptOutRecipientChannelCompoundUniqueInput = {
+    recipient: string
+    channel: string
+  }
+
+  export type MessageOptOutCountOrderByAggregateInput = {
+    id?: SortOrder
+    recipient?: SortOrder
+    channel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageOptOutMaxOrderByAggregateInput = {
+    id?: SortOrder
+    recipient?: SortOrder
+    channel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MessageOptOutMinOrderByAggregateInput = {
+    id?: SortOrder
+    recipient?: SortOrder
+    channel?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type MpesaRequestCountOrderByAggregateInput = {
+    id?: SortOrder
+    checkoutRequestId?: SortOrder
+    merchantRequestId?: SortOrder
+    phone?: SortOrder
+    amount?: SortOrder
+    accountReference?: SortOrder
+    description?: SortOrder
+    branchId?: SortOrder
+    salesDocumentId?: SortOrder
+    status?: SortOrder
+    resultCode?: SortOrder
+    resultDesc?: SortOrder
+    receiptNumber?: SortOrder
+    paidAmount?: SortOrder
+    transactionDate?: SortOrder
+    createdById?: SortOrder
+    callbackRaw?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MpesaRequestAvgOrderByAggregateInput = {
+    amount?: SortOrder
+    resultCode?: SortOrder
+    paidAmount?: SortOrder
+  }
+
+  export type MpesaRequestMaxOrderByAggregateInput = {
+    id?: SortOrder
+    checkoutRequestId?: SortOrder
+    merchantRequestId?: SortOrder
+    phone?: SortOrder
+    amount?: SortOrder
+    accountReference?: SortOrder
+    description?: SortOrder
+    branchId?: SortOrder
+    salesDocumentId?: SortOrder
+    status?: SortOrder
+    resultCode?: SortOrder
+    resultDesc?: SortOrder
+    receiptNumber?: SortOrder
+    paidAmount?: SortOrder
+    transactionDate?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MpesaRequestMinOrderByAggregateInput = {
+    id?: SortOrder
+    checkoutRequestId?: SortOrder
+    merchantRequestId?: SortOrder
+    phone?: SortOrder
+    amount?: SortOrder
+    accountReference?: SortOrder
+    description?: SortOrder
+    branchId?: SortOrder
+    salesDocumentId?: SortOrder
+    status?: SortOrder
+    resultCode?: SortOrder
+    resultDesc?: SortOrder
+    receiptNumber?: SortOrder
+    paidAmount?: SortOrder
+    transactionDate?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MpesaRequestSumOrderByAggregateInput = {
+    amount?: SortOrder
+    resultCode?: SortOrder
+    paidAmount?: SortOrder
+  }
+
+  export type ApiKeyCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    scopes?: SortOrder
+    branchId?: SortOrder
+    rateLimitPerMin?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiKeyAvgOrderByAggregateInput = {
+    rateLimitPerMin?: SortOrder
+  }
+
+  export type ApiKeyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    branchId?: SortOrder
+    rateLimitPerMin?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiKeyMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    keyPrefix?: SortOrder
+    keyHash?: SortOrder
+    branchId?: SortOrder
+    rateLimitPerMin?: SortOrder
+    isActive?: SortOrder
+    expiresAt?: SortOrder
+    lastUsedAt?: SortOrder
+    revokedAt?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ApiKeySumOrderByAggregateInput = {
+    rateLimitPerMin?: SortOrder
+  }
+
+  export type WebhookEndpointCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    url?: SortOrder
+    secret?: SortOrder
+    events?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookEndpointMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    url?: SortOrder
+    secret?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookEndpointMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    url?: SortOrder
+    secret?: SortOrder
+    isActive?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookDeliveryCountOrderByAggregateInput = {
+    id?: SortOrder
+    endpointId?: SortOrder
+    event?: SortOrder
+    payload?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastStatusCode?: SortOrder
+    lastError?: SortOrder
+    deliveredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookDeliveryAvgOrderByAggregateInput = {
+    attempts?: SortOrder
+    lastStatusCode?: SortOrder
+  }
+
+  export type WebhookDeliveryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    endpointId?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastStatusCode?: SortOrder
+    lastError?: SortOrder
+    deliveredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookDeliveryMinOrderByAggregateInput = {
+    id?: SortOrder
+    endpointId?: SortOrder
+    event?: SortOrder
+    status?: SortOrder
+    attempts?: SortOrder
+    nextAttemptAt?: SortOrder
+    lastStatusCode?: SortOrder
+    lastError?: SortOrder
+    deliveredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WebhookDeliverySumOrderByAggregateInput = {
+    attempts?: SortOrder
+    lastStatusCode?: SortOrder
   }
 
   export type ApprovalRequestCreateNestedManyWithoutApprovedByInput = {
@@ -192510,6 +202867,24 @@ export namespace Prisma {
   }
 
   export type PromotionUpdatebranchIdsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ApiKeyCreatescopesInput = {
+    set: string[]
+  }
+
+  export type ApiKeyUpdatescopesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type WebhookEndpointCreateeventsInput = {
+    set: string[]
+  }
+
+  export type WebhookEndpointUpdateeventsInput = {
     set?: string[]
     push?: string | string[]
   }

@@ -3070,6 +3070,142 @@ model PromotionRedemption {
   @@map("promotion_redemptions")
 }
 
+/// Phase 11a: outbound messaging (email / SMS / WhatsApp) with a retrying outbox.
+model MessageTemplate {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  channel     String // EMAIL | SMS | WHATSAPP
+  subject     String?
+  body        String
+  isActive    Boolean  @default(true) @map("is_active")
+  updatedById String?  @map("updated_by_id")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("message_templates")
+}
+
+model MessageOutbox {
+  id                String    @id @default(uuid())
+  channel           String // EMAIL | SMS | WHATSAPP
+  category          String    @default("TRANSACTIONAL") // TRANSACTIONAL | MARKETING
+  recipient         String
+  subject           String?
+  body              String
+  status            String    @default("QUEUED") // QUEUED | SENDING | SENT | FAILED | CANCELLED
+  attempts          Int       @default(0)
+  maxAttempts       Int       @default(5) @map("max_attempts")
+  nextAttemptAt     DateTime  @default(now()) @map("next_attempt_at")
+  lastError         String?   @map("last_error")
+  provider          String?
+  providerMessageId String?   @map("provider_message_id")
+  templateCode      String?   @map("template_code")
+  relatedType       String?   @map("related_type")
+  relatedId         String?   @map("related_id")
+  createdById       String?   @map("created_by_id")
+  sentAt            DateTime? @map("sent_at")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([relatedType, relatedId])
+  @@index([createdAt])
+  @@map("message_outbox")
+}
+
+model MessageOptOut {
+  id        String   @id @default(uuid())
+  recipient String
+  channel   String
+  createdAt DateTime @default(now())
+
+  @@unique([recipient, channel])
+  @@map("message_opt_outs")
+}
+
+/// Phase 11b: M-Pesa STK push requests (Safaricom Daraja) and their callbacks.
+model MpesaRequest {
+  id                String    @id @default(uuid())
+  checkoutRequestId String?   @unique @map("checkout_request_id")
+  merchantRequestId String?   @map("merchant_request_id")
+  phone             String
+  amount            Int
+  accountReference  String    @map("account_reference")
+  description       String?
+  branchId          String?   @map("branch_id")
+  salesDocumentId   String?   @map("sales_document_id")
+  status            String    @default("PENDING") // PENDING | SUCCESS | FAILED | CANCELLED | TIMEOUT
+  resultCode        Int?      @map("result_code")
+  resultDesc        String?   @map("result_desc")
+  receiptNumber     String?   @unique @map("receipt_number")
+  paidAmount        Float?    @map("paid_amount")
+  transactionDate   DateTime? @map("transaction_date")
+  createdById       String    @map("created_by_id")
+  callbackRaw       Json?     @map("callback_raw")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([status, createdAt])
+  @@index([salesDocumentId])
+  @@index([createdById])
+  @@map("mpesa_requests")
+}
+
+/// Phase 11c: public API keys and outbound webhooks.
+model ApiKey {
+  id              String    @id @default(uuid())
+  name            String
+  keyPrefix       String    @map("key_prefix")
+  keyHash         String    @unique @map("key_hash")
+  scopes          String[]
+  branchId        String?   @map("branch_id")
+  rateLimitPerMin Int       @default(60) @map("rate_limit_per_min")
+  isActive        Boolean   @default(true) @map("is_active")
+  expiresAt       DateTime? @map("expires_at")
+  lastUsedAt      DateTime? @map("last_used_at")
+  revokedAt       DateTime? @map("revoked_at")
+  createdById     String    @map("created_by_id")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([keyPrefix])
+  @@map("api_keys")
+}
+
+model WebhookEndpoint {
+  id          String   @id @default(uuid())
+  name        String
+  url         String
+  secret      String
+  events      String[]
+  isActive    Boolean  @default(true) @map("is_active")
+  createdById String   @map("created_by_id")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id             String    @id @default(uuid())
+  endpointId     String    @map("endpoint_id")
+  event          String
+  payload        Json
+  status         String    @default("PENDING") // PENDING | SENDING | SENT | FAILED
+  attempts       Int       @default(0)
+  nextAttemptAt  DateTime  @default(now()) @map("next_attempt_at")
+  lastStatusCode Int?      @map("last_status_code")
+  lastError      String?   @map("last_error")
+  deliveredAt    DateTime? @map("delivered_at")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status, nextAttemptAt])
+  @@index([endpointId, createdAt])
+  @@map("webhook_deliveries")
+}
+
 enum VATType {
   INPUT
   OUTPUT

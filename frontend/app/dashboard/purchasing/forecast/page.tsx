@@ -105,7 +105,10 @@ export default function ForecastPage() {
   };
 
   const submit = async () => {
-    if (!branchId) return toast.error("Choose a branch");
+    if (!branchId) {
+      toast.error("Choose a branch");
+      return;
+    }
     setSaving(true);
     try {
       const out = await forecastService.createRequisition({
