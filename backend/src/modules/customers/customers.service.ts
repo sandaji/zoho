@@ -1,6 +1,7 @@
 // backend/src/modules/customers/customers.service.ts
 import { prisma } from '@core/database/db';
 import { CodeGeneratorService } from '@shared/code-generator.service';
+import { CustomerLedgerService } from './customer-ledger.service';
 
 export class CustomersService {
   /**
@@ -16,7 +17,9 @@ export class CustomersService {
     creditLimit?: number;
     currentBalance?: number;
     isActive?: boolean;
+    salesmanId: string; // every customer has a salesman
   }) {
+    await CustomerLedgerService.assertValidSalesman(data.salesmanId);
     const code = await CodeGeneratorService.generateCustomerCode();
     return prisma.customer.create({
       data: {
@@ -30,6 +33,7 @@ export class CustomersService {
         creditLimit: data.creditLimit || 0,
         currentBalance: data.currentBalance || 0,
         isActive: data.isActive !== false,
+        salesmanId: data.salesmanId,
       },
     });
   }
@@ -50,12 +54,18 @@ export class CustomersService {
     search?: string;
     limit?: number;
     offset?: number;
+    salesmanId?: string; // a user id, or "none" for customers without a salesman
   }) {
     const limit = query.limit || 50;
     const offset = query.offset || 0;
 
     const where = {
       isActive: true,
+      ...(query.salesmanId === "none"
+        ? { salesmanId: null }
+        : query.salesmanId
+          ? { salesmanId: query.salesmanId }
+          : {}),
       ...(query.search && {
         OR: [
           { name: { contains: query.search, mode: "insensitive" as const } },
@@ -76,7 +86,17 @@ export class CustomersService {
       prisma.customer.count({ where }),
     ]);
 
-    return { data: customers, total, limit, offset };
+    const ids = Array.from(new Set(customers.map((c) => c.salesmanId).filter(Boolean) as string[]));
+    const users = ids.length
+      ? await prisma.user.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } })
+      : [];
+    const names = new Map(users.map((u) => [u.id, u.name]));
+    const data = customers.map((c) => ({
+      ...c,
+      salesmanName: c.salesmanId ? names.get(c.salesmanId) ?? null : null,
+    }));
+
+    return { data, total, limit, offset };
   }
 
   /**
@@ -113,6 +133,15 @@ export class CustomersService {
    * Find customer by ID
    */
   static async findById(id: string) {
+    const found = await this.findByIdRaw(id);
+    if (!found) return found;
+    const salesman = found.salesmanId
+      ? await prisma.user.findUnique({ where: { id: found.salesmanId }, select: { name: true } })
+      : null;
+    return { ...found, salesmanName: salesman?.name ?? null };
+  }
+
+  private static async findByIdRaw(id: string) {
     return prisma.customer.findUnique({
       where: { id },
       include: {
@@ -166,8 +195,10 @@ export class CustomersService {
       creditLimit?: number;
       currentBalance?: number;
       isActive?: boolean;
+      salesmanId?: string;
     }
   ) {
+    if (data.salesmanId) await CustomerLedgerService.assertValidSalesman(data.salesmanId);
     return prisma.customer.update({
       where: { id },
       data: {
@@ -180,8 +211,16 @@ export class CustomersService {
         ...(data.creditLimit !== undefined && { creditLimit: data.creditLimit }),
         ...(data.currentBalance !== undefined && { currentBalance: data.currentBalance }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.salesmanId && { salesmanId: data.salesmanId }),
       },
     });
+  }
+
+  /** Assign one salesman to many customers (clean-up of customers created before this rule). */
+  static async assignSalesman(customerIds: string[], salesmanId: string) {
+    await CustomerLedgerService.assertValidSalesman(salesmanId);
+    const r = await prisma.customer.updateMany({ where: { id: { in: customerIds } }, data: { salesmanId } });
+    return { updated: r.count };
   }
 
   /**

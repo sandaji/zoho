@@ -281,7 +281,8 @@ export class CrmService {
       (lead.email
         ? await prisma.customer.findFirst({ where: { email: { equals: lead.email, mode: "insensitive" } } })
         : null);
-    const customer =
+    // The lead's owner becomes the customer's salesman.
+    let customer =
       existing ??
       (await CustomersService.create({
         name: customerName,
@@ -289,7 +290,12 @@ export class CrmService {
         phone: lead.phone,
         address: lead.address,
         customerType: lead.company ? "CORPORATE" : "RETAIL",
+        salesmanId: lead.ownerId,
       }));
+    // An existing customer that has no salesman yet gets the lead's owner.
+    if (existing && !existing.salesmanId) {
+      customer = await prisma.customer.update({ where: { id: existing.id }, data: { salesmanId: lead.ownerId } });
+    }
 
     const updated = await prisma.crmLead.update({
       where: { id },

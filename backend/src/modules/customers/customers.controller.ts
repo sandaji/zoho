@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { CustomersService } from "./customers.service";
+import { CustomerLedgerService } from "./customer-ledger.service";
 
 // Validation schemas
 const createCustomerSchema = z.object({
@@ -14,6 +15,8 @@ const createCustomerSchema = z.object({
   creditLimit: z.number().optional().default(0),
   currentBalance: z.number().optional().default(0),
   isActive: z.boolean().optional().default(true),
+  // Defaults to the person creating the customer when not given
+  salesmanId: z.string().min(1).optional(),
 });
 
 const updateCustomerSchema = z.object({
@@ -26,7 +29,10 @@ const updateCustomerSchema = z.object({
   creditLimit: z.number().optional(),
   currentBalance: z.number().optional(),
   isActive: z.boolean().optional(),
+  salesmanId: z.string().min(1).optional(),
 });
+
+const dateOnly = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional();
 
 export class CustomersController {
   /**
@@ -47,7 +53,12 @@ export class CustomersController {
         return;
       }
 
-      const customer = await CustomersService.create(data);
+      const salesmanId = data.salesmanId ?? req.user?.userId;
+      if (!salesmanId) {
+        res.status(400).json({ success: false, error: "A salesman is required" });
+        return;
+      }
+      const customer = await CustomersService.create({ ...data, salesmanId });
       res.status(201).json({ success: true, data: customer });
     } catch (error) {
       next(error);
@@ -63,9 +74,10 @@ export class CustomersController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { search, limit, offset } = req.query;
+      const { search, limit, offset, salesmanId } = req.query;
 
       const result = await CustomersService.findAll({
+        salesmanId: (salesmanId as string) || undefined,
         search: search as string,
         limit: limit ? parseInt(limit as string) : undefined,
         offset: offset ? parseInt(offset as string) : undefined,
@@ -148,6 +160,54 @@ export class CustomersController {
       const customer = await CustomersService.update(id, data);
 
       res.status(200).json({ success: true, data: customer });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /** Salesmen who can be assigned to customers */
+  static async salesmen(_req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      res.status(200).json({ success: true, data: await CustomerLedgerService.salesmen() });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /** Bulk-assign a salesman to customers */
+  static async assignSalesman(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const body = z
+        .object({ customerIds: z.array(z.string()).min(1).max(1000), salesmanId: z.string().min(1) })
+        .parse(req.body);
+      res.status(200).json({ success: true, data: await CustomersService.assignSalesman(body.customerIds, body.salesmanId) });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /** Full statement: date, invoice no, debit, credit, running balance */
+  static async statement(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const from = dateOnly.parse(req.query.from || undefined);
+      const to = dateOnly.parse(req.query.to || undefined);
+      res.status(200).json({ success: true, data: await CustomerLedgerService.statement(id, { from, to }) });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /** Same statement as a CSV download */
+  static async statementCsv(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = req.params.id as string;
+      const from = dateOnly.parse(req.query.from || undefined);
+      const to = dateOnly.parse(req.query.to || undefined);
+      const out = await CustomerLedgerService.csv(id, { from, to });
+      res.setHeader("Content-Type", "text/csv; charset=utf-8");
+      res.setHeader("Content-Disposition", `attachment; filename="${out.filename}"`);
+      res.status(200).send("﻿" + out.body);
     } catch (error) {
       next(error);
     }

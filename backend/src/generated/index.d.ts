@@ -35047,6 +35047,7 @@ export namespace Prisma {
     customerType: string | null
     isActive: boolean | null
     code: string | null
+    salesmanId: string | null
   }
 
   export type CustomerMaxAggregateOutputType = {
@@ -35063,6 +35064,7 @@ export namespace Prisma {
     customerType: string | null
     isActive: boolean | null
     code: string | null
+    salesmanId: string | null
   }
 
   export type CustomerCountAggregateOutputType = {
@@ -35079,6 +35081,7 @@ export namespace Prisma {
     customerType: number
     isActive: number
     code: number
+    salesmanId: number
     _all: number
   }
 
@@ -35107,6 +35110,7 @@ export namespace Prisma {
     customerType?: true
     isActive?: true
     code?: true
+    salesmanId?: true
   }
 
   export type CustomerMaxAggregateInputType = {
@@ -35123,6 +35127,7 @@ export namespace Prisma {
     customerType?: true
     isActive?: true
     code?: true
+    salesmanId?: true
   }
 
   export type CustomerCountAggregateInputType = {
@@ -35139,6 +35144,7 @@ export namespace Prisma {
     customerType?: true
     isActive?: true
     code?: true
+    salesmanId?: true
     _all?: true
   }
 
@@ -35242,6 +35248,7 @@ export namespace Prisma {
     customerType: string
     isActive: boolean
     code: string
+    salesmanId: string | null
     _count: CustomerCountAggregateOutputType | null
     _avg: CustomerAvgAggregateOutputType | null
     _sum: CustomerSumAggregateOutputType | null
@@ -35277,6 +35284,7 @@ export namespace Prisma {
     customerType?: boolean
     isActive?: boolean
     code?: boolean
+    salesmanId?: boolean
     payments?: boolean | Customer$paymentsArgs<ExtArgs>
     salesDocuments?: boolean | Customer$salesDocumentsArgs<ExtArgs>
     salesOrders?: boolean | Customer$salesOrdersArgs<ExtArgs>
@@ -35297,6 +35305,7 @@ export namespace Prisma {
     customerType?: boolean
     isActive?: boolean
     code?: boolean
+    salesmanId?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -35313,6 +35322,7 @@ export namespace Prisma {
     customerType?: boolean
     isActive?: boolean
     code?: boolean
+    salesmanId?: boolean
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
@@ -35329,9 +35339,10 @@ export namespace Prisma {
     customerType?: boolean
     isActive?: boolean
     code?: boolean
+    salesmanId?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "taxId" | "createdAt" | "updatedAt" | "creditLimit" | "currentBalance" | "customerType" | "isActive" | "code", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "taxId" | "createdAt" | "updatedAt" | "creditLimit" | "currentBalance" | "customerType" | "isActive" | "code" | "salesmanId", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     payments?: boolean | Customer$paymentsArgs<ExtArgs>
     salesDocuments?: boolean | Customer$salesDocumentsArgs<ExtArgs>
@@ -35362,6 +35373,7 @@ export namespace Prisma {
       customerType: string
       isActive: boolean
       code: string
+      salesmanId: string | null
     }, ExtArgs["result"]["customer"]>
     composites: {}
   }
@@ -35801,6 +35813,7 @@ export namespace Prisma {
     readonly customerType: FieldRef<"Customer", 'String'>
     readonly isActive: FieldRef<"Customer", 'Boolean'>
     readonly code: FieldRef<"Customer", 'String'>
+    readonly salesmanId: FieldRef<"Customer", 'String'>
   }
     
 
@@ -159074,7 +159087,8 @@ export namespace Prisma {
     currentBalance: 'currentBalance',
     customerType: 'customerType',
     isActive: 'isActive',
-    code: 'code'
+    code: 'code',
+    salesmanId: 'salesmanId'
   };
 
   export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typeof CustomerScalarFieldEnum]
@@ -163473,6 +163487,7 @@ export namespace Prisma {
     customerType?: StringFilter<"Customer"> | string
     isActive?: BoolFilter<"Customer"> | boolean
     code?: StringFilter<"Customer"> | string
+    salesmanId?: StringNullableFilter<"Customer"> | string | null
     payments?: PaymentListRelationFilter
     salesDocuments?: SalesDocumentListRelationFilter
     salesOrders?: SalesOrderListRelationFilter
@@ -163492,6 +163507,7 @@ export namespace Prisma {
     customerType?: SortOrder
     isActive?: SortOrder
     code?: SortOrder
+    salesmanId?: SortOrderInput | SortOrder
     payments?: PaymentOrderByRelationAggregateInput
     salesDocuments?: SalesDocumentOrderByRelationAggregateInput
     salesOrders?: SalesOrderOrderByRelationAggregateInput
@@ -163514,6 +163530,7 @@ export namespace Prisma {
     currentBalance?: DecimalFilter<"Customer"> | Decimal | DecimalJsLike | number | string
     customerType?: StringFilter<"Customer"> | string
     isActive?: BoolFilter<"Customer"> | boolean
+    salesmanId?: StringNullableFilter<"Customer"> | string | null
     payments?: PaymentListRelationFilter
     salesDocuments?: SalesDocumentListRelationFilter
     salesOrders?: SalesOrderListRelationFilter
@@ -163533,6 +163550,7 @@ export namespace Prisma {
     customerType?: SortOrder
     isActive?: SortOrder
     code?: SortOrder
+    salesmanId?: SortOrderInput | SortOrder
     _count?: CustomerCountOrderByAggregateInput
     _avg?: CustomerAvgOrderByAggregateInput
     _max?: CustomerMaxOrderByAggregateInput
@@ -163557,6 +163575,7 @@ export namespace Prisma {
     customerType?: StringWithAggregatesFilter<"Customer"> | string
     isActive?: BoolWithAggregatesFilter<"Customer"> | boolean
     code?: StringWithAggregatesFilter<"Customer"> | string
+    salesmanId?: StringNullableWithAggregatesFilter<"Customer"> | string | null
   }
 
   export type CustomerCodeSettingWhereInput = {
@@ -175053,6 +175072,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     payments?: PaymentCreateNestedManyWithoutCustomerInput
     salesDocuments?: SalesDocumentCreateNestedManyWithoutCustomerInput
     salesOrders?: SalesOrderCreateNestedManyWithoutCustomerInput
@@ -175072,6 +175092,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     payments?: PaymentUncheckedCreateNestedManyWithoutCustomerInput
     salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCustomerInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCustomerInput
@@ -175091,6 +175112,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUpdateManyWithoutCustomerNestedInput
     salesDocuments?: SalesDocumentUpdateManyWithoutCustomerNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutCustomerNestedInput
@@ -175110,6 +175132,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUncheckedUpdateManyWithoutCustomerNestedInput
     salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCustomerNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutCustomerNestedInput
@@ -175129,6 +175152,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
   }
 
   export type CustomerUpdateManyMutationInput = {
@@ -175145,6 +175169,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CustomerUncheckedUpdateManyInput = {
@@ -175161,6 +175186,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CustomerCodeSettingCreateInput = {
@@ -187869,6 +187895,7 @@ export namespace Prisma {
     customerType?: SortOrder
     isActive?: SortOrder
     code?: SortOrder
+    salesmanId?: SortOrder
   }
 
   export type CustomerAvgOrderByAggregateInput = {
@@ -187890,6 +187917,7 @@ export namespace Prisma {
     customerType?: SortOrder
     isActive?: SortOrder
     code?: SortOrder
+    salesmanId?: SortOrder
   }
 
   export type CustomerMinOrderByAggregateInput = {
@@ -187906,6 +187934,7 @@ export namespace Prisma {
     customerType?: SortOrder
     isActive?: SortOrder
     code?: SortOrder
+    salesmanId?: SortOrder
   }
 
   export type CustomerSumOrderByAggregateInput = {
@@ -216423,6 +216452,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     payments?: PaymentCreateNestedManyWithoutCustomerInput
     salesOrders?: SalesOrderCreateNestedManyWithoutCustomerInput
   }
@@ -216441,6 +216471,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     payments?: PaymentUncheckedCreateNestedManyWithoutCustomerInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCustomerInput
   }
@@ -217344,6 +217375,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUpdateManyWithoutCustomerNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutCustomerNestedInput
   }
@@ -217362,6 +217394,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUncheckedUpdateManyWithoutCustomerNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutCustomerNestedInput
   }
@@ -218015,6 +218048,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     salesDocuments?: SalesDocumentCreateNestedManyWithoutCustomerInput
     salesOrders?: SalesOrderCreateNestedManyWithoutCustomerInput
   }
@@ -218033,6 +218067,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCustomerInput
     salesOrders?: SalesOrderUncheckedCreateNestedManyWithoutCustomerInput
   }
@@ -218273,6 +218308,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     salesDocuments?: SalesDocumentUpdateManyWithoutCustomerNestedInput
     salesOrders?: SalesOrderUpdateManyWithoutCustomerNestedInput
   }
@@ -218291,6 +218327,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCustomerNestedInput
     salesOrders?: SalesOrderUncheckedUpdateManyWithoutCustomerNestedInput
   }
@@ -218754,6 +218791,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     payments?: PaymentCreateNestedManyWithoutCustomerInput
     salesDocuments?: SalesDocumentCreateNestedManyWithoutCustomerInput
   }
@@ -218772,6 +218810,7 @@ export namespace Prisma {
     customerType?: string
     isActive?: boolean
     code: string
+    salesmanId?: string | null
     payments?: PaymentUncheckedCreateNestedManyWithoutCustomerInput
     salesDocuments?: SalesDocumentUncheckedCreateNestedManyWithoutCustomerInput
   }
@@ -219056,6 +219095,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUpdateManyWithoutCustomerNestedInput
     salesDocuments?: SalesDocumentUpdateManyWithoutCustomerNestedInput
   }
@@ -219074,6 +219114,7 @@ export namespace Prisma {
     customerType?: StringFieldUpdateOperationsInput | string
     isActive?: BoolFieldUpdateOperationsInput | boolean
     code?: StringFieldUpdateOperationsInput | string
+    salesmanId?: NullableStringFieldUpdateOperationsInput | string | null
     payments?: PaymentUncheckedUpdateManyWithoutCustomerNestedInput
     salesDocuments?: SalesDocumentUncheckedUpdateManyWithoutCustomerNestedInput
   }

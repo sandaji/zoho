@@ -43,6 +43,8 @@ interface Customer {
   currentBalance: number;
   isActive: boolean;
   createdAt: string;
+  salesmanId?: string | null;
+  salesmanName?: string | null;
 }
 
 export default function CustomersPage() {
@@ -58,6 +60,8 @@ export default function CustomersPage() {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [customerDetails, setCustomerDetails] = useState<any | null>(null);
+  const [salesmen, setSalesmen] = useState<{ id: string; name: string }[]>([]);
+  const [salesmanFilter, setSalesmanFilter] = useState("");
 
   // Admin-configurable customer code prefix (2 letters + auto-incrementing 6-digit number)
   const [codeSettingOpen, setCodeSettingOpen] = useState(false);
@@ -75,7 +79,16 @@ export default function CustomersPage() {
     customerType: "RETAIL",
     creditLimit: "0",
     currentBalance: "0",
+    salesmanId: "", // empty = the person creating the customer
   });
+
+  useEffect(() => {
+    if (!token) return;
+    fetch(`${API_BASE_URL}/v1/customers/salesmen`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => j && setSalesmen(j.data ?? []))
+      .catch(() => undefined);
+  }, [token]);
 
   // Fetch customers
   const fetchCustomers = useCallback(async () => {
@@ -83,7 +96,7 @@ export default function CustomersPage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/v1/customers?search=${searchTerm}`, {
+      const response = await fetch(`${API_BASE_URL}/v1/customers?search=${encodeURIComponent(searchTerm)}${salesmanFilter ? `&salesmanId=${encodeURIComponent(salesmanFilter)}` : ""}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -105,7 +118,7 @@ export default function CustomersPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [token, searchTerm, showToast]);
+  }, [token, searchTerm, salesmanFilter, showToast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -190,6 +203,7 @@ export default function CustomersPage() {
         },
         body: JSON.stringify({
           ...formData,
+          salesmanId: formData.salesmanId || undefined,
           creditLimit: parseFloat(formData.creditLimit),
           currentBalance: parseFloat(formData.currentBalance),
         }),
@@ -213,6 +227,7 @@ export default function CustomersPage() {
         customerType: "RETAIL",
         creditLimit: "0",
         currentBalance: "0",
+        salesmanId: "",
       });
 
       setOpenDialog(false);
@@ -293,6 +308,14 @@ export default function CustomersPage() {
           cell: (ctx) => <Badge variant="outline">{ctx.getValue()}</Badge>,
           sortFn: "text",
         }),
+        columnHelper.accessor((row) => row.salesmanName || "Unassigned", {
+          id: "salesman",
+          header: ({ column }) => <DataTableColumnHeader column={column} title="Salesman" />,
+          cell: (ctx) => (
+            <span className={ctx.row.original.salesmanId ? "text-foreground" : "text-destructive"}>{ctx.getValue()}</span>
+          ),
+          sortFn: "text",
+        }),
         columnHelper.accessor((row) => row.phone || "-", {
           id: "phone",
           header: ({ column }) => <DataTableColumnHeader column={column} title="Phone" />,
@@ -371,13 +394,16 @@ export default function CustomersPage() {
           header: "Actions",
           enableSorting: false,
           cell: (ctx) => (
-            <div className="w-32">
+            <div className="flex w-44 gap-1">
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => handleOpenDetails(ctx.row.original.id)}
               >
                 View
+              </Button>
+              <Button size="sm" variant="outline" asChild>
+                <Link href={`/dashboard/crm/customers/${ctx.row.original.id}`}>Statement</Link>
               </Button>
             </div>
           ),
@@ -575,6 +601,26 @@ export default function CustomersPage() {
                   />
                 </div>
 
+                {/* Salesman */}
+                <div>
+                  <Label htmlFor="salesmanId" className="text-sm font-medium">
+                    Salesman *
+                  </Label>
+                  <select
+                    id="salesmanId"
+                    value={formData.salesmanId}
+                    onChange={(e) => setFormData({ ...formData, salesmanId: e.target.value })}
+                    className="mt-1 h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground [color-scheme:light] dark:[color-scheme:dark]"
+                  >
+                    <option value="">Me (default)</option>
+                    {salesmen.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Buttons */}
                 <div className="flex gap-3 pt-4">
                   <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>
@@ -598,14 +644,30 @@ export default function CustomersPage() {
       </div>
 
       {/* ── Search Bar ────────────────────────────────────────────────────── */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search by name, email, or phone..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by name, email, or phone..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <select
+          aria-label="Filter by salesman"
+          value={salesmanFilter}
+          onChange={(e) => setSalesmanFilter(e.target.value)}
+          className="h-9 rounded-md border border-input bg-background px-3 text-sm text-foreground [color-scheme:light] dark:[color-scheme:dark]"
+        >
+          <option value="">All salesmen</option>
+          <option value="none">Unassigned</option>
+          {salesmen.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* ── Data Table ────────────────────────────────────────────────────── */}
@@ -682,6 +744,12 @@ export default function CustomersPage() {
                 <p className="text-sm font-mono text-muted-foreground">{customerDetails.code}</p>
                 <p className="text-sm text-muted-foreground">{customerDetails.email || ""}</p>
                 <p className="text-sm text-muted-foreground">{customerDetails.phone || ""}</p>
+                <p className="text-sm text-muted-foreground">
+                  Salesman: {customerDetails.salesmanName || "Unassigned"}
+                </p>
+                <Button size="sm" variant="outline" className="mt-2" asChild>
+                  <Link href={`/dashboard/crm/customers/${customerDetails.id}`}>Open full statement</Link>
+                </Button>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

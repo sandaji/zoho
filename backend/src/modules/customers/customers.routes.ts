@@ -17,6 +17,27 @@ router.get(
   CustomersController.search
 );
 
+router.get(
+  "/salesmen",
+  hasAnyPermission(['sales.customer.view', 'sales.customer.manage']),
+  CustomersController.salesmen
+);
+router.post(
+  "/assign-salesman",
+  hasAnyPermission(['sales.customer.manage']),
+  CustomersController.assignSalesman
+);
+router.get(
+  "/:id/statement",
+  hasAnyPermission(['sales.customer.view', 'sales.customer.manage']),
+  CustomersController.statement
+);
+router.get(
+  "/:id/statement.csv",
+  hasAnyPermission(['sales.customer.view', 'sales.customer.manage']),
+  CustomersController.statementCsv
+);
+
 // CRUD routes with specific RBAC requirements
 router.post(
   "/",

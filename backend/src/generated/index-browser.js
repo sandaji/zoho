@@ -358,7 +358,8 @@ exports.Prisma.CustomerScalarFieldEnum = {
   currentBalance: 'currentBalance',
   customerType: 'customerType',
   isActive: 'isActive',
-  code: 'code'
+  code: 'code',
+  salesmanId: 'salesmanId'
 };
 
 exports.Prisma.CustomerCodeSettingScalarFieldEnum = {

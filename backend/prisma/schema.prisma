@@ -462,10 +462,13 @@ model Customer {
   payments       Payment[]
   salesDocuments SalesDocument[]
   salesOrders    SalesOrder[]
+  // The salesman responsible for this customer (plain user id, no relation, like other audit fields)
+  salesmanId     String?         @map("salesman_id")
 
   @@index([email])
   @@index([phone])
   @@index([name])
+  @@index([salesmanId])
   @@map("customers")
 }
 
