@@ -163,7 +163,7 @@ export class MessagingService {
     const target = (to ?? (channel === "EMAIL" ? doc.customer?.email : doc.customer?.phone) ?? "").trim();
     if (!target) throw bad(`No ${channel === "EMAIL" ? "email address" : "phone number"} on file for this customer. Enter one to send to.`);
     const balance = Number(doc.balance ?? 0);
-    return MessagingService.enqueue({
+    const queued = await MessagingService.enqueue({
       channel,
       to: target,
       templateCode: `SALE_RECEIPT_${channel}`,
@@ -181,6 +181,9 @@ export class MessagingService {
       relatedId: doc.id,
       createdById: ctx.userId,
     });
+    // A cashier is waiting on this one: send now instead of waiting for the next (possibly slowed) poll.
+    void MessagingService.processDue(5).catch(() => undefined);
+    return queued;
   }
 
   // ------------------------------------------------------------ outbox admin
@@ -224,11 +227,15 @@ export class MessagingService {
 
   /** Deliver everything that is due. Safe to run from several processes: rows are claimed atomically. */
   static async processDue(limit = 20) {
-    // A crash mid-send leaves rows in SENDING; put them back after 5 minutes.
-    await prisma.messageOutbox.updateMany({
-      where: { status: "SENDING", updatedAt: { lt: new Date(Date.now() - 5 * 60_000) } },
-      data: { status: "QUEUED" },
-    });
+    // A crash mid-send leaves rows in SENDING; put them back after 5 minutes. Checked every couple of
+    // minutes rather than every tick: it is one more query against a database that may be far away.
+    if (Date.now() - lastRecovery > 2 * 60_000) {
+      lastRecovery = Date.now();
+      await prisma.messageOutbox.updateMany({
+        where: { status: "SENDING", updatedAt: { lt: new Date(Date.now() - 5 * 60_000) } },
+        data: { status: "QUEUED" },
+      });
+    }
 
     const due = await prisma.messageOutbox.findMany({
       where: { status: "QUEUED", nextAttemptAt: { lte: new Date() } },
@@ -267,23 +274,33 @@ export class MessagingService {
   }
 }
 
+let lastRecovery = 0;
 let timer: NodeJS.Timeout | null = null;
-let busy = false;
+let running = false;
 
-/** Start the in-process delivery loop (every 15s). Set MESSAGING_WORKER=off to run it elsewhere. */
+/**
+ * Start the in-process delivery loop. It polls every 15s while there is work and slows down to once a
+ * minute (MESSAGING_IDLE_POLL_MS) when the queue is empty, so an idle system sends almost no queries.
+ * Set MESSAGING_WORKER=off to run it elsewhere.
+ */
 export function startMessageWorker() {
-  if (timer || (process.env.MESSAGING_WORKER ?? "").toLowerCase() === "off") return;
-  timer = setInterval(async () => {
-    if (busy) return;
-    busy = true;
+  if (running || (process.env.MESSAGING_WORKER ?? "").toLowerCase() === "off") return;
+  running = true;
+  const busyMs = Number(process.env.MESSAGING_POLL_MS) || 15_000;
+  const idleMs = Number(process.env.MESSAGING_IDLE_POLL_MS) || 60_000;
+  const tick = async () => {
+    let next = idleMs;
     try {
-      await MessagingService.processDue();
+      const r = await MessagingService.processDue();
+      if (r.due > 0) next = busyMs;
     } catch (err) {
       logger.error({ err }, "Message worker tick failed");
-    } finally {
-      busy = false;
+      next = busyMs;
     }
-  }, 15_000);
+    timer = setTimeout(tick, next);
+    timer.unref();
+  };
+  timer = setTimeout(tick, busyMs);
   timer.unref();
   logger.info("📨 Message worker started");
 }

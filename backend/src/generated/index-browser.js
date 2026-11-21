@@ -1792,6 +1792,8 @@ exports.Prisma.PromotionRedemptionScalarFieldEnum = {
   branchId: 'branchId',
   quantity: 'quantity',
   amount: 'amount',
+  reversedQuantity: 'reversedQuantity',
+  reversedAmount: 'reversedAmount',
   createdAt: 'createdAt'
 };
 

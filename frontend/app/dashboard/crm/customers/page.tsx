@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { BulkAssignDialog } from "./BulkAssignDialog";
 
 interface Customer {
   id: string;
@@ -436,6 +437,15 @@ export default function CustomersPage() {
         </div>
 
         <div className="flex gap-2">
+          <BulkAssignDialog
+            token={token}
+            salesmen={salesmen}
+            onDone={(n) => {
+              showToast("Success", `${n} customer${n === 1 ? "" : "s"} assigned`, "success");
+              fetchCustomers();
+            }}
+            onError={(m) => showToast("Error", m, "error")}
+          />
           {codeSetting && (
             <Dialog open={codeSettingOpen} onOpenChange={setCodeSettingOpen}>
               <DialogTrigger asChild>

@@ -1517,6 +1517,18 @@ async function main() {
     }
   }
 
+  // Tills can send a customer their receipt (SMS / WhatsApp / email). Creates the grant only; never narrows one.
+  for (const roleCode of ["cashier", "sales_rep", "sales_manager", "branch_manager", "manager"]) {
+    const role = await prisma.role.findFirst({ where: { code: roleCode }, select: { id: true } });
+    const permissionId = permissionMap.get("messaging.send");
+    if (!role || !permissionId) continue;
+    await prisma.rolePermission.upsert({
+      where: { roleId_permissionId: { roleId: role.id, permissionId } },
+      update: {},
+      create: { roleId: role.id, permissionId, scope: AccessScope.BRANCH },
+    });
+  }
+
   // Forecasting: purchasing and stock people plan; leadership reads.
   const forecastGrants: [string, string[], AccessScope][] = [
     ["purchasing_officer", ["purchasing.forecast.view", "purchasing.forecast.requisition"], AccessScope.GLOBAL],

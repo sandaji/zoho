@@ -149903,11 +149903,15 @@ export namespace Prisma {
   export type PromotionRedemptionAvgAggregateOutputType = {
     quantity: number | null
     amount: number | null
+    reversedQuantity: number | null
+    reversedAmount: number | null
   }
 
   export type PromotionRedemptionSumAggregateOutputType = {
     quantity: number | null
     amount: number | null
+    reversedQuantity: number | null
+    reversedAmount: number | null
   }
 
   export type PromotionRedemptionMinAggregateOutputType = {
@@ -149918,6 +149922,8 @@ export namespace Prisma {
     branchId: string | null
     quantity: number | null
     amount: number | null
+    reversedQuantity: number | null
+    reversedAmount: number | null
     createdAt: Date | null
   }
 
@@ -149929,6 +149935,8 @@ export namespace Prisma {
     branchId: string | null
     quantity: number | null
     amount: number | null
+    reversedQuantity: number | null
+    reversedAmount: number | null
     createdAt: Date | null
   }
 
@@ -149940,6 +149948,8 @@ export namespace Prisma {
     branchId: number
     quantity: number
     amount: number
+    reversedQuantity: number
+    reversedAmount: number
     createdAt: number
     _all: number
   }
@@ -149948,11 +149958,15 @@ export namespace Prisma {
   export type PromotionRedemptionAvgAggregateInputType = {
     quantity?: true
     amount?: true
+    reversedQuantity?: true
+    reversedAmount?: true
   }
 
   export type PromotionRedemptionSumAggregateInputType = {
     quantity?: true
     amount?: true
+    reversedQuantity?: true
+    reversedAmount?: true
   }
 
   export type PromotionRedemptionMinAggregateInputType = {
@@ -149963,6 +149977,8 @@ export namespace Prisma {
     branchId?: true
     quantity?: true
     amount?: true
+    reversedQuantity?: true
+    reversedAmount?: true
     createdAt?: true
   }
 
@@ -149974,6 +149990,8 @@ export namespace Prisma {
     branchId?: true
     quantity?: true
     amount?: true
+    reversedQuantity?: true
+    reversedAmount?: true
     createdAt?: true
   }
 
@@ -149985,6 +150003,8 @@ export namespace Prisma {
     branchId?: true
     quantity?: true
     amount?: true
+    reversedQuantity?: true
+    reversedAmount?: true
     createdAt?: true
     _all?: true
   }
@@ -150083,6 +150103,8 @@ export namespace Prisma {
     branchId: string | null
     quantity: number
     amount: number
+    reversedQuantity: number
+    reversedAmount: number
     createdAt: Date
     _count: PromotionRedemptionCountAggregateOutputType | null
     _avg: PromotionRedemptionAvgAggregateOutputType | null
@@ -150113,6 +150135,8 @@ export namespace Prisma {
     branchId?: boolean
     quantity?: boolean
     amount?: boolean
+    reversedQuantity?: boolean
+    reversedAmount?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["promotionRedemption"]>
 
@@ -150124,6 +150148,8 @@ export namespace Prisma {
     branchId?: boolean
     quantity?: boolean
     amount?: boolean
+    reversedQuantity?: boolean
+    reversedAmount?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["promotionRedemption"]>
 
@@ -150135,6 +150161,8 @@ export namespace Prisma {
     branchId?: boolean
     quantity?: boolean
     amount?: boolean
+    reversedQuantity?: boolean
+    reversedAmount?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["promotionRedemption"]>
 
@@ -150146,10 +150174,12 @@ export namespace Prisma {
     branchId?: boolean
     quantity?: boolean
     amount?: boolean
+    reversedQuantity?: boolean
+    reversedAmount?: boolean
     createdAt?: boolean
   }
 
-  export type PromotionRedemptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "promotionId" | "salesDocumentId" | "productId" | "branchId" | "quantity" | "amount" | "createdAt", ExtArgs["result"]["promotionRedemption"]>
+  export type PromotionRedemptionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "promotionId" | "salesDocumentId" | "productId" | "branchId" | "quantity" | "amount" | "reversedQuantity" | "reversedAmount" | "createdAt", ExtArgs["result"]["promotionRedemption"]>
 
   export type $PromotionRedemptionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PromotionRedemption"
@@ -150162,6 +150192,8 @@ export namespace Prisma {
       branchId: string | null
       quantity: number
       amount: number
+      reversedQuantity: number
+      reversedAmount: number
       createdAt: Date
     }, ExtArgs["result"]["promotionRedemption"]>
     composites: {}
@@ -150593,6 +150625,8 @@ export namespace Prisma {
     readonly branchId: FieldRef<"PromotionRedemption", 'String'>
     readonly quantity: FieldRef<"PromotionRedemption", 'Int'>
     readonly amount: FieldRef<"PromotionRedemption", 'Float'>
+    readonly reversedQuantity: FieldRef<"PromotionRedemption", 'Int'>
+    readonly reversedAmount: FieldRef<"PromotionRedemption", 'Float'>
     readonly createdAt: FieldRef<"PromotionRedemption", 'DateTime'>
   }
     
@@ -160812,6 +160846,8 @@ export namespace Prisma {
     branchId: 'branchId',
     quantity: 'quantity',
     amount: 'amount',
+    reversedQuantity: 'reversedQuantity',
+    reversedAmount: 'reversedAmount',
     createdAt: 'createdAt'
   };
 
@@ -172489,6 +172525,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"PromotionRedemption"> | string | null
     quantity?: IntFilter<"PromotionRedemption"> | number
     amount?: FloatFilter<"PromotionRedemption"> | number
+    reversedQuantity?: IntFilter<"PromotionRedemption"> | number
+    reversedAmount?: FloatFilter<"PromotionRedemption"> | number
     createdAt?: DateTimeFilter<"PromotionRedemption"> | Date | string
   }
 
@@ -172500,6 +172538,8 @@ export namespace Prisma {
     branchId?: SortOrderInput | SortOrder
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -172514,6 +172554,8 @@ export namespace Prisma {
     branchId?: StringNullableFilter<"PromotionRedemption"> | string | null
     quantity?: IntFilter<"PromotionRedemption"> | number
     amount?: FloatFilter<"PromotionRedemption"> | number
+    reversedQuantity?: IntFilter<"PromotionRedemption"> | number
+    reversedAmount?: FloatFilter<"PromotionRedemption"> | number
     createdAt?: DateTimeFilter<"PromotionRedemption"> | Date | string
   }, "id">
 
@@ -172525,6 +172567,8 @@ export namespace Prisma {
     branchId?: SortOrderInput | SortOrder
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
     createdAt?: SortOrder
     _count?: PromotionRedemptionCountOrderByAggregateInput
     _avg?: PromotionRedemptionAvgOrderByAggregateInput
@@ -172544,6 +172588,8 @@ export namespace Prisma {
     branchId?: StringNullableWithAggregatesFilter<"PromotionRedemption"> | string | null
     quantity?: IntWithAggregatesFilter<"PromotionRedemption"> | number
     amount?: FloatWithAggregatesFilter<"PromotionRedemption"> | number
+    reversedQuantity?: IntWithAggregatesFilter<"PromotionRedemption"> | number
+    reversedAmount?: FloatWithAggregatesFilter<"PromotionRedemption"> | number
     createdAt?: DateTimeWithAggregatesFilter<"PromotionRedemption"> | Date | string
   }
 
@@ -185268,6 +185314,8 @@ export namespace Prisma {
     branchId?: string | null
     quantity: number
     amount: number
+    reversedQuantity?: number
+    reversedAmount?: number
     createdAt?: Date | string
   }
 
@@ -185279,6 +185327,8 @@ export namespace Prisma {
     branchId?: string | null
     quantity: number
     amount: number
+    reversedQuantity?: number
+    reversedAmount?: number
     createdAt?: Date | string
   }
 
@@ -185290,6 +185340,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    reversedQuantity?: IntFieldUpdateOperationsInput | number
+    reversedAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -185301,6 +185353,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    reversedQuantity?: IntFieldUpdateOperationsInput | number
+    reversedAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -185312,6 +185366,8 @@ export namespace Prisma {
     branchId?: string | null
     quantity: number
     amount: number
+    reversedQuantity?: number
+    reversedAmount?: number
     createdAt?: Date | string
   }
 
@@ -185323,6 +185379,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    reversedQuantity?: IntFieldUpdateOperationsInput | number
+    reversedAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -185334,6 +185392,8 @@ export namespace Prisma {
     branchId?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
     amount?: FloatFieldUpdateOperationsInput | number
+    reversedQuantity?: IntFieldUpdateOperationsInput | number
+    reversedAmount?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -194180,12 +194240,16 @@ export namespace Prisma {
     branchId?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
     createdAt?: SortOrder
   }
 
   export type PromotionRedemptionAvgOrderByAggregateInput = {
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
   }
 
   export type PromotionRedemptionMaxOrderByAggregateInput = {
@@ -194196,6 +194260,8 @@ export namespace Prisma {
     branchId?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -194207,12 +194273,16 @@ export namespace Prisma {
     branchId?: SortOrder
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
     createdAt?: SortOrder
   }
 
   export type PromotionRedemptionSumOrderByAggregateInput = {
     quantity?: SortOrder
     amount?: SortOrder
+    reversedQuantity?: SortOrder
+    reversedAmount?: SortOrder
   }
 
   export type MessageTemplateCountOrderByAggregateInput = {

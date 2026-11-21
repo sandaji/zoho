@@ -128,7 +128,11 @@ export class WebhookService {
   // ------------------------------------------------------------ worker
 
   static async processDue(limit = 20) {
-    await prisma.webhookDelivery.updateMany({ where: { status: "SENDING", updatedAt: { lt: new Date(Date.now() - 5 * 60_000) } }, data: { status: "PENDING" } });
+    // Put rows stuck in SENDING (crash mid-send) back, checked every couple of minutes rather than every tick.
+    if (Date.now() - lastRecovery > 2 * 60_000) {
+      lastRecovery = Date.now();
+      await prisma.webhookDelivery.updateMany({ where: { status: "SENDING", updatedAt: { lt: new Date(Date.now() - 5 * 60_000) } }, data: { status: "PENDING" } });
+    }
     const due = await prisma.webhookDelivery.findMany({ where: { status: "PENDING", nextAttemptAt: { lte: new Date() } }, orderBy: { nextAttemptAt: "asc" }, take: limit });
     for (const d of due) {
       const claim = await prisma.webhookDelivery.updateMany({ where: { id: d.id, status: "PENDING" }, data: { status: "SENDING", attempts: { increment: 1 } } });
@@ -177,25 +181,35 @@ export class WebhookService {
         logger.warn({ id: d.id, endpoint: endpoint.id, attempt, final, error }, "Webhook delivery failed");
       }
     }
+    return due.length;
   }
 }
 
+let lastRecovery = 0;
 let timer: NodeJS.Timeout | null = null;
-let busy = false;
+let running = false;
 
+/**
+ * Polls every 10s while there is work and once a minute (WEBHOOK_IDLE_POLL_MS) when the queue is empty,
+ * so an idle system sends almost no queries. A new event can therefore wait up to a minute to go out.
+ */
 export function startWebhookWorker() {
-  if (timer || (process.env.WEBHOOK_WORKER ?? "").toLowerCase() === "off") return;
-  timer = setInterval(async () => {
-    if (busy) return;
-    busy = true;
+  if (running || (process.env.WEBHOOK_WORKER ?? "").toLowerCase() === "off") return;
+  running = true;
+  const busyMs = Number(process.env.WEBHOOK_POLL_MS) || 10_000;
+  const idleMs = Number(process.env.WEBHOOK_IDLE_POLL_MS) || 60_000;
+  const tick = async () => {
+    let next = idleMs;
     try {
-      await WebhookService.processDue();
+      if ((await WebhookService.processDue()) > 0) next = busyMs;
     } catch (err) {
       logger.error({ err }, "Webhook worker tick failed");
-    } finally {
-      busy = false;
+      next = busyMs;
     }
-  }, 10_000);
+    timer = setTimeout(tick, next);
+    timer.unref();
+  };
+  timer = setTimeout(tick, busyMs);
   timer.unref();
   logger.info("🔔 Webhook worker started");
 }

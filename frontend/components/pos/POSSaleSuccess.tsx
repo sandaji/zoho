@@ -31,6 +31,7 @@ import { getApiUrl } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
+import { messagingService, type Channel } from "@/lib/messaging.service";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;
@@ -49,7 +50,8 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
   const { toast } = useToast();
   const { token } = useAuth();
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
-  const [emailAddress, setEmailAddress] = useState("");
+  const [emailAddress, setEmailAddress] = useState(""); // recipient: an email address or a phone number
+  const [channel, setChannel] = useState<Channel>(sale.customer?.phone ? "SMS" : "EMAIL");
   const [isLoadingEmail, setIsLoadingEmail] = useState(false);
   const [isLoadingPDF, setIsLoadingPDF] = useState(false);
 
@@ -59,25 +61,18 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
   });
 
   const handleEmailReceipt = async () => {
-    if (!emailAddress.trim()) {
-      toast("Please enter an email address", "warning");
+    const to = emailAddress.trim();
+    if (!to) {
+      toast(channel === "EMAIL" ? "Please enter an email address" : "Please enter a phone number", "warning");
       return;
     }
 
     try {
       setIsLoadingEmail(true);
-      const res = await fetch(`${getApiUrl("/v1/pos/sales")}/${sale.id}/email`, {
-        method: "POST",
-        headers: getAuthHeadersWithToken(token || ""),
-        body: JSON.stringify({ email: emailAddress }),
-      });
+      // Queued through the messaging outbox: retried automatically if the provider is down.
+      await messagingService.shareSale(sale.id, channel, to);
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Failed to send email");
-      }
-
-      toast("Receipt sent successfully", "success");
+      toast("Receipt queued for sending", "success");
       setEmailDialogOpen(false);
       setEmailAddress("");
     } catch (error) {
@@ -165,9 +160,16 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
               <Printer className="mr-2 h-4 w-4" />
               Print Receipt
             </Button>
-            <Button variant="outline" onClick={() => setEmailDialogOpen(true)} className="h-12">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setEmailAddress(channel === "EMAIL" ? "" : sale.customer?.phone ?? "");
+                setEmailDialogOpen(true);
+              }}
+              className="h-12"
+            >
               <Mail className="mr-2 h-4 w-4" />
-              Email Receipt
+              Send Receipt
             </Button>
             <Button
               variant="outline"
@@ -193,18 +195,35 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
           <Dialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Email Receipt</DialogTitle>
+                <DialogTitle>Send Receipt</DialogTitle>
                 <DialogDescription>
-                  Send receipt for invoice {sale.invoice_no} to customer email
+                  Send the receipt for invoice {sale.invoice_no} by SMS, WhatsApp or email
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div>
-                  <Label htmlFor="email">Customer Email</Label>
+                  <Label htmlFor="receipt-channel">Send by</Label>
+                  <select
+                    id="receipt-channel"
+                    value={channel}
+                    onChange={(e) => {
+                      const c = e.target.value as Channel;
+                      setChannel(c);
+                      setEmailAddress(c === "EMAIL" ? "" : sale.customer?.phone ?? "");
+                    }}
+                    className="mt-2 h-9 w-full rounded-md border border-input bg-background px-3 text-sm [color-scheme:light] dark:[color-scheme:dark]"
+                  >
+                    <option value="SMS">SMS</option>
+                    <option value="WHATSAPP">WhatsApp</option>
+                    <option value="EMAIL">Email</option>
+                  </select>
+                </div>
+                <div>
+                  <Label htmlFor="email">{channel === "EMAIL" ? "Customer Email" : "Customer Phone"}</Label>
                   <Input
                     id="email"
-                    type="email"
-                    placeholder="customer@example.com"
+                    type={channel === "EMAIL" ? "email" : "tel"}
+                    placeholder={channel === "EMAIL" ? "customer@example.com" : "07XX XXX XXX"}
                     value={emailAddress}
                     onChange={(e) => setEmailAddress(e.target.value)}
                     onKeyDown={(e) => {
@@ -234,7 +253,7 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
                         Sending...
                       </>
                     ) : (
-                      "Send Email"
+                      "Send"
                     )}
                   </Button>
                 </div>

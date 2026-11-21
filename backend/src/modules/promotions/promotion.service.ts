@@ -119,7 +119,7 @@ export class PromotionService {
   }
 
   /** Preview for the till: looks up catalogue prices itself. */
-  static async preview(branchId: string | null, items: { productId: string; quantity: number }[]) {
+  static async preview(branchId: string | null, items: { productId: string; quantity: number; discount?: number }[]) {
     if (!Array.isArray(items) || items.length === 0) return [];
     const products = await prisma.product.findMany({
       where: { id: { in: items.map((i) => i.productId) }, isActive: true },
@@ -128,7 +128,12 @@ export class PromotionService {
     const price = new Map(products.map((p) => [p.id, p.unit_price]));
     const lines = items
       .filter((i) => price.has(i.productId) && Number(i.quantity) > 0)
-      .map((i) => ({ productId: i.productId, quantity: Math.floor(Number(i.quantity)), unitPrice: price.get(i.productId)! }));
+      .map((i) => ({
+        productId: i.productId,
+        quantity: Math.floor(Number(i.quantity)),
+        unitPrice: price.get(i.productId)!,
+        manualDiscount: Math.max(0, Math.floor(Number(i.discount) || 0)),
+      }));
     const res = await PromotionService.evaluate({ branchId, lines });
     return [...res.values()];
   }
@@ -149,6 +154,53 @@ export class PromotionService {
         amount: l.promotion!.amount,
       }));
     if (data.length) await tx.promotionRedemption.createMany({ data });
+  }
+
+  /** The whole sale is cancelled: give back every remaining promotion discount on it. */
+  static async reverseAllForDocument(tx: { promotionRedemption: any }, salesDocumentId: string) {
+    const rows: { id: string; quantity: number; amount: number; reversedQuantity: number; reversedAmount: number }[] =
+      await tx.promotionRedemption.findMany({ where: { salesDocumentId } });
+    for (const r of rows) {
+      if (r.reversedQuantity >= r.quantity && r.reversedAmount >= r.amount) continue;
+      await tx.promotionRedemption.update({
+        where: { id: r.id },
+        data: { reversedQuantity: r.quantity, reversedAmount: r.amount },
+      });
+    }
+  }
+
+  /**
+   * Goods came back on a credit note: reverse the promotion discount in proportion to the quantity returned,
+   * per product. A product that was never discounted is ignored.
+   */
+  static async reverseForReturn(
+    tx: { promotionRedemption: any },
+    invoiceId: string,
+    returned: { productId: string; quantity: number }[],
+  ) {
+    for (const line of returned) {
+      let left = Math.floor(Math.abs(line.quantity));
+      if (left <= 0) continue;
+      const rows: { id: string; quantity: number; amount: number; reversedQuantity: number; reversedAmount: number }[] =
+        await tx.promotionRedemption.findMany({
+          where: { salesDocumentId: invoiceId, productId: line.productId },
+          orderBy: { createdAt: "asc" },
+        });
+      for (const r of rows) {
+        if (left <= 0) break;
+        const room = r.quantity - r.reversedQuantity;
+        if (room <= 0) continue;
+        const take = Math.min(room, left);
+        const isLast = take === room;
+        // Whatever is left of the discount when the last unit goes, otherwise a proportional share.
+        const amount = isLast ? r.amount - r.reversedAmount : Math.floor((r.amount * take) / r.quantity);
+        await tx.promotionRedemption.update({
+          where: { id: r.id },
+          data: { reversedQuantity: { increment: take }, reversedAmount: { increment: Math.max(0, amount) } },
+        });
+        left -= take;
+      }
+    }
   }
 
   // ------------------------------------------------------------ management
@@ -184,14 +236,14 @@ export class PromotionService {
     const stats = await prisma.promotionRedemption.groupBy({
       by: ["promotionId"],
       where: { promotionId: { in: rows.map((r) => r.id) } },
-      _sum: { amount: true, quantity: true },
+      _sum: { amount: true, quantity: true, reversedAmount: true },
       _count: { _all: true },
     });
     const sm = new Map(stats.map((s) => [s.promotionId, s]));
     return rows.map((r) => ({
       ...r,
       redemptions: sm.get(r.id)?._count._all ?? 0,
-      discountGiven: sm.get(r.id)?._sum.amount ?? 0,
+      discountGiven: (sm.get(r.id)?._sum.amount ?? 0) - (sm.get(r.id)?._sum.reversedAmount ?? 0),
     }));
   }
 
@@ -200,10 +252,15 @@ export class PromotionService {
     if (!p) throw nf();
     const agg = await prisma.promotionRedemption.aggregate({
       where: { promotionId: id },
-      _sum: { amount: true, quantity: true },
+      _sum: { amount: true, quantity: true, reversedAmount: true, reversedQuantity: true },
       _count: { _all: true },
     });
-    return { ...p, redemptions: agg._count._all, discountGiven: agg._sum.amount ?? 0, unitsDiscounted: agg._sum.quantity ?? 0 };
+    return {
+      ...p,
+      redemptions: agg._count._all,
+      discountGiven: (agg._sum.amount ?? 0) - (agg._sum.reversedAmount ?? 0),
+      unitsDiscounted: (agg._sum.quantity ?? 0) - (agg._sum.reversedQuantity ?? 0),
+    };
   }
 
   private static clean(d: any) {

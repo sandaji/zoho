@@ -19,6 +19,7 @@ import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { computeCartTotals, lineDiscount } from "@/lib/sales-calculator";
 import { POSCashier } from "@/components/pos/POSCashier";
+import { POSMpesaStk } from "@/components/pos/POSMpesaStk";
 
 // ------------------ Types ------------------
 type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer" | "credit";
@@ -90,6 +91,8 @@ export default function POSPage() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [orderDiscount, setOrderDiscount] = useState<number>(0);
+  // Promotions the server would apply to this cart (preview only; the server re-evaluates at sale time)
+  const [promoByProduct, setPromoByProduct] = useState<Record<string, { amount: number; name: string }>>({});
 
   // Document mode state
   const [docMode, setDocMode] = useState<"SALE" | "DRAFT" | "QUOTE">("SALE");
@@ -137,11 +140,49 @@ export default function POSPage() {
     setPaymentConfirmed(paymentMethod === "cash" || paymentMethod === "credit");
   }, [paymentMethod]);
 
+  // Ask the server which promotions apply to the cart (sale mode only; quotes and drafts are not promoted).
+  useEffect(() => {
+    if (!token || cart.length === 0 || docMode !== "SALE") {
+      setPromoByProduct({});
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      try {
+        const res = await fetch(getApiUrl("/v1/promotions/preview"), {
+          method: "POST",
+          headers: getAuthHeadersWithToken(token),
+          body: JSON.stringify({
+            branchId: user?.branchId ?? null,
+            items: cart.map((c) => ({ productId: c.productId, quantity: c.quantity, discount: lineDiscount(c) })),
+          }),
+        });
+        const json = await res.json();
+        if (cancelled || !res.ok || !Array.isArray(json.data)) return;
+        const next: Record<string, { amount: number; name: string }> = {};
+        for (const r of json.data) {
+          if (r?.promotion?.amount > 0) next[r.productId] = { amount: r.promotion.amount, name: r.promotion.name };
+        }
+        setPromoByProduct(next);
+      } catch {
+        if (!cancelled) setPromoByProduct({});
+      }
+    }, 350);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [cart, token, docMode, user?.branchId]);
+
   // ------------------ Totals ------------------
   // Same rules as the backend (see lib/sales-calculator.ts) so the total shown
   // here is the total the server charges. Plain computation, no hooks, so it is
   // safe above the early returns.
-  const totals = computeCartTotals(cart, orderDiscount);
+  // Promotion discounts are added to the lines for DISPLAY only. The sale request below still sends the
+  // cashier's own discounts from `cart`; the server adds the promotion itself, so nothing is counted twice.
+  const calcLines = cart.map((c) => ({ ...c, discount: lineDiscount(c) + (promoByProduct[c.productId]?.amount ?? 0) }));
+  const promoTotal = cart.reduce((s, c) => s + (promoByProduct[c.productId]?.amount ?? 0), 0);
+  const totals = computeCartTotals(calcLines, orderDiscount);
   const { subtotal, tax, grandTotal } = totals;
   const totalDiscount = totals.itemDiscount;
   const clampedOrderDiscount = totals.orderDiscountApplied;
@@ -717,6 +758,21 @@ export default function POSPage() {
               />
             </div>
 
+            {promoTotal > 0 && (
+              <div className="rounded-xl border border-emerald-300/60 bg-emerald-50 px-4 py-2 text-sm text-emerald-900 dark:bg-emerald-500/10 dark:text-emerald-200">
+                <div className="font-medium">Promotions applied: -KES {promoTotal.toLocaleString()}</div>
+                <ul className="mt-1 space-y-0.5 text-xs">
+                  {cart
+                    .filter((c) => promoByProduct[c.productId])
+                    .map((c) => (
+                      <li key={c.productId}>
+                        {c.name}: {promoByProduct[c.productId]!.name} (-{promoByProduct[c.productId]!.amount.toLocaleString()})
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
+
             {/* Cart - Neutral */}
             <div className="rounded-xl border border-border/50 bg-card p-4 shadow-sm">
               <POSCart
@@ -735,6 +791,21 @@ export default function POSPage() {
           <div className="lg:col-span-3 space-y-4">
             {/* Payment - Emerald tint */}
             <div className="space-y-4 rounded-xl border border-primary/15 bg-card p-4 shadow-sm">
+              {paymentMethod === "mpesa" && docMode === "SALE" && cart.length > 0 && (
+                <POSMpesaStk
+                  amount={grandTotal}
+                  defaultPhone={selectedCustomer?.phone || undefined}
+                  onPaid={(code) => {
+                    setPaymentReference(code);
+                    setPaymentConfirmed(true);
+                    toast(`M-Pesa payment received: ${code}`, "success");
+                  }}
+                  onReset={() => {
+                    setPaymentReference("");
+                    setPaymentConfirmed(false);
+                  }}
+                />
+              )}
               <POSPayment
                 subtotal={subtotal}
                 tax={tax}

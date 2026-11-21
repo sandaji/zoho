@@ -1054,6 +1054,11 @@ export class SalesService {
           }
         }
 
+        // A cancelled sale no longer counts towards any promotion's discount total.
+        if (document.type === SalesDocumentType.INVOICE) {
+          await PromotionService.reverseAllForDocument(tx, id);
+        }
+
         return tx.salesDocument.update({
           where: { id },
           data: { status: SalesDocumentStatus.VOID, notes: reason || "VOIDED" },
@@ -1918,6 +1923,15 @@ export class SalesService {
               reference: `Credit Note ${document.documentId} approved`,
             });
           }
+        }
+
+        // Returned goods give back their share of any promotion discount on the original invoice.
+        if (document.sourceDocumentId) {
+          await PromotionService.reverseForReturn(
+            tx,
+            document.sourceDocumentId,
+            document.items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+          );
         }
 
         return tx.salesDocument.update({

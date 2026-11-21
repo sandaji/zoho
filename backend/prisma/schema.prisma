@@ -3066,6 +3066,9 @@ model PromotionRedemption {
   branchId        String?  @map("branch_id")
   quantity        Int
   amount          Float
+  // Reversed when the sale is voided or goods are credited back; discountGiven reports amount - reversedAmount
+  reversedQuantity Int     @default(0) @map("reversed_quantity")
+  reversedAmount   Float   @default(0) @map("reversed_amount")
   createdAt       DateTime @default(now())
 
   @@index([promotionId])
