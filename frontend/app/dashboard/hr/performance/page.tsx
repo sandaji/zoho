@@ -65,11 +65,11 @@ export default function PerformancePage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "COMPLETED":
-        return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+        return <CheckCircle2 className="h-4 w-4 text-success" />;
       case "IN_PROGRESS":
         return <Clock className="h-4 w-4 text-blue-500" />;
       case "OVERDUE":
-        return <AlertCircle className="h-4 w-4 text-red-500" />;
+        return <AlertCircle className="h-4 w-4 text-destructive" />;
       default:
         return <Clock className="h-4 w-4 text-slate-400" />;
     }

@@ -12,14 +12,18 @@
    down still handle dark mode for the common neutral utilities.
      slate/gray/zinc/neutral/stone -> ERP cool neutrals
      blue/indigo/sky               -> ERP primary blue (#1060D0)
-     green                         -> ERP success
+     green/emerald                 -> ERP success
      red/rose                      -> ERP destructive
      amber/yellow/orange           -> ERP warning
-   NOT remapped (they keep Tailwind's default colours): emerald, teal, cyan,
-   lime, purple, violet, fuchsia, pink. Prefer the semantic tokens below
+   NOT remapped (they keep Tailwind's default colours): teal, cyan, lime,
+   purple, violet, fuchsia, pink. Prefer the semantic tokens below
    (success / warning / info / destructive) in new code.
    ═══════════════════════════════════════════════════════════════════════════ */
 @theme {
+  /* Type scale: Tailwind's text-xs is 0.75rem = 9.75px at the 13px root; this
+     lifts it to 10.4px. (text-sm stays 0.875rem = 11.4px.) */
+  --text-xs: 0.8rem;
+
   /* Neutrals */
   --color-slate-50: #F5F8FC;  --color-gray-50: #F5F8FC;  --color-zinc-50: #F5F8FC;  --color-neutral-50: #F5F8FC;  --color-stone-50: #F5F8FC;
   --color-slate-100: #EDF1F6; --color-gray-100: #EDF1F6; --color-zinc-100: #EDF1F6; --color-neutral-100: #EDF1F6; --color-stone-100: #EDF1F6;
@@ -58,6 +62,20 @@
   --color-green-800: #0E5133;
   --color-green-900: #0B3F28;
   --color-green-950: #06261A;
+
+  /* Emerald shares the success-green scale (it is used ~600 times across
+     screens that were written before the ERP palette existed). */
+  --color-emerald-50: #EEF9F3;
+  --color-emerald-100: #D0F0E0;
+  --color-emerald-200: #A8DCC2;
+  --color-emerald-300: #7ACAA4;
+  --color-emerald-400: #3FAE7C;
+  --color-emerald-500: #22966A;
+  --color-emerald-600: #168050;
+  --color-emerald-700: #11663F;
+  --color-emerald-800: #0E5133;
+  --color-emerald-900: #0B3F28;
+  --color-emerald-950: #06261A;
 
   /* Destructive red */
   --color-red-50: #FDF1F1;  --color-rose-50: #FDF1F1;
@@ -162,19 +180,23 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-muted: var(--destructive-muted);
   --color-destructive-border: var(--destructive-border);
+  --color-destructive-strong: var(--destructive-strong);
   /* ── Semantic colour tokens exposed as Tailwind utilities ── */
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-success-muted: var(--success-muted);
   --color-success-border: var(--success-border);
+  --color-success-strong: var(--success-strong);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-muted: var(--warning-muted);
   --color-warning-border: var(--warning-border);
+  --color-warning-strong: var(--warning-strong);
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
   --color-info-muted: var(--info-muted);
   --color-info-border: var(--info-border);
+  --color-info-strong: var(--info-strong);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -195,7 +217,8 @@
 
 /* ═══════════════════════════════════════════════════════════════════════════
    GLOBAL FONT SIZE  — 13px base so Tailwind's rem scale stays proportional:
-   text-xs=9.75px  text-sm=11.4px  text-base=13px  text-lg=14.6px  text-xl=16.25px
+   text-xs=10.4px (overridden by --text-xs above)  text-sm=11.4px  text-base=13px
+   text-lg=14.6px  text-xl=16.25px
    ═══════════════════════════════════════════════════════════════════════════ */
 html {
   font-size: 13px;
@@ -239,21 +262,26 @@ html {
   --success-foreground: #FFFFFF;
   --success-muted: #D0F0E0;
   --success-border: #A8DCC2;
+  /* "strong" = readable text on the matching -muted tint (use text-*-strong) */
+  --success-strong: #11663F;
 
   --warning: #D09020;
   --warning-foreground: #102030;
   --warning-muted: #FFF2D6;
   --warning-border: #E8C77F;
+  --warning-strong: #8F6313;
 
   --destructive: #D04040;
   --destructive-foreground: #FFFFFF;
   --destructive-muted: #FAE0E0;
   --destructive-border: #F4C2C2;
+  --destructive-strong: #AE3030;
 
   --info: #1050A0;
   --info-foreground: #FFFFFF;
   --info-muted: #E0F0F0;
   --info-border: #A9C6E8;
+  --info-strong: #0D50AC;
 
   /* Navy sidebar remains branded in both themes */
   --sidebar: #102040;
@@ -314,21 +342,25 @@ html {
   --success-foreground: #0B1220;
   --success-muted: #123B32;
   --success-border: #21634F;
+  --success-strong: var(--success);
 
   --warning: #FBBF24;
   --warning-foreground: #0F172A;
   --warning-muted: #3B3217;
   --warning-border: #6B5520;
+  --warning-strong: var(--warning);
 
   --destructive: #F87171;
   --destructive-foreground: #0F172A;
   --destructive-muted: color-mix(in srgb, var(--destructive) 16%, var(--card));
   --destructive-border: color-mix(in srgb, var(--destructive) 35%, var(--card));
+  --destructive-strong: var(--destructive);
 
   --info: #60A5FA;
   --info-foreground: #0F172A;
   --info-muted: #172B47;
   --info-border: #284A73;
+  --info-strong: var(--info);
 
   /* Sidebar - Dark Mode */
   --sidebar: #0B1220;
@@ -379,14 +411,36 @@ html {
 
   .dark .text-slate-900,
   .dark .text-slate-800,
-  .dark .text-slate-700 {
+  .dark .text-slate-700,
+  .dark .text-gray-900,
+  .dark .text-gray-800,
+  .dark .text-gray-700 {
     color: var(--foreground);
   }
 
   .dark .text-slate-600,
   .dark .text-slate-500,
-  .dark .text-slate-400 {
+  .dark .text-slate-400,
+  .dark .text-gray-600,
+  .dark .text-gray-500,
+  .dark .text-gray-400 {
     color: var(--muted-foreground);
+  }
+
+  /* Hover states: the fixed light fills would flash white on a dark surface. */
+  .dark .hover\:bg-gray-50:hover,
+  .dark .hover\:bg-slate-50:hover {
+    background-color: var(--muted);
+  }
+
+  .dark .hover\:bg-gray-100:hover,
+  .dark .hover\:bg-slate-100:hover {
+    background-color: var(--accent);
+  }
+
+  .dark .hover\:text-gray-900:hover,
+  .dark .hover\:text-slate-900:hover {
+    color: var(--foreground);
   }
 
   .dark .border-gray-100,

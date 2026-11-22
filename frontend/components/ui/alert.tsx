@@ -14,7 +14,7 @@ const alertVariants = cva(
         success:
           "bg-success-muted text-success border-success-border [&>svg]:text-success",
         warning:
-          "bg-warning-muted text-warning-foreground border-warning-border [&>svg]:text-warning",
+          "bg-warning-muted text-warning-strong border-warning-border [&>svg]:text-warning",
         info:
           "bg-info-muted text-info border-info-border [&>svg]:text-info",
       },

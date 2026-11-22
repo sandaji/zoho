@@ -102,7 +102,7 @@ export default function BenefitsPage() {
           <CardContent>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <p className="text-lg">This is your time to update coverage for yourself and your dependents.</p>
-              <Button className="bg-white text-rose-500 hover:bg-rose-50 border-none font-bold whitespace-nowrap">
+              <Button className="bg-white text-destructive hover:bg-destructive-muted/50 border-none font-bold whitespace-nowrap">
                 Start Enrollment
               </Button>
             </div>
@@ -138,7 +138,7 @@ export default function BenefitsPage() {
               <Card key={benefit.id} className="hover:shadow-md transition-shadow relative overflow-hidden group">
                 {isEnrolled(benefit.id) && (
                   <div className="absolute top-0 right-0 p-2">
-                    <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-none">
+                    <Badge className="bg-success-muted text-success-strong hover:bg-success-muted border-none">
                       <CheckCircle2 className="h-3 w-3 mr-1" /> Enrolled
                     </Badge>
                   </div>

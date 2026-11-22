@@ -44,11 +44,11 @@ interface AttendanceSummary {
 function getStatusColor(status: string) {
   switch (status) {
     case "present":
-      return "bg-green-100 text-green-800";
+      return "bg-success-muted text-success-strong";
     case "absent":
-      return "bg-red-100 text-red-800";
+      return "bg-destructive-muted text-destructive-strong";
     case "late":
-      return "bg-yellow-100 text-yellow-800";
+      return "bg-warning-muted text-warning-strong";
     case "half-day":
       return "bg-blue-100 text-blue-800";
     case "excused":
@@ -198,7 +198,7 @@ export default function AttendancePage() {
                 <CardTitle className="text-sm font-medium">Present</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{summary.totalPresent}</div>
+                <div className="text-2xl font-bold text-success-strong">{summary.totalPresent}</div>
                 <p className="text-xs text-gray-500 mt-1">Days present</p>
               </CardContent>
             </Card>
@@ -208,7 +208,7 @@ export default function AttendancePage() {
                 <CardTitle className="text-sm font-medium">Absent</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">{summary.totalAbsent}</div>
+                <div className="text-2xl font-bold text-destructive-strong">{summary.totalAbsent}</div>
                 <p className="text-xs text-gray-500 mt-1">Days absent</p>
               </CardContent>
             </Card>
@@ -218,7 +218,7 @@ export default function AttendancePage() {
                 <CardTitle className="text-sm font-medium">Late</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">{summary.totalLate}</div>
+                <div className="text-2xl font-bold text-warning-strong">{summary.totalLate}</div>
                 <p className="text-xs text-gray-500 mt-1">Late arrivals</p>
               </CardContent>
             </Card>
