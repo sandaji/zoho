@@ -6,6 +6,12 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { AuthController } from "./controllers/auth.controller";
 import { authMiddleware } from "@core/middleware/auth";
+import { validateBody } from "../../middleware/validation.middleware";
+import {
+  loginSchema,
+  updateProfileSchema,
+  refreshSchema,
+} from "./auth.validation";
 
 const router = Router();
 
@@ -20,17 +26,15 @@ const authController = new AuthController();
  * POST /auth/login
  * Login user with email and password
  */
-router.post("/login", (req: Request, res: Response, next: NextFunction) =>
-  authController.login(req, res, next),
+router.post(
+  "/login",
+  validateBody(loginSchema),
+  (req: Request, res: Response, next: NextFunction) =>
+    authController.login(req, res, next),
 );
 
-/**
- * POST /auth/register
- * Register new user
- */
-router.post("/register", (req: Request, res: Response, next: NextFunction) =>
-  authController.register(req, res, next),
-);
+// NOTE: Public self-registration is intentionally disabled. Accounts are
+// created by administrators (e.g. through employee/user management).
 
 // ============================================================================
 // PROTECTED ROUTES (Auth Required)
@@ -54,17 +58,19 @@ router.get(
 router.patch(
   "/profile",
   authMiddleware,
+  validateBody(updateProfileSchema),
   (req: Request, res: Response, next: NextFunction) =>
     authController.updateProfile(req, res, next),
 );
 
 /**
  * POST /auth/refresh
- * Refresh authentication token
+ * Exchange a refresh token (request body) for a new access token.
+ * Deliberately NOT behind authMiddleware: the access token may have expired.
  */
 router.post(
   "/refresh",
-  authMiddleware,
+  validateBody(refreshSchema),
   (req: Request, res: Response, next: NextFunction) =>
     authController.refresh(req, res, next),
 );

@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { frontendEnv } from "@/lib/env";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";
+import { authFetch } from "@/lib/api-client";
 
 interface TransferStockDialogProps {
   open: boolean;
@@ -114,7 +115,7 @@ export function TransferStockDialog({
         notes: formData.notes || undefined,
       };
 
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/inventory/transfer`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/inventory/transfer`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

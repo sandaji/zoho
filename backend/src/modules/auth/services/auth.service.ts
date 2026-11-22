@@ -7,13 +7,17 @@ import type { LoginRequestDTO, RegisterRequestDTO } from "../dtos";
 import { prisma } from "@core/database/db";
 import { AppError, ErrorCode } from "@core/errors/errors";
 import { hashPassword, verifyPassword } from "@core/utils/password";
-import { generateToken } from "@core/utils/jwt";
+import {
+  generateToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} from "@core/utils/jwt";
 import { TokenPayload } from "../../../types";
 import { logger } from "@core/utils/logger";
 import { PermissionService } from "./permission.service";
 
-const DEFAULT_ADMIN_EMAIL = "admin@swiftpos.co.ke";
-const DEFAULT_ADMIN_PASSWORD = "password123";
+// Public self-registration always receives this least-privileged role.
+const DEFAULT_REGISTRATION_ROLE = "cashier";
 
 export class AuthService {
   /**
@@ -37,7 +41,7 @@ export class AuthService {
     // code paths (e.g. createEmployee, before it normalised them) may contain
     // uppercase letters, and lowercasing only the input made those accounts
     // impossible to find ("Invalid email or password").
-    let user = await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: { email: { equals: normalizedEmail, mode: "insensitive" } },
       include: {
         branch: true,
@@ -45,35 +49,11 @@ export class AuthService {
     });
 
     if (!user) {
-      const shouldBootstrapDefaultAdmin =
-        normalizedEmail === DEFAULT_ADMIN_EMAIL &&
-        password === DEFAULT_ADMIN_PASSWORD;
-
-      if (shouldBootstrapDefaultAdmin) {
-        logger.info(
-          { email: normalizedEmail },
-          "Bootstrapping default admin user",
-        );
-        const passwordHash = await hashPassword(password);
-        user = await prisma.user.create({
-          data: {
-            email: normalizedEmail,
-            passwordHash: passwordHash,
-            name: "Admin User",
-            role: "admin",
-            branchId: null,
-          },
-          include: {
-            branch: true,
-          },
-        });
-      } else {
-        throw new AppError(
-          ErrorCode.UNAUTHORIZED,
-          401,
-          "Invalid email or password",
-        );
-      }
+      throw new AppError(
+        ErrorCode.UNAUTHORIZED,
+        401,
+        "Invalid email or password",
+      );
     }
 
     // Check if user has a password hash
@@ -112,10 +92,13 @@ export class AuthService {
       branchId: user.branchId,
     });
 
+    const refreshToken = generateRefreshToken(user.id);
+
     logger.info({ userId: user.id, email: user.email }, "User logged in");
 
     return {
       token,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -133,7 +116,7 @@ export class AuthService {
    * Register new user
    */
   async register(request: RegisterRequestDTO) {
-    const { email, password, name, role, phone, branchId } = request;
+    const { email, password, name, phone, branchId } = request;
 
     // Validate input
     if (!email || !password || !name) {
@@ -157,8 +140,9 @@ export class AuthService {
       );
     }
 
-    // Determine role
-    const roleCode = role || "cashier";
+    // The role is never taken from the request: public registration always
+    // gets the least-privileged role. Elevation needs an admin workflow.
+    const roleCode = DEFAULT_REGISTRATION_ROLE;
     const roleToAssign = await prisma.role.findUnique({
       where: { code: roleCode },
     });
@@ -182,7 +166,7 @@ export class AuthService {
           passwordHash: passwordHash,
           name,
           phone,
-          role: role || "cashier",
+          role: roleCode,
           branchId,
         },
       });
@@ -256,7 +240,7 @@ export class AuthService {
   /**
    * Update user profile
    */
-  async updateUser(userId: string, data: { name?: string; role?: string }) {
+  async updateUser(userId: string, data: { name?: string }) {
     if (!userId) {
       throw new AppError(
         ErrorCode.VALIDATION_ERROR,
@@ -269,7 +253,6 @@ export class AuthService {
       where: { id: userId },
       data: {
         ...(data.name && { name: data.name }),
-        ...(data.role && { role: data.role as any }),
       },
     });
 
@@ -403,16 +386,41 @@ export class AuthService {
 
   /**
    * Refresh user token
-   * Generates a new JWT token for an authenticated user
+   * Exchanges a valid refresh token for a new access token and a new refresh
+   * token. This works after the access token has expired. Role, branch and
+   * permissions are re-read from the database.
    */
-  async refresh(userId: string) {
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw new AppError(
+        ErrorCode.UNAUTHORIZED,
+        401,
+        "Refresh token is required",
+      );
+    }
+
+    let userId: string;
+    try {
+      userId = verifyRefreshToken(refreshToken).userId;
+    } catch {
+      throw new AppError(
+        ErrorCode.UNAUTHORIZED,
+        401,
+        "Invalid or expired refresh token",
+      );
+    }
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { branch: true },
     });
 
     if (!user) {
-      throw new AppError(ErrorCode.NOT_FOUND, 404, "User not found");
+      throw new AppError(
+        ErrorCode.UNAUTHORIZED,
+        401,
+        "Invalid or expired refresh token",
+      );
     }
 
     // Get permissions for the new token
@@ -433,10 +441,12 @@ export class AuthService {
     };
 
     const token = generateToken(tokenPayload);
+    const newRefreshToken = generateRefreshToken(user.id);
     logger.info({ userId: user.id }, "Token refreshed for user");
 
     return {
       token,
+      refreshToken: newRefreshToken,
       user: {
         id: user.id,
         email: user.email,

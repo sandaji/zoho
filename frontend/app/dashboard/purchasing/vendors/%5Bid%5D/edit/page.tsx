@@ -17,6 +17,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
+import { authFetch } from "@/lib/api-client";
 
 export default function EditVendorPage() {
     const router = useRouter();
@@ -45,7 +46,7 @@ export default function EditVendorPage() {
     const fetchVendor = async () => {
         try {
             const token = localStorage.getItem("auth_token");
-            const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors/${id}`, {
+            const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors/${id}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (response.ok) {
@@ -89,7 +90,7 @@ export default function EditVendorPage() {
         setSaving(true);
         try {
             const token = localStorage.getItem("auth_token");
-            const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors/${id}`, {
+            const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

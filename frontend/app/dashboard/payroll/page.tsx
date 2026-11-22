@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+import { authFetch } from "@/lib/api-client";
 
 interface EmployeeOption {
   id: string;
@@ -160,7 +161,7 @@ export default function PayrollDashboard() {
   useEffect(() => {
     if (!token || !canManagePayroll) return;
     let active = true;
-    fetch(`${API_BASE_URL}/v1/employees?isActive=true`, {
+    authFetch(`${API_BASE_URL}/v1/employees?isActive=true`, {
       headers: getAuthHeadersWithToken(token),
     })
       .then(async (response) => {

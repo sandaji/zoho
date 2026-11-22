@@ -1,6 +1,7 @@
 // frontend/lib/rbac-api.ts
 import { API_BASE_URL } from "./api-config";
 import { getAuthHeadersWithToken } from "./api-utils";
+import { authFetch } from "./api-client";
 
 export interface Permission {
   id: string;
@@ -32,7 +33,7 @@ export interface Role {
 }
 
 export const fetchRoles = async (token: string): Promise<Role[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/roles`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) throw new Error("Failed to fetch roles");
@@ -41,7 +42,7 @@ export const fetchRoles = async (token: string): Promise<Role[]> => {
 };
 
 export const fetchRoleDetails = async (token: string, id: string): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) throw new Error("Failed to fetch role details");
@@ -50,7 +51,7 @@ export const fetchRoleDetails = async (token: string, id: string): Promise<Role>
 };
 
 export const createRole = async (token: string, data: { name: string; code: string; description?: string }): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/roles`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(data),
@@ -64,7 +65,7 @@ export const createRole = async (token: string, data: { name: string; code: stri
 };
 
 export const updateRole = async (token: string, id: string, data: { name?: string; description?: string }): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(data),
@@ -75,7 +76,7 @@ export const updateRole = async (token: string, id: string, data: { name?: strin
 };
 
 export const deleteRole = async (token: string, id: string): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/roles/${id}`, {
     method: "DELETE",
     headers: getAuthHeadersWithToken(token),
   });
@@ -86,7 +87,7 @@ export const deleteRole = async (token: string, id: string): Promise<void> => {
 };
 
 export const fetchPermissions = async (token: string): Promise<Module[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/permissions`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/permissions`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) throw new Error("Failed to fetch permissions");
@@ -95,7 +96,7 @@ export const fetchPermissions = async (token: string): Promise<Module[]> => {
 };
 
 export const syncRolePermissions = async (token: string, roleId: string, permissionIds: string[]): Promise<Role> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/roles/${roleId}/permissions`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/roles/${roleId}/permissions`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify({ permissions: permissionIds }),
@@ -106,7 +107,7 @@ export const syncRolePermissions = async (token: string, roleId: string, permiss
 };
 
 export const fetchUserRoles = async (token: string, userId: string): Promise<any[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/users/${userId}/roles`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/users/${userId}/roles`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) throw new Error("Failed to fetch user roles");
@@ -115,7 +116,7 @@ export const fetchUserRoles = async (token: string, userId: string): Promise<any
 };
 
 export const assignUserRoles = async (token: string, userId: string, roleIds: string[]): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/rbac/users/${userId}/roles`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/rbac/users/${userId}/roles`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify({ roles: roleIds }),

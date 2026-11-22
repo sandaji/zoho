@@ -4,6 +4,7 @@
  */
 
 import { frontendEnv } from "./env";
+import { authFetch } from "./api-client";
 
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
@@ -52,7 +53,7 @@ class PurchasingService {
    * @returns Vendors data
    */
   async getVendors(token: string) {
-    const response = await fetch(`${API_URL}/v1/purchasing/vendors`, {
+    const response = await authFetch(`${API_URL}/v1/purchasing/vendors`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -74,7 +75,7 @@ class PurchasingService {
    * @returns Orders data
    */
   async getOrders(token: string): Promise<GetOrdersResponse["data"]> {
-    const response = await fetch(`${API_URL}/v1/purchasing/orders`, {
+    const response = await authFetch(`${API_URL}/v1/purchasing/orders`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +98,7 @@ class PurchasingService {
    * @returns Order data
    */
   async getOrderById(token: string, orderId: string) {
-    const response = await fetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
+    const response = await authFetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +121,7 @@ class PurchasingService {
    */
   async createOrder(token: string, orderData: any) {
     try {
-      const response = await fetch(`${API_URL}/v1/purchasing/orders`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,7 +161,7 @@ class PurchasingService {
    */
   async updateOrder(token: string, orderId: string, orderData: any) {
     try {
-      const response = await fetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -199,7 +200,7 @@ class PurchasingService {
    */
   async updateOrderStatus(token: string, orderId: string, status: string) {
     try {
-      const response = await fetch(
+      const response = await authFetch(
         `${API_URL}/v1/purchasing/orders/${orderId}/status`,
         {
           method: "PATCH",
@@ -239,7 +240,7 @@ class PurchasingService {
    * @param orderId - Purchase order ID
    */
   async deleteOrder(token: string, orderId: string) {
-    const response = await fetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
+    const response = await authFetch(`${API_URL}/v1/purchasing/orders/${orderId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

@@ -53,10 +53,14 @@ export default function LoginPage() {
         return;
       }
 
-      const { token, user } = response.data as { token: string; user: User };
+      const { token, refreshToken, user } = response.data as {
+        token: string;
+        refreshToken?: string;
+        user: User;
+      };
 
       // Store auth data
-      login(token, user);
+      login(token, user, refreshToken);
 
       // Redirect based on role
       // Prefer roles array if available, fall back to single role
@@ -135,30 +139,9 @@ export default function LoginPage() {
 
           <div className="mt-6 pt-6 border-t border-border">
             <p className="text-center text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <button
-                onClick={() => router.push("/auth/register")}
-                className="text-primary hover:text-primary/80 font-medium"
-              >
-                Sign up
-              </button>
+              Need an account? Contact your administrator.
             </p>
           </div>
-
-          {/* <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-xs text-blue-700 font-medium mb-2">Demo Credentials by Role:</p>
-            <div className="space-y-1 text-xs text-blue-600">
-              <p>
-                <strong>Admin:</strong> admin@example.com / password123
-              </p>
-              <p>
-                <strong>Branch Manager:</strong> manager@example.com / password123
-              </p>
-              <p>
-                <strong>Cashier:</strong> cashier@example.com / password123
-              </p>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

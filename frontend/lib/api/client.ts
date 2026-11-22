@@ -1,5 +1,6 @@
 import { API_BASE_URL } from "../api-config";
 import { getAuthToken } from "../api-utils";
+import { authFetch } from "../api-client";
 
 /**
  * Standard request options extending fetch RequestInit
@@ -50,9 +51,9 @@ export class BaseApiClient {
       headers.set('Authorization', `Bearer ${token}`);
     }
 
-    // 3. Execute fetch
+    // 3. Execute fetch (shared transport: auth header + refresh-on-401)
     try {
-      const response = await fetch(url.toString(), {
+      const response = await authFetch(url.toString(), {
         ...options,
         headers
       });

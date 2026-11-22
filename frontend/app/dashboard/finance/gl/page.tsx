@@ -56,6 +56,7 @@ import {
 import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { authFetch } from "@/lib/api-client";
 
 interface JournalEntry {
   id: string;
@@ -119,8 +120,8 @@ export default function GeneralLedgerPage() {
   const fetchMetadata = useCallback(async () => {
     try {
       const [jRes, aRes] = await Promise.all([
-        fetch(getApiUrl("/v1/finance/gl/journals"), { headers }),
-        fetch(getApiUrl("/v1/finance/accounts"), { headers }),
+        authFetch(getApiUrl("/v1/finance/gl/journals"), { headers }),
+        authFetch(getApiUrl("/v1/finance/accounts"), { headers }),
       ]);
       const [jData, aData] = await Promise.all([jRes.json(), aRes.json()]);
       if (jData.status === "success") setJournals(jData.data);
@@ -133,7 +134,7 @@ export default function GeneralLedgerPage() {
   const fetchEntries = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(getApiUrl("/v1/finance/gl/entries"), { headers });
+      const res = await authFetch(getApiUrl("/v1/finance/gl/entries"), { headers });
       const data = await res.json();
       if (data.status === "success") setEntries(data.data);
     } catch (error) {
@@ -203,7 +204,7 @@ export default function GeneralLedgerPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(getApiUrl("/v1/finance/gl/entries"), {
+      const res = await authFetch(getApiUrl("/v1/finance/gl/entries"), {
         method: "POST",
         headers,
         body: JSON.stringify({ ...formData, date: new Date(formData.date) }),

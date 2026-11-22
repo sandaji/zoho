@@ -30,6 +30,7 @@ import { useTable, createColumnHelper, type SortingState } from "@tanstack/react
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { BulkAssignDialog } from "./BulkAssignDialog";
+import { authFetch } from "@/lib/api-client";
 
 interface Customer {
   id: string;
@@ -85,7 +86,7 @@ export default function CustomersPage() {
 
   useEffect(() => {
     if (!token) return;
-    fetch(`${API_BASE_URL}/v1/customers/salesmen`, { headers: { Authorization: `Bearer ${token}` } })
+    authFetch(`${API_BASE_URL}/v1/customers/salesmen`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => j && setSalesmen(j.data ?? []))
       .catch(() => undefined);
@@ -97,7 +98,7 @@ export default function CustomersPage() {
 
     try {
       setIsLoading(true);
-      const response = await fetch(`${API_BASE_URL}/v1/customers?search=${encodeURIComponent(searchTerm)}${salesmanFilter ? `&salesmanId=${encodeURIComponent(salesmanFilter)}` : ""}`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/customers?search=${encodeURIComponent(searchTerm)}${salesmanFilter ? `&salesmanId=${encodeURIComponent(salesmanFilter)}` : ""}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -133,7 +134,7 @@ export default function CustomersPage() {
   const fetchCodeSetting = useCallback(async () => {
     if (!token) return;
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/admin/settings/customer-code`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/admin/settings/customer-code`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!response.ok) return; // Non-admins won't have access — fail quietly
@@ -157,7 +158,7 @@ export default function CustomersPage() {
     }
     try {
       setSavingPrefix(true);
-      const response = await fetch(`${API_BASE_URL}/v1/admin/settings/customer-code`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/admin/settings/customer-code`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -196,7 +197,7 @@ export default function CustomersPage() {
     try {
       setIsCreating(true);
 
-      const response = await fetch(`${API_BASE_URL}/v1/customers`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/customers`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -260,7 +261,7 @@ export default function CustomersPage() {
       if (!token || !selectedCustomerId || !detailsOpen) return;
       try {
         setDetailsLoading(true);
-        const res = await fetch(`${API_BASE_URL}/v1/customers/${selectedCustomerId}`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/customers/${selectedCustomerId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error("Failed to load details");

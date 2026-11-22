@@ -12,6 +12,7 @@ import { DocumentTotals } from "./DocumentTotals";
 import { DocumentActions } from "./DocumentActions";
 import { Toaster, toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
+import { authFetch } from "@/lib/api-client";
 
 // Define schema
 const salesDocumentSchema = z.object({
@@ -161,7 +162,7 @@ export const SalesDocumentBuilder: React.FC<SalesDocumentBuilderProps> = ({
 
       console.log("Submitting document:", payload);
 
-      const response = await fetch("/api/sales/documents", {
+      const response = await authFetch("/api/sales/documents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

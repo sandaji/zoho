@@ -8,8 +8,6 @@ import { AuthService } from "../services/auth.service";
 import type {
   LoginRequestDTO,
   LoginResponseDTO,
-  RegisterRequestDTO,
-  RegisterResponseDTO,
   MeResponseDTO,
 } from "../dtos";
 
@@ -36,29 +34,9 @@ export class AuthController {
         success: true,
         data: {
           token: data.token,
+          refreshToken: data.refreshToken,
           user: data.user,
         },
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  /**
-   * POST /auth/register
-   * Register new user
-   */
-  async register(
-    req: Request<{}, {}, RegisterRequestDTO>,
-    res: Response<RegisterResponseDTO>,
-    next: NextFunction,
-  ): Promise<void> {
-    try {
-      const data = await this.authService.register(req.body);
-
-      res.status(201).json({
-        success: true,
-        data,
       });
     } catch (error) {
       next(error);
@@ -95,7 +73,7 @@ export class AuthController {
    * Update user profile
    */
   async updateProfile(
-    req: Request<{}, {}, { name?: string; role?: string }>,
+    req: Request<{}, {}, { name?: string }>,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
@@ -104,7 +82,11 @@ export class AuthController {
         throw new Error("User not authenticated");
       }
 
-      const user = await this.authService.updateUser(req.user.userId, req.body);
+      // Only the name is self-editable. Role changes must go through an
+      // admin-only flow, never the self-service profile endpoint.
+      const user = await this.authService.updateUser(req.user.userId, {
+        name: req.body?.name,
+      });
 
       res.json({
         success: true,
@@ -125,17 +107,16 @@ export class AuthController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      if (!req.user) {
-        throw new Error("User not authenticated");
-      }
-
-      // Generate a new token for the current user
-      const data = await this.authService.refresh(req.user.userId);
+      // Authenticated by the refresh token in the body (not the access
+      // token, which may already have expired).
+      const { refreshToken } = (req.body ?? {}) as { refreshToken?: string };
+      const data = await this.authService.refresh(refreshToken ?? "");
 
       res.json({
         success: true,
         data: {
           token: data.token,
+          refreshToken: data.refreshToken,
           user: data.user,
         },
       });

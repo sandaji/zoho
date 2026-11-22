@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { authFetch } from "@/lib/api-client";
 
 export default function HRDashboard() {
   const [stats, setStats] = useState({
@@ -27,7 +28,7 @@ export default function HRDashboard() {
     const fetchHRStats = async () => {
       try {
         const token = localStorage.getItem("auth_token");
-        const response = await fetch(
+        const response = await authFetch(
           `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/stats`,
           {
             headers: { Authorization: `Bearer ${token}` }

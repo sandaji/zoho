@@ -26,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { authFetch } from "@/lib/api-client";
 
 interface AccountItem {
   id: string;
@@ -61,7 +62,7 @@ export default function ProfitLossPage() {
       setLoading(true);
       const url = `${getApiUrl(API_ENDPOINTS.FINANCE_PROFIT_LOSS)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
 
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         headers: getAuthHeaders(),
       });
 

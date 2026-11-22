@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Plus } from "lucide-react";
 import { API_ENDPOINTS, getApiUrl, getAuthHeaders } from "@/lib/api-config";
 import { useToast } from "@/hooks/use-toast";
+import { authFetch } from "@/lib/api-client";
 
 interface LeaveType {
   id: string;
@@ -46,7 +47,7 @@ export function RequestLeaveDialog({ onProcessed }: { onProcessed: () => void })
 
   useEffect(() => {
     if (open) {
-      fetch(getApiUrl(API_ENDPOINTS.LEAVE_TYPES), { headers: getAuthHeaders() })
+      authFetch(getApiUrl(API_ENDPOINTS.LEAVE_TYPES), { headers: getAuthHeaders() })
         .then(res => res.json())
         .then(data => {
           if (data.success) setTypes(data.data);
@@ -59,7 +60,7 @@ export function RequestLeaveDialog({ onProcessed }: { onProcessed: () => void })
     setLoading(true);
 
     try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.LEAVE_REQUEST), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.LEAVE_REQUEST), {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(formData),

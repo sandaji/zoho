@@ -4,6 +4,7 @@
 
 import { API_BASE_URL } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { authFetch } from "./api-client";
 
 // ============================================================================
 // TYPES
@@ -154,7 +155,7 @@ export async function fetchGlobalFinancials(
     branchId,
     period: String(periodDays),
   });
-  const res = await fetch(`${API_BASE_URL}/v1/admin/global-financials?${params}`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/admin/global-financials?${params}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!res.ok) {
@@ -166,7 +167,7 @@ export async function fetchGlobalFinancials(
 }
 
 export async function fetchIBTMonitor(token: string): Promise<IBTMonitorData> {
-  const res = await fetch(`${API_BASE_URL}/v1/admin/ibt-monitor`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/admin/ibt-monitor`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!res.ok) {
@@ -178,7 +179,7 @@ export async function fetchIBTMonitor(token: string): Promise<IBTMonitorData> {
 }
 
 export async function fetchSystemHealth(token: string): Promise<SystemHealthData> {
-  const res = await fetch(`${API_BASE_URL}/v1/admin/system-health`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/admin/system-health`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!res.ok) {
@@ -206,7 +207,7 @@ export async function fetchAuditLogs(
     ...(params.action     ? { action:     params.action     } : {}),
     ...(params.highValue  ? { highValue:  "true"            } : {}),
   });
-  const res = await fetch(`${API_BASE_URL}/v1/audit-logs?${query}`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/audit-logs?${query}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!res.ok) {

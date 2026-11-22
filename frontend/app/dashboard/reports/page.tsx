@@ -34,6 +34,7 @@ import {
 } from 'recharts';
 
 import { frontendEnv } from "@/lib/env";
+import { authFetch } from "@/lib/api-client";
 
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
@@ -120,7 +121,7 @@ export default function FinancialDashboardPage() {
           return;
         }
 
-        const response = await fetch(
+        const response = await authFetch(
           `${API_URL}/v1/reports/financials`,
           {
             headers: {

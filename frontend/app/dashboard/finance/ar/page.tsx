@@ -49,6 +49,7 @@ import { useTable, createColumnHelper, type SortingState } from "@tanstack/react
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { cn } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 
 export default function ReceivablesPage() {
@@ -84,7 +85,7 @@ export default function ReceivablesPage() {
     try {
       setLoading(true);
       const headers = getAuthHeadersWithToken(token || "");
-      const res = await fetch(getApiUrl("/v1/finance/ar/list"), { headers });
+      const res = await authFetch(getApiUrl("/v1/finance/ar/list"), { headers });
       const data = await res.json();
       if (data.status === "success") {
         const invoiceNo = searchParams?.get("invoiceNo");
@@ -93,7 +94,7 @@ export default function ReceivablesPage() {
 
         if (paymentId) {
           try {
-            const paymentLookup = await fetch(
+            const paymentLookup = await authFetch(
               getApiUrl(`/v1/finance/ar/payment/${paymentId}`),
               { headers },
             );
@@ -171,7 +172,7 @@ export default function ReceivablesPage() {
     if (!selectedAR) return;
 
     try {
-      const res = await fetch(getApiUrl("/v1/finance/ar/payment"), {
+      const res = await authFetch(getApiUrl("/v1/finance/ar/payment"), {
         method: "POST",
         headers: getAuthHeadersWithToken(token || ""),
         body: JSON.stringify({

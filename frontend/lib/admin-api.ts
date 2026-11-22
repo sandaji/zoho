@@ -9,6 +9,7 @@ import {
 import { API_BASE_URL, API_ENDPOINTS, getApiUrl } from "./api-config";
 import { getAuthHeadersWithToken } from "./api-utils";
 import { UserRole } from "./auth-context";
+import { authFetch } from "./api-client";
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -346,7 +347,7 @@ export interface MonthlyReport {
 // ============================================================================
 
 export const fetchBranches = async (token: string): Promise<Branch[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/branches`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/branches`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -380,7 +381,7 @@ export const createBranch = async (
   token: string,
   payload: CreateBranchPayload
 ): Promise<Branch> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/branches`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/branches`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -398,7 +399,7 @@ export const updateBranch = async (
   branchId: string,
   payload: UpdateBranchPayload
 ): Promise<Branch> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/branches/${branchId}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/branches/${branchId}`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -412,7 +413,7 @@ export const updateBranch = async (
 };
 
 export const fetchWarehouses = async (token: string): Promise<Warehouse[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/warehouses`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/warehouses`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -441,7 +442,7 @@ export const createWarehouse = async (
   token: string,
   payload: CreateWarehousePayload
 ): Promise<Warehouse> => {
-  const response = await fetch(`${API_BASE_URL}/v1/warehouses`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/warehouses`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -459,7 +460,7 @@ export const updateWarehouse = async (
   warehouseId: string,
   payload: UpdateWarehousePayload
 ): Promise<Warehouse> => {
-  const response = await fetch(`${API_BASE_URL}/v1/warehouses/${warehouseId}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/warehouses/${warehouseId}`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -473,7 +474,7 @@ export const updateWarehouse = async (
 };
 
 export const fetchVendors = async (token: string): Promise<any[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -490,7 +491,7 @@ export const fetchUsers = async (
   // includeDrivers: also return employees with the "driver" role who have no
   // system login (needed by the transfer dispatch dialog's driver picker).
   const query = options.includeDrivers ? "?includeDrivers=true" : "";
-  const response = await fetch(`${API_BASE_URL}/v1/admin/users${query}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/users${query}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -507,7 +508,7 @@ export const fetchUsers = async (
 };
 
 export const fetchProducts = async (token: string): Promise<Product[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/products`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/products`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -518,7 +519,7 @@ export const fetchProducts = async (token: string): Promise<Product[]> => {
 };
 
 export const fetchSales = async (token: string): Promise<Sales[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/pos/sales`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/pos/sales`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -529,7 +530,7 @@ export const fetchSales = async (token: string): Promise<Sales[]> => {
 };
 
 export const fetchDeliveries = async (token: string): Promise<Delivery[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/deliveries`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/deliveries`, {
     // Corrected endpoint
     headers: getAuthHeadersWithToken(token),
   });
@@ -544,7 +545,7 @@ export const createDelivery = async (
   token: string,
   payload: CreateDeliveryPayload
 ): Promise<Delivery> => {
-  const response = await fetch(`${API_BASE_URL}/v1/deliveries`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/deliveries`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -562,7 +563,7 @@ export const updateDeliveryStatus = async (
   deliveryId: string,
   payload: UpdateDeliveryStatusPayload
 ): Promise<Delivery> => {
-  const response = await fetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/status`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/status`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -576,7 +577,7 @@ export const updateDeliveryStatus = async (
 };
 
 export const fetchTrucks = async (token: string): Promise<Truck[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/trucks`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/trucks`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -602,7 +603,7 @@ export const fetchDeliveryTimeline = async (
   status: string;
   events: DeliveryTimelineEvent[];
 }> => {
-  const response = await fetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/timeline`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/deliveries/${deliveryId}/timeline`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -616,7 +617,7 @@ export const fetchDeliveryTimeline = async (
 // creating a delivery of type "transfer" — kept even after the old two-stage
 // admin transfer view was removed, since this consumer is unrelated to it.
 export const fetchStockTransfers = async (token: string): Promise<StockTransfer[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -635,7 +636,7 @@ export const requestStockTransfer = async (
   token: string,
   payload: RequestStockTransferPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/request`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/request`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -653,7 +654,7 @@ export const approveStockTransfer = async (
   transferId: string,
   payload: ApproveStockTransferPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/approve`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/approve`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -671,7 +672,7 @@ export const startPickingStockTransfer = async (
   transferId: string,
   payload: StartPickingPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(
+  const response = await authFetch(
     `${API_BASE_URL}/v1/inventory/transfers/${transferId}/start-picking`,
     {
       method: "POST",
@@ -692,7 +693,7 @@ export const completePickingStockTransfer = async (
   transferId: string,
   payload: CompletePickingPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(
+  const response = await authFetch(
     `${API_BASE_URL}/v1/inventory/transfers/${transferId}/complete-picking`,
     {
       method: "POST",
@@ -713,7 +714,7 @@ export const verifyStockTransfer = async (
   transferId: string,
   payload: VerifyTransferPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/verify`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/verify`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -731,7 +732,7 @@ export const dispatchStockTransfer = async (
   transferId: string,
   payload: DispatchStockTransferPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/dispatch`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/dispatch`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -749,7 +750,7 @@ export const receiveStockTransfer = async (
   transferId: string,
   payload: ReceiveStockTransferPayload
 ): Promise<StockTransfer> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/receive`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/receive`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -777,7 +778,7 @@ export const raiseTransferIssue = async (
   transferId: string,
   payload: RaiseTransferIssuePayload
 ): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/issues`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/issues`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -795,7 +796,7 @@ export const resolveTransferIssue = async (
   issueId: string,
   payload: ResolveTransferIssuePayload
 ): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/issues/${issueId}/resolve`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/issues/${issueId}/resolve`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -809,7 +810,7 @@ export const resolveTransferIssue = async (
 };
 
 export const fetchTransferAuditLogs = async (token: string, transferId: string): Promise<any[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/audit-logs`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/${transferId}/audit-logs`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -820,7 +821,7 @@ export const fetchTransferAuditLogs = async (token: string, transferId: string):
 };
 
 export const fetchTransferAnalytics = async (token: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/inventory/transfers/analytics`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/inventory/transfers/analytics`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -833,7 +834,7 @@ export const fetchTransferAnalytics = async (token: string): Promise<any> => {
 export const fetchNotifications = async (
   token: string
 ): Promise<{ notifications: any[]; unreadCount: number }> => {
-  const response = await fetch(`${API_BASE_URL}/v1/notifications`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/notifications`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -844,7 +845,7 @@ export const fetchNotifications = async (
 };
 
 export const markNotificationRead = async (token: string, notificationId: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/notifications/${notificationId}/read`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/notifications/${notificationId}/read`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
   });
@@ -855,7 +856,7 @@ export const markNotificationRead = async (token: string, notificationId: string
 };
 
 export const markAllNotificationsRead = async (token: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/notifications/read-all`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/notifications/read-all`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
   });
@@ -866,7 +867,7 @@ export const markAllNotificationsRead = async (token: string): Promise<any> => {
 };
 
 export const fetchFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/finance/transactions`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/finance/transactions`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -877,7 +878,7 @@ export const fetchFinanceTransactions = async (token: string): Promise<FinanceTr
 };
 
 export const fetchPayroll = async (token: string): Promise<Payroll[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/payroll`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/payroll`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -888,7 +889,7 @@ export const fetchPayroll = async (token: string): Promise<Payroll[]> => {
 };
 
 export const createProduct = async (token: string, payload: ProductPayload): Promise<Product> => {
-  const response = await fetch(`${API_BASE_URL}/v1/products`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/products`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -933,7 +934,7 @@ export const bulkImportProducts = async (
   token: string,
   payload: BulkImportPayload
 ): Promise<BulkImportResult> => {
-  const response = await fetch(`${API_BASE_URL}/v1/products/bulk-import`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/products/bulk-import`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -953,7 +954,7 @@ export const fetchDailySummary = async (
   const base = getApiUrl(API_ENDPOINTS.POS_DAILY_SUMMARY);
   const url =
     branchId && branchId !== "all" ? `${base}?branchId=${encodeURIComponent(branchId)}` : base;
-  const response = await fetch(url, {
+  const response = await authFetch(url, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1034,7 +1035,7 @@ export const fetchSalesPerformance = async (
   if (params.branchId) query.set("branchId", params.branchId);
   query.set("limit", String(params.limit ?? 10));
 
-  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/performance?${query}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/sales-documents/performance?${query}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1054,7 +1055,7 @@ export const getFinancialReport = async (
   month: number,
   year: number
 ): Promise<MonthlyReport> => {
-  const response = await fetch(`${API_BASE_URL}/v1/finance/report?month=${month}&year=${year}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/finance/report?month=${month}&year=${year}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1065,7 +1066,7 @@ export const getFinancialReport = async (
 };
 
 export const getRevenueAnalytics = async (token: string, range: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/finance/analytics/revenue?range=${range}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/finance/analytics/revenue?range=${range}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1076,7 +1077,7 @@ export const getRevenueAnalytics = async (token: string, range: string): Promise
 };
 
 export const listFinanceTransactions = async (token: string): Promise<FinanceTransaction[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/finance/transactions`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/finance/transactions`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1102,7 +1103,7 @@ export const listPayrollPage = async (
     if (value !== undefined && value !== "") query.set(key, String(value));
   });
   const queryString = query.toString();
-  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll${queryString ? `?${queryString}` : ""}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/hr/payroll${queryString ? `?${queryString}` : ""}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1129,7 +1130,7 @@ export const createPayrollRecord = async (
   token: string,
   payload: { userId: string; base_salary: number; allowances: number; deductions: number; period_start: string; period_end: string; notes?: string },
 ): Promise<Payroll> => {
-  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/hr/payroll`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -1147,7 +1148,7 @@ export const updatePayrollRecord = async (
   id: string,
   payload: { status?: PayrollStatus; base_salary?: number; allowances?: number; deductions?: number; paid_date?: string; payment_method?: string; notes?: string },
 ): Promise<Payroll> => {
-  const response = await fetch(`${API_BASE_URL}/v1/hr/payroll/${id}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/hr/payroll/${id}`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -1164,7 +1165,7 @@ export const runPayroll = async (
   token: string,
   payload: { period_start: string; period_end: string; month: number; year: number },
 ): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/payroll/run`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/payroll/run`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -1182,7 +1183,7 @@ export const updatePayrollStatus = async (
   id: string,
   status: string
 ): Promise<Payroll> => {
-  const response = await fetch(`${API_BASE_URL}/v1/payroll/${id}/status`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/payroll/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify({ status }),
@@ -1239,7 +1240,7 @@ export const updateUser = async (
   userId: string,
   payload: UpdateUserPayload
 ): Promise<User> => {
-  const response = await fetch(`${API_BASE_URL}/v1/hr/users/${userId}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/hr/users/${userId}`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -1257,7 +1258,7 @@ export const updateUser = async (
 // ============================================================================
 
 export const getEligibleEmployees = async (token: string): Promise<User[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/eligible-employees`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/eligible-employees`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1272,7 +1273,7 @@ export const grantSystemAccess = async (
   userId: string,
   payload: { role: string; password?: string }
 ): Promise<User> => {
-  const response = await fetch(`${API_BASE_URL}/v1/admin/users/${userId}/grant-access`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/admin/users/${userId}/grant-access`, {
     method: "PUT",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -1298,7 +1299,7 @@ export const updateProduct = async (
   productId: string,
   payload: UpdateProductPayload
 ): Promise<Product> => {
-  const response = await fetch(`${API_BASE_URL}/v1/products/${productId}`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/products/${productId}`, {
     method: "PATCH",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -1335,7 +1336,7 @@ export interface CreditNote {
 }
 
 export const fetchCreditNotes = async (token: string): Promise<CreditNote[]> => {
-  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/documents?type=CREDIT_NOTE`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/sales-documents/documents?type=CREDIT_NOTE`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!response.ok) {
@@ -1346,7 +1347,7 @@ export const fetchCreditNotes = async (token: string): Promise<CreditNote[]> => 
 };
 
 export const approveCreditNote = async (token: string, id: string): Promise<any> => {
-  const response = await fetch(`${API_BASE_URL}/v1/sales-documents/documents/${id}/approve`, {
+  const response = await authFetch(`${API_BASE_URL}/v1/sales-documents/documents/${id}/approve`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
   });
@@ -1372,7 +1373,7 @@ export const createCreditNote = async (
     reason: string;
   }
 ): Promise<any> => {
-  const response = await fetch(
+  const response = await authFetch(
     `${API_BASE_URL}/v1/sales-documents/invoices/${invoiceId}/credit-notes`,
     {
       method: "POST",

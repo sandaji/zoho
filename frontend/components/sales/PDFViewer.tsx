@@ -17,6 +17,7 @@ import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { useAuth } from "@/lib/auth-context";
 import { useReactToPrint } from "react-to-print";
 import { cn } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 interface PDFViewerProps {
   documentId: string;
@@ -40,7 +41,7 @@ export function PDFViewer({
   const fetchHTML = useCallback(async (): Promise<string | null> => {
     setLoading(true);
     try {
-      const response = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)), {
+      const response = await authFetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)), {
         headers: getAuthHeadersWithToken(token || ""),
       });
       if (!response.ok) throw new Error("Failed to generate document");
@@ -80,7 +81,7 @@ export function PDFViewer({
   const handleDownload = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
+      const response = await authFetch(
         getApiUrl(`${API_ENDPOINTS.SALES_DOCUMENT_PDF(documentId)}?format=pdf`),
         { headers: getAuthHeadersWithToken(token || "") }
       );

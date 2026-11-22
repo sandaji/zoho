@@ -21,6 +21,7 @@ import ReceiveGoodsModal from "./receive-goods-modal";
 import { formatCurrency } from "@/lib/utils";
 
 import { frontendEnv } from "@/lib/env";
+import { authFetch } from "@/lib/api-client";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface PurchaseOrderDetail {
@@ -115,7 +116,7 @@ export default function PurchaseOrderDetailPage() {
           return;
         }
 
-        const response = await fetch(`${API_URL}/v1/purchasing/orders/${params.id}`, {
+        const response = await authFetch(`${API_URL}/v1/purchasing/orders/${params.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -153,7 +154,7 @@ export default function PurchaseOrderDetailPage() {
 
     try {
       setApproving(true);
-      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/approve`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders/${po.id}/approve`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -191,7 +192,7 @@ export default function PurchaseOrderDetailPage() {
 
     try {
       setAcknowledging(true);
-      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/acknowledge`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders/${po.id}/acknowledge`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -238,7 +239,7 @@ export default function PurchaseOrderDetailPage() {
 
     try {
       setReturning(true);
-      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/status`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders/${po.id}/status`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -277,7 +278,7 @@ export default function PurchaseOrderDetailPage() {
 
     try {
       setSubmitting(true);
-      const response = await fetch(`${API_URL}/v1/purchasing/orders/${po.id}/status`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders/${po.id}/status`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,

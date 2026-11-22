@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { Package, Loader2, Search, AlertCircle } from "lucide-react";
+import { authFetch } from "@/lib/api-client";
 
 interface Product {
   id: string;
@@ -136,7 +137,7 @@ export function AutocompleteProductSearch({
       try {
         setError(null);
 
-        const res = await fetch(getApiUrl(API_ENDPOINTS.POS_PRODUCTS_SEARCH), {
+        const res = await authFetch(getApiUrl(API_ENDPOINTS.POS_PRODUCTS_SEARCH), {
           method: "POST",
           headers: getAuthHeadersWithToken(token),
           body: JSON.stringify({ search: trimmedQuery, branchId, combinedStock }),

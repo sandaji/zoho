@@ -4,6 +4,7 @@
 
 import { API_BASE_URL } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
+import { authFetch } from "../api-client";
 
 // ============================================================================
 // TYPES
@@ -80,7 +81,7 @@ export interface SwitchBranchResult {
  * List all branches with employee + warehouse counts (admin only)
  */
 export async function listBranches(token: string): Promise<BranchSummary[]> {
-  const res = await fetch(`${API_BASE_URL}/v1/branches`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/branches`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!res.ok) {
@@ -96,7 +97,7 @@ export async function listBranches(token: string): Promise<BranchSummary[]> {
  * Get single branch with users and warehouses
  */
 export async function getBranch(token: string, id: string): Promise<BranchDetail> {
-  const res = await fetch(`${API_BASE_URL}/v1/branches/${id}`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/branches/${id}`, {
     headers: getAuthHeadersWithToken(token),
   });
   if (!res.ok) {
@@ -114,7 +115,7 @@ export async function createBranch(
   token: string,
   payload: CreateBranchPayload
 ): Promise<BranchSummary> {
-  const res = await fetch(`${API_BASE_URL}/v1/branches`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/branches`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -135,7 +136,7 @@ export async function updateBranch(
   id: string,
   payload: UpdateBranchPayload
 ): Promise<BranchSummary> {
-  const res = await fetch(`${API_BASE_URL}/v1/branches/${id}`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/branches/${id}`, {
     method: "PUT",
     headers: getAuthHeadersWithToken(token),
     body: JSON.stringify(payload),
@@ -152,7 +153,7 @@ export async function updateBranch(
  * Delete a branch — only works if no employees/warehouses/sales are attached
  */
 export async function deleteBranch(token: string, id: string): Promise<void> {
-  const res = await fetch(`${API_BASE_URL}/v1/branches/${id}`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/branches/${id}`, {
     method: "DELETE",
     headers: getAuthHeadersWithToken(token),
   });
@@ -169,7 +170,7 @@ export async function switchBranch(
   token: string,
   branchId: string
 ): Promise<SwitchBranchResult> {
-  const res = await fetch(`${API_BASE_URL}/v1/branches/${branchId}/switch`, {
+  const res = await authFetch(`${API_BASE_URL}/v1/branches/${branchId}/switch`, {
     method: "POST",
     headers: getAuthHeadersWithToken(token),
   });
@@ -185,7 +186,7 @@ export async function switchBranch(
  * Get branch stats / dashboard data
  */
 export async function getBranchStats(token: string, branchId: string) {
-  const res = await fetch(
+  const res = await authFetch(
     `${API_BASE_URL}/v1/branches/stats?branchId=${branchId}`,
     { headers: getAuthHeadersWithToken(token) }
   );

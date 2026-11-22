@@ -11,6 +11,7 @@ import { Printer, ArrowLeft } from "lucide-react";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { formatCurrency } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 interface SaleItem {
   id: string;
@@ -77,7 +78,7 @@ export default function InvoicePage() {
   const fetchSale = async () => {
     try {
       setLoading(true);
-      fetch(getApiUrl(API_ENDPOINTS.POS_SALES_BY_ID(params.id as string)), {
+      authFetch(getApiUrl(API_ENDPOINTS.POS_SALES_BY_ID(params.id as string)), {
         headers: getAuthHeadersWithToken(token || ""),
       })
       .then((response) => response.json())

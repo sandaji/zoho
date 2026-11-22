@@ -25,6 +25,7 @@ import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { FiscalPeriod } from "@/lib/types/admin";
 import { showSuccessToast, showErrorToast } from "@/components/ui/toast";
+import { authFetch } from "@/lib/api-client";
 
 export default function PeriodManagementPage() {
   const [periods, setPeriods] = useState<FiscalPeriod[]>([]);
@@ -54,7 +55,7 @@ export default function PeriodManagementPage() {
   const fetchPeriods = async (year: number) => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/v1/finance/periods?year=${year}`, {
+      const res = await authFetch(`${API_URL}/v1/finance/periods?year=${year}`, {
         headers: getAuthHeaders(),
       });
       const data = await res.json();
@@ -77,7 +78,7 @@ export default function PeriodManagementPage() {
   const fetchBudgets = async (year?: number) => {
     try {
       const query = year ? `?fiscalYear=${year}` : "";
-      const res = await fetch(`${API_URL}/v1/finance/budgets${query}`, {
+      const res = await authFetch(`${API_URL}/v1/finance/budgets${query}`, {
         headers: getAuthHeaders(),
       });
       const data = await res.json();
@@ -93,7 +94,7 @@ export default function PeriodManagementPage() {
     e.preventDefault();
     try {
       setSubmittingBudget(true);
-      const res = await fetch(`${API_URL}/v1/finance/budgets`, {
+      const res = await authFetch(`${API_URL}/v1/finance/budgets`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({
@@ -135,7 +136,7 @@ export default function PeriodManagementPage() {
   const initializeYear = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${API_URL}/v1/finance/periods/initialize`, {
+      const res = await authFetch(`${API_URL}/v1/finance/periods/initialize`, {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ year: yearToInit }),
@@ -161,7 +162,7 @@ export default function PeriodManagementPage() {
     const action = period.isLocked ? "unlock" : "lock";
     try {
       setLoadingAction(period.id);
-      const res = await fetch(`${API_URL}/v1/finance/periods/${period.id}/${action}`, {
+      const res = await authFetch(`${API_URL}/v1/finance/periods/${period.id}/${action}`, {
         method: "POST",
         headers: getAuthHeaders(),
       });

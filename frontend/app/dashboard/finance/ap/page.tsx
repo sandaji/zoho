@@ -60,6 +60,7 @@ import { useTable, createColumnHelper, type SortingState } from "@tanstack/react
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { cn } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 export default function PayablesPage() {
   const { token } = useAuth();
@@ -89,7 +90,7 @@ export default function PayablesPage() {
     try {
       setLoading(true);
       const headers = getAuthHeadersWithToken(token);
-      const res = await fetch(getApiUrl("/v1/finance/ap/list"), { headers });
+      const res = await authFetch(getApiUrl("/v1/finance/ap/list"), { headers });
       const data = await res.json();
       if (data.status === "success") {
         setPayables(data.data);
@@ -150,7 +151,7 @@ export default function PayablesPage() {
   const handleRecordPayment = async () => {
     if (!selectedAP || !token) return;
     try {
-      const res = await fetch(getApiUrl("/v1/finance/ap/payment"), {
+      const res = await authFetch(getApiUrl("/v1/finance/ap/payment"), {
         method: "POST",
         headers: getAuthHeadersWithToken(token),
         body: JSON.stringify({

@@ -39,6 +39,7 @@ import { useTable, createColumnHelper, type SortingState } from "@tanstack/react
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { formatCurrency } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 type DocumentType = "ALL" | "DRAFT" | "QUOTE" | "INVOICE" | "CREDIT_NOTE";
 
@@ -113,7 +114,7 @@ export default function HistoryPage() {
         params.append("endDate", toDate);
       }
 
-      const response = await fetch(`/api/sales/documents?${params.toString()}`);
+      const response = await authFetch(`/api/sales/documents?${params.toString()}`);
       const result = await response.json();
 
       if (result.success) {

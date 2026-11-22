@@ -23,6 +23,7 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, AlertCircle } from "lucide-react";
+import { authFetch } from "@/lib/api-client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -77,7 +78,7 @@ export default function ReceiveGoodsModal({
       try {
         if (!token) return;
 
-        const response = await fetch(`${API_URL}/v1/warehouses`, {
+        const response = await authFetch(`${API_URL}/v1/warehouses`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -168,7 +169,7 @@ export default function ReceiveGoodsModal({
         return;
       }
 
-      const response = await fetch(`${API_URL}/v1/purchasing/orders/${purchaseOrder.id}/receive`, {
+      const response = await authFetch(`${API_URL}/v1/purchasing/orders/${purchaseOrder.id}/receive`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

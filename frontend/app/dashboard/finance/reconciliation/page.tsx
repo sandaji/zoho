@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/lib/toast-context";
+import { authFetch } from "@/lib/api-client";
 
 interface BankAccount {
   id: string;
@@ -40,7 +41,7 @@ export default function ReconciliationDashboard() {
 
   const fetchAccounts = async () => {
     try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_ACCOUNTS), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.BANK_ACCOUNTS), {
         headers: getAuthHeaders(),
       });
       if (!res.ok) throw new Error("Failed to fetch accounts");
@@ -62,7 +63,7 @@ export default function ReconciliationDashboard() {
       const content = await file.text();
       
       // v2 import: skips rows already imported and auto-matches by amount/date.
-      const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_UPLOAD.replace(/\/upload$/, "/import")), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.BANK_UPLOAD.replace(/\/upload$/, "/import")), {
         method: "POST",
         headers: {
             ...getAuthHeaders(),

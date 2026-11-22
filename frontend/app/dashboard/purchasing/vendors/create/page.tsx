@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { authFetch } from "@/lib/api-client";
 
 export default function CreateVendorPage() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function CreateVendorPage() {
     setLoading(true);
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -28,6 +28,7 @@ import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
 import { hasAuthToken } from "@/lib/api-utils";
 import { useToast } from "@/lib/toast-context";
 import { formatCurrency, safeFormatDate } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 interface POSHistoryProps {
   branchId: string;
@@ -81,7 +82,7 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
         params.set("payment_method", paymentFilter);
       }
 
-      const res = await fetch(`${getApiUrl(API_ENDPOINTS.POS_SALES)}?${params}`, {
+      const res = await authFetch(`${getApiUrl(API_ENDPOINTS.POS_SALES)}?${params}`, {
         headers: getAuthHeaders(),
       });
 
@@ -116,7 +117,7 @@ export const POSHistory: React.FC<POSHistoryProps> = ({ branchId }) => {
       }
       params.set("format", "csv");
 
-      const res = await fetch(`${getApiUrl("/v1/sales")}/export?${params}`, {
+      const res = await authFetch(`${getApiUrl("/v1/sales")}/export?${params}`, {
         headers: getAuthHeaders(),
       });
 

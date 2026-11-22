@@ -63,6 +63,7 @@ import { AddCustomerDialog } from "@/components/pos/AddCustomerDialog";
 import { AutocompleteProductSearch } from "@/components/pos/AutocompleteProductSearch";
 import type { Customer } from "@/components/pos/POSCustomerSelect";
 import { useAuth } from "@/lib/auth-context";
+import { authFetch } from "@/lib/api-client";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -317,7 +318,7 @@ export function POSMenuBar({
         if (to) params.set("endDate", to);
         if (search && search.length >= 2) params.set("search", search);
 
-        const res = await fetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params}`, {
+        const res = await authFetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params}`, {
           headers: getAuthHeadersWithToken(token),
         });
         const json: SalesDocumentListResponse = await res.json();
@@ -390,7 +391,7 @@ export function POSMenuBar({
     setCreditNoteLoading(true);
     try {
       const params = new URLSearchParams({ type: "CREDIT_NOTE", sourceDocumentId: doc.id });
-      const res = await fetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params}`, {
+      const res = await authFetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params}`, {
         headers: getAuthHeadersWithToken(token),
       });
       const json = await res.json();
@@ -437,7 +438,7 @@ export function POSMenuBar({
 
     setCreditNoteSubmitting(true);
     try {
-      const res = await fetch(
+      const res = await authFetch(
         getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CREDIT_NOTE(creditNoteInvoice.id)),
         {
           method: "POST",
@@ -515,7 +516,7 @@ export function POSMenuBar({
     setPaymentSubmitting(true);
     try {
       for (const line of validLines) {
-        const res = await fetch(
+        const res = await authFetch(
           getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_PAYMENT(paymentInvoice.id)),
           {
             method: "POST",
@@ -581,7 +582,7 @@ export function POSMenuBar({
   async function handleConvertToInvoice(doc: SalesDocument) {
     setConvertingId(doc.id);
     try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(doc.id)), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(doc.id)), {
         method: "POST",
         headers: getAuthHeadersWithToken(token),
         body: JSON.stringify({}),

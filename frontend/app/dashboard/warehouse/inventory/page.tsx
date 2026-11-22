@@ -28,6 +28,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
 import { DataTablePagination } from "@/components/ui/data-table-pagination";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { warehouseService } from "@/lib/warehouse.service";
+import { authFetch } from "@/lib/api-client";
 
 function getStockStatusColor(available: number, reorderLevel: number) {
   if (available === 0) return "text-red-600 bg-red-100";
@@ -231,7 +232,7 @@ export default function InventoryPage() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/inventory`, {
+      const response = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/inventory`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -241,7 +242,7 @@ export default function InventoryPage() {
       setInventory(data.data || []);
 
       // Load warehouses
-      const warehouseRes = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/warehouse`, {
+      const warehouseRes = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/warehouse`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

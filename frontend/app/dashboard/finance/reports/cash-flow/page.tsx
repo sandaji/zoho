@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { authFetch } from "@/lib/api-client";
 
 interface CashFlowEntry {
   id: string;
@@ -55,7 +56,7 @@ export default function CashFlowPage() {
       setLoading(true);
       const url = `${getApiUrl(API_ENDPOINTS.FINANCE_CASH_FLOW)}?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`;
 
-      const res = await fetch(url, {
+      const res = await authFetch(url, {
         headers: getAuthHeaders(),
       });
 

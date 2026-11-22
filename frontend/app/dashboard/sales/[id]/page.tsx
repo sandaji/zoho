@@ -1,6 +1,7 @@
 // c:/Projects/swiftpos/frontend/app/dashboard/sales/[id]/page.tsx
 import { SalesDocumentBuilder } from "@/components/sales/SalesDocumentBuilder";
 import { notFound } from "next/navigation";
+import { authFetch } from "@/lib/api-client";
 
 type SalesDocumentType = "DRAFT" | "QUOTATION" | "INVOICE" | "CREDIT_NOTE";
 
@@ -30,7 +31,7 @@ interface SalesDocument {
 async function getDocument(id: string): Promise<SalesDocument | null> {
   // This is a mock fetch. Replace with your actual API call.
   // For example:
-  // const res = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/sales-documents/${id}`);
+  // const res = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/sales-documents/${id}`);
   // if (!res.ok) return null;
   // return res.json();
   console.log(`Fetching document with id: ${id}`);

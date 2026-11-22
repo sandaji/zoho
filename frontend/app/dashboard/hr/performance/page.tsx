@@ -23,6 +23,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { authFetch } from "@/lib/api-client";
 
 interface Goal {
   id: string;
@@ -40,7 +41,7 @@ export default function PerformancePage() {
     const fetchGoals = async () => {
       try {
         const token = localStorage.getItem("auth_token");
-        const response = await fetch(
+        const response = await authFetch(
           `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/performance/goals`,
           {
             headers: { Authorization: `Bearer ${token}` }

@@ -34,6 +34,7 @@ import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 
 import { frontendEnv } from "@/lib/env";
+import { authFetch } from "@/lib/api-client";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface SalesOrderItem {
@@ -110,7 +111,7 @@ export default function SalesOrderDispatchPage({
         };
 
         // Fetch sales order
-        const soRes = await fetch(`${API_URL}/v1/sales/orders/${params.id}`, {
+        const soRes = await authFetch(`${API_URL}/v1/sales/orders/${params.id}`, {
           headers,
         });
         if (!soRes.ok) {
@@ -127,7 +128,7 @@ export default function SalesOrderDispatchPage({
         setDispatchQuantities(initialQuantities);
 
         // Fetch warehouses
-        const whRes = await fetch(`${API_URL}/v1/warehouses`, {
+        const whRes = await authFetch(`${API_URL}/v1/warehouses`, {
           headers,
         });
         if (whRes.ok) {
@@ -218,7 +219,7 @@ export default function SalesOrderDispatchPage({
     setSubmitting(true);
 
     try {
-      const response = await fetch(
+      const response = await authFetch(
         `${API_URL}/v1/sales/orders/${params.id}/dispatch`,
         {
           method: 'POST',

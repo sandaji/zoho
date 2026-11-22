@@ -21,6 +21,7 @@ import {
   ResolveTransferIssuePayload,
 } from "./admin-api";
 import { frontendEnv } from "./env";
+import { authFetch } from "./api-client";
 
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
@@ -141,7 +142,7 @@ export const warehouseService = {
     if (params.page) queryParams.append("page", params.page.toString());
     if (params.limit) queryParams.append("limit", params.limit.toString());
 
-    const response = await fetch(`${API_URL}/v1/inventory/transfers?${queryParams}`, {
+    const response = await authFetch(`${API_URL}/v1/inventory/transfers?${queryParams}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -158,7 +159,7 @@ export const warehouseService = {
    * Get a single transfer by ID
    */
   async getTransferById(id: string, token: string) {
-    const response = await fetch(`${API_URL}/v1/inventory/transfers/${id}`, {
+    const response = await authFetch(`${API_URL}/v1/inventory/transfers/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -175,7 +176,7 @@ export const warehouseService = {
    * Adjust stock
    */
   async adjustStock(data: AdjustStockInput, token: string) {
-    const response = await fetch(`${API_URL}/v1/inventory/adjust`, {
+    const response = await authFetch(`${API_URL}/v1/inventory/adjust`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -205,7 +206,7 @@ export const warehouseService = {
     if (params.page) queryParams.append("page", params.page.toString());
     if (params.limit) queryParams.append("limit", params.limit.toString());
 
-    const response = await fetch(`${API_URL}/v1/warehouse/movements?${queryParams}`, {
+    const response = await authFetch(`${API_URL}/v1/warehouse/movements?${queryParams}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -224,7 +225,7 @@ export const warehouseService = {
   async getWarehouseStats(warehouseId: string | undefined, token: string) {
     const queryParams = warehouseId ? `?warehouseId=${warehouseId}` : "";
 
-    const response = await fetch(`${API_URL}/v1/warehouse/stats${queryParams}`, {
+    const response = await authFetch(`${API_URL}/v1/warehouse/stats${queryParams}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -241,7 +242,7 @@ export const warehouseService = {
    * Get warehouses list
    */
   async getWarehouses(token: string) {
-    const response = await fetch(`${API_URL}/v1/warehouses`, {
+    const response = await authFetch(`${API_URL}/v1/warehouses`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -263,7 +264,7 @@ export const warehouseService = {
     if (params?.search) queryParams.append("search", params.search);
     if (params?.limit) queryParams.append("limit", params.limit.toString());
 
-    const response = await fetch(`${API_URL}/v1/products?${queryParams.toString()}`, {
+    const response = await authFetch(`${API_URL}/v1/products?${queryParams.toString()}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

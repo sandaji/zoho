@@ -66,6 +66,7 @@ export interface EmployeeTransfer {
 }
 
 import { frontendEnv } from "./env";
+import { authFetch } from "./api-client";
 
 const API_URL = `${frontendEnv.NEXT_PUBLIC_API_URL}/v1`;
 
@@ -88,7 +89,7 @@ export const employeeService = {
     if (filters?.branchId) params.append("branchId", filters.branchId);
     if (filters?.isActive !== undefined) params.append("isActive", String(filters.isActive));
 
-    const response = await fetch(`${API_URL}/employees?${params}`, {
+    const response = await authFetch(`${API_URL}/employees?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -102,7 +103,7 @@ export const employeeService = {
    * Get single employee with transfer history
    */
   async getEmployee(token: string, id: string) {
-    const response = await fetch(`${API_URL}/employees/${id}`, {
+    const response = await authFetch(`${API_URL}/employees/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -116,7 +117,7 @@ export const employeeService = {
    * Create employee
    */
   async createEmployee(token: string, data: EmployeeFormData) {
-    const response = await fetch(`${API_URL}/employees`, {
+    const response = await authFetch(`${API_URL}/employees`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -145,7 +146,7 @@ export const employeeService = {
       delete data.password;
     }
 
-    const response = await fetch(`${API_URL}/employees/${id}`, {
+    const response = await authFetch(`${API_URL}/employees/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -176,7 +177,7 @@ export const employeeService = {
       approvedBy?: string;
     }
   ) {
-    const response = await fetch(`${API_URL}/employees/${id}/transfer`, {
+    const response = await authFetch(`${API_URL}/employees/${id}/transfer`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -196,7 +197,7 @@ export const employeeService = {
    * Get employee transfer history
    */
   async getTransferHistory(token: string, id: string) {
-    const response = await fetch(`${API_URL}/employees/${id}/transfers`, {
+    const response = await authFetch(`${API_URL}/employees/${id}/transfers`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -210,7 +211,7 @@ export const employeeService = {
    * Delete employee
    */
   async deleteEmployee(token: string, id: string) {
-    const response = await fetch(`${API_URL}/employees/${id}`, {
+    const response = await authFetch(`${API_URL}/employees/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -228,7 +229,7 @@ export const employeeService = {
    * List departments (HR-managed employee code prefixes)
    */
   async getAllDepartments(token: string) {
-    const response = await fetch(`${API_URL}/employees/departments`, {
+    const response = await authFetch(`${API_URL}/employees/departments`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -243,7 +244,7 @@ export const employeeService = {
    * { name: "Junior Staff", prefix: "JS" } → employees get JS001, JS002...
    */
   async createDepartment(token: string, data: { name: string; prefix: string }) {
-    const response = await fetch(`${API_URL}/employees/departments`, {
+    const response = await authFetch(`${API_URL}/employees/departments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -267,7 +268,7 @@ export const employeeService = {
     id: string,
     data: { name?: string; prefix?: string; isActive?: boolean }
   ) {
-    const response = await fetch(`${API_URL}/employees/departments/${id}`, {
+    const response = await authFetch(`${API_URL}/employees/departments/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -26,6 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { authFetch } from "@/lib/api-client";
 
 interface JobPosting {
   id: string;
@@ -48,7 +49,7 @@ export default function RecruitmentPage() {
     const fetchPostings = async () => {
       try {
         const token = localStorage.getItem("auth_token");
-        const response = await fetch(
+        const response = await authFetch(
           `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/recruitment/postings`,
           {
             headers: { Authorization: `Bearer ${token}` }

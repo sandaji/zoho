@@ -5,6 +5,7 @@
 
 
 import { frontendEnv } from "./env";
+import { authFetch } from "./api-client";
 
 const API_URL = `${frontendEnv.NEXT_PUBLIC_API_URL}/v1`;
 
@@ -39,7 +40,7 @@ export const branchService = {
     if (filters?.search) params.append("search", filters.search);
     if (filters?.isActive !== undefined) params.append("isActive", String(filters.isActive));
 
-    const response = await fetch(`${API_URL}/branches?${params}`, {
+    const response = await authFetch(`${API_URL}/branches?${params}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -53,7 +54,7 @@ export const branchService = {
    * Get single branch
    */
   async getBranch(token: string, id: string) {
-    const response = await fetch(`${API_URL}/branches/${id}`, {
+    const response = await authFetch(`${API_URL}/branches/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -67,7 +68,7 @@ export const branchService = {
    * Create branch
    */
   async createBranch(token: string, data: BranchFormData) {
-    const response = await fetch(`${API_URL}/branches`, {
+    const response = await authFetch(`${API_URL}/branches`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +92,7 @@ export const branchService = {
     id: string,
     data: Partial<BranchFormData> & { isActive?: boolean }
   ) {
-    const response = await fetch(`${API_URL}/branches/${id}`, {
+    const response = await authFetch(`${API_URL}/branches/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -111,7 +112,7 @@ export const branchService = {
    * Delete branch
    */
   async deleteBranch(token: string, id: string) {
-    const response = await fetch(`${API_URL}/branches/${id}`, {
+    const response = await authFetch(`${API_URL}/branches/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/table";
 import { FileText, Plus, Search, Eye, RefreshCw, ArrowRight } from "lucide-react";
 import { getApiUrl, API_ENDPOINTS, getAuthHeaders } from "@/lib/api-config";
+import { authFetch } from "@/lib/api-client";
 
 interface SalesDocument {
   id: string;
@@ -82,7 +83,7 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
       if (statusFilter !== "ALL") params.append("status", statusFilter);
       params.append("limit", "50");
 
-      const res = await fetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params.toString()}`, {
+      const res = await authFetch(`${getApiUrl(API_ENDPOINTS.SALES_DOCUMENTS)}?${params.toString()}`, {
         headers: getAuthHeaders(),
       });
 
@@ -108,7 +109,7 @@ export function POSDocuments({ branchId }: POSDocumentsProps) {
 
   const handleConvertToInvoice = async (id: string) => {
     try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(id)), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(id)), {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify({ type: "OPEN_INVOICE" }),

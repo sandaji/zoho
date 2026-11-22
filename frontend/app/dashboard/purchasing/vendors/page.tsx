@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { authFetch } from "@/lib/api-client";
 
 interface Vendor {
   id: string;
@@ -49,7 +50,7 @@ export default function VendorsPage() {
   const fetchVendors = async () => {
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -68,7 +69,7 @@ export default function VendorsPage() {
 
     try {
       const token = localStorage.getItem("auth_token");
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors/${id}`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/purchasing/vendors/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

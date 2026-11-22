@@ -38,6 +38,7 @@ export interface NavigationModule {
   id: string;
   label: string;
   icon: NavigationIcon;
+  showSubNavigation?: boolean;
   accent: {
     text: string;
     icon: string;
@@ -63,6 +64,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     id: "home",
     label: "Home",
     icon: LayoutDashboard,
+    showSubNavigation: true,
     section: "operations",
     accent: sharedAccent("text-slate-700 dark:text-slate-200", "text-slate-600 dark:text-slate-400", "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-white", "bg-slate-400 dark:bg-slate-300"),
     pages: [
@@ -80,6 +82,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     id: "sales",
     label: "Sales",
     icon: ShoppingCart,
+    showSubNavigation: true,
     section: "operations",
     accent: sharedAccent("text-emerald-700 dark:text-emerald-300", "text-emerald-600 dark:text-emerald-400", "bg-emerald-50 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200", "bg-emerald-500 dark:bg-emerald-400"),
     permissions: ["sales.order.create", "sales.order.view_all", "crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all", "sales.promotion.view", "sales.mpesa.initiate", "sales.mpesa.view"],
@@ -88,13 +91,13 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
       { id: "customers", label: "Customers", href: "/dashboard/crm/customers", icon: Users },
       { id: "mpesa", label: "M-Pesa Payments", href: "/dashboard/sales/mpesa", icon: Wallet, permissions: ["sales.mpesa.initiate", "sales.mpesa.view"] },
       { id: "promotions", label: "Promotions", href: "/dashboard/sales/promotions", icon: ShoppingCart, permissions: ["sales.promotion.view", "sales.promotion.manage", "sales.promotion.activate"] },
-      { id: "crm-pipeline", label: "Sales Pipeline", href: "/dashboard/crm/pipeline", icon: BarChart3, permissions: ["crm.pipeline.view", "crm.pipeline.manage", "crm.pipeline.view_all"] },
     ],
   },
   {
     id: "inventory",
     label: "Inventory",
     icon: Package,
+    showSubNavigation: true,
     section: "operations",
     accent: sharedAccent("text-sky-700 dark:text-sky-300", "text-sky-600 dark:text-sky-400", "bg-sky-50 text-sky-900 dark:bg-sky-500/20 dark:text-sky-200", "bg-sky-500 dark:bg-sky-400"),
     permissions: ["inventory.product.view", "inventory.stock.adjust", "inventory.product.manage", "inventory.count.view"],
@@ -125,6 +128,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     id: "procurement",
     label: "Procurement",
     icon: BookOpen,
+    showSubNavigation: true,
     section: "operations",
     accent: sharedAccent("text-violet-700 dark:text-violet-300", "text-violet-600 dark:text-violet-400", "bg-violet-50 text-violet-900 dark:bg-violet-500/20 dark:text-violet-200", "bg-violet-500 dark:bg-violet-400"),
     // 'purchasing.*' are the codes the backend actually enforces; the older
@@ -169,6 +173,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     id: "finance",
     label: "Finance",
     icon: DollarSign,
+    showSubNavigation: true,
     section: "operations",
     accent: sharedAccent("text-amber-700 dark:text-amber-300", "text-amber-600 dark:text-amber-400", "bg-amber-50 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200", "bg-amber-500 dark:bg-amber-400"),
     permissions: [
@@ -236,6 +241,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     id: "human-resources",
     label: "Human Resources",
     icon: Users,
+    showSubNavigation: true,
     section: "operations",
     accent: sharedAccent("text-rose-700 dark:text-rose-300", "text-rose-600 dark:text-rose-400", "bg-rose-50 text-rose-900 dark:bg-rose-500/20 dark:text-rose-200", "bg-rose-500 dark:bg-rose-400"),
     permissions: ["hr.employee.view", "hr.employee.manage", "hr.payroll.view", "hr.payroll.manage"],
@@ -269,6 +275,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     id: "system",
     label: "System Administration",
     icon: Crown,
+    showSubNavigation: true,
     section: "system",
     accent: sharedAccent("text-yellow-700 dark:text-yellow-300", "text-yellow-600 dark:text-yellow-400", "bg-yellow-50 text-yellow-900 dark:bg-yellow-500/20 dark:text-yellow-200", "bg-yellow-500 dark:bg-yellow-400"),
     // No module-level roles/permissions restriction — visibility is decided

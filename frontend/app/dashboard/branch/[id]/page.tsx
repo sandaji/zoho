@@ -19,6 +19,7 @@ import { LineChart } from "@/components/ui/chart";
 import { QuickActionButtons } from "@/components/ui/quick-action-buttons";
 import { API_ENDPOINTS, getApiUrl, getAuthHeaders } from "@/lib/api-config";
 import { formatCurrency } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 interface BranchDashboardData {
   branch_id: string;
@@ -53,7 +54,7 @@ export default function BranchDashboard() {
     const fetchDashboard = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(getApiUrl(API_ENDPOINTS.BRANCH_DASHBOARD(branchId)), {
+        const response = await authFetch(getApiUrl(API_ENDPOINTS.BRANCH_DASHBOARD(branchId)), {
           headers: getAuthHeaders(),
         });
         const data = await response.json();

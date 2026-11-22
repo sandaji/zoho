@@ -9,6 +9,7 @@ import { Loader2, ArrowLeftRight, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { authFetch } from "@/lib/api-client";
 
 interface BankTransaction {
   id: string;
@@ -37,7 +38,7 @@ export default function ReconciliationMatchingPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILIATION_DATA(accountId)), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILIATION_DATA(accountId)), {
         headers: getAuthHeaders(),
       });
       if (!res.ok) throw new Error("Failed to fetch data");
@@ -57,7 +58,7 @@ export default function ReconciliationMatchingPage() {
 
     try {
       setReconciling(true);
-      const res = await fetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILE), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.BANK_RECONCILE), {
         method: "POST",
         headers: {
           ...getAuthHeaders(),

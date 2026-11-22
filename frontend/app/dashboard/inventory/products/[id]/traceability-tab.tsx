@@ -17,6 +17,7 @@ import { Loader2, ArrowUpRight, ArrowDownLeft, RefreshCw } from "lucide-react";
 import { useTable, createColumnHelper, type SortingState } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
+import { authFetch } from "@/lib/api-client";
 
 interface StockMovement {
   id: string;
@@ -118,7 +119,7 @@ export function TraceabilityTab({ productId }: { productId: string }) {
     try {
       setLoading(true);
       const url = `${API_ENDPOINTS.STOCK_MOVEMENTS}?productId=${productId}&limit=20`;
-      const response = await fetch(url, {
+      const response = await authFetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

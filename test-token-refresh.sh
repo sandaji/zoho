@@ -4,6 +4,11 @@
 
 API_BASE="http://localhost:5000"
 
+# Credentials come from the environment, never from the script.
+# Usage: TEST_EMAIL=you@example.com TEST_PASSWORD='...' ./test-token-refresh.sh
+TEST_EMAIL="${TEST_EMAIL:?Set TEST_EMAIL}"
+TEST_PASSWORD="${TEST_PASSWORD:?Set TEST_PASSWORD}"
+
 echo "🔐 Testing Auth & Token Refresh Flow"
 echo "=================================="
 
@@ -11,15 +16,17 @@ echo "=================================="
 echo -e "\n1️⃣ Logging in with test credentials..."
 LOGIN_RESPONSE=$(curl -s -X POST "$API_BASE/v1/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@swiftpos.com","password":"password123"}')
+  -d "{\"email\":\"$TEST_EMAIL\",\"password\":\"$TEST_PASSWORD\"}")
 
 echo "Response: $LOGIN_RESPONSE"
 
 # Extract token from response
 TOKEN=$(echo "$LOGIN_RESPONSE" | grep -o '"token":"[^"]*' | cut -d'"' -f4)
 
-if [ -z "$TOKEN" ]; then
-  echo "❌ Failed to get token. Response: $LOGIN_RESPONSE"
+REFRESH_TOKEN=$(echo "$LOGIN_RESPONSE" | grep -o '"refreshToken":"[^"]*' | cut -d'"' -f4)
+
+if [ -z "$TOKEN" ] || [ -z "$REFRESH_TOKEN" ]; then
+  echo "❌ Failed to get token/refreshToken. Response: $LOGIN_RESPONSE"
   exit 1
 fi
 
@@ -35,9 +42,11 @@ echo "Response: $ME_RESPONSE"
 
 # Step 3: Test token refresh
 echo -e "\n3️⃣ Testing token refresh with POST /v1/auth/refresh..."
+# The refresh endpoint is authenticated by the refresh token in the body,
+# not the access token (which may already have expired).
 REFRESH_RESPONSE=$(curl -s -X POST "$API_BASE/v1/auth/refresh" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json")
+  -H "Content-Type: application/json" \
+  -d "{\"refreshToken\":\"$REFRESH_TOKEN\"}")
 
 echo "Response: $REFRESH_RESPONSE"
 

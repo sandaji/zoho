@@ -20,6 +20,7 @@ import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { computeCartTotals, lineDiscount } from "@/lib/sales-calculator";
 import { POSCashier } from "@/components/pos/POSCashier";
 import { POSMpesaStk } from "@/components/pos/POSMpesaStk";
+import { authFetch } from "@/lib/api-client";
 
 // ------------------ Types ------------------
 type PaymentMethod = "cash" | "card" | "mpesa" | "cheque" | "bank_transfer" | "credit";
@@ -149,7 +150,7 @@ export default function POSPage() {
     let cancelled = false;
     const t = setTimeout(async () => {
       try {
-        const res = await fetch(getApiUrl("/v1/promotions/preview"), {
+        const res = await authFetch(getApiUrl("/v1/promotions/preview"), {
           method: "POST",
           headers: getAuthHeadersWithToken(token),
           body: JSON.stringify({
@@ -331,7 +332,7 @@ export default function POSPage() {
       const headers = new Headers(authHeaders);
       headers.set("Idempotency-Key", idempotencyKey);
 
-      const res = await fetch(getApiUrl(API_ENDPOINTS.POS_SALES), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.POS_SALES), {
         method: "POST",
         headers,
         // Identity (user, branch) comes from the auth token and prices come
@@ -440,7 +441,7 @@ export default function POSPage() {
   const onEditDocument = async (docId: string) => {
     try {
       setLoading(true);
-      const res = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(docId)), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(docId)), {
         headers: getAuthHeadersWithToken(token || ""),
       });
 
@@ -537,7 +538,7 @@ export default function POSPage() {
             items,
           };
 
-      const res = await fetch(getApiUrl(endpoint), {
+      const res = await authFetch(getApiUrl(endpoint), {
         method,
         headers: getAuthHeadersWithToken(token || ""),
         body: JSON.stringify(body),
@@ -591,7 +592,7 @@ export default function POSPage() {
         discount: c.discount,
       }));
       const headers = getAuthHeadersWithToken(token || "");
-      const saved = await fetch(
+      const saved = await authFetch(
         getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_UPDATE_ITEMS(editingDocId)),
         {
           method: "PATCH",
@@ -612,7 +613,7 @@ export default function POSPage() {
         );
         return;
       }
-      const converted = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(editingDocId)), {
+      const converted = await authFetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_CONVERT(editingDocId)), {
         method: "POST",
         headers,
         body: JSON.stringify({

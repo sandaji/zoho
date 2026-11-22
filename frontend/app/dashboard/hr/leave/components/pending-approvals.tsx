@@ -14,6 +14,7 @@ import { Check, X } from "lucide-react";
 import { API_ENDPOINTS, getApiUrl, getAuthHeaders } from "@/lib/api-config";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
+import { authFetch } from "@/lib/api-client";
 
 interface PendingRequest {
   id: string;
@@ -32,7 +33,7 @@ export function PendingApprovals({ pending, onProcessed }: { pending: PendingReq
   const handleAction = async (id: string, status: "APPROVED" | "REJECTED") => {
     setProcessingId(id);
     try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.LEAVE_UPDATE_STATUS(id)), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.LEAVE_UPDATE_STATUS(id)), {
         method: "PATCH",
         headers: getAuthHeaders(),
         body: JSON.stringify({ status }),

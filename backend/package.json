@@ -32,7 +32,8 @@
     "migrate:sales": "tsx scripts/migrate-sales-to-documents.ts",
     "migrate:sales:dry-run": "tsx scripts/migrate-sales-to-documents.ts --dry-run",
     "verify:sales-migration": "tsx scripts/verify-sales-migration.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:unit": "tsx --test \"src/**/*.test.ts\""
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

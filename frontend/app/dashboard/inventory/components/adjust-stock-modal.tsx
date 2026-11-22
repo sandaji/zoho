@@ -25,6 +25,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { frontendEnv } from "@/lib/env";
 import { WarehouseSelect } from "@/components/ui/warehouse-select";
+import { authFetch } from "@/lib/api-client";
 
 interface AdjustStockModalProps {
   open: boolean;
@@ -143,7 +144,7 @@ export function AdjustStockModal({
             : undefined,
       };
 
-      const response = await fetch(
+      const response = await authFetch(
         `${frontendEnv.NEXT_PUBLIC_API_URL}/v1/inventory/adjust`,
         {
           method: "POST",

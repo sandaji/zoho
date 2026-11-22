@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { getApiUrl, API_ENDPOINTS } from "@/lib/api-config";
 import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { useToast } from "@/lib/toast-context";
+import { authFetch } from "@/lib/api-client";
 
 interface Customer {
   id: string;
@@ -53,7 +54,7 @@ export function AddCustomerDialog({
 
     setIsAdding(true);
     try {
-      const res = await fetch(getApiUrl(API_ENDPOINTS.CUSTOMERS), {
+      const res = await authFetch(getApiUrl(API_ENDPOINTS.CUSTOMERS), {
         method: "POST",
         headers: getAuthHeadersWithToken(token),
         body: JSON.stringify({

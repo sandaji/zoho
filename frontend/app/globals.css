@@ -15,6 +15,9 @@
      green                         -> ERP success
      red/rose                      -> ERP destructive
      amber/yellow/orange           -> ERP warning
+   NOT remapped (they keep Tailwind's default colours): emerald, teal, cyan,
+   lime, purple, violet, fuchsia, pink. Prefer the semantic tokens below
+   (success / warning / info / destructive) in new code.
    ═══════════════════════════════════════════════════════════════════════════ */
 @theme {
   /* Neutrals */
@@ -157,6 +160,8 @@
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-muted: var(--destructive-muted);
+  --color-destructive-border: var(--destructive-border);
   /* ── Semantic colour tokens exposed as Tailwind utilities ── */
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
@@ -190,7 +195,7 @@
 
 /* ═══════════════════════════════════════════════════════════════════════════
    GLOBAL FONT SIZE  — 13px base so Tailwind's rem scale stays proportional:
-   text-xs=10.4px  text-sm=11.7px  text-base=13px  text-lg=14.6px
+   text-xs=9.75px  text-sm=11.4px  text-base=13px  text-lg=14.6px  text-xl=16.25px
    ═══════════════════════════════════════════════════════════════════════════ */
 html {
   font-size: 13px;
@@ -242,6 +247,8 @@ html {
 
   --destructive: #D04040;
   --destructive-foreground: #FFFFFF;
+  --destructive-muted: #FAE0E0;
+  --destructive-border: #F4C2C2;
 
   --info: #1050A0;
   --info-foreground: #FFFFFF;
@@ -315,6 +322,8 @@ html {
 
   --destructive: #F87171;
   --destructive-foreground: #0F172A;
+  --destructive-muted: color-mix(in srgb, var(--destructive) 16%, var(--card));
+  --destructive-border: color-mix(in srgb, var(--destructive) 35%, var(--card));
 
   --info: #60A5FA;
   --info-foreground: #0F172A;
@@ -488,6 +497,9 @@ html {
    ═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
   /* ── Card: tighter padding, smaller title ───────────────────────────── */
+  /* NOTE: rules in this block live in the base layer, so the utility classes
+     in components/ui/*.tsx win over them. They mainly affect raw elements
+     (plain <input>, <table>, <th>) and properties a component doesn't set. */
   [data-slot="card"] {
     @apply py-4;
   }
@@ -509,13 +521,13 @@ html {
 
   /* ── Button: slightly shorter, smaller text ─────────────────────────── */
   [data-slot="button"] {
-    @apply text-xs;
+    @apply text-sm;
   }
   [data-slot="button"][data-size="default"] {
     @apply h-8 px-3 py-1.5;
   }
   [data-slot="button"][data-size="sm"] {
-    @apply h-7 px-2.5 text-xs;
+    @apply h-7 px-2.5 text-sm;
   }
   [data-slot="button"][data-size="lg"] {
     @apply h-9 px-5;
@@ -523,12 +535,12 @@ html {
 
   /* ── Badge: tighter ─────────────────────────────────────────────────── */
   [data-slot="badge"] {
-    @apply text-[10px] px-1.5 py-px;
+    @apply text-[11px] px-1.5 py-px;
   }
 
   /* ── Input: compact ─────────────────────────────────────────────────── */
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
-    @apply text-xs;
+    @apply text-sm;
     height: 2rem; /* 32px */
     padding-top: 0.25rem;
     padding-bottom: 0.25rem;
@@ -536,15 +548,15 @@ html {
 
   /* ── Select trigger ─────────────────────────────────────────────────── */
   [data-radix-select-trigger] {
-    @apply h-8 text-xs;
+    @apply h-8 text-sm;
   }
 
   /* ── Table: tighter rows ────────────────────────────────────────────── */
   table {
-    @apply text-xs;
+    @apply text-sm;
   }
   thead tr th {
-    @apply h-9 px-3 text-[10px] font-semibold uppercase tracking-wide;
+    @apply h-9 px-3 text-[11px] font-semibold uppercase tracking-wide;
   }
   tbody tr td {
     @apply px-3 py-2;
@@ -558,12 +570,12 @@ html {
 
   /* ── Dropdown menu items ────────────────────────────────────────────── */
   [role="menuitem"] {
-    @apply text-xs py-1.5;
+    @apply text-sm py-1.5;
   }
 
   /* ── Tabs ───────────────────────────────────────────────────────────── */
   [role="tab"] {
-    @apply text-xs;
+    @apply text-sm;
   }
 }
 

@@ -25,6 +25,7 @@ import { Loader2, Plus, Trash2, Edit2, Folder, FolderOpen } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { frontendEnv } from "@/lib/env";
+import { authFetch } from "@/lib/api-client";
 
 interface Category {
   id: string;
@@ -65,7 +66,7 @@ export function CategoryManagementDialog({
     if (!token) return;
     setIsLoading(true);
     try {
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -89,7 +90,7 @@ export function CategoryManagementDialog({
     if (!newCategoryName.trim() || !token) return;
     setIsSaving(true);
     try {
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +117,7 @@ export function CategoryManagementDialog({
     if (!newSubcategoryName.trim() || !selectedCategoryForSub || !token) return;
     setIsSaving(true);
     try {
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories/${selectedCategoryForSub}/subcategories`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories/${selectedCategoryForSub}/subcategories`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -144,7 +145,7 @@ export function CategoryManagementDialog({
     if (!token) return;
     if (!confirm("Are you sure you want to delete this category? This will also delete all its subcategories.")) return;
     try {
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories/${categoryId}`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories/${categoryId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -164,7 +165,7 @@ export function CategoryManagementDialog({
     if (!token) return;
     if (!confirm("Are you sure you want to delete this subcategory?")) return;
     try {
-      const response = await fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories/${categoryId}/subcategories/${subcategoryId}`, {
+      const response = await authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/products/categories/${categoryId}/subcategories/${subcategoryId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

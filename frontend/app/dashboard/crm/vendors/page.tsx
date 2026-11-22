@@ -51,6 +51,7 @@ import { useTable, createColumnHelper, type SortingState } from "@tanstack/react
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { tableFeaturesConfig, type AppTableFeatures } from "@/lib/table/table-features";
 import { cn } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 interface Vendor {
   id: string;
@@ -129,7 +130,7 @@ export default function CrmVendorsPage() {
         ? `${API_BASE_URL}/v1/purchasing/vendors?search=${encodeURIComponent(searchTerm.trim())}`
         : `${API_BASE_URL}/v1/purchasing/vendors`;
 
-      const response = await fetch(url, {
+      const response = await authFetch(url, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
@@ -182,7 +183,7 @@ export default function CrmVendorsPage() {
     try {
       setIsCreating(true);
 
-      const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/purchasing/vendors`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -258,7 +259,7 @@ export default function CrmVendorsPage() {
     try {
       setIsSavingEdit(true);
 
-      const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors/${editFormData.id}`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/purchasing/vendors/${editFormData.id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${authToken}`,
@@ -308,7 +309,7 @@ export default function CrmVendorsPage() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/v1/purchasing/vendors/${id}`, {
+      const response = await authFetch(`${API_BASE_URL}/v1/purchasing/vendors/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${authToken}` },
       });
@@ -348,7 +349,7 @@ export default function CrmVendorsPage() {
 
       try {
         setDetailsLoading(true);
-        const res = await fetch(`${API_BASE_URL}/v1/purchasing/vendors/${selectedVendorId}`, {
+        const res = await authFetch(`${API_BASE_URL}/v1/purchasing/vendors/${selectedVendorId}`, {
           headers: { Authorization: `Bearer ${authToken}` },
         });
 

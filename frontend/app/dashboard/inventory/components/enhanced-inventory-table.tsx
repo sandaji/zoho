@@ -251,12 +251,14 @@ export function EnhancedInventoryTable({
     pageCount: pagination?.totalPages ?? -1,
     state: { sorting, pagination: currentPagination },
     onSortingChange: (updater) => {
-      setSorting((old) => {
-        const next = typeof updater === "function" ? updater(old) : updater;
-        const [first] = next;
-        if (first) onSort?.(first.id, first.desc ? "desc" : "asc");
-        return next;
-      });
+      // Don't call onSort inside a setSorting updater: React runs updaters
+      // while rendering this component, so the parent's setState would fire
+      // mid-render. Resolve the next value here and notify the parent from
+      // the event handler instead.
+      const next = typeof updater === "function" ? updater(sorting) : updater;
+      setSorting(next);
+      const [first] = next;
+      if (first) onSort?.(first.id, first.desc ? "desc" : "asc");
     },
     onPaginationChange: (updater) => {
       const next = typeof updater === "function" ? updater(currentPagination) : updater;

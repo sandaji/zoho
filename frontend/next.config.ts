@@ -1,5 +1,12 @@
 import type { NextConfig } from "next";
 
+// Where the /api/* rewrite forwards to. Set API_PROXY_TARGET when the backend
+// is deployed separately; otherwise it follows NEXT_PUBLIC_API_URL.
+const API_PROXY_TARGET =
+  process.env.API_PROXY_TARGET ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:5000";
+
 const nextConfig: NextConfig = {
   // TypeScript strict mode
   typescript: {
@@ -16,7 +23,7 @@ const nextConfig: NextConfig = {
       beforeFiles: [
         {
           source: "/api/:path*",
-          destination: "http://localhost:5000/v1/:path*",
+          destination: `${API_PROXY_TARGET}/v1/:path*`,
         },
       ],
     };

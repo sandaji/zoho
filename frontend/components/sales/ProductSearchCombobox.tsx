@@ -21,6 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useAuth } from "@/lib/auth-context";
+import { authFetch } from "@/lib/api-client";
 
 interface Product {
   id: string;
@@ -81,7 +82,7 @@ export function ProductSearchCombobox({
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const response = await fetch(
+      const response = await authFetch(
         `/api/products/search/pos?q=${encodeURIComponent(query)}&branchId=${branchId}`,
         {
           headers,

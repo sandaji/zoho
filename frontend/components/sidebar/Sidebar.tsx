@@ -13,9 +13,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
@@ -38,7 +35,6 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
-  ChevronDown,
   Pin,
   Star,
 } from "lucide-react";
@@ -52,7 +48,9 @@ import { NAVIGATION_MODULES, canAccessNavigationItem } from "@/lib/navigation";
 import type { Branch } from "@/lib/types/admin";
 import { isActivePath } from "./constants";
 import { CommandPalette } from "./CommandPalette";
+import { ModuleNavbar } from "./ModuleNavbar";
 import type { SwitcherBranch, SearchResult } from "./types";
+import { authFetch } from "@/lib/api-client";
 
 // Internal component that uses the sidebar context
 function SidebarContentInternal() {
@@ -64,7 +62,6 @@ function SidebarContentInternal() {
   const isCollapsed = state === "collapsed";
 
   // UI State
-  const [openModule, setOpenModule] = useState<string | null>(null);
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -87,7 +84,7 @@ function SidebarContentInternal() {
     const token = localStorage.getItem("auth_token");
     if (!token) return;
 
-    fetch(`${API_BASE_URL}${API_ENDPOINTS.BRANCHES}`, {
+    authFetch(`${API_BASE_URL}${API_ENDPOINTS.BRANCHES}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => (response.ok ? response.json() : null))
@@ -115,7 +112,7 @@ function SidebarContentInternal() {
       const token = localStorage.getItem("auth_token");
       if (!token) return;
       try {
-        const response = await fetch(`${API_BASE_URL}/v1/admin/stats`, {
+        const response = await authFetch(`${API_BASE_URL}/v1/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok && active) {
@@ -193,11 +190,6 @@ function SidebarContentInternal() {
     [allPages, pathname]
   );
 
-  useEffect(() => {
-    const activeModuleId = currentPage?.module?.id;
-    if (activeModuleId) setOpenModule(activeModuleId);
-  }, [currentPage?.module?.id]);
-
   // Track recent pages
   useEffect(() => {
     if (currentPage) {
@@ -227,7 +219,7 @@ function SidebarContentInternal() {
       if (hasAnyPermission(["inventory.product.view", "inventory.product.manage"])) {
         requests.push({
           type: "product",
-          response: fetch(
+          response: authFetch(
             `${API_BASE_URL}${API_ENDPOINTS.PRODUCTS}?search=${encodeURIComponent(query)}&limit=5`,
             { headers }
           ),
@@ -237,7 +229,7 @@ function SidebarContentInternal() {
       if (hasAnyPermission(["sales.order.create", "sales.order.view_all"])) {
         requests.push({
           type: "customer",
-          response: fetch(
+          response: authFetch(
             `${API_BASE_URL}${API_ENDPOINTS.CUSTOMERS_SEARCH}?q=${encodeURIComponent(query)}`,
             { headers }
           ),
@@ -498,7 +490,6 @@ function SidebarContentInternal() {
                     <SidebarMenu>
                       {sectionModules.map((module: any) => {
                         const Icon = module.icon;
-                        const isOpen = openModule === module.id;
                         const isPinned = pinnedModules.value.includes(module.id);
                         const isActive = module.pages.some((page: any) =>
                           isActivePath(pathname, page.href)
@@ -508,15 +499,8 @@ function SidebarContentInternal() {
                           <SidebarMenuItem key={module.id}>
                             <SidebarMenuButton
                               isActive={isActive}
-                              onClick={() => {
-                                if (isCollapsed) {
-                                  navigate(module.pages[0].href);
-                                  return;
-                                }
-                                setOpenModule(isOpen ? null : module.id);
-                              }}
+                              onClick={() => navigate(module.pages[0].href)}
                               tooltip={module.label}
-                              aria-expanded={isCollapsed ? undefined : isOpen}
                               className="w-full pr-16"
                             >
                               <Icon
@@ -533,12 +517,6 @@ function SidebarContentInternal() {
                                       {module.summary(stats)}
                                     </Badge>
                                   )}
-                                  <ChevronDown
-                                    className={cn(
-                                      "h-3.5 w-3.5 transition-transform duration-200",
-                                      isOpen && "rotate-180"
-                                    )}
-                                  />
                                 </>
                               )}
                             </SidebarMenuButton>
@@ -554,50 +532,6 @@ function SidebarContentInternal() {
                                   className={cn("h-3 w-3", isPinned && "fill-current text-sidebar-accent-foreground")}
                                 />
                               </SidebarMenuAction>
-                            )}
-                            {isOpen && !isCollapsed && (
-                              <SidebarMenuSub>
-                                {module.pages.map((page: any) => {
-                                  const PageIcon = page.icon;
-                                  const isPageActive = isActivePath(pathname, page.href);
-                                  const isFavorite = favorites.value.includes(page.href);
-
-                                  return (
-                                    <SidebarMenuSubItem key={page.href}>
-                                      <SidebarMenuSubButton asChild isActive={isPageActive}>
-                                        <a
-                                          href={page.href}
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            navigate(page.href);
-                                          }}
-                                        >
-                                          <PageIcon
-                                            className={cn(
-                                              "h-4 w-4",
-                                              isPageActive
-                                                ? "text-sidebar-accent-foreground"
-                                                : "text-sidebar-foreground/60"
-                                            )}
-                                          />
-                                          <span>{page.label}</span>
-                                        </a>
-                                      </SidebarMenuSubButton>
-                                      <SidebarMenuAction
-                                        onClick={() => favorites.toggle(page.href)}
-                                        className={cn(isFavorite && "text-amber-500")}
-                                        aria-label={`${isFavorite ? "Remove" : "Add"} ${page.label} ${isFavorite ? "from" : "to"} favorites`}
-                                        title={`${isFavorite ? "Remove from" : "Add to"} favorites`}
-                                        showOnHover
-                                      >
-                                        <Star
-                                          className={cn("h-3 w-3", isFavorite && "fill-current")}
-                                        />
-                                      </SidebarMenuAction>
-                                    </SidebarMenuSubItem>
-                                  );
-                                })}
-                              </SidebarMenuSub>
                             )}
                           </SidebarMenuItem>
                         );
@@ -688,8 +622,10 @@ export function SidebarLayout({ children }: { children: React.ReactNode }) {
           <SidebarTrigger />
           <span className="ml-2 font-semibold">SwiftPos ERP</span>
         </div>
+        <ModuleNavbar />
         {children}
       </main>
     </SidebarProvider>
   );
 }
+

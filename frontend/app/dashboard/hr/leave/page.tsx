@@ -9,6 +9,7 @@ import { LeaveRequestsTable } from "./components/leave-requests-table";
 import { PendingApprovals } from "./components/pending-approvals";
 import { RequestLeaveDialog } from "./components/request-leave-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { authFetch } from "@/lib/api-client";
 
 export default function LeaveDashboard() {
   const [balance, setBalance] = useState([]);
@@ -27,8 +28,8 @@ export default function LeaveDashboard() {
     setIsLoading(true);
     try {
       const [balanceRes, requestsRes] = await Promise.all([
-        fetch(getApiUrl(API_ENDPOINTS.LEAVE_BALANCE), { headers: getAuthHeaders() }),
-        fetch(getApiUrl(API_ENDPOINTS.LEAVE_MY_REQUESTS), { headers: getAuthHeaders() }),
+        authFetch(getApiUrl(API_ENDPOINTS.LEAVE_BALANCE), { headers: getAuthHeaders() }),
+        authFetch(getApiUrl(API_ENDPOINTS.LEAVE_MY_REQUESTS), { headers: getAuthHeaders() }),
       ]);
 
       const balanceData = await balanceRes.json();
@@ -38,7 +39,7 @@ export default function LeaveDashboard() {
       if (requestsData.success) setRequests(requestsData.data);
 
       // Optionally fetch pending if user has manager role
-      const pendingRes = await fetch(getApiUrl(API_ENDPOINTS.LEAVE_PENDING), {
+      const pendingRes = await authFetch(getApiUrl(API_ENDPOINTS.LEAVE_PENDING), {
         headers: getAuthHeaders(),
       });
       if (pendingRes.ok) {

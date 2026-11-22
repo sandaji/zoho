@@ -249,6 +249,17 @@ export default function AdminOverview() {
         })}
       </div>
 
+      {/* ── Global Financials Widget ────────────────────────────────────── */}
+      {permissions.canViewFinancials && <GlobalFinancialsWidget refreshKey={refreshKey} />}
+
+      {/* ── Multi-Branch Widgets Grid ───────────────────────────────────── */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* IBT Monitor */}
+        {permissions.canViewIBT && <IBTMonitorWidget />}
+
+        {/* System Health */}
+        {permissions.canViewSystemHealth && <SystemHealthWidget />}
+      </div>
       {/* ── Today's Top Products ────────────────────────────────────────── */}
       <Card className="rounded-xl border border-emerald-100 bg-white shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-3">
@@ -321,7 +332,7 @@ export default function AdminOverview() {
                             <DropdownMenuItem
                               onClick={() =>
                                 router.push(
-                                  `/dashboard/products?search=${encodeURIComponent(product.name)}`,
+                                  `/dashboard/products?search=${encodeURIComponent(product.name)}`
                                 )
                               }
                             >
@@ -339,20 +350,9 @@ export default function AdminOverview() {
         </CardContent>
       </Card>
 
-      {/* ── Global Financials Widget ────────────────────────────────────── */}
-      {permissions.canViewFinancials && <GlobalFinancialsWidget refreshKey={refreshKey} />}
-
-      {/* ── Multi-Branch Widgets Grid ───────────────────────────────────── */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* IBT Monitor */}
-        {permissions.canViewIBT && <IBTMonitorWidget />}
-
-        {/* System Health */}
-        {permissions.canViewSystemHealth && <SystemHealthWidget />}
-      </div>
-
       {/* ── Global Audit Feed ───────────────────────────────────────────── */}
       {permissions.canViewAuditFeed && <GlobalAuditFeed />}
+
     </div>
   );
 }

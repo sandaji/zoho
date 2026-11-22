@@ -105,6 +105,7 @@ interface SalesPerformance {
 }
 
 import { frontendEnv } from "./env";
+import { authFetch } from "./api-client";
 
 const API_URL = `${frontendEnv.NEXT_PUBLIC_API_URL}/v1`;
 
@@ -125,7 +126,7 @@ class HttpError extends Error {
  * "Failed to fetch ..." so the UI can say what is actually wrong.
  */
 async function apiGet<T = any>(path: string, token: string): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await authFetch(`${API_URL}${path}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

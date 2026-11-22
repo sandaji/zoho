@@ -16,7 +16,6 @@ export const API_BASE_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 export const API_ENDPOINTS = {
   // Auth
   AUTH_LOGIN: "/v1/auth/login",
-  AUTH_REGISTER: "/v1/auth/register",
   AUTH_ME: "/v1/auth/me",
   AUTH_REFRESH: "/v1/auth/refresh",
 

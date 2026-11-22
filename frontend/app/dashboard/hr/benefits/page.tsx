@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { authFetch } from "@/lib/api-client";
 
 export default function BenefitsPage() {
   const [benefits, setBenefits] = useState<Array<{
@@ -34,10 +35,10 @@ export default function BenefitsPage() {
       try {
         const token = localStorage.getItem("auth_token");
         const [benefitsRes, enrollmentsRes] = await Promise.all([
-          fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/benefits`, {
+          authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/benefits`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
-          fetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/benefits/my-enrollments`, {
+          authFetch(`${frontendEnv.NEXT_PUBLIC_API_URL}/v1/hr/benefits/my-enrollments`, {
             headers: { Authorization: `Bearer ${token}` }
           })
         ]);

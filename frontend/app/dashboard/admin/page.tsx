@@ -161,29 +161,6 @@ export default function AdminDashboardPage() {
   return (
     <AdminBranchProvider>
       <div className="admin-dashboard flex min-h-full flex-col bg-background">
-        {/* ── Page heading strip ──────────────────────────────────────────── */}
-        <div className="sticky top-0 z-10 border-b border-border bg-background/95 px-6 py-4 shadow-sm backdrop-blur-sm">
-          <div className="flex items-center gap-3">
-            <div
-              className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-lg",
-                section === "overview" ? "bg-yellow-400" : "bg-accent"
-              )}
-            >
-              <MetaIcon
-                className={cn(
-                  "h-4 w-4",
-                  section === "overview" ? "text-emerald-900" : "text-foreground"
-                )}
-              />
-            </div>
-            <div>
-              <h1 className="text-base font-bold leading-none text-emerald-900">{meta!.title}</h1>
-              <p className="mt-0.5 text-xs text-emerald-500">{meta!.subtitle}</p>
-            </div>
-          </div>
-        </div>
-
         {/* ── Section content ─────────────────────────────────────────────── */}
         <main className="flex-1 p-5">{renderSection()}</main>
       </div>

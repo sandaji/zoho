@@ -6,6 +6,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { authFetch } from "@/lib/api-client";
 
 interface Row {
   id: string;
@@ -45,7 +46,7 @@ export function BulkAssignDialog({
     if (!token) return;
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/v1/customers?salesmanId=none&limit=200&search=${encodeURIComponent(filter)}`, {
+      const res = await authFetch(`${API_BASE_URL}/v1/customers?salesmanId=none&limit=200&search=${encodeURIComponent(filter)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
@@ -79,7 +80,7 @@ export function BulkAssignDialog({
     if (!salesmanId || picked.size === 0) return;
     setSaving(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/v1/customers/assign-salesman`, {
+      const res = await authFetch(`${API_BASE_URL}/v1/customers/assign-salesman`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify({ customerIds: [...picked], salesmanId }),

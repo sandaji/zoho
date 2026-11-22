@@ -14,6 +14,7 @@ export interface LoginResponseDTO {
   success: true;
   data: {
     token: string;
+    refreshToken: string;
     user: {
       id: string;
       email: string;
@@ -54,7 +55,6 @@ export interface RegisterRequestDTO {
   password: string;
   name: string;
   phone?: string;
-  role?: UserRole;
   branchId?: string | null;
 }
 
@@ -69,12 +69,13 @@ export interface RegisterResponseDTO {
 }
 
 export interface RefreshTokenRequestDTO {
-  token: string;
+  refreshToken: string;
 }
 
 export interface RefreshTokenResponseDTO {
   success: true;
   data: {
     token: string;
+    refreshToken: string;
   };
 }

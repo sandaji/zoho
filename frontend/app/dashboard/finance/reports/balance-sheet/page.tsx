@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { authFetch } from "@/lib/api-client";
 
 interface AccountBalance {
   id: string;
@@ -51,7 +52,7 @@ export default function BalanceSheetPage() {
       }
 
       setLoading(true);
-      const res = await fetch(
+      const res = await authFetch(
         `${getApiUrl(API_ENDPOINTS.FINANCE_BALANCE_SHEET)}?date=${date.toISOString()}`,
         {
           headers: getAuthHeaders(),

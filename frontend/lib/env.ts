@@ -8,6 +8,8 @@ const envSchema = z.object({
   NEXT_PUBLIC_API_VERSION: z.string().default("v1"),
 
   // API Configuration
+  // DEPRECATED: use NEXT_PUBLIC_API_URL (host only, no /v1 suffix; endpoint
+  // paths add /v1 themselves). Kept only so any remaining imports still compile.
   NEXT_PUBLIC_API_BASE_URL: z.string().url().default("http://localhost:5000/v1"),
   NEXT_PUBLIC_AUTH_TOKEN_KEY: z.string().default("auth_token"),
   NEXT_PUBLIC_REFRESH_TOKEN_KEY: z.string().default("swiftpos-erp-refresh-token"),

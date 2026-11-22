@@ -32,6 +32,7 @@ import { getAuthHeadersWithToken } from "@/lib/api-utils";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 import { messagingService, type Channel } from "@/lib/messaging.service";
+import { authFetch } from "@/lib/api-client";
 
 interface POSSaleSuccessProps {
   isOpen: boolean;
@@ -85,7 +86,7 @@ export const POSSaleSuccess: React.FC<POSSaleSuccessProps> = ({
   const handleDownloadPDF = async () => {
     try {
       setIsLoadingPDF(true);
-      const res = await fetch(`${getApiUrl("/v1/pos/sales")}/${sale.id}/pdf`, {
+      const res = await authFetch(`${getApiUrl("/v1/pos/sales")}/${sale.id}/pdf`, {
         headers: getAuthHeadersWithToken(token || ""),
       });
 

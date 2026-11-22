@@ -34,6 +34,7 @@ import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 
 import { frontendEnv } from "@/lib/env";
+import { authFetch } from "@/lib/api-client";
 const API_URL = frontendEnv.NEXT_PUBLIC_API_URL;
 
 interface Customer {
@@ -98,7 +99,7 @@ export default function CreateSalesOrderPage() {
         };
 
         // Fetch customers
-        const customersRes = await fetch(`${API_URL}/v1/customers`, {
+        const customersRes = await authFetch(`${API_URL}/v1/customers`, {
           headers,
         });
         if (customersRes.ok) {
@@ -107,7 +108,7 @@ export default function CreateSalesOrderPage() {
         }
 
         // Fetch products
-        const productsRes = await fetch(`${API_URL}/v1/products`, {
+        const productsRes = await authFetch(`${API_URL}/v1/products`, {
           headers,
         });
         if (productsRes.ok) {
@@ -116,7 +117,7 @@ export default function CreateSalesOrderPage() {
         }
 
         // Fetch branches
-        const branchesRes = await fetch(`${API_URL}/v1/branches`, {
+        const branchesRes = await authFetch(`${API_URL}/v1/branches`, {
           headers,
         });
         if (branchesRes.ok) {
@@ -215,7 +216,7 @@ export default function CreateSalesOrderPage() {
     setSubmitting(true);
 
     try {
-      const response = await fetch(`${API_URL}/v1/sales/orders`, {
+      const response = await authFetch(`${API_URL}/v1/sales/orders`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

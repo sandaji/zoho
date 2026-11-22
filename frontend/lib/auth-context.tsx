@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { apiClient, TOKEN_REFRESHED_EVENT } from "./api-client";
 
 export interface Branch {
   id:       string;
@@ -30,7 +31,7 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (token: string, user: User) => void;
+  login: (token: string, user: User, refreshToken?: string) => void;
   logout: () => void;
   setUser: (user: User | null) => void;
   switchBranch: (branchId: string) => Promise<void>;
@@ -66,25 +67,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    // Validate the token with the backend in the background
-    const apiBase =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-
-    fetch(`${apiBase}/v1/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${storedToken}`,
-        "Content-Type": "application/json",
-      },
-    })
+    // Validate the session with the backend in the background. apiClient
+    // refreshes an expired access token transparently using the refresh token.
+    apiClient
+      .getMe()
       .then((res) => {
-        if (res.status === 401 || res.status === 403) {
-          // Token is invalid/expired — clear everything and force re-login
-          console.warn("Stored token rejected by server — logging out.");
+        if (res.success) {
+          // The client may have swapped in a freshly refreshed access token.
+          const freshToken = localStorage.getItem("auth_token");
+          if (freshToken && freshToken !== storedToken) setToken(freshToken);
+          return;
+        }
+        const code = res.error?.code;
+        if (
+          code === "SESSION_EXPIRED" ||
+          code === "UNAUTHORIZED" ||
+          code === "FORBIDDEN"
+        ) {
+          // Session is invalid and could not be refreshed — force re-login
+          console.warn("Stored session rejected by server — logging out.");
           setToken(null);
           setUser(null);
           localStorage.removeItem("auth_token");
           localStorage.removeItem("auth_user");
+          localStorage.removeItem("auth_refresh_token");
         }
+        // Other failures (e.g. server unreachable) keep the session so the UI
+        // stays usable; individual calls will show their own errors.
       })
       .catch(() => {
         // Server unreachable — keep the token so the UI stays usable offline,
@@ -96,11 +105,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
   }, []);
 
-  const login = (newToken: string, newUser: User) => {
+  // Keep the context's copy of the access token in step when the API layer
+  // refreshes it in the background.
+  useEffect(() => {
+    const onRefreshed = (event: Event) => {
+      const next = (event as CustomEvent<string>).detail;
+      if (next) setToken(next);
+    };
+    window.addEventListener(TOKEN_REFRESHED_EVENT, onRefreshed);
+    return () => window.removeEventListener(TOKEN_REFRESHED_EVENT, onRefreshed);
+  }, []);
+
+  const login = (newToken: string, newUser: User, refreshToken?: string) => {
     setToken(newToken);
     setUser(newUser);
     localStorage.setItem("auth_token", newToken);
     localStorage.setItem("auth_user", JSON.stringify(newUser));
+    // Only replaced when a new one is issued (e.g. branch switch keeps the old).
+    if (refreshToken) localStorage.setItem("auth_refresh_token", refreshToken);
     // Write cookies so Next.js edge proxy can read them for route protection
     const maxAge = 60 * 60 * 24 * 7; // 7 days — matches typical JWT expiry
     document.cookie = `auth_token=${newToken}; path=/; max-age=${maxAge}; SameSite=Lax`;
@@ -117,6 +139,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     localStorage.removeItem("auth_token");
     localStorage.removeItem("auth_user");
+    localStorage.removeItem("auth_refresh_token");
     // Clear the auth cookies
     document.cookie = "auth_token=; path=/; max-age=0; SameSite=Lax";
     document.cookie = "auth_user=; path=/; max-age=0; SameSite=Lax";

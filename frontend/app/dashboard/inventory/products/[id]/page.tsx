@@ -11,6 +11,7 @@ import { ArrowLeft, Edit, Package, BarChart3, History } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { TraceabilityTab } from "./traceability-tab";
+import { authFetch } from "@/lib/api-client";
 
 interface Product {
   id: string;
@@ -42,7 +43,7 @@ export default function ProductDetailsPage() {
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/products/${id}`, {
+      const response = await authFetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

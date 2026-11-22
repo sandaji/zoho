@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { authFetch } from "@/lib/api-client";
 
 type Kind = "INVOICE" | "PAYMENT" | "CREDIT_NOTE" | "VOID";
 interface Entry {
@@ -85,7 +86,7 @@ export default function CustomerStatementPage() {
       const q = new URLSearchParams();
       if (from) q.set("from", from);
       if (to) q.set("to", to);
-      const res = await fetch(`${API_BASE_URL}/v1/customers/${id}/statement${q.toString() ? `?${q}` : ""}`, { headers: headers() });
+      const res = await authFetch(`${API_BASE_URL}/v1/customers/${id}/statement${q.toString() ? `?${q}` : ""}`, { headers: headers() });
       const json = await res.json();
       if (!res.ok) throw new Error(json?.error?.message || json?.error || json?.message || "Failed to load statement");
       setData(json.data);
@@ -103,7 +104,7 @@ export default function CustomerStatementPage() {
 
   useEffect(() => {
     if (!token) return;
-    fetch(`${API_BASE_URL}/v1/customers/salesmen`, { headers: headers() })
+    authFetch(`${API_BASE_URL}/v1/customers/salesmen`, { headers: headers() })
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => j && setSalesmen(j.data ?? []))
       .catch(() => undefined);
@@ -113,7 +114,7 @@ export default function CustomerStatementPage() {
     if (!salesmanId) return;
     try {
       setSaving(true);
-      const res = await fetch(`${API_BASE_URL}/v1/customers/${id}`, {
+      const res = await authFetch(`${API_BASE_URL}/v1/customers/${id}`, {
         method: "PUT",
         headers: headers(),
         body: JSON.stringify({ salesmanId }),
@@ -133,7 +134,7 @@ export default function CustomerStatementPage() {
 
   const downloadCsv = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/v1/customers/${id}/statement.csv${qs()}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await authFetch(`${API_BASE_URL}/v1/customers/${id}/statement.csv${qs()}`, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error("Export failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);

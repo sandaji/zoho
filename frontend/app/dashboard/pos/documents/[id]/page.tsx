@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { PDFViewer } from "@/components/sales/PDFViewer";
+import { authFetch } from "@/lib/api-client";
 
 // ─── Status badge styling: works cleanly in both light & dark modes ───────────
 const STATUS_STYLES: Record<string, { className: string; icon: any; label: string }> = {
@@ -106,7 +107,7 @@ export default function DocumentDetailPage() {
     try {
       const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
       if (!rawId) return;
-      const response = await fetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(rawId)), {
+      const response = await authFetch(getApiUrl(API_ENDPOINTS.SALES_DOCUMENT_BY_ID(rawId)), {
         headers: getAuthHeaders(),
       });
       const result = await response.json();
