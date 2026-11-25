@@ -6,6 +6,7 @@ type InventoryDbClient = typeof defaultPrisma;
 
 export interface InventoryFilterOptions {
   branchId?: string;
+  branchIds?: string[];
 }
 
 export class InventoryRepository {
@@ -22,6 +23,11 @@ export class InventoryRepository {
     const batches = await this.db.stockBatch.findMany({
       where: {
         isDepleted: false,
+        ...(filters?.branchId
+          ? { warehouse: { is: { branchId: filters.branchId } } }
+          : filters?.branchIds?.length
+            ? { warehouse: { is: { branchId: { in: filters.branchIds } } } }
+            : {}),
       },
       select: {
         currentQuantity: true,
@@ -93,9 +99,16 @@ export class InventoryRepository {
   /**
    * Get active stock batches with batch stats
    */
-  async getStockBatches() {
+  async getStockBatches(filters?: InventoryFilterOptions) {
     return this.db.stockBatch.findMany({
-      where: { isDepleted: false },
+      where: {
+        isDepleted: false,
+        ...(filters?.branchId
+          ? { warehouse: { is: { branchId: filters.branchId } } }
+          : filters?.branchIds?.length
+            ? { warehouse: { is: { branchId: { in: filters.branchIds } } } }
+            : {}),
+      },
       select: {
         id: true,
         currentQuantity: true,

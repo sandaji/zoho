@@ -18,11 +18,10 @@ const SCOPE_PRIORITY: Record<AccessScope, number> = {
   OWN: 1,
 };
 
-// Earlier seeded roles use `procurement.*`; Purchasing routes now check
-// `purchasing.*`. Treat the former grants as aliases for their direct
-// equivalents so existing role assignments keep working without widening
-// access to unrelated purchasing actions.
+// Keep older permission codes mapped to their current feature checks so
+// existing role assignments continue to work with scoped route middleware.
 const PERMISSION_ALIASES: Record<string, string[]> = {
+  "finance.reports.view": ["finance.report.aging", "admin.user.manage"],
   "purchasing.vendor.view": ["procurement.vendor.view"],
   "purchasing.vendor.manage": ["procurement.vendor.manage"],
   "purchasing.order.create": ["procurement.order.create"],

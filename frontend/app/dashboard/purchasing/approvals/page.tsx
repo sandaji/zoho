@@ -29,7 +29,7 @@ export default function ApprovalsPage() {
 
   if (!hasPermission) {
     return (
-      <div className="space-y-5">
+      <div className="space-y-5 p-4 sm:p-6">
         <div className="flex items-start gap-3">
           <div className="mt-0.5 rounded-md bg-primary/10 p-2 text-primary">
             <ShieldCheck className="h-5 w-5" />
@@ -54,7 +54,7 @@ export default function ApprovalsPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 p-4 sm:p-6">
       <div className="flex items-start gap-3">
         <div className="mt-0.5 rounded-md bg-primary/10 p-2 text-primary">
           <ShieldCheck className="h-5 w-5" />

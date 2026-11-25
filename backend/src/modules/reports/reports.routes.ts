@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getFinancialReport } from './reports.controller';
 import { authMiddleware as authenticate } from '@core/middleware/auth';
-import { hasAnyPermission } from '../../middleware/rbac.middleware';
+import { requirePermission } from '../../middleware/rbac.middleware';
 
 const router = Router();
 
@@ -10,11 +10,11 @@ const router = Router();
  * Prefix: /v1/reports
  */
 
-// Get financial metrics - requires admin or finance.report.aging permission
+// Branch scope is resolved by requirePermission and applied in the report query.
 router.get(
   '/financials',
   authenticate,
-  hasAnyPermission(['finance.report.aging', 'admin.user.manage']),
+  requirePermission('finance.reports.view'),
   getFinancialReport
 );
 

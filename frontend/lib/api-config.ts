@@ -79,6 +79,7 @@ export const API_ENDPOINTS = {
   FINANCE_TRANSACTION_BY_ID: (id: string) => `/v1/finance/transactions/${id}`,
 
   // Financial Reports
+  REPORT_FINANCIALS: "/v1/reports/financials",
   FINANCE_BALANCE_SHEET: "/v1/finance/reports/balance-sheet",
   FINANCE_PROFIT_LOSS: "/v1/finance/reports/profit-loss",
   FINANCE_CASH_FLOW: "/v1/finance/reports/cash-flow",

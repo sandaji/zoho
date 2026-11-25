@@ -268,7 +268,7 @@ export const NAVIGATION_MODULES: NavigationModule[] = [
     icon: BarChart3,
     section: "reports",
     accent: sharedAccent("text-cyan-700 dark:text-cyan-300", "text-cyan-600 dark:text-cyan-400", "bg-cyan-50 text-cyan-900 dark:bg-cyan-500/20 dark:text-cyan-200", "bg-cyan-500 dark:bg-cyan-400"),
-    permissions: ["finance.reports.view", "admin.branch.manage"],
+    permissions: ["finance.reports.view", "finance.report.aging", "admin.user.manage"],
     pages: [{ id: "reports-overview", label: "Reports", href: "/dashboard/reports", icon: BarChart3 }],
   },
   {

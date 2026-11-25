@@ -35,7 +35,7 @@ export default function SupplierScorecardsPage() {
   }, [search]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4 sm:p-6">
       <div>
         <h1 className="text-xl font-bold">Supplier scorecards</h1>
         <p className="text-sm text-muted-foreground">
